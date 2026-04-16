@@ -6395,7 +6395,7 @@ if (stored) {
       const fallbackId = userGuess
         ? `${userGuess} (broad category — limited evidence)`
         : "American antique furniture (broad category — limited evidence)";
-      const _g = (answers.user_category_guess || "").toLowerCase();
+      const _g = (((answers as any).user_category_guess) || "").toLowerCase();
       const _broadFormKey =
         (_g.includes("chest") || _g.includes("trunk")) ? "chest" :
         _g.includes("table")    ? "table"   :
