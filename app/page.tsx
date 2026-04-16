@@ -638,7 +638,7 @@ function RuntimeModeBadge() {
     icon: "✕",
   };
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <div style={{marginBottom:12, fontFamily:"sans-serif"}}>
