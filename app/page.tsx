@@ -6362,7 +6362,7 @@ if (stored) {
     try {
       // Register any newly added images not yet in the case store
       const existingIds = new Set((caseStore[caseId].images || []).map(i => i.storage_key));
-      for (const [key, img] of Object.entries(images)) {
+      for (const [key, img] of Object.entries(images as Record<string, any>)) {
         if (!existingIds.has(key)) {
           API.addImage(caseId, { storage_key:key, image_type:img.image_type, is_primary:key==="overall_front", data_url:img.data_url });
         }
@@ -6370,7 +6370,7 @@ if (stored) {
       // Re-add all images on full rerun to pick up latest state
       if (isRerun) {
         caseStore[caseId].images = [];
-        for (const [key, img] of Object.entries(images)) {
+        for (const [key, img] of Object.entries(images as Record<string, any>)) {
           API.addImage(caseId, { storage_key:key, image_type:img.image_type, is_primary:key==="overall_front", data_url:img.data_url });
         }
       }
