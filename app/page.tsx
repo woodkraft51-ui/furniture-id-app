@@ -6038,7 +6038,11 @@ const GUIDANCE_MESSAGES = {
 // Mirrors the logic in API.analyzeCase so guidance is live before analysis runs.
 function computeMissingEvidence(images, groupImages) {
   const imageKeys = new Set(Object.keys(images));
-  const groupTypes = new Set(Object.values(groupImages).flat().map(i => i.image_type));
+  const groupTypes = new Set(
+  Object.values(groupImages as Record<string, any[]>)
+    .flat()
+    .map((i: any) => i.image_type)
+);
   return {
     underside_photo: !imageKeys.has("underside"),
     back_photo:      !imageKeys.has("back"),
