@@ -6299,7 +6299,7 @@ export default function App() {
 
   // ── Route entry ───────────────────────────────────────────
   // Creates a new case and routes to the correct intake screen.
-  const handleStart = (selectedMode, transferEvidence) => {
+  const handleStart = (selectedMode, transferEvidence = null) => {
     const r = API.createCase({});
     // If upgrading from Field Scan, transfer evidence cache to new case
     if (transferEvidence && caseId && caseStore[caseId] && caseStore[caseId]._evidence_cache) {
