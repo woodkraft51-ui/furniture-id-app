@@ -414,8 +414,9 @@ const API = {
 // The mock response is tuned to a drop-leaf / gateleg table test case.
 // ============================================================
 type EngineMode = "live" | "mock";
-const EVIDENCE_ADAPTER_MODE: EngineMode = "live"; // "mock" | "live" — Field Scan evidence extractor
-const FULL_ANALYSIS_MODE: EngineMode = "live"; // "mock" | "live" — Full Analysis phase engine
+
+let EVIDENCE_ADAPTER_MODE: EngineMode = "live"; // "mock" | "live" — Field Scan evidence extractor
+let FULL_ANALYSIS_MODE: EngineMode = "live"; // "mock" | "live" — Full Analysis phase engine
 //
 // To connect a real backend:
 //   Set FULL_ANALYSIS_MODE = "live"  and ensure api.anthropic.com is reachable
