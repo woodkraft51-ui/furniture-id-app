@@ -5120,7 +5120,15 @@ EVIDENCE FROM ${digest.photos_used_count} PHOTOS:
 ${JSON.stringify(digest.evidence_digest)}
 
 STRUCTURAL MECHANISMS DETECTED:
-${JSON.stringify(Object.entries(mech).filter(([,v]) => v.present).map(([k,v]) => ({mechanism:k, confidence:v.confidence, note:v.note})))}
+${JSON.stringify(
+  Object.entries(mech as Record<string, any>)
+    .filter(([, v]) => (v as any).present)
+    .map(([k, v]) => ({
+      mechanism: k,
+      confidence: (v as any).confidence,
+      note: (v as any).note
+    }))
+)}
 Strongest mechanism: ${digest.strongest_mechanism || "none detected"}
 
 CLIENT-SIDE FORM CANDIDATE (pre-computed): ${clientSideForm || "none"}
