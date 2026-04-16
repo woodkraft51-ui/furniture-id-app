@@ -429,8 +429,8 @@ let FULL_ANALYSIS_MODE: EngineMode = "live"; // "mock" | "live" — Full Analysi
 // Called once at startup and on every result render.
 // ============================================================
 function getRuntimeMode() {
-  const fullMock  = (typeof FULL_ANALYSIS_MODE     !== "undefined" && FULL_ANALYSIS_MODE     === "mock");
-  const fieldMock = (typeof EVIDENCE_ADAPTER_MODE  !== "undefined" && EVIDENCE_ADAPTER_MODE  === "mock");
+ const fullMock = String(FULL_ANALYSIS_MODE) === "mock";
+const fieldMock = String(EVIDENCE_ADAPTER_MODE) === "mock";
 
   const reasons = [];
   if (fullMock)  reasons.push('FULL_ANALYSIS_MODE="mock"');
