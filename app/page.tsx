@@ -4923,7 +4923,7 @@ if (digestResult.ok !== false) {
           if (mechProse.length > 0) digest.evidence_digest = mechProse;
         }
         console.info("[NCW FS Stage0] Digest after merge — evidence_digest:", digest.evidence_digest, "| mechanisms:", Object.keys(digest.mechanisms_detected||{}).filter(k=>digest.mechanisms_detected[k].present));
-            } else {
+               } else {
         // Store the raw failure response in digest so debug panel can read it
         digest._raw_response     = digestResult.raw_response || "";
         digest._raw_response_len = (digestResult.raw_response || "").length;
