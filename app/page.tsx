@@ -6584,7 +6584,7 @@ if (stored) {
             // Persist to storage
             (async function(){
               try {
-                if (typeof window !== 'undefined' && window.storage) { await window.storage.set("picker_profile", JSON.stringify(clean)); }
+                if (typeof window !== 'undefined') { localStorage.setItem("picker_profile", JSON.stringify(clean)); }
                 console.info("[NCW Storage] Picker profile persisted");
               } catch(_e) {
                 console.info("[NCW Storage] Could not persist profile:", _e.message);
