@@ -4817,7 +4817,7 @@ Begin your response with { and end with }. Do not include any text outside the J
       console.info("[NCW Stage0] CF: stage0_returned (success)");
       return Object.assign({}, parsed, { _diag: diag });
     } catch(_e1) {
-      console.warn("[NCW Quick] JSON parse failed. cleaned[:300]:", cleaned.slice(0,300));
+      console.warn("[NCW Quick] JSON parse failed. raw[:300]:", String(bodyText || "").slice(0, 300));
       // One retry with tighter instruction
       try {
         const r2 = await fetch("/api/analyze", {
