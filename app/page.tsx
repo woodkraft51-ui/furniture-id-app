@@ -6391,7 +6391,7 @@ if (stored) {
       // On any unexpected error: synthesize a degraded result from available state
       // so the user always sees something actionable and can add more photos.
       console.warn("[NCW Quick] Unexpected error — building degraded result:", e.message);
-      const userGuess = answers.user_category_guess || "";
+      const userGuess = (answers as any).user_category_guess || "";
       const fallbackId = userGuess
         ? `${userGuess} (broad category — limited evidence)`
         : "American antique furniture (broad category — limited evidence)";
