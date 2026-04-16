@@ -6398,7 +6398,7 @@ export default function App() {
       const degradedResult = {
         likely_identification: fallbackId,
         broad_form_key:        _broadFormKey,
-        const groupTypes = new Set(
+        estimated_date_range:  "Date uncertain — add underside or joinery photo",
   Object.values(groupImages as Record<string, any[]>)
     .flat()
     .map((i: any) => i.image_type)
