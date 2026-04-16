@@ -1895,7 +1895,7 @@ const PE = {
 
   async callClaude(system, userContent) {
     // ── Mock short-circuit — only fires when FULL_ANALYSIS_MODE="mock" ──
-    if (typeof FULL_ANALYSIS_MODE !== "undefined" && FULL_ANALYSIS_MODE === "mock") {
+    if (String(FULL_ANALYSIS_MODE) === "mock") {
       console.info("[NCW callClaude] engine_mode=SIMULATED api_call_attempted=false fallback_triggered=true reason=mock_flag");
       return { ok:false, error_type:"mock_mode", error_message:'Set FULL_ANALYSIS_MODE="live" to enable real calls.', raw_response:"" };
     }
