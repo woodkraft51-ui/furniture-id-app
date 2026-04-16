@@ -6322,12 +6322,16 @@ export default function App() {
   typeof window !== 'undefined'
     ? localStorage.getItem("picker_profile")
     : null;
-        if (stored && stored.value) {
-          const loaded = JSON.parse(stored.value);
-          setPickerProfile(loaded);
-          console.info("[NCW Storage] Picker profile loaded:", JSON.stringify(loaded).slice(0,80));
-          return; // profile found — skip setup
-        }
+
+if (stored) {
+  const loaded = JSON.parse(stored);
+  setPickerProfile(loaded);
+  console.info(
+    "[NCW Storage] Picker profile loaded:",
+    JSON.stringify(loaded).slice(0, 80)
+  );
+  return; // profile found — skip setup
+}
       } catch(_e) {
         console.info("[NCW Storage] No saved profile or storage unavailable:", _e.message);
       }
