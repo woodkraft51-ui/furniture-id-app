@@ -413,8 +413,9 @@ const API = {
 // To switch to a supported proxy or backend, replace the "live" branch only.
 // The mock response is tuned to a drop-leaf / gateleg table test case.
 // ============================================================
-const EVIDENCE_ADAPTER_MODE    = "live"; // "mock" | "live" — Field Scan evidence extractor
-const FULL_ANALYSIS_MODE       = "live"; // "mock" | "live" — Full Analysis phase engine
+type EngineMode = "live" | "mock";
+const EVIDENCE_ADAPTER_MODE: EngineMode = "live"; // "mock" | "live" — Field Scan evidence extractor
+const FULL_ANALYSIS_MODE: EngineMode = "live"; // "mock" | "live" — Full Analysis phase engine
 //
 // To connect a real backend:
 //   Set FULL_ANALYSIS_MODE = "live"  and ensure api.anthropic.com is reachable
