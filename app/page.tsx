@@ -3126,7 +3126,12 @@ Begin your response with { and end with }. Do not include any text outside the J
     }
 
     // ── Assemble canonical output ──────────────────────────────
-    const recoveryUsed = !!(rawResult._recovery || Object.values(observationsByType).flat().some(o => o._recovered));
+    const recoveryUsed = !!(
+  (rawResult as any)._recovery ||
+  Object.values(observationsByType as Record<string, any[]>)
+    .flat()
+    .some((o: any) => o._recovered)
+);
     if (recoveryUsed) console.info(`[NCW P0] Recovery normalization applied. Total observations recovered: ${totalObs}`);
 
     return {
