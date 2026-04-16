@@ -4880,7 +4880,7 @@ Begin your response with { and end with }. Do not include any text outside the J
     const photoCount  = images.filter(i => i.data_url).length;
     const imageLabels = images.map(i => i.image_type).join(", ");
 
-    let digest = {
+    let digest: Record<string, any> = {
       photos_used_count:       photoCount,
       photo_types_included:    images.map(i => i.image_type),
       evidence_digest:         [],
