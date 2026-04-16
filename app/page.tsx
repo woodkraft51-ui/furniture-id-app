@@ -6509,7 +6509,7 @@ if (stored) {
     setAnalyzing(true); setError(null); setDebugOpen(false); setPhasesDone({}); setCurrentPhase(1);
     try {
       // Add core images
-      for (const [key, img] of Object.entries(images)) {
+      for (const [key, img] of Object.entries(images as Record<string, any>)) {
         API.addImage(caseId, {
           storage_key: key, image_type: img.image_type,
           is_primary: key === "overall_front", data_url: img.data_url,
