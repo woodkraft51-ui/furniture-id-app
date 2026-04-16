@@ -2032,10 +2032,11 @@ err.error_type = result.error_type || "unknown_error";
 err.error_message = result.error_message || "No error details available";
 err.raw_response = result.raw_response || "";
 err.retry_attempted = (result && result.retry_attempted != null) ? result.retry_attempted : false;
-        stage_name:    err.stage_name,
-        error_type:    err.error_type,
+              console.error(`[NCW Phase Error] case:${stageName}`, {
+        stage_name: err.stage_name,
+        error_type: err.error_type,
         error_message: err.error_message,
-        raw_response:  err.raw_response.slice(0, 500),
+        raw_response: (err.raw_response || "").slice(0, 500),
       });
       throw err;
     }
