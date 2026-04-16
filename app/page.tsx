@@ -6403,11 +6403,7 @@ export default function App() {
         likely_identification: fallbackId,
         broad_form_key:        _broadFormKey,
         estimated_date_range:  "Date uncertain — add underside or joinery photo",
-  Object.values(groupImages as Record<string, any[]>)
-    .flat()
-    .map((i: any) => i.image_type)
-);
-        confidence:            "Low",
+         confidence:            "Low",
         is_broad_category:     true,
         estimated_value_low:   0,
         estimated_value_high:  0,
