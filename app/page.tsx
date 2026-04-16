@@ -6318,7 +6318,10 @@ export default function App() {
   useEffect(function() {
     (async function() {
       try {
-        const stored = typeof window !== 'undefined' && window.storage ? await window.storage.get("picker_profile") : null;
+        const stored =
+  typeof window !== 'undefined'
+    ? localStorage.getItem("picker_profile")
+    : null;
         if (stored && stored.value) {
           const loaded = JSON.parse(stored.value);
           setPickerProfile(loaded);
