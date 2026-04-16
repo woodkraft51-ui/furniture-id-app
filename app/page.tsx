@@ -4917,9 +4917,9 @@ if (digestResult.ok !== false) {
         }
         if ((!digest.evidence_digest || digest.evidence_digest.length === 0)) {
           // Last-resort: extract any present mechanisms into prose
-          const mechProse = Object.entries(digest.mechanisms_detected || {})
-            .filter(([, v]) => v && v.present)
-            .map(([k, v]) => k.replace(/_/g, " ") + (v.note ? " — " + v.note : ""));
+          const mechProse = Object.entries((digest.mechanisms_detected || {}) as Record<string, any>)
+  .filter(([, v]) => v && (v as any).present)
+  .map(([k, v]) => k.replace(/_/g, " ") + ((v as any).note ? " — " + (v as any).note : ""));
          if (mechProse.length > 0) digest.evidence_digest = mechProse;
 console.info(
   "[NCW FS Stage0] Digest after merge — evidence_digest:",
