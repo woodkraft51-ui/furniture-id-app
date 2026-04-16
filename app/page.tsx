@@ -6881,6 +6881,7 @@ if (stored) {
                           <div style={S.photoCardEvidenceHint}>◆ {slot.evidence_hint}</div>
                         )}
 
+                       
                         {/* Two-button row — always visible */}
                         <div style={S.uploadBtnRow}>
                           <button
