@@ -2127,7 +2127,7 @@ Formula: confidence_pct = supporting / (supporting + opposing) × 100`;
     };
 
     const repairs = [];
-    const alias = (obj, from, to, coerce) => {
+    const alias = (obj: any, from: string, to: string, coerce?: (value: any) => any) => {
       if (obj[from] !== undefined && obj[to] === undefined) {
         obj[to] = coerce ? coerce(obj[from]) : obj[from];
         repairs.push(`${from}→${to}`);
