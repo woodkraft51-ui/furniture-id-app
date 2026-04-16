@@ -4692,18 +4692,18 @@ Begin your response with { and end with }. Do not include any text outside the J
     console.info("[NCW Quick] Request structure:", JSON.stringify(debugPayload));
 
     // ── Diagnostics object — written to at every stage, returned on failure ──
-    const diag = {
-      model_name:             "claude-sonnet-4-6",
-      endpoint:               "/api/analyze",
-      http_status:            null,
-      fetch_ok:               null,
-      response_content_type:  null,
-      response_text_preview:  null,
-      parsed_top_level_keys:  null,
-      has_data_content:       null,
-      has_data_error:         null,
-      caught_exception:       null,
-    };
+    const diag: Record<string, any> = {
+  model_name: this.QUICK_SCHEMA.model_name,
+  endpoint: this.QUICK_SCHEMA.endpoint,
+  http_status: null,
+  fetch_ok: null,
+  response_content_type: null,
+  response_text_preview: null,
+  parsed_top_level_keys: null,
+  has_data_content: null,
+  has_data_error: null,
+  caught_exception: null,
+};
     diag.cf_request_payload_built = true;
     console.info("[NCW Stage0] CF: request_payload_built");
 
