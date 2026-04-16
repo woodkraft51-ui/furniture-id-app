@@ -9159,7 +9159,7 @@ const C = {
   sage: "#5a6b52", divider: "#d4c9b4", card: "#fdfaf4",
   shadow: "rgba(26,20,16,0.10)",
 };
-const S = {
+const S: any = {
   root:        { minHeight:"100vh", background:C.cream, fontFamily:"'Georgia','Times New Roman',serif", color:C.ink, position:"relative", overflowX:"hidden" },
   bgTexture:   { position:"fixed", inset:0, backgroundImage:`radial-gradient(circle at 18% 18%, rgba(139,105,20,0.05) 0%, transparent 55%), radial-gradient(circle at 82% 82%, rgba(90,107,82,0.04) 0%, transparent 55%)`, pointerEvents:"none", zIndex:0 },
   header:      { borderBottom:`1px solid ${C.divider}`, background:C.ink, position:"sticky", top:0, zIndex:100 },
