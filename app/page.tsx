@@ -2015,15 +2015,23 @@ const PE = {
   // Validate a phase result — throws a structured PhaseError if result is an error object
   assertPhase(result, stageName, phaseLabel) {
     if (!result || result.ok === false) {
-      const err = new Error(result.error_message || "Unknown phase error");
-      err.isPhaseError    = true;
-      err.stage_name      = stageName;
-      err.phase_label     = phaseLabel;
-      err.error_type      = result.error_type      || "unknown_error";
-      err.error_message   = result.error_message   || "No error details available";
-      err.raw_response    = result.raw_response     || "";
-      err.retry_attempted = (result && result.retry_attempted != null) ? result.retry_attempted : false;
-      console.error(`[NCW Phase Error] case:${stageName}`, {
+      const err = new Error(result.error_message || "Unknown phase error") as Error & {
+  isPhaseError?: boolean;
+  stage_name?: string;
+  phase_label?: string;
+  error_type?: string;
+  error_message?: string;
+  raw_response?: string;
+  retry_attempted?: boolean;
+};
+
+err.isPhaseError = true;
+err.stage_name = stageName;
+err.phase_label = phaseLabel;
+err.error_type = result.error_type || "unknown_error";
+err.error_message = result.error_message || "No error details available";
+err.raw_response = result.raw_response || "";
+err.retry_attempted = (result && result.retry_attempted != null) ? result.retry_attempted : false;
         stage_name:    err.stage_name,
         error_type:    err.error_type,
         error_message: err.error_message,
