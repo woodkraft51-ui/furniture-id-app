@@ -6416,7 +6416,7 @@ if (stored) {
         estimated_value_high:  0,
         buy_guidance:          "Caution",
         short_reason:          "Insufficient evidence for a specific identification. Add an underside, joinery, or hardware photo to improve the result.",
-        asking_price:          parseFloat(answers.asking_price) || null,
+        asking_price:          parseFloat((answers as any).asking_price) || null,
         price_guidance:        null,
         key_clues:             [],
         hard_negatives:        [],
