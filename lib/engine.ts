@@ -3976,7 +3976,7 @@ Respond ONLY in valid JSON. Begin with {.`,
       hard_negatives,
       summary: `Phase 0 found ${observations.length} visual observations across ${Object.keys(grouped).length} evidence types.${hard_negatives.length ? ` ⚠ ${hard_negatives.length} hard negative(s) detected.` : ""}`,
     };
-  },
+  }
 };
 
 // ============================================================
