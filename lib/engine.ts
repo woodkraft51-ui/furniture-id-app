@@ -653,6 +653,7 @@ alias(n,"original_form","original_form_candidate", identity);
       }
 
       case "p4_construction": {
+        const identity = function(v) { return v; };
        alias(n,"joinery_type","primary_joinery_type", identity);
         alias(n,"joinery","primary_joinery_type", identity);
         alias(n,"manufacturing","manufacturing_mode", identity);
