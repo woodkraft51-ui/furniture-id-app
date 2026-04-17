@@ -3142,7 +3142,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
       console.info("[NCW Stage0] CF: stage0_returned (success)");
       return Object.assign({}, parsed, { _diag: diag });
     } catch(_e1) {
-      console.warn("[NCW Quick] JSON parse failed. cleaned[:300]:", cleaned.slice(0,300));
+      console.warn("[NCW Quick] JSON parse failed. bodyText[:300]:", String(bodyText || "").slice(0,300));
       // One retry with tighter instruction
       try {
         const r2 = await fetch("/api/analyze", {
