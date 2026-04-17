@@ -653,16 +653,15 @@ alias(n,"original_form","original_form_candidate", identity);
       }
 
       case "p4_construction": {
-        const identity = function(v) { return v; };
-        alias(n,"joinery_type","primary_joinery_type");
-        alias(n,"joinery","primary_joinery_type");
-        alias(n,"manufacturing","manufacturing_mode");
-        alias(n,"manufacturing_method","manufacturing_mode");
+       alias(n,"joinery_type","primary_joinery_type", identity);
+        alias(n,"joinery","primary_joinery_type", identity);
+        alias(n,"manufacturing","manufacturing_mode", identity);
+        alias(n,"manufacturing_method","manufacturing_mode", identity);
         alias(n,"drawer_bottom","drawer_construction");
-        alias(n,"back_construction","back_panel_construction");
-        alias(n,"secondary_wood_species","secondary_wood");
-        alias(n,"wood_species","secondary_wood");
-        alias(n,"anomalies","structural_anomalies",toArr);
+        alias(n,"drawer_bottom","drawer_construction", identity);
+        alias(n,"back_construction","back_panel_construction", identity);
+        alias(n,"secondary_wood_species","secondary_wood", identity);
+        alias(n,"wood_species","secondary_wood", identity);
         alias(n,"special","special_structures",toArr);
         alias(n,"hard_negatives","hard_negatives_triggered",toArr);
         alias(n,"date_range","construction_date_range");
