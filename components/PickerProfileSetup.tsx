@@ -1,6 +1,6 @@
 'use client';
 
-export default function PickerProfileSetup(...)
+export default function PickerProfileSetup({ draft, setDraft, step, setStep, onSave, onCancel }) {
   const sf = draft;
 
   // Build the visible step list based on current answers
@@ -178,7 +178,6 @@ export default function PickerProfileSetup(...)
         boxShadow:"0 8px 40px rgba(0,0,0,0.35)",
         fontFamily:"'Georgia',serif",
       }}>
-        {/* Header */}
         <div style={{
           background:"#5a3e1b", borderRadius:"8px 8px 0 0",
           padding:"18px 24px", display:"flex", alignItems:"center", gap:12,
@@ -193,16 +192,12 @@ export default function PickerProfileSetup(...)
           </div>
         </div>
 
-        {/* Progress bar */}
         <div style={{height:3, background:"#e8ddb8"}}>
           <div style={{height:"100%", width:((step+1)/total*100)+"%", background:"#8b6914", transition:"width 0.3s"}} />
         </div>
 
-        {/* Body */}
         <div style={{padding:"28px 28px 20px"}}>
-
           {cur.type === "review" ? (
-            // ── Review screen ─────────────────────────────────
             <div>
               <div style={{fontSize:18, fontWeight:700, color:"#3a2010", marginBottom:6}}>Your picker profile is ready.</div>
               <div style={{fontSize:13, color:"#7a6040", marginBottom:20, lineHeight:1.6}}>
@@ -235,7 +230,6 @@ export default function PickerProfileSetup(...)
               </div>
             </div>
           ) : (
-            // ── Question screen ────────────────────────────────
             <div>
               <div style={{fontSize:16, fontWeight:700, color:"#3a2010", marginBottom:20, lineHeight:1.5}}>
                 {cur.q}
@@ -314,7 +308,6 @@ export default function PickerProfileSetup(...)
           )}
         </div>
 
-        {/* Footer buttons */}
         <div style={{
           padding:"16px 28px 24px", display:"flex", gap:10,
           borderTop:"1px solid #e8ddb8",
@@ -365,5 +358,3 @@ export default function PickerProfileSetup(...)
     </div>
   );
 }
-
-
