@@ -36,8 +36,8 @@ const isSim = m === "mock";
         borderRadius: 999,
         cursor: "pointer",
         background: cfg.bg,
-        color: cfg.fg,
-        border: "1px solid " + cfg.bd,
+        color: cfg.color,
+        border: "1px solid " + cfg.border,
         fontSize: 12,
         fontWeight: 700,
       }}
