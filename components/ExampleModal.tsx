@@ -1,5 +1,5 @@
 'use client';
-
+import { useState } from "react";
 function ExampleModal({ exampleKey, onClose }) {
   const ex = PHOTO_EXAMPLES[exampleKey];
   const [tab, setTab] = useState(0);
