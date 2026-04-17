@@ -1442,7 +1442,7 @@ Begin your response with { and end with }. Do not include any text outside the J
     let totalObs = 0;
 
     for (const [typeName, obsArr] of Object.entries(observationsByType)) {
-      for (const obs of obsArr) {
+      for (const obs of Array.isArray(obsArr) ? obsArr : []) {
         totalObs++;
         if (HARD_NEG_CLUES.has(obs.clue) && obs.visual_confidence >= 40) {
           hardNegativesDetected.push({
