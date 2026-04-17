@@ -1,6 +1,6 @@
 'use client';
 
-const GUIDANCE_MESSAGES = {
+export default function PickerProfileSetup({ draft, setDraft, step, setStep, onSave, onCancel }) {
   overall_photo: "Try adding a full photo of the piece.",
   underside: "An underside photo helps confirm age and construction.",
   joinery_closeup: "A close-up of joinery can help identify craftsmanship.",
