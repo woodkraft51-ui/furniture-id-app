@@ -1,6 +1,6 @@
 'use client';
 
-export default function GuidanceMessages({ missing, totalPhotos, style }) {
+export default function PickerProfileSetup({ draft, setDraft, step, setStep, onSave, onCancel }) {
   if (!missing || totalPhotos < 2) return null;
   const active = Object.entries(missing)
     .filter(([, v]) => v)
