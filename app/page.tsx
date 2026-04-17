@@ -8405,6 +8405,7 @@ if (stored) {
                             <div style={S.appraisalMetaValue}>{fr.style_family}</div>
                           </div>
                         )}
+                       
                         <div style={S.appraisalMeta}>
                           <div style={S.appraisalMetaLabel}>Confidence</div>
                           <div style={{
