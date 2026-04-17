@@ -47,17 +47,9 @@ const isSim = m === "mock";
           fontSize:11, fontFamily:"monospace", color:"#555",
           display:"flex", flexDirection:"column", gap:3,
         }}>
-          <div><strong>engine_mode:</strong> {m.engine_mode}</div>
-          <div><strong>live_llm_enabled:</strong> {String(m.live_llm_enabled)}</div>
-          <div><strong>anthropic_key_present:</strong> {String(m.anthropic_key_present)}</div>
-          <div><strong>fetch_blocked:</strong> {String(m.fetch_blocked)}</div>
-          <div><strong>backend_endpoint_available:</strong> {String(m.backend_endpoint_available)}</div>
-          <div><strong>api_version_header:</strong> {m.api_version_header}</div>
-          <div><strong>full_analysis_flag:</strong> {m.full_analysis_flag}</div>
-          <div><strong>field_scan_flag:</strong> {m.field_scan_flag}</div>
-          <div><strong>primary_trigger:</strong> {m.primary_trigger}</div>
-          <div><strong>simulation_reason:</strong> {m.simulation_reason}</div>
-        </div>
+         <div><strong>engine_mode:</strong> {m}</div>
+<div><strong>is_live:</strong> {String(m === "live")}</div>
+<div><strong>is_mock:</strong> {String(m === "mock")}</div>
       )}
     </div>
   );
