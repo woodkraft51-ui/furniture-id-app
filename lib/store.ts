@@ -1,3 +1,4 @@
+import * as PE from "./engine";
 const caseStore = {};
 let caseCounter  = 1000;
 let obsCounter   = 0;
