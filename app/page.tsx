@@ -7970,10 +7970,10 @@ if (stored) {
                               </div>
                               <div style={S.progressiveAddBtns}>
                                 <input type="file" accept="image/*" capture="environment" style={{display:"none"}}
-                                  ref={el => (quickAddRefs.current[`${slot.key}_cam`] = el)}
+                                  ref={el => { quickAddRefs.current[`${slot.key}_cam`] = el; }}
                                   onChange={e => handleQuickAddPhoto(slot.key, e.target.files[0])} />
                                 <input type="file" accept="image/*" style={{display:"none"}}
-                                  ref={el => (quickAddRefs.current[`${slot.key}_lib`] = el)}
+                                  ref={el => { quickAddRefs.current[`${slot.key}_lib`] = el; }}
                                   onChange={e => handleQuickAddPhoto(slot.key, e.target.files[0])} />
                                 <button style={S.progressiveMiniBtn} onClick={() => quickAddRefs.current[`${slot.key}_cam`].click()}>📷</button>
                                 <button style={S.progressiveMiniBtn} onClick={() => quickAddRefs.current[`${slot.key}_lib`].click()}>🖼</button>
