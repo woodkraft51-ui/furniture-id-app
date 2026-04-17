@@ -707,8 +707,7 @@ alias(n,"original_form","original_form_candidate", identity);
         alias(n,"hard_negatives","hard_negatives_triggered",toArr);
         alias(n,"confidence","hardware_confidence",toConf);
         alias(n,"notes","hardware_notes", identity);
-        alias(n,"notes","hardware_notes");
-
+        
         if (!n.hardware_scoring_detail)  { n.hardware_scoring_detail=[]; repairs.push("default hardware_scoring_detail"); }
         if (n.age_support_points===undefined)    { n.age_support_points=0;    repairs.push("default age_support_points"); }
         if (n.age_opposing_points===undefined)   { n.age_opposing_points=0;   repairs.push("default age_opposing_points"); }
