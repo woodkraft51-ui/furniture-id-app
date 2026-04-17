@@ -38,8 +38,8 @@ function getRuntimeMode() {
   };
 }
 
-const RUNTIME_MODE = getRuntimeMode();
-console.info("[NCW Runtime]", JSON.stringify(RUNTIME_MODE, null, 2));
+const runtimeProbe = getRuntimeMode();
+console.info("[NCW Runtime]", JSON.stringify(runtimeProbe, null, 2));
 
 
 
