@@ -610,6 +610,7 @@ alias(n,"date_band","primary_date_range", identity);
       }
 
       case "p3_form": {
+        const identity = function(v) { return v; };
         alias(n,"current_form","current_form_candidate", identity);
 alias(n,"form","current_form_candidate", identity);
 alias(n,"identified_form","current_form_candidate", identity);
