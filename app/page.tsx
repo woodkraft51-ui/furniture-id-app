@@ -6959,7 +6959,7 @@ if (stored) {
                     <input
                       type="file" accept="image/*"
                       style={{ display:"none" }}
-                      ref={el => (groupRefs.current[`${group.key}_lib`] = el)}
+                      ref={el => { groupRefs.current[`${group.key}_lib`] = el; }}
                       onChange={e => { handleGroupUpload(group.key, group.image_type, e.target.files[0]); e.target.value = ""; }}
                     />
 
