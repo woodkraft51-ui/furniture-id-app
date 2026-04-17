@@ -2928,7 +2928,7 @@ Begin your response with { and end with }. Do not include any text outside the J
     if (!parsed || typeof parsed !== "object") return null;
     const out = { ...parsed };
 
-        // Apply aliases
+           // Apply aliases
     const aliasEntries = Object.entries(this.QUICK_SCHEMA.aliases) as [string, string][];
     for (const [alias, canonical] of aliasEntries) {
       if (out[alias] !== undefined && out[canonical] === undefined) {
@@ -2945,17 +2945,14 @@ Begin your response with { and end with }. Do not include any text outside the J
       else if (c.includes("moderate") || c.includes("medium")) out.confidence = "Moderate";
       else out.confidence = "Low";
     }
-    }
 
     // Normalize buy_guidance
     if (out.buy_guidance) {
       const g = String(out.buy_guidance).toLowerCase();
-      if      (g.includes("buy") && !g.includes("over"))  out.buy_guidance = "Buy";
-      else if (g.includes("fair") || g.includes("ok"))    out.buy_guidance = "Fair Price";
-      else if (g.includes("over") || g.includes("high"))  out.buy_guidance = "Overpriced";
-      else if (g.includes("pass") || g.includes("skip"))  out.buy_guidance = "Pass";
-      else if (g.includes("caut"))                        out.buy_guidance = "Caution";
-    }
+if (g.includes("buy") && !g.includes("over")) out.buy_guidance = "Buy";
+else if (g.includes("fair") || g.includes("ok")) out.buy_guidance = "Fair Price";
+else if (g.includes("pass") || g.includes("skip")) out.buy_guidance = "Pass";
+else if (g.includes("cat")) out.buy_guidance = "Caution";
 
     // Safe defaults for missing fields
     if (!out.likely_identification)  out.likely_identification  = "Undetermined";
