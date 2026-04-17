@@ -2996,7 +2996,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
   }
 
   // callClaudeQuick — independent caller for Quick Mode
-  async callClaudeQuick(system, userContent) {
+  async function callClaudeQuick(system, userContent) {
     // When userContent is an array (vision call), prepend a text instruction block
     // so the model receives an explicit question alongside the images.
     const contentToSend = Array.isArray(userContent)
