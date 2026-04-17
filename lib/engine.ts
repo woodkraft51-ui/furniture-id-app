@@ -3711,7 +3711,7 @@ Respond ONLY in valid JSON. Begin with {.`,
 
 
 
-  async function runAllPhases(caseData, images, intake, onPhase) {
+  export async function runAllPhases(caseData, images, intake, onPhase) {
     const so   = {};
     const skip = (reason) => ({
       ok: true, skipped: true, skip_reason: reason,
