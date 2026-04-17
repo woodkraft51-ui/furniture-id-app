@@ -7893,13 +7893,7 @@ if (stored) {
                     { key:"hardware_closeup", label:"Leaf hinge close-up",      hint:"Hinge type at leaf joint — helps date the piece" },
                     { key:"joinery_closeup",  label:"Leg and apron joinery",    hint:"How the leg meets the apron — mortise and tenon or other joint" },
                   ],
-                  "drop-leaf table": [
-                    { key:"overall_side",     label:"Leaf support mechanism",   hint:"Show how the leaf is supported — gate, swing leg, or bracket" },
-                    { key:"hardware_closeup", label:"Leaf hinge close-up",      hint:"Hinge type at leaf join — butterfly, rule joint, or butt hinge" },
-                    { key:"underside",        label:"Underside",                hint:"Apron construction and nail types for dating" },
-                    { key:"joinery_closeup",  label:"Leg or apron joinery",     hint:"How the leg joins the apron" },
-                  ],
-                };
+                                  };
 
                 // ── Slot resolver — taxonomy-aware: specific form → subfamily → form family ──
                 const formKey    = quickResult.broad_form_key || "cabinet";
