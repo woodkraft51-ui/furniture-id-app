@@ -2966,7 +2966,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
     if (!out.buy_guidance)           out.buy_guidance           = "Caution";
 
     return out;
-  },
+  }
 
   // Validate a Quick Mode response — TOLERANT.
   // Accepts if at least ONE informational field is non-empty.
