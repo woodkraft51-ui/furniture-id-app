@@ -348,7 +348,7 @@ const PE = {
   // Validate a phase result — throws a structured PhaseError if result is an error object
   assertPhase(result, stageName, phaseLabel) {
     if (!result || result.ok === false) {
-      const err = new Error(result.error_message || "Unknown phase error");
+      const err: any = new Error(result.error_message || "Unknown phase error");
       err.isPhaseError    = true;
       err.stage_name      = stageName;
       err.phase_label     = phaseLabel;
