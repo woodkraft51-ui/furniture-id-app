@@ -694,6 +694,7 @@ alias(n,"original_form","original_form_candidate", identity);
       }
 
       case "p5_hardware": {
+        const identity = function(v) { return v; };
         alias(n,"hardware","hardware_scoring_detail",toArr);
         alias(n,"hardware_items","hardware_scoring_detail",toArr);
         alias(n,"date_range","hardware_date_range", identity);
