@@ -367,12 +367,3 @@ function PickerProfileSetup({ draft, setDraft, step, setStep, onSave, onCancel }
 }
 
 
-// ============================================================
-// HISTORICAL CLUE LIBRARY
-// ============================================================
-// Maps observed clue keys to historical indicator text,
-// typical date ranges, and evidence categories.
-// Consumed by Tier 2 rendering in BOTH Field Scan and Full Analysis.
-// Field Scan: top 2–3 highest-priority entries only.
-// Full Analysis: full set with deeper context.
-// ============================================================
