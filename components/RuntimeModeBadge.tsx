@@ -1,5 +1,6 @@
 'use client';
 
+import React from "react";
 import { RUNTIME_MODE } from "../lib/engine";
 
 function RuntimeModeBadge() {
