@@ -2928,23 +2928,23 @@ Begin your response with { and end with }. Do not include any text outside the J
     if (!parsed || typeof parsed !== "object") return null;
     const out = { ...parsed };
 
-    // Apply aliases
-  const aliasEntries = Object.entries(this.QUICK_SCHEMA.aliases) as [string, string][];
-for (const [alias, canonical] of aliasEntries) {
-  if (out[alias] !== undefined && out[canonical] === undefined) {
-    out[canonical] = out[alias];
-  }
-}
+        // Apply aliases
+    const aliasEntries = Object.entries(this.QUICK_SCHEMA.aliases) as [string, string][];
+    for (const [alias, canonical] of aliasEntries) {
+      if (out[alias] !== undefined && out[canonical] === undefined) {
+        out[canonical] = out[alias];
+      }
     }
 
     // Normalize confidence — 4-level ladder:
     // "Very High" | "High" | "Moderate" | "Low"
     if (out.confidence) {
-      const c = String(out.confidence).toLowerCase().replace(/[_\s-]+/g," ");
-      if      (c.includes("very high") || c.includes("very_high")) out.confidence = "Very High";
-      else if (c.includes("high"))                                  out.confidence = "High";
-      else if (c.includes("mod"))                                   out.confidence = "Moderate";
-      else                                                          out.confidence = "Low";
+      const c = String(out.confidence).toLowerCase().replace(/[_\s-]+/g, " ");
+      if (c.includes("very high") || c.includes("very_high")) out.confidence = "Very High";
+      else if (c.includes("high")) out.confidence = "High";
+      else if (c.includes("moderate") || c.includes("medium")) out.confidence = "Moderate";
+      else out.confidence = "Low";
+    }
     }
 
     // Normalize buy_guidance
