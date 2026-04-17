@@ -570,6 +570,7 @@ alias(n,"proceed","proceed_recommendation", identity);
         alias(n,"toolmarks","toolmark_observations",toArr);
         alias(n,"fasteners","fastener_observations",toArr);
         alias(n,"joinery","joinery_observations",toArr);
+        const identity = function(v) { return v; };
         alias(n,"materials","material_observations",toArr);
         alias(n,"finish","finish_observations",toArr);
         alias(n,"date_range","primary_date_range", identity);
