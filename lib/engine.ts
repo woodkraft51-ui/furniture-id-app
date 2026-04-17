@@ -3017,7 +3017,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
     console.info("[NCW Quick] Request structure:", JSON.stringify(debugPayload));
 
     // ── Diagnostics object — written to at every stage, returned on failure ──
-    const diag = {
+    const diag: any = {
       model_name:             "claude-sonnet-4-6",
       endpoint:               "/api/analyze",
       http_status:            null,
