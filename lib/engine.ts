@@ -3947,7 +3947,7 @@ Respond ONLY in valid JSON. Begin with {.`,
   // ── Observation digest builder ────────────────────────────
   // Compact structured summary of Phase 0 observations,
   // injected into every downstream phase prompt.
-  _buildObsDigest(caseId, p0) {
+  function _buildObsDigest(caseId, p0) {
     const observations = API.getObservations(caseId);
     if (!observations.length) return { empty: true, summary: "No visual observations recorded." };
 
