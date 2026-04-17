@@ -69,10 +69,7 @@ const isSim = m === "mock";
     )}
   </div>
 );
-      >
-        <span style={{fontSize:9}}>{cfg.icon}</span>
-        {cfg.label}
-        <span style={{fontSize:9, opacity:0.6}}>{open ? "▲" : "▼"}</span>
+      
       </div>
 
       {open && (
