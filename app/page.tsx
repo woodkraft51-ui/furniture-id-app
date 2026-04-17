@@ -7214,7 +7214,7 @@ if (stored) {
             <div style={S.quickGuessBlock}>
               <label style={S.quickGuessLabel}>What do you think it is? <span style={{color:"#aaa",fontWeight:400}}>(optional)</span></label>
               <input style={S.quickGuessInput} type="text" placeholder="e.g. table, cabinet, chair…"
-                value={answers.user_category_guess||""}
+                value={(answers as any).user_category_guess || ""}
                 onChange={e => setAnswers(p => ({...p, user_category_guess: e.target.value}))} />
             </div>
 
