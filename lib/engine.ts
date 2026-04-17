@@ -204,7 +204,6 @@ function parseModelJSON(responseText) {
 
 // RuntimeModeBadge removed from engine.ts.
 // Keep UI components in components/RuntimeModeBadge.tsx.
-}
 
 // ============================================================
 // PICKER PROFILE SETUP — multi-step guided questionnaire
