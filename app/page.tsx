@@ -7186,7 +7186,7 @@ if (stored) {
                       ref={el => { coreRefs.current[`${slot.key}_cam`] = el; }}
                       onChange={e => handleCoreUpload(slot.key, e.target.files[0])} />
                     <input type="file" accept="image/*" style={{display:"none"}}
-                      ref={el => (coreRefs.current[`${slot.key}_lib`] = el)}
+                      ref={el => { coreRefs.current[`${slot.key}_lib`] = el; }}
                       onChange={e => handleCoreUpload(slot.key, e.target.files[0])} />
                     {img ? (
                       <div style={S.quickSlotFilled}>
