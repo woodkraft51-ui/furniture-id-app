@@ -2972,7 +2972,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
   // Accepts if at least ONE informational field is non-empty.
   // Missing fields get defaults via normalizeQuickResponse.
   // Only rejects if ZERO informational fields are present.
-  validateQuickResponse(raw, parsed) {
+  function validateQuickResponse(raw, parsed) {
     if (!parsed || typeof parsed !== "object") {
       console.warn("[NCW Quick] JSON parse failure, raw:", raw.slice(0,300));
       return { ok: false, error_type:"json_parse_error", raw_response: raw || "" };
