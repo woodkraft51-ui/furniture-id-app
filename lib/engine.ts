@@ -658,7 +658,6 @@ alias(n,"original_form","original_form_candidate", identity);
         alias(n,"joinery","primary_joinery_type", identity);
         alias(n,"manufacturing","manufacturing_mode", identity);
         alias(n,"manufacturing_method","manufacturing_mode", identity);
-        alias(n,"drawer_bottom","drawer_construction");
         alias(n,"drawer_bottom","drawer_construction", identity);
         alias(n,"back_construction","back_panel_construction", identity);
         alias(n,"secondary_wood_species","secondary_wood", identity);
