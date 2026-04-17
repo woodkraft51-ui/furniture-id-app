@@ -465,7 +465,7 @@ Formula: confidence_pct = supporting / (supporting + opposing) × 100`;
         // ── Primary aliases ──
         alias(n,"images_present","visible_image_types",toArr);
         alias(n,"image_types","visible_image_types",toArr);
-        alias(n,"sufficiency","evidence_sufficiency");
+        alias(n,"sufficiency","evidence_sufficiency", identity);
         alias(n,"quality_notes","image_quality_notes");
         alias(n,"user_guess","user_stated_category");
         alias(n,"category_guess","user_stated_category");
