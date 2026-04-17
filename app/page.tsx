@@ -8069,7 +8069,7 @@ if (stored) {
                       <div><strong>api_version_header:</strong> {RUNTIME_MODE.api_version_header}</div>
                       <div style={{borderTop:"1px solid #d4c9b4", marginTop:4, paddingTop:4}}></div>
                       <div><strong>fs_step:</strong> {step}{analyzing ? " (scanning)" : ""}</div>
-                      <div><strong>result_stale:</strong> {step === "quick_scanning" ? "yes — scan in progress" : "no — result is current"}</div>
+                      <div><strong>result_stale:</strong> {analyzing ? "yes — scan in progress" : "no — result is current"}</div>
                       <div style={{borderTop:"1px solid #d4c9b4", marginTop:4, paddingTop:4, fontWeight:600, color:"#8b6914"}}>Adapter</div>
                       <div><strong>adapter_mode:</strong> {_dig._adapter_mode || EVIDENCE_ADAPTER_MODE || "—"} {_dig._adapter_mode === "mock" ? "⚠ using mock data" : ""}</div>
                       <div style={{borderTop:"1px solid #d4c9b4", marginTop:4, paddingTop:4, fontWeight:600, color:"#8b6914"}}>Control flow</div>
