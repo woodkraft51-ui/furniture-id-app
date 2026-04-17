@@ -8546,9 +8546,19 @@ if (stored) {
                       // Fall back to scorecard if no weighted clues
                       if (!cats.length && sc) {
                         cats = [
-                          {category:"construction", score: Math.round(((sc.form_support_points||0)/Math.max((sc.form_support_points||0)+(sc.form_opposing_points||0),1))*100)},
-                          {category:"fasteners",    score: Math.round(((sc.age_support_points||0)/Math.max((sc.age_support_points||0)+(sc.age_opposing_points||0),1))*100)},
-                        ].filter(function(c){ return c.score > 0; });
+  {
+    category: "construction",
+    score: Math.round(((sc.form_support_points || 0) / Math.max((sc.form_support_points || 0) + (sc.form_opposing_points || 0), 1)) * 100),
+    avg: 0,
+    count: 0
+  },
+  {
+    category: "fasteners",
+    score: Math.round(((sc.age_support_points || 0) / Math.max((sc.age_support_points || 0) + (sc.age_opposing_points || 0), 1)) * 100),
+    avg: 0,
+    count: 0
+  }
+].filter(function(c){ return c.score > 0; });
                       }
                       if (!cats.length) return null;
                       var catLabels = { construction:"Construction clues", joinery:"Joinery", toolmarks:"Toolmarks",
