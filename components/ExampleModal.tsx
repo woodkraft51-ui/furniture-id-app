@@ -1,5 +1,6 @@
 'use client';
 import { useState } from "react";
+import { PHOTO_EXAMPLES } from "../lib/intake";
 function ExampleModal({ exampleKey, onClose }) {
   const ex = PHOTO_EXAMPLES[exampleKey];
   const [tab, setTab] = useState(0);
