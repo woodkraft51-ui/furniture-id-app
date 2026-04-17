@@ -2993,7 +2993,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
 
     console.info("[NCW Quick] Response accepted. Fields:", Object.keys(normalized).join(", "));
     return { ok: true, data: normalized };
-  },
+  }
 
   // callClaudeQuick — independent caller for Quick Mode
   async callClaudeQuick(system, userContent) {
