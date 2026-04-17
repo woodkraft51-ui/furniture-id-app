@@ -1,5 +1,6 @@
-const EVIDENCE_ADAPTER_MODE    = "live"; // "mock" | "live" — Field Scan evidence extractor
-const FULL_ANALYSIS_MODE       = "live"; // "mock" | "live" — Full Analysis phase engine
+export const EVIDENCE_ADAPTER_MODE = "live"; // "mock" | "live" — Field Scan evidence extractor
+export const FULL_ANALYSIS_MODE = "live"; // "mock" | "live" — Full Analysis phase engine
+export const RUNTIME_MODE = FULL_ANALYSIS_MODE;
 //
 // To connect a real backend:
 //   Set FULL_ANALYSIS_MODE = "live"  and ensure api.anthropic.com is reachable
