@@ -3986,3 +3986,5 @@ Respond ONLY in valid JSON. Begin with {.`,
 // Each entry has an SVG illustration (drawn inline, no external
 // assets) and bullet-point guidance describing what makes it good.
 // Keyed to slot.key or group.key.
+}
+  
