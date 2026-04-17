@@ -2929,7 +2929,8 @@ Begin your response with { and end with }. Do not include any text outside the J
     const out = { ...parsed };
 
     // Apply aliases
-    for (const [alias, canonical] of Object.entries(this.QUICK_SCHEMA.aliases) as [string, string][]) {
+  const aliasEntries = Object.entries(this.QUICK_SCHEMA.aliases) as [string, string][];
+for (const [alias, canonical] of aliasEntries) {
   if (out[alias] !== undefined && out[canonical] === undefined) {
     out[canonical] = out[alias];
   }
