@@ -8326,8 +8326,7 @@ if (stored) {
                   improvements.push("Hardware close-ups would help assess whether fittings are original to the piece.");
                 if (me.label_photo)
                   improvements.push("A photo of any labels, stamps, or maker's marks could help identify the manufacturer or narrow the date.");
-                if (typeof faNarr !== "undefined" && faNarr && faNarr.limits) improvements.push(faNarr.limits);
-
+                
                 // Derive a short one-sentence primary reasoning from reconciliation
                 const p7data = (report.stage_outputs && report.stage_outputs["7_reconciliation"]) || null;
                 const primaryReason = (p7data && p7data.reconciliation_notes)
