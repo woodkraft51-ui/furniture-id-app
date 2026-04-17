@@ -3242,8 +3242,8 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
         if ((!digest.evidence_digest || digest.evidence_digest.length === 0)) {
           // Last-resort: extract any present mechanisms into prose
           const mechProse = Object.entries(digest.mechanisms_detected || {})
-            .filter(([, v]) => v && v.present)
-            .map(([k, v]) => k.replace(/_/g, " ") + (v.note ? " — " + v.note : ""));
+            .filter(([, v]: [string, any]) => v && v.present)
+            .map(([k, v]: [string, any]) => k.replace(/_/g, " ") + (v.note ? " — " + v.note : ""));
           if (mechProse.length > 0) digest.evidence_digest = mechProse;
         }
         console.info("[NCW FS Stage0] Digest after merge — evidence_digest:", digest.evidence_digest, "| mechanisms:", Object.keys(digest.mechanisms_detected||{}).filter(k=>digest.mechanisms_detected[k].present));
