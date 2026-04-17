@@ -7996,10 +7996,10 @@ if (stored) {
                           return (
                             <div style={S.quickUploadRow}>
                               <input type="file" accept="image/*" capture="environment" style={{display:"none"}}
-                                ref={el => (quickAddRefs.current[`add_cam`] = el)}
+                                ref={el => { quickAddRefs.current[`add_cam`] = el; }}
                                 onChange={e => handleQuickAddPhoto(nextSlot.key, e.target.files[0])} />
                               <input type="file" accept="image/*" style={{display:"none"}}
-                                ref={el => (quickAddRefs.current[`add_lib`] = el)}
+                                ref={el => { quickAddRefs.current[`add_lib`] = el; }}
                                 onChange={e => handleQuickAddPhoto(nextSlot.key, e.target.files[0])} />
                               <button style={S.quickUploadBtn} onClick={() => quickAddRefs.current[`add_cam`].click()}>📷 Take Photo</button>
                               <button style={S.quickUploadBtn} onClick={() => quickAddRefs.current[`add_lib`].click()}>🖼 Choose from Library</button>
