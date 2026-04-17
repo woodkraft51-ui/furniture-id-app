@@ -3987,4 +3987,4 @@ Respond ONLY in valid JSON. Begin with {.`,
 // assets) and bullet-point guidance describing what makes it good.
 // Keyed to slot.key or group.key.
 }
-  
+} 
