@@ -3942,7 +3942,7 @@ Respond ONLY in valid JSON. Begin with {.`,
     };
 
     return { stage_outputs: so, conflicts, scores, form_assessment, valuations, final_report };
-  },
+  }
 
   // ── Observation digest builder ────────────────────────────
   // Compact structured summary of Phase 0 observations,
