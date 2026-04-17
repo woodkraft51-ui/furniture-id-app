@@ -2929,10 +2929,11 @@ Begin your response with { and end with }. Do not include any text outside the J
     const out = { ...parsed };
 
     // Apply aliases
-    for (const [alias, canonical] of Object.entries(this.QUICK_SCHEMA.aliases)) {
-      if (out[alias] !== undefined && out[canonical] === undefined) {
-        out[canonical] = out[alias];
-      }
+    for (const [alias, canonical] of Object.entries(this.QUICK_SCHEMA.aliases) as [string, string][]) {
+  if (out[alias] !== undefined && out[canonical] === undefined) {
+    out[canonical] = out[alias];
+  }
+}
     }
 
     // Normalize confidence — 4-level ladder:
