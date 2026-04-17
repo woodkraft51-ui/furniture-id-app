@@ -7232,7 +7232,7 @@ if (stored) {
                   placeholder="0.00"
                   min="0"
                   step="1"
-                  value={answers.asking_price||""}
+                  value={(answers as any).asking_price || ""}
                   onChange={e => setAnswers(p => ({...p, asking_price: e.target.value}))}
                 />
               </div>
