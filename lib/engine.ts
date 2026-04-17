@@ -790,14 +790,15 @@ alias(n,"original_form","original_form_candidate", identity);
       }
 
       case "p8_valuation": {
-        alias(n,"market_estimates","valuations",toArr);
-        alias(n,"estimates","valuations",toArr);
-        alias(n,"value_ranges","valuations",toArr);
-        alias(n,"lanes","valuations",toArr);
-        alias(n,"drivers","value_drivers",toArr);
-        alias(n,"detractors","value_detractors",toArr);
-        alias(n,"market_context","market_notes");
-        alias(n,"notes","market_notes");
+        const identity = function(v) { return v; };
+       alias(n,"market_estimates","valuations",toArr);
+       alias(n,"estimates","valuations",toArr);
+       alias(n,"value_ranges","valuations",toArr);
+       alias(n,"lanes","valuations",toArr);
+       alias(n,"drivers","value_drivers",toArr);
+       alias(n,"detractors","value_detractors",toArr);
+       alias(n,"market_context","market_notes", identity);
+       alias(n,"notes","market_notes", identity);
 
         if (!n.valuations) { n.valuations=[]; repairs.push("default valuations"); }
         n.valuations=toArr(n.valuations).map((v,i)=>{
