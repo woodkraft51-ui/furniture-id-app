@@ -3169,7 +3169,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
         return { ok:false, error_type:"json_parse_error", raw_response: raw };
       }
     }
-  },
+  }
 
   // ─────────────────────────────────────────────────────────────
   // FIELD SCAN PIPELINE  — 5 stages
