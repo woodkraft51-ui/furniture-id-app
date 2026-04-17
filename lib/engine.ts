@@ -463,6 +463,7 @@ Formula: confidence_pct = supporting / (supporting + opposing) × 100`;
 
       case "p1_intake": {
         // ── Primary aliases ──
+        const identity = function(v) { return v; };
         alias(n,"images_present","visible_image_types",toArr);
         alias(n,"image_types","visible_image_types",toArr);
         alias(n,"sufficiency","evidence_sufficiency", identity);
