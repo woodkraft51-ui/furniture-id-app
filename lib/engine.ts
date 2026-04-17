@@ -664,8 +664,8 @@ alias(n,"original_form","original_form_candidate", identity);
         alias(n,"wood_species","secondary_wood", identity);
         alias(n,"special","special_structures",toArr);
         alias(n,"hard_negatives","hard_negatives_triggered",toArr);
-        alias(n,"date_range","construction_date_range");
-        alias(n,"construction_date","construction_date_range");
+        alias(n,"date_range","construction_date_range", identity);
+        alias(n,"construction_date","construction_date_range", identity);
         alias(n,"confidence","construction_confidence",toConf);
         alias(n,"conflicts","construction_conflicts",toArr);
 
