@@ -3706,7 +3706,7 @@ Respond ONLY in valid JSON. Begin with {.`,
         recommend_full:         true,
       },
     };
-  },
+  }
 
 
 
