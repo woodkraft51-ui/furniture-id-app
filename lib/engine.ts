@@ -696,15 +696,16 @@ alias(n,"original_form","original_form_candidate", identity);
       case "p5_hardware": {
         alias(n,"hardware","hardware_scoring_detail",toArr);
         alias(n,"hardware_items","hardware_scoring_detail",toArr);
-        alias(n,"date_range","hardware_date_range");
-        alias(n,"hardware_date","hardware_date_range");
-        alias(n,"consistency","hardware_consistency");
-        alias(n,"style_family","style_family_suggested");
-        alias(n,"style","style_family_suggested");
+        alias(n,"date_range","hardware_date_range", identity);
+        alias(n,"hardware_date","hardware_date_range", identity);
+        alias(n,"consistency","hardware_consistency", identity);
+        alias(n,"style_family","style_family_suggested", identity);
+        alias(n,"style","style_family_suggested", identity);
         alias(n,"concerns","originality_concerns",toArr);
         alias(n,"conflicts","hardware_conflicts",toArr);
         alias(n,"hard_negatives","hard_negatives_triggered",toArr);
         alias(n,"confidence","hardware_confidence",toConf);
+        alias(n,"notes","hardware_notes", identity);
         alias(n,"notes","hardware_notes");
 
         if (!n.hardware_scoring_detail)  { n.hardware_scoring_detail=[]; repairs.push("default hardware_scoring_detail"); }
