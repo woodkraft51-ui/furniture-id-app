@@ -62,7 +62,7 @@ function ExampleModal({ exampleKey, onClose }) {
   );
 }
 
-const exStyles = {
+const exStyles: any = {
   overlay:      { position:"fixed", inset:0, background:"rgba(26,20,16,0.72)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:300, padding:16 },
   modal:        { background:"#faf6ef", borderRadius:6, maxWidth:380, width:"100%", maxHeight:"90vh", overflowY:"auto", display:"flex", flexDirection:"column" },
   header:       { display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 18px 12px", borderBottom:"1px solid #d4c9b4" },
