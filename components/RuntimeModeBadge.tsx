@@ -4,8 +4,8 @@ import { RUNTIME_MODE } from "../lib/engine";
 
 function RuntimeModeBadge() {
   const m = RUNTIME_MODE;
-  const isLive = m.engine_mode === "LIVE";
-  const isSim  = m.engine_mode === "SIMULATED_FALLBACK";
+const isLive = m === "live";
+const isSim = m === "mock";
 
   const cfg = isLive ? {
     label: "LIVE ENGINE",
