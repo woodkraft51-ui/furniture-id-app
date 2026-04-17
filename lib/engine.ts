@@ -3775,7 +3775,7 @@ Respond ONLY in valid JSON. Begin with {.`,
             retry_attempted: (err.retry_attempted != null) ? err.retry_attempted : false,
           },
         };
-        const richErr = new Error(JSON.stringify(payload));
+        const richErr: any = new Error(JSON.stringify(payload));
         richErr.phasePayload = payload;
         throw richErr;
       }
