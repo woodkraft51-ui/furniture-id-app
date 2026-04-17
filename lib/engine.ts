@@ -3440,7 +3440,7 @@ EVIDENCE FROM ${digest.photos_used_count} PHOTOS:
 ${JSON.stringify(digest.evidence_digest)}
 
 STRUCTURAL MECHANISMS DETECTED:
-${JSON.stringify(Object.entries(mech).filter(([,v]) => v.present).map(([k,v]) => ({mechanism:k, confidence:v.confidence, note:v.note})))}
+${JSON.stringify(Object.entries(mech).filter(([, v]: [string, any]) => v.present).map(([k, v]: [string, any]) => ({ mechanism: k, confidence: v.confidence, note: v.note })))}
 Strongest mechanism: ${digest.strongest_mechanism || "none detected"}
 
 CLIENT-SIDE FORM CANDIDATE (pre-computed): ${clientSideForm || "none"}
