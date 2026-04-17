@@ -8236,8 +8236,8 @@ if (stored) {
                 {/* Engine status banner — shown when phase(s) used synthesized fallbacks */}
                 {(() => {
                   const so = report.stage_outputs || {};
-                  const isMock = typeof FULL_ANALYSIS_MODE !== "undefined" && FULL_ANALYSIS_MODE === "mock";
-                  const hasSynthesized = Object.values(so).some(function(p){ return p && p._synthesized; });
+                  const isMock = String(FULL_ANALYSIS_MODE) === "mock";
+                  const hasSynthesized = Object.values(so as Record<string, any>).some(function(p){ return p && (p as any)._synthesized; });
                   if (!isMock && !hasSynthesized) return null;
                   return (
                     <div style={{
