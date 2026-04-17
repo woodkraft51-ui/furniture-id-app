@@ -178,7 +178,7 @@ async function runEvidenceDigest(images, context) {
     }[i.image_type] || ("Photo " + (idx+1) + " (" + (i.image_type||"unknown").toUpperCase() + ")");
     return tg;
   }).join("; ");
-  return await PE.callClaudeQuick(
+  return await PE.callClaude(
     "You are the Mechanism Detection engine. " +
     "Photos: " + photoCount + " | " + typeGuidance,
     PE.imgs(images)
