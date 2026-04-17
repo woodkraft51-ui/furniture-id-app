@@ -25,15 +25,50 @@ const isSim = m === "mock";
   const [open, setOpen] = React.useState(false);
 
   return (
-    <div style={{marginBottom:12, fontFamily:"sans-serif"}}>
+  <div style={{ marginBottom: 12, fontFamily: "sans-serif" }}>
+    <div
+      onClick={function () { setOpen(function (o) { return !o; }); }}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "6px 10px",
+        borderRadius: 999,
+        cursor: "pointer",
+        background: cfg.bg,
+        color: cfg.fg,
+        border: "1px solid " + cfg.bd,
+        fontSize: 12,
+        fontWeight: 700,
+      }}
+    >
+      <span>{cfg.label}</span>
+      <span style={{ fontSize: 9, opacity: 0.6 }}>{open ? "▲" : "▼"}</span>
+    </div>
+
+    {open && (
       <div
-        onClick={function(){ setOpen(function(o){ return !o; }); }}
         style={{
-          display:"inline-flex", alignItems:"center", gap:6, cursor:"pointer",
-          background:cfg.bg, border:"1px solid " + cfg.border, borderRadius:3,
-          padding:"3px 10px", fontSize:11, fontWeight:700,
-          letterSpacing:"0.08em", color:cfg.color, userSelect:"none",
+          marginTop: 4,
+          padding: "10px 12px",
+          background: "#f5f0e8",
+          border: "1px solid #d4c9b4",
+          borderRadius: 3,
+          fontSize: 11,
+          fontFamily: "monospace",
+          color: "#555",
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
         }}
+      >
+        <div><strong>engine_mode:</strong> {m}</div>
+        <div><strong>is_live:</strong> {String(m === "live")}</div>
+        <div><strong>is_mock:</strong> {String(m === "mock")}</div>
+      </div>
+    )}
+  </div>
+);
       >
         <span style={{fontSize:9}}>{cfg.icon}</span>
         {cfg.label}
