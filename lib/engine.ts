@@ -610,10 +610,10 @@ alias(n,"date_band","primary_date_range", identity);
       }
 
       case "p3_form": {
-        alias(n,"current_form","current_form_candidate");
-        alias(n,"form","current_form_candidate");
-        alias(n,"identified_form","current_form_candidate");
-        alias(n,"original_form","original_form_candidate");
+        alias(n,"current_form","current_form_candidate", identity);
+alias(n,"form","current_form_candidate", identity);
+alias(n,"identified_form","current_form_candidate", identity);
+alias(n,"original_form","original_form_candidate", identity);
         alias(n,"alternates","alternate_form_candidates",toArr);
         alias(n,"alternate_forms","alternate_form_candidates",toArr);
         alias(n,"converted","is_conversion",toBool);
