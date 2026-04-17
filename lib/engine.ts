@@ -748,28 +748,29 @@ alias(n,"original_form","original_form_candidate", identity);
       }
 
       case "p7_reconciliation": {
-        alias(n,"date_range","reconciled_date_range");
-        alias(n,"final_date","reconciled_date_range");
-        alias(n,"date","reconciled_date_range");
-        alias(n,"style","reconciled_style_family");
-        alias(n,"style_family","reconciled_style_family");
-        alias(n,"form","reconciled_form");
-        alias(n,"current_form","reconciled_form");
-        alias(n,"original","original_form");
-        alias(n,"alterations_list","alterations",toArr);
-        alias(n,"changes","alterations",toArr);
-        alias(n,"evidence","supporting_evidence",toArr);
-        alias(n,"key_evidence","supporting_evidence",toArr);
-        alias(n,"conflicts","conflicts_found",toArr);
-        alias(n,"negative_clues","negative_evidence_applied",toArr);
-        alias(n,"confidence_pct","confidence_percent",toNum);
-        alias(n,"confidence_score","confidence_percent",toNum);
-        alias(n,"confidence","confidence_band",toConf);
-        alias(n,"band","confidence_band",toConf);
-        alias(n,"classification","object_classification");
-        alias(n,"notes","reconciliation_notes");
-        alias(n,"summary","reconciliation_notes");
-
+        const identity = function(v) { return v; };
+       alias(n,"date_range","reconciled_date_range", identity);
+       alias(n,"final_date","reconciled_date_range", identity);
+       alias(n,"date","reconciled_date_range", identity);
+       alias(n,"style","reconciled_style_family", identity);
+       alias(n,"style_family","reconciled_style_family", identity);
+       alias(n,"form","reconciled_form", identity);
+       alias(n,"current_form","reconciled_form", identity);
+       alias(n,"original","original_form", identity);
+       alias(n,"alterations_list","alterations",toArr);
+       alias(n,"changes","alterations",toArr);
+       alias(n,"evidence","supporting_evidence",toArr);
+       alias(n,"key_evidence","supporting_evidence",toArr);
+       alias(n,"conflicts","conflicts_found",toArr);
+       alias(n,"negative_clues","negative_evidence_applied",toArr);
+       alias(n,"confidence_pct","confidence_percent",toNum);
+       alias(n,"confidence_score","confidence_percent",toNum);
+       alias(n,"confidence","confidence_band",toConf);
+       alias(n,"band","confidence_band",toConf);
+       alias(n,"classification","object_classification", identity);
+       alias(n,"notes","reconciliation_notes", identity);
+       alias(n,"summary","reconciliation_notes", identity);
+        
         if (!n.reconciled_date_range)     { n.reconciled_date_range="Undetermined"; repairs.push("default reconciled_date_range"); }
         if (!n.reconciled_form)           { n.reconciled_form="unknown"; repairs.push("default reconciled_form"); }
         if (!n.original_form)              n.original_form=n.reconciled_form;
