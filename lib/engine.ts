@@ -3227,10 +3227,10 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
             photoCount, imageLabels, userGuess: intake.user_category_guess || "",
           });
       console.info("[NCW FS Stage0] digestResult.ok:", digestResult.ok, "| keys:", Object.keys(digestResult).join(", "));
-      if (digestResult._diag) { digest._diag = digestResult._diag; }
+      if ((digestResult as any)._diag) { digest._diag = (digestResult as any)._diag; }
       if (digestResult.ok !== false) {
         digest = { ...digest, ...digestResult };
-        if (digestResult._diag) digest._diag = digestResult._diag;
+        if ((digestResult as any)._diag) digest._diag = (digestResult as any)._diag;
         digest.photos_used_count    = photoCount;
         digest.photo_types_included = images.map(i => i.image_type);
         if (!digest.mechanisms_detected) digest.mechanisms_detected = {};
