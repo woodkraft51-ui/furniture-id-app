@@ -1,6 +1,6 @@
 'use client';
 
-function PickerProfileSetup({ draft, setDraft, step, setStep, onSave, onCancel }) {
+export default function PickerProfileSetup(...)
   const sf = draft;
 
   // Build the visible step list based on current answers
