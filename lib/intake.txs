@@ -1,4 +1,4 @@
-const PHOTO_EXAMPLES = {
+export const PHOTO_EXAMPLES = {
 import { PHOTO_EXAMPLES } from "../lib/intake";
   overall_front: {
     title: "Overall Front — Good Example",
