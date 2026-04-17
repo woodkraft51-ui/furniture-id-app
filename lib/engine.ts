@@ -3205,7 +3205,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
     const photoCount  = images.filter(i => i.data_url).length;
     const imageLabels = images.map(i => i.image_type).join(", ");
 
-    let digest = {
+    let digest: any = {
       photos_used_count:       photoCount,
       photo_types_included:    images.map(i => i.image_type),
       evidence_digest:         [],
