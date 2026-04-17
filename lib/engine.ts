@@ -2945,7 +2945,7 @@ Begin your response with { and end with }. Do not include any text outside the J
       else if (c.includes("moderate") || c.includes("medium")) out.confidence = "Moderate";
       else out.confidence = "Low";
     }
-    },
+    }
 
     // Normalize buy_guidance
     if (out.buy_guidance) {
