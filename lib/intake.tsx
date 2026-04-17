@@ -391,3 +391,33 @@ function GuidanceMessages({ missing, totalPhotos, style }) {
 }
 
 const guidanceStyles = {
+  block: {
+    marginTop: 12,
+    padding: "12px 14px",
+    border: "1px solid #d6c7ab",
+    borderRadius: 10,
+    background: "#f7f1e7",
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: "#3e3122",
+    marginBottom: 8,
+  },
+  row: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 8,
+    marginTop: 6,
+  },
+  icon: {
+    flex: "0 0 auto",
+    lineHeight: 1.35,
+  },
+  text: {
+    flex: 1,
+    fontSize: 13,
+    lineHeight: 1.45,
+    color: "#4b3b2a",
+  },
+};
