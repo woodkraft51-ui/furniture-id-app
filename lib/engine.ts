@@ -727,13 +727,14 @@ alias(n,"original_form","original_form_candidate", identity);
       }
 
       case "p6_conflict": {
-        alias(n,"conflicts","conflicts_detected",toArr);
-        alias(n,"conflict_list","conflicts_detected",toArr);
-        alias(n,"issues","conflicts_detected",toArr);
-        alias(n,"net_adjustment","total_net_adjustment",toNum);
-        alias(n,"classification","object_classification_suggested");
-        alias(n,"interpretation","conflict_interpretation_for_report");
-        alias(n,"conflict_summary_text","conflict_summary");
+        const identity = function(v) { return v; };
+       alias(n,"conflicts","conflicts_detected",toArr);
+       alias(n,"conflict_list","conflicts_detected",toArr);
+       alias(n,"issues","conflicts_detected",toArr);
+       alias(n,"net_adjustment","total_net_adjustment",toNum);
+       alias(n,"classification","object_classification_suggested", identity);
+       alias(n,"interpretation","conflict_interpretation_for_report", identity);
+       alias(n,"conflict_summary_text","conflict_summary", identity);
 
         if (!n.conflicts_detected)      { n.conflicts_detected=[]; repairs.push("default conflicts_detected"); }
         if (n.no_conflicts_detected===undefined) n.no_conflicts_detected=n.conflicts_detected.length===0;
