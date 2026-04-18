@@ -3185,7 +3185,7 @@ else if (g.includes("cat")) out.buy_guidance = "Caution";
   // The digest is built once and passed through every downstream stage.
   // Adding more photos updates the digest and reruns from Stage 1.
   // ─────────────────────────────────────────────────────────────
-  export async function runQuickMode(caseData, images, intake, onPhase) {
+  async function runQuickMode(caseData, images, intake, onPhase) {
     const so          = {};
     const askingPrice = parseFloat(intake.asking_price) || null;
 
