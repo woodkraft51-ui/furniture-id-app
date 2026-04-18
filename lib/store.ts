@@ -117,7 +117,7 @@ export const API = {
     const c = caseStore[caseId];
     c.status = "analyzing";
     c.intake_answers = intakeAnswers;
-    const result = await PE.runQuickMode(c, c.images, intakeAnswers, onPhase);
+    const result = await runAllPhases(c, c.images, intakeAnswers, onPhase);
     c.stage_outputs  = result.stage_outputs;
     c.quick_result   = result.quick_result;
     // Expose visual_evidence at case level for cross-mode access
