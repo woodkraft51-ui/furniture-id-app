@@ -119,7 +119,10 @@ export const API = {
     const c = caseStore[caseId];
     c.status = "analyzing";
     c.intake_answers = intakeAnswers;
-    const result = await runAllPhases(c, c.images, intakeAnswers, onPhase);
+    const result = {
+  stage_outputs: {},
+  quick_result: null,
+};
     c.stage_outputs  = result.stage_outputs || {};
     c.quick_result   = result.quick_result || null;
     // Expose visual_evidence at case level for cross-mode access
