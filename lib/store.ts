@@ -1,4 +1,4 @@
-import * as PE from "./engine";
+import { runAllPhases } from "./engine";
 const caseStore = {};
 let caseCounter  = 1000;
 let obsCounter   = 0;
