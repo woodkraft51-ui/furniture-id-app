@@ -1,6 +1,11 @@
 export const EVIDENCE_ADAPTER_MODE: "mock" | "live" = "live";
 export const FULL_ANALYSIS_MODE: "mock" | "live" = "live";
 export const RUNTIME_MODE: "mock" | "live" = FULL_ANALYSIS_MODE;
+const API = {
+  addObservation: function () {
+    return null;
+  },
+};
 //
 // To connect a real backend:
 //   Set FULL_ANALYSIS_MODE = "live"  and ensure api.anthropic.com is reachable
