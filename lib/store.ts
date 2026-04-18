@@ -118,8 +118,8 @@ export const API = {
     c.status = "analyzing";
     c.intake_answers = intakeAnswers;
     const result = await runAllPhases(c, c.images, intakeAnswers, onPhase);
-    c.stage_outputs  = result.stage_outputs;
-    c.quick_result   = result.quick_result;
+    c.stage_outputs  = result.stage_outputs || {};
+    c.quick_result   = result.quick_result || null;
     // Expose visual_evidence at case level for cross-mode access
     if (result.stage_outputs && result.stage_outputs["0_evidence_digest"]) {
       c.visual_evidence = result.stage_outputs["0_evidence_digest"];
