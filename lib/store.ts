@@ -102,7 +102,10 @@ export const API = {
       label_photo:     !imageTypes.has("label_makers_mark"),
     };
 
-    const result = await runAllPhases(c, c.images, intakeAnswers, onPhase);
+    const result = {
+  stage_outputs: {},
+  quick_result: null,
+};
     Object.assign(c, result);
     // Expose visual_evidence at case level
     if (c.stage_outputs && c.stage_outputs["0_visual_scan"]) {
