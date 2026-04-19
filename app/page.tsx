@@ -608,11 +608,27 @@ async function runEvidenceDigest(images, context) {
 // Throws on total failure so callClaude's catch block captures it.
 function parseModelJSON(responseText) {
   if (!responseText) throw new Error("Empty response text");
-  const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("Invalid response format — no JSON object found");
+
+  let cleaned = String(responseText)
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const firstBrace = cleaned.indexOf("{");
+  if (firstBrace === -1) {
+    throw new Error("Invalid response format — no JSON object found");
+  }
+  cleaned = cleaned.slice(firstBrace);
+
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (lastBrace === -1) {
+    throw new Error("Invalid response format — no closing brace found");
+  }
+  cleaned = cleaned.slice(0, lastBrace + 1);
+
   try {
-    return JSON.parse(jsonMatch[0]);
-  } catch(err) {
+    return JSON.parse(cleaned);
+  } catch (err) {
     throw new Error("JSON parse failed: " + err.message);
   }
 }
