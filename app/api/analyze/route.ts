@@ -1,27 +1,46 @@
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const apiKey = process.env.ANTHROPIC_API_KEY;
 
-    return Response.json({
-      ok: false,
-      error: {
-        type: "backend_not_configured",
-        message:
-          "The /api/analyze route exists, but it is not yet connected to Anthropic. Add your server-side API call here.",
+    if (!apiKey) {
+      return Response.json(
+        {
+          ok: false,
+          error: {
+            type: "missing_api_key",
+            message: "ANTHROPIC_API_KEY is not set on the server.",
+          },
+        },
+        { status: 500 }
+      );
+    }
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
       },
-      received: {
-        model: body?.model ?? null,
-        has_system: !!body?.system,
-        has_messages: Array.isArray(body?.messages),
-      },
-    }, { status: 501 });
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    return Response.json(data, { status: res.status });
   } catch (error) {
-    return Response.json({
-      ok: false,
-      error: {
-        type: "invalid_request",
-        message: error instanceof Error ? error.message : "Unknown error",
+    return Response.json(
+      {
+        ok: false,
+        error: {
+          type: "invalid_request",
+          message: error instanceof Error ? error.message : "Unknown error",
+        },
       },
-    }, { status: 400 });
+      { status: 400 }
+    );
   }
 }
