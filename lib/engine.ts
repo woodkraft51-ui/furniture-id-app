@@ -514,14 +514,40 @@ Alternative structured JSON is acceptable if it is still valid JSON.
     ]);
 
     if (!result.ok) {
-      const fallback = {
-        ok: true,
-        observations: [],
-        note: "LLM failed — no evidence extracted",
-      };
-      onPhase?.("p0", fallback);
-      return fallback;
+  const recoveredParsed = cleanClaudeJSON(result.raw_response || "") || null;
+  const recoveredObservations = normalizeObservationsFromParsed(recoveredParsed);
+
+  if (recoveredObservations.length > 0) {
+    for (const o of recoveredObservations) {
+      API.addObservation(caseData.id, {
+        observation_type: o.type || "unknown",
+        observed_value_text: o.description,
+        raw_confidence: (o.confidence || 40) / 100,
+        weight_multiplier: 1,
+        recovered: true,
+      });
     }
+
+    const recoveredRes = {
+      ok: true,
+      observations: recoveredObservations,
+      broad_form:
+        recoveredObservations.find((o) => o.type === "form")?.description || "Unknown",
+      note: "Recovered observations from raw response",
+    };
+
+    onPhase?.("p0", recoveredRes);
+    return recoveredRes;
+  }
+
+  const fallback = {
+    ok: true,
+    observations: [],
+    note: "LLM failed — no evidence extracted",
+  };
+  onPhase?.("p0", fallback);
+  return fallback;
+}
 
     const parsedPayload = result.parsed || cleanClaudeJSON(result.raw_response || "") || null;
     const observations = normalizeObservationsFromParsed(parsedPayload);
