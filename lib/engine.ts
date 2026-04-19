@@ -203,6 +203,48 @@ Return:
     return res;
   },
 
+// ── Stage 1: Form Recognition ──────────────────────────
+// If Stage 0 already found a specific mechanical form, keep it and skip
+// the no-image fallback form call.
+const stage0SpecificForm =
+  digest?.object_analysis?.form_identification?.furniture_type ||
+  digest?.broad_form_guess ||
+  null;
+
+const stage0Mechanism =
+  digest?.object_analysis?.form_identification?.expansion_mechanism ||
+  digest?.strongest_mechanism ||
+  digest?.strongest_signature ||
+  null;
+
+const stage0LooksSpecific =
+  !!stage0SpecificForm &&
+  stage0SpecificForm !== "table" &&
+  stage0SpecificForm !== "furniture" &&
+  stage0SpecificForm !== "unknown";
+
+if (stage0LooksSpecific || stage0Mechanism) {
+  const recognized = stage0SpecificForm || digest?.broad_form_guess || "unknown";
+
+  const formResult = {
+    form_family: "table",
+    subfamily: recognized.toLowerCase().includes("drop-leaf") ? "drop-leaf table" : null,
+    recognized_form: recognized,
+    recognition_method: "mechanical_signature",
+    signature_used: stage0Mechanism || "stage0_visual_digest",
+    form_confidence: "High",
+    broad_form_key: "table",
+    is_broad_category: false,
+    alternate_forms: [],
+    recognition_notes: "Accepted Stage 0 visual/mechanical identification and skipped no-image fallback form recognition.",
+  };
+
+  so["1_form_recognition"] = formResult;
+  if (typeof onPhase === "function") onPhase(1, formResult);
+} else {
+  // existing Stage 1 LLM/client-side resolver logic here
+}
+  
   // ===============================
   // SIMPLE DATING (EVIDENCE-BOUND)
   // ===============================
