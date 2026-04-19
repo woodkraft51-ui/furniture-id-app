@@ -4927,36 +4927,164 @@ Begin your response with { and end with }. Do not include any text outside the J
 
     try {
       const digestResult = cacheHit
-        ? cached.digest  // reuse cached result — no API call
-        : await runEvidenceDigest(images, {
-            photoCount, imageLabels, userGuess: intake.user_category_guess || "",
-          });
-      console.info("[NCW FS Stage0] digestResult.ok:", digestResult.ok, "| keys:", Object.keys(digestResult).join(", "));
-if ((digestResult as any)._diag) { (digest as any)._diag = (digestResult as any)._diag; }
-if (digestResult.ok !== false) {
-  digest = { ...digest, ...digestResult };
-  if ((digestResult as any)._diag) (digest as any)._diag = (digestResult as any)._diag;
-}
-        digest.photos_used_count    = photoCount;
-        digest.photo_types_included = images.map(i => i.image_type);
-        if (!digest.mechanisms_detected) digest.mechanisms_detected = {};
-        // ── Fallback extractor: if evidence_digest empty but LLM saw the images, ──
-        // synthesize minimal clues from broad_form_guess + mechanisms_detected
-        if ((!digest.evidence_digest || digest.evidence_digest.length === 0) && digest.broad_form_guess) {
-          digest.evidence_digest = ["Broad form observed: " + digest.broad_form_guess];
-        }
-        if ((!digest.evidence_digest || digest.evidence_digest.length === 0)) {
-          // Last-resort: extract any present mechanisms into prose
-          const mechProse = Object.entries((digest.mechanisms_detected || {}) as Record<string, any>)
-  .filter(([, v]) => v && (v as any).present)
-  .map(([k, v]) => k.replace(/_/g, " ") + ((v as any).note ? " — " + (v as any).note : ""));
-         if (mechProse.length > 0) digest.evidence_digest = mechProse;
+  ? cached.digest
+  : await runEvidenceDigest(images, {
+      photoCount,
+      imageLabels,
+      userGuess: intake.user_category_guess || "",
+    });
+
 console.info(
-  "[NCW FS Stage0] Digest after merge — evidence_digest:",
-  digest.evidence_digest,
-  "| mechanisms:",
-  Object.keys(digest.mechanisms_detected || {}).filter(k => digest.mechanisms_detected[k].present)
+  "[NCW FS Stage0] digestResult.ok:",
+  digestResult && digestResult.ok,
+  "| keys:",
+  Object.keys(digestResult || {}).join(", ")
 );
+
+if ((digestResult as any)?._diag) {
+  (digest as any)._diag = (digestResult as any)._diag;
+}
+
+if (digestResult && digestResult.ok !== false) {
+  digest = { ...digest, ...digestResult };
+
+  const mechanismAnalysis = (digestResult as any).mechanism_analysis || {};
+  const objectIdentification = (digestResult as any).object_identification || {};
+  const photoAnalysis = (digestResult as any).photo_analysis || {};
+  const datingSynthesis = (digestResult as any).dating_synthesis || {};
+
+  if (!digest.mechanisms_detected) digest.mechanisms_detected = {};
+  if (!Array.isArray(digest.evidence_digest)) digest.evidence_digest = [];
+  if (!Array.isArray(digest.fastener_clues)) digest.fastener_clues = [];
+  if (!Array.isArray(digest.toolmark_clues)) digest.toolmark_clues = [];
+  if (!Array.isArray(digest.hardware_clues)) digest.hardware_clues = [];
+  if (!Array.isArray(digest.hard_negatives)) digest.hard_negatives = [];
+
+  if (!digest.broad_form_guess) {
+    digest.broad_form_guess =
+      objectIdentification.form ||
+      objectIdentification.recognized_form ||
+      objectIdentification.form_family ||
+      "";
+  }
+
+  if (!digest.primary_wood_guess) {
+    digest.primary_wood_guess =
+      objectIdentification.primary_wood ||
+      photoAnalysis.primary_wood ||
+      "";
+  }
+
+  const pushEvidence = (text) => {
+    if (!text || typeof text !== "string") return;
+    const t = text.trim();
+    if (!t) return;
+    if (!digest.evidence_digest.includes(t)) {
+      digest.evidence_digest.push(t);
+    }
+  };
+
+  Object.values(mechanismAnalysis).forEach((entry) => {
+    if (!entry || typeof entry !== "object") return;
+
+    if (entry.form) pushEvidence("Form observed: " + entry.form);
+    if (entry.table_type) pushEvidence("Type observed: " + entry.table_type);
+    if (entry.structural_mechanism) pushEvidence("Mechanism observed: " + entry.structural_mechanism);
+    if (entry.primary_wood) pushEvidence("Primary wood observed: " + entry.primary_wood);
+    if (entry.secondary_wood) pushEvidence("Secondary wood observed: " + entry.secondary_wood);
+    if (entry.joinery) pushEvidence("Joinery observed: " + entry.joinery);
+    if (entry.hardware) pushEvidence("Hardware observed: " + entry.hardware);
+    if (entry.fasteners) pushEvidence("Fasteners observed: " + entry.fasteners);
+  });
+
+  if (objectIdentification.form) {
+    pushEvidence("Object identification: " + objectIdentification.form);
+  }
+  if (objectIdentification.structural_mechanism) {
+    pushEvidence("Structural mechanism: " + objectIdentification.structural_mechanism);
+  }
+
+  if (datingSynthesis.primary_date_range) {
+    pushEvidence("Date range estimate: " + datingSynthesis.primary_date_range);
+  }
+
+  const evidenceBlob = digest.evidence_digest.join(" | ").toLowerCase();
+
+  if (
+    evidenceBlob.includes("drop-leaf") ||
+    evidenceBlob.includes("drop leaf")
+  ) {
+    digest.mechanisms_detected.drop_leaf_hinged = {
+      present: true,
+      confidence: 85,
+      note: "Drop-leaf structure identified from Stage 0 digest",
+    };
+  }
+
+  if (
+    evidenceBlob.includes("gate-leg") ||
+    evidenceBlob.includes("gate leg") ||
+    evidenceBlob.includes("swing-out gate-leg")
+  ) {
+    digest.mechanisms_detected.gateleg_support = {
+      present: true,
+      confidence: 85,
+      note: "Gate-leg support identified from Stage 0 digest",
+    };
+  }
+
+  if (
+    evidenceBlob.includes("rule-joint") ||
+    evidenceBlob.includes("rule joint")
+  ) {
+    digest.mechanisms_detected.rule_joint = {
+      present: true,
+      confidence: 75,
+      note: "Rule joint identified from Stage 0 digest",
+    };
+  }
+
+  if ((!digest.evidence_digest || digest.evidence_digest.length === 0) && digest.broad_form_guess) {
+    digest.evidence_digest = ["Broad form observed: " + digest.broad_form_guess];
+  }
+
+  if ((!digest.evidence_digest || digest.evidence_digest.length === 0)) {
+    const mechProse = Object.entries((digest.mechanisms_detected || {}))
+      .filter(([, v]) => v && v.present)
+      .map(([k, v]) => k.replace(/_/g, " ") + (v.note ? " — " + v.note : ""));
+    if (mechProse.length > 0) digest.evidence_digest = mechProse;
+  }
+
+  if ((digestResult as any)?._diag) {
+    (digest as any)._diag = (digestResult as any)._diag;
+  }
+
+  console.info(
+    "[NCW FS Stage0] Digest after merge — evidence_digest:",
+    digest.evidence_digest,
+    "| mechanisms:",
+    Object.keys(digest.mechanisms_detected || {}).filter(
+      (k) => digest.mechanisms_detected[k] && digest.mechanisms_detected[k].present
+    )
+  );
+} else {
+  digest._raw_response = digestResult?.raw_response || "";
+  digest._raw_response_len = (digestResult?.raw_response || "").length;
+  digest._error_type = digestResult?.error_type || "unknown";
+  if (digestResult?._diag) {
+    digest._diag = digestResult._diag;
+  }
+  console.warn(
+    "[NCW FS Stage0] Digest degraded — error_type:",
+    digestResult?.error_type,
+    "| raw (first 400):",
+    (digestResult?.raw_response || "").slice(0, 400)
+  );
+}
+
+digest.photos_used_count = photoCount;
+digest.photo_types_included = images.map(i => i.image_type);
+if (!digest.mechanisms_detected) digest.mechanisms_detected = {};
       } else {
         // Store the raw failure response in digest so debug panel can read it
         digest._raw_response = digestResult.raw_response || "";
