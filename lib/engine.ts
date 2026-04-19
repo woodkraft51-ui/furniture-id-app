@@ -38,7 +38,6 @@ export function getRuntimeProbe(): RuntimeProbe {
 
 // Temporary compatibility so nothing else breaks
 export const RUNTIME_MODE: RuntimeMode = getRuntimeProbe().runtime_mode;
-export const FULL_ANALYSIS_MODE: "mock" | "live" = "live";
 export const RUNTIME_MODE: "mock" | "live" = FULL_ANALYSIS_MODE;
 
 /**
