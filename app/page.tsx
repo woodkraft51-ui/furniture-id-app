@@ -5085,16 +5085,7 @@ if (digestResult && digestResult.ok !== false) {
 digest.photos_used_count = photoCount;
 digest.photo_types_included = images.map(i => i.image_type);
 if (!digest.mechanisms_detected) digest.mechanisms_detected = {};
-      } else {
-        // Store the raw failure response in digest so debug panel can read it
-        digest._raw_response = digestResult.raw_response || "";
-        digest._raw_response_len = (digestResult.raw_response || "").length;
-        digest._error_type       = digestResult.error_type || "unknown";
-        // Store full diagnostics object if available
-        if (digestResult._diag) {
-          digest._diag = digestResult._diag;
-        }
-        console.warn("[NCW FS Stage0] Digest degraded — error_type:", digestResult.error_type, "| raw (first 400):", (digestResult.raw_response||"").slice(0,400));
+              console.warn("[NCW FS Stage0] Digest degraded — error_type:", digestResult.error_type, "| raw (first 400):", (digestResult.raw_response||"").slice(0,400));
       }
     } catch(e) {
       digest._cf_catch_message = e.message;
