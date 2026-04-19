@@ -4984,18 +4984,18 @@ if (digestResult && digestResult.ok !== false) {
     }
   };
 
-  Object.values(mechanismAnalysis).forEach((entry) => {
-    if (!entry || typeof entry !== "object") return;
+  Object.values(mechanismAnalysis).forEach((entry: any) => {
+  if (!entry || typeof entry !== "object") return;
 
-    if (entry.form) pushEvidence("Form observed: " + entry.form);
-    if (entry.table_type) pushEvidence("Type observed: " + entry.table_type);
-    if (entry.structural_mechanism) pushEvidence("Mechanism observed: " + entry.structural_mechanism);
-    if (entry.primary_wood) pushEvidence("Primary wood observed: " + entry.primary_wood);
-    if (entry.secondary_wood) pushEvidence("Secondary wood observed: " + entry.secondary_wood);
-    if (entry.joinery) pushEvidence("Joinery observed: " + entry.joinery);
-    if (entry.hardware) pushEvidence("Hardware observed: " + entry.hardware);
-    if (entry.fasteners) pushEvidence("Fasteners observed: " + entry.fasteners);
-  });
+  if (entry.form) pushEvidence("Form observed: " + entry.form);
+  if (entry.table_type) pushEvidence("Type observed: " + entry.table_type);
+  if (entry.structural_mechanism) pushEvidence("Mechanism observed: " + entry.structural_mechanism);
+  if (entry.primary_wood) pushEvidence("Primary wood observed: " + entry.primary_wood);
+  if (entry.secondary_wood) pushEvidence("Secondary wood observed: " + entry.secondary_wood);
+  if (entry.joinery) pushEvidence("Joinery observed: " + entry.joinery);
+  if (entry.hardware) pushEvidence("Hardware observed: " + entry.hardware);
+  if (entry.fasteners) pushEvidence("Fasteners observed: " + entry.fasteners);
+});
 
   if (objectIdentification.form) {
     pushEvidence("Object identification: " + objectIdentification.form);
