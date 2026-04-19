@@ -697,7 +697,7 @@ function parseModelJSON(responseText) {
   }
 
   throw new Error("JSON parse failed: unable to recover valid JSON");
-}──
+}
 function RuntimeModeBadge() {
   const m = RUNTIME_MODE;
   const isLive = m.engine_mode === "LIVE";
