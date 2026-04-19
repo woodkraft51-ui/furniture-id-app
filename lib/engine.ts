@@ -227,7 +227,7 @@ function parseModelJSON(responseText) {
 // ============================================================
 
 
-const PE = {
+export const PE = {
 
   async callClaude(system, userContent) {
     // ── Mock short-circuit — only fires when FULL_ANALYSIS_MODE="mock" ──
