@@ -4819,13 +4819,27 @@ Begin your response with { and end with }. Do not include any text outside the J
     }
 
     const sanitizeQ = (text) => {
-      let s = text.replace(/`{3}json[\s\S]*?`{3}|`{3}[\s\S]*?`{3}/g, "").trim();
-      const firstBrace = s.indexOf("{");
-      if (firstBrace > 0) s = s.slice(firstBrace);
-      const m = s.match(/\{[\s\S]*\}/);
-      if (!m) throw new Error("No JSON object found in response");
-      return JSON.parse(m[0]);
-    };
+  if (!text) throw new Error("Empty response text");
+
+  let s = String(text)
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const firstBrace = s.indexOf("{");
+  if (firstBrace === -1) {
+    throw new Error("No JSON object found in response");
+  }
+  s = s.slice(firstBrace);
+
+  const lastBrace = s.lastIndexOf("}");
+  if (lastBrace === -1) {
+    throw new Error("No closing brace found in response");
+  }
+  s = s.slice(0, lastBrace + 1);
+
+  return JSON.parse(s);
+};
     try {
       const parsed = sanitizeQ(raw);
       console.info("[NCW Quick] Parse OK. Top-level keys:", Object.keys(parsed).join(", "));
