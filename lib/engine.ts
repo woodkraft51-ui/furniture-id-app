@@ -256,7 +256,7 @@ Return:
   }
 
   // 🔥 NEW: detect mechanism-based form
-  const detected = detectFormFromObservations(observations);
+  const detected = this.detectFormFromObservations(observations);
 
   if (detected) {
     return detected;
