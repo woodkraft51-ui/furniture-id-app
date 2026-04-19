@@ -178,7 +178,9 @@ Return:
     }
 
     const observations = result.parsed.observations || [];
-
+    console.log("P0 RAW RESULT:", result);
+    console.log("P0 PARSED:", result.parsed);
+    console.log("P0 OBS:", observations);
     // Store raw observations (no modification)
     for (const o of observations) {
       API.addObservation(caseData.id, {
