@@ -253,14 +253,14 @@ Return:
       form: "Unknown",
       confidence: "Inconclusive",
     };
-  },
+  }
 
   // 🔥 NEW: detect mechanism-based form
   const detected = this.detectFormFromObservations(observations);
 
   if (detected) {
     return detected;
-  }
+  },
 
   // fallback
   return {
