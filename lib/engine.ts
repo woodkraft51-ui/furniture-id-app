@@ -1,10 +1,10 @@
-// engine.ts
 import { API } from "./store";
-export const EVIDENCE_ADAPTER_MODE: RuntimeMode = "live";
-export const FULL_ANALYSIS_MODE: RuntimeMode = "live";
 
 export type RuntimeMode = "mock" | "live";
 export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
+
+export const EVIDENCE_ADAPTER_MODE: RuntimeMode = "live";
+export const FULL_ANALYSIS_MODE: RuntimeMode = "live";
 
 export interface RuntimeProbe {
   engine_mode: EngineMode;
@@ -36,21 +36,17 @@ export function getRuntimeProbe(): RuntimeProbe {
   };
 }
 
-
-// Temporary compatibility so nothing else breaks
 export const RUNTIME_MODE: RuntimeMode = getRuntimeProbe().runtime_mode;
 
-/**
- * CORE PRINCIPLE:
- * - Evidence is NEVER fabricated
- * - Weak evidence stays weak
- * - Unknown stays unknown
- */
-
-export const PE = {
-  // ===============================
-  // LLM CALL
-  // ===============================
+export const PE: {
+  callClaude: (system: string, content: any[]) => Promise<any>;
+  imgs: (images: any[]) => any[];
+  p0: (caseData: any, images: any[], intake: any, onPhase?: any) => Promise<any>;
+  p2: (observations: any[]) => any;
+  detectFormFromObservations: (observations: any[]) => any;
+  p3: (observations: any[], p0: any) => any;
+  runAllPhases: (caseData: any, images: any[], intake: any, onPhase?: any) => Promise<any>;
+} = {
   async callClaude(system: string, content: any[]) {
     if (FULL_ANALYSIS_MODE === "mock") {
       return { ok: false, error: "mock_mode" };
@@ -84,8 +80,9 @@ export const PE = {
         return { ok: false, error: "empty_response" };
       }
 
-      // STRICT JSON extraction
-      const match = raw.match(/\{[\s\S]*\}/);
+      const clean = raw.replace(/```json|```/g, "").trim();
+      const match = clean.match(/\{[\s\S]*\}/);
+
       if (!match) {
         return { ok: false, error: "no_json" };
       }
@@ -99,9 +96,6 @@ export const PE = {
     }
   },
 
-  // ===============================
-  // IMAGE FORMATTER
-  // ===============================
   imgs(images: any[]) {
     const out: any[] = [];
 
@@ -125,11 +119,8 @@ export const PE = {
     return out;
   },
 
-  // ===============================
-  // PHASE 0 – VISUAL EVIDENCE ONLY
-  // ===============================
   async p0(caseData: any, images: any[], intake: any, onPhase?: any) {
-    const count = images.filter(i => i.data_url).length;
+    const count = images.filter((i) => i.data_url).length;
 
     if (count === 0) {
       const res = {
@@ -177,13 +168,12 @@ Return:
       return fallback;
     }
 
-    const observations = result.parsed.observations || [];
-    
+    const observations = result.parsed?.observations || [];
+
     console.log("P0 RAW RESULT:", result);
     console.log("P0 PARSED:", result.parsed);
     console.log("P0 OBS:", observations);
-    
-    // Store raw observations (no modification)
+
     for (const o of observations) {
       API.addObservation(caseData.id, {
         observation_type: o.type || "unknown",
@@ -203,51 +193,6 @@ Return:
     return res;
   },
 
-// ── Stage 1: Form Recognition ──────────────────────────
-// If Stage 0 already found a specific mechanical form, keep it and skip
-// the no-image fallback form call.
-const stage0SpecificForm =
-  digest?.object_analysis?.form_identification?.furniture_type ||
-  digest?.broad_form_guess ||
-  null;
-
-const stage0Mechanism =
-  digest?.object_analysis?.form_identification?.expansion_mechanism ||
-  digest?.strongest_mechanism ||
-  digest?.strongest_signature ||
-  null;
-
-const stage0LooksSpecific =
-  !!stage0SpecificForm &&
-  stage0SpecificForm !== "table" &&
-  stage0SpecificForm !== "furniture" &&
-  stage0SpecificForm !== "unknown";
-
-if (stage0LooksSpecific || stage0Mechanism) {
-  const recognized = stage0SpecificForm || digest?.broad_form_guess || "unknown";
-
-  const formResult = {
-    form_family: "table",
-    subfamily: recognized.toLowerCase().includes("drop-leaf") ? "drop-leaf table" : null,
-    recognized_form: recognized,
-    recognition_method: "mechanical_signature",
-    signature_used: stage0Mechanism || "stage0_visual_digest",
-    form_confidence: "High",
-    broad_form_key: "table",
-    is_broad_category: false,
-    alternate_forms: [],
-    recognition_notes: "Accepted Stage 0 visual/mechanical identification and skipped no-image fallback form recognition.",
-  };
-
-  so["1_form_recognition"] = formResult;
-  if (typeof onPhase === "function") onPhase(1, formResult);
-} else {
-  // existing Stage 1 LLM/client-side resolver logic here
-}
-  
-  // ===============================
-  // SIMPLE DATING (EVIDENCE-BOUND)
-  // ===============================
   p2(observations: any[]) {
     if (!observations.length) {
       return {
@@ -256,16 +201,12 @@ if (stage0LooksSpecific || stage0Mechanism) {
       };
     }
 
-    // VERY conservative
     return {
       range: "1800–1950",
       confidence: "Low",
     };
   },
 
-    // ===============================
-  // FORM (NO GUESSING)
-  // ===============================
   detectFormFromObservations(observations: any[]) {
     const text = observations
       .map((o: any) => (o.observed_value_text || "").toLowerCase())
@@ -311,10 +252,7 @@ if (stage0LooksSpecific || stage0Mechanism) {
       confidence: "Low",
     };
   },
-  
-  // ===============================
-  // PIPELINE
-  // ===============================
+
   async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
     const stage_outputs: any = {};
 
