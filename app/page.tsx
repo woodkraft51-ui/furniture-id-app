@@ -5085,7 +5085,6 @@ if (digestResult && digestResult.ok !== false) {
 digest.photos_used_count = photoCount;
 digest.photo_types_included = images.map(i => i.image_type);
 if (!digest.mechanisms_detected) digest.mechanisms_detected = {};
-      }
     } catch(e) {
       digest._cf_catch_message = e.message;
       digest._cf_catch_stack   = (e.stack || "").slice(0, 300);
