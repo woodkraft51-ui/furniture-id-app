@@ -1,7 +1,7 @@
 // engine.ts
 import { API } from "./store";
-export const EVIDENCE_ADAPTER_MODE: "mock" | "live" = "live";
-export const FULL_ANALYSIS_MODE: "mock" | "live" = "live";
+export const EVIDENCE_ADAPTER_MODE = "live" as RuntimeMode;
+export const FULL_ANALYSIS_MODE = "live" as RuntimeMode;
 
 export type RuntimeMode = "mock" | "live";
 export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
