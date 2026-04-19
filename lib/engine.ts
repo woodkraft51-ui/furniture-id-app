@@ -455,10 +455,11 @@ Alternative structured JSON is acceptable if it is still valid JSON.
       return fallback;
     }
 
-    const observations = normalizeObservationsFromParsed(result.parsed);
+    const parsedPayload = result.parsed || cleanClaudeJSON(result.raw_response || "") || null;
+    const observations = normalizeObservationsFromParsed(parsedPayload);
 
-    console.log("P0 RAW RESULT:", result.raw);
-    console.log("P0 PARSED:", result.parsed);
+    console.log("P0 RAW RESULT:", result.raw_response);
+    console.log("P0 PARSED:", parsedPayload);
     console.log("P0 OBS:", observations);
 
     for (const o of observations) {
