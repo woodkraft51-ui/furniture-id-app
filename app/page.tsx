@@ -2047,17 +2047,105 @@ const PE = {
     // Step 3: extract the outermost { ... } JSON object
     // Step 4: parse — throws on failure so the retry path fires
     const sanitize = (text) => {
-      // Step 1: strip markdown fences
-      let s = text.replace(/`{3}json[\s\S]*?`{3}|`{3}[\s\S]*?`{3}/g, "").trim();
-      // Step 2: trim anything before the first {
-      const firstBrace = s.indexOf("{");
-      if (firstBrace > 0) s = s.slice(firstBrace);
-      // Step 3: extract outermost { ... }
-      const jsonMatch = s.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error("No JSON object found in response");
-      // Step 4: parse
-      return JSON.parse(jsonMatch[0]);
-    };
+  if (!text) throw new Error("Empty response text");
+
+  let cleaned = String(text)
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
+
+  // Try parsing the entire cleaned response first.
+  try {
+    return JSON.parse(cleaned);
+  } catch (_) {}
+
+  // Find the first balanced JSON object or array.
+  const extractBalancedJSON = (src) => {
+    const starts = [];
+    const objStart = src.indexOf("{");
+    const arrStart = src.indexOf("[");
+
+    if (objStart !== -1) starts.push({ idx: objStart, char: "{" });
+    if (arrStart !== -1) starts.push({ idx: arrStart, char: "[" });
+
+    if (!starts.length) return null;
+
+    starts.sort((a, b) => a.idx - b.idx);
+    const start = starts[0];
+    const openChar = start.char;
+    const closeChar = openChar === "{" ? "}" : "]";
+
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = start.idx; i < src.length; i++) {
+      const ch = src[i];
+
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+        } else if (ch === "\\") {
+          escaped = true;
+        } else if (ch === '"') {
+          inString = false;
+        }
+        continue;
+      }
+
+      if (ch === '"') {
+        inString = true;
+        continue;
+      }
+
+      if (ch === openChar) depth++;
+      if (ch === closeChar) depth--;
+
+      if (depth === 0) {
+        return src.slice(start.idx, i + 1);
+      }
+    }
+
+    return null;
+  };
+
+  const balanced = extractBalancedJSON(cleaned);
+  if (balanced) {
+    try {
+      return JSON.parse(balanced);
+    } catch (_) {
+      // Progressive trim fallback
+      for (let i = balanced.length - 1; i > 0; i--) {
+        const slice = balanced.slice(0, i);
+        try {
+          return JSON.parse(slice);
+        } catch (_) {}
+      }
+    }
+  }
+
+  // Broad object fallback
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    const objSlice = cleaned.slice(firstBrace, lastBrace + 1);
+    try {
+      return JSON.parse(objSlice);
+    } catch (_) {}
+  }
+
+  // Broad array fallback
+  const firstBracket = cleaned.indexOf("[");
+  const lastBracket = cleaned.lastIndexOf("]");
+  if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+    const arrSlice = cleaned.slice(firstBracket, lastBracket + 1);
+    try {
+      return JSON.parse(arrSlice);
+    } catch (_) {}
+  }
+
+  throw new Error("No JSON object found in response");
+};
     try {
       const parsed = sanitize(raw);
       return { ok: true, ...parsed };
