@@ -220,6 +220,35 @@ Return:
   // ===============================
   // FORM (NO GUESSING)
   // ===============================
+  function detectFormFromObservations(observations: any[]) {
+  const text = observations
+    .map(o => (o.observed_value_text || "").toLowerCase())
+    .join(" ");
+
+  let score = {
+    drop_leaf: 0,
+  };
+
+  // ── Core mechanism signals ───────────────────────────
+  if (text.includes("leaf")) score.drop_leaf += 2;
+  if (text.includes("hinge")) score.drop_leaf += 3;
+  if (text.includes("fold") || text.includes("drop")) score.drop_leaf += 2;
+  if (text.includes("extend")) score.drop_leaf += 1;
+
+  // ── Structural cues ─────────────────────────────────
+  if (text.includes("two sides") || text.includes("both sides")) score.drop_leaf += 2;
+  if (text.includes("symmetrical")) score.drop_leaf += 1;
+
+  // ── Decision ───────────────────────────────────────
+  if (score.drop_leaf >= 3) {
+    return {
+      form: "Drop-leaf table",
+      confidence: score.drop_leaf >= 5 ? "Moderate" : "Low",
+    };
+  }
+
+  return null;
+}
   p3(observations: any[], p0: any) {
     if (!observations.length) {
       return {
