@@ -250,12 +250,26 @@ Return:
   return null;
 }
   p3(observations: any[], p0: any) {
-    if (!observations.length) {
-      return {
-        form: "Unknown",
-        confidence: "Inconclusive",
-      };
-    }
+  if (!observations.length) {
+    return {
+      form: "Unknown",
+      confidence: "Inconclusive",
+    };
+  }
+
+  // 🔥 NEW: detect mechanism-based form
+  const detected = detectFormFromObservations(observations);
+
+  if (detected) {
+    return detected;
+  }
+
+  // fallback
+  return {
+    form: p0?.broad_form || "Table",
+    confidence: "Low",
+  };
+}
 
     return {
       form: p0?.broad_form || "Unknown",
