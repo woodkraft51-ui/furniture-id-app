@@ -44,20 +44,30 @@ type Observation = {
   confidence: number;
 };
 
-function cleanJsonText(raw: string): string {
-  return String(raw || "")
+function cleanClaudeJSON(raw: string): any | null {
+  if (!raw) return null;
+
+  let cleaned = String(raw)
     .replace(/```json/gi, "")
     .replace(/```/g, "")
     .trim();
-}
 
-function extractJsonObject(text: string): string | null {
-  if (!text) return null;
+  const firstBrace = cleaned.indexOf("{");
+  if (firstBrace !== -1) {
+    cleaned = cleaned.slice(firstBrace);
+  }
 
-  const cleaned = cleanJsonText(text);
-  const match = cleaned.match(/\{[\s\S]*\}/);
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (lastBrace !== -1) {
+    cleaned = cleaned.slice(0, lastBrace + 1);
+  }
 
-  return match ? match[0] : null;
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    console.error("[NCW] cleanClaudeJSON failed. cleaned preview:", cleaned.slice(0, 500));
+    return null;
+  }
 }
 
 function collectTextSnippets(value: any, out: string[] = []): string[] {
