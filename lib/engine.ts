@@ -51,10 +51,26 @@ function cleanJsonText(raw: string): string {
     .trim();
 }
 
-function extractJsonObject(raw: string): string | null {
-  const clean = cleanJsonText(raw);
-  const match = clean.match(/\{[\s\S]*\}/);
-  return match ? match[0] : null;
+function extractJSON(text: string) {
+  if (!text) return null;
+
+  // Remove code fences
+  let cleaned = text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  // Find first valid JSON block
+  const match = cleaned.match(/\{[\s\S]*\}/);
+
+  if (!match) return null;
+
+  try {
+    return JSON.parse(match[0]);
+  } catch (e) {
+    console.error("JSON parse error:", e);
+    return null;
+  }
 }
 
 function collectTextSnippets(value: any, out: string[] = []): string[] {
