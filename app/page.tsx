@@ -614,27 +614,90 @@ function parseModelJSON(responseText) {
     .replace(/```/g, "")
     .trim();
 
-  const firstBrace = cleaned.indexOf("{");
-  if (firstBrace === -1) {
-    throw new Error("Invalid response format — no JSON object found");
-  }
-  cleaned = cleaned.slice(firstBrace);
-
-  const lastBrace = cleaned.lastIndexOf("}");
-  if (lastBrace === -1) {
-    throw new Error("Invalid response format — no closing brace found");
-  }
-  cleaned = cleaned.slice(0, lastBrace + 1);
-
+  // Try parsing the entire cleaned response first.
   try {
     return JSON.parse(cleaned);
-  } catch (err) {
-    throw new Error("JSON parse failed: " + err.message);
+  } catch (_) {}
+
+  // Find the first balanced JSON object or array.
+  function extractBalancedJSON(text) {
+    const starts = [];
+    const objStart = text.indexOf("{");
+    const arrStart = text.indexOf("[");
+
+    if (objStart !== -1) starts.push({ idx: objStart, char: "{" });
+    if (arrStart !== -1) starts.push({ idx: arrStart, char: "[" });
+
+    if (!starts.length) return null;
+
+    starts.sort((a, b) => a.idx - b.idx);
+    const start = starts[0];
+    const openChar = start.char;
+    const closeChar = openChar === "{" ? "}" : "]";
+
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = start.idx; i < text.length; i++) {
+      const ch = text[i];
+
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+        } else if (ch === "\\") {
+          escaped = true;
+        } else if (ch === '"') {
+          inString = false;
+        }
+        continue;
+      }
+
+      if (ch === '"') {
+        inString = true;
+        continue;
+      }
+
+      if (ch === openChar) depth++;
+      if (ch === closeChar) depth--;
+
+      if (depth === 0) {
+        return text.slice(start.idx, i + 1);
+      }
+    }
+
+    return null;
   }
-}
 
+  const balanced = extractBalancedJSON(cleaned);
+  if (balanced) {
+    try {
+      return JSON.parse(balanced);
+    } catch (_) {}
+  }
 
-// ── Runtime mode badge — rendered in both Field Scan and Full Analysis results ──
+  // Fallback: broad object slice
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    const objSlice = cleaned.slice(firstBrace, lastBrace + 1);
+    try {
+      return JSON.parse(objSlice);
+    } catch (_) {}
+  }
+
+  // Fallback: broad array slice
+  const firstBracket = cleaned.indexOf("[");
+  const lastBracket = cleaned.lastIndexOf("]");
+  if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+    const arrSlice = cleaned.slice(firstBracket, lastBracket + 1);
+    try {
+      return JSON.parse(arrSlice);
+    } catch (_) {}
+  }
+
+  throw new Error("JSON parse failed: unable to recover valid JSON");
+}──
 function RuntimeModeBadge() {
   const m = RUNTIME_MODE;
   const isLive = m.engine_mode === "LIVE";
