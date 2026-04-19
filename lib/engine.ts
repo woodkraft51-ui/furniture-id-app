@@ -52,22 +52,89 @@ function cleanClaudeJSON(raw: string): any | null {
     .replace(/```/g, "")
     .trim();
 
-  const firstBrace = cleaned.indexOf("{");
-  if (firstBrace !== -1) {
-    cleaned = cleaned.slice(firstBrace);
-  }
-
-  const lastBrace = cleaned.lastIndexOf("}");
-  if (lastBrace !== -1) {
-    cleaned = cleaned.slice(0, lastBrace + 1);
-  }
-
+  // First try: parse the cleaned full text directly.
   try {
     return JSON.parse(cleaned);
-  } catch (err) {
-    console.error("[NCW] cleanClaudeJSON failed. cleaned preview:", cleaned.slice(0, 500));
+  } catch (_) {}
+
+  // Second try: extract the first full JSON object OR array by balanced brackets.
+  const extractBalancedJSON = (text: string): string | null => {
+    const starts = [];
+    const objStart = text.indexOf("{");
+    const arrStart = text.indexOf("[");
+
+    if (objStart !== -1) starts.push({ idx: objStart, char: "{" });
+    if (arrStart !== -1) starts.push({ idx: arrStart, char: "[" });
+    if (!starts.length) return null;
+
+    starts.sort((a, b) => a.idx - b.idx);
+    const start = starts[0];
+    const openChar = start.char;
+    const closeChar = openChar === "{" ? "}" : "]";
+
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = start.idx; i < text.length; i++) {
+      const ch = text[i];
+
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+        } else if (ch === "\\") {
+          escaped = true;
+        } else if (ch === '"') {
+          inString = false;
+        }
+        continue;
+      }
+
+      if (ch === '"') {
+        inString = true;
+        continue;
+      }
+
+      if (ch === openChar) depth++;
+      if (ch === closeChar) depth--;
+
+      if (depth === 0) {
+        return text.slice(start.idx, i + 1);
+      }
+    }
+
     return null;
+  };
+
+  const balanced = extractBalancedJSON(cleaned);
+  if (balanced) {
+    try {
+      return JSON.parse(balanced);
+    } catch (_) {}
   }
+
+  // Third try: fallback to broad object slice.
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    const objSlice = cleaned.slice(firstBrace, lastBrace + 1);
+    try {
+      return JSON.parse(objSlice);
+    } catch (_) {}
+  }
+
+  // Fourth try: fallback to broad array slice.
+  const firstBracket = cleaned.indexOf("[");
+  const lastBracket = cleaned.lastIndexOf("]");
+  if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+    const arrSlice = cleaned.slice(firstBracket, lastBracket + 1);
+    try {
+      return JSON.parse(arrSlice);
+    } catch (_) {}
+  }
+
+  console.error("[NCW] cleanClaudeJSON failed. cleaned preview:", cleaned.slice(0, 1000));
+  return null;
 }
 
 function collectTextSnippets(value: any, out: string[] = []): string[] {
