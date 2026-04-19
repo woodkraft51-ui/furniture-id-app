@@ -46,7 +46,7 @@ type Observation = {
 
 function cleanJsonText(raw: string): string {
   return String(raw || "")
-    .replace(/```json/gi, "```")
+    .replace(/```json/gi, "")
     .replace(/```/g, "")
     .trim();
 }
@@ -54,23 +54,10 @@ function cleanJsonText(raw: string): string {
 function extractJsonObject(text: string): string | null {
   if (!text) return null;
 
-  // Remove code fences
-  let cleaned = text
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
-
-  // Find first valid JSON block
+  const cleaned = cleanJsonText(text);
   const match = cleaned.match(/\{[\s\S]*\}/);
 
-  if (!match) return null;
-
-  try {
-    return JSON.parse(match[0]);
-  } catch (e) {
-    console.error("JSON parse error:", e);
-    return null;
-  }
+  return match ? match[0] : null;
 }
 
 function collectTextSnippets(value: any, out: string[] = []): string[] {
@@ -140,6 +127,10 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     pushUnique("mechanism", "rule-joint leaf edge", 90);
   }
 
+  if (textDump.includes("gate-leg") || textDump.includes("gate leg")) {
+    pushUnique("mechanism", "gate-leg support", 90);
+  }
+
   if (textDump.includes("hinge") || textDump.includes("hinged")) {
     pushUnique("mechanism", "hinged leaves", 85);
   }
@@ -160,8 +151,8 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     pushUnique("leg", "turned legs", 70);
   }
 
-  if (textDump.includes("reeded")) {
-    pushUnique("leg", "reeded legs", 70);
+  if (textDump.includes("reeded") || textDump.includes("fluted")) {
+    pushUnique("leg", "reeded or fluted legs", 70);
   }
 
   if (textDump.includes("caster") || textDump.includes("casters")) {
@@ -210,10 +201,9 @@ export const PE: {
         return { ok: false, error: data };
       }
 
-      const raw =
-        Array.isArray(data?.content)
-          ? data.content.map((b: any) => b?.text || "").join("\n")
-          : "";
+      const raw = Array.isArray(data?.content)
+        ? data.content.map((b: any) => b?.text || "").join("\n")
+        : "";
 
       if (!raw.trim()) {
         return { ok: false, error: "empty_response" };
@@ -351,7 +341,8 @@ Alternative structured JSON is acceptable if it is still valid JSON.
     if (
       text.includes("casters") ||
       text.includes("turned legs") ||
-      text.includes("reeded")
+      text.includes("reeded") ||
+      text.includes("fluted")
     ) {
       return {
         range: "1880–1930",
@@ -375,6 +366,7 @@ Alternative structured JSON is acceptable if it is still valid JSON.
     };
 
     if (text.includes("drop-leaf") || text.includes("drop leaf")) score.drop_leaf += 5;
+    if (text.includes("gate-leg") || text.includes("gate leg")) score.drop_leaf += 4;
     if (text.includes("rule joint") || text.includes("rule-joint")) score.drop_leaf += 3;
     if (text.includes("hinge") || text.includes("hinged")) score.drop_leaf += 3;
     if (text.includes("leaf") || text.includes("leaves")) score.drop_leaf += 2;
