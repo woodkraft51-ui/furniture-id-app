@@ -161,83 +161,151 @@ function collectTextSnippets(value: any, out: string[] = []): string[] {
 function normalizeObservationsFromParsed(parsed: any): Observation[] {
   if (!parsed || typeof parsed !== "object") return [];
 
-  const direct = Array.isArray(parsed.observations) ? parsed.observations : [];
-  if (direct.length) {
-    return direct.map((o: any) => ({
-      type: typeof o?.type === "string" ? o.type : "unknown",
-      description:
-        typeof o?.description === "string"
-          ? o.description
-          : typeof o?.observed_value_text === "string"
-          ? o.observed_value_text
-          : "unknown",
-      confidence:
-        typeof o?.confidence === "number"
-          ? o.confidence
-          : typeof o?.raw_confidence === "number"
-          ? Math.round(o.raw_confidence * 100)
-          : 40,
-    }));
-  }
-
-  const snippets = collectTextSnippets(parsed);
-  const textDump = snippets.join(" | ").toLowerCase();
-
   const observations: Observation[] = [];
 
   const pushUnique = (type: string, description: string, confidence: number) => {
+    if (!description) return;
     const exists = observations.some(
       (o) => o.type === type && o.description.toLowerCase() === description.toLowerCase()
     );
     if (!exists) observations.push({ type, description, confidence });
   };
 
+  const direct = Array.isArray(parsed.observations) ? parsed.observations : [];
+  if (direct.length) {
+    for (const o of direct) {
+      pushUnique(
+        typeof o?.type === "string" ? o.type : "unknown",
+        typeof o?.description === "string"
+          ? o.description
+          : typeof o?.observed_value_text === "string"
+          ? o.observed_value_text
+          : "unknown",
+        typeof o?.confidence === "number"
+          ? o.confidence
+          : typeof o?.raw_confidence === "number"
+          ? Math.round(o.raw_confidence * 100)
+          : 40
+      );
+    }
+    return observations;
+  }
+
+  const mapArray = (arr: any[], fallbackType: string) => {
+    for (const item of arr || []) {
+      if (!item || typeof item !== "object") continue;
+
+      const description =
+        typeof item.description === "string"
+          ? item.description
+          : typeof item.note === "string"
+          ? item.note
+          : typeof item.observed_value_text === "string"
+          ? item.observed_value_text
+          : typeof item.clue === "string"
+          ? item.clue.replace(/_/g, " ")
+          : fallbackType;
+
+      const confidence =
+        typeof item.confidence === "number"
+          ? item.confidence
+          : typeof item.visual_confidence === "number"
+          ? item.visual_confidence
+          : typeof item.raw_confidence === "number"
+          ? Math.round(item.raw_confidence * 100)
+          : 40;
+
+      pushUnique(fallbackType, description, confidence);
+    }
+  };
+
+  mapArray(Array.isArray(parsed.toolmark_observations) ? parsed.toolmark_observations : [], "toolmark");
+  mapArray(Array.isArray(parsed.fastener_observations) ? parsed.fastener_observations : [], "fastener");
+  mapArray(Array.isArray(parsed.hardware_observations) ? parsed.hardware_observations : [], "hardware");
+  mapArray(Array.isArray(parsed.construction_observations) ? parsed.construction_observations : [], "construction");
+  mapArray(Array.isArray(parsed.material_observations) ? parsed.material_observations : [], "material");
+
+  if (parsed.mechanism_analysis && typeof parsed.mechanism_analysis === "object") {
+    for (const entry of Object.values(parsed.mechanism_analysis) as any[]) {
+      if (!entry || typeof entry !== "object") continue;
+
+      if (typeof entry.form === "string") {
+        pushUnique("form", entry.form, 75);
+      }
+      if (typeof entry.structural_mechanism === "string") {
+        pushUnique("mechanism", entry.structural_mechanism, 70);
+      }
+      if (typeof entry.leg_type === "string") {
+        pushUnique("leg", entry.leg_type, 65);
+      }
+      if (typeof entry.joinery === "string") {
+        pushUnique("construction", entry.joinery, 65);
+      }
+      if (typeof entry.hardware === "string") {
+        pushUnique("hardware", entry.hardware, 65);
+      }
+      if (typeof entry.fasteners === "string") {
+        pushUnique("fastener", entry.fasteners, 65);
+      }
+      if (typeof entry.primary_wood === "string") {
+        pushUnique("material", entry.primary_wood, 60);
+      }
+    }
+  }
+
+  if (observations.length) {
+    return observations;
+  }
+
+  const snippets = collectTextSnippets(parsed);
+  const textDump = snippets.join(" | ").toLowerCase();
+
   if (textDump.includes("drop-leaf") || textDump.includes("drop leaf")) {
-    pushUnique("form", "drop-leaf table", 95);
+    pushUnique("form", "drop-leaf table", 75);
   }
 
   if (textDump.includes("dining table")) {
-    pushUnique("form", "dining table", 80);
+    pushUnique("form", "dining table", 65);
   }
 
   if (textDump.includes("rule joint") || textDump.includes("rule-joint")) {
-    pushUnique("mechanism", "rule-joint leaf edge", 90);
+    pushUnique("mechanism", "rule-joint leaf edge", 70);
   }
 
   if (textDump.includes("gate-leg") || textDump.includes("gate leg")) {
-    pushUnique("mechanism", "gate-leg support", 90);
+    pushUnique("mechanism", "gate-leg support", 70);
   }
 
   if (textDump.includes("hinge") || textDump.includes("hinged")) {
-    pushUnique("mechanism", "hinged leaves", 85);
+    pushUnique("mechanism", "hinged leaves", 65);
   }
 
   if (textDump.includes("leaf") || textDump.includes("leaves")) {
-    pushUnique("structure", "side leaves present", 75);
+    pushUnique("structure", "side leaves present", 55);
   }
 
   if (textDump.includes("both leaves") || textDump.includes("two drop leaves")) {
-    pushUnique("structure", "two side leaves", 85);
+    pushUnique("structure", "two side leaves", 60);
   }
 
   if (textDump.includes("raised") || textDump.includes("extended")) {
-    pushUnique("configuration", "leaves shown raised or extended", 70);
+    pushUnique("configuration", "leaves shown raised or extended", 55);
   }
 
   if (textDump.includes("turned")) {
-    pushUnique("leg", "turned legs", 70);
+    pushUnique("leg", "turned legs", 55);
   }
 
   if (textDump.includes("reeded") || textDump.includes("fluted")) {
-    pushUnique("leg", "reeded or fluted legs", 70);
+    pushUnique("leg", "reeded or fluted legs", 55);
   }
 
   if (textDump.includes("caster") || textDump.includes("casters")) {
-    pushUnique("hardware", "casters present", 75);
+    pushUnique("hardware", "casters present", 55);
   }
 
   if (!observations.length && textDump.includes("table")) {
-    pushUnique("form", "table", 55);
+    pushUnique("form", "table", 45);
   }
 
   return observations;
