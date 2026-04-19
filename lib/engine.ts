@@ -186,55 +186,133 @@ export const PE: {
   runAllPhases: (caseData: any, images: any[], intake: any, onPhase?: any) => Promise<any>;
 } = {
   async callClaude(system: string, content: any[]) {
-    if (FULL_ANALYSIS_MODE === "mock") {
-      return { ok: false, error: "mock_mode" };
+  if (FULL_ANALYSIS_MODE === "mock") {
+    return { ok: false, error_type: "mock_mode", error_message: "mock_mode" };
+  }
+
+  try {
+    console.info("[NCW callClaude] engine_mode=LIVE api_call_attempted=true target=api.anthropic.com/v1/messages");
+    console.info("[NCW callClaude] fetch_starting=true model=claude-sonnet-4-6 proxy_auth=platform_injected");
+
+    const payload = {
+      model: "claude-sonnet-4-6",
+      max_tokens: 1200,
+      system,
+      messages: [{ role: "user", content }],
+    };
+
+    const res = await fetch("/api/analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    console.info("[NCW callClaude] fetch_resolved=true status=" + res.status);
+
+    const contentType = res.headers.get("content-type") || "";
+    const bodyText = await res.text();
+
+    if (!res.ok) {
+      let errorType = "http_error";
+      if (res.status === 413) errorType = "http_413_payload_too_large";
+      else if (res.status === 401 || res.status === 403) errorType = "auth_error";
+      else if (res.status >= 500) errorType = "server_error";
+
+      console.warn(
+        "[NCW callClaude] non-200 response:",
+        res.status,
+        "| content-type:",
+        contentType,
+        "| raw_preview:",
+        bodyText.slice(0, 300)
+      );
+
+      return {
+        ok: false,
+        error_type: errorType,
+        error_message: `HTTP ${res.status}`,
+        raw_response: bodyText || "",
+        retry_attempted: false,
+        http_status: res.status,
+      };
     }
+
+    let data: any = null;
 
     try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1200,
-          system,
-          messages: [{ role: "user", content }],
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        return { ok: false, error: data };
-      }
-
-      const raw = Array.isArray(data?.content)
-        ? data.content.map((b: any) => b?.text || "").join("\n")
-        : "";
-
-      if (!raw.trim()) {
-        return { ok: false, error: "empty_response" };
-      }
-
-      const parsed = cleanClaudeJSON(raw);
-
-if (!parsed) {
-  return { ok: false, error: "no_json" };
-}
-
-return {
-  ok: true,
-  parsed,
-  raw,
-};
-    } catch (e: any) {
-      return { ok: false, error: e?.message || "unknown_error" };
+      data = contentType.includes("application/json") ? JSON.parse(bodyText) : null;
+    } catch (parseErr: any) {
+      console.error("[NCW callClaude] response JSON parse failed:", parseErr?.message || "unknown_parse_error");
+      return {
+        ok: false,
+        error_type: "invalid_json_response",
+        error_message: parseErr?.message || "invalid_json_response",
+        raw_response: bodyText || "",
+        retry_attempted: false,
+      };
     }
-  },
 
+    console.info(
+      "[NCW callClaude] api_http_status=200 response_keys=" +
+        Object.keys(data || {}).join(",")
+    );
+
+    const raw = Array.isArray(data?.content)
+      ? data.content.map((b: any) => b?.text || "").join("\n")
+      : "";
+
+    console.info(
+      "[NCW callClaude] raw_llm_response_length=" +
+        raw.length +
+        " fallback_triggered=false"
+    );
+
+    if (!raw.trim()) {
+      return {
+        ok: false,
+        error_type: "empty_response",
+        error_message: "empty_response",
+        raw_response: "",
+        retry_attempted: false,
+      };
+    }
+
+    const parsed = cleanClaudeJSON(raw);
+
+    if (!parsed) {
+      return {
+        ok: false,
+        error_type: "no_json",
+        error_message: "no_json",
+        raw_response: raw,
+        retry_attempted: false,
+      };
+    }
+
+    return {
+      ok: true,
+      parsed,
+      raw_response: raw,
+      http_status: 200,
+    };
+  } catch (e: any) {
+    console.warn(
+      "[NCW callClaude] fetch_resolved=false — request blocked before response. Likely cause: sandbox network policy blocks outbound fetch to api.anthropic.com from this artifact origin."
+    );
+    console.error("[NCW callClaude] error=" + (e?.message || "unknown_error"));
+
+    return {
+      ok: false,
+      error_type: "fetch_failed",
+      error_message: e?.message || "unknown_error",
+      raw_response: "",
+      retry_attempted: false,
+    };
+  }
+},
   imgs(images: any[]) {
     const out: any[] = [];
 
