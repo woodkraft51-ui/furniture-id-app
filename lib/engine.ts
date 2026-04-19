@@ -219,16 +219,17 @@ export const PE: {
         return { ok: false, error: "empty_response" };
       }
 
-      const jsonText = extractJsonObject(raw);
-      if (!jsonText) {
-        return { ok: false, error: "no_json" };
-      }
+      const parsed = cleanClaudeJSON(raw);
 
-      return {
-        ok: true,
-        parsed: JSON.parse(jsonText),
-        raw,
-      };
+if (!parsed) {
+  return { ok: false, error: "no_json" };
+}
+
+return {
+  ok: true,
+  parsed,
+  raw,
+};
     } catch (e: any) {
       return { ok: false, error: e?.message || "unknown_error" };
     }
