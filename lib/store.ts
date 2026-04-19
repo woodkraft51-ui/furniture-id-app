@@ -3,6 +3,7 @@ const caseStore = {};
 let caseCounter  = 1000;
 let obsCounter   = 0;
 
+
 export const API = {
   createCase(data) {
     const id = `case-${++caseCounter}`;
