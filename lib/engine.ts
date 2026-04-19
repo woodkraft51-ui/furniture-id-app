@@ -3,9 +3,6 @@ import { API } from "./store";
 export let EVIDENCE_ADAPTER_MODE: RuntimeMode = "live";
 export let FULL_ANALYSIS_MODE: RuntimeMode = "live";
 
-export const EVIDENCE_ADAPTER_MODE: RuntimeMode = "live";
-export const FULL_ANALYSIS_MODE: RuntimeMode = "live";
-
 export interface RuntimeProbe {
   engine_mode: EngineMode;
   runtime_mode: RuntimeMode;
