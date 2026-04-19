@@ -670,11 +670,19 @@ function parseModelJSON(responseText) {
   }
 
   const balanced = extractBalancedJSON(cleaned);
-  if (balanced) {
-    try {
-      return JSON.parse(balanced);
-    } catch (_) {}
+if (balanced) {
+  try {
+    return JSON.parse(balanced);
+  } catch (err) {
+    // 🔧 NEW: try trimming trailing junk progressively
+    for (let i = balanced.length - 1; i > 0; i--) {
+      const slice = balanced.slice(0, i);
+      try {
+        return JSON.parse(slice);
+      } catch (_) {}
+    }
   }
+}
 
   // Fallback: broad object slice
   const firstBrace = cleaned.indexOf("{");
