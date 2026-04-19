@@ -1,7 +1,7 @@
 import { API } from "./store";
 
-export type RuntimeMode = "mock" | "live";
-export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
+export let EVIDENCE_ADAPTER_MODE: RuntimeMode = "live";
+export let FULL_ANALYSIS_MODE: RuntimeMode = "live";
 
 export const EVIDENCE_ADAPTER_MODE: RuntimeMode = "live";
 export const FULL_ANALYSIS_MODE: RuntimeMode = "live";
