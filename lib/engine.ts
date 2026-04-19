@@ -627,12 +627,12 @@ Alternative structured JSON is acceptable if it is still valid JSON.
     if (text.includes("raised")) score.drop_leaf += 1;
     if (text.includes("symmetrical")) score.drop_leaf += 1;
 
-    if (score.drop_leaf >= 5) {
-      return {
-        form: "Drop-leaf table",
-        confidence: "Moderate",
-      };
-    }
+   if (score.drop_leaf >= 7) {
+  return {
+    form: "Drop-leaf table",
+    confidence: "Moderate",
+  };
+}
 
     if (score.drop_leaf >= 3) {
       return {
