@@ -38,6 +38,127 @@ export function getRuntimeProbe(): RuntimeProbe {
 
 export const RUNTIME_MODE: RuntimeMode = getRuntimeProbe().runtime_mode;
 
+type Observation = {
+  type: string;
+  description: string;
+  confidence: number;
+};
+
+function cleanJsonText(raw: string): string {
+  return String(raw || "")
+    .replace(/```json/gi, "```")
+    .replace(/```/g, "")
+    .trim();
+}
+
+function extractJsonObject(raw: string): string | null {
+  const clean = cleanJsonText(raw);
+  const match = clean.match(/\{[\s\S]*\}/);
+  return match ? match[0] : null;
+}
+
+function collectTextSnippets(value: any, out: string[] = []): string[] {
+  if (value == null) return out;
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed) out.push(trimmed);
+    return out;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) collectTextSnippets(item, out);
+    return out;
+  }
+
+  if (typeof value === "object") {
+    for (const v of Object.values(value)) collectTextSnippets(v, out);
+  }
+
+  return out;
+}
+
+function normalizeObservationsFromParsed(parsed: any): Observation[] {
+  if (!parsed || typeof parsed !== "object") return [];
+
+  const direct = Array.isArray(parsed.observations) ? parsed.observations : [];
+  if (direct.length) {
+    return direct.map((o: any) => ({
+      type: typeof o?.type === "string" ? o.type : "unknown",
+      description:
+        typeof o?.description === "string"
+          ? o.description
+          : typeof o?.observed_value_text === "string"
+          ? o.observed_value_text
+          : "unknown",
+      confidence:
+        typeof o?.confidence === "number"
+          ? o.confidence
+          : typeof o?.raw_confidence === "number"
+          ? Math.round(o.raw_confidence * 100)
+          : 40,
+    }));
+  }
+
+  const snippets = collectTextSnippets(parsed);
+  const textDump = snippets.join(" | ").toLowerCase();
+
+  const observations: Observation[] = [];
+
+  const pushUnique = (type: string, description: string, confidence: number) => {
+    const exists = observations.some(
+      (o) => o.type === type && o.description.toLowerCase() === description.toLowerCase()
+    );
+    if (!exists) observations.push({ type, description, confidence });
+  };
+
+  if (textDump.includes("drop-leaf") || textDump.includes("drop leaf")) {
+    pushUnique("form", "drop-leaf table", 95);
+  }
+
+  if (textDump.includes("dining table")) {
+    pushUnique("form", "dining table", 80);
+  }
+
+  if (textDump.includes("rule joint") || textDump.includes("rule-joint")) {
+    pushUnique("mechanism", "rule-joint leaf edge", 90);
+  }
+
+  if (textDump.includes("hinge") || textDump.includes("hinged")) {
+    pushUnique("mechanism", "hinged leaves", 85);
+  }
+
+  if (textDump.includes("leaf") || textDump.includes("leaves")) {
+    pushUnique("structure", "side leaves present", 75);
+  }
+
+  if (textDump.includes("both leaves") || textDump.includes("two drop leaves")) {
+    pushUnique("structure", "two side leaves", 85);
+  }
+
+  if (textDump.includes("raised") || textDump.includes("extended")) {
+    pushUnique("configuration", "leaves shown raised or extended", 70);
+  }
+
+  if (textDump.includes("turned")) {
+    pushUnique("leg", "turned legs", 70);
+  }
+
+  if (textDump.includes("reeded")) {
+    pushUnique("leg", "reeded legs", 70);
+  }
+
+  if (textDump.includes("caster") || textDump.includes("casters")) {
+    pushUnique("hardware", "casters present", 75);
+  }
+
+  if (!observations.length && textDump.includes("table")) {
+    pushUnique("form", "table", 55);
+  }
+
+  return observations;
+}
+
 export const PE: {
   callClaude: (system: string, content: any[]) => Promise<any>;
   imgs: (images: any[]) => any[];
@@ -74,25 +195,26 @@ export const PE: {
       }
 
       const raw =
-        data?.content?.map((b: any) => b.text || "").join("\n") || "";
+        Array.isArray(data?.content)
+          ? data.content.map((b: any) => b?.text || "").join("\n")
+          : "";
 
       if (!raw.trim()) {
         return { ok: false, error: "empty_response" };
       }
 
-      const clean = raw.replace(/```json|```/g, "").trim();
-      const match = clean.match(/\{[\s\S]*\}/);
-
-      if (!match) {
+      const jsonText = extractJsonObject(raw);
+      if (!jsonText) {
         return { ok: false, error: "no_json" };
       }
 
       return {
         ok: true,
-        parsed: JSON.parse(match[0]),
+        parsed: JSON.parse(jsonText),
+        raw,
       };
     } catch (e: any) {
-      return { ok: false, error: e.message };
+      return { ok: false, error: e?.message || "unknown_error" };
     }
   },
 
@@ -100,10 +222,10 @@ export const PE: {
     const out: any[] = [];
 
     for (const img of images) {
-      if (!img.data_url) continue;
+      if (!img?.data_url) continue;
 
       const [head, base] = img.data_url.split(",");
-      const type = head.match(/data:(.*?);/)?.[1] || "image/jpeg";
+      const type = head?.match(/data:(.*?);/)?.[1] || "image/jpeg";
 
       out.push({
         type: "image",
@@ -120,7 +242,7 @@ export const PE: {
   },
 
   async p0(caseData: any, images: any[], intake: any, onPhase?: any) {
-    const count = images.filter((i) => i.data_url).length;
+    const count = images.filter((i: any) => !!i?.data_url).length;
 
     if (count === 0) {
       const res = {
@@ -136,12 +258,13 @@ export const PE: {
 You are an evidence extraction system.
 
 Rules:
-- Only report what is directly visible
-- Do NOT guess
-- If unsure, include with low confidence
-- Return JSON only
+- Only report what is directly visible.
+- Do not guess beyond the visible evidence.
+- If unsure, include the clue with lower confidence.
+- Return JSON only.
+- If the object has a specific mechanism or form, state it plainly.
 
-Return:
+Preferred return shape:
 {
   "observations": [
     {
@@ -151,11 +274,13 @@ Return:
     }
   ]
 }
+
+Alternative structured JSON is acceptable if it is still valid JSON.
 `;
 
     const result = await this.callClaude(system, [
       ...this.imgs(images),
-      { type: "text", text: intake.notes || "" },
+      { type: "text", text: intake?.notes || "" },
     ]);
 
     if (!result.ok) {
@@ -168,59 +293,9 @@ Return:
       return fallback;
     }
 
-    let observations = result.parsed?.observations || [];
+    const observations = normalizeObservationsFromParsed(result.parsed);
 
-if (!observations.length && result.parsed?.mechanism_analysis) {
-  const mech = result.parsed.mechanism_analysis;
-  observations = Object.values(mech).flatMap((entry: any) => {
-    const out = [];
-    if (entry?.form) {
-      out.push({
-        type: "form",
-        description: entry.form,
-        confidence: 85,
-      });
-    }
-    if (entry?.structural_mechanism) {
-      out.push({
-        type: "mechanism",
-        description: entry.structural_mechanism,
-        confidence: 85,
-      });
-    }
-    if (entry?.leg_type) {
-      out.push({
-        type: "structure",
-        description: entry.leg_type,
-        confidence: 70,
-      });
-    }
-    return out;
-  });
-}
-
-if (!observations.length && result.parsed?.object_analysis?.form_identification) {
-  const fi = result.parsed.object_analysis.form_identification;
-  observations = [
-    fi.furniture_type && {
-      type: "form",
-      description: fi.furniture_type,
-      confidence: 90,
-    },
-    fi.configuration && {
-      type: "configuration",
-      description: fi.configuration,
-      confidence: 80,
-    },
-    fi.expansion_mechanism && {
-      type: "mechanism",
-      description: fi.expansion_mechanism,
-      confidence: 90,
-    },
-  ].filter(Boolean);
-}
-
-    console.log("P0 RAW RESULT:", result);
+    console.log("P0 RAW RESULT:", result.raw);
     console.log("P0 PARSED:", result.parsed);
     console.log("P0 OBS:", observations);
 
@@ -237,6 +312,8 @@ if (!observations.length && result.parsed?.object_analysis?.form_identification)
     const res = {
       ok: true,
       observations,
+      broad_form:
+        observations.find((o) => o.type === "form")?.description || "Unknown",
     };
 
     onPhase?.("p0", res);
@@ -251,6 +328,21 @@ if (!observations.length && result.parsed?.object_analysis?.form_identification)
       };
     }
 
+    const text = observations
+      .map((o: any) => String(o?.observed_value_text || o?.description || "").toLowerCase())
+      .join(" ");
+
+    if (
+      text.includes("casters") ||
+      text.includes("turned legs") ||
+      text.includes("reeded")
+    ) {
+      return {
+        range: "1880–1930",
+        confidence: "Low",
+      };
+    }
+
     return {
       range: "1800–1950",
       confidence: "Low",
@@ -259,24 +351,41 @@ if (!observations.length && result.parsed?.object_analysis?.form_identification)
 
   detectFormFromObservations(observations: any[]) {
     const text = observations
-      .map((o: any) => (o.observed_value_text || "").toLowerCase())
+      .map((o: any) => String(o?.observed_value_text || o?.description || "").toLowerCase())
       .join(" ");
 
     const score = {
       drop_leaf: 0,
     };
 
-    if (text.includes("leaf")) score.drop_leaf += 2;
-    if (text.includes("hinge")) score.drop_leaf += 3;
+    if (text.includes("drop-leaf") || text.includes("drop leaf")) score.drop_leaf += 5;
+    if (text.includes("rule joint") || text.includes("rule-joint")) score.drop_leaf += 3;
+    if (text.includes("hinge") || text.includes("hinged")) score.drop_leaf += 3;
+    if (text.includes("leaf") || text.includes("leaves")) score.drop_leaf += 2;
     if (text.includes("fold") || text.includes("drop")) score.drop_leaf += 2;
-    if (text.includes("extend")) score.drop_leaf += 1;
-    if (text.includes("two sides") || text.includes("both sides")) score.drop_leaf += 2;
+    if (text.includes("extend") || text.includes("extended")) score.drop_leaf += 1;
+    if (text.includes("both leaves") || text.includes("two side leaves")) score.drop_leaf += 2;
+    if (text.includes("raised")) score.drop_leaf += 1;
     if (text.includes("symmetrical")) score.drop_leaf += 1;
+
+    if (score.drop_leaf >= 5) {
+      return {
+        form: "Drop-leaf table",
+        confidence: "Moderate",
+      };
+    }
 
     if (score.drop_leaf >= 3) {
       return {
         form: "Drop-leaf table",
-        confidence: score.drop_leaf >= 5 ? "Moderate" : "Low",
+        confidence: "Low",
+      };
+    }
+
+    if (text.includes("table")) {
+      return {
+        form: "Table",
+        confidence: "Low",
       };
     }
 
@@ -319,7 +428,7 @@ if (!observations.length && result.parsed?.object_analysis?.form_identification)
 
     return {
       stage_outputs,
-      final_report: "Evidence-based result. Confidence limited by available data.",
+      final_report: `Evidence-based result: ${p3.form}. Confidence remains limited by available detail.`,
     };
   },
 };
