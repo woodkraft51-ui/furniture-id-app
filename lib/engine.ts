@@ -1,6 +1,43 @@
 // engine.ts
 import { API } from "./store";
+export const EVIDENCE_ADAPTER_MODE: "mock" | "live" = "live";
+export const FULL_ANALYSIS_MODE: "mock" | "live" = "live";
 
+export type RuntimeMode = "mock" | "live";
+export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
+
+export interface RuntimeProbe {
+  engine_mode: EngineMode;
+  runtime_mode: RuntimeMode;
+  full_analysis_mode: RuntimeMode;
+  evidence_adapter_mode: RuntimeMode;
+  live_llm_enabled: boolean;
+  live_field_scan: boolean;
+  backend_endpoint: string;
+  simulation_reason: string;
+}
+
+export function getRuntimeProbe(): RuntimeProbe {
+  const fullMock = FULL_ANALYSIS_MODE === "mock";
+  const fieldMock = EVIDENCE_ADAPTER_MODE === "mock";
+
+  return {
+    engine_mode: fullMock || fieldMock ? "SIMULATED_FALLBACK" : "LIVE",
+    runtime_mode: fullMock || fieldMock ? "mock" : "live",
+    full_analysis_mode: FULL_ANALYSIS_MODE,
+    evidence_adapter_mode: EVIDENCE_ADAPTER_MODE,
+    live_llm_enabled: !fullMock,
+    live_field_scan: !fieldMock,
+    backend_endpoint: "/api/analyze",
+    simulation_reason:
+      fullMock || fieldMock
+        ? `FULL_ANALYSIS_MODE=${FULL_ANALYSIS_MODE}; EVIDENCE_ADAPTER_MODE=${EVIDENCE_ADAPTER_MODE}`
+        : "Live mode. Client calls /api/analyze",
+  };
+}
+
+// Temporary compatibility so nothing else breaks
+export const RUNTIME_MODE: RuntimeMode = getRuntimeProbe().runtime_mode;
 export const FULL_ANALYSIS_MODE: "mock" | "live" = "live";
 export const RUNTIME_MODE: "mock" | "live" = FULL_ANALYSIS_MODE;
 
