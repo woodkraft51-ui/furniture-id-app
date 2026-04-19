@@ -5049,9 +5049,9 @@ if (digestResult && digestResult.ok !== false) {
   }
 
   if ((!digest.evidence_digest || digest.evidence_digest.length === 0)) {
-    const mechProse = Object.entries((digest.mechanisms_detected || {}))
-      .filter(([, v]) => v && v.present)
-      .map(([k, v]) => k.replace(/_/g, " ") + (v.note ? " — " + v.note : ""));
+    const mechProse = Object.entries((digest.mechanisms_detected || {}) as Record<string, any>)
+  .filter(([, v]) => v && v.present)
+  .map(([k, v]) => k.replace(/_/g, " ") + (v.note ? " — " + v.note : ""));
     if (mechProse.length > 0) digest.evidence_digest = mechProse;
   }
 
