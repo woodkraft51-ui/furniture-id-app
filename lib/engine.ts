@@ -168,7 +168,57 @@ Return:
       return fallback;
     }
 
-    const observations = result.parsed?.observations || [];
+    let observations = result.parsed?.observations || [];
+
+if (!observations.length && result.parsed?.mechanism_analysis) {
+  const mech = result.parsed.mechanism_analysis;
+  observations = Object.values(mech).flatMap((entry: any) => {
+    const out = [];
+    if (entry?.form) {
+      out.push({
+        type: "form",
+        description: entry.form,
+        confidence: 85,
+      });
+    }
+    if (entry?.structural_mechanism) {
+      out.push({
+        type: "mechanism",
+        description: entry.structural_mechanism,
+        confidence: 85,
+      });
+    }
+    if (entry?.leg_type) {
+      out.push({
+        type: "structure",
+        description: entry.leg_type,
+        confidence: 70,
+      });
+    }
+    return out;
+  });
+}
+
+if (!observations.length && result.parsed?.object_analysis?.form_identification) {
+  const fi = result.parsed.object_analysis.form_identification;
+  observations = [
+    fi.furniture_type && {
+      type: "form",
+      description: fi.furniture_type,
+      confidence: 90,
+    },
+    fi.configuration && {
+      type: "configuration",
+      description: fi.configuration,
+      confidence: 80,
+    },
+    fi.expansion_mechanism && {
+      type: "mechanism",
+      description: fi.expansion_mechanism,
+      confidence: 90,
+    },
+  ].filter(Boolean);
+}
 
     console.log("P0 RAW RESULT:", result);
     console.log("P0 PARSED:", result.parsed);
