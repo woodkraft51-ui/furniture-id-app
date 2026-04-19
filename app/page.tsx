@@ -581,7 +581,7 @@ async function runEvidenceDigest(images, context) {
   // ── Live mode — direct Anthropic API call ────────────────────
   // NOTE: This path is blocked inside the Claude artifact sandbox.
   // Replace with a supported proxy endpoint when deploying outside sandbox.
-  console.warn("[NCW Adapter] live mode — direct fetch to api.anthropic.com (may be blocked in sandbox)");
+  console.info("[NCW Adapter] live mode — calling PE.callClaudeQuick via /api/analyze");
   // Build per-type guidance for the model
   const typeGuidance = images.filter(function(i){ return i.data_url; }).map(function(i, idx) {
     const tg = {
