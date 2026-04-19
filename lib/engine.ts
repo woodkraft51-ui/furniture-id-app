@@ -51,7 +51,7 @@ function cleanJsonText(raw: string): string {
     .trim();
 }
 
-function extractJSON(text: string) {
+function extractJsonObject(text: string): string | null {
   if (!text) return null;
 
   // Remove code fences
