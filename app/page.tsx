@@ -2199,8 +2199,7 @@ if (!parsed) {
 
 return { ok: true, ...parsed };
       }
-    }
-  },
+   },
 
   // Validate a phase result — throws a structured PhaseError if result is an error object
   assertPhase(result, stageName, phaseLabel) {
