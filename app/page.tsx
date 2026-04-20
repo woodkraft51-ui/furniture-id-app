@@ -2028,7 +2028,14 @@ const PE = {
       };
     }
 
-    const raw = data.content ? data.content.map(b => b.text || "").join("\n") : "";
+    const raw = Array.isArray(data?.content)
+  ? data.content
+      .filter(b => b && typeof b.text === "string")
+      .map(b => b.text.trim())
+      .filter(Boolean)
+      .join("\n")
+  : "";
+   console.log("[NCW DEBUG RAW START]", raw.slice(0, 200));
    // 🔥 FIRST ATTEMPT: direct parse (most important)
 try {
   const direct = JSON.parse(raw);
