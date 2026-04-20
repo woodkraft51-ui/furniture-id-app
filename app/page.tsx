@@ -3601,14 +3601,15 @@ Begin your response with { and end with }. Do not include any text outside the J
       for (const obs of result.new_observations) {
         if (!obs.clue || obs.visual_confidence < 20) continue;
         const libEntry = this.VISUAL_LIBRARY.find(c => c.clue_key === obs.clue);
+
 API.addObservation(context.caseId, {
   observation_type:    category,
   reference_table:     libEntry ? (libEntry.reference_table || null) : null,
-  reference_id:        obs.clue,
-  observed_value_text: obs.visual_description || obs.clue,
-  source_image_id:     obs.source_image,
-  raw_confidence:      obs.visual_confidence / 100,
-  weight_multiplier:   obs.weight_multiplier,
+  reference_id:        obs.clue || null,
+  observed_value_text: obs.visual_description || obs.clue || "",
+  source_image_id:     obs.source_image || null,
+  raw_confidence:      (typeof obs.visual_confidence === "number" ? obs.visual_confidence : 0) / 100,
+  weight_multiplier:   typeof obs.weight_multiplier === "number" ? obs.weight_multiplier : 1,
   is_hidden_surface:   (libEntry && libEntry.is_hidden_surface != null) ? libEntry.is_hidden_surface : false,
   region_label:        obs.image_region || null,
   created_by_stage:    `phase_0b_targeted_${category}`,
