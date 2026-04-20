@@ -1999,7 +1999,7 @@ const PE = {
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 2200,
+          max_tokens: 4000,
           system,
           messages: [{ role: "user", content: userContent }],
         }),
@@ -2180,7 +2180,7 @@ try {
             headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
             body: JSON.stringify({
               model: "claude-sonnet-4-6",
-              max_tokens: 2200,
+              max_tokens: 4000,
               system: system + "\n\nCRITICAL: Your previous response could not be parsed as JSON. Return ONLY a valid JSON object. No markdown. No explanation. No code fences. Begin your response with { and end with }.",
               messages: [
                 { role: "user", content: userContent },
