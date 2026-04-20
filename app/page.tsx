@@ -2029,6 +2029,18 @@ const PE = {
     }
 
     const raw = Array.isArray(data?.content)
+     // 🔥 FORCE direct parse BEFORE ANY OTHER LOGIC
+try {
+  const direct = JSON.parse(raw);
+  console.log("[NCW DIRECT PARSE SUCCESS]");
+  return {
+    ok: true,
+    ...direct,
+    raw_response: raw,
+  };
+} catch (e) {
+  console.warn("[NCW DIRECT PARSE FAILED]", e?.message);
+}
   ? data.content
       .filter(b => b && typeof b.text === "string")
       .map(b => b.text.trim())
