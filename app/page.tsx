@@ -2144,7 +2144,7 @@ const PE = {
     try {
       const parsed = sanitize(raw);
       return { ok: true, ...parsed };
-        } catch (parseErr) {
+           } catch (parseErr) {
       try {
         let retryRes, retryData;
         try {
