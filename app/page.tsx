@@ -2028,8 +2028,17 @@ const PE = {
       };
     }
 
-    const raw = Array.isArray(data?.content)
-     // 🔥 FORCE direct parse BEFORE ANY OTHER LOGIC
+  const raw = Array.isArray(data?.content)
+  ? data.content
+      .filter(b => b && typeof b.text === "string")
+      .map(b => b.text.trim())
+      .filter(Boolean)
+      .join("\n")
+  : "";
+
+console.log("[NCW DEBUG RAW START]", raw.slice(0, 200));
+
+// 🔥 FIRST ATTEMPT: direct JSON parse
 try {
   const direct = JSON.parse(raw);
   console.log("[NCW DIRECT PARSE SUCCESS]");
@@ -2041,12 +2050,6 @@ try {
 } catch (e) {
   console.warn("[NCW DIRECT PARSE FAILED]", e?.message);
 }
-  ? data.content
-      .filter(b => b && typeof b.text === "string")
-      .map(b => b.text.trim())
-      .filter(Boolean)
-      .join("\n")
-  : "";
    console.log("[NCW DEBUG RAW START]", raw.slice(0, 200));
    // 🔥 FIRST ATTEMPT: direct parse (most important)
 try {
