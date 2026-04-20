@@ -3891,7 +3891,58 @@ Begin your response with { and end with }. Do not include any text outside the J
       };
     }
 
-    const p2normalized = this.normalize(p2raw, "p2_dating");
+    let p2parsed = null;
+
+try {
+  p2parsed = parseModelJSON((p2raw && p2raw.raw_response) || "");
+} catch (e) {
+  console.warn("[NCW P2] parseModelJSON failed — attempting fallback");
+
+  const cleaned = String((p2raw && p2raw.raw_response) || "");
+
+  for (let i = cleaned.length - 1; i > 0; i--) {
+    const slice = cleaned.slice(0, i);
+    try {
+      p2parsed = JSON.parse(slice);
+      break;
+    } catch (_) {}
+  }
+}
+
+if (!p2parsed) {
+  console.warn("[NCW P2] Unable to recover JSON — returning fallback");
+  const hasUndersideObs = (mergedToolmarks.length + mergedFasteners.length) > 0;
+  return {
+    ok: true,
+    _synthesized: true,
+    _raw_phase2_response_preview: ((p2raw && p2raw.raw_response) || "").slice(0, 200),
+    phase2_json_extracted: false,
+    phase2_schema_valid: false,
+    toolmark_observations: mergedToolmarks,
+    fastener_observations: mergedFasteners,
+    joinery_observations: [],
+    material_observations: [],
+    finish_observations: [],
+    primary_date_range: "Date uncertain — engine unavailable",
+    earliest_possible_year: 1800,
+    latest_possible_year: 1975,
+    dating_confidence: "Low",
+    key_dating_evidence: mergedToolmarks.slice(0, 3).map(o => o.clue || ""),
+    negative_evidence_applied: [],
+    hard_negatives_triggered: [],
+    dating_conflicts: [],
+    caps_applied: [],
+    era_intersection_logic: "Synthesized from image observations — P2 JSON recovery failed",
+    age_support_points: 0,
+    age_opposing_points: 0,
+    new_observations: [],
+    candidates: [],
+    eliminated: [],
+    confidence_adjustments: [],
+  };
+}
+
+const p2normalized = this.normalizePhase2Dating(p2parsed);
 
     // Guarantee schema completeness on the normalized result
     if (!Array.isArray(p2normalized.new_observations))       p2normalized.new_observations = [];
