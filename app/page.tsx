@@ -4955,13 +4955,13 @@ Begin your response with { and end with }. Do not include any text outside the J
       : userContent;
 
     const imgCount = Array.isArray(userContent) ? userContent.filter(b => b.type === "image").length : 0;
-    console.info("[NCW Quick] Sending request — images:", imgCount, "| model: claude-sonnet-4-6 | max_tokens: 1800");
+    console.info("[NCW Quick] Sending request — images:", imgCount, "| model: claude-sonnet-4-6 | max_tokens: 4000");
     if (imgCount === 0) console.warn("[NCW Quick] WARNING: no images in request — vision call will return nothing useful");
 
     // Log the request structure (truncating base64 data for readability)
     const debugPayload = {
       model: "claude-sonnet-4-6",
-      max_tokens: 1800,
+      max_tokens: 4000,
       system_len: system.length,
       messages_content_types: contentToSend.map(b => b.type + (b.type === "image" ? "(" + (b.source && b.source.media_type) + ",len=" + (b.source && b.source.data && b.source.data.length) + ")" : "(len=" + (b.text||"").length + ")")),
     };
@@ -4992,7 +4992,7 @@ Begin your response with { and end with }. Do not include any text outside the J
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model:      "claude-sonnet-4-6",
-          max_tokens: 1800,
+          max_tokens: 4000,
           system,
           messages:   [{ role: "user", content: contentToSend }],
         }),
@@ -5119,7 +5119,7 @@ Begin your response with { and end with }. Do not include any text outside the J
         const r2 = await fetch("/api/analyze", {
           method:"POST", headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01"},
           body: JSON.stringify({
-            model:"claude-sonnet-4-6", max_tokens:1800,
+            model:"claude-sonnet-4-6", max_tokens:4000,
             system: system + "\n\nCRITICAL: Return ONLY valid JSON. Start with { and end with }. No markdown.",
             messages:[
               { role:"user",      content: contentToSend },
