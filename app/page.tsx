@@ -2029,6 +2029,13 @@ const PE = {
     }
 
     const raw = data.content ? data.content.map(b => b.text || "").join("\n") : "";
+   // 🔥 FIRST ATTEMPT: direct parse (most important)
+try {
+  const direct = JSON.parse(raw);
+  return { ok: true, ...direct };
+} catch (_) {
+  // continue to sanitize logic
+}
     console.info("[NCW callClaude] raw_llm_response_length=" + raw.length + " fallback_triggered=" + (!raw.trim()));
 
     if (!raw.trim()) {
