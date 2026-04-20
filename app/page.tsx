@@ -2168,20 +2168,23 @@ const PE = {
         }
 
         const retryRaw = retryData.content.map(b => b.text || "").join("\n") || "";
-        const retryParsed = sanitize(retryRaw);
-        return { ok: true, ...retryParsed };
-      } catch (retryErr) {
-        console.warn("[NCW callClaude] FINAL fallback — forcing JSON recovery");
+        let parsed = null;
 
-const cleaned = String(raw || "");
+try {
+  parsed = sanitize(retryRaw);
+} catch (_) {
+  console.warn("[NCW callClaude] FINAL fallback — forcing JSON recovery");
 
-for (let i = cleaned.length - 1; i > 0; i--) {
-  const slice = cleaned.slice(0, i);
-  try {
-    parsed = JSON.parse(slice);
-    console.warn("[NCW callClaude] recovered JSON via aggressive trim");
-    break;
-  } catch (_) {}
+  const cleaned = String(retryRaw || "");
+
+  for (let i = cleaned.length - 1; i > 0; i--) {
+    const slice = cleaned.slice(0, i);
+    try {
+      parsed = JSON.parse(slice);
+      console.warn("[NCW callClaude] recovered JSON via aggressive trim");
+      break;
+    } catch (_) {}
+  }
 }
 
 if (!parsed) {
@@ -2189,10 +2192,12 @@ if (!parsed) {
     ok: false,
     error_type: "json_parse_error",
     error_message: "Unable to recover JSON",
-    raw_response: raw,
+    raw_response: retryRaw,
     retry_attempted: true,
   };
 }
+
+return { ok: true, ...parsed };
       }
     }
   },
