@@ -2171,13 +2171,28 @@ const PE = {
         const retryParsed = sanitize(retryRaw);
         return { ok: true, ...retryParsed };
       } catch (retryErr) {
-        console.warn("[NCW callClaude] FINAL fallback — returning safe empty structure");
-        return {
-          ok: true,
-          degraded: true,
-          raw_response: raw,
-          retry_attempted: true,
-        };
+        console.warn("[NCW callClaude] FINAL fallback — forcing JSON recovery");
+
+const cleaned = String(raw || "");
+
+for (let i = cleaned.length - 1; i > 0; i--) {
+  const slice = cleaned.slice(0, i);
+  try {
+    parsed = JSON.parse(slice);
+    console.warn("[NCW callClaude] recovered JSON via aggressive trim");
+    break;
+  } catch (_) {}
+}
+
+if (!parsed) {
+  return {
+    ok: false,
+    error_type: "json_parse_error",
+    error_message: "Unable to recover JSON",
+    raw_response: raw,
+    retry_attempted: true,
+  };
+}
       }
     }
   },
