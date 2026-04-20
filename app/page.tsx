@@ -2049,14 +2049,7 @@ try {
   };
   console.warn("[NCW DIRECT PARSE FAILED]", e?.message);
 }
-   console.log("[NCW DEBUG RAW START]", raw.slice(0, 200));
-   // 🔥 FIRST ATTEMPT: direct parse (most important)
-try {
-  const direct = JSON.parse(raw);
-  return { ok: true, ...direct };
-} catch (_) {
-  // continue to sanitize logic
-}
+
     console.info("[NCW callClaude] raw_llm_response_length=" + raw.length + " fallback_triggered=" + (!raw.trim()));
 
     if (!raw.trim()) {
