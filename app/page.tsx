@@ -2144,7 +2144,7 @@ const PE = {
     try {
       const parsed = sanitize(raw);
       return { ok: true, ...parsed };
-    } catch (parseErr) {
+        } catch (parseErr) {
       try {
         let retryRes, retryData;
         try {
@@ -2168,39 +2168,48 @@ const PE = {
         }
 
         const retryRaw = retryData.content.map(b => b.text || "").join("\n") || "";
+
         let parsed = null;
 
-try {
-  parsed = sanitize(retryRaw);
-} catch (_) {
-  console.warn("[NCW callClaude] FINAL fallback — forcing JSON recovery");
+        try {
+          parsed = sanitize(retryRaw);
+        } catch (_) {
+          console.warn("[NCW callClaude] FINAL fallback — forcing JSON recovery");
 
-  const cleaned = String(retryRaw || "");
+          const cleaned = String(retryRaw || "");
 
-  for (let i = cleaned.length - 1; i > 0; i--) {
-    const slice = cleaned.slice(0, i);
-    try {
-      parsed = JSON.parse(slice);
-      console.warn("[NCW callClaude] recovered JSON via aggressive trim");
-      break;
-    } catch (_) {}
-  }
-}
+          for (let i = cleaned.length - 1; i > 0; i--) {
+            const slice = cleaned.slice(0, i);
+            try {
+              parsed = JSON.parse(slice);
+              console.warn("[NCW callClaude] recovered JSON via aggressive trim");
+              break;
+            } catch (_) {}
+          }
+        }
 
-if (!parsed) {
-  return {
-    ok: false,
-    error_type: "json_parse_error",
-    error_message: "Unable to recover JSON",
-    raw_response: retryRaw,
-    retry_attempted: true,
-  };
-}
+        if (!parsed) {
+          return {
+            ok: false,
+            error_type: "json_parse_error",
+            error_message: "Unable to recover JSON",
+            raw_response: retryRaw,
+            retry_attempted: true,
+          };
+        }
 
-return { ok: true, ...parsed };
+        return { ok: true, ...parsed };
+      } catch (retryErr) {
+        return {
+          ok: false,
+          error_type: "json_parse_error",
+          error_message: `JSON parse failed: ${parseErr.message}. Retry also failed: ${retryErr.message}`,
+          raw_response: raw,
+          retry_attempted: true,
+        };
       }
-   },
-
+    }
+  },
   // Validate a phase result — throws a structured PhaseError if result is an error object
   assertPhase(result, stageName, phaseLabel) {
     if (!result || result.ok === false) {
