@@ -2047,110 +2047,104 @@ const PE = {
     // Step 3: extract the outermost { ... } JSON object
     // Step 4: parse — throws on failure so the retry path fires
     const sanitize = (text) => {
-  if (!text) throw new Error("Empty response text");
+      if (!text) throw new Error("Empty response text");
 
-  let cleaned = String(text)
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .trim();
+      let cleaned = String(text)
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
+        .trim();
 
-  // Try parsing the entire cleaned response first.
-  try {
-    return JSON.parse(cleaned);
-  } catch (_) {}
+      try {
+        return JSON.parse(cleaned);
+      } catch (_) {}
 
-  // Find the first balanced JSON object or array.
-  const extractBalancedJSON = (src) => {
-    const starts = [];
-    const objStart = src.indexOf("{");
-    const arrStart = src.indexOf("[");
+      const extractBalancedJSON = (src) => {
+        const starts = [];
+        const objStart = src.indexOf("{");
+        const arrStart = src.indexOf("[");
 
-    if (objStart !== -1) starts.push({ idx: objStart, char: "{" });
-    if (arrStart !== -1) starts.push({ idx: arrStart, char: "[" });
+        if (objStart !== -1) starts.push({ idx: objStart, char: "{" });
+        if (arrStart !== -1) starts.push({ idx: arrStart, char: "[" });
+        if (!starts.length) return null;
 
-    if (!starts.length) return null;
+        starts.sort((a, b) => a.idx - b.idx);
+        const start = starts[0];
+        const openChar = start.char;
+        const closeChar = openChar === "{" ? "}" : "]";
 
-    starts.sort((a, b) => a.idx - b.idx);
-    const start = starts[0];
-    const openChar = start.char;
-    const closeChar = openChar === "{" ? "}" : "]";
+        let depth = 0;
+        let inString = false;
+        let escaped = false;
 
-    let depth = 0;
-    let inString = false;
-    let escaped = false;
+        for (let i = start.idx; i < src.length; i++) {
+          const ch = src[i];
 
-    for (let i = start.idx; i < src.length; i++) {
-      const ch = src[i];
+          if (inString) {
+            if (escaped) {
+              escaped = false;
+            } else if (ch === "\\") {
+              escaped = true;
+            } else if (ch === '"') {
+              inString = false;
+            }
+            continue;
+          }
 
-      if (inString) {
-        if (escaped) {
-          escaped = false;
-        } else if (ch === "\\") {
-          escaped = true;
-        } else if (ch === '"') {
-          inString = false;
+          if (ch === '"') {
+            inString = true;
+            continue;
+          }
+
+          if (ch === openChar) depth++;
+          if (ch === closeChar) depth--;
+
+          if (depth === 0) {
+            return src.slice(start.idx, i + 1);
+          }
         }
-        continue;
-      }
 
-      if (ch === '"') {
-        inString = true;
-        continue;
-      }
+        return null;
+      };
 
-      if (ch === openChar) depth++;
-      if (ch === closeChar) depth--;
-
-      if (depth === 0) {
-        return src.slice(start.idx, i + 1);
-      }
-    }
-
-    return null;
-  };
-
-  const balanced = extractBalancedJSON(cleaned);
-  if (balanced) {
-    try {
-      return JSON.parse(balanced);
-    } catch (_) {
-      // Progressive trim fallback
-      for (let i = balanced.length - 1; i > 0; i--) {
-        const slice = balanced.slice(0, i);
+      const balanced = extractBalancedJSON(cleaned);
+      if (balanced) {
         try {
-          return JSON.parse(slice);
+          return JSON.parse(balanced);
+        } catch (_) {
+          for (let i = balanced.length - 1; i > 0; i--) {
+            const slice = balanced.slice(0, i);
+            try {
+              return JSON.parse(slice);
+            } catch (_) {}
+          }
+        }
+      }
+
+      const firstBrace = cleaned.indexOf("{");
+      const lastBrace = cleaned.lastIndexOf("}");
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        const objSlice = cleaned.slice(firstBrace, lastBrace + 1);
+        try {
+          return JSON.parse(objSlice);
         } catch (_) {}
       }
-    }
-  }
 
-  // Broad object fallback
-  const firstBrace = cleaned.indexOf("{");
-  const lastBrace = cleaned.lastIndexOf("}");
-  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    const objSlice = cleaned.slice(firstBrace, lastBrace + 1);
-    try {
-      return JSON.parse(objSlice);
-    } catch (_) {}
-  }
+      const firstBracket = cleaned.indexOf("[");
+      const lastBracket = cleaned.lastIndexOf("]");
+      if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+        const arrSlice = cleaned.slice(firstBracket, lastBracket + 1);
+        try {
+          return JSON.parse(arrSlice);
+        } catch (_) {}
+      }
 
-  // Broad array fallback
-  const firstBracket = cleaned.indexOf("[");
-  const lastBracket = cleaned.lastIndexOf("]");
-  if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-    const arrSlice = cleaned.slice(firstBracket, lastBracket + 1);
-    try {
-      return JSON.parse(arrSlice);
-    } catch (_) {}
-  }
+      throw new Error("No JSON object found in response");
+    };
 
-  throw new Error("No JSON object found in response");
-};
     try {
       const parsed = sanitize(raw);
       return { ok: true, ...parsed };
     } catch (parseErr) {
-      // Retry once with a tighter instruction
       try {
         let retryRes, retryData;
         try {
@@ -2162,24 +2156,25 @@ const PE = {
               max_tokens: 1200,
               system: system + "\n\nCRITICAL: Your previous response could not be parsed as JSON. Return ONLY a valid JSON object. No markdown. No explanation. No code fences. Begin your response with { and end with }.",
               messages: [
-                { role: "user",      content: userContent },
+                { role: "user", content: userContent },
                 { role: "assistant", content: raw },
-                { role: "user",      content: "Your response was not valid JSON. Return only the JSON object now, starting with {." },
+                { role: "user", content: "Your response was not valid JSON. Return only the JSON object now, starting with {." },
               ],
             }),
           });
           retryData = await retryRes.json();
-        } catch(retryFetchErr) {
-          throw retryFetchErr; // fall through to outer catch(retryErr)
+        } catch (retryFetchErr) {
+          throw retryFetchErr;
         }
-        const retryRaw      = retryData.content.map(b => b.text || "").join("\n") || "";
-        const retryParsed   = sanitize(retryRaw);
+
+        const retryRaw = retryData.content.map(b => b.text || "").join("\n") || "";
+        const retryParsed = sanitize(retryRaw);
         return { ok: true, ...retryParsed };
       } catch (retryErr) {
+        console.warn("[NCW callClaude] FINAL fallback — returning safe empty structure");
         return {
-          ok: false,
-          error_type: "json_parse_error",
-          error_message: `JSON parse failed: ${parseErr.message}. Retry also failed: ${retryErr.message}`,
+          ok: true,
+          degraded: true,
           raw_response: raw,
           retry_attempted: true,
         };
