@@ -2181,7 +2181,20 @@ try {
             body: JSON.stringify({
               model: "claude-sonnet-4-6",
               max_tokens: 4000,
-              system: system + "\n\nCRITICAL: Your previous response could not be parsed as JSON. Return ONLY a valid JSON object. No markdown. No explanation. No code fences. Begin your response with { and end with }.",
+              system:
+  system +
+  `
+  
+CRITICAL: Your previous response could not be parsed as JSON.
+Return ONLY a valid JSON object.
+No markdown.
+No explanation.
+No code fences.
+Begin with { and end with }.
+Preserve all evidence categories requested.
+Keep every evidence item concise.
+Use short strings, short notes, no repeated prose, and no summary paragraphs inside JSON values.
+`,
               messages: [
                 { role: "user", content: userContent },
                 { role: "assistant", content: raw },
