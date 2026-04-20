@@ -5047,7 +5047,13 @@ Begin your response with { and end with }. Do not include any text outside the J
       return { ok:false, error_type:"bad_response_shape", raw_response: bodyText, _diag: diag };
     }
 
-    const raw = data.content.map(function(b) { return b.text || ""; }).join("\n") || "";
+    const raw = Array.isArray(data?.content)
+  ? data.content
+      .filter(b => b && typeof b.text === "string")
+      .map(b => b.text.trim())
+      .filter(Boolean)
+      .join("\n")
+  : "";
     console.info("[NCW Quick] extracted_raw_len:", raw.length,
       "| stop_reason:", data.stop_reason,
       "| usage:", JSON.stringify(data.usage || {}),
