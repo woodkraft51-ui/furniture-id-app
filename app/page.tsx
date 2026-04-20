@@ -2000,7 +2000,16 @@ const PE = {
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens: 4000,
-          system,
+          system:
+  system +
+  `
+  
+FORMAT RULES:
+Return ONLY valid JSON.
+Preserve all requested evidence categories.
+Keep every evidence item concise.
+Use short strings, short notes, no repeated prose, and no summary paragraphs inside JSON values.
+`,
           messages: [{ role: "user", content: userContent }],
         }),
       });
