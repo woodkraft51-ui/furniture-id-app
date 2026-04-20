@@ -4014,7 +4014,7 @@ if (!p2parsed) {
   };
 }
 
-const p2normalized = this.normalizePhase2Dating(p2parsed);
+const p2normalized = this.normalize(p2parsed, "p2_dating");
 
     // Guarantee schema completeness on the normalized result
     if (!Array.isArray(p2normalized.new_observations))       p2normalized.new_observations = [];
