@@ -3603,7 +3603,7 @@ Begin your response with { and end with }. Do not include any text outside the J
         const libEntry = this.VISUAL_LIBRARY.find(c => c.clue_key === obs.clue);
         API.addObservation(context.caseId, {
           observation_type:    category,
-          reference_table:     libEntry.reference_table || null,
+          reference_table:     libEntry ? libEntry.reference_table || null : null,
           reference_id:        obs.clue,
           observed_value_text: obs.visual_description || obs.clue,
           source_image_id:     obs.source_image,
