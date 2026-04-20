@@ -2047,6 +2047,7 @@ try {
     ...direct,
     raw_response: raw,
   };
+} catch (e) {
   console.warn("[NCW DIRECT PARSE FAILED]", e?.message);
 }
 
