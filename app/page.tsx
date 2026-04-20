@@ -1999,7 +1999,7 @@ const PE = {
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 1200,
+          max_tokens: 2200,
           system,
           messages: [{ role: "user", content: userContent }],
         }),
@@ -2051,7 +2051,12 @@ try {
   console.warn("[NCW DIRECT PARSE FAILED]", e?.message);
 }
 
-    console.info("[NCW callClaude] raw_llm_response_length=" + raw.length + " fallback_triggered=" + (!raw.trim()));
+    console.info(
+  "[NCW callClaude] raw_llm_response_length=" + raw.length +
+  " fallback_triggered=" + (!raw.trim()) +
+  " | stop_reason=" + (data.stop_reason || "") +
+  " | usage=" + JSON.stringify(data.usage || {})
+);
 
     if (!raw.trim()) {
       return {
@@ -2175,7 +2180,7 @@ try {
             headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
             body: JSON.stringify({
               model: "claude-sonnet-4-6",
-              max_tokens: 1200,
+              max_tokens: 2200,
               system: system + "\n\nCRITICAL: Your previous response could not be parsed as JSON. Return ONLY a valid JSON object. No markdown. No explanation. No code fences. Begin your response with { and end with }.",
               messages: [
                 { role: "user", content: userContent },
