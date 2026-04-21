@@ -3715,7 +3715,7 @@ API.addObservation(context.caseId, {
       ? caseData.images.map(i => i.image_type)
       : [],
   };
-}
+},
  async p1(caseData, intake, evidence, p0) {
   const imageTypesPresent = Array.isArray(evidence?.image_types_present)
     ? evidence.image_types_present
