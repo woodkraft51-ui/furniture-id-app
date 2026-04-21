@@ -5656,7 +5656,7 @@ Respond ONLY in valid JSON. Begin with {.`,
     "1_intake",
     "Phase 1 — Intake Controller",
     "phase_1_intake",
-    () => this.p1(caseData, intake, evidence, p0)
+    () => PE.p1(caseData, intake, evidence, p0)
   );
 
   const p2 = this.triggered(p1, "run_dating_grid")
