@@ -3622,35 +3622,46 @@ API.addObservation(context.caseId, {
   },
 
   // Helper: merge full scan + targeted scan observations for a category
-  mergeVisualObs(fullScanObs, targetedResult, category) {
-    const full     = fullScanObs[category] || [];
-    const targeted = targetedResult.new_observations || [];
+ mergeVisualObs(fullScanObs, targetedResult, category) {
+  const full = Array.isArray(fullScanObs?.[category]) ? [...fullScanObs[category]] : [];
+  const targeted = Array.isArray(targetedResult?.new_observations)
+    ? targetedResult.new_observations
+    : [];
 
-    // Build a map of existing clue keys from full scan
-    const fullKeys = new Set(full.map(o => o.clue));
+  const merged = [...full];
+  const existingByClue = new Map();
 
-    // Add targeted observations that are new or have higher confidence
-    const merged = [...full];
-    for (const t of targeted) {
-      if (!t.clue || t.visual_confidence < 20) continue;
-      if (!fullKeys.has(t.clue)) {
-        // New clue found in targeted scan — add it
-        merged.push(t);
-      } else {
-        // Clue already in full scan — if targeted has higher confidence, upgrade
-        const existing = merged.find(o => o.clue === t.clue);
-        if (existing && t.visual_confidence > existing.visual_confidence) {
-          existing.visual_confidence  = t.visual_confidence;
-          existing.weight_multiplier  = t.weight_multiplier;
-          existing.image_region       = t.image_region || existing.image_region;
-          existing.visual_description = t.visual_description || existing.visual_description;
-          existing.low_confidence_flag= t.low_confidence_flag;
-          existing.source             = "targeted_scan_upgraded";
-        }
-      }
+  for (const item of merged) {
+    if (item && item.clue) existingByClue.set(item.clue, item);
+  }
+
+  for (const t of targeted) {
+    if (!t?.clue || t.visual_confidence < 20) continue;
+
+    const existing = existingByClue.get(t.clue);
+
+    if (!existing) {
+      const copy = {
+        ...t,
+        source: "targeted_scan_added",
+      };
+      merged.push(copy);
+      existingByClue.set(t.clue, copy);
+      continue;
     }
-    return merged;
-  },
+
+    if ((t.visual_confidence || 0) > (existing.visual_confidence || 0)) {
+      existing.visual_confidence   = t.visual_confidence;
+      existing.weight_multiplier   = t.weight_multiplier;
+      existing.image_region        = t.image_region || existing.image_region;
+      existing.visual_description  = t.visual_description || existing.visual_description;
+      existing.low_confidence_flag = t.low_confidence_flag;
+      existing.source              = "targeted_scan_upgraded";
+    }
+  }
+
+  return merged;
+}
   async p1(caseData, images, intake, p0) {
     const imageTypesPresent = images.map(i => i.image_type);
     const sys = `You are the Intake Controller for the NCW American Furniture Identification Engine.
