@@ -6900,15 +6900,15 @@ if (stored) {
     setError(null); setDebugOpen(false); setPhasesDone({}); setCurrentPhase(0);
     setQuickScanVersion(0);
   };
-  const handleCoreUpload = (key, file) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => setImages(prev => ({
-      ...prev,
-      [key]: { file, data_url: e.target.result, image_type: key },
-    }));
-    reader.readAsDataURL(file);
-  };
+ const handleCoreUpload = (key, file) => {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => setImages(prev => ({
+    ...prev,
+    [key]: { file, data_url: e.target?.result as string, image_type: key },
+  }));
+  reader.readAsDataURL(file);
+};
 
   // Evidence group upload (append)
   const handleGroupUpload = (groupKey, imageType, file) => {
