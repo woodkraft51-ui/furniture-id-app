@@ -5622,7 +5622,7 @@ Respond ONLY in valid JSON. Begin with {.`,
         }
       }
 
-      this.assertPhase(result, stageName, label);
+      PE.assertPhase(result, stageName, label);
       so[key] = result;
       if (typeof onPhase === "function") {
         onPhase(parseInt(key.split("_")[0], 10), result);
@@ -5646,7 +5646,7 @@ Respond ONLY in valid JSON. Begin with {.`,
   "0_visual_scan",
   "Phase 0 — Visual Evidence Scan",
   "phase_0_visual_scan",
-  () => this.p0(images)
+  () => PE.p0(images)
 );
 
   // Freeze downstream reasoning input
@@ -5659,21 +5659,21 @@ Respond ONLY in valid JSON. Begin with {.`,
     () => PE.p1(caseData, intake, evidence, p0)
   );
 
-  const p2 = this.triggered(p1, "run_dating_grid")
+  const p2 = PE.triggered(p1, "run_dating_grid")
     ? await runPhase(
         "2_dating",
         "Phase 2 — Rapid Dating Grid",
         "phase_2_dating",
-        () => this.p2(caseData, evidence, p0, p1)
+        () => PE.p2(caseData, evidence, p0, p1)
       )
     : skip("No structural dating evidence visible");
 
-  const p3 = this.triggered(p1, "run_form_engine")
+  const p3 = PE.triggered(p1, "run_form_engine")
     ? await runPhase(
         "3_form",
         "Phase 3 — Form Decision Engine",
         "phase_3_form_decision",
-        () => this.p3(caseData, evidence, p0, p1, p2)
+        () => PE.p3(caseData, evidence, p0, p1, p2)
       )
     : {
         ...skip("No overall form visible"),
