@@ -6930,13 +6930,12 @@ const handleGroupUpload = (groupKey, imageType, file) => {
 };
 
   // Remove a group image by id
-  const removeGroupImage = (groupKey, id) => {
-    setGroupImages(prev => ({
-      ...prev,
-      [groupKey]: prev[groupKey].filter(img => img.id !== id),
-    }));
-  };
-
+ const removeGroupImage = (groupKey, id) => {
+  setGroupImages(prev => ({
+    ...prev,
+    [groupKey]: (prev[groupKey] || []).filter(img => img.id !== id),
+  }));
+};
   const handleAnalyze = async () => {
     if (!caseId) return;
     setAnalyzing(true); setError(null); setDebugOpen(false); setPhasesDone({}); setCurrentPhase(1);
