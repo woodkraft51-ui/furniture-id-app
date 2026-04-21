@@ -3474,6 +3474,118 @@ REQUIRED JSON SHAPE
 
 FINAL INSTRUCTION
 Return valid JSON only. Every category must be present. If evidence is not confirmable, provide a low-confidence placeholder observation with a reason.`;
+       let rawResult = null;
+    let rawResponseText = "";
+    try {
+      rawResult = await this.callClaude(sys, [
+        ...this.imgs(images),
+        {
+          type: "text",
+          text: "Scan all submitted images once. Populate every evidence category in the required schema. If evidence is weak or not confirmable, still include a low-confidence placeholder observation explaining why. Respond ONLY in valid JSON starting with {."
+        },
+      ]);
+    } catch(e) {
+      console.error("[NCW P0] callClaude threw:", e.message);
+      rawResult = { ok: false, error_type: "runtime_error", error_message: e.message, raw_response: "" };
+    }
+
+    if (rawResult.ok === false) {
+      let rawText = rawResult.raw_response || "";
+
+      rawText = String(rawText).trim();
+      if (rawText.startsWith("```")) {
+        rawText = rawText.replace(/^```[\w]*\n?/, "");
+        rawText = rawText.replace(/```$/, "");
+      }
+
+      console.warn("[NCW P0] callClaude returned ok:false. Type:", rawResult.error_type, "— attempting partial recovery from raw text.");
+
+      let recovered = null;
+      try {
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) recovered = JSON.parse(jsonMatch[0]);
+      } catch(_e) {}
+
+      if (!recovered) {
+        console.warn("[NCW P0] Partial recovery failed. Returning safe empty result. Pipeline continues with low-confidence caps.");
+        return safeEmpty(\`callClaude error: \${rawResult.error_type} — \${rawResult.error_message}\`, rawText);
+      }
+
+      rawResult = recovered;
+      console.info("[NCW P0] Partial recovery succeeded from raw text.");
+    }
+
+    const observationsByType = recoverObservations(rawResult, images);
+
+    if (!observationsByType) {
+      console.warn("[NCW P0] recoverObservations returned null — no usable observations. Returning safe empty result.");
+      return safeEmpty("No observations field found in response", rawResponseText);
+    }
+
+    const HARD_NEG_CLUES = new Set([
+      "phillips_screw",
+      "plywood_structural",
+      "plywood_drawer_bottom",
+      "particle_board",
+      "mdf",
+      "modern_concealed_hinge",
+      "staple_fastener"
+    ]);
+
+    const hardNegativesDetected = [];
+    let totalObs = 0;
+
+    for (const [typeName, obsArr] of Object.entries(observationsByType)) {
+      for (const obs of (Array.isArray(obsArr) ? obsArr : [])) {
+        totalObs++;
+        if (HARD_NEG_CLUES.has(obs.clue) && obs.visual_confidence >= 40) {
+          hardNegativesDetected.push({
+            clue_key: obs.clue,
+            visual_confidence: obs.visual_confidence,
+            effective_confidence: (obs.visual_confidence / 100) * obs.weight_multiplier,
+            region_label: obs.image_region || null,
+            source_image_id: obs.source_image || null,
+          });
+        }
+      }
+    }
+
+    const recoveryUsed = !!(
+      rawResult._recovery ||
+      Object.values(observationsByType)
+        .flat()
+        .some((o) => o._recovered)
+    );
+
+    if (recoveryUsed) {
+      console.info(\`[NCW P0] Recovery normalization applied. Total observations recovered: \${totalObs}\`);
+    }
+
+    return {
+      skipped: false,
+      phase_0_status: totalObs > 0 ? "ok" : "no_observations_found",
+      recovery_used: recoveryUsed,
+      total_observations: totalObs,
+      observations_by_type: observationsByType,
+      hard_negatives_detected: hardNegativesDetected,
+      images_scanned: images.filter(i => i.data_url).length,
+      scan_summary: rawResult.scan_summary || {
+        scan_confidence: totalObs > 0 ? "low" : "none",
+        images_scanned: [],
+        image_quality_issues: [],
+        total_observations: totalObs,
+        hard_negatives_found: hardNegativesDetected.map(h => h.clue_key)
+      },
+      mechanical_form_signature: rawResult.mechanical_form_signature || "",
+      primary_wood_observed: rawResult.primary_wood_observed || "",
+      secondary_wood_observed: rawResult.secondary_wood_observed || "",
+      broad_form_impression: rawResult.broad_form_impression || rawResult.mechanical_form_signature || "",
+      condition_impression: rawResult.condition_impression || "unknown",
+      anomalies_noted: rawResult.anomalies_noted || [],
+      created_by_stage: "phase_0_visual_scan",
+      non_destructive: true,
+    };
+  },
   // ─────────────────────────────────────────────────────────────
   // PHASE 2 — Rapid Dating Grid
   // Trigger: run_dating_grid = true
