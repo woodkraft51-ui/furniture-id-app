@@ -14,6 +14,10 @@ type CoreImageMap = Record<string, ImageRecord | null>;
 type GroupImageMap = Record<string, ImageRecord[]>;
 
 type IntakeState = {
+  analysis_mode: "full_analysis" | "field_scan";
+  asking_price: string;
+  picker_profile?: any;
+
   approximate_height: string;
   approximate_width: string;
   primary_wood_guess: string;
