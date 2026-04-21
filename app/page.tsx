@@ -2086,7 +2086,7 @@ try {
       if (!text) throw new Error("Empty response text");
 
       let cleaned = String(text)
-        .replace(/```json/gi, "")
+        .replace(/```[\w]*\n?/gi, "")
         .replace(/```/g, "")
         .trim();
 
