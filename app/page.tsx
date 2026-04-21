@@ -6010,11 +6010,11 @@ Respond ONLY in valid JSON. Begin with {.`,
 
   // Phase 0 is the ONLY phase allowed to inspect images directly
   const p0 = await runPhase(
-    "0_visual_scan",
-    "Phase 0 — Visual Evidence Scan",
-    "phase_0_visual_scan",
-    () => this.p0(caseData, images, intake)
-  );
+  "0_visual_scan",
+  "Phase 0 — Visual Evidence Scan",
+  "phase_0_visual_scan",
+  () => this.p0(images)
+);
 
   // Freeze downstream reasoning input
   const evidence = this.buildEvidenceBundle(caseData, p0);
