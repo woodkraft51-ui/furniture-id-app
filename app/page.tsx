@@ -3661,7 +3661,7 @@ API.addObservation(context.caseId, {
   }
 
   return merged;
-}
+},
   buildEvidenceBundle(caseData, p0) {
   const observations = Array.isArray(caseData?.observations)
     ? caseData.observations
