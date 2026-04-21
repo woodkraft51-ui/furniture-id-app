@@ -3558,7 +3558,7 @@ Return valid JSON only. Every category must be present. If evidence is not confi
     );
 
     if (recoveryUsed) {
-      console.info(\`[NCW P0] Recovery normalization applied. Total observations recovered: \${totalObs}\`);
+      console.info("[NCW P0] Recovery normalization applied. Total observations recovered: " + totalObs);
     }
 
     return {
