@@ -4431,120 +4431,116 @@ Respond ONLY in valid JSON:
   // Reads hardware observations directly from p0 visual scan.
   // Hardware MUST NOT override construction unless originality ×1.0.
   // ─────────────────────────────────────────────────────────────
-  async p5(caseData, images, p0, p1, p2, p3, p4) {
-    const styles = DB.style_families.map(s => `${s.name} (${s.era_start}–${s.era_end})`).join(", ");
-    const sys = `You are the Hardware Analysis engine for the NCW American Furniture Identification Engine.
+  async p5(caseData, evidence, p0, p1, p2, p3, p4) {
+  const hardware = Array.isArray(evidence?.byType?.hardware)
+    ? evidence.byType.hardware
+    : [];
+  const finish = Array.isArray(evidence?.byType?.finish)
+    ? evidence.byType.finish
+    : [];
+
+  const hardNegativesFromP0 = Array.isArray(p0?.scan_summary?.hard_negatives_found)
+    ? p0.scan_summary.hard_negatives_found
+    : [];
+
+  const styles = DB.style_families
+    .map(s => `${s.name} (${s.era_start}–${s.era_end})`)
+    .join(", ");
+
+  const sys = `You are the Hardware Analysis engine for the NCW American Furniture Identification Engine.
 
 ${this.wmSummary()}
 
 PURPOSE
-Examine all visible hardware. Assess date band, originality, and replacement risk.
-Hardware is Tier weight ${WM.tiers.hardware} — supports but does NOT override Tier A–E (weights ${WM.tiers.hidden_structure}–${WM.tiers.interior_logic})
-unless originality multiplier is ×1.0 (clearly original).
+Assess hardware for date, originality, and replacement risk.
 
-KNOWN HARDWARE:
-• porcelain_caster:       1830–1870, replacement_risk moderate → age_support +8
-• wood_caster:            1800–1840, replacement_risk moderate → age_support +6
-• victorian_strap_hinge:  1865–1895, replacement_risk moderate → age_support +6, style +4 (Gothic/Victorian Revival)
-• batwing_brass_pull:     1720–1790, replacement_risk HIGH → age_support +8, max_multiplier ×0.5
-• eastlake_pull:          1870–1890, replacement_risk moderate → age_support +6, style +4 (Eastlake)
-• surface_lock:           1750–present, replacement_risk moderate → age_support +4
-• modern_concealed_hinge: 1950+, replacement_risk low → age_opposing +${Math.abs(WM.negative_rules.modern_concealed_hinge)}, originality_opposing +15 HARD NEGATIVE
+IMPORTANT
+Use ONLY the recorded observations and structured evidence bundle.
+Do NOT rescan images. Do NOT rely on raw photo input.
+
+Hardware is supportive evidence only. It must not override strong construction evidence unless clearly original.
 
 STYLE FAMILIES: ${styles}
 
-ORIGINALITY ASSESSMENT — check all indicators before assigning multiplier:
-Indicators of replacement (each present reduces originality confidence):
-- Enlarged or plugged screw holes around mount
-- Finish disturbance or fresh wood around mount
-- Oxidation mismatch between hardware and surrounding wood
-- Wear pattern on hardware differs from surrounding wood
-- Screws inconsistent with construction era (e.g., phillips in 19th c. mount)
-- Hardware shadow/ghost outline does not match current hardware
+ORIGINALITY ASSESSMENT:
+Check indicators such as:
+• mismatch in oxidation
+• inconsistent screw types
+• disturbed finish around mounts
+• ghost outlines or plug holes
 
 MULTIPLIERS:
-• Clearly original (0 indicators)   → ×1.0 (full score)
-• Uncertain (1–2 minor indicators)  → ×0.5
-• Likely replaced (3+ indicators)   → ×0.25
-• batwing_brass_pull                → max ×0.5 regardless (inherent replacement risk)
-
-HARD NEGATIVES (apply regardless of stated originality):
-• phillips_screws in any original mount → age_opposing +${Math.abs(WM.negative_rules.phillips_screw_pre1930)}, originality_opposing +12
-• filled/plugged pull holes             → originality_opposing +8
-• hardware shadow mismatch             → originality_opposing +8
-• finish visibly disturbed around mount→ originality_opposing +6
-• modern_concealed_hinge               → age_opposing +${Math.abs(WM.negative_rules.modern_concealed_hinge)}, originality_opposing +15
-
-CONFLICT: If hardware date range conflicts with P4 construction date range by >30 years → flag conflict.
-If hardware likely replaced → lower influence. If appears original AND conflicts → higher severity.
+• clearly original → ×1.0
+• uncertain → ×0.5
+• likely replaced → ×0.25
 
 Apply hardware_originality_cap from Phase 1.
 
 P1: ${JSON.stringify(p1)}
-P3 (Form): ${JSON.stringify(p3)}
-P4 (Construction): ${JSON.stringify(p4)}
+P3: ${JSON.stringify(p3)}
+P4: ${JSON.stringify(p4)}
 
 Respond ONLY in valid JSON:
 {
-  "hardware_scoring_detail": [
-    {"type":"","location":"","originality_indicators_against":[],"appears_original":true,"originality_multiplier":1.0,"raw_score":0,"adjusted_score":0,"date_range":"","notes":""}
-  ],
-  "age_support_points":          0,
-  "age_opposing_points":         0,
-  "originality_support_points":  0,
+  "hardware_scoring_detail": [],
+  "age_support_points": 0,
+  "age_opposing_points": 0,
+  "originality_support_points": 0,
   "originality_opposing_points": 0,
-  "hard_negatives_triggered":    [],
-  "hardware_date_range":         "",
-  "hardware_consistency":        "consistent",
-  "style_family_suggested":      null,
-  "originality_concerns":        [],
-  "hardware_conflicts":          [{"conflict":"","severity":"low|medium|high","likely_replaced":true}],
-  "hardware_confidence":         "Moderate",
-  "hardware_notes":              "",
-  "caps_applied":                []
-}
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
-    // Targeted scans — hardware is the primary focus; finish helps assess originality
-    const targetedHardware = await this.p0_targeted(
-      images, "hardware", p0.observations_by_type,
-      { caseId:caseData.id, phase:"hardware_analysis",
-        construction_date: p4.construction_date_range || "unknown",
-        joinery_found: p4.primary_joinery_type || "unknown" }
-    );
-    const targetedFinish = await this.p0_targeted(
-      images, "finish", p0.observations_by_type,
-      { caseId:caseData.id, phase:"hardware_analysis" }
-    );
-    const mergedHardware = this.mergeVisualObs(p0.observations_by_type, targetedHardware, "hardware");
-    const mergedFinish   = this.mergeVisualObs(p0.observations_by_type, targetedFinish,   "finish");
+  "hard_negatives_triggered": [],
+  "hardware_date_range": "",
+  "hardware_consistency": "consistent",
+  "style_family_suggested": null,
+  "originality_concerns": [],
+  "hardware_conflicts": [],
+  "hardware_confidence": "Moderate",
+  "hardware_notes": "",
+  "caps_applied": []
+}`;
 
-    let _raw_p5;
-    try {
-      _raw_p5 = await this.callClaude(sys, [
-      ...this.imgs(images),
-      { type: "text", text: `VISUAL SCANNER OBSERVATIONS (full scan + targeted hardware/finish re-examination):\nHardware: ${JSON.stringify(mergedHardware)}\nFinish: ${JSON.stringify(mergedFinish)}\nHard negatives found: ${JSON.stringify(p0.scan_summary.hard_negatives_found||[])}\nTargeted hardware summary: ${targetedHardware.targeted_summary||""}\nTargeted finish summary: ${targetedFinish.targeted_summary||""}\n\nP1: ${JSON.stringify(p1)}\nP3: ${JSON.stringify(p3)}\nP4: ${JSON.stringify(p4)}` },
+  let _raw_p5;
+  try {
+    _raw_p5 = await this.callClaude(sys, [
+      {
+        type: "text",
+        text:
+          `RECORDED OBSERVATIONS ONLY:\n` +
+          `Hardware: ${JSON.stringify(hardware, null, 2)}\n` +
+          `Finish: ${JSON.stringify(finish, null, 2)}\n` +
+          `Hard negatives: ${JSON.stringify(hardNegativesFromP0, null, 2)}\n\n` +
+          `Phase 1: ${JSON.stringify(p1, null, 2)}\n` +
+          `Phase 3: ${JSON.stringify(p3, null, 2)}\n` +
+          `Phase 4: ${JSON.stringify(p4, null, 2)}`
+      },
     ]);
-    } catch(_e_p5) {
-      console.warn("[NCW P5] callClaude threw:", _e_p5.message);
-      _raw_p5 = { ok:false, error_type:"call_threw", error_message: _e_p5.message, raw_response:"" };
-    }
-    if (!_raw_p5 || _raw_p5.ok === false) {
-      console.warn("[NCW P5] Returning safe fallback");
-      return {
-        ok: true, _synthesized: true, _engine_status: "llm_unavailable",
-        hardware_scoring_detail: [], hardware_date_range: "Date uncertain",
-        hardware_consistency: "unknown", style_family_suggested: null,
-        hardware_confidence: "Low", hardware_support_points: 0, hardware_opposing_points: 0,
-        originality_concerns: [], hardware_conflicts: [], hard_negatives_triggered: [],
-        hardware_notes: "P5 LLM call failed", caps_applied: [],
-      };
-    }
-    return this.normalize(_raw_p5, "p5_hardware");
-  },
+  } catch (_e_p5) {
+    console.warn("[NCW P5] callClaude threw:", _e_p5.message);
+    _raw_p5 = { ok: false, error_type: "call_threw", error_message: _e_p5.message, raw_response: "" };
+  }
+
+  if (!_raw_p5 || _raw_p5.ok === false) {
+    console.warn("[NCW P5] Returning safe fallback");
+    return {
+      ok: true,
+      _synthesized: true,
+      _engine_status: "llm_unavailable",
+      hardware_scoring_detail: [],
+      hardware_date_range: "Date uncertain",
+      hardware_consistency: "unknown",
+      style_family_suggested: null,
+      hardware_confidence: "Low",
+      hardware_support_points: 0,
+      hardware_opposing_points: 0,
+      originality_concerns: [],
+      hardware_conflicts: [],
+      hard_negatives_triggered: hardNegativesFromP0,
+      hardware_notes: "P5 LLM call failed",
+      caps_applied: [],
+    };
+  }
+
+  return this.normalize(_raw_p5, "p5_hardware");
+},
 
   // ─────────────────────────────────────────────────────────────
   // PHASE 6 — Conflict Detection Engine
