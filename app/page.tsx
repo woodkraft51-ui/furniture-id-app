@@ -691,6 +691,17 @@ export default function Page() {
                   gap: 12,
                 }}
               >
+                {intake.analysis_mode === "field_scan" && (
+  <label style={{ display: "grid", gap: 6 }}>
+    <span style={{ fontSize: 13, fontWeight: 600 }}>Asking Price</span>
+    <input
+      value={intake.asking_price}
+      onChange={(e) => updateIntake("asking_price", e.target.value as any)}
+      style={inputStyle}
+      placeholder="e.g. 45"
+    />
+  </label>
+)}
                 <label style={{ display: "grid", gap: 6 }}>
                   <span style={{ fontSize: 13, fontWeight: 600 }}>Height (in)</span>
                   <input
