@@ -4164,11 +4164,30 @@ Respond ONLY in valid JSON:
   // Trigger: run_form_engine = true
   // Most credibility-critical phase. Three separate determinations.
   // ─────────────────────────────────────────────────────────────
-  async p3(caseData, images, p0, p1, p2) {
-    const forms = DB.forms
-      .map(f => `${f.name} [${f.parent_category}, ${f.common_eras}${f.common_conversion_targets ? ` → converts to: ${f.common_conversion_targets}` : ""}]`)
-      .join("\n");
-    const sys = `You are the Form Decision Engine for the NCW American Furniture Identification Engine.
+ async p3(caseData, evidence, p0, p1, p2) {
+  const hiddenStructure = Array.isArray(evidence?.byType?.hidden_structure)
+    ? evidence.byType.hidden_structure
+    : [];
+  const hardware = Array.isArray(evidence?.byType?.hardware)
+    ? evidence.byType.hardware
+    : [];
+  const construction = Array.isArray(evidence?.byType?.construction)
+    ? evidence.byType.construction
+    : [];
+
+  const evidencePayload = {
+    hidden_structure: hiddenStructure,
+    hardware,
+    construction,
+    broad_form_impression: p0?.broad_form_impression || "unknown",
+    clue_keys: Array.isArray(evidence?.clue_keys) ? evidence.clue_keys : [],
+  };
+
+  const forms = DB.forms
+    .map(f => `${f.name} [${f.parent_category}, ${f.common_eras}${f.common_conversion_targets ? ` → converts to: ${f.common_conversion_targets}` : ""}]`)
+    .join("\n");
+
+  const sys = `You are the Form Decision Engine for the NCW American Furniture Identification Engine.
 THIS IS THE MOST CREDIBILITY-CRITICAL PHASE. Three separate determinations required.
 
 ${this.wmSummary()}
@@ -4176,186 +4195,102 @@ ${this.wmSummary()}
 AVAILABLE FORMS:
 ${forms}
 
-FORM DETECTION — RUN FIRST, BEFORE SCORING
-Inspect the images for structural mechanisms and form signatures before any style or category analysis.
-These signatures identify furniture form with higher certainty than proportion or appearance alone.
+IMPORTANT
+Use ONLY the recorded evidence bundle and structured observations provided.
+Do NOT rescan images. Do NOT rely on visual inspection beyond the supplied evidence.
 
-STEP 1 — MECHANICAL FORM SIGNATURES (check in order):
-If ANY of these are clearly visible, classify that specific form and record it as form_detection_method = "mechanical_signature":
+FORM DETECTION PRIORITY:
+1. Hidden structure and cavities (strongest)
+2. Hardware and mounting logic
+3. Construction patterns
+4. Broad form impression (weakest)
 
-DROP-LEAF & GATE TABLE FAMILY:
-• hinged leaves + visible gateleg or swing support       → "gateleg drop-leaf table"
-• hinged leaves + swing leg (no gate frame)              → "pembroke table"
-• hinged leaves + butterfly bracket visible              → "butterfly drop-leaf table"
-• hinged leaves visible, support not identified          → "drop-leaf table"
+PURPOSE — three independent determinations:
+1. current_form
+2. original_form
+3. conversion_probability
 
-CHEST / TRUNK FAMILY:
-• hinged or removable top/lid + till or interior visible → "blanket chest"
-• hinged or lift top, no till                            → "storage chest or trunk"
+SCORING — Tier: interior_logic (weight ${WM.tiers.interior_logic})
 
-DESK FAMILY:
-• angled fall-front writing surface                      → "slant-front desk"
-• cylinder roll or tambour shutter over writing surface  → "rolltop desk"
-• flat fall-front panel + pigeonhole interior visible    → "secretary desk"
-• flat fall-front only                                   → "fall-front desk"
-
-PEDESTAL TABLE FAMILY:
-• single central column + tilt hardware visible          → "tilt-top table"
-• single central column + tripod legs                   → "tripod pedestal table"
-• single central column + platform base                 → "pedestal table"
-
-SPECIALIZED:
-• pedal cavity void at base                              → "pump organ cabinet" (likely converted)
-• treadle iron bracket mount                             → "sewing machine cabinet"
-• zinc/metal-lined interior chamber                      → "icebox"
-• adjustable angled shelf/rack                           → "music stand or Canterbury"
-
-STEP 2 — BROAD STRUCTURAL FORM (if no mechanism visible):
-Use overall structure and interior logic when no specific mechanism is detected:
-• 4+ stacked drawers, no superstructure                 → "chest of drawers"
-• 2–3 drawers + mirror mount visible                    → "dresser"
-• full-length door(s), tall narrow case                 → "wardrobe"
-• raised splash rail + basin shelf                      → "washstand"
-• door + drawer combination, case piece                 → appropriate case piece form
-
-STEP 3 — RECORD DETECTION METHOD:
-• form_detection_method = "mechanical_signature" — form driven by a specific mechanism (Steps above)
-• form_detection_method = "structural_logic"     — form driven by proportions and interior layout
-• form_detection_method = "visual_impression"    — form suggested by overall appearance only (weakest)
-• mechanical_signature_detected = the specific clue name, or null
-
-Only fall back to broad labels like "table" or "cabinet" when no more specific form can be justified.
-Always prefer the narrowest defensible furniture form.
-
-PURPOSE — three independent determinations, do NOT collapse:
-1. current_form  — what the object is being used as NOW
-2. original_form — what it was originally built as
-3. conversion_probability — how likely the form has changed
-
-SCORING — Tier: interior_logic (weight ${WM.tiers.interior_logic}):
-
-FORM SUPPORT POINTS:
-• Interior structure layout strongly matches known form                    → form_support +15
-• Specialized structural cavity matches known mechanism (pedal/treadle/ice)→ form_support +15 AND original_form_support +15
-• Overall proportions clearly fit a specific known form                    → form_support +8
-• Leg/support structure fits known form pattern                            → form_support +8
-• Storage arrangement matches known form                                   → form_support +6
-• Decorative elements typical of known form (Tier J, weight ${WM.tiers.style})          → form_support +4 (weak)
-
-CONVERSION SUPPORT POINTS:
-• Current surface use/function conflicts with visible structure             → conversion_support +10
-• Original mechanism/cavity present but non-functional or removed          → conversion_support +8
-• Later incompatible top added (wrong material or era)                     → conversion_support +8
-• Current use impossible without blocking original mechanism               → conversion_support +10
-• Structural voids or filled areas suggest removed components              → conversion_support +6
-• Hardware mounting patterns inconsistent with current form function       → conversion_support +5
-
-FORM OPPOSITION POINTS:
-• Proportions do not fit named form                                        → form_opposing +6
-• Structure actively contradicts named form                                → form_opposing +10
-
-CONFIDENCE THRESHOLDS:
-• form_support ≥ 70  → form_confidence = "High"
-• form_support 45–69 → form_confidence = "Moderate"
-• form_support < 45  → form_confidence = "Low"
-
-CONVERSION THRESHOLDS:
-• conversion_support ≥ 25 → conversion_probability = "High"
-• 15–24               → "Moderate"
-• < 15                → "Low"
-
-CONFLICT TRIGGER:
-If top two form candidates are within 15 points of each other → set form_conflict flag.
-If both original_form and current_form independently exceed threshold → set form_conflict flag.
-Do NOT collapse — preserve both candidates.
+CONFIDENCE:
+• High     — strong structural alignment
+• Moderate — partial alignment
+• Low      — insufficient or conflicting evidence
 
 Apply form_confidence_cap from Phase 1.
-
-SCHEMA CONTRACT — REQUIRED FIELDS WITH SAFE DEFAULTS:
-You MUST include every field below in your response, even when evidence is incomplete or uncertain.
-Never omit a field. If uncertain, use these safe defaults:
-• current_form_candidate   → "unknown" (never omit, never leave blank)
-• original_form_candidate  → same as current_form_candidate if no conversion evidence, else best guess or "unknown"
-• alternate_form_candidates→ [] (empty array is valid)
-• form_scoring_detail      → [] (empty array is valid when no evidence available)
-• form_support_points      → 0
-• form_opposing_points     → 0
-• conversion_support_points→ 0
-• conversion_opposing_points→ 0
-• current_form_score       → 0
-• original_form_score      → 0
-• is_conversion            → false (default unless evidence supports conversion)
-• conversion_evidence      → [] (empty array is valid)
-• conversion_probability   → "Low"
-• form_confidence          → "Low" (use Low when evidence is insufficient, not omit)
-• form_conflicts           → []
-• form_reasoning           → "Insufficient evidence to determine form with confidence." (never omit)
-• caps_applied             → []
 
 Phase 1: ${JSON.stringify(p1)}
 Phase 2: ${JSON.stringify(p2)}
 
-Respond ONLY in valid JSON. Begin with { and end with }. Include every field listed:
+Respond ONLY in valid JSON:
 {
-  "form_detection_method":     "mechanical_signature|structural_logic|visual_impression",
+  "form_detection_method": "mechanical_signature|structural_logic|visual_impression",
   "mechanical_signature_detected": null,
-  "form_scoring_detail": [{"criterion":"","track":"form_support|conversion_support|form_opposing","score":0,"observed":""}],
-  "form_support_points":       0,
-  "form_opposing_points":      0,
+  "form_scoring_detail": [],
+  "form_support_points": 0,
+  "form_opposing_points": 0,
   "conversion_support_points": 0,
-  "conversion_opposing_points":0,
-  "current_form_candidate":    "unknown",
-  "current_form_score":        0,
-  "original_form_candidate":   "unknown",
-  "original_form_score":       0,
+  "conversion_opposing_points": 0,
+  "current_form_candidate": "unknown",
+  "current_form_score": 0,
+  "original_form_candidate": "unknown",
+  "original_form_score": 0,
   "alternate_form_candidates": [],
-  "is_conversion":             false,
-  "conversion_evidence":       [],
-  "conversion_probability":    "Low",
-  "form_confidence":           "Low",
-  "form_conflicts":            [],
-  "form_reasoning":            "Insufficient evidence to determine form with confidence.",
-  "caps_applied":              []
-}
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
-    // Targeted scan for hidden_structure — cavities are the most critical form evidence
-    const targetedStructure = await this.p0_targeted(
-      images,
-      "hidden_structure",
-      p0.observations_by_type,
-      { caseId: caseData.id, phase: "form_decision", prior_form_guess: p0.broad_form_impression }
-    );
-    const mergedStructure = this.mergeVisualObs(p0.observations_by_type, targetedStructure, "hidden_structure");
+  "is_conversion": false,
+  "conversion_evidence": [],
+  "conversion_probability": "Low",
+  "form_confidence": "Low",
+  "form_conflicts": [],
+  "form_reasoning": "Insufficient evidence to determine form with confidence.",
+  "caps_applied": []
+}`;
 
-    let _raw_p3;
-    try {
-      _raw_p3 = await this.callClaude(sys, [
-      ...this.imgs(images),
-      { type: "text", text: `VISUAL SCANNER OBSERVATIONS (full scan + targeted hidden_structure re-examination):\nConversion cavities / hidden structure: ${JSON.stringify(mergedStructure)}\nHardware: ${JSON.stringify(p0.observations_by_type.hardware||[])}\nBroad form impression: ${p0.broad_form_impression||"unknown"}\nTargeted structure summary: ${targetedStructure.targeted_summary||""}\n\nPhase 1: ${JSON.stringify(p1)}\nPhase 2: ${JSON.stringify(p2)}` },
+  let _raw_p3;
+  try {
+    _raw_p3 = await this.callClaude(sys, [
+      {
+        type: "text",
+        text:
+          `RECORDED OBSERVATIONS ONLY:\n` +
+          `Hidden structure: ${JSON.stringify(hiddenStructure, null, 2)}\n` +
+          `Hardware: ${JSON.stringify(hardware, null, 2)}\n` +
+          `Construction: ${JSON.stringify(construction, null, 2)}\n` +
+          `Broad form impression: ${p0?.broad_form_impression || "unknown"}\n\n` +
+          `Phase 1: ${JSON.stringify(p1, null, 2)}\n` +
+          `Phase 2: ${JSON.stringify(p2, null, 2)}`
+      },
     ]);
-    } catch(_e_p3) {
-      console.warn("[NCW P3] callClaude threw:", _e_p3.message);
-      _raw_p3 = { ok:false, error_type:"call_threw", error_message: _e_p3.message, raw_response:"" };
-    }
-    if (!_raw_p3 || _raw_p3.ok === false) {
-      console.warn("[NCW P3] Returning safe fallback");
-      return {
-        ok: true, _synthesized: true, _engine_status: "llm_unavailable",
-        current_form_candidate: "Unknown", original_form_candidate: "Unknown",
-        is_conversion: false, conversion_probability: "Low",
-        form_confidence: "Low", form_support_points: 0, form_opposing_points: 0,
-        conversion_support_points: 0, conversion_opposing_points: 0,
-        alternate_form_candidates: [], form_scoring_detail: [], conversion_evidence: [],
-        form_reasoning: "P3 LLM call failed — form unknown",
-        form_detection_method: "broad_fallback", mechanical_signature_detected: null,
-      };
-    }
-    return this.normalize(_raw_p3, "p3_form");
-  },
+  } catch (_e_p3) {
+    console.warn("[NCW P3] callClaude threw:", _e_p3.message);
+    _raw_p3 = { ok: false, error_type: "call_threw", error_message: _e_p3.message, raw_response: "" };
+  }
+
+  if (!_raw_p3 || _raw_p3.ok === false) {
+    console.warn("[NCW P3] Returning safe fallback");
+    return {
+      ok: true,
+      _synthesized: true,
+      _engine_status: "llm_unavailable",
+      current_form_candidate: "Unknown",
+      original_form_candidate: "Unknown",
+      is_conversion: false,
+      conversion_probability: "Low",
+      form_confidence: "Low",
+      form_support_points: 0,
+      form_opposing_points: 0,
+      conversion_support_points: 0,
+      conversion_opposing_points: 0,
+      alternate_form_candidates: [],
+      form_scoring_detail: [],
+      conversion_evidence: [],
+      form_reasoning: "P3 LLM call failed — form unknown",
+      form_detection_method: "broad_fallback",
+      mechanical_signature_detected: null,
+    };
+  }
+
+  return this.normalize(_raw_p3, "p3_form");
+},
 
   // ─────────────────────────────────────────────────────────────
   // PHASE 4 — Construction Analysis
