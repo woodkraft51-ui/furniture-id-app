@@ -5585,6 +5585,7 @@ Respond ONLY in valid JSON. Begin with {.`,
   async runAllPhases(caseData, images, intake, onPhase) {
   const so = {};
   const skip = (reason) => ({
+   const engine: any = PE;
     ok: true,
     skipped: true,
     skip_reason: reason,
