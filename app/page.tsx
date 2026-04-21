@@ -5685,21 +5685,21 @@ Respond ONLY in valid JSON. Begin with {.`,
         alternate_form_candidates: [],
       };
 
-  const p4 = this.triggered(p1, "run_construction")
+  const p4 = PE.triggered(p1, "run_construction")
     ? await runPhase(
         "4_construction",
         "Phase 4 — Construction Analysis",
         "phase_4_construction",
-        () => this.p4(caseData, evidence, p0, p1, p2, p3)
+        () => PE.p4(caseData, evidence, p0, p1, p2, p3)
       )
     : skip("No construction detail visible");
 
-  const p5 = this.triggered(p1, "run_hardware")
+  const p5 = PE.triggered(p1, "run_hardware")
     ? await runPhase(
         "5_hardware",
         "Phase 5 — Hardware Analysis",
         "phase_5_hardware",
-        () => this.p5(caseData, evidence, p0, p1, p2, p3, p4)
+        () => PE.p5(caseData, evidence, p0, p1, p2, p3, p4)
       )
     : skip("No hardware visible");
 
@@ -5707,21 +5707,21 @@ Respond ONLY in valid JSON. Begin with {.`,
     "6_conflict",
     "Phase 6 — Conflict Detection Engine",
     "phase_6_conflict",
-    () => this.p6_conflict(p0, p1, p2, p3, p4, p5)
+    () => PE.p6_conflict(p0, p1, p2, p3, p4, p5)
   );
 
   const p7 = await runPhase(
     "7_reconciliation",
     "Phase 7 — Reconciliation",
     "phase_7_reconciliation",
-    () => this.p7(p1, p2, p3, p4, p5, p6c)
+    () => PE.p7(p1, p2, p3, p4, p5, p6c)
   );
 
   const p8 = await runPhase(
     "8_valuation",
     "Phase 8 — Valuation",
     "phase_8_valuation",
-    () => this.p8(p3, p4, p5, p6c, p7, intake, caseData)
+    () => PE.p8(p3, p4, p5, p6c, p7, intake, caseData)
   );
 
    // ── Assemble final outputs ───────────────────────────────
