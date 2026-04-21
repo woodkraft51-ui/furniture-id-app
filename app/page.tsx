@@ -3344,7 +3344,6 @@ if (rawText.startsWith("```")) {
 
 console.warn("[NCW P0] callClaude returned ok:false. Type:", rawResult.error_type, "— attempting partial recovery from raw text.");
 
-responseText = rawText;
 
       // Try to extract JSON from raw text (may be wrapped in prose or partial)
       let recovered = null;
