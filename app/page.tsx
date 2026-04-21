@@ -1265,6 +1265,149 @@ const fs6 = stageOutputs.fs6 || null;
               ) : (
                 <div style={emptyText}>No weighted clues were returned.</div>
               )}
+              {report && analysisMode === "field_scan" && (
+  <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
+    <SectionCard title="Field Scan Summary">
+      <div style={{ fontSize: 18, fontWeight: 700, color: "#3d2d1f", marginBottom: 8 }}>
+        {fs6?.headline || "Field Scan Result"}
+      </div>
+      <div
+        style={{
+          fontSize: 15,
+          lineHeight: 1.65,
+          color: "#3e2f1f",
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        {report.final_report || "No field scan summary returned."}
+      </div>
+    </SectionCard>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 18,
+      }}
+    >
+      <SectionCard title="Identification">
+        <div style={metaRowStyle}>
+          <span>Primary ID</span>
+          <strong>{fs2?.primary_identification || "Unknown"}</strong>
+        </div>
+        <div style={metaRowStyle}>
+          <span>Alternate ID</span>
+          <strong>{fs2?.alternate_identification || "—"}</strong>
+        </div>
+
+        <div style={subheadStyle}>Style Context</div>
+        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+          {fs2?.style_context || "No style context returned."}
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Date Range">
+        <div style={metaRowStyle}>
+          <span>Working Range</span>
+          <strong>{fs2?.date_range || "Unknown"}</strong>
+        </div>
+
+        <div style={subheadStyle}>Reasoning</div>
+        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+          {fs2?.date_reasoning || "No date reasoning returned."}
+        </div>
+      </SectionCard>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 18,
+      }}
+    >
+      <SectionCard title="Value Range">
+        <div style={metaRowStyle}>
+          <span>Estimated Range</span>
+          <strong>{fs4?.valuation_display || "Unknown"}</strong>
+        </div>
+
+        <div style={subheadStyle}>Value Reasoning</div>
+        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+          {fs4?.value_reasoning || "No valuation reasoning returned."}
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Buy Guidance">
+        <div style={metaRowStyle}>
+          <span>Recommendation</span>
+          <strong>{fs5?.recommendation_display || "Unknown"}</strong>
+        </div>
+        <div style={metaRowStyle}>
+          <span>Fit Score</span>
+          <strong>{typeof fs5?.fit_score === "number" ? fs5.fit_score : "—"}</strong>
+        </div>
+        <div style={metaRowStyle}>
+          <span>Margin Estimate</span>
+          <strong>
+            {typeof fs5?.margin_estimate === "number"
+              ? `$${fs5.margin_estimate}`
+              : "—"}
+          </strong>
+        </div>
+
+        <div style={subheadStyle}>Recommendation Reasoning</div>
+        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+          {fs5?.recommendation_reasoning || "No recommendation reasoning returned."}
+        </div>
+      </SectionCard>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 18,
+      }}
+    >
+      <SectionCard title="What We Can Say">
+        {fs6?.supported_summary?.length ? (
+          <ul style={listStyle}>
+            {fs6.supported_summary.map((item: string) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <div style={emptyText}>No supported summary returned.</div>
+        )}
+      </SectionCard>
+
+      <SectionCard title="Limits and Risks">
+        {fs6?.limitations_summary?.length ? (
+          <ul style={listStyle}>
+            {fs6.limitations_summary.map((item: string) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <div style={emptyText}>No limitations summary returned.</div>
+        )}
+      </SectionCard>
+    </div>
+
+    <SectionCard title="Next Best Evidence">
+      {fs6?.next_steps?.length ? (
+        <ul style={listStyle}>
+          {fs6.next_steps.map((item: string) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <div style={emptyText}>No next steps returned.</div>
+      )}
+    </SectionCard>
+  </div>
+)}
             </SectionCard>
 
             <SectionCard title="Category Scores">
