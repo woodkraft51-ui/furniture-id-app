@@ -377,12 +377,21 @@ export default function Page() {
   }
 
   const stageOutputs = report?.stage_outputs || {};
-  const p1 = stageOutputs.p1 || null;
-  const p2 = stageOutputs.p2 || null;
-  const p3 = stageOutputs.p3 || null;
-  const p4 = stageOutputs.p4 || null;
-  const p5 = stageOutputs.p5 || null;
-  const p6 = stageOutputs.p6 || null;
+const analysisMode = report?.analysis_mode || intake.analysis_mode || "full_analysis";
+
+const p1 = stageOutputs.p1 || null;
+const p2 = stageOutputs.p2 || null;
+const p3 = stageOutputs.p3 || null;
+const p4 = stageOutputs.p4 || null;
+const p5 = stageOutputs.p5 || null;
+const p6 = stageOutputs.p6 || null;
+
+const fs1 = stageOutputs.fs1 || null;
+const fs2 = stageOutputs.fs2 || null;
+const fs3 = stageOutputs.fs3 || null;
+const fs4 = stageOutputs.fs4 || null;
+const fs5 = stageOutputs.fs5 || null;
+const fs6 = stageOutputs.fs6 || null;
 
   return (
     <main
