@@ -3508,7 +3508,7 @@ Return valid JSON only. Every category must be present. If evidence is not confi
 
       if (!recovered) {
         console.warn("[NCW P0] Partial recovery failed. Returning safe empty result. Pipeline continues with low-confidence caps.");
-        return safeEmpty(\`callClaude error: \${rawResult.error_type} — \${rawResult.error_message}\`, rawText);
+       return safeEmpty("callClaude error: " + rawResult.error_type + " — " + rawResult.error_message, rawText);
       }
 
       rawResult = recovered;
