@@ -2040,7 +2040,7 @@ Use short strings, short notes, no repeated prose, and no summary paragraphs ins
       };
     }
 
-  const raw = Array.isArray(data?.content)
+ const raw = Array.isArray(data?.content)
   ? data.content
       .filter(b => b && typeof b.text === "string")
       .map(b => b.text.trim())
@@ -2048,16 +2048,23 @@ Use short strings, short notes, no repeated prose, and no summary paragraphs ins
       .join("\n")
   : "";
 
-console.log("[NCW DEBUG RAW START]", raw.slice(0, 200));
+let cleaned = String(raw || "").trim();
+
+if (cleaned.startsWith("```")) {
+  cleaned = cleaned.replace(/^```[\w]*\n?/, "");
+  cleaned = cleaned.replace(/```$/, "");
+}
+
+console.log("[NCW DEBUG RAW START]", cleaned.slice(0, 200));
 
 // 🔥 FIRST ATTEMPT: direct JSON parse
 try {
-  const direct = JSON.parse(raw);
+  const direct = JSON.parse(cleaned);
   console.log("[NCW DIRECT PARSE SUCCESS]");
   return {
     ok: true,
     ...direct,
-    raw_response: raw,
+    raw_response: cleaned,
   };
 } catch (e) {
   console.warn("[NCW DIRECT PARSE FAILED]", e?.message);
@@ -2070,7 +2077,7 @@ try {
   " | usage=" + JSON.stringify(data.usage || {})
 );
 
-    if (!raw.trim()) {
+    if (!cleaned.trim()) {
       return {
         ok: false,
         error_type: "empty_response",
