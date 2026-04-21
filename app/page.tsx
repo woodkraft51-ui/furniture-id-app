@@ -3205,102 +3205,264 @@ Formula: confidence_pct = supporting / (supporting + opposing) × 100`;
     };
 
     // ── Build the prompt ───────────────────────────────────────
-    const sys = `You are the Visual Evidence Scanner for the NCW American Furniture Identification Engine.
+   const sys = `You are Phase 0 — the Visual Evidence Scanner for the NCW American Furniture Identification Engine.
 Scope: American furniture, 1600–present.
 
-════════════════════════════════════════════════════════
-STAGE A — RAW VISUAL OBSERVATIONS  (do this first)
-════════════════════════════════════════════════════════
+MISSION
+Inspect all submitted images exactly once and extract structured visual evidence for downstream reasoning phases.
+You are the ONLY phase allowed to inspect raw images directly.
+Downstream phases will reason only from your recorded evidence.
 
-Look at EVERY submitted image carefully. For each image, write down every visible physical clue in plain English.
+NON-NEGOTIABLE RULES
+1. Return ONLY valid JSON. No markdown. No code fences. No commentary before or after.
+2. You MUST include EVERY evidence category listed below, even if evidence is weak, obscured, or not visible.
+3. Never omit a category.
+4. If a category cannot be confirmed, return a LOW-confidence placeholder observation instead of leaving the category empty.
+5. Prefer:
+   - "not_visible_in_submitted_images"
+   - "obscured_or_insufficient_resolution"
+   - "insufficient_angle_for_confirmation"
+   over vague placeholders like "none_recorded".
+6. Only report what is actually visible. Do not infer evidence just because a form commonly has it.
+7. Hard negatives must always be reported if visible.
 
-DO NOT identify the furniture yet.
-DO NOT infer style or date yet.
-DO NOT skip weak or uncertain clues — label them tentative if needed.
+IMAGE TYPES SUBMITTED
+${JSON.stringify(images.map(i => i.image_type))}
 
-Record anything you can see, including:
-• hinged leaves / drop leaves / fold lines at top edge
-• swing leg, gate leg, pivot leg, or gate frame
-• turned legs, square-tapered legs, cabriole legs, straight legs
-• stretchers between legs
-• casters (wheels) under feet
-• drawers — how many, what joinery at corners if visible
-• doors — hinged, sliding, paneled
-• underside rails, apron, or support structure
-• support brackets, butterfly brackets, rule joints
-• hinge hardware — type, location, scale
-• pull hardware — bail, knob, ring, Eastlake, ceramic
-• lock escutcheons
-• fastener types — nail heads, screw heads
-• saw marks on underside boards
-• panel construction — solid, frame-and-panel, plywood
-• wood species clues — grain pattern, color, figure
-• finish appearance — sheen, crazing, color
-• labels, stamps, stencils, maker marks
-• repairs — patches, replaced boards, new fasteners
-• signs of conversion — ghost holes, removed mechanisms, mismatched wood
-• anything structurally absent that you would expect to see
+EVIDENCE CATEGORIES — ALL REQUIRED
+• toolmarks
+• fasteners
+• joinery
+• hardware
+• conversion_cavities
+• finish
+• construction
+• mechanical_structures
 
-CRITICAL RULE: If the photos clearly show a table form with hinged leaves,
-you MUST record "hinged leaves visible" and "drop leaf form" in at least one image entry.
-Do not omit obvious table mechanisms even at low confidence.
+CONFIDENCE SCALE
+• 80–100 = unmistakably visible
+• 60–79  = clearly visible with minor ambiguity
+• 40–59  = probably present but unclear
+• 20–39  = weak signal only
+• below 20 = do not report unless it is a hard negative
 
-════════════════════════════════════════════════════════
-STAGE B — NORMALIZED EVIDENCE SCHEMA  (do this second)
-════════════════════════════════════════════════════════
+WEIGHT MULTIPLIER RULES
+• default = 1.0
+• if visual_confidence < 60 → weight_multiplier = 0.5 and low_confidence_flag = true
+• hard negatives always use weight_multiplier = 1.0
+• if clue is visible but partially obscured, still report it with lower confidence
 
-Convert your Stage A observations into structured evidence fields.
+CRITICAL CATEGORY REQUIREMENTS
 
-Use these exact observation types: toolmarks, fasteners, joinery, hardware, conversion_cavities, finish, mechanical_structures.
+TOOLMARKS
+Look for:
+• pit_saw_marks
+• circular_saw_arcs
+• band_saw_lines
+• hand_plane_chatter
+• machine_routing_uniform
+If none are confirmable, still return one placeholder toolmark observation explaining why.
 
-For mechanical_structures, use these clue keys when applicable:
-drop_leaf_hinged, gateleg_support, rule_joint, swing_leg, butterfly_support,
-lift_lid, till_interior, drawer_present, multiple_drawer_case, door_present,
-slant_front, cylinder_roll, fall_front, pedestal_base, tilt_top, tripod_base,
-extension_mechanism, washstand_splash, mirror_attachment.
+FASTENERS
+Look for:
+• hand_forged_nail
+• cut_nail
+• wire_nail
+• slotted_handmade_screw
+• slotted_machine_screw
+• phillips_screw
+• staple_fastener
+If none are confirmable, still return one placeholder fastener observation explaining why.
 
-HARD NEGATIVES (always flag): phillips_screw, staple_fastener, plywood_drawer_bottom, modern_concealed_hinge, particle_board, mdf.
+JOINERY
+Look for:
+• hand_cut_dovetails
+• machine_dovetails
+• mortise_and_tenon
+• dowel_joinery
+• butt_joint_screwed
+• frame_and_panel
+• solid_board_drawer_bottom
+• glue_blocks
+• plywood_drawer_bottom
+If none are confirmable, still return one placeholder joinery observation explaining why.
 
-visual_confidence scale:
-80–100 = clearly visible  |  50–79 = visible with some uncertainty  |  20–49 = possible, mark low_confidence_flag:true  |  below 20 = omit
+HARDWARE
+Look for:
+• porcelain_caster
+• wood_caster
+• victorian_strap_hinge
+• batwing_brass_pull
+• eastlake_pull
+• surface_lock
+• modern_concealed_hinge
+Also note visible replacement indicators:
+• plugged holes
+• mismatch in oxidation
+• disturbed finish
+• shadow outlines
+If none are confirmable, still return one placeholder hardware observation explaining why.
 
-MINIMUM OUTPUT RULE:
-• If you recorded any table-form clues in Stage A, observations.mechanical_structures must not be empty.
-• If ANY clues were visible, observations must not be an empty object.
-• broad_form_impression is REQUIRED if any form is evident.
+CONVERSION CAVITIES
+Look for:
+• pedal_cavity_structure
+• treadle_mount
+• ice_chamber
+• structural_void
+If none are visible, still return one placeholder observation stating whether the relevant surfaces were visible and what prevented confirmation.
 
-════════════════════════════════════════════════════════
-OUTPUT FORMAT
-════════════════════════════════════════════════════════
+FINISH
+Look for:
+• shellac
+• oil_finish
+• polyurethane
+• shellac_crazing
+Also note if finish is obscured, refinished, or unreadable.
+If none are confirmable, still return one placeholder finish observation explaining why.
 
-Respond ONLY in valid JSON. Begin with { and include both stages:
+CONSTRUCTION
+Look for broad construction clues not already captured above:
+• apron structure
+• leaf support type
+• leg-to-apron construction
+• backboard construction
+• panel build
+• underside structure
+If none are confirmable, still return one placeholder construction observation explaining why.
 
+MECHANICAL STRUCTURES
+Look for:
+• drop_leaf_hinged
+• gateleg_support
+• rule_joint
+• swing_leg
+• lift_lid
+• till_interior
+• slant_front
+• cylinder_roll
+• multiple_drawer_case
+• drawer_present
+• door_present
+• pedestal_base
+• tilt_top
+• tripod_base
+• mirror_attachment
+If none are confirmable, still return one placeholder mechanical observation explaining why.
+
+WOOD / FORM / CONDITION SUMMARY
+Also provide:
+• mechanical_form_signature
+• primary_wood_observed
+• secondary_wood_observed
+• broad_form_impression
+• condition_impression
+• anomalies_noted
+
+REQUIRED JSON SHAPE
 {
-  "raw_visual_observations": [
-    {
-      "image_label": "overall_front",
-      "clues": [
-        "drop leaves visible on both sides of the fixed center top",
-        "turned legs with small casters at base",
-        "gate leg or swing leg visible folded against apron"
-      ]
-    }
-  ],
-  "scan_summary": {
-    "images_scanned": [],
-    "image_quality_issues": [],
-    "total_observations": 0,
-    "hard_negatives_found": [],
-    "scan_confidence": "high|moderate|low"
-  },
   "observations": {
-    "toolmarks":             [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "weight_multiplier":1.0, "visual_description":"", "era_implication":"" } ],
-    "fasteners":             [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "weight_multiplier":1.0, "hard_negative":false, "visual_description":"", "era_implication":"" } ],
-    "joinery":               [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "weight_multiplier":1.0, "hard_negative":false, "visual_description":"", "era_implication":"" } ],
-    "hardware":              [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "weight_multiplier":1.0, "hard_negative":false, "visual_description":"", "era_implication":"" } ],
-    "conversion_cavities":   [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "weight_multiplier":1.0, "visual_description":"", "structural_implication":"" } ],
-    "finish":                [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "weight_multiplier":1.0, "visual_description":"" } ],
-    "mechanical_structures": [ { "clue":"", "source_image":"", "image_region":"", "visual_confidence":0, "low_confidence_flag":false, "form_signature":"", "visual_description":"", "implied_form":"" } ]
+    "toolmarks": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "hard_negative": false,
+        "visual_description": "",
+        "era_implication": ""
+      }
+    ],
+    "fasteners": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "hard_negative": false,
+        "visual_description": "",
+        "era_implication": ""
+      }
+    ],
+    "joinery": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "hard_negative": false,
+        "visual_description": "",
+        "era_implication": ""
+      }
+    ],
+    "hardware": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "hard_negative": false,
+        "visual_description": "",
+        "era_implication": ""
+      }
+    ],
+    "conversion_cavities": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "visual_description": "",
+        "structural_implication": ""
+      }
+    ],
+    "finish": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "hard_negative": false,
+        "visual_description": ""
+      }
+    ],
+    "construction": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "hard_negative": false,
+        "visual_description": "",
+        "structural_implication": ""
+      }
+    ],
+    "mechanical_structures": [
+      {
+        "clue": "",
+        "source_image": "",
+        "image_region": "",
+        "visual_confidence": 0,
+        "low_confidence_flag": false,
+        "weight_multiplier": 1.0,
+        "form_signature": "",
+        "visual_description": "",
+        "implied_form": ""
+      }
+    ]
   },
   "mechanical_form_signature": "",
   "primary_wood_observed": "",
@@ -3309,630 +3471,9 @@ Respond ONLY in valid JSON. Begin with { and include both stages:
   "condition_impression": "excellent|good|fair|poor",
   "anomalies_noted": []
 }
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
 
-    // ── Call Claude — with fallback retry ──────────────────────
-    let rawResult = null;
-    let rawResponseText = "";
-    try {
-      rawResult = await this.callClaude(sys, [
-        ...this.imgs(images),
-        { type: "text", text: "Scan all submitted images. Report only what you can actually see. Respond ONLY in valid JSON starting with {." },
-      ]);
-      // callClaude already retries once on parse failure and tags ok:false on error
-    } catch(e) {
-      console.error("[NCW P0] callClaude threw:", e.message);
-      rawResult = { ok: false, error_type: "runtime_error", error_message: e.message, raw_response: "" };
-    }
-
-    // ── Tolerance layer ────────────────────────────────────────
-    // callClaude returns { ok: false, ... } on API or parse error.
-    // If ok === false, attempt recovery from raw_response text if present.
-    if (rawResult.ok === false) {
-      let rawText = rawResult.raw_response || "";
-
-// 🔥 STRIP markdown fences BEFORE any parsing
-rawText = String(rawText).trim();
-if (rawText.startsWith("```")) {
-  rawText = rawText.replace(/^```[\w]*\n?/, "");
-  rawText = rawText.replace(/```$/, "");
-}
-
-console.warn("[NCW P0] callClaude returned ok:false. Type:", rawResult.error_type, "— attempting partial recovery from raw text.");
-
-
-      // Try to extract JSON from raw text (may be wrapped in prose or partial)
-      let recovered = null;
-      try {
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) recovered = JSON.parse(jsonMatch[0]);
-      } catch(_e) { /* recovery attempt failed */ }
-
-      if (!recovered) {
-        console.warn("[NCW P0] Partial recovery failed. Returning safe empty result. Pipeline continues with low-confidence caps.");
-        return safeEmpty(`callClaude error: ${rawResult.error_type} — ${rawResult.error_message}`, rawText);
-      }
-
-      // Recovery succeeded — continue with recovered object
-      rawResult = recovered;
-      console.info("[NCW P0] Partial recovery succeeded from raw text.");
-    }
-
-    // ── Normalize the parsed result ────────────────────────────
-    const observationsByType = recoverObservations(rawResult, images);
-
-    if (!observationsByType) {
-      console.warn("[NCW P0] recoverObservations returned null — no usable observations. Returning safe empty result.");
-      return safeEmpty("No observations field found in response", rawResponseText);
-    }
-
-    // ── Count and flag hard negatives ──────────────────────────
-    const HARD_NEG_CLUES = new Set(["phillips_screw","plywood_structural","plywood_drawer_bottom","particle_board","mdf","modern_concealed_hinge","staple_fastener"]);
-    const hardNegativesDetected = [];
-    let totalObs = 0;
-
-    for (const [typeName, obsArr] of Object.entries(observationsByType as Record<string, any[]>)) {
-  for (const obs of (Array.isArray(obsArr) ? obsArr : [])) {
-        totalObs++;
-        if (HARD_NEG_CLUES.has(obs.clue) && obs.visual_confidence >= 40) {
-          hardNegativesDetected.push({
-            clue_key:           obs.clue,
-            visual_confidence:  obs.visual_confidence,
-            effective_confidence: (obs.visual_confidence / 100) * obs.weight_multiplier,
-            region_label:       obs.image_region || null,
-            source_image_id:    obs.source_image  || null,
-          });
-        }
-      }
-    }
-
-    // ── Assemble canonical output ──────────────────────────────
-    const recoveryUsed = !!(
-  (rawResult as any)._recovery ||
-  Object.values(observationsByType as Record<string, any[]>)
-    .flat()
-    .some((o: any) => o._recovered)
-);
-    if (recoveryUsed) console.info(`[NCW P0] Recovery normalization applied. Total observations recovered: ${totalObs}`);
-
-    return {
-      skipped:                false,
-      phase_0_status:         totalObs > 0 ? "ok" : "no_observations_found",
-      recovery_used:          recoveryUsed,
-      total_observations:     totalObs,
-      observations_by_type:   observationsByType,
-      hard_negatives_detected:hardNegativesDetected,
-      images_scanned:         images.filter(i => i.data_url).length,
-      scan_summary:           rawResult.scan_summary || { scan_confidence: totalObs > 0 ? "low" : "none", images_scanned:[], image_quality_issues:[], total_observations: totalObs, hard_negatives_found: hardNegativesDetected.map(h => h.clue_key) },
-      mechanical_form_signature: rawResult.mechanical_form_signature || "",
-      primary_wood_observed:  rawResult.primary_wood_observed   || "",
-      secondary_wood_observed:rawResult.secondary_wood_observed || "",
-      broad_form_impression:  rawResult.broad_form_impression   || rawResult.mechanical_form_signature || "",
-      condition_impression:   rawResult.condition_impression    || "unknown",
-      anomalies_noted:        rawResult.anomalies_noted         || [],
-      created_by_stage:       "phase_0_visual_scan",
-      non_destructive:        true,
-    };
-  },
-
-
-  // ─────────────────────────────────────────────────────────────
-  // PHASE 0b — Targeted Visual Scanner
-  // Called by each reasoning phase (p2–p5) for its own evidence
-  // category. Sends only the relevant images and a tight,
-  // category-specific prompt. Returns structured observations
-  // that are MERGED with the full scan results before scoring.
-  //
-  // This implements the "Both" strategy:
-  //   Phase 0  = broad full scan — catches everything visible
-  //   Phase 0b = targeted follow-up — goes deeper on one category
-  //              using the phase's specific knowledge
-  //
-  // Low-confidence rule: visual_confidence < 60 → weight_multiplier ×0.5,
-  // flag as low_confidence. Observation is still recorded and scored.
-  // ─────────────────────────────────────────────────────────────
-  async p0_targeted(images, category, existingObs, context) {
-    // Select relevant images for this category
-    const categoryImageMap = {
-      toolmarks:          ["underside","back","joinery_closeup"],
-      fasteners:          ["underside","back","joinery_closeup","hardware_closeup"],
-      joinery:            ["joinery_closeup","underside"],
-      construction:       ["joinery_closeup","underside","back"],
-      hardware:           ["hardware_closeup","overall_front","overall_side"],
-      hidden_structure:   ["underside","overall_side","overall_front"],
-      finish:             ["overall_front","hardware_closeup"],
-    };
-    const relevantTypes = categoryImageMap[category] || [];
-    const targetImages  = images.filter(i => relevantTypes.includes(i.image_type) && i.data_url);
-    if (targetImages.length === 0) return { skipped: true, category, skip_reason: "No relevant images for this category", new_observations: [] };
-
-    // Category-specific clue definitions
-    const categoryClues = {
-      toolmarks: [
-        { clue:"pit_saw_marks",           look_for:"Irregular diagonal or vertical straight lines, rough texture, slight waviness. Pre-1830.", hard_negative:false },
-        { clue:"circular_saw_arcs",       look_for:"Curved arc marks in consistent radius patterns. Post-1830, strong post-1840.", hard_negative:false },
-        { clue:"band_saw_lines",          look_for:"Very fine, straight, closely-spaced parallel lines. Post-1870.", hard_negative:false },
-        { clue:"hand_plane_chatter",      look_for:"Subtle regular ridges or scallop patterns across grain direction. Any era.", hard_negative:false },
-        { clue:"machine_routing_uniform", look_for:"Perfectly uniform routed profile, consistent depth, smooth walls on moldings. Post-1900.", hard_negative:false },
-      ],
-      fasteners: [
-        { clue:"hand_forged_nail",       look_for:"Irregular hammered head, not perfectly round. Shank tapers on all four sides. Pre-1800.", hard_negative:false },
-        { clue:"cut_nail",               look_for:"Rectangular cross-section, flat rectangular head, tapers on two sides only. 1790–1890.", hard_negative:false },
-        { clue:"wire_nail",              look_for:"Round shank, circular head, perfectly cylindrical. Post-1880.", hard_negative:false },
-        { clue:"slotted_handmade_screw", look_for:"Off-center slot, irregular thread pitch, blunt or tapered tip. 1770–1840.", hard_negative:false },
-        { clue:"slotted_machine_screw",  look_for:"Centered slot, uniform threads, sharp point, perfectly round head. Post-1840.", hard_negative:false },
-        { clue:"phillips_screw",         look_for:"Cross-shaped X recess in head. HARD NEGATIVE — post-1930.", hard_negative:true },
-        { clue:"staple_fastener",        look_for:"U-shaped wire staple driven into wood. HARD NEGATIVE — post-1945.", hard_negative:true },
-      ],
-      joinery: [
-        { clue:"hand_cut_dovetails",          look_for:"Dovetails with slightly irregular pin spacing, varying angles, subtle hand-cut variation. Knife scribe lines may be visible. Pre-1860.", hard_negative:false },
-        { clue:"machine_dovetails",           look_for:"Perfectly uniform pin spacing, identical angles, machine-perfect regularity. Post-1860.", hard_negative:false },
-        { clue:"mortise_and_tenon",           look_for:"Rectangular peg-in-slot at frame corners. May show wooden pegs or wedges. 1600–1900.", hard_negative:false },
-        { clue:"dowel_joinery",               look_for:"Round wooden pegs at joint faces, perfectly round holes. Post-1900.", hard_negative:false },
-        { clue:"solid_board_drawer_bottom",   look_for:"Single solid board chamfered at edges, grain runs side to side, may show shrinkage cracks. Pre-1920.", hard_negative:false },
-        { clue:"plywood_drawer_bottom",       look_for:"Laminated layers visible at drawer bottom edge. HARD NEGATIVE — post-1920.", hard_negative:true },
-        { clue:"frame_and_panel",             look_for:"Floating panel within grooved frame, panel edges visible in groove. Any era.", hard_negative:false },
-        { clue:"butt_joint_screwed",          look_for:"Simple flat joint held with screws only, no interlocking. Modern indicator.", hard_negative:false },
-      ],
-      hardware: [
-        { clue:"victorian_strap_hinge",     look_for:"Long decorative strap hinge, Gothic or Victorian revival styling, pointed ends, ornate surface detail. 1865–1895.", hard_negative:false },
-        { clue:"batwing_brass_pull",        look_for:"Bat-wing shaped brass bail pull with rosette backplate. HIGH replacement risk — note any oxidation or hole mismatch. 1720–1790.", hard_negative:false },
-        { clue:"eastlake_pull",             look_for:"Geometric brass pull, incised angular decoration, machined surface ornament. 1870–1890.", hard_negative:false },
-        { clue:"porcelain_caster",          look_for:"White ceramic or porcelain wheel on metal fork bracket. Not rubber, not metal wheel. 1830–1870.", hard_negative:false },
-        { clue:"wood_caster",               look_for:"Turned wooden wheel caster. 1800–1840.", hard_negative:false },
-        { clue:"surface_lock",              look_for:"Surface-mounted lock plate with visible keyhole. 1750–present.", hard_negative:false },
-        { clue:"modern_concealed_hinge",    look_for:"Cup-style hinge recessed into door face. Circular cup mortise. HARD NEGATIVE — post-1950.", hard_negative:true },
-        { clue:"phillips_in_hardware_mount",look_for:"Phillips screw visible in hardware mounting hole — hard negative for antique hardware originality.", hard_negative:true },
-        { clue:"filled_pull_holes",         look_for:"Plugged or filled screw holes visible beside or near current hardware — indicates replacement.", hard_negative:false },
-        { clue:"hardware_shadow_mismatch",  look_for:"Ghost outline or shadow of previous hardware that does not match current hardware shape — indicates replacement.", hard_negative:false },
-      ],
-      hidden_structure: [
-        { clue:"pedal_cavity_structure",  look_for:"Rectangular void or cavity at base consistent with foot pedals — typically full-width, 6–10 inches deep, may show bellows mount points or pedal pivot hardware. 1850–1920.", hard_negative:false },
-        { clue:"treadle_mount",           look_for:"Iron bracket holes, pivot points, or reinforced lower frame for treadle mechanism. 1860–1910.", hard_negative:false },
-        { clue:"ice_chamber",             look_for:"Lined interior compartment, thick walls, metal liner, drain fitting. Upper ice, lower food. 1880–1920.", hard_negative:false },
-        { clue:"structural_void",         look_for:"Unexplained void, cavity, or dead space inconsistent with current form — suggests removed mechanism.", hard_negative:false },
-        { clue:"removed_mechanism_ghost", look_for:"Mounting holes, wear patterns, hardware shadows, or routed channels indicating a removed original mechanism.", hard_negative:false },
-        { clue:"incompatible_top_surface",look_for:"Surface material or profile visually inconsistent with the base — different wood aging, different style era, added marble/glass.", hard_negative:false },
-      ],
-      finish: [
-        { clue:"shellac_crazing",    look_for:"Fine crackle or alligator pattern in amber/orange surface film. 1800–1920.", hard_negative:false },
-        { clue:"shellac_intact",     look_for:"Smooth amber/orange surface with slight sheen, no crackle. 1800–1920.", hard_negative:false },
-        { clue:"oil_finish_patina",  look_for:"Deep mellow glow, no surface film, grain fully visible, no sheen. Any era.", hard_negative:false },
-        { clue:"milk_paint",         look_for:"Opaque matte surface, chalky texture, often chipped or worn through to wood. 1700–1900.", hard_negative:false },
-        { clue:"polyurethane",       look_for:"Plastic-like surface sheen, possible orange-peel texture, may peel or chip at edges. HARD NEGATIVE for original finish. Post-1960.", hard_negative:true },
-        { clue:"painted_over_original",   look_for:"Brush strokes over original finish visible at edges, chips, or worn areas.", hard_negative:false },
-        { clue:"refinished_surface", look_for:"Uniform new finish obscuring age patina, no wear at natural contact points (edges, handles, feet).", hard_negative:false },
-      ],
-    };
-
-    const clues = categoryClues[category] || [];
-    if (clues.length === 0) return { skipped: true, category, skip_reason: "No clue definitions for category", new_observations: [] };
-
-    // Summarize what the full scan already found for this category
-    const alreadyFound = (existingObs[category] || [])
-      .map(o => `${o.clue} (confidence ${o.visual_confidence}, region: ${o.image_region || "unspecified"})`)
-      .join("; ") || "none detected in full scan";
-
-    const clueList = clues.map(c =>
-      `• ${c.clue}${c.hard_negative ? " ⚠ HARD NEGATIVE" : ""}\n  LOOK FOR: ${c.look_for}`
-    ).join("\n\n");
-
-    const sys = `You are the Targeted Visual Scanner for the NCW American Furniture Identification Engine.
-You are performing a FOCUSED re-examination of specific images for one evidence category: ${category.toUpperCase()}.
-
-This is the second pass of a two-pass visual system:
-• Pass 1 (Phase 0 full scan): broad sweep of all categories across all images
-• Pass 2 (this scan): deep focused examination of ${category} evidence in relevant images only
-
-YOUR TASK
-Look carefully at the submitted image(s) and report ONLY ${category} evidence.
-Be more precise than the full scan. Note exact locations. Describe what you see in forensic detail.
-
-WHAT THE FULL SCAN ALREADY FOUND FOR ${category.toUpperCase()}:
-${alreadyFound}
-Do NOT simply repeat the same observations. Look for additional detail, confirm or refute findings,
-or identify evidence the full scan may have missed.
-
-CLUES TO SCAN FOR:
-${clueList}
-
-CONFIDENCE SCORING (0–100):
-• 80–100: Unmistakably visible — clear identifying features present
-• 60–79:  Clearly visible but minor ambiguity (lighting, angle, partial view)
-• 40–59:  Probably present but unclear — APPLY ×0.5 weight, flag as low_confidence
-• 20–39:  Possibly present — APPLY ×0.5 weight, flag as low_confidence
-• below 20: Do NOT report — insufficient signal
-
-WEIGHT MULTIPLIER RULES:
-• Default: 1.0
-• visual_confidence < 60: override to 0.5, set low_confidence_flag = true
-• Image blurry or out of focus: reduce by additional 0.2
-• Clue only partially visible: reduce by 0.1
-• Hard negative clue: always report if confidence > 20, apply ×1.0 (never discount hard negatives)
-
-REGION LABEL: Be specific. Examples:
-"lower left corner", "center of drawer face", "right hinge mount area",
-"entire underside surface", "top right quadrant of back panel"
-
-IMAGE QUALITY: If an image is too blurry, dark, or obstructed to read this category reliably,
-set image_quality to "poor" and note why. Still attempt to report any visible clues.
-
-CONSERVATIVE RULE: Only report what you can actually see.
-Do not report evidence because the form type commonly has it.
-A low-confidence observation is more useful than a fabricated one.
-
-Additional context from prior phases: ${context || "none"}
-
-Respond ONLY in valid JSON:
-{
-  "category": "${category}",
-  "images_examined": [],
-  "image_quality_notes": "",
-  "new_observations": [
-    {
-      "clue": "",
-      "source_image": "",
-      "image_region": "",
-      "visual_confidence": 0,
-      "low_confidence_flag": false,
-      "weight_multiplier": 1.0,
-      "effective_confidence": 0,
-      "hard_negative": false,
-      "visual_description": "",
-      "era_implication": "",
-      "confirms_full_scan": true,
-      "notes": ""
-    }
-  ],
-  "full_scan_corrections": [
-    {
-      "original_clue": "",
-      "correction": "confirms|refutes|adds_detail",
-      "note": ""
-    }
-  ],
-  "targeted_summary": ""
-}
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
-
-    const imgContent = [];
-    for (const img of targetImages) {
-      const [h, b] = img.data_url.split(",");
-      const mt = h.match(/data:(.*?);/)[1] || "image/jpeg";
-      imgContent.push({ type:"image", source:{ type:"base64", media_type:mt, data:b } });
-      imgContent.push({ type:"text",  text:`[Image: ${img.image_type}]` });
-    }
-    imgContent.push({ type:"text", text:`Perform targeted ${category} scan. Report only what you actually see.` });
-
-    const result = await this.callClaude(sys, imgContent);
-
-    // Write new targeted observations to case_observations via API
-    if (Array.isArray(result.new_observations) && result.new_observations.length > 0 && context.caseId) {
-      for (const obs of result.new_observations) {
-        if (!obs.clue || obs.visual_confidence < 20) continue;
-        const libEntry = this.VISUAL_LIBRARY.find(c => c.clue_key === obs.clue);
-
-API.addObservation(context.caseId, {
-  observation_type:    category,
-  reference_table:     libEntry ? (libEntry.reference_table || null) : null,
-  reference_id:        obs.clue || null,
-  observed_value_text: obs.visual_description || obs.clue || "",
-  source_image_id:     obs.source_image || null,
-  raw_confidence:      (typeof obs.visual_confidence === "number" ? obs.visual_confidence : 0) / 100,
-  weight_multiplier:   typeof obs.weight_multiplier === "number" ? obs.weight_multiplier : 1,
-  is_hidden_surface:   (libEntry && libEntry.is_hidden_surface != null) ? libEntry.is_hidden_surface : false,
-  region_label:        obs.image_region || null,
-  created_by_stage:    `phase_0b_targeted_${category}`,
-  image_quality:       result.image_quality_notes ? "flagged" : "ok",
-});
-      }
-    }
-
-    return result;
-  },
-
-  // Helper: merge full scan + targeted scan observations for a category
- mergeVisualObs(fullScanObs, targetedResult, category) {
-  const full = Array.isArray(fullScanObs?.[category]) ? [...fullScanObs[category]] : [];
-  const targeted = Array.isArray(targetedResult?.new_observations)
-    ? targetedResult.new_observations
-    : [];
-
-  const merged = [...full];
-  const existingByClue = new Map();
-
-  for (const item of merged) {
-    if (item && item.clue) existingByClue.set(item.clue, item);
-  }
-
-  for (const t of targeted) {
-    if (!t?.clue || t.visual_confidence < 20) continue;
-
-    const existing = existingByClue.get(t.clue);
-
-    if (!existing) {
-      const copy = {
-        ...t,
-        source: "targeted_scan_added",
-      };
-      merged.push(copy);
-      existingByClue.set(t.clue, copy);
-      continue;
-    }
-
-    if ((t.visual_confidence || 0) > (existing.visual_confidence || 0)) {
-      existing.visual_confidence   = t.visual_confidence;
-      existing.weight_multiplier   = t.weight_multiplier;
-      existing.image_region        = t.image_region || existing.image_region;
-      existing.visual_description  = t.visual_description || existing.visual_description;
-      existing.low_confidence_flag = t.low_confidence_flag;
-      existing.source              = "targeted_scan_upgraded";
-    }
-  }
-
-  return merged;
-},
-  buildEvidenceBundle(caseData, p0) {
-  const observations = Array.isArray(caseData?.observations)
-    ? caseData.observations
-    : [];
-
-  const byType = {
-    construction: [],
-    toolmarks: [],
-    fasteners: [],
-    hardware: [],
-    materials: [],
-    finish: [],
-    interior_logic: [],
-    hidden_structure: [],
-    repairs: [],
-    style: [],
-    provenance: [],
-  };
-
-  for (const obs of observations) {
-    const type = obs?.observation_type || "construction";
-    if (!byType[type]) byType[type] = [];
-
-    byType[type].push({
-      id: obs.id || null,
-      clue: obs.reference_id || "",
-      observed_value_text: obs.observed_value_text || "",
-      source_image_id: obs.source_image_id || null,
-      raw_confidence: typeof obs.raw_confidence === "number" ? obs.raw_confidence : 0,
-      weight_multiplier: typeof obs.weight_multiplier === "number" ? obs.weight_multiplier : 1,
-      effective_confidence:
-        typeof obs.effective_confidence === "number"
-          ? obs.effective_confidence
-          : (
-              (typeof obs.raw_confidence === "number" ? obs.raw_confidence : 0) *
-              (typeof obs.weight_multiplier === "number" ? obs.weight_multiplier : 1)
-            ),
-      is_hidden_surface: !!obs.is_hidden_surface,
-      region_label: obs.region_label || null,
-      created_by_stage: obs.created_by_stage || null,
-    });
-  }
-
-  return {
-    observations,
-    byType,
-    clue_keys: observations.map(o => o.reference_id).filter(Boolean),
-    missing_evidence: caseData?.missing_evidence || {},
-    visual_scan_summary: p0 || null,
-    image_types_present: Array.isArray(caseData?.images)
-      ? caseData.images.map(i => i.image_type)
-      : [],
-  };
-},
- async p1(caseData, intake, evidence, p0) {
-  const imageTypesPresent = Array.isArray(evidence?.image_types_present)
-    ? evidence.image_types_present
-    : [];
-
-  const observedClues = Array.isArray(evidence?.clue_keys) ? evidence.clue_keys : [];
-  const byType = evidence?.byType || {};
-  const missingEvidence = evidence?.missing_evidence || {};
-
-  const evidenceSummary = {
-    observed_clue_keys: observedClues,
-    observation_counts: {
-      construction: (byType.construction || []).length,
-      toolmarks: (byType.toolmarks || []).length,
-      fasteners: (byType.fasteners || []).length,
-      hardware: (byType.hardware || []).length,
-      materials: (byType.materials || []).length,
-      finish: (byType.finish || []).length,
-      interior_logic: (byType.interior_logic || []).length,
-      hidden_structure: (byType.hidden_structure || []).length,
-    },
-    missing_evidence: missingEvidence,
-  };
-
-  const sys = `You are the Intake Controller for the NCW American Furniture Identification Engine.
-Scope: American furniture, 1600–present.
-
-PURPOSE
-Inventory all submitted evidence. Apply confidence caps. Set downstream phase triggers.
-Do NOT assign any positive scoring; this phase constrains later phases only.
-
-IMPORTANT
-Use the structured evidence bundle and recorded observations as the primary evidence source.
-Do NOT rescan images. Do NOT infer new visual details beyond the evidence inventory supplied.
-
-EVIDENCE CATEGORIES — assess each as present | partial | absent:
-• overall_form_view        — overall_front or overall_side image present
-• underside_hidden_surface — underside showing saw marks, nails, unfinished wood
-• hardware_closeup         — dedicated hardware image (hinges, pulls, locks, casters)
-• joinery_drawer_construction — joinery_closeup showing dovetails or drawer corners
-• interior_structure       — interior view showing shelves, cavities, or mechanism remnants
-• finish_closeup           — close view of surface finish or patina
-• back_board               — back panel showing secondary wood and tool marks
-
-EVIDENCE SUFFICIENCY:
-• High     — 4+ categories present including underside + joinery
-• Moderate — 2–3 categories present
-• Low      — only overall shot(s), no structural evidence
-
-CONFIDENCE CAP RULES:
-• underside_hidden_surface absent            → date_confidence_cap = "Moderate"
-• joinery_drawer_construction absent         → construction_confidence_cap = "Moderate"
-• hardware_closeup absent                    → hardware_originality_cap = "Low"
-• interior_structure absent AND complex case piece suspected → form_confidence_cap = "Moderate"
-• only one overall photo, nothing structural → overall_confidence_cap = "Low"
-• evidence_sufficiency = "Low"              → valuation_confidence_cap = "Low"
-
-PHASE TRIGGER RULES:
-• run_dating_grid  — true if underside OR joinery_closeup OR back_board visible
-• run_form_engine  — true if overall_front OR overall_side OR interior_structure visible
-• run_construction — true if joinery_closeup OR back_board OR underside visible
-• run_hardware     — true if hardware_closeup visible OR hardware apparent in any overall shot
-
-Image types submitted: ${JSON.stringify(imageTypesPresent)}
-Recorded evidence summary: ${JSON.stringify(evidenceSummary)}
-Phase 0 summary: ${JSON.stringify(p0)}
-
-Respond ONLY in valid JSON, no markdown fences:
-{
-  "visible_image_types": [],
-  "evidence_inventory": {
-    "overall_form_view": "present|partial|absent",
-    "underside_hidden_surface": "present|partial|absent",
-    "hardware_closeup": "present|partial|absent",
-    "joinery_drawer_construction": "present|partial|absent",
-    "interior_structure": "present|partial|absent",
-    "finish_closeup": "present|partial|absent",
-    "back_board": "present|partial|absent"
-  },
-  "evidence_sufficiency": "High|Moderate|Low",
-  "confidence_caps": {
-    "date_confidence_cap": "High|Moderate|Low|Inconclusive",
-    "construction_confidence_cap": "High|Moderate|Low|Inconclusive",
-    "hardware_originality_cap": "High|Moderate|Low|Inconclusive",
-    "form_confidence_cap": "High|Moderate|Low|Inconclusive",
-    "overall_confidence_cap": "High|Moderate|Low|Inconclusive",
-    "valuation_confidence_cap": "High|Moderate|Low|Inconclusive"
-  },
-  "phase_triggers": {
-    "run_dating_grid": true,
-    "run_form_engine": true,
-    "run_construction": true,
-    "run_hardware": true
-  },
-  "notes": ""
-}`;
-
-  let p1raw;
-  try {
-    p1raw = await this.callClaude(sys, [
-      {
-        type: "text",
-        text:
-          `Recorded observations only:\n${JSON.stringify(evidenceSummary, null, 2)}\n\n` +
-          `Phase 0 summary:\n${JSON.stringify(p0, null, 2)}\n\n` +
-          `User intake:\n${JSON.stringify(intake, null, 2)}\n\n` +
-          `User notes:\n${caseData.notes_from_user || "none"}`
-      },
-    ]);
-  } catch (callErr) {
-    console.warn("[NCW P1] callClaude threw:", callErr.message, "— routing to fallback");
-    p1raw = { ok: false, error_type: "call_threw", error_message: callErr.message, raw_response: "" };
-  }
-
-  console.info("[NCW P1] raw callClaude ok:", p1raw && p1raw.ok,
-    "| type:", typeof p1raw,
-    "| keys:", p1raw ? Object.keys(p1raw).join(", ") : "null",
-    "| raw_response_len:", (p1raw && p1raw.raw_response || "").length);
-
-  const p1normalized = this.normalize(p1raw, "p1_intake");
-
-  console.info("[NCW P1] after normalize ok:", p1normalized && p1normalized.ok,
-    "| evidence_sufficiency:", p1normalized && p1normalized.evidence_sufficiency);
-
-  if (!p1normalized || p1normalized.ok === false) {
-    console.warn("[NCW P1] Normalize failed — synthesizing safe p1 from recorded evidence");
-    return {
-      ok: true,
-      _synthesized: true,
-      visible_image_types: imageTypesPresent,
-      evidence_inventory: {
-        overall_form_view:
-          (imageTypesPresent.includes("overall_front") || imageTypesPresent.includes("overall_side")) ? "present" : "absent",
-        underside_hidden_surface:
-          imageTypesPresent.includes("underside") ? "present" : "absent",
-        hardware_closeup:
-          imageTypesPresent.includes("hardware_closeup") ? "present" : "absent",
-        joinery_drawer_construction:
-          imageTypesPresent.includes("joinery_closeup") ? "present" : "absent",
-        interior_structure:
-          imageTypesPresent.includes("interior") ? "present" : "absent",
-        finish_closeup:
-          imageTypesPresent.includes("finish_closeup") ? "present" : "absent",
-        back_board:
-          (imageTypesPresent.includes("back") || imageTypesPresent.includes("back_panel")) ? "present" : "absent",
-      },
-      evidence_sufficiency:
-        observedClues.length >= 4 ? "Moderate" : "Low",
-      confidence_caps: {
-        date_confidence_cap: imageTypesPresent.includes("underside") ? "High" : "Moderate",
-        construction_confidence_cap: imageTypesPresent.includes("joinery_closeup") ? "High" : "Moderate",
-        hardware_originality_cap: imageTypesPresent.includes("hardware_closeup") ? "Moderate" : "Low",
-        form_confidence_cap:
-          (imageTypesPresent.includes("overall_front") || imageTypesPresent.includes("overall_side")) ? "Moderate" : "Low",
-        overall_confidence_cap:
-          imageTypesPresent.length > 1 ? "Moderate" : "Low",
-        valuation_confidence_cap:
-          observedClues.length >= 4 ? "Moderate" : "Low",
-      },
-      phase_triggers: {
-        run_dating_grid:
-          imageTypesPresent.includes("underside") ||
-          imageTypesPresent.includes("joinery_closeup") ||
-          imageTypesPresent.includes("back") ||
-          imageTypesPresent.includes("back_panel"),
-        run_form_engine:
-          imageTypesPresent.includes("overall_front") ||
-          imageTypesPresent.includes("overall_side") ||
-          imageTypesPresent.includes("interior"),
-        run_construction:
-          imageTypesPresent.includes("joinery_closeup") ||
-          imageTypesPresent.includes("underside") ||
-          imageTypesPresent.includes("back") ||
-          imageTypesPresent.includes("back_panel"),
-        run_hardware:
-          imageTypesPresent.includes("hardware_closeup") ||
-          (byType.hardware || []).length > 0,
-      },
-      notes: "Synthesized from recorded evidence — P1 LLM call failed",
-      _debug: {
-        raw_phase1_response: (p1raw && p1raw.raw_response) || "",
-        normalized_phase1_payload: "fallback — LLM call failed",
-        validation_result: "fallback_synthesized",
-      },
-      raw_response: (p1raw && p1raw.raw_response) || "",
-    };
-  }
-
-  p1normalized._debug = {
-    raw_phase1_response:
-      (p1raw && p1raw.raw_response) ||
-      (p1raw && JSON.stringify(p1raw).slice(0, 300)) ||
-      "",
-    normalized_phase1_payload: "ok",
-    validation_result: "normalized",
-  };
-
-  return p1normalized;
-},
+FINAL INSTRUCTION
+Return valid JSON only. Every category must be present. If evidence is not confirmable, provide a low-confidence placeholder observation with a reason.`;
   // ─────────────────────────────────────────────────────────────
   // PHASE 2 — Rapid Dating Grid
   // Trigger: run_dating_grid = true
