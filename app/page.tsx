@@ -5650,7 +5650,7 @@ Respond ONLY in valid JSON. Begin with {.`,
 );
 
   // Freeze downstream reasoning input
-  const evidence = this.buildEvidenceBundle(caseData, p0);
+  const evidence = buildEvidenceBundle(caseData, p0);
 
   const p1 = await runPhase(
     "1_intake",
