@@ -548,46 +548,68 @@ export default function Page() {
                           )}
                         </div>
 
-                        <div style={{ display: "flex", gap: 8 }}>
-                          <label
-                            style={{
-                              display: "inline-block",
-                              background: "#5a3e1b",
-                              color: "#fffaf2",
-                              borderRadius: 8,
-                              padding: "9px 12px",
-                              cursor: "pointer",
-                              fontSize: 13,
-                              fontWeight: 600,
-                            }}
-                          >
-                            Upload
-                            <input
-                              type="file"
-                              accept="image/*"
-                              style={{ display: "none" }}
-                              onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
-                            />
-                          </label>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+  <label
+    style={{
+      display: "inline-block",
+      background: "#5a3e1b",
+      color: "#fffaf2",
+      borderRadius: 8,
+      padding: "9px 12px",
+      cursor: "pointer",
+      fontSize: 13,
+      fontWeight: 600,
+    }}
+  >
+    Upload Photo
+    <input
+      type="file"
+      accept="image/*"
+      style={{ display: "none" }}
+      onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
+    />
+  </label>
 
-                          {current && (
-                            <button
-                              type="button"
-                              onClick={() => removeCoreImage(slot.key)}
-                              style={{
-                                border: "1px solid #cebda4",
-                                background: "#fff8ee",
-                                color: "#6f4428",
-                                borderRadius: 8,
-                                padding: "9px 12px",
-                                cursor: "pointer",
-                                fontSize: 13,
-                              }}
-                            >
-                              Remove
-                            </button>
-                          )}
-                        </div>
+  <label
+    style={{
+      display: "inline-block",
+      background: "#7d6540",
+      color: "#fffaf2",
+      borderRadius: 8,
+      padding: "9px 12px",
+      cursor: "pointer",
+      fontSize: 13,
+      fontWeight: 600,
+    }}
+  >
+    Take Photo
+    <input
+      type="file"
+      accept="image/*"
+      capture="environment"
+      style={{ display: "none" }}
+      onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
+    />
+  </label>
+
+  {current && (
+    <button
+      type="button"
+      onClick={() => removeCoreImage(slot.key)}
+      style={{
+        border: "1px solid #cebda4",
+        background: "#fff8ee",
+        color: "#6f4428",
+        borderRadius: 8,
+        padding: "9px 12px",
+        cursor: "pointer",
+        fontSize: 13,
+      }}
+    >
+      Remove
+    </button>
+  )}
+</div>
                       </div>
                     </div>
                   );
