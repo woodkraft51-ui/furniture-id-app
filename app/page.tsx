@@ -4298,15 +4298,41 @@ Respond ONLY in valid JSON:
   // Reads joinery + hidden structure from p0 observations.
   // Construction outranks style. Conflicts → flag + explain.
   // ─────────────────────────────────────────────────────────────
-  async p4(caseData, images, p0, p1, p2, p3) {
-    const sys = `You are the Construction Analysis engine for the NCW American Furniture Identification Engine.
+  async p4(caseData, evidence, p0, p1, p2, p3) {
+  const joinery = Array.isArray(evidence?.byType?.construction)
+    ? evidence.byType.construction
+    : [];
+  const materials = Array.isArray(evidence?.byType?.materials)
+    ? evidence.byType.materials
+    : [];
+  const hiddenStructure = Array.isArray(evidence?.byType?.hidden_structure)
+    ? evidence.byType.hidden_structure
+    : [];
+  const toolmarks = Array.isArray(evidence?.byType?.toolmarks)
+    ? evidence.byType.toolmarks
+    : [];
+
+  const evidencePayload = {
+    joinery,
+    materials,
+    hidden_structure: hiddenStructure,
+    toolmarks,
+    secondary_wood_observed: p0?.secondary_wood_observed || "",
+    hard_negatives: Array.isArray(p0?.scan_summary?.hard_negatives_found)
+      ? p0.scan_summary.hard_negatives_found
+      : [],
+  };
+
+  const sys = `You are the Construction Analysis engine for the NCW American Furniture Identification Engine.
 
 ${this.wmSummary()}
 
 PURPOSE
 Evaluate how the piece was physically built. Establish manufacturing era, mode, and originality.
-Construction OUTRANKS style (Tier J weight ${WM.tiers.style} vs construction Tier weight ${WM.tiers.construction}).
-If they conflict, create a construction_conflict and attempt an explanation.
+
+IMPORTANT
+Use ONLY the recorded observations and structured evidence bundle.
+Do NOT rescan images. Do NOT rely on direct visual inspection beyond provided data.
 
 MANUFACTURING MODES:
 • hand_craft (pre-1830)
@@ -4315,34 +4341,11 @@ MANUFACTURING MODES:
 • factory_production (post-1890)
 • modern_production (post-1950)
 
-SCORING:
-
-TIER: hidden_structure (weight ${WM.tiers.hidden_structure}) — HIGHEST:
-• Pedal cavity / treadle mount / ice chamber → form_support +12, conversion_support +12
-• Structural voids from removed mechanism   → conversion_support +8
-
-TIER: construction (weight ${WM.tiers.construction}):
-• hand_cut_dovetails (irregular, hand variation) → age_support +12, originality_support +12
-• machine_dovetails (uniform)                   → age_support +10
-• mortise_and_tenon (hand-fitted)               → age_support +8, originality_support +8
-• dowel_joinery                                 → age_support +6 (post-1900 indicator)
-• butt_joint_screwed                            → age_opposing +8, originality_opposing +8
-• frame_and_panel                               → originality_support +6
-• solid_board_drawer_bottom                     → originality_support +6
-• glue_blocks                                   → originality_support +4
-• plywood_drawer_bottom                         → age_opposing +15 HARD NEGATIVE (WM: plywood_pre1905 = ${WM.negative_rules.plywood_pre1905})
-
-TIER: materials (weight ${WM.tiers.materials}):
-• plywood structural   → age_opposing +${Math.abs(WM.negative_rules.plywood_pre1905)} HARD NEGATIVE eliminates pre-1905
-• particle_board       → age_opposing +${Math.abs(WM.negative_rules.particle_board)}, originality_opposing +25 HARD NEGATIVE
-• MDF                  → age_opposing +${Math.abs(WM.negative_rules.mdf)}, originality_opposing +25 HARD NEGATIVE
-• poplar secondary     → age_support +5
-• gumwood secondary    → age_support +4 (1880–1940)
-• pine secondary       → originality_support +3
-
-CONFLICT EXPLANATIONS — attempt one if construction conflicts with style or form:
-revival_style | replacement_parts | antique_repair | conversion | composite_marriage_piece |
-early_industrial_transition | rural_persistence_of_older_methods
+SCORING PRIORITY:
+1. hidden_structure (highest weight)
+2. construction (joinery)
+3. materials
+4. toolmarks (supporting)
 
 Apply construction_confidence_cap from Phase 1.
 
@@ -4352,62 +4355,75 @@ Phase 3: ${JSON.stringify(p3)}
 
 Respond ONLY in valid JSON:
 {
-  "construction_scoring_detail": [{"observation":"","tier":"hidden_structure|construction|materials","tracks":["age_support"],"score":0,"notes":""}],
-  "age_support_points":             0,
-  "age_opposing_points":            0,
-  "originality_support_points":     0,
-  "originality_opposing_points":    0,
-  "form_support_from_structure":    0,
-  "conversion_support_from_structure":0,
-  "manufacturing_mode":             "",
-  "primary_joinery_type":           "",
-  "joinery_confidence":             0,
-  "drawer_construction":            "",
-  "back_panel_construction":        "",
-  "secondary_wood":                 "",
-  "special_structures":             [],
-  "structural_anomalies":           [],
-  "hard_negatives_triggered":       [],
-  "construction_date_range":        "",
-  "construction_conflicts":         [{"conflict":"","explanation_attempted":"","resolved":false}],
-  "construction_confidence":        "Moderate",
-  "caps_applied":                   []
-}
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
-    // Targeted scans — joinery is the primary dating surface; construction catches materials
-    const targetedJoinery      = await this.p0_targeted(images, "joinery",      p0.observations_by_type, { caseId:caseData.id, phase:"construction_analysis" });
-    const targetedConstruction = await this.p0_targeted(images, "construction", p0.observations_by_type, { caseId:caseData.id, phase:"construction_analysis" });
-    const mergedJoinery      = this.mergeVisualObs(p0.observations_by_type, targetedJoinery,      "joinery");
-    const mergedConstruction = this.mergeVisualObs(p0.observations_by_type, targetedConstruction, "construction");
+  "construction_scoring_detail": [],
+  "age_support_points": 0,
+  "age_opposing_points": 0,
+  "originality_support_points": 0,
+  "originality_opposing_points": 0,
+  "form_support_from_structure": 0,
+  "conversion_support_from_structure": 0,
+  "manufacturing_mode": "",
+  "primary_joinery_type": "",
+  "joinery_confidence": 0,
+  "drawer_construction": "",
+  "back_panel_construction": "",
+  "secondary_wood": "",
+  "special_structures": [],
+  "structural_anomalies": [],
+  "hard_negatives_triggered": [],
+  "construction_date_range": "",
+  "construction_conflicts": [],
+  "construction_confidence": "Moderate",
+  "caps_applied": []
+}`;
 
-    let _raw_p4;
-    try {
-      _raw_p4 = await this.callClaude(sys, [
-      ...this.imgs(images),
-      { type: "text", text: `VISUAL SCANNER OBSERVATIONS (full scan + targeted joinery/construction re-examination):\nJoinery: ${JSON.stringify(mergedJoinery)}\nConstruction: ${JSON.stringify(mergedConstruction)}\nConversion cavities: ${JSON.stringify(p0.observations_by_type.conversion_cavities||[])}\nToolmarks: ${JSON.stringify(p0.observations_by_type.toolmarks||[])}\nSecondary wood observed: ${p0.secondary_wood_observed||"unknown"}\nTargeted joinery summary: ${targetedJoinery.targeted_summary||""}\nTargeted construction summary: ${targetedConstruction.targeted_summary||""}\n\nP1: ${JSON.stringify(p1)}\nP2: ${JSON.stringify(p2)}\nP3: ${JSON.stringify(p3)}` },
+  let _raw_p4;
+  try {
+    _raw_p4 = await this.callClaude(sys, [
+      {
+        type: "text",
+        text:
+          `RECORDED OBSERVATIONS ONLY:\n` +
+          `Joinery / construction: ${JSON.stringify(joinery, null, 2)}\n` +
+          `Materials: ${JSON.stringify(materials, null, 2)}\n` +
+          `Hidden structure: ${JSON.stringify(hiddenStructure, null, 2)}\n` +
+          `Toolmarks: ${JSON.stringify(toolmarks, null, 2)}\n` +
+          `Secondary wood: ${p0?.secondary_wood_observed || ""}\n\n` +
+          `Phase 1: ${JSON.stringify(p1, null, 2)}\n` +
+          `Phase 2: ${JSON.stringify(p2, null, 2)}\n` +
+          `Phase 3: ${JSON.stringify(p3, null, 2)}`
+      },
     ]);
-    } catch(_e_p4) {
-      console.warn("[NCW P4] callClaude threw:", _e_p4.message);
-      _raw_p4 = { ok:false, error_type:"call_threw", error_message: _e_p4.message, raw_response:"" };
-    }
-    if (!_raw_p4 || _raw_p4.ok === false) {
-      console.warn("[NCW P4] Returning safe fallback");
-      return {
-        ok: true, _synthesized: true, _engine_status: "llm_unavailable",
-        primary_joinery_type: "unknown", manufacturing_mode: "unknown",
-        drawer_construction: "unknown", back_panel_construction: "unknown",
-        secondary_wood: "", construction_date_range: "Date uncertain",
-        construction_confidence: "Low", construction_support_points: 0, construction_opposing_points: 0,
-        structural_anomalies: [], special_structures: [], hard_negatives_triggered: [],
-        construction_conflicts: [], caps_applied: [],
-      };
-    }
-    return this.normalize(_raw_p4, "p4_construction");
-  },
+  } catch (_e_p4) {
+    console.warn("[NCW P4] callClaude threw:", _e_p4.message);
+    _raw_p4 = { ok: false, error_type: "call_threw", error_message: _e_p4.message, raw_response: "" };
+  }
+
+  if (!_raw_p4 || _raw_p4.ok === false) {
+    console.warn("[NCW P4] Returning safe fallback");
+    return {
+      ok: true,
+      _synthesized: true,
+      _engine_status: "llm_unavailable",
+      primary_joinery_type: "unknown",
+      manufacturing_mode: "unknown",
+      drawer_construction: "unknown",
+      back_panel_construction: "unknown",
+      secondary_wood: "",
+      construction_date_range: "Date uncertain",
+      construction_confidence: "Low",
+      construction_support_points: 0,
+      construction_opposing_points: 0,
+      structural_anomalies: [],
+      special_structures: [],
+      hard_negatives_triggered: [],
+      construction_conflicts: [],
+      caps_applied: [],
+    };
+  }
+
+  return this.normalize(_raw_p4, "p4_construction");
+},
 
   // ─────────────────────────────────────────────────────────────
   // PHASE 5 — Hardware Analysis
