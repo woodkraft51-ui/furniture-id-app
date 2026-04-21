@@ -3921,8 +3921,38 @@ Respond ONLY in valid JSON, no markdown fences:
   // Reads from p0 visual observations first.
   // Style is ignored except as tie-breaker when structural weak.
   // ─────────────────────────────────────────────────────────────
- async p2(caseData, evidence, p0, p1) {
-    const sys = `You are the Rapid Dating Grid engine for the NCW American Furniture Identification Engine.
+async p2(caseData, evidence, p0, p1) {
+  const toolmarks = Array.isArray(evidence?.byType?.toolmarks)
+    ? evidence.byType.toolmarks
+    : [];
+  const fasteners = Array.isArray(evidence?.byType?.fasteners)
+    ? evidence.byType.fasteners
+    : [];
+  const construction = Array.isArray(evidence?.byType?.construction)
+    ? evidence.byType.construction
+    : [];
+  const materials = Array.isArray(evidence?.byType?.materials)
+    ? evidence.byType.materials
+    : [];
+  const finish = Array.isArray(evidence?.byType?.finish)
+    ? evidence.byType.finish
+    : [];
+
+  const hardNegativesFromP0 = Array.isArray(p0?.scan_summary?.hard_negatives_found)
+    ? p0.scan_summary.hard_negatives_found
+    : [];
+
+  const evidencePayload = {
+    toolmarks,
+    fasteners,
+    construction,
+    materials,
+    finish,
+    hard_negatives_found: hardNegativesFromP0,
+    clue_keys: Array.isArray(evidence?.clue_keys) ? evidence.clue_keys : [],
+  };
+
+  const sys = `You are the Rapid Dating Grid engine for the NCW American Furniture Identification Engine.
 Scope: American furniture, 1600–present.
 
 ${this.wmSummary()}
@@ -3930,6 +3960,10 @@ ${this.wmSummary()}
 PURPOSE
 Build an initial date band by intersecting physical clue era windows.
 IGNORE decorative style except as tie-breaker when Tier A–D evidence is weak.
+
+IMPORTANT
+Use the recorded evidence bundle and structured observations as the only evidence source.
+Do NOT rescan images. Do NOT request or rely on raw photo input in this phase.
 
 SCORING — use these exact values from the WM clue table:
 
@@ -3973,7 +4007,8 @@ DATE RANGE LOGIC:
 4. Hard negatives OVERRIDE supporting evidence — if triggered, state what era is eliminated.
 5. Tier G–I clues narrow further only.
 
-CONFLICT: If 2+ Tier A–D clues produce non-overlapping date ranges → set dating_conflict flag, lower confidence to Low.
+CONFLICT:
+If 2+ Tier A–D clues produce non-overlapping date ranges, set dating_conflict flag and lower confidence to Low.
 
 CONFIDENCE:
 • High     — 4+ Tier A–D clues align in narrow range, no conflict
@@ -4002,148 +4037,128 @@ Respond ONLY in valid JSON:
   "dating_conflicts":       [],
   "dating_confidence":      "Moderate",
   "caps_applied":           []
-}
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
-    // Phase 2 uses images for context but reads clues primarily from p0 observations.
-    // First run a targeted toolmark/fastener scan, then merge with full scan results.
-    const targeted = await this.p0_targeted(
-      images,
-      "toolmarks",
-      p0.observations_by_type,
-      { caseId: caseData.id, phase: "dating_grid" }
-    );
-    const targetedFasteners = await this.p0_targeted(
-      images,
-      "fasteners",
-      p0.observations_by_type,
-      { caseId: caseData.id, phase: "dating_grid" }
-    );
-    const mergedToolmarks = Array.isArray((targeted || {}).new_observations)
-      ? this.mergeVisualObs(p0.observations_by_type, targeted, "toolmarks")
-      : (Array.isArray((p0.observations_by_type || {}).toolmarks) ? p0.observations_by_type.toolmarks : []);
-    const mergedFasteners = Array.isArray((targetedFasteners || {}).new_observations)
-      ? this.mergeVisualObs(p0.observations_by_type, targetedFasteners, "fasteners")
-      : (Array.isArray((p0.observations_by_type || {}).fasteners) ? p0.observations_by_type.fasteners : []);
-    const visualObs = { ...(p0.observations_by_type || {}), toolmarks: mergedToolmarks, fasteners: mergedFasteners };
+}`;
 
-    let p2raw;
-    try {
-      p2raw = await this.callClaude(sys, [
-        ...this.imgs(images),
-        { type: "text", text: `VISUAL SCANNER OBSERVATIONS (full scan + targeted re-examination — use as primary evidence):\nToolmarks: ${JSON.stringify(mergedToolmarks)}\nFasteners: ${JSON.stringify(mergedFasteners)}\nJoinery: ${JSON.stringify(visualObs.joinery||[])}\nFinish: ${JSON.stringify(visualObs.finish||[])}\nHard negatives found: ${JSON.stringify(p0.scan_summary.hard_negatives_found||[])}\nTargeted toolmark summary: ${targeted.targeted_summary||""}\nTargeted fastener summary: ${targetedFasteners.targeted_summary||""}\n\nPhase 1 (Intake): ${JSON.stringify(p1)}` },
-      ]);
-    } catch(callErr) {
-      console.warn("[NCW P2] callClaude threw:", callErr.message, "— using fallback");
-      p2raw = { ok:false, error_type:"call_threw", error_message: callErr.message, raw_response:"" };
-    }
-
-    console.info("[NCW P2] callClaude ok:", p2raw && p2raw.ok,
-      "| error_type:", (p2raw && p2raw.error_type) || "none",
-      "| raw_preview:", (p2raw && p2raw.raw_response || "").slice(0, 80));
-
-    // If the network call failed, synthesize a minimal safe p2 from available evidence
-    if (!p2raw || p2raw.ok === false) {
-      console.warn("[NCW P2] Synthesizing safe fallback p2");
-      const hasUndersideObs = (mergedToolmarks.length + mergedFasteners.length) > 0;
-      return {
-        ok: true,
-        _synthesized: true,
-        _raw_phase2_response_preview: (p2raw && p2raw.raw_response || "").slice(0, 200),
-        phase2_json_extracted: false,
-        phase2_schema_valid:   false,
-        toolmark_observations:     mergedToolmarks,
-        fastener_observations:     mergedFasteners,
-        joinery_observations:      [],
-        material_observations:     [],
-        finish_observations:       [],
-        primary_date_range:        hasUndersideObs ? "Date uncertain — engine unavailable" : "Date uncertain — engine unavailable",
-        earliest_possible_year:    1800,
-        latest_possible_year:      1975,
-        dating_confidence:         "Low",
-        key_dating_evidence:       mergedToolmarks.slice(0,3).map(o => o.clue || ""),
-        negative_evidence_applied: [],
-        hard_negatives_triggered:  [],
-        dating_conflicts:          [],
-        caps_applied:              [],
-        era_intersection_logic:    "Synthesized from image observations — P2 LLM call failed",
-        age_support_points:        0,
-        age_opposing_points:       0,
-        new_observations:          [],
-        candidates:                [],
-        eliminated:                [],
-        confidence_adjustments:    [],
-      };
-    }
-
-    let p2parsed = null;
-
-try {
-  p2parsed = parseModelJSON((p2raw && p2raw.raw_response) || "");
-} catch (e) {
-  console.warn("[NCW P2] parseModelJSON failed — attempting fallback");
-
-  const cleaned = String((p2raw && p2raw.raw_response) || "");
-
-  for (let i = cleaned.length - 1; i > 0; i--) {
-    const slice = cleaned.slice(0, i);
-    try {
-      p2parsed = JSON.parse(slice);
-      break;
-    } catch (_) {}
+  let p2raw;
+  try {
+    p2raw = await this.callClaude(sys, [
+      {
+        type: "text",
+        text:
+          `RECORDED OBSERVATIONS ONLY:\n` +
+          `Toolmarks: ${JSON.stringify(toolmarks, null, 2)}\n` +
+          `Fasteners: ${JSON.stringify(fasteners, null, 2)}\n` +
+          `Construction: ${JSON.stringify(construction, null, 2)}\n` +
+          `Materials: ${JSON.stringify(materials, null, 2)}\n` +
+          `Finish: ${JSON.stringify(finish, null, 2)}\n` +
+          `Hard negatives found: ${JSON.stringify(hardNegativesFromP0, null, 2)}\n\n` +
+          `Phase 1 (Intake): ${JSON.stringify(p1, null, 2)}`
+      },
+    ]);
+  } catch (callErr) {
+    console.warn("[NCW P2] callClaude threw:", callErr.message, "— using fallback");
+    p2raw = { ok: false, error_type: "call_threw", error_message: callErr.message, raw_response: "" };
   }
-}
 
-if (!p2parsed) {
-  console.warn("[NCW P2] Unable to recover JSON — returning fallback");
-  const hasUndersideObs = (mergedToolmarks.length + mergedFasteners.length) > 0;
-  return {
-    ok: true,
-    _synthesized: true,
-    _raw_phase2_response_preview: ((p2raw && p2raw.raw_response) || "").slice(0, 200),
-    phase2_json_extracted: false,
-    phase2_schema_valid: false,
-    toolmark_observations: mergedToolmarks,
-    fastener_observations: mergedFasteners,
-    joinery_observations: [],
-    material_observations: [],
-    finish_observations: [],
-    primary_date_range: "Date uncertain — engine unavailable",
-    earliest_possible_year: 1800,
-    latest_possible_year: 1975,
-    dating_confidence: "Low",
-    key_dating_evidence: mergedToolmarks.slice(0, 3).map(o => o.clue || ""),
-    negative_evidence_applied: [],
-    hard_negatives_triggered: [],
-    dating_conflicts: [],
-    caps_applied: [],
-    era_intersection_logic: "Synthesized from image observations — P2 JSON recovery failed",
-    age_support_points: 0,
-    age_opposing_points: 0,
-    new_observations: [],
-    candidates: [],
-    eliminated: [],
-    confidence_adjustments: [],
-  };
-}
+  console.info("[NCW P2] callClaude ok:", p2raw && p2raw.ok,
+    "| error_type:", (p2raw && p2raw.error_type) || "none",
+    "| raw_preview:", (p2raw && p2raw.raw_response || "").slice(0, 80));
 
-const p2normalized = this.normalize(p2parsed, "p2_dating");
+  if (!p2raw || p2raw.ok === false) {
+    console.warn("[NCW P2] Synthesizing safe fallback p2 from recorded evidence");
+    const hasDatingObs = (toolmarks.length + fasteners.length + construction.length + materials.length + finish.length) > 0;
+    return {
+      ok: true,
+      _synthesized: true,
+      _raw_phase2_response_preview: ((p2raw && p2raw.raw_response) || "").slice(0, 200),
+      phase2_json_extracted: false,
+      phase2_schema_valid: false,
+      toolmark_observations: toolmarks,
+      fastener_observations: fasteners,
+      joinery_observations: construction,
+      material_observations: materials,
+      finish_observations: finish,
+      primary_date_range: hasDatingObs ? "Date uncertain — engine unavailable" : "Date uncertain — limited evidence",
+      earliest_possible_year: 1800,
+      latest_possible_year: 1975,
+      dating_confidence: "Low",
+      key_dating_evidence: [...toolmarks, ...fasteners, ...construction].slice(0, 3).map(o => o.clue || ""),
+      negative_evidence_applied: [],
+      hard_negatives_triggered: hardNegativesFromP0,
+      dating_conflicts: [],
+      caps_applied: [],
+      era_intersection_logic: "Synthesized from recorded observations — P2 LLM call failed",
+      age_support_points: 0,
+      age_opposing_points: 0,
+      new_observations: [],
+      candidates: [],
+      eliminated: [],
+      confidence_adjustments: [],
+    };
+  }
 
-    // Guarantee schema completeness on the normalized result
-    if (!Array.isArray(p2normalized.new_observations))       p2normalized.new_observations = [];
-    if (!Array.isArray(p2normalized.candidates))             p2normalized.candidates = [];
-    if (!Array.isArray(p2normalized.eliminated))             p2normalized.eliminated = [];
-    if (!Array.isArray(p2normalized.confidence_adjustments)) p2normalized.confidence_adjustments = [];
-    p2normalized._raw_phase2_response_preview = (p2raw.raw_response || "").slice(0, 200);
-    p2normalized.phase2_json_extracted = true;
-    p2normalized.phase2_schema_valid   = true;
+  let p2parsed = null;
 
-    return p2normalized;
-  },
+  try {
+    p2parsed = parseModelJSON((p2raw && p2raw.raw_response) || "");
+  } catch (e) {
+    console.warn("[NCW P2] parseModelJSON failed — attempting fallback");
 
+    const cleaned = String((p2raw && p2raw.raw_response) || "");
+
+    for (let i = cleaned.length - 1; i > 0; i--) {
+      const slice = cleaned.slice(0, i);
+      try {
+        p2parsed = JSON.parse(slice);
+        break;
+      } catch (_) {}
+    }
+  }
+
+  if (!p2parsed) {
+    console.warn("[NCW P2] Unable to recover JSON — returning fallback");
+    return {
+      ok: true,
+      _synthesized: true,
+      _raw_phase2_response_preview: ((p2raw && p2raw.raw_response) || "").slice(0, 200),
+      phase2_json_extracted: false,
+      phase2_schema_valid: false,
+      toolmark_observations: toolmarks,
+      fastener_observations: fasteners,
+      joinery_observations: construction,
+      material_observations: materials,
+      finish_observations: finish,
+      primary_date_range: "Date uncertain — engine unavailable",
+      earliest_possible_year: 1800,
+      latest_possible_year: 1975,
+      dating_confidence: "Low",
+      key_dating_evidence: [...toolmarks, ...fasteners, ...construction].slice(0, 3).map(o => o.clue || ""),
+      negative_evidence_applied: [],
+      hard_negatives_triggered: hardNegativesFromP0,
+      dating_conflicts: [],
+      caps_applied: [],
+      era_intersection_logic: "Synthesized from recorded observations — P2 JSON recovery failed",
+      age_support_points: 0,
+      age_opposing_points: 0,
+      new_observations: [],
+      candidates: [],
+      eliminated: [],
+      confidence_adjustments: [],
+    };
+  }
+
+  const p2normalized = this.normalize(p2parsed, "p2_dating");
+
+  if (!Array.isArray(p2normalized.new_observations)) p2normalized.new_observations = [];
+  if (!Array.isArray(p2normalized.candidates)) p2normalized.candidates = [];
+  if (!Array.isArray(p2normalized.eliminated)) p2normalized.eliminated = [];
+  if (!Array.isArray(p2normalized.confidence_adjustments)) p2normalized.confidence_adjustments = [];
+  p2normalized._raw_phase2_response_preview = (p2raw.raw_response || "").slice(0, 200);
+  p2normalized.phase2_json_extracted = true;
+  p2normalized.phase2_schema_valid = true;
+
+  return p2normalized;
+},
   // ─────────────────────────────────────────────────────────────
   // PHASE 3 — Form Decision Engine
   // Trigger: run_form_engine = true
