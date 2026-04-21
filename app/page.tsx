@@ -2260,12 +2260,12 @@ Use short strings, short notes, no repeated prose, and no summary paragraphs ins
         return { ok: true, ...parsed };
       } catch (retryErr) {
         return {
-          ok: false,
-          error_type: "json_parse_error",
-          error_message: `JSON parse failed: ${parseErr.message}. Retry also failed: ${retryErr.message}`,
-          raw_response: cleaned,
-          retry_attempted: true,
-        };
+  ok: false,
+  error_type: "json_parse_error",
+  error_message: `JSON parse failed: ${parseErr.message}. Retry also failed: ${retryErr.message}`,
+  raw_response: cleaned,
+  retry_attempted: true,
+};
       }
     }
   },
