@@ -1026,7 +1026,7 @@ const fs6 = stageOutputs.fs6 || null;
           </div>
         </div>
 
-        {report && (
+        {report && analysisMode === "full_analysis" && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
             <SectionCard title="Supported Findings">
               {p6?.supported_findings?.length ? (
