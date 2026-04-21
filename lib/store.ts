@@ -4,9 +4,6 @@ let caseCounter = 1000;
 let obsCounter = 0;
 
 export const API = {
-  // ===============================
-  // CREATE CASE
-  // ===============================
   createCase(data: any) {
     const id = `case-${++caseCounter}`;
 
@@ -17,24 +14,19 @@ export const API = {
       images: [],
       observations: [],
       stage_outputs: {},
+      analysis_mode: "full_analysis",
     };
 
     return { case_id: id };
   },
 
-  // ===============================
-  // ADD IMAGE
-  // ===============================
   addImage(caseId: string, img: any) {
     caseStore[caseId].images.push({
-      id: `img-${Date.now()}`,
+      id: `img-${Date.now()}-${Math.random()}`,
       ...img,
     });
   },
 
-  // ===============================
-  // APPEND-ONLY OBSERVATIONS
-  // ===============================
   addObservation(caseId: string, obs: any) {
     const entry = {
       id: `obs-${++obsCounter}`,
@@ -50,30 +42,39 @@ export const API = {
     return caseStore[caseId].observations;
   },
 
-  // ===============================
-  // ANALYZE
-  // ===============================
   async analyzeCase(caseId: string, intake: any, onPhase?: any) {
     const c = caseStore[caseId];
     c.status = "analyzing";
 
-    const result = await (await import("./engine")).PE.runAllPhases(
-      c,
-      c.images,
-      intake,
-      onPhase
-    );
+    const mode =
+      intake?.analysis_mode === "field_scan" ? "field_scan" : "full_analysis";
+
+    let result;
+
+    if (mode === "field_scan") {
+      result = await (await import("./fieldScan")).FieldScan.run(
+        c,
+        c.images,
+        intake,
+        onPhase
+      );
+    } else {
+      result = await (await import("./engine")).PE.runAllPhases(
+        c,
+        c.images,
+        intake,
+        onPhase
+      );
+    }
 
     c.stage_outputs = result.stage_outputs;
     c.final_report = result.final_report;
+    c.analysis_mode = mode;
     c.status = "complete";
 
     return { case_id: caseId };
   },
 
-  // ===============================
-  // REPORT
-  // ===============================
   getReport(caseId: string) {
     return caseStore[caseId];
   },
