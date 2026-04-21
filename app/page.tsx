@@ -6937,56 +6937,94 @@ const handleGroupUpload = (groupKey, imageType, file) => {
   }));
 };
   const handleAnalyze = async () => {
-    if (!caseId) return;
-    setAnalyzing(true); setError(null); setDebugOpen(false); setPhasesDone({}); setCurrentPhase(1);
-    try {
-      // Add core images
-      for (const [key, img] of Object.entries(images as Record<string, any>)) {
-        API.addImage(caseId, {
-          storage_key: key, image_type: img.image_type,
-          is_primary: key === "overall_front", data_url: img.data_url,
-        });
-      }
-      // Add group images
-      for (const [groupKey, imgs] of Object.entries(groupImages)) {
-        const group = EVIDENCE_GROUPS.find(g => g.key === groupKey);
-        imgs.forEach((img, i) => {
-          API.addImage(caseId, {
-            storage_key: `${groupKey}_${i}`,
-            image_type:  group.image_type || groupKey,
-            is_primary:  false,
-            data_url:    img.data_url,
-          });
-        });
-      }
-      await API.analyzeCase(caseId, { ...answers, ...clues }, (phaseNum, phaseData) => {
-        setPhasesDone(prev => ({ ...prev, [phaseNum]: phaseData }));
-        setCurrentPhase(phaseNum + 1);
+  if (!caseId) return;
+
+  setAnalyzing(true);
+  setError(null);
+  setDebugOpen(false);
+  setPhasesDone({});
+  setCurrentPhase(1);
+
+  try {
+    // Add core images
+    for (const [key, img] of Object.entries(images as Record<string, any>)) {
+      if (!img?.data_url) continue;
+
+      API.addImage(caseId, {
+        storage_key: key,
+        image_type: img.image_type,
+        is_primary: key === "overall_front",
+        data_url: img.data_url,
       });
-      const r = API.getReport(caseId);
-      setReport(r);
-      setStep("report");
-    } catch (e) {
-      // Try to unpack a structured phase error payload
-      if (e.phasePayload) {
-        setError(e.phasePayload);
-      } else {
-        // Try to parse a JSON-encoded payload from the message
-        try {
-          const parsed = JSON.parse(e.message);
-          if (parsed.ok === false && parsed.error) {
-            setError(parsed);
-          } else {
-            setError({ ok: false, failed_stage: "Unknown phase", error: { stage_name: "unknown", phase_label: "Unknown", error_type: "unknown_error", error_message: e.message || "An unknown error occurred", raw_response: "", retry_attempted: false } });
-          }
-        } catch(_e3) {
-          // Plain string error — wrap it so UI always has a consistent shape
-          setError({ ok: false, failed_stage: "Unknown phase", error: { stage_name: "unknown", phase_label: "Unknown", error_type: "unknown_error", error_message: e.message || "An unknown formatting error occurred. No phase details were returned.", raw_response: "", retry_attempted: false } });
+    }
+
+    // Add group images
+    for (const [groupKey, imgs] of Object.entries(groupImages)) {
+      const group = EVIDENCE_GROUPS.find(g => g.key === groupKey);
+      if (!Array.isArray(imgs)) continue;
+
+      imgs.forEach((img, i) => {
+        if (!img?.data_url) return;
+
+        API.addImage(caseId, {
+          storage_key: `${groupKey}_${i}`,
+          image_type: group?.image_type || groupKey,
+          is_primary: false,
+          data_url: img.data_url,
+        });
+      });
+    }
+
+    await API.analyzeCase(caseId, { ...answers, ...clues }, (phaseNum, phaseData) => {
+      setPhasesDone(prev => ({ ...prev, [phaseNum]: phaseData }));
+      setCurrentPhase(phaseNum + 1);
+    });
+
+    const r = API.getReport(caseId);
+    setReport(r);
+    setStep("report");
+  } catch (e: any) {
+    if (e?.phasePayload) {
+      setError(e.phasePayload);
+    } else {
+      try {
+        const parsed = JSON.parse(e?.message || "");
+        if (parsed.ok === false && parsed.error) {
+          setError(parsed);
+        } else {
+          setError({
+            ok: false,
+            failed_stage: "Unknown phase",
+            error: {
+              stage_name: "unknown",
+              phase_label: "Unknown",
+              error_type: "unknown_error",
+              error_message: e?.message || "An unknown error occurred",
+              raw_response: "",
+              retry_attempted: false,
+            },
+          });
         }
+      } catch (_e3) {
+        setError({
+          ok: false,
+          failed_stage: "Unknown phase",
+          error: {
+            stage_name: "unknown",
+            phase_label: "Unknown",
+            error_type: "unknown_error",
+            error_message:
+              e?.message || "An unknown formatting error occurred. No phase details were returned.",
+            raw_response: "",
+            retry_attempted: false,
+          },
+        });
       }
     }
+  } finally {
     setAnalyzing(false);
-  };
+  }
+};
 
   // Total photo count across core + groups
   const coreCount  = Object.keys(images).length;
