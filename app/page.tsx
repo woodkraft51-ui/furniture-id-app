@@ -609,13 +609,13 @@ async function runEvidenceDigest(images, context) {
 function parseModelJSON(responseText) {
   if (!responseText) throw new Error("Empty response text");
 
-  let cleaned = String(responseText)
-  .replace(/```[\s\S]*?```/g, match => {
-    return match
-      .replace(/```[\w]*\n?/, "")
-      .replace(/```$/, "");
-  })
-  .trim();
+let cleaned = String(responseText).trim();
+
+// Strip markdown code fences if present
+if (cleaned.startsWith("```")) {
+  cleaned = cleaned.replace(/^```[\w]*\n?/, "");
+  cleaned = cleaned.replace(/```$/, "");
+}
 
   // Try parsing the entire cleaned response first.
   try {
