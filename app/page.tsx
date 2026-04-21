@@ -637,30 +637,54 @@ export default function Page() {
                       </div>
 
                       <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <label
-                          style={{
-                            display: "inline-block",
-                            background: "#5a3e1b",
-                            color: "#fffaf2",
-                            borderRadius: 8,
-                            padding: "9px 12px",
-                            cursor: "pointer",
-                            fontSize: 13,
-                            fontWeight: 600,
-                          }}
-                        >
-                          Add Photo(s)
-                          <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            style={{ display: "none" }}
-                            onChange={(e) =>
-                              handleGroupUpload(group.key, group.image_type, e.target.files)
-                            }
-                          />
-                        </label>
-                      </div>
+  <label
+    style={{
+      display: "inline-block",
+      background: "#5a3e1b",
+      color: "#fffaf2",
+      borderRadius: 8,
+      padding: "9px 12px",
+      cursor: "pointer",
+      fontSize: 13,
+      fontWeight: 600,
+    }}
+  >
+    Upload Photo(s)
+    <input
+      type="file"
+      accept="image/*"
+      multiple
+      style={{ display: "none" }}
+      onChange={(e) =>
+        handleGroupUpload(group.key, group.image_type, e.target.files)
+      }
+    />
+  </label>
+
+  <label
+    style={{
+      display: "inline-block",
+      background: "#7d6540",
+      color: "#fffaf2",
+      borderRadius: 8,
+      padding: "9px 12px",
+      cursor: "pointer",
+      fontSize: 13,
+      fontWeight: 600,
+    }}
+  >
+    Take Photo
+    <input
+      type="file"
+      accept="image/*"
+      capture="environment"
+      style={{ display: "none" }}
+      onChange={(e) =>
+        handleGroupUpload(group.key, group.image_type, e.target.files)
+      }
+    />
+  </label>
+</div>
 
                       {items.length > 0 && (
                         <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
