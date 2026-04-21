@@ -5900,241 +5900,156 @@ Respond ONLY in valid JSON. Begin with {.`,
 
 
   async runAllPhases(caseData, images, intake, onPhase) {
-    const so   = {};
-    const skip = (reason) => ({
-      ok: true, skipped: true, skip_reason: reason,
-      age_support_points: 0, age_opposing_points: 0,
-      originality_support_points: 0, originality_opposing_points: 0,
-      form_support_points: 0, form_opposing_points: 0,
-      conversion_support_points: 0, conversion_opposing_points: 0,
-    });
+  const so = {};
+  const skip = (reason) => ({
+    ok: true,
+    skipped: true,
+    skip_reason: reason,
+    age_support_points: 0,
+    age_opposing_points: 0,
+    originality_support_points: 0,
+    originality_opposing_points: 0,
+    form_support_points: 0,
+    form_opposing_points: 0,
+    conversion_support_points: 0,
+    conversion_opposing_points: 0,
+  });
 
-    // ── Phase runner helper: wraps each phase in try/catch,
-    //    validates the result, logs errors, and throws a structured PhaseError.
-    const runPhase = async (key, label, stageName, fn) => {
-      try {
-        const result = await fn();
-        // Debug: log raw result before assertPhase
-        if (key === "1_intake") {
-          console.info("[NCW P1 Debug] raw result ok:", result && result.ok,
-            "| keys:", result ? Object.keys(result).join(", ") : "null");
-          if (result && result.ok === false) {
-            console.warn("[NCW P1 Debug] raw_response:", (result.raw_response||"").slice(0,500));
-          } else {
-            console.info("[NCW P1 Debug] normalized payload keys:", result ? Object.keys(result).join(", ") : "null");
-            console.info("[NCW P1 Debug] evidence_inventory:", JSON.stringify(result.evidence_inventory));
-            console.info("[NCW P1 Debug] phase_triggers:", JSON.stringify(result.phase_triggers));
-            console.info("[NCW P1 Debug] evidence_sufficiency:", result.evidence_sufficiency);
-          }
-        }
-        this.assertPhase(result, stageName, label);   // throws PhaseError if ok===false
-        so[key] = result;
-        onPhase(parseInt(key.split("_")[0]), result);
-        return result;
-      } catch (err) {
-        // Enrich with phase metadata if not already a PhaseError
-        if (!err.isPhaseError) {
-          err.isPhaseError    = true;
-          err.stage_name      = stageName;
-          err.phase_label     = label;
-          err.error_type      = err.error_type || "runtime_error";
-          err.error_message   = err.message    || "Unexpected error";
-          err.raw_response    = err.raw_response || "";
-          err.retry_attempted = false;
-        }
-        console.error(`[NCW PhaseError] ${stageName}`, {
-          case_id:       caseData.id,
-          stage_name:    err.stage_name,
-          error_type:    err.error_type,
-          error_message: err.error_message,
-          raw_response:  err.raw_response.slice(0, 500),
-        });
-        // Store partial result in stage_outputs so UI can show what ran
-        so[key] = { ok: false, stage_name: stageName, error_type: err.error_type, error_message: err.error_message, raw_response: err.raw_response };
-        // Re-throw as a structured payload the UI can unpack
-        const payload = {
-          ok:            false,
-          failed_stage:  label,
-          error: {
-            stage_name:      err.stage_name,
-            phase_label:     err.phase_label,
-            error_type:      err.error_type,
-            error_message:   err.error_message,
-            raw_response:    err.raw_response    || "",
-            retry_attempted: (err.retry_attempted != null) ? err.retry_attempted : false,
-          },
-        };
-        const richErr = new Error(JSON.stringify(payload)) as Error & {
-  phasePayload?: any;
-};
+  const runPhase = async (key, label, stageName, fn) => {
+    try {
+      const result = await fn();
 
-richErr.phasePayload = payload;
-throw richErr;
+      if (key === "1_intake") {
+        console.info(
+          "[NCW P1 Debug] raw result ok:",
+          result && result.ok,
+          "| keys:",
+          result ? Object.keys(result).join(", ") : "null"
+        );
+        if (result && result.ok === false) {
+          console.warn("[NCW P1 Debug] raw_response:", (result.raw_response || "").slice(0, 500));
+        } else {
+          console.info(
+            "[NCW P1 Debug] normalized payload keys:",
+            result ? Object.keys(result).join(", ") : "null"
+          );
+          console.info("[NCW P1 Debug] evidence_inventory:", JSON.stringify(result?.evidence_inventory));
+          console.info("[NCW P1 Debug] phase_triggers:", JSON.stringify(result?.phase_triggers));
+          console.info("[NCW P1 Debug] evidence_sufficiency:", result?.evidence_sufficiency);
+        }
       }
-    };
 
-    // Phase 0 — Visual Evidence Scanner
-    // NOT routed through runPhase/assertPhase — p0 is self-tolerant and never throws.
-    // If Field Scan already ran on these images, reuse its evidence cache.
-    const priorEvidence = caseData._evidence_cache;
-    const fullImgFingerprint = (images || []).filter(function(i){ return i.data_url; })
-      .map(function(i){ return i.image_type + ":" + (i.data_url||"").length; }).join("|");
-    const fullCacheHit = priorEvidence && priorEvidence.fingerprint === fullImgFingerprint
-      && priorEvidence.digest && priorEvidence.digest.phase_0_status;
-    let p0;
-    if (fullCacheHit) {
-      console.info("[NCW P0] Cache hit — reusing Field Scan evidence (no re-extraction needed)");
-      p0 = priorEvidence.digest;
-    } else try {
-      p0 = await this.p0(images);
-      so["0_visual_scan"] = p0;
-      if (typeof onPhase === "function") onPhase(0, p0);
-      console.info("[NCW P0] Complete. status:", p0.phase_0_status, "| obs:", p0.total_observations, "| recovery:", p0.recovery_used);
-    } catch(e) {
-      console.error("[NCW P0] Unexpected throw:", e.message);
-      p0 = {
-        skipped:false, phase_0_status:"unexpected_throw", recovery_used:false,
-        total_observations:0, observations_by_type:{}, hard_negatives_detected:[],
-        images_scanned: images.filter(i=>i.data_url).length,
-        scan_summary:{ scan_confidence:"none" }, primary_wood_observed:"",
-        secondary_wood_observed:"", broad_form_impression:"", condition_impression:"unknown",
-        anomalies_noted:[], _error: e.message,
-      };
-      so["0_visual_scan"] = p0;
-      onPhase(0, p0);
+      this.assertPhase(result, stageName, label);
+      so[key] = result;
+      if (typeof onPhase === "function") {
+        onPhase(parseInt(key.split("_")[0], 10), result);
+      }
+      return result;
+    } catch (err) {
+      if (!err.isPhaseError) {
+        err.isPhaseError = true;
+        err.stage_name = stageName;
+        err.phase_label = label;
+        err.error_type = err.error_type || "runtime_error";
+        err.error_message = err.message || "Unexpected error";
+        err.raw_response = err.raw_response || "";
+      }
+      throw err;
     }
+  };
 
-    // Phase 1 — Intake Controller
-    const p1 = await runPhase("1_intake", "Phase 1 — Intake Controller", "phase_1_intake",
-      () => this.p1(caseData, images, intake, p0));
+  // Phase 0 is the ONLY phase allowed to inspect images directly
+  const p0 = await runPhase(
+    "0_visual_scan",
+    "Phase 0 — Visual Evidence Scan",
+    "phase_0_visual_scan",
+    () => this.p0(caseData, images, intake)
+  );
 
-    // Phase 2 — Rapid Dating Grid (conditional)
-    const p2 = this.triggered(p1, "run_dating_grid")
-      ? await runPhase("2_dating", "Phase 2 — Rapid Dating Grid", "phase_2_dating",
-          () => this.p2(caseData, images, p0, p1))
-      : skip("No structural dating evidence visible");
-    if (!p2.skipped) { so["2_dating"] = p2; if (typeof onPhase === "function") onPhase(2, p2); }
+  // Freeze downstream reasoning input
+  const evidence = this.buildEvidenceBundle(caseData, p0);
 
-    // Phase 3 — Form Decision Engine (conditional)
-    const p3 = this.triggered(p1, "run_form_engine")
-      ? await runPhase("3_form", "Phase 3 — Form Decision Engine", "phase_3_form_decision",
-          () => this.p3(caseData, images, p0, p1, p2))
-      : { ...skip("No overall form visible"), current_form_candidate:"Unknown", original_form_candidate:"Unknown", is_conversion:false, conversion_probability:"Low", form_confidence:"Low", alternate_form_candidates:[] };
-    if (!p3.skipped) { so["3_form"] = p3; if (typeof onPhase === "function") onPhase(3, p3); }
+  const p1 = await runPhase(
+    "1_intake",
+    "Phase 1 — Intake Controller",
+    "phase_1_intake",
+    () => this.p1(caseData, intake, evidence, p0)
+  );
 
-    // Phase 4 — Construction Analysis (conditional)
-    const p4 = this.triggered(p1, "run_construction")
-      ? await runPhase("4_construction", "Phase 4 — Construction Analysis", "phase_4_construction",
-          () => this.p4(caseData, images, p0, p1, p2, p3))
-      : skip("No construction detail visible");
-    if (!p4.skipped) { so["4_construction"] = p4; if (typeof onPhase === "function") onPhase(4, p4); }
+  const p2 = this.triggered(p1, "run_dating_grid")
+    ? await runPhase(
+        "2_dating",
+        "Phase 2 — Rapid Dating Grid",
+        "phase_2_dating",
+        () => this.p2(caseData, evidence, p0, p1)
+      )
+    : skip("No structural dating evidence visible");
 
-    // Phase 5 — Hardware Analysis (conditional)
-    const p5 = this.triggered(p1, "run_hardware")
-      ? await runPhase("5_hardware", "Phase 5 — Hardware Analysis", "phase_5_hardware",
-          () => this.p5(caseData, images, p0, p1, p2, p3, p4))
-      : skip("No hardware visible");
-    if (!p5.skipped) { so["5_hardware"] = p5; if (typeof onPhase === "function") onPhase(5, p5); }
+  const p3 = this.triggered(p1, "run_form_engine")
+    ? await runPhase(
+        "3_form",
+        "Phase 3 — Form Decision Engine",
+        "phase_3_form_decision",
+        () => this.p3(caseData, evidence, p0, p1, p2)
+      )
+    : {
+        ...skip("No overall form visible"),
+        current_form_candidate: "Unknown",
+        original_form_candidate: "Unknown",
+        is_conversion: false,
+        conversion_probability: "Low",
+        form_confidence: "Low",
+        alternate_form_candidates: [],
+      };
 
-    // Phase 6 — Conflict Detection Engine
-    const p6c = await runPhase("6_conflict", "Phase 6 — Conflict Detection Engine", "phase_6_conflict",
-      () => this.p6_conflict(p0, p1, p2, p3, p4, p5));
+  const p4 = this.triggered(p1, "run_construction")
+    ? await runPhase(
+        "4_construction",
+        "Phase 4 — Construction Analysis",
+        "phase_4_construction",
+        () => this.p4(caseData, evidence, p0, p1, p2, p3)
+      )
+    : skip("No construction detail visible");
 
-    // Phase 7 — Reconciliation
-    const p7 = await runPhase("7_reconciliation", "Phase 7 — Reconciliation", "phase_7_reconciliation",
-      () => this.p7(p1, p2, p3, p4, p5, p6c));
+  const p5 = this.triggered(p1, "run_hardware")
+    ? await runPhase(
+        "5_hardware",
+        "Phase 5 — Hardware Analysis",
+        "phase_5_hardware",
+        () => this.p5(caseData, evidence, p0, p1, p2, p3, p4)
+      )
+    : skip("No hardware visible");
 
-    // Phase 8 — Valuation
-    const p8 = await runPhase("8_valuation", "Phase 8 — Valuation", "phase_8_valuation",
-      () => this.p8(p3, p7));
+  const p6c = await runPhase(
+    "6_conflict",
+    "Phase 6 — Conflict Detection Engine",
+    "phase_6_conflict",
+    () => this.p6_conflict(p0, p1, p2, p3, p4, p5)
+  );
 
-    // ── Assemble final outputs ───────────────────────────────
-    const sc      = p7.scorecard || {};
-    const sup     = p7.overall_supporting_points || 0;
-    const opp     = p7.overall_opposing_points   || 0;
-    const rawConf = opp > 0 ? (sup / (sup + opp)) * 100 : sup > 0 ? 88 : 50;
-    const confPct = Math.min(100, Math.max(0, p7.confidence_percent || rawConf));
-    const confBand = p7.confidence_band || WM.bandOf(confPct);
+  const p7 = await runPhase(
+    "7_reconciliation",
+    "Phase 7 — Reconciliation",
+    "phase_7_reconciliation",
+    () => this.p7(p1, p2, p3, p4, p5, p6c)
+  );
 
-    const scores = {
-      ...sc,
-      overall_supporting_points:  sup,
-      overall_opposing_points:    opp,
-      raw_confidence_percent:     Math.round(rawConf),
-      overall_confidence_percent: Math.round(confPct),
-      confidence_band:            confBand,
-      conflict_net_adjustment:    p6c.total_net_adjustment || 0,
-    };
+  const p8 = await runPhase(
+    "8_valuation",
+    "Phase 8 — Valuation",
+    "phase_8_valuation",
+    () => this.p8(p3, p4, p5, p6c, p7, intake, caseData)
+  );
 
-    const conflicts = [
-      ...(p6c.conflicts_detected || []).map(c => ({
-        conflict_type:       c.conflict_type,
-        evidence_a:          c.trigger_evidence_a,
-        evidence_b:          c.trigger_evidence_b,
-        likely_explanation:  c.likely_explanation,
-        severity:            c.severity,
-        confidence_penalty:  c.confidence_penalty,
-        confidence_recovery: c.confidence_recovery,
-        net_adjustment:      c.net_adjustment,
-        resolved:            c.resolved,
-        resolution_narrative:c.resolution_narrative,
-      })),
-      ...(p7.conflicts_found || []).map(c => ({
-        conflict_type:       "evidence_conflict",
-        evidence_a:          c.conflict,
-        likely_explanation:  c.explanation_attempted,
-        confidence_penalty:  c.penalty_applied || 0,
-        resolved:            c.resolved || false,
-        resolution_narrative:c.recovery_applied ? `+${c.recovery_applied} pts recovered — ${c.resolution_note || ""}` : "",
-      })),
-    ];
-
-    const form_assessment = {
-      current_form_candidate:   p3.current_form_candidate,
-      original_form_candidate:  p3.original_form_candidate,
-      alternate_form_candidates:p3.alternate_form_candidates || [],
-      conversion_probability:   p3.conversion_probability,
-      form_confidence:          p3.form_confidence,
-      object_classification:    p7.object_classification || p6c.object_classification_suggested || "unknown",
-    };
-
-    const valuations = (p8.valuations || []).map(v => ({
-      market_lane:    v.market_lane,
-      low_estimate:   v.low,
-      high_estimate:  v.high,
-      currency:       "USD",
-      rationale:      v.rationale,
-      confidence_band:confBand,
-    }));
-
-    const identName = p3.is_conversion
-      ? `${p3.original_form_candidate} converted to ${p3.current_form_candidate}`
-      : (p3.current_form_candidate || "Form undetermined");
-
-    const final_report = {
-      identified_object_name:     identName,
-      original_form_text:         p3.original_form_candidate,
-      current_form_text:          p3.current_form_candidate,
-      object_classification:      p7.object_classification || p6c.object_classification_suggested || "unknown",
-      date_range_text:            p7.reconciled_date_range || p2.primary_date_range || "Undetermined",
-      style_family:               p7.reconciled_style_family,
-      confidence_text:            `${confBand} (${Math.round(confPct)}%)`,
-      supporting_evidence:        p7.supporting_evidence || [],
-      alterations:                p7.alterations || [],
-      summary_text:               p7.reconciliation_notes || "",
-      conflict_interpretation:    p6c.conflict_interpretation_for_report || "",
-      conflicts_detected:         p6c.conflicts_detected || [],
-      valuations,
-      value_drivers:              p8.value_drivers || [],
-      value_detractors:           p8.value_detractors || [],
-      market_notes:               p8.market_notes || "",
-      valuation_skipped:          p8.valuation_skipped || false,
-      valuation_provisional:      p8.provisional || false,
-      value_adjustments:          p8.value_adjustments_applied || [],
-    };
-
-    return { stage_outputs: so, conflicts, scores, form_assessment, valuations, final_report };
-  },
+  return {
+    stage_outputs: so,
+    final_report: p7?.final_report || null,
+    scores: p7?.scores || null,
+    form_assessment: p3 || null,
+    conflicts: p6c?.conflicts || [],
+    valuations: p8?.valuations || [],
+  };
+},
 
   // ── Observation digest builder ────────────────────────────
   // Compact structured summary of Phase 0 observations,
