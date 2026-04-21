@@ -6911,18 +6911,23 @@ if (stored) {
 };
 
   // Evidence group upload (append)
-  const handleGroupUpload = (groupKey, imageType, file) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => setGroupImages(prev => ({
-      ...prev,
-      [groupKey]: [
-        ...prev[groupKey],
-        { file, data_url: e.target.result, image_type: imageType, id: `${groupKey}-${Date.now()}` },
-      ],
-    }));
-    reader.readAsDataURL(file);
-  };
+const handleGroupUpload = (groupKey, imageType, file) => {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => setGroupImages(prev => ({
+    ...prev,
+    [groupKey]: [
+      ...(prev[groupKey] || []),
+      {
+        file,
+        data_url: e.target?.result as string,
+        image_type: imageType,
+        id: `${groupKey}-${Date.now()}`
+      },
+    ],
+  }));
+  reader.readAsDataURL(file);
+};
 
   // Remove a group image by id
   const removeGroupImage = (groupKey, id) => {
