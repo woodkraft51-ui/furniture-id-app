@@ -6071,13 +6071,100 @@ Respond ONLY in valid JSON. Begin with {.`,
     () => this.p8(p3, p4, p5, p6c, p7, intake, caseData)
   );
 
+   // ── Assemble final outputs ───────────────────────────────
+  const sc      = p7.scorecard || {};
+  const sup     = p7.overall_supporting_points || 0;
+  const opp     = p7.overall_opposing_points   || 0;
+  const rawConf = opp > 0 ? (sup / (sup + opp)) * 100 : sup > 0 ? 88 : 50;
+  const confPct = Math.min(100, Math.max(0, p7.confidence_percent || rawConf));
+  const confBand = p7.confidence_band || WM.bandOf(confPct);
+
+  const scores = {
+    ...sc,
+    overall_supporting_points:  sup,
+    overall_opposing_points:    opp,
+    raw_confidence_percent:     Math.round(rawConf),
+    overall_confidence_percent: Math.round(confPct),
+    confidence_band:            confBand,
+    conflict_net_adjustment:    p6c.total_net_adjustment || 0,
+  };
+
+  const conflicts = [
+    ...((p6c.conflicts_detected || []).map(c => ({
+      conflict_type:       c.conflict_type,
+      evidence_a:          c.trigger_evidence_a,
+      evidence_b:          c.trigger_evidence_b,
+      likely_explanation:  c.likely_explanation,
+      severity:            c.severity,
+      confidence_penalty:  c.confidence_penalty,
+      confidence_recovery: c.confidence_recovery,
+      net_adjustment:      c.net_adjustment,
+      resolved:            c.resolved,
+      resolution_narrative:c.resolution_narrative,
+    }))),
+    ...((p7.conflicts_found || []).map(c => ({
+      conflict_type:       "evidence_conflict",
+      evidence_a:          c.conflict,
+      likely_explanation:  c.explanation_attempted,
+      confidence_penalty:  c.penalty_applied || 0,
+      resolved:            c.resolved || false,
+      resolution_narrative:c.recovery_applied
+        ? `+${c.recovery_applied} pts recovered — ${c.resolution_note || ""}`
+        : "",
+    }))),
+  ];
+
+  const form_assessment = {
+    current_form_candidate:    p3.current_form_candidate,
+    original_form_candidate:   p3.original_form_candidate,
+    alternate_form_candidates: p3.alternate_form_candidates || [],
+    conversion_probability:    p3.conversion_probability,
+    form_confidence:           p3.form_confidence,
+    object_classification:     p7.object_classification || p6c.object_classification_suggested || "unknown",
+  };
+
+  const valuations = (p8.valuations || []).map(v => ({
+    market_lane:     v.market_lane,
+    low_estimate:    v.low,
+    high_estimate:   v.high,
+    currency:        "USD",
+    rationale:       v.rationale,
+    confidence_band: confBand,
+  }));
+
+  const identName = p3.is_conversion
+    ? `${p3.original_form_candidate} converted to ${p3.current_form_candidate}`
+    : (p3.current_form_candidate || "Form undetermined");
+
+  const final_report = {
+    identified_object_name:      identName,
+    original_form_text:          p3.original_form_candidate,
+    current_form_text:           p3.current_form_candidate,
+    object_classification:       p7.object_classification || p6c.object_classification_suggested || "unknown",
+    date_range_text:             p7.reconciled_date_range || p2.primary_date_range || "Undetermined",
+    style_family:                p7.reconciled_style_family,
+    confidence_text:             `${confBand} (${Math.round(confPct)}%)`,
+    supporting_evidence:         p7.supporting_evidence || [],
+    alterations:                 p7.alterations || [],
+    summary_text:                p7.reconciliation_notes || "",
+    conflict_interpretation:     p6c.conflict_interpretation_for_report || "",
+    conflicts_detected:          p6c.conflicts_detected || [],
+    valuations,
+    value_drivers:               p8.value_drivers || [],
+    value_detractors:            p8.value_detractors || [],
+    market_notes:                p8.market_notes || "",
+    valuation_skipped:           p8.valuation_skipped || false,
+    valuation_provisional:       p8.provisional || false,
+    value_adjustments:           p8.value_adjustments_applied || [],
+  };
+
   return {
     stage_outputs: so,
-    final_report: p7?.final_report || null,
-    scores: p7?.scores || null,
-    form_assessment: p3 || null,
-    conflicts: p6c?.conflicts || [],
-    valuations: p8?.valuations || [],
+    conflicts,
+    scores,
+    form_assessment,
+    valuations,
+    final_report,
   };
 },
 
