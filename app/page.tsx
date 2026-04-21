@@ -3662,7 +3662,61 @@ API.addObservation(context.caseId, {
 
   return merged;
 }
-  async p1(caseData, images, intake, p0) {
+  buildEvidenceBundle(caseData, p0) {
+  const observations = Array.isArray(caseData?.observations)
+    ? caseData.observations
+    : [];
+
+  const byType = {
+    construction: [],
+    toolmarks: [],
+    fasteners: [],
+    hardware: [],
+    materials: [],
+    finish: [],
+    interior_logic: [],
+    hidden_structure: [],
+    repairs: [],
+    style: [],
+    provenance: [],
+  };
+
+  for (const obs of observations) {
+    const type = obs?.observation_type || "construction";
+    if (!byType[type]) byType[type] = [];
+
+    byType[type].push({
+      id: obs.id || null,
+      clue: obs.reference_id || "",
+      observed_value_text: obs.observed_value_text || "",
+      source_image_id: obs.source_image_id || null,
+      raw_confidence: typeof obs.raw_confidence === "number" ? obs.raw_confidence : 0,
+      weight_multiplier: typeof obs.weight_multiplier === "number" ? obs.weight_multiplier : 1,
+      effective_confidence:
+        typeof obs.effective_confidence === "number"
+          ? obs.effective_confidence
+          : (
+              (typeof obs.raw_confidence === "number" ? obs.raw_confidence : 0) *
+              (typeof obs.weight_multiplier === "number" ? obs.weight_multiplier : 1)
+            ),
+      is_hidden_surface: !!obs.is_hidden_surface,
+      region_label: obs.region_label || null,
+      created_by_stage: obs.created_by_stage || null,
+    });
+  }
+
+  return {
+    observations,
+    byType,
+    clue_keys: observations.map(o => o.reference_id).filter(Boolean),
+    missing_evidence: caseData?.missing_evidence || {},
+    visual_scan_summary: p0 || null,
+    image_types_present: Array.isArray(caseData?.images)
+      ? caseData.images.map(i => i.image_type)
+      : [],
+  };
+}
+ async p1(caseData, images, intake, p0) {
     const imageTypesPresent = images.map(i => i.image_type);
     const sys = `You are the Intake Controller for the NCW American Furniture Identification Engine.
 Scope: American furniture, 1600–present.
