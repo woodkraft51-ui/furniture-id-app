@@ -100,6 +100,10 @@ const GROUP_SLOTS = [
 ] as const;
 
 const INITIAL_INTAKE: IntakeState = {
+  analysis_mode: "full_analysis",
+  asking_price: "",
+  picker_profile: undefined,
+
   approximate_height: "",
   approximate_width: "",
   primary_wood_guess: "",
