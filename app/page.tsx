@@ -610,8 +610,11 @@ function parseModelJSON(responseText) {
   if (!responseText) throw new Error("Empty response text");
 
   let cleaned = String(responseText)
-  .replace(/```[\w]*\n?/gi, "")   // removes ```json, ```js, ``` etc
-  .replace(/```/g, "")
+  .replace(/```[\s\S]*?```/g, match => {
+    return match
+      .replace(/```[\w]*\n?/, "")
+      .replace(/```$/, "");
+  })
   .trim();
 
   // Try parsing the entire cleaned response first.
