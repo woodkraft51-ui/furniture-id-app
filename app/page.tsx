@@ -3716,14 +3716,40 @@ API.addObservation(context.caseId, {
       : [],
   };
 }
- async p1(caseData, images, intake, p0) {
-    const imageTypesPresent = images.map(i => i.image_type);
-    const sys = `You are the Intake Controller for the NCW American Furniture Identification Engine.
+ async p1(caseData, intake, evidence, p0) {
+  const imageTypesPresent = Array.isArray(evidence?.image_types_present)
+    ? evidence.image_types_present
+    : [];
+
+  const observedClues = Array.isArray(evidence?.clue_keys) ? evidence.clue_keys : [];
+  const byType = evidence?.byType || {};
+  const missingEvidence = evidence?.missing_evidence || {};
+
+  const evidenceSummary = {
+    observed_clue_keys: observedClues,
+    observation_counts: {
+      construction: (byType.construction || []).length,
+      toolmarks: (byType.toolmarks || []).length,
+      fasteners: (byType.fasteners || []).length,
+      hardware: (byType.hardware || []).length,
+      materials: (byType.materials || []).length,
+      finish: (byType.finish || []).length,
+      interior_logic: (byType.interior_logic || []).length,
+      hidden_structure: (byType.hidden_structure || []).length,
+    },
+    missing_evidence: missingEvidence,
+  };
+
+  const sys = `You are the Intake Controller for the NCW American Furniture Identification Engine.
 Scope: American furniture, 1600–present.
 
 PURPOSE
 Inventory all submitted evidence. Apply confidence caps. Set downstream phase triggers.
-Do NOT assign any positive scoring — this phase constrains later phases only.
+Do NOT assign any positive scoring; this phase constrains later phases only.
+
+IMPORTANT
+Use the structured evidence bundle and recorded observations as the primary evidence source.
+Do NOT rescan images. Do NOT infer new visual details beyond the evidence inventory supplied.
 
 EVIDENCE CATEGORIES — assess each as present | partial | absent:
 • overall_form_view        — overall_front or overall_side image present
@@ -3739,7 +3765,7 @@ EVIDENCE SUFFICIENCY:
 • Moderate — 2–3 categories present
 • Low      — only overall shot(s), no structural evidence
 
-CONFIDENCE CAP RULES (a cap can only LOWER a band, never raise it):
+CONFIDENCE CAP RULES:
 • underside_hidden_surface absent            → date_confidence_cap = "Moderate"
 • joinery_drawer_construction absent         → construction_confidence_cap = "Moderate"
 • hardware_closeup absent                    → hardware_originality_cap = "Low"
@@ -3754,6 +3780,8 @@ PHASE TRIGGER RULES:
 • run_hardware     — true if hardware_closeup visible OR hardware apparent in any overall shot
 
 Image types submitted: ${JSON.stringify(imageTypesPresent)}
+Recorded evidence summary: ${JSON.stringify(evidenceSummary)}
+Phase 0 summary: ${JSON.stringify(p0)}
 
 Respond ONLY in valid JSON, no markdown fences:
 {
@@ -3767,22 +3795,14 @@ Respond ONLY in valid JSON, no markdown fences:
     "finish_closeup": "present|partial|absent",
     "back_board": "present|partial|absent"
   },
-  "evidence_sufficiency": "Moderate",
-  "missing_critical_evidence": [],
-  "image_quality_notes": "",
-  "user_stated_category": null,
-  "broad_form_guess": null,
-  "visible_primary_wood": null,
-  "visible_secondary_wood": null,
-  "overall_condition": "good",
-  "red_flags": [],
+  "evidence_sufficiency": "High|Moderate|Low",
   "confidence_caps": {
-    "date_confidence_cap": "none",
-    "construction_confidence_cap": "none",
-    "hardware_originality_cap": "none",
-    "form_confidence_cap": "none",
-    "overall_confidence_cap": "none",
-    "valuation_confidence_cap": "none"
+    "date_confidence_cap": "High|Moderate|Low|Inconclusive",
+    "construction_confidence_cap": "High|Moderate|Low|Inconclusive",
+    "hardware_originality_cap": "High|Moderate|Low|Inconclusive",
+    "form_confidence_cap": "High|Moderate|Low|Inconclusive",
+    "overall_confidence_cap": "High|Moderate|Low|Inconclusive",
+    "valuation_confidence_cap": "High|Moderate|Low|Inconclusive"
   },
   "phase_triggers": {
     "run_dating_grid": true,
@@ -3790,81 +3810,111 @@ Respond ONLY in valid JSON, no markdown fences:
     "run_construction": true,
     "run_hardware": true
   },
-  "proceed_recommendation": "proceed"
-}
-RESPONSE FORMAT — MANDATORY:
-Return ONLY a valid JSON object. No markdown. No code fences. No explanation before or after.
-If uncertain about a field, use a safe default value rather than natural language.
-Begin your response with { and end with }. Do not include any text outside the JSON object.
-`;
-    let p1raw;
-    try {
-      p1raw = await this.callClaude(sys, [
-        ...this.imgs(images),
-        { type: "text", text: `Visual Scanner observations (Phase 0): ${JSON.stringify(p0.scan_summary || {})}\nImage quality issues: ${JSON.stringify(p0.scan_summary.image_quality_issues || [])}\nIntake answers: ${JSON.stringify(intake)}\nUser notes: ${caseData.notes_from_user || "none"}` },
-      ]);
-    } catch(callErr) {
-      console.warn("[NCW P1] callClaude threw:", callErr.message, "— routing to fallback");
-      p1raw = { ok:false, error_type:"call_threw", error_message: callErr.message, raw_response:"" };
-    }
-    console.info("[NCW P1] raw callClaude ok:", p1raw && p1raw.ok,
-      "| type:", typeof p1raw,
-      "| keys:", p1raw ? Object.keys(p1raw).join(", ") : "null",
-      "| raw_response_len:", (p1raw && p1raw.raw_response || "").length);
-    const p1normalized = this.normalize(p1raw, "p1_intake");
-    console.info("[NCW P1] after normalize ok:", p1normalized && p1normalized.ok,
-      "| evidence_sufficiency:", p1normalized && p1normalized.evidence_sufficiency);
-    // ── Self-tolerant fallback: if still ok:false, synthesize from available images ──
-    if (!p1normalized || p1normalized.ok === false) {
-      console.warn("[NCW P1] Normalize failed — synthesizing safe p1 from image types");
-      const imageTypes = new Set(images.map(function(i){ return i.image_type; }));
-      return {
-        ok: true,
-        _synthesized: true,
-        visible_image_types:    Array.from(imageTypes),
-        evidence_inventory: {
-          overall_form_view:          (imageTypes.has("overall_front")||imageTypes.has("overall_side")) ? "present" : "absent",
-          underside_hidden_surface:   imageTypes.has("underside")       ? "present" : "absent",
-          hardware_closeup:           imageTypes.has("hardware_closeup") ? "present" : "absent",
-          joinery_drawer_construction:imageTypes.has("joinery_closeup")  ? "present" : "absent",
-          interior_structure:         imageTypes.has("interior")         ? "present" : "absent",
-          finish_closeup:             imageTypes.has("finish_closeup")   ? "present" : "absent",
-          back_board:                 imageTypes.has("back")             ? "present" : "absent",
-        },
-        evidence_sufficiency:  images.length >= 3 ? "Moderate" : "Low",
-        missing_critical_evidence: [],
-        image_quality_notes:   "Synthesized from available images — P1 LLM call failed",
-        user_stated_category:  intake.user_category_guess || null,
-        broad_form_guess:      intake.user_category_guess || null,
-        visible_primary_wood:  null,
-        visible_secondary_wood:null,
-        overall_condition:     "unknown",
-        red_flags:             [],
-        confidence_caps: { date_confidence_cap:"none", construction_confidence_cap:"none", hardware_originality_cap:"none", form_confidence_cap:"none", overall_confidence_cap:"none", valuation_confidence_cap:"none" },
-        phase_triggers: { run_dating_grid:true, run_form_engine:true, run_construction:true, run_hardware:true },
-        folds_or_expands:    false,
-        mechanical_parts:    false,
-        conversion_possible: false,
-        has_drawers:         false,
-        has_doors:           false,
-        proceed_recommendation: "proceed",
-        _debug: {
-          raw_phase1_response:    (p1raw && p1raw.raw_response) || "",
-          normalized_phase1_payload: "fallback — LLM call failed",
-          validation_result:      "fallback_synthesized",
-        },
-        raw_response: (p1raw && p1raw.raw_response) || "",
-      };
-    }
-    // Attach debug fields to successful normalized result
-    p1normalized._debug = {
-      raw_phase1_response:    (p1raw && p1raw.raw_response) || (p1raw && JSON.stringify(p1raw).slice(0,300)) || "",
-      normalized_phase1_payload: "ok",
-      validation_result:      "normalized",
-    };
-    return p1normalized;
-  },
+  "notes": ""
+}`;
 
+  let p1raw;
+  try {
+    p1raw = await this.callClaude(sys, [
+      {
+        type: "text",
+        text:
+          `Recorded observations only:\n${JSON.stringify(evidenceSummary, null, 2)}\n\n` +
+          `Phase 0 summary:\n${JSON.stringify(p0, null, 2)}\n\n` +
+          `User intake:\n${JSON.stringify(intake, null, 2)}\n\n` +
+          `User notes:\n${caseData.notes_from_user || "none"}`
+      },
+    ]);
+  } catch (callErr) {
+    console.warn("[NCW P1] callClaude threw:", callErr.message, "— routing to fallback");
+    p1raw = { ok: false, error_type: "call_threw", error_message: callErr.message, raw_response: "" };
+  }
+
+  console.info("[NCW P1] raw callClaude ok:", p1raw && p1raw.ok,
+    "| type:", typeof p1raw,
+    "| keys:", p1raw ? Object.keys(p1raw).join(", ") : "null",
+    "| raw_response_len:", (p1raw && p1raw.raw_response || "").length);
+
+  const p1normalized = this.normalize(p1raw, "p1_intake");
+
+  console.info("[NCW P1] after normalize ok:", p1normalized && p1normalized.ok,
+    "| evidence_sufficiency:", p1normalized && p1normalized.evidence_sufficiency);
+
+  if (!p1normalized || p1normalized.ok === false) {
+    console.warn("[NCW P1] Normalize failed — synthesizing safe p1 from recorded evidence");
+    return {
+      ok: true,
+      _synthesized: true,
+      visible_image_types: imageTypesPresent,
+      evidence_inventory: {
+        overall_form_view:
+          (imageTypesPresent.includes("overall_front") || imageTypesPresent.includes("overall_side")) ? "present" : "absent",
+        underside_hidden_surface:
+          imageTypesPresent.includes("underside") ? "present" : "absent",
+        hardware_closeup:
+          imageTypesPresent.includes("hardware_closeup") ? "present" : "absent",
+        joinery_drawer_construction:
+          imageTypesPresent.includes("joinery_closeup") ? "present" : "absent",
+        interior_structure:
+          imageTypesPresent.includes("interior") ? "present" : "absent",
+        finish_closeup:
+          imageTypesPresent.includes("finish_closeup") ? "present" : "absent",
+        back_board:
+          (imageTypesPresent.includes("back") || imageTypesPresent.includes("back_panel")) ? "present" : "absent",
+      },
+      evidence_sufficiency:
+        observedClues.length >= 4 ? "Moderate" : "Low",
+      confidence_caps: {
+        date_confidence_cap: imageTypesPresent.includes("underside") ? "High" : "Moderate",
+        construction_confidence_cap: imageTypesPresent.includes("joinery_closeup") ? "High" : "Moderate",
+        hardware_originality_cap: imageTypesPresent.includes("hardware_closeup") ? "Moderate" : "Low",
+        form_confidence_cap:
+          (imageTypesPresent.includes("overall_front") || imageTypesPresent.includes("overall_side")) ? "Moderate" : "Low",
+        overall_confidence_cap:
+          imageTypesPresent.length > 1 ? "Moderate" : "Low",
+        valuation_confidence_cap:
+          observedClues.length >= 4 ? "Moderate" : "Low",
+      },
+      phase_triggers: {
+        run_dating_grid:
+          imageTypesPresent.includes("underside") ||
+          imageTypesPresent.includes("joinery_closeup") ||
+          imageTypesPresent.includes("back") ||
+          imageTypesPresent.includes("back_panel"),
+        run_form_engine:
+          imageTypesPresent.includes("overall_front") ||
+          imageTypesPresent.includes("overall_side") ||
+          imageTypesPresent.includes("interior"),
+        run_construction:
+          imageTypesPresent.includes("joinery_closeup") ||
+          imageTypesPresent.includes("underside") ||
+          imageTypesPresent.includes("back") ||
+          imageTypesPresent.includes("back_panel"),
+        run_hardware:
+          imageTypesPresent.includes("hardware_closeup") ||
+          (byType.hardware || []).length > 0,
+      },
+      notes: "Synthesized from recorded evidence — P1 LLM call failed",
+      _debug: {
+        raw_phase1_response: (p1raw && p1raw.raw_response) || "",
+        normalized_phase1_payload: "fallback — LLM call failed",
+        validation_result: "fallback_synthesized",
+      },
+      raw_response: (p1raw && p1raw.raw_response) || "",
+    };
+  }
+
+  p1normalized._debug = {
+    raw_phase1_response:
+      (p1raw && p1raw.raw_response) ||
+      (p1raw && JSON.stringify(p1raw).slice(0, 300)) ||
+      "",
+    normalized_phase1_payload: "ok",
+    validation_result: "normalized",
+  };
+
+  return p1normalized;
+},
   // ─────────────────────────────────────────────────────────────
   // PHASE 2 — Rapid Dating Grid
   // Trigger: run_dating_grid = true
