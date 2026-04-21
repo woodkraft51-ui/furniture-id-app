@@ -3326,9 +3326,18 @@ Begin your response with { and end with }. Do not include any text outside the J
     // callClaude returns { ok: false, ... } on API or parse error.
     // If ok === false, attempt recovery from raw_response text if present.
     if (rawResult.ok === false) {
-      const rawText = rawResult.raw_response || "";
-      console.warn("[NCW P0] callClaude returned ok:false. Type:", rawResult.error_type, "— attempting partial recovery from raw text.");
-      rawResponseText = rawText;
+      let rawText = rawResult.raw_response || "";
+
+// 🔥 STRIP markdown fences BEFORE any parsing
+rawText = String(rawText).trim();
+if (rawText.startsWith("```")) {
+  rawText = rawText.replace(/^```[\w]*\n?/, "");
+  rawText = rawText.replace(/```$/, "");
+}
+
+console.warn("[NCW P0] callClaude returned ok:false. Type:", rawResult.error_type, "— attempting partial recovery from raw text.");
+
+responseText = rawText;
 
       // Try to extract JSON from raw text (may be wrapped in prose or partial)
       let recovered = null;
