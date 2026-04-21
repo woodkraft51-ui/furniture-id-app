@@ -3921,7 +3921,7 @@ Respond ONLY in valid JSON, no markdown fences:
   // Reads from p0 visual observations first.
   // Style is ignored except as tie-breaker when structural weak.
   // ─────────────────────────────────────────────────────────────
-  async p2(caseData, images, p0, p1) {
+ async p2(caseData, evidence, p0, p1) {
     const sys = `You are the Rapid Dating Grid engine for the NCW American Furniture Identification Engine.
 Scope: American furniture, 1600–present.
 
