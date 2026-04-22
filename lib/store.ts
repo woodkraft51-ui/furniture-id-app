@@ -46,26 +46,17 @@ export const API = {
     const c = caseStore[caseId];
     c.status = "analyzing";
 
-    const mode =
+        const mode =
       intake?.analysis_mode === "field_scan" ? "field_scan" : "full_analysis";
 
-    let result;
+    c.analysis_mode = mode;
 
-    if (mode === "field_scan") {
-      result = await (await import("./fieldScan")).FieldScan.run(
-        c,
-        c.images,
-        intake,
-        onPhase
-      );
-    } else {
-      result = await (await import("./engine")).PE.runAllPhases(
-        c,
-        c.images,
-        intake,
-        onPhase
-      );
-    }
+    const result = await (await import("./engine")).PE.runAllPhases(
+      c,
+      c.images,
+      intake,
+      onPhase
+    );
 
     c.stage_outputs = result.stage_outputs;
     c.final_report = result.final_report;
