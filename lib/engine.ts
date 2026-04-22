@@ -1491,7 +1491,7 @@ function synthesize(
   const tentative: string[] = [];
   const moreEvidence: string[] = [...gate.next_best_evidence];
 
-  supported.push(`The strongest supported reading is ${form.form} (${form.confidence.toLowerCase()} confidence).`);
+    supported.push(`The strongest supported reading is ${form.display_form} (${form.confidence.toLowerCase()} confidence).`);
 
   if (dating.range !== "Unknown") {
     supported.push(`Current dating evidence most strongly supports ${dating.range}.`);
