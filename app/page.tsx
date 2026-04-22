@@ -43,6 +43,7 @@ type PhaseEvent = {
 type ReportShape = {
   id?: string;
   status?: string;
+  analysis_mode?: "full_analysis" | "field_scan";
   final_report?: string;
   stage_outputs?: Record<string, any>;
   observations?: any[];
