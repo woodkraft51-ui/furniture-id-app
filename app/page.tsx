@@ -510,6 +510,23 @@ export default function Page() {
     setFieldPhotos((prev) => [...prev, ...nextImages]);
   }
 
+    async function handleFieldRefinementUpload(imageType: string, fileList: FileList | null) {
+    if (!fileList || fileList.length === 0) return;
+
+    const files = Array.from(fileList);
+    const nextImages: ImageRecord[] = [];
+
+    for (const file of files) {
+      const dataUrl = await fileToDataUrl(file);
+      nextImages.push({
+        image_type: imageType,
+        data_url: dataUrl,
+        name: file.name,
+      });
+    }
+
+    setFieldPhotos((prev) => [...prev, ...nextImages]);
+  }
   function removeCoreImage(slotKey: string) {
     setCoreImages((prev) => ({ ...prev, [slotKey]: null }));
   }
