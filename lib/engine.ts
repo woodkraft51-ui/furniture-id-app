@@ -1351,8 +1351,10 @@ function deriveDisplayForm(form: string, styleContext: string | null, observatio
 }
 function identifyForm(observations: Observation[], digest: EvidenceDigest, gate: Phase1Gate, intake: GenericRecord): Phase3Form {
   if (!gate.can_run.form) {
-    return {
+        return {
       form: "Unknown",
+      display_form: "Unknown",
+      style_context: null,
       confidence: "Inconclusive",
       support: [],
       alternatives: ["More overall and structural photos are needed before assigning form."],
