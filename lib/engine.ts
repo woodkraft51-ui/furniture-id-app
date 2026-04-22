@@ -104,6 +104,8 @@ type Phase2Dating = {
 
 type Phase3Form = {
   form: string;
+  display_form: string;
+  style_context: string | null;
   confidence: "High" | "Moderate" | "Low" | "Inconclusive";
   support: string[];
   alternatives: string[];
