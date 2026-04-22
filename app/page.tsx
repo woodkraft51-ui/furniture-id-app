@@ -1266,7 +1266,36 @@ const fs6 = stageOutputs.fs6 || null;
               ) : (
                 <div style={emptyText}>No weighted clues were returned.</div>
               )}
-              {report && analysisMode === "field_scan" && (
+              
+      </SectionCard>
+
+      <SectionCard title="Limits and Risks">
+        {fs6?.limitations_summary?.length ? (
+          <ul style={listStyle}>
+            {fs6.limitations_summary.map((item: string) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <div style={emptyText}>No limitations summary returned.</div>
+        )}
+      </SectionCard>
+    </div>
+
+    <SectionCard title="Next Best Evidence">
+      {fs6?.next_steps?.length ? (
+        <ul style={listStyle}>
+          {fs6.next_steps.map((item: string) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <div style={emptyText}>No next steps returned.</div>
+      )}
+    </SectionCard>
+  </div>
+)}
+{report && analysisMode === "field_scan" && (
   <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
     <SectionCard title="Field Scan Summary">
       <div style={{ fontSize: 18, fontWeight: 700, color: "#3d2d1f", marginBottom: 8 }}>
@@ -1381,34 +1410,6 @@ const fs6 = stageOutputs.fs6 || null;
         ) : (
           <div style={emptyText}>No supported summary returned.</div>
         )}
-      </SectionCard>
-
-      <SectionCard title="Limits and Risks">
-        {fs6?.limitations_summary?.length ? (
-          <ul style={listStyle}>
-            {fs6.limitations_summary.map((item: string) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        ) : (
-          <div style={emptyText}>No limitations summary returned.</div>
-        )}
-      </SectionCard>
-    </div>
-
-    <SectionCard title="Next Best Evidence">
-      {fs6?.next_steps?.length ? (
-        <ul style={listStyle}>
-          {fs6.next_steps.map((item: string) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      ) : (
-        <div style={emptyText}>No next steps returned.</div>
-      )}
-    </SectionCard>
-  </div>
-)}
             </SectionCard>
 
             <SectionCard title="Category Scores">
