@@ -1113,13 +1113,7 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
     };
   }
 
-  const clueKeys = digest.clue_keys;
-  const foundHints = uniq(
-    clueKeys
-      .map((k) => CLUE_LIBRARY[k]?.dateHint)
-      .filter(Boolean) as string[]
-  );
-
+  const clueSet = new Set(digest.clue_keys);
   const support = digest.strongest_observations.slice(0, 4).map((o) => o.description);
   const limitations: string[] = [];
 
@@ -1133,29 +1127,118 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
     limitations.push(`Hard negatives present: ${digest.hard_negatives.map(titleCase).join(", ")}.`);
   }
 
-  if (!foundHints.length) {
+  const hasVeryLate =
+    clueSet.has("phillips_screw") ||
+    clueSet.has("staple_fastener") ||
+    clueSet.has("plywood_structural") ||
+    clueSet.has("plywood_drawer_bottom") ||
+    clueSet.has("modern_concealed_hinge");
+
+  const hasLaterIndustrial =
+    clueSet.has("wire_nail") ||
+    clueSet.has("slotted_machine_screw") ||
+    clueSet.has("machine_dovetails") ||
+    clueSet.has("dowel_joinery");
+
+  const hasVictorianEra =
+    clueSet.has("porcelain_caster") ||
+    clueSet.has("victorian_strap_hinge") ||
+    clueSet.has("eastlake_pull");
+
+  const hasMid19thStructural =
+    clueSet.has("cut_nail") ||
+    clueSet.has("circular_saw_arcs");
+
+  const hasEarlyOnlySignals =
+    clueSet.has("hand_forged_nail") ||
+    clueSet.has("pit_saw_marks") ||
+    clueSet.has("hand_cut_dovetails") ||
+    clueSet.has("slotted_handmade_screw");
+
+  const hasEarlierStyleJoinery =
+    clueSet.has("rule_joint");
+
+  if (hasVeryLate) {
     return {
-      range: "Broadly antique or vintage, but not tightly dated",
-      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 45)),
+      range: "post-1935",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 78)),
       support,
-      limitations: limitations.length
-        ? limitations
-        : ["No strong date-specific clues were identified."],
+      limitations,
     };
   }
 
-  const prioritized = [...foundHints].sort((a, b) => {
-    return DATE_PRIORITY_ORDER.indexOf(a) - DATE_PRIORITY_ORDER.indexOf(b);
-  });
+  if (hasVictorianEra && hasLaterIndustrial) {
+    return {
+      range: "1880–1920",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 78)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasVictorianEra && hasMid19thStructural) {
+    return {
+      range: "1850–1900",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 76)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasLaterIndustrial) {
+    return {
+      range: "1880–1920",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 72)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasMid19thStructural && hasEarlierStyleJoinery) {
+    return {
+      range: "1830–1890",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 72)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasMid19thStructural) {
+    return {
+      range: "1830–1890",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 68)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasEarlyOnlySignals) {
+    return {
+      range: "pre-1860",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 68)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasEarlierStyleJoinery) {
+    return {
+      range: "Broadly 19th century",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 62)),
+      support,
+      limitations,
+    };
+  }
 
   return {
-    range: prioritized[0],
-    confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 72)),
+    range: "Broadly antique or vintage, but not tightly dated",
+    confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 45)),
     support,
-    limitations,
+    limitations: limitations.length
+      ? limitations
+      : ["No strong date-specific clues were identified."],
   };
 }
-
 function scoreFormCandidates(observations: Observation[], intake: GenericRecord): Record<string, number> {
   const text = observations
     .map((o) => `${o.clue || ""} ${o.description}`.toLowerCase())
