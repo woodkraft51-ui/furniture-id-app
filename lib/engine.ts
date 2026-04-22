@@ -1056,7 +1056,7 @@ function gateEvidence(digest: EvidenceDigest, missing: MissingEvidenceMap): Phas
       form: obsCount >= 2,
       weighting: obsCount >= 1,
       conflict_check: obsCount >= 3,
-      valuation_ready: obsCount >= 6 && !missing.underside_photo && !missing.joinery_photo,
+      valuation_ready: obsCount >= 6 && structuralEvidenceCount >= 2,
     },
     next_best_evidence: uniq(nextBest).slice(0, 5),
   };
