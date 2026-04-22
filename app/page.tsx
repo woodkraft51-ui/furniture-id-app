@@ -129,6 +129,14 @@ const PHASE_LABELS: Record<string, string> = {
   p4: "Phase 4 — Evidence Weighting",
   p5: "Phase 5 — Conflict Review",
   p6: "Phase 6 — Final Synthesis",
+
+  fs0: "Field Scan — Evidence Scan",
+  fs1: "Field Scan — Evidence Gate",
+  fs2: "Field Scan — Quick Identification",
+  fs3: "Field Scan — Risk Review",
+  fs4: "Field Scan — Value Range",
+  fs5: "Field Scan — Buy Guidance",
+  fs6: "Field Scan — Final Summary",
 };
 
 function computeMissingEvidence(coreImages: CoreImageMap, groupImages: GroupImageMap) {
@@ -378,21 +386,21 @@ export default function Page() {
   }
 
   const stageOutputs = report?.stage_outputs || {};
-const analysisMode = report?.analysis_mode || intake.analysis_mode || "full_analysis";
+  const analysisMode = report?.analysis_mode || intake.analysis_mode || "full_analysis";
 
-const p1 = stageOutputs.p1 || null;
-const p2 = stageOutputs.p2 || null;
-const p3 = stageOutputs.p3 || null;
-const p4 = stageOutputs.p4 || null;
-const p5 = stageOutputs.p5 || null;
-const p6 = stageOutputs.p6 || null;
+  const p1 = stageOutputs.p1 || null;
+  const p2 = stageOutputs.p2 || null;
+  const p3 = stageOutputs.p3 || null;
+  const p4 = stageOutputs.p4 || null;
+  const p5 = stageOutputs.p5 || null;
+  const p6 = stageOutputs.p6 || null;
 
-const fs1 = stageOutputs.fs1 || null;
-const fs2 = stageOutputs.fs2 || null;
-const fs3 = stageOutputs.fs3 || null;
-const fs4 = stageOutputs.fs4 || null;
-const fs5 = stageOutputs.fs5 || null;
-const fs6 = stageOutputs.fs6 || null;
+  const fs1 = stageOutputs.fs1 || null;
+  const fs2 = stageOutputs.fs2 || null;
+  const fs3 = stageOutputs.fs3 || null;
+  const fs4 = stageOutputs.fs4 || null;
+  const fs5 = stageOutputs.fs5 || null;
+  const fs6 = stageOutputs.fs6 || null;
 
   return (
     <main
@@ -466,62 +474,63 @@ const fs6 = stageOutputs.fs6 || null;
         >
           <div style={{ display: "grid", gap: 18 }}>
             <SectionCard title="Analysis Mode">
-  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-    <label
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 8,
-        padding: 12,
-        border: "1px solid #d9ccb5",
-        borderRadius: 10,
-        background: intake.analysis_mode === "full_analysis" ? "#fff7eb" : "#fff",
-        cursor: "pointer",
-        flex: 1,
-      }}
-    >
-      <input
-        type="radio"
-        name="analysis_mode"
-        checked={intake.analysis_mode === "full_analysis"}
-        onChange={() => updateIntake("analysis_mode", "full_analysis" as any)}
-      />
-      <div>
-        <div style={{ fontWeight: 700 }}>Full Analysis</div>
-        <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
-          More detailed, slower, and deeper evidence synthesis.
-        </div>
-      </div>
-    </label>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 8,
+                    padding: 12,
+                    border: "1px solid #d9ccb5",
+                    borderRadius: 10,
+                    background: intake.analysis_mode === "full_analysis" ? "#fff7eb" : "#fff",
+                    cursor: "pointer",
+                    flex: 1,
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="analysis_mode"
+                    checked={intake.analysis_mode === "full_analysis"}
+                    onChange={() => updateIntake("analysis_mode", "full_analysis" as any)}
+                  />
+                  <div>
+                    <div style={{ fontWeight: 700 }}>Full Analysis</div>
+                    <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
+                      More detailed, slower, and deeper evidence synthesis.
+                    </div>
+                  </div>
+                </label>
 
-    <label
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 8,
-        padding: 12,
-        border: "1px solid #d9ccb5",
-        borderRadius: 10,
-        background: intake.analysis_mode === "field_scan" ? "#fff7eb" : "#fff",
-        cursor: "pointer",
-        flex: 1,
-      }}
-    >
-      <input
-        type="radio"
-        name="analysis_mode"
-        checked={intake.analysis_mode === "field_scan"}
-        onChange={() => updateIntake("analysis_mode", "field_scan" as any)}
-      />
-      <div>
-        <div style={{ fontWeight: 700 }}>Field Scan</div>
-        <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
-          Faster thrift-store or antique-mall mode with broader, evidence-first results.
-        </div>
-      </div>
-    </label>
-  </div>
-</SectionCard>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 8,
+                    padding: 12,
+                    border: "1px solid #d9ccb5",
+                    borderRadius: 10,
+                    background: intake.analysis_mode === "field_scan" ? "#fff7eb" : "#fff",
+                    cursor: "pointer",
+                    flex: 1,
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="analysis_mode"
+                    checked={intake.analysis_mode === "field_scan"}
+                    onChange={() => updateIntake("analysis_mode", "field_scan" as any)}
+                  />
+                  <div>
+                    <div style={{ fontWeight: 700 }}>Field Scan</div>
+                    <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
+                      Faster thrift-store or antique-mall mode with broader, evidence-first results.
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </SectionCard>
+
             <SectionCard title="1. Core Photos">
               <div style={{ display: "grid", gap: 14 }}>
                 {CORE_SLOTS.map((slot) => {
@@ -559,67 +568,67 @@ const fs6 = stageOutputs.fs6 || null;
                         </div>
 
                         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-  <label
-    style={{
-      display: "inline-block",
-      background: "#5a3e1b",
-      color: "#fffaf2",
-      borderRadius: 8,
-      padding: "9px 12px",
-      cursor: "pointer",
-      fontSize: 13,
-      fontWeight: 600,
-    }}
-  >
-    Upload Photo
-    <input
-      type="file"
-      accept="image/*"
-      style={{ display: "none" }}
-      onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
-    />
-  </label>
+                          <label
+                            style={{
+                              display: "inline-block",
+                              background: "#5a3e1b",
+                              color: "#fffaf2",
+                              borderRadius: 8,
+                              padding: "9px 12px",
+                              cursor: "pointer",
+                              fontSize: 13,
+                              fontWeight: 600,
+                            }}
+                          >
+                            Upload Photo
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
+                            />
+                          </label>
 
-  <label
-    style={{
-      display: "inline-block",
-      background: "#7d6540",
-      color: "#fffaf2",
-      borderRadius: 8,
-      padding: "9px 12px",
-      cursor: "pointer",
-      fontSize: 13,
-      fontWeight: 600,
-    }}
-  >
-    Take Photo
-    <input
-      type="file"
-      accept="image/*"
-      capture="environment"
-      style={{ display: "none" }}
-      onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
-    />
-  </label>
+                          <label
+                            style={{
+                              display: "inline-block",
+                              background: "#7d6540",
+                              color: "#fffaf2",
+                              borderRadius: 8,
+                              padding: "9px 12px",
+                              cursor: "pointer",
+                              fontSize: 13,
+                              fontWeight: 600,
+                            }}
+                          >
+                            Take Photo
+                            <input
+                              type="file"
+                              accept="image/*"
+                              capture="environment"
+                              style={{ display: "none" }}
+                              onChange={(e) => handleCoreUpload(slot.key, e.target.files)}
+                            />
+                          </label>
 
-  {current && (
-    <button
-      type="button"
-      onClick={() => removeCoreImage(slot.key)}
-      style={{
-        border: "1px solid #cebda4",
-        background: "#fff8ee",
-        color: "#6f4428",
-        borderRadius: 8,
-        padding: "9px 12px",
-        cursor: "pointer",
-        fontSize: 13,
-      }}
-    >
-      Remove
-    </button>
-  )}
-</div>
+                          {current && (
+                            <button
+                              type="button"
+                              onClick={() => removeCoreImage(slot.key)}
+                              style={{
+                                border: "1px solid #cebda4",
+                                background: "#fff8ee",
+                                color: "#6f4428",
+                                borderRadius: 8,
+                                padding: "9px 12px",
+                                cursor: "pointer",
+                                fontSize: 13,
+                              }}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -647,54 +656,54 @@ const fs6 = stageOutputs.fs6 || null;
                       </div>
 
                       <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-  <label
-    style={{
-      display: "inline-block",
-      background: "#5a3e1b",
-      color: "#fffaf2",
-      borderRadius: 8,
-      padding: "9px 12px",
-      cursor: "pointer",
-      fontSize: 13,
-      fontWeight: 600,
-    }}
-  >
-    Upload Photo(s)
-    <input
-      type="file"
-      accept="image/*"
-      multiple
-      style={{ display: "none" }}
-      onChange={(e) =>
-        handleGroupUpload(group.key, group.image_type, e.target.files)
-      }
-    />
-  </label>
+                        <label
+                          style={{
+                            display: "inline-block",
+                            background: "#5a3e1b",
+                            color: "#fffaf2",
+                            borderRadius: 8,
+                            padding: "9px 12px",
+                            cursor: "pointer",
+                            fontSize: 13,
+                            fontWeight: 600,
+                          }}
+                        >
+                          Upload Photo(s)
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            style={{ display: "none" }}
+                            onChange={(e) =>
+                              handleGroupUpload(group.key, group.image_type, e.target.files)
+                            }
+                          />
+                        </label>
 
-  <label
-    style={{
-      display: "inline-block",
-      background: "#7d6540",
-      color: "#fffaf2",
-      borderRadius: 8,
-      padding: "9px 12px",
-      cursor: "pointer",
-      fontSize: 13,
-      fontWeight: 600,
-    }}
-  >
-    Take Photo
-    <input
-      type="file"
-      accept="image/*"
-      capture="environment"
-      style={{ display: "none" }}
-      onChange={(e) =>
-        handleGroupUpload(group.key, group.image_type, e.target.files)
-      }
-    />
-  </label>
-</div>
+                        <label
+                          style={{
+                            display: "inline-block",
+                            background: "#7d6540",
+                            color: "#fffaf2",
+                            borderRadius: 8,
+                            padding: "9px 12px",
+                            cursor: "pointer",
+                            fontSize: 13,
+                            fontWeight: 600,
+                          }}
+                        >
+                          Take Photo
+                          <input
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            style={{ display: "none" }}
+                            onChange={(e) =>
+                              handleGroupUpload(group.key, group.image_type, e.target.files)
+                            }
+                          />
+                        </label>
+                      </div>
 
                       {items.length > 0 && (
                         <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
@@ -748,16 +757,17 @@ const fs6 = stageOutputs.fs6 || null;
                 }}
               >
                 {intake.analysis_mode === "field_scan" && (
-  <label style={{ display: "grid", gap: 6 }}>
-    <span style={{ fontSize: 13, fontWeight: 600 }}>Asking Price</span>
-    <input
-      value={intake.asking_price}
-      onChange={(e) => updateIntake("asking_price", e.target.value as any)}
-      style={inputStyle}
-      placeholder="e.g. 45"
-    />
-  </label>
-)}
+                  <label style={{ display: "grid", gap: 6 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>Asking Price</span>
+                    <input
+                      value={intake.asking_price}
+                      onChange={(e) => updateIntake("asking_price", e.target.value as any)}
+                      style={inputStyle}
+                      placeholder="e.g. 45"
+                    />
+                  </label>
+                )}
+
                 <label style={{ display: "grid", gap: 6 }}>
                   <span style={{ fontSize: 13, fontWeight: 600 }}>Height (in)</span>
                   <input
@@ -1266,150 +1276,6 @@ const fs6 = stageOutputs.fs6 || null;
               ) : (
                 <div style={emptyText}>No weighted clues were returned.</div>
               )}
-              
-      </SectionCard>
-
-      <SectionCard title="Limits and Risks">
-        {fs6?.limitations_summary?.length ? (
-          <ul style={listStyle}>
-            {fs6.limitations_summary.map((item: string) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        ) : (
-          <div style={emptyText}>No limitations summary returned.</div>
-        )}
-      </SectionCard>
-    </div>
-
-    <SectionCard title="Next Best Evidence">
-      {fs6?.next_steps?.length ? (
-        <ul style={listStyle}>
-          {fs6.next_steps.map((item: string) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      ) : (
-        <div style={emptyText}>No next steps returned.</div>
-      )}
-    </SectionCard>
-  </div>
-)}
-{report && analysisMode === "field_scan" && (
-  <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
-    <SectionCard title="Field Scan Summary">
-      <div style={{ fontSize: 18, fontWeight: 700, color: "#3d2d1f", marginBottom: 8 }}>
-        {fs6?.headline || "Field Scan Result"}
-      </div>
-      <div
-        style={{
-          fontSize: 15,
-          lineHeight: 1.65,
-          color: "#3e2f1f",
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        {report.final_report || "No field scan summary returned."}
-      </div>
-    </SectionCard>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 18,
-      }}
-    >
-      <SectionCard title="Identification">
-        <div style={metaRowStyle}>
-          <span>Primary ID</span>
-          <strong>{fs2?.primary_identification || "Unknown"}</strong>
-        </div>
-        <div style={metaRowStyle}>
-          <span>Alternate ID</span>
-          <strong>{fs2?.alternate_identification || "—"}</strong>
-        </div>
-
-        <div style={subheadStyle}>Style Context</div>
-        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
-          {fs2?.style_context || "No style context returned."}
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Date Range">
-        <div style={metaRowStyle}>
-          <span>Working Range</span>
-          <strong>{fs2?.date_range || "Unknown"}</strong>
-        </div>
-
-        <div style={subheadStyle}>Reasoning</div>
-        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
-          {fs2?.date_reasoning || "No date reasoning returned."}
-        </div>
-      </SectionCard>
-    </div>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 18,
-      }}
-    >
-      <SectionCard title="Value Range">
-        <div style={metaRowStyle}>
-          <span>Estimated Range</span>
-          <strong>{fs4?.valuation_display || "Unknown"}</strong>
-        </div>
-
-        <div style={subheadStyle}>Value Reasoning</div>
-        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
-          {fs4?.value_reasoning || "No valuation reasoning returned."}
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Buy Guidance">
-        <div style={metaRowStyle}>
-          <span>Recommendation</span>
-          <strong>{fs5?.recommendation_display || "Unknown"}</strong>
-        </div>
-        <div style={metaRowStyle}>
-          <span>Fit Score</span>
-          <strong>{typeof fs5?.fit_score === "number" ? fs5.fit_score : "—"}</strong>
-        </div>
-        <div style={metaRowStyle}>
-          <span>Margin Estimate</span>
-          <strong>
-            {typeof fs5?.margin_estimate === "number"
-              ? `$${fs5.margin_estimate}`
-              : "—"}
-          </strong>
-        </div>
-
-        <div style={subheadStyle}>Recommendation Reasoning</div>
-        <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
-          {fs5?.recommendation_reasoning || "No recommendation reasoning returned."}
-        </div>
-      </SectionCard>
-    </div>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 18,
-      }}
-    >
-      <SectionCard title="What We Can Say">
-        {fs6?.supported_summary?.length ? (
-          <ul style={listStyle}>
-            {fs6.supported_summary.map((item: string) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        ) : (
-          <div style={emptyText}>No supported summary returned.</div>
-        )}
             </SectionCard>
 
             <SectionCard title="Category Scores">
@@ -1449,6 +1315,201 @@ const fs6 = stageOutputs.fs6 || null;
                 </div>
               ) : (
                 <div style={emptyText}>No category scores were returned.</div>
+              )}
+            </SectionCard>
+          </div>
+        )}
+
+        {report && analysisMode === "field_scan" && (
+          <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
+            <SectionCard title="Field Scan Summary">
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#3d2d1f", marginBottom: 8 }}>
+                {fs6?.headline || "Field Scan Result"}
+              </div>
+              <div
+                style={{
+                  fontSize: 15,
+                  lineHeight: 1.65,
+                  color: "#3e2f1f",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {report.final_report || "No field scan summary returned."}
+              </div>
+            </SectionCard>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 18,
+              }}
+            >
+              <SectionCard title="Identification">
+                <div style={metaRowStyle}>
+                  <span>Primary ID</span>
+                  <strong>{fs2?.primary_identification || "Unknown"}</strong>
+                </div>
+                <div style={metaRowStyle}>
+                  <span>Alternate ID</span>
+                  <strong>{fs2?.alternate_identification || "—"}</strong>
+                </div>
+
+                <div style={subheadStyle}>Style Context</div>
+                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                  {fs2?.style_context || "No style context returned."}
+                </div>
+              </SectionCard>
+
+              <SectionCard title="Date Range">
+                <div style={metaRowStyle}>
+                  <span>Working Range</span>
+                  <strong>{fs2?.date_range || "Unknown"}</strong>
+                </div>
+
+                <div style={subheadStyle}>Reasoning</div>
+                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                  {fs2?.date_reasoning || "No date reasoning returned."}
+                </div>
+              </SectionCard>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 18,
+              }}
+            >
+              <SectionCard title="Value Range">
+                <div style={metaRowStyle}>
+                  <span>Estimated Range</span>
+                  <strong>{fs4?.valuation_display || "Unknown"}</strong>
+                </div>
+
+                <div style={subheadStyle}>Value Reasoning</div>
+                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                  {fs4?.value_reasoning || "No valuation reasoning returned."}
+                </div>
+              </SectionCard>
+
+              <SectionCard title="Buy Guidance">
+                <div style={metaRowStyle}>
+                  <span>Recommendation</span>
+                  <strong>{fs5?.recommendation_display || "Unknown"}</strong>
+                </div>
+                <div style={metaRowStyle}>
+                  <span>Fit Score</span>
+                  <strong>{typeof fs5?.fit_score === "number" ? fs5.fit_score : "—"}</strong>
+                </div>
+                <div style={metaRowStyle}>
+                  <span>Margin Estimate</span>
+                  <strong>
+                    {typeof fs5?.margin_estimate === "number"
+                      ? `$${fs5.margin_estimate}`
+                      : "—"}
+                  </strong>
+                </div>
+
+                <div style={subheadStyle}>Recommendation Reasoning</div>
+                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                  {fs5?.recommendation_reasoning || "No recommendation reasoning returned."}
+                </div>
+              </SectionCard>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 18,
+              }}
+            >
+              <SectionCard title="What We Can Say">
+                {fs6?.supported_summary?.length ? (
+                  <ul style={listStyle}>
+                    {fs6.supported_summary.map((item: string) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div style={emptyText}>No supported summary returned.</div>
+                )}
+              </SectionCard>
+
+              <SectionCard title="Limits and Risks">
+                {fs6?.limitations_summary?.length ? (
+                  <ul style={listStyle}>
+                    {fs6.limitations_summary.map((item: string) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div style={emptyText}>No limitations summary returned.</div>
+                )}
+              </SectionCard>
+            </div>
+
+            <SectionCard title="Next Best Evidence">
+              {fs6?.next_steps?.length ? (
+                <ul style={listStyle}>
+                  {fs6.next_steps.map((item: string) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <div style={emptyText}>No next steps returned.</div>
+              )}
+            </SectionCard>
+
+            <SectionCard title="Field Scan Evidence Gate">
+              <div style={metaRowStyle}>
+                <span>Precision Level</span>
+                <strong>{fs1?.precision_level ? humanize(fs1.precision_level) : "Unknown"}</strong>
+              </div>
+              <div style={metaRowStyle}>
+                <span>Confidence Statement</span>
+                <strong>{fs1?.confidence_statement ? humanize(fs1.confidence_statement) : "Unknown"}</strong>
+              </div>
+
+              <div style={subheadStyle}>Evidence Summary</div>
+              <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                {fs1?.evidence_summary || "No field scan evidence summary returned."}
+              </div>
+
+              {fs1?.next_best_evidence?.length > 0 && (
+                <>
+                  <div style={subheadStyle}>Next Best Evidence</div>
+                  <ul style={listStyle}>
+                    {fs1.next_best_evidence.map((item: string) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </SectionCard>
+
+            <SectionCard title="Field Scan Risk Review">
+              <div style={metaRowStyle}>
+                <span>Condition Lane</span>
+                <strong>{fs3?.condition_lane ? humanize(fs3.condition_lane) : "Unknown"}</strong>
+              </div>
+              <div style={metaRowStyle}>
+                <span>Labor Lane</span>
+                <strong>{fs3?.labor_lane ? humanize(fs3.labor_lane) : "Unknown"}</strong>
+              </div>
+
+              {fs3?.risk_flags?.length ? (
+                <>
+                  <div style={subheadStyle}>Risk Flags</div>
+                  <ul style={listStyle}>
+                    {fs3.risk_flags.map((item: string) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <div style={{ ...emptyText, marginTop: 10 }}>No specific risk flags were returned.</div>
               )}
             </SectionCard>
           </div>
