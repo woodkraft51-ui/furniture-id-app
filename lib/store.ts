@@ -60,6 +60,7 @@ export const API = {
 
     c.stage_outputs = result.stage_outputs;
     c.final_report = result.final_report;
+    c.evidence_digest = result.evidence_digest || null;
     c.status = "complete";
 
     return { case_id: caseId };
