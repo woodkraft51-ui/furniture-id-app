@@ -60,7 +60,6 @@ export const API = {
 
     c.stage_outputs = result.stage_outputs;
     c.final_report = result.final_report;
-    c.analysis_mode = mode;
     c.status = "complete";
 
     return { case_id: caseId };
