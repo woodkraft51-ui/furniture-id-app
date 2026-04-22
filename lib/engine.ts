@@ -999,26 +999,32 @@ function gateEvidence(digest: EvidenceDigest, missing: MissingEvidenceMap): Phas
   let capPct = 88;
   const nextBest: string[] = [];
 
-  if (missing.underside_photo) {
-    capPct -= 18;
+    const hasJoinery = (digest.by_type?.joinery || []).length > 0;
+  const hasHardware = (digest.by_type?.hardware || []).length > 0;
+  const hasConstruction = (digest.by_type?.construction || []).length > 0;
+  const hasFasteners = (digest.by_type?.fasteners || []).length > 0;
+
+  const structuralEvidenceCount =
+    [hasJoinery, hasConstruction, hasFasteners].filter(Boolean).length;
+
+  if (!hasFasteners && !hasConstruction) {
     nextBest.push("Underside photo for saw marks and fasteners");
   }
-  if (missing.back_photo) {
-    capPct -= 10;
-    nextBest.push("Back panel photo for milling and secondary wood");
-  }
-  if (missing.joinery_photo) {
-    capPct -= 12;
+  if (!hasJoinery) {
     nextBest.push("Joinery close-up for drawer construction or framing");
   }
-  if (missing.hardware_photo) {
-    capPct -= 6;
+  if (!hasHardware) {
     nextBest.push("Hardware close-up to judge originality");
   }
+  if (missing.back_photo) {
+    nextBest.push("Back panel photo for milling and secondary wood");
+  }
   if (missing.label_photo) {
-    capPct -= 4;
     nextBest.push("Maker's mark or label if present");
   }
+
+  if (structuralEvidenceCount === 0) capPct -= 25;
+  else if (structuralEvidenceCount === 1) capPct -= 10;
 
   if (obsCount < 3) capPct -= 22;
   else if (obsCount < 6) capPct -= 10;
