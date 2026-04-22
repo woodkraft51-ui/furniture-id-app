@@ -588,9 +588,23 @@ function detectClueFromText(text: string): string | null {
   if (t.includes("dowel")) return "dowel_joinery";
   if (t.includes("plywood drawer bottom")) return "plywood_drawer_bottom";
 
-  if (t.includes("pit saw")) return "pit_saw_marks";
-  if (t.includes("circular saw")) return "circular_saw_arcs";
-  if (t.includes("band saw")) return "band_saw_lines";
+    const mentionsPitSaw = t.includes("pit saw");
+  const mentionsCircularSaw = t.includes("circular saw");
+  const mentionsBandSaw = t.includes("band saw");
+
+  const rejectsPitSaw =
+    t.includes("rather than pit saw") ||
+    t.includes("not pit saw") ||
+    t.includes("instead of pit saw") ||
+    t.includes("more consistent with circular") ||
+    t.includes("more consistent with band saw") ||
+    t.includes("consistent with circular or band saw");
+
+  if (mentionsCircularSaw && !mentionsBandSaw) return "circular_saw_arcs";
+  if (mentionsBandSaw && !mentionsCircularSaw) return "band_saw_lines";
+  if (mentionsCircularSaw && mentionsBandSaw) return "band_saw_lines";
+  if (mentionsPitSaw && !rejectsPitSaw) return "pit_saw_marks";
+
   if (t.includes("hand plane") || t.includes("plane chatter")) return "hand_plane_chatter";
 
   if (t.includes("poplar")) return "poplar_secondary";
