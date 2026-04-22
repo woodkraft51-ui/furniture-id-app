@@ -159,7 +159,7 @@ function bandColor(band?: string) {
 function inferFieldImageType(index: number): string {
   if (index === 0) return "overall_front";
   if (index === 1) return "overall_side";
-  return "unknown";
+  return "detail";
 }
 
 function computeMissingEvidenceFromImages(images: ImageRecord[]) {
