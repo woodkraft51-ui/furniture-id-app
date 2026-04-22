@@ -660,7 +660,17 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
       else if (desc.includes("circular saw")) clue = "circular_saw_arcs";
       else clue = null;
     }
-
+    if (
+      clue === "polyurethane" &&
+      (
+        desc.includes("no obvious") ||
+        desc.includes("inconclusive") ||
+        desc.includes("cannot confirm") ||
+        desc.includes("not clearly visible")
+      )
+    ) {
+      clue = null;
+    }
     const meta = clue ? CLUE_LIBRARY[clue] : null;
 
     normalized.push({
