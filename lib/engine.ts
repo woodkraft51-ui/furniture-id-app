@@ -639,10 +639,27 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
 
   const push = (raw: any) => {
     const description = descriptionFromObservation(raw);
-    const clue =
+        let clue =
       normalizeClueKey(raw?.clue) ||
       normalizeClueKey(raw?.reference_id) ||
       detectClueFromText(description);
+
+    const desc = description.toLowerCase();
+    if (
+      clue === "pit_saw_marks" &&
+      (
+        desc.includes("rather than pit saw") ||
+        desc.includes("not pit saw") ||
+        desc.includes("instead of pit saw") ||
+        desc.includes("more consistent with circular") ||
+        desc.includes("more consistent with band saw") ||
+        desc.includes("consistent with circular or band saw")
+      )
+    ) {
+      if (desc.includes("band saw")) clue = "band_saw_lines";
+      else if (desc.includes("circular saw")) clue = "circular_saw_arcs";
+      else clue = null;
+    }
 
     const meta = clue ? CLUE_LIBRARY[clue] : null;
 
