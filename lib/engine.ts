@@ -1297,7 +1297,58 @@ function scoreFormCandidates(observations: Observation[], intake: GenericRecord)
 
   return score;
 }
+function deriveStyleContext(observations: Observation[], clueKeys: string[]): string | null {
+  const text = observations.map((o) => o.description.toLowerCase()).join(" | ");
+  const clueSet = new Set(clueKeys);
 
+  const hasVictorianHardware =
+    clueSet.has("porcelain_caster") || clueSet.has("victorian_strap_hinge");
+
+  const hasTurnedVictorianLegs =
+    text.includes("turned") ||
+    text.includes("ring-and-cylinder") ||
+    text.includes("ring and cylinder") ||
+    text.includes("baluster") ||
+    text.includes("reeded") ||
+    text.includes("fluted");
+
+  if (hasVictorianHardware && hasTurnedVictorianLegs) {
+    return "Victorian";
+  }
+
+  if (hasTurnedVictorianLegs) {
+    return "Victorian-influenced";
+  }
+
+  return null;
+}
+
+function deriveDisplayForm(form: string, styleContext: string | null, observations: Observation[], clueKeys: string[]): string {
+  const text = observations.map((o) => o.description.toLowerCase()).join(" | ");
+  const clueSet = new Set(clueKeys);
+
+  if (form === "Drop-leaf table") {
+    const hasDiningScaleLanguage =
+      text.includes("dining") ||
+      text.includes("all four legs") ||
+      text.includes("apron") ||
+      clueSet.has("porcelain_caster");
+
+    if (styleContext === "Victorian" && hasDiningScaleLanguage) {
+      return "Victorian drop-leaf dining table";
+    }
+
+    if (styleContext === "Victorian") {
+      return "Victorian drop-leaf table";
+    }
+
+    if (hasDiningScaleLanguage) {
+      return "Drop-leaf dining table";
+    }
+  }
+
+  return styleContext ? `${styleContext} ${form}` : form;
+}
 function identifyForm(observations: Observation[], digest: EvidenceDigest, gate: Phase1Gate, intake: GenericRecord): Phase3Form {
   if (!gate.can_run.form) {
     return {
