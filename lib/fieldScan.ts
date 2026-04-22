@@ -65,6 +65,18 @@ type EvidenceDigest = {
   strongest_observations: Observation[];
 };
 
+type StructuralSupport = {
+  structural_observation_count: number;
+  mechanism_count: number;
+  joinery_count: number;
+  fastener_count: number;
+  toolmark_count: number;
+  structural_material_count: number;
+  supportive_view_count: number;
+  supportive_views: string[];
+  strong_form_supported: boolean;
+};
+
 type FS0Result = {
   ok: true;
   observations: Observation[];
@@ -75,10 +87,11 @@ type FS0Result = {
 
 type FS1Result = {
   precision_level: PrecisionLevel;
-  confidence_statement: "broad" | "supported" | "well-supported";
+  confidence_statement: "broad" | "supported" | "well_supported";
   evidence_summary: string;
   missing_evidence: MissingEvidenceMap;
   structural_evidence_present: boolean;
+  structural_support: StructuralSupport;
   next_best_evidence: string[];
 };
 
@@ -130,47 +143,56 @@ const CLUE_LIBRARY: Record<
     structural?: boolean;
     hardNegative?: boolean;
     explanation: string;
+    formHint?: string;
   }
 > = {
   drop_leaf_hinged: {
     category: "construction",
     structural: true,
     explanation: "Defining drop-leaf mechanism.",
+    formHint: "Drop-leaf table",
   },
   gateleg_support: {
     category: "construction",
     structural: true,
     explanation: "Defining gateleg support structure.",
+    formHint: "Gateleg table",
   },
   rule_joint: {
     category: "joinery",
     structural: true,
     explanation: "Leaf-edge joinery clue.",
+    formHint: "Drop-leaf table",
   },
   swing_leg: {
     category: "construction",
     structural: true,
     explanation: "Leaf-support mechanism.",
+    formHint: "Drop-leaf table",
   },
   lift_lid: {
     category: "construction",
     structural: true,
     explanation: "Chest-form mechanism.",
+    formHint: "Blanket chest",
   },
   slant_front: {
     category: "construction",
     structural: true,
     explanation: "Desk-form mechanism.",
+    formHint: "Slant-front desk",
   },
   cylinder_roll: {
     category: "construction",
     structural: true,
     explanation: "Roll-top mechanism.",
+    formHint: "Roll-top desk",
   },
   extension_mechanism: {
     category: "construction",
     structural: true,
     explanation: "Table extension mechanism.",
+    formHint: "Extension table",
   },
 
   hand_cut_dovetails: {
@@ -300,10 +322,12 @@ const CLUE_LIBRARY: Record<
   drawer_present: {
     category: "construction",
     explanation: "Supports case-piece reading.",
+    formHint: "Chest of drawers",
   },
   door_present: {
     category: "construction",
     explanation: "Supports cabinet-form reading.",
+    formHint: "Cabinet",
   },
 };
 
@@ -571,7 +595,7 @@ function buildEvidenceDigest(observations: Observation[]): EvidenceDigest {
 
   const strongest = [...observations]
     .sort((a, b) => b.confidence - a.confidence)
-    .slice(0, 6);
+    .slice(0, 8);
 
   return {
     observations,
@@ -580,10 +604,6 @@ function buildEvidenceDigest(observations: Observation[]): EvidenceDigest {
     hard_negatives: hardNegatives,
     strongest_observations: strongest,
   };
-}
-
-function hasStructuralEvidence(digest: EvidenceDigest) {
-  return digest.clue_keys.some((key) => Boolean(CLUE_LIBRARY[key]?.structural));
 }
 
 function buildIntakeSummary(intake: FieldScanIntake) {
@@ -638,23 +658,199 @@ function applyIntakeHints(intake: FieldScanIntake, observations: Observation[]) 
   return dedupeObservations(next);
 }
 
-function determinePrecision(digest: EvidenceDigest, missing: MissingEvidenceMap): PrecisionLevel {
-  const structural = hasStructuralEvidence(digest);
-  const clueCount = digest.clue_keys.length;
+function promoteEvidenceFeatures(observations: Observation[]): Observation[] {
+  const promoted = [...observations];
+
+  const addIfMissing = (type: string, clue: string | null, description: string, confidence: number, source: string | null) => {
+    const exists = promoted.some(
+      (o) =>
+        (clue && o.clue === clue) ||
+        o.description.toLowerCase() === description.toLowerCase()
+    );
+    if (!exists) {
+      promoted.push({
+        type,
+        clue,
+        description,
+        confidence,
+        source_image: source,
+        hard_negative: Boolean(clue && CLUE_LIBRARY[clue]?.hardNegative),
+        low_confidence_flag: false,
+      });
+    }
+  };
+
+  for (const obs of observations) {
+    const text = `${obs.clue || ""} ${obs.description}`.toLowerCase();
+    const source = obs.source_image || null;
+
+    if (text.includes("gate leg") || text.includes("gate-leg")) {
+      addIfMissing("construction", "gateleg_support", "Gate-leg support is visibly present", 78, source);
+    }
+    if (text.includes("drop leaf") || text.includes("drop-leaf")) {
+      addIfMissing("construction", "drop_leaf_hinged", "Drop-leaf construction is visibly present", 78, source);
+    }
+    if (text.includes("rule joint")) {
+      addIfMissing("joinery", "rule_joint", "Rule joint appears visible at the leaf edge", 72, source);
+    }
+    if (text.includes("dovetail")) {
+      if (text.includes("hand")) {
+        addIfMissing("joinery", "hand_cut_dovetails", "Hand-cut dovetail construction appears visible", 72, source);
+      } else if (text.includes("machine")) {
+        addIfMissing("joinery", "machine_dovetails", "Machine-cut dovetails appear visible", 70, source);
+      }
+    }
+    if (text.includes("cut nail")) {
+      addIfMissing("fasteners", "cut_nail", "Cut nails appear visible", 72, source);
+    }
+    if (text.includes("wire nail")) {
+      addIfMissing("fasteners", "wire_nail", "Wire nails appear visible", 70, source);
+    }
+    if (text.includes("phillips")) {
+      addIfMissing("fasteners", "phillips_screw", "Phillips screws appear visible", 75, source);
+    }
+    if (text.includes("circular saw")) {
+      addIfMissing("toolmarks", "circular_saw_arcs", "Circular saw marks appear visible", 70, source);
+    }
+    if (text.includes("band saw")) {
+      addIfMissing("toolmarks", "band_saw_lines", "Band saw marks appear visible", 70, source);
+    }
+    if (text.includes("pit saw")) {
+      addIfMissing("toolmarks", "pit_saw_marks", "Pit-saw marks appear visible", 74, source);
+    }
+    if (text.includes("mortise") && text.includes("tenon")) {
+      addIfMissing("joinery", "mortise_and_tenon", "Mortise-and-tenon construction appears visible", 70, source);
+    }
+    if (text.includes("dowel")) {
+      addIfMissing("joinery", "dowel_joinery", "Dowel joinery appears visible", 66, source);
+    }
+    if (text.includes("roll top") || text.includes("tambour")) {
+      addIfMissing("construction", "cylinder_roll", "Roll-top or tambour mechanism appears visible", 80, source);
+    }
+    if (text.includes("slant front") || text.includes("fall front")) {
+      addIfMissing("construction", "slant_front", "Slant-front desk mechanism appears visible", 80, source);
+    }
+  }
+
+  return dedupeObservations(promoted);
+}
+
+function deriveStructuralSupport(digest: EvidenceDigest): StructuralSupport {
+  const supportiveViews = new Set<string>();
+  let mechanismCount = 0;
+  let joineryCount = 0;
+  let fastenerCount = 0;
+  let toolmarkCount = 0;
+  let structuralMaterialCount = 0;
+
+  for (const obs of digest.observations) {
+    const clue = obs.clue || "";
+    const category = clue && CLUE_LIBRARY[clue] ? CLUE_LIBRARY[clue].category : obs.type;
+    const source = obs.source_image || "";
+
+    if (
+      source === "underside" ||
+      source === "back" ||
+      source === "joinery_closeup" ||
+      source === "hardware_closeup"
+    ) {
+      if (
+        category === "construction" ||
+        category === "joinery" ||
+        category === "fasteners" ||
+        category === "toolmarks" ||
+        category === "materials"
+      ) {
+        supportiveViews.add(source);
+      }
+    }
+
+    if (
+      clue === "gateleg_support" ||
+      clue === "drop_leaf_hinged" ||
+      clue === "rule_joint" ||
+      clue === "swing_leg" ||
+      clue === "lift_lid" ||
+      clue === "slant_front" ||
+      clue === "cylinder_roll" ||
+      clue === "extension_mechanism"
+    ) {
+      mechanismCount++;
+    }
+
+    if (category === "joinery") joineryCount++;
+    if (category === "fasteners") fastenerCount++;
+    if (category === "toolmarks") toolmarkCount++;
+    if (category === "materials") structuralMaterialCount++;
+  }
+
+  const strongFormSupported =
+    mechanismCount >= 1 ||
+    digest.clue_keys.some((key) => ["gateleg_support", "drop_leaf_hinged", "lift_lid", "slant_front", "cylinder_roll", "extension_mechanism"].includes(key));
+
+  const structuralObservationCount =
+    mechanismCount + joineryCount + fastenerCount + toolmarkCount + structuralMaterialCount;
+
+  return {
+    structural_observation_count: structuralObservationCount,
+    mechanism_count: mechanismCount,
+    joinery_count: joineryCount,
+    fastener_count: fastenerCount,
+    toolmark_count: toolmarkCount,
+    structural_material_count: structuralMaterialCount,
+    supportive_view_count: supportiveViews.size,
+    supportive_views: Array.from(supportiveViews),
+    strong_form_supported: strongFormSupported,
+  };
+}
+
+function determinePrecision(
+  digest: EvidenceDigest,
+  missing: MissingEvidenceMap,
+  support: StructuralSupport
+): PrecisionLevel {
   const hardNegCount = digest.hard_negatives.length;
 
-  if (!structural) return "low";
-  if (hardNegCount > 1) return "low";
-  if (clueCount >= 4 && (!missing.underside_photo || !missing.back_photo || !missing.joinery_photo)) {
+  if (
+    support.strong_form_supported &&
+    support.structural_observation_count >= 2 &&
+    support.supportive_view_count >= 1 &&
+    hardNegCount <= 1
+  ) {
     return "medium";
   }
-  return "medium";
+
+  if (
+    support.structural_observation_count >= 3 &&
+    (support.joinery_count >= 1 || support.fastener_count >= 1 || support.toolmark_count >= 1) &&
+    hardNegCount <= 1
+  ) {
+    return "medium";
+  }
+
+  if (
+    support.structural_observation_count >= 5 &&
+    support.supportive_view_count >= 2 &&
+    hardNegCount === 0
+  ) {
+    return "high";
+  }
+
+  if (
+    support.structural_observation_count >= 2 &&
+    (!missing.underside_photo || !missing.back_photo || !missing.joinery_photo)
+  ) {
+    return "medium";
+  }
+
+  return "low";
 }
 
 function buildFs1(digest: EvidenceDigest, images: any[]): FS1Result {
   const missing = computeMissingEvidence(images);
-  const structural = hasStructuralEvidence(digest);
-  const precision = determinePrecision(digest, missing);
+  const support = deriveStructuralSupport(digest);
+  const structural = support.structural_observation_count > 0;
+  const precision = determinePrecision(digest, missing, support);
 
   const nextBest: string[] = [];
   if (missing.underside_photo) nextBest.push("Underside photo, if accessible");
@@ -665,14 +861,16 @@ function buildFs1(digest: EvidenceDigest, images: any[]): FS1Result {
   let evidenceSummary = "Field Scan is operating from broad visible evidence.";
   let confidenceStatement: FS1Result["confidence_statement"] = "broad";
 
-  if (structural && precision === "medium") {
+  if (precision === "medium") {
     evidenceSummary =
-      "Field Scan includes supporting construction evidence, so the result can be more specific while still staying broad.";
+      "Field Scan includes meaningful construction support, so the result can be more specific while still staying broad.";
     confidenceStatement = "supported";
   }
 
-  if (structural && digest.clue_keys.length >= 6) {
-    confidenceStatement = "well-supported";
+  if (precision === "high") {
+    evidenceSummary =
+      "Field Scan includes multiple supporting construction clues, so form and date precision can be tighter than a style-only read.";
+    confidenceStatement = "well_supported";
   }
 
   return {
@@ -681,6 +879,7 @@ function buildFs1(digest: EvidenceDigest, images: any[]): FS1Result {
     evidence_summary: evidenceSummary,
     missing_evidence: missing,
     structural_evidence_present: structural,
+    structural_support: support,
     next_best_evidence: uniq(nextBest).slice(0, 4),
   };
 }
@@ -696,33 +895,73 @@ function identifyForm(observations: Observation[], intake: FieldScanIntake) {
     "Desk": 0,
     "Bookcase": 0,
     "Table": 0,
+    "Slant-front desk": 0,
+    "Roll-top desk": 0,
+    "Extension table": 0,
   };
 
-  if (text.includes("gateleg_support") || text.includes("gate leg")) score["Gateleg table"] += 7;
-  if (text.includes("drop_leaf_hinged") || text.includes("drop leaf")) score["Drop-leaf table"] += 7;
-  if (text.includes("rule_joint")) {
-    score["Gateleg table"] += 2;
-    score["Drop-leaf table"] += 3;
+  if (text.includes("gateleg_support") || text.includes("gate leg")) {
+    score["Gateleg table"] += 12;
+    score["Table"] += 1;
   }
-  if (text.includes("swing_leg")) score["Drop-leaf table"] += 2;
-  if (text.includes("lift_lid")) score["Blanket chest"] += 7;
-  if (text.includes("door_present")) score["Cabinet"] += 4;
+
+  if (text.includes("drop_leaf_hinged") || text.includes("drop leaf")) {
+    score["Drop-leaf table"] += 11;
+    score["Table"] += 1;
+  }
+
+  if (text.includes("rule_joint")) {
+    score["Drop-leaf table"] += 4;
+    score["Gateleg table"] += 3;
+  }
+
+  if (text.includes("swing_leg")) {
+    score["Drop-leaf table"] += 4;
+  }
+
+  if (text.includes("lift_lid")) {
+    score["Blanket chest"] += 11;
+  }
+
+  if (text.includes("door_present")) {
+    score["Cabinet"] += 6;
+  }
+
   if (text.includes("drawer_present")) {
-    score["Chest of drawers"] += 4;
+    score["Chest of drawers"] += 6;
     score["Desk"] += 2;
   }
-  if (text.includes("slant_front") || text.includes("cylinder_roll")) score["Desk"] += 7;
+
+  if (text.includes("slant_front")) {
+    score["Slant-front desk"] += 12;
+    score["Desk"] += 2;
+  }
+
+  if (text.includes("cylinder_roll")) {
+    score["Roll-top desk"] += 12;
+    score["Desk"] += 2;
+  }
+
+  if (text.includes("extension_mechanism")) {
+    score["Extension table"] += 11;
+    score["Table"] += 2;
+  }
 
   const guess = asString(intake.user_category_guess).toLowerCase();
   if (guess.includes("table")) {
     score["Table"] += 3;
     score["Drop-leaf table"] += 1;
     score["Gateleg table"] += 1;
+    score["Extension table"] += 1;
   }
-  if (guess.includes("bookcase") || guess.includes("bookshelf")) score["Bookcase"] += 4;
-  if (guess.includes("cabinet")) score["Cabinet"] += 3;
-  if (guess.includes("desk")) score["Desk"] += 3;
-  if (guess.includes("chest") || guess.includes("dresser")) score["Chest of drawers"] += 2;
+  if (guess.includes("bookcase") || guess.includes("bookshelf")) score["Bookcase"] += 6;
+  if (guess.includes("cabinet")) score["Cabinet"] += 4;
+  if (guess.includes("desk")) {
+    score["Desk"] += 3;
+    score["Slant-front desk"] += 1;
+    score["Roll-top desk"] += 1;
+  }
+  if (guess.includes("chest") || guess.includes("dresser")) score["Chest of drawers"] += 3;
 
   const ranked = Object.entries(score).sort((a, b) => b[1] - a[1]);
   const best = ranked[0];
@@ -731,6 +970,7 @@ function identifyForm(observations: Observation[], intake: FieldScanIntake) {
   return {
     primary: best && best[1] > 0 ? best[0] : "Furniture form not confidently narrowed",
     alternate: alt ? alt[0] : null,
+    primaryScore: best?.[1] || 0,
   };
 }
 
@@ -750,8 +990,12 @@ function detectStyleContext(observations: Observation[]) {
   return "Visible style cues help with broad context, but style alone is not enough for a tight age claim.";
 }
 
-function broadDateRange(digest: EvidenceDigest, precision: PrecisionLevel) {
+function broadDateRange(
+  digest: EvidenceDigest,
+  fs1: FS1Result
+) {
   const clues = new Set(digest.clue_keys);
+  const support = fs1.structural_support;
 
   if (clues.has("phillips_screw") || clues.has("modern_concealed_hinge") || clues.has("staple_fastener")) {
     return {
@@ -762,29 +1006,54 @@ function broadDateRange(digest: EvidenceDigest, precision: PrecisionLevel) {
 
   if (clues.has("hand_forged_nail") || clues.has("pit_saw_marks")) {
     return {
-      range: precision === "medium" ? "Likely pre-1830" : "Broadly pre-1830 to mid-19th century",
+      range: fs1.precision_level === "high" ? "Likely pre-1830" : "Broadly pre-1830 to mid-19th century",
       reason: "Early fastener or milling evidence supports an earlier date lane.",
     };
   }
 
   if (clues.has("hand_cut_dovetails") || clues.has("slotted_handmade_screw")) {
     return {
-      range: precision === "medium" ? "Broadly c. 1780–1860" : "Broadly 19th century",
+      range:
+        fs1.precision_level === "high"
+          ? "Broadly c. 1780–1860"
+          : "Broadly 19th century",
       reason: "Early joinery or screw evidence supports an earlier construction period.",
     };
   }
 
-  if (clues.has("cut_nail") || clues.has("circular_saw_arcs")) {
+  if (
+    clues.has("cut_nail") ||
+    clues.has("circular_saw_arcs") ||
+    clues.has("porcelain_caster")
+  ) {
     return {
-      range: precision === "medium" ? "Broadly c. 1830–1890" : "Mid-19th to early 20th century (c. 1850–1910)",
-      reason: "19th-century fastener or milling evidence supports a broad 19th-century lane.",
+      range:
+        fs1.precision_level === "medium" || fs1.precision_level === "high"
+          ? "Broadly c. 1830–1890"
+          : "Mid-19th to early 20th century (c. 1850–1910)",
+      reason: "19th-century fastener, milling, or hardware evidence supports a broad 19th-century lane.",
     };
   }
 
-  if (clues.has("wire_nail") || clues.has("machine_dovetails") || clues.has("band_saw_lines")) {
+  if (
+    clues.has("wire_nail") ||
+    clues.has("machine_dovetails") ||
+    clues.has("band_saw_lines") ||
+    clues.has("dowel_joinery")
+  ) {
     return {
-      range: precision === "medium" ? "Broadly c. 1880–1930" : "Late 19th to early 20th century",
-      reason: "Later factory-era construction clues support a late 19th to early 20th century lane.",
+      range:
+        fs1.precision_level === "medium" || fs1.precision_level === "high"
+          ? "Broadly c. 1880–1930"
+          : "Late 19th to early 20th century",
+      reason: "Factory-era construction clues support a late 19th to early 20th century lane.",
+    };
+  }
+
+  if (support.strong_form_supported && support.structural_observation_count >= 2) {
+    return {
+      range: "Broadly 19th to early 20th century",
+      reason: "The current read is supported by form and some construction evidence, but not enough for a tighter structural date lane.",
     };
   }
 
@@ -797,7 +1066,7 @@ function broadDateRange(digest: EvidenceDigest, precision: PrecisionLevel) {
 function buildFs2(digest: EvidenceDigest, intake: FieldScanIntake, fs1: FS1Result): FS2Result {
   const form = identifyForm(digest.observations, intake);
   const style = detectStyleContext(digest.observations);
-  const date = broadDateRange(digest, fs1.precision_level);
+  const date = broadDateRange(digest, fs1);
 
   return {
     primary_identification: form.primary,
@@ -857,12 +1126,15 @@ function valuationBand(
   let high = 300;
 
   if (form.includes("Gateleg") || form.includes("Drop-leaf")) {
-    low = 25;
+    low = 35;
     high = 300;
+  } else if (form.includes("Extension table")) {
+    low = 50;
+    high = 350;
   } else if (form.includes("Blanket chest")) {
     low = 50;
     high = 400;
-  } else if (form.includes("Desk")) {
+  } else if (form.includes("Roll-top desk") || form.includes("Slant-front desk") || form.includes("Desk")) {
     low = 75;
     high = 500;
   } else if (form.includes("Cabinet") || form.includes("Chest of drawers")) {
@@ -879,18 +1151,23 @@ function valuationBand(
   }
 
   if (risk.condition_lane === "moderate_risk") {
-    low = Math.round(low * 0.85);
-    high = Math.round(high * 0.85);
+    low = Math.round(low * 0.88);
+    high = Math.round(high * 0.88);
   }
 
   if (risk.condition_lane === "high_risk") {
-    low = Math.round(low * 0.7);
-    high = Math.round(high * 0.7);
+    low = Math.round(low * 0.72);
+    high = Math.round(high * 0.72);
   }
 
   if (precision === "medium") {
-    low = Math.round(low * 0.95);
-    high = Math.round(high * 0.95);
+    low = Math.round(low * 1.02);
+    high = Math.round(high * 0.9);
+  }
+
+  if (precision === "high") {
+    low = Math.round(low * 1.08);
+    high = Math.round(high * 0.82);
   }
 
   return { low, high };
@@ -911,7 +1188,9 @@ function buildFs4(fs2: FS2Result, fs3: FS3Result, fs1: FS1Result): FS4Result {
     value_reasoning:
       fs1.precision_level === "low"
         ? "This is a broad field-scan range based on visible form, broad date lane, and risk level."
-        : "This is a field-scan range based on visible construction evidence, broad form, and condition/risk level.",
+        : fs1.precision_level === "medium"
+        ? "This is a field-scan range narrowed by visible construction support, broad date lane, and risk level."
+        : "This is a tighter field-scan range based on multiple supporting construction clues and overall risk level.",
   };
 }
 
@@ -941,8 +1220,8 @@ function profileFitScore(profile?: FieldScanProfile) {
 }
 
 function recommendationFromScore(score: number): RecommendationLevel {
-  if (score >= 80) return "BUY_NOW";
-  if (score >= 65) return "BUY";
+  if (score >= 82) return "BUY_NOW";
+  if (score >= 66) return "BUY";
   if (score >= 45) return "CONSIDER_IF_NEGOTIABLE";
   return "PASS";
 }
@@ -962,10 +1241,10 @@ function buildFs5(intake: FieldScanIntake, fs1: FS1Result, fs3: FS3Result, fs4: 
   let score = 50;
 
   if (margin != null) {
-    if (margin >= 150) score += 20;
-    else if (margin >= 75) score += 12;
-    else if (margin >= 25) score += 6;
-    else if (margin < 0) score -= 20;
+    if (margin >= 175) score += 22;
+    else if (margin >= 90) score += 14;
+    else if (margin >= 35) score += 8;
+    else if (margin < 0) score -= 22;
   }
 
   if (fs3.labor_lane === "medium") score -= 8;
@@ -976,8 +1255,9 @@ function buildFs5(intake: FieldScanIntake, fs1: FS1Result, fs3: FS3Result, fs4: 
 
   score += Math.round((profileFitScore(intake.picker_profile) - 50) * 0.5);
 
-  if (fs1.precision_level === "low") score -= 12;
-  if (!fs1.structural_evidence_present) score -= 12;
+  if (fs1.precision_level === "low") score -= 10;
+  if (!fs1.structural_evidence_present) score -= 10;
+  if (fs1.precision_level === "high") score += 6;
 
   let rec = recommendationFromScore(score);
 
@@ -988,7 +1268,7 @@ function buildFs5(intake: FieldScanIntake, fs1: FS1Result, fs3: FS3Result, fs4: 
     rec === "BUY_NOW"
       ? "The visible evidence, estimated value lane, and profile fit all support a strong field-scan buy."
       : rec === "BUY"
-      ? "The piece appears promising, but still carries normal field-scan uncertainty."
+      ? "The piece appears promising, with enough visible evidence to support a positive field-scan decision."
       : rec === "CONSIDER_IF_NEGOTIABLE"
       ? "There may be upside, but uncertainty or labor risk suggests a conservative purchase price."
       : "The visible risk, weak margin, or low-confidence construction evidence make this a pass for field-scan purposes.";
@@ -1157,6 +1437,7 @@ Return structure:
     }
 
     observations = applyIntakeHints(intake, observations);
+    observations = promoteEvidenceFeatures(observations);
     const digest = buildEvidenceDigest(observations);
 
     for (const obs of observations) {
