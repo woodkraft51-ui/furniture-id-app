@@ -158,11 +158,11 @@ const CLUE_LIBRARY: Record<
     dateHint: "1680–1800; revival 1880–1930",
     explanation: "Strong structural evidence for gate-leg/drop-leaf table forms.",
   },
-  rule_joint: {
+    rule_joint: {
     category: "joinery",
-    baseWeight: 0.85,
-    dateHint: "pre-1870",
-    explanation: "Strong joinery evidence often associated with earlier work.",
+    baseWeight: 0.78,
+    dateHint: "1700–1930",
+    explanation: "Useful joinery evidence for drop-leaf construction, but not by itself a decisive early-date indicator.",
   },
   swing_leg: {
     category: "construction",
