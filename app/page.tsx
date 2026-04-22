@@ -1619,9 +1619,135 @@ export default function Page() {
               </SectionCard>
             </div>
 
-            <SectionCard title="Next Best Evidence">
+                        <SectionCard title="Next Best Evidence">
               <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>
                 {nextBestEvidence}
+              </div>
+            </SectionCard>
+
+            <SectionCard title="Refine This Result">
+              <div
+                style={{
+                  fontSize: 14,
+                  color: "#574634",
+                  lineHeight: 1.6,
+                  marginBottom: 12,
+                }}
+              >
+                Add a follow-up photo to tighten the result without starting over.
+              </div>
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <label
+                  style={{
+                    display: "inline-block",
+                    background: "#5a3e1b",
+                    color: "#fffaf2",
+                    borderRadius: 8,
+                    padding: "10px 14px",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  Add Underside Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    style={{ display: "none" }}
+                    onChange={(e) =>
+                      handleFieldRefinementUpload("underside", e.target.files)
+                    }
+                  />
+                </label>
+
+                <label
+                  style={{
+                    display: "inline-block",
+                    background: "#7d6540",
+                    color: "#fffaf2",
+                    borderRadius: 8,
+                    padding: "10px 14px",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  Add Back Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    style={{ display: "none" }}
+                    onChange={(e) =>
+                      handleFieldRefinementUpload("back", e.target.files)
+                    }
+                  />
+                </label>
+
+                <label
+                  style={{
+                    display: "inline-block",
+                    background: "#8a6f47",
+                    color: "#fffaf2",
+                    borderRadius: 8,
+                    padding: "10px 14px",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  Add Construction Detail
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    style={{ display: "none" }}
+                    onChange={(e) =>
+                      handleFieldRefinementUpload("joinery_closeup", e.target.files)
+                    }
+                  />
+                </label>
+
+                <label
+                  style={{
+                    display: "inline-block",
+                    background: "#9a7d53",
+                    color: "#fffaf2",
+                    borderRadius: 8,
+                    padding: "10px 14px",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  Add Hardware Close-Up
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    style={{ display: "none" }}
+                    onChange={(e) =>
+                      handleFieldRefinementUpload("hardware_closeup", e.target.files)
+                    }
+                  />
+                </label>
+              </div>
+
+              <div style={{ marginTop: 14 }}>
+                <button
+                  type="button"
+                  onClick={runAnalysis}
+                  disabled={isRunning || fieldPhotos.length < 2}
+                  style={{
+                    ...primaryButton,
+                    opacity: isRunning ? 0.7 : 1,
+                    cursor: isRunning ? "wait" : "pointer",
+                  }}
+                >
+                  {isRunning ? "Re-analyzing..." : "Re-Run Field Scan"}
+                </button>
               </div>
             </SectionCard>
           </div>
