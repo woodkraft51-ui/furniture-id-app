@@ -1035,13 +1035,15 @@ function gateEvidence(digest: EvidenceDigest, missing: MissingEvidenceMap): Phas
 
   const capBand = toConfidenceBand(capPct);
 
-  let summary = "Evidence is sufficient for a cautious evidence-first assessment.";
+    let summary = "Evidence is sufficient for a cautious evidence-first assessment.";
   if (obsCount < 3) {
-    summary = "Evidence is sparse. Conclusions should stay tentative until more structural photos are provided.";
-  } else if (missing.underside_photo || missing.joinery_photo) {
-    summary = "Broad assessment is possible, but missing structural views limit dating confidence.";
+    summary = "Evidence is sparse. Conclusions should stay tentative until more visible evidence is provided.";
+  } else if (structuralEvidenceCount >= 2) {
+    summary = "Strong visible evidence supports a narrower reading, though hidden structure could refine it further.";
   } else if (hardNegCount > 0) {
     summary = "Assessment is possible, but hard negatives limit how early or original the piece can be claimed to be.";
+  } else {
+    summary = "Visible evidence allows a broad reading; additional structural detail could narrow it further.";
   }
 
   return {
