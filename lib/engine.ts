@@ -1522,7 +1522,7 @@ function synthesize(
   }
 
   const summaryParts = [
-    `Evidence-first result: ${form.form}.`,
+    `Evidence-first result: ${form.display_form}.`,
     `Dating: ${dating.range}.`,
     gate.evidence_sufficiency_summary,
   ];
