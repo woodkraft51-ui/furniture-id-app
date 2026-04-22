@@ -1385,8 +1385,13 @@ function identifyForm(observations: Observation[], digest: EvidenceDigest, gate:
   const rawPct = gap >= 4 ? 80 : gap >= 2 ? 68 : 52;
   const capped = Math.min(rawPct, gate.confidence_cap_pct);
 
+    const styleContext = deriveStyleContext(observations, digest.clue_keys);
+  const displayForm = deriveDisplayForm(best[0], styleContext, observations, digest.clue_keys);
+
   return {
     form: best[0],
+    display_form: displayForm,
+    style_context: styleContext,
     confidence: toConfidenceBand(capped),
     support: digest.strongest_observations.slice(0, 4).map((o) => o.description),
     alternatives: ranked
