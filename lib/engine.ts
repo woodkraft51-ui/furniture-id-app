@@ -1386,7 +1386,28 @@ function resolveConflicts(
     restorationInterpretation =
       "Some observed features appear later than a strict original antique reading would allow. That may reflect later repair, replacement, refinish, or a later manufacture date.";
   }
+  const clueSet = new Set(weightedClues.map((w) => w.clue));
 
+  const hasEarlierDatingPull =
+    clueSet.has("rule_joint") ||
+    clueSet.has("hand_cut_dovetails") ||
+    clueSet.has("hand_forged_nail") ||
+    clueSet.has("pit_saw_marks") ||
+    clueSet.has("slotted_handmade_screw");
+
+  const hasLaterDatingPull =
+    clueSet.has("wire_nail") ||
+    clueSet.has("slotted_machine_screw") ||
+    clueSet.has("machine_dovetails") ||
+    clueSet.has("dowel_joinery") ||
+    clueSet.has("polyurethane");
+
+  if (hasEarlierDatingPull && hasLaterDatingPull) {
+    notes.push(
+      "Mixed-period dating signals are present. Earlier-style construction details appear alongside later fasteners or finish evidence, so the result should favor a later practical date lane unless hidden structure proves otherwise."
+    );
+    adjustment -= 4;
+  }
   return {
     conflict_notes: notes,
     confidence_adjustment: adjustment,
