@@ -1368,8 +1368,13 @@ function identifyForm(observations: Observation[], digest: EvidenceDigest, gate:
   const second = ranked[1];
 
   if (!best || best[1] <= 0) {
+        const fallbackForm = digest.likely_forms[0] || "Uncertain case or table form";
+    const fallbackStyle = deriveStyleContext(observations, digest.clue_keys);
+
     return {
-      form: digest.likely_forms[0] || "Uncertain case or table form",
+      form: fallbackForm,
+      display_form: deriveDisplayForm(fallbackForm, fallbackStyle, observations, digest.clue_keys),
+      style_context: fallbackStyle,
       confidence: "Low",
       support: digest.strongest_observations.slice(0, 3).map((o) => o.description),
       alternatives: ["No form candidate clearly outranked the others."],
