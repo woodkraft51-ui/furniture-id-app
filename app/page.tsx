@@ -1358,18 +1358,7 @@ export default function Page() {
                 </label>
               </div>
 
-              <div style={{ marginTop: 14 }}>
-                <button
-                  type="button"
-                  onClick={runAnalysis}
-                  disabled={isRunning || fieldPhotos.length < 2}
-                  style={{
-                    ...primaryButton,
-                    opacity: isRunning ? 0.7 : 1,
-                    cursor: isRunning ? "wait" : "pointer",
-                  }}
-                >
-                  {isRunning ? "Re-analyzing..." : "Re-Run Field Scan"}
+             {isRunning ? "Re-analyzing..." : "Re-Run Field Scan"}
                 </button>
               </div>
             </SectionCard>
