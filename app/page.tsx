@@ -34,12 +34,6 @@ type IntakeState = {
   suggests_prior_function: boolean;
 };
 
-type PhaseEvent = {
-  key: string;
-  label: string;
-  payload?: any;
-};
-
 type ReportShape = {
   id?: string;
   status?: string;
@@ -124,16 +118,6 @@ const INITIAL_INTAKE: IntakeState = {
   suggests_prior_function: false,
 };
 
-const PHASE_LABELS: Record<string, string> = {
-  p0: "Phase 0 · Visual Evidence Scan",
-  p1: "Phase 1 · Evidence Gate",
-  p2: "Phase 2 · Dating Window",
-  p3: "Phase 3 · Form Identification",
-  p4: "Phase 4 · Evidence Weighting",
-  p5: "Phase 5 · Conflict Review",
-  p6: "Phase 6 · Final Synthesis",
-};
-
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -153,7 +137,7 @@ function bandColor(band?: string) {
   if (band === "High") return "#2f6f3e";
   if (band === "Moderate") return "#7a5a12";
   if (band === "Low") return "#7a4a12";
-  return "#7a2a2a";
+  return "#7a2626";
 }
 
 function inferFieldImageType(index: number): string {
@@ -332,8 +316,6 @@ function deriveFieldRecommendation(args: {
   }
 
   if (args.conflictCount >= 1) score -= 8;
-  if (args.conflictCount >= 3) score -= 10;
-
   if (args.confidenceBand === "High") score += 8;
   if (args.confidenceBand === "Moderate") score += 3;
   if (args.confidenceBand === "Low") score -= 8;
@@ -368,6 +350,50 @@ function deriveFieldRecommendation(args: {
     label: recommendationLabel(recommendation),
     explanation,
   };
+}
+
+function evidenceMeaning(text: string): string {
+  const t = String(text || "").toLowerCase();
+
+  if (t.includes("cut nail")) return "Supports a 19th-century construction lane rather than a later factory build.";
+  if (t.includes("wire nail")) return "Suggests later fasteners or possible later repair activity.";
+  if (t.includes("machine screw")) return "Points toward later industrial hardware rather than very early handmade fastening.";
+  if (t.includes("porcelain caster")) return "Supports a later 19th-century furniture context, though hardware can be replaced.";
+  if (t.includes("shellac") || t.includes("crazing")) return "Supports an older finish character, though finish alone is not decisive for date.";
+  if (t.includes("drop leaf") || t.includes("drop-leaf")) return "Directly supports the form identification rather than just a general table reading.";
+  if (t.includes("multiple drawers") || t.includes("full-width drawers") || t.includes("side-by-side drawers")) {
+    return "Supports a dresser or chest-of-drawers form rather than a cabinet or table form.";
+  }
+  if (t.includes("back panel") || t.includes("back boards")) return "Backboard construction helps date the piece and judge whether the case construction feels earlier or later.";
+  if (t.includes("joinery") || t.includes("dovetail") || t.includes("rabbet") || t.includes("mortise") || t.includes("tenon")) {
+    return "Construction joinery helps narrow both date and originality when clearly visible.";
+  }
+  if (t.includes("oak") || t.includes("poplar") || t.includes("secondary wood")) {
+    return "Wood species and secondary wood help support period and construction context, but they are not decisive alone.";
+  }
+  if (t.includes("bracket") || t.includes("cabriole") || t.includes("ogee") || t.includes("reeded") || t.includes("fluted") || t.includes("turned")) {
+    return "This mainly supports broad style context and helps the form feel more historically grounded.";
+  }
+
+  return "This supports the current reading, but would be stronger when combined with hidden structure or fastener evidence.";
+}
+
+function pickSupportingEvidence(report: ReportShape | null): string[] {
+  const p2 = report?.stage_outputs?.p2;
+  const p3 = report?.stage_outputs?.p3;
+  const p4 = report?.stage_outputs?.p4;
+
+  const out: string[] = [];
+
+  if (Array.isArray(p3?.support)) out.push(...p3.support);
+  if (Array.isArray(p2?.support)) out.push(...p2.support);
+  if (Array.isArray(p4?.confidence_drivers?.increased)) out.push(...p4.confidence_drivers.increased);
+
+  const cleaned = out
+    .map((item) => String(item || "").trim())
+    .filter(Boolean);
+
+  return Array.from(new Set(cleaned)).slice(0, 4);
 }
 
 function SectionCard({
@@ -416,9 +442,7 @@ export default function Page() {
   });
 
   const [fieldPhotos, setFieldPhotos] = useState<ImageRecord[]>([]);
-
   const [intake, setIntake] = useState<IntakeState>(INITIAL_INTAKE);
-  const [phaseEvents, setPhaseEvents] = useState<PhaseEvent[]>([]);
   const [report, setReport] = useState<ReportShape | null>(null);
   const [activeCaseId, setActiveCaseId] = useState<string>("");
   const [isRunning, setIsRunning] = useState(false);
@@ -436,8 +460,7 @@ export default function Page() {
     [fieldPhotos]
   );
 
-  const activeMissingEvidence =
-    analysisMode === "field_scan" ? fieldMissingEvidence : structuredMissingEvidence;
+  const activeMissingEvidence = analysisMode === "field_scan" ? fieldMissingEvidence : structuredMissingEvidence;
 
   const totalPhotos = useMemo(() => {
     if (analysisMode === "field_scan") return fieldPhotos.length;
@@ -510,7 +533,7 @@ export default function Page() {
     setFieldPhotos((prev) => [...prev, ...nextImages]);
   }
 
-    async function handleFieldRefinementUpload(imageType: string, fileList: FileList | null) {
+  async function handleFieldRefinementUpload(imageType: string, fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
 
     const files = Array.from(fileList);
@@ -527,6 +550,7 @@ export default function Page() {
 
     setFieldPhotos((prev) => [...prev, ...nextImages]);
   }
+
   function removeCoreImage(slotKey: string) {
     setCoreImages((prev) => ({ ...prev, [slotKey]: null }));
   }
@@ -555,7 +579,6 @@ export default function Page() {
   async function runAnalysis() {
     setError("");
     setReport(null);
-    setPhaseEvents([]);
 
     if (analysisMode === "field_scan") {
       if (fieldPhotos.length < 2) {
@@ -592,17 +615,7 @@ export default function Page() {
         API.addImage(caseId, img);
       }
 
-      await API.analyzeCase(caseId, intake, (phaseKey: string, payload: any) => {
-        setPhaseEvents((prev) => [
-          ...prev,
-          {
-            key: phaseKey,
-            label: PHASE_LABELS[phaseKey] || phaseKey,
-            payload,
-          },
-        ]);
-      });
-
+      await API.analyzeCase(caseId, intake);
       const finalReport = API.getReport(caseId);
       setReport(finalReport);
     } catch (e: any) {
@@ -626,7 +639,6 @@ export default function Page() {
     });
     setFieldPhotos([]);
     setIntake(INITIAL_INTAKE);
-    setPhaseEvents([]);
     setReport(null);
     setActiveCaseId("");
     setError("");
@@ -644,7 +656,7 @@ export default function Page() {
   const fieldValue = useMemo(() => {
     if (!p2 || !p3) return null;
     return fieldValueBand(
-      p3?.form || "Unknown",
+      p3?.display_form || p3?.form || "Unknown",
       p2?.range || "Unknown",
       Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0,
       p1?.confidence_cap
@@ -661,6 +673,8 @@ export default function Page() {
       conflictCount: Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0,
     });
   }, [fieldValue, intake.asking_price, p1, p5]);
+
+  const supportingEvidence = useMemo(() => pickSupportingEvidence(report), [report]);
 
   const primaryCaution =
     (Array.isArray(p5?.conflict_notes) && p5.conflict_notes[0]) ||
@@ -879,7 +893,7 @@ export default function Page() {
                     >
                       <div style={{ fontWeight: 700, marginBottom: 6 }}>For best results, include:</div>
                       <div>• The overall form from multiple angles</div>
-                      <div>• Visible construction details (if accessible)</div>
+                      <div>• Visible construction details, if accessible</div>
                       <div>• Hardware or surface finish</div>
                       <div style={{ marginTop: 8 }}>
                         Additional views help refine accuracy, but are not required.
@@ -887,18 +901,7 @@ export default function Page() {
                     </div>
 
                     <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
-                      <label
-                        style={{
-                          display: "inline-block",
-                          background: "#5a3e1b",
-                          color: "#fffaf2",
-                          borderRadius: 8,
-                          padding: "10px 14px",
-                          cursor: "pointer",
-                          fontSize: 14,
-                          fontWeight: 700,
-                        }}
-                      >
+                      <label style={uploadBrownButton}>
                         Upload Photos
                         <input
                           type="file"
@@ -909,18 +912,7 @@ export default function Page() {
                         />
                       </label>
 
-                      <label
-                        style={{
-                          display: "inline-block",
-                          background: "#7d6540",
-                          color: "#fffaf2",
-                          borderRadius: 8,
-                          padding: "10px 14px",
-                          cursor: "pointer",
-                          fontSize: 14,
-                          fontWeight: 700,
-                        }}
-                      >
+                      <label style={uploadTanButton}>
                         Take Photo
                         <input
                           type="file"
@@ -949,22 +941,8 @@ export default function Page() {
                             background: "#fff",
                           }}
                         >
-                          <div style={{ fontSize: 13, color: "#4f3f30" }}>
-                            {img.name || `Photo ${index + 1}`}
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeFieldPhoto(index)}
-                            style={{
-                              border: "1px solid #cebda4",
-                              background: "#fff8ee",
-                              color: "#6f4428",
-                              borderRadius: 8,
-                              padding: "6px 10px",
-                              cursor: "pointer",
-                              fontSize: 12,
-                            }}
-                          >
+                          <div style={{ fontSize: 13, color: "#4f3f30" }}>{img.name || `Photo ${index + 1}`}</div>
+                          <button type="button" onClick={() => removeFieldPhoto(index)} style={tinyRemoveButton}>
                             Remove
                           </button>
                         </div>
@@ -974,13 +952,7 @@ export default function Page() {
                 </SectionCard>
 
                 <SectionCard title="2. Quick Details">
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: 12,
-                    }}
-                  >
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Asking Price (optional)</span>
                       <input
@@ -993,16 +965,8 @@ export default function Page() {
                   </div>
 
                   <div style={{ marginTop: 14 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
-                      Quick Details (optional)
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: 8,
-                      }}
-                    >
+                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Quick Details (optional)</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {[
                         ["has_drawers", "Has drawers"],
                         ["has_doors", "Has doors"],
@@ -1023,9 +987,7 @@ export default function Page() {
                           <input
                             type="checkbox"
                             checked={Boolean(intake[key as keyof IntakeState])}
-                            onChange={(e) =>
-                              updateIntake(key as keyof IntakeState, e.target.checked as any)
-                            }
+                            onChange={(e) => updateIntake(key as keyof IntakeState, e.target.checked as any)}
                           />
                           {label}
                         </label>
@@ -1050,41 +1012,19 @@ export default function Page() {
                             background: "#fff",
                           }}
                         >
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              gap: 12,
-                              alignItems: "start",
-                            }}
-                          >
+                          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "start" }}>
                             <div>
                               <div style={{ fontWeight: 700, color: "#3d2d1f" }}>
                                 {slot.label} {slot.required ? "*" : ""}
                               </div>
-                              <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
-                                {slot.desc}
-                              </div>
+                              <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>{slot.desc}</div>
                               {current?.name && (
-                                <div style={{ marginTop: 8, fontSize: 12, color: "#46603e" }}>
-                                  Loaded: {current.name}
-                                </div>
+                                <div style={{ marginTop: 8, fontSize: 12, color: "#46603e" }}>Loaded: {current.name}</div>
                               )}
                             </div>
 
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                              <label
-                                style={{
-                                  display: "inline-block",
-                                  background: "#5a3e1b",
-                                  color: "#fffaf2",
-                                  borderRadius: 8,
-                                  padding: "9px 12px",
-                                  cursor: "pointer",
-                                  fontSize: 13,
-                                  fontWeight: 600,
-                                }}
-                              >
+                              <label style={uploadBrownButtonSmall}>
                                 Upload Photo
                                 <input
                                   type="file"
@@ -1094,18 +1034,7 @@ export default function Page() {
                                 />
                               </label>
 
-                              <label
-                                style={{
-                                  display: "inline-block",
-                                  background: "#7d6540",
-                                  color: "#fffaf2",
-                                  borderRadius: 8,
-                                  padding: "9px 12px",
-                                  cursor: "pointer",
-                                  fontSize: 13,
-                                  fontWeight: 600,
-                                }}
-                              >
+                              <label style={uploadTanButtonSmall}>
                                 Take Photo
                                 <input
                                   type="file"
@@ -1117,19 +1046,7 @@ export default function Page() {
                               </label>
 
                               {current && (
-                                <button
-                                  type="button"
-                                  onClick={() => removeCoreImage(slot.key)}
-                                  style={{
-                                    border: "1px solid #cebda4",
-                                    background: "#fff8ee",
-                                    color: "#6f4428",
-                                    borderRadius: 8,
-                                    padding: "9px 12px",
-                                    cursor: "pointer",
-                                    fontSize: 13,
-                                  }}
-                                >
+                                <button type="button" onClick={() => removeCoreImage(slot.key)} style={smallRemoveButton}>
                                   Remove
                                 </button>
                               )}
@@ -1156,56 +1073,28 @@ export default function Page() {
                           }}
                         >
                           <div style={{ fontWeight: 700, color: "#3d2d1f" }}>{group.label}</div>
-                          <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
-                            {group.helper}
-                          </div>
+                          <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>{group.helper}</div>
 
                           <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-                            <label
-                              style={{
-                                display: "inline-block",
-                                background: "#5a3e1b",
-                                color: "#fffaf2",
-                                borderRadius: 8,
-                                padding: "9px 12px",
-                                cursor: "pointer",
-                                fontSize: 13,
-                                fontWeight: 600,
-                              }}
-                            >
+                            <label style={uploadBrownButtonSmall}>
                               Upload Photo(s)
                               <input
                                 type="file"
                                 accept="image/*"
                                 multiple
                                 style={{ display: "none" }}
-                                onChange={(e) =>
-                                  handleGroupUpload(group.key, group.image_type, e.target.files)
-                                }
+                                onChange={(e) => handleGroupUpload(group.key, group.image_type, e.target.files)}
                               />
                             </label>
 
-                            <label
-                              style={{
-                                display: "inline-block",
-                                background: "#7d6540",
-                                color: "#fffaf2",
-                                borderRadius: 8,
-                                padding: "9px 12px",
-                                cursor: "pointer",
-                                fontSize: 13,
-                                fontWeight: 600,
-                              }}
-                            >
+                            <label style={uploadTanButtonSmall}>
                               Take Photo
                               <input
                                 type="file"
                                 accept="image/*"
                                 capture="environment"
                                 style={{ display: "none" }}
-                                onChange={(e) =>
-                                  handleGroupUpload(group.key, group.image_type, e.target.files)
-                                }
+                                onChange={(e) => handleGroupUpload(group.key, group.image_type, e.target.files)}
                               />
                             </label>
                           </div>
@@ -1225,22 +1114,8 @@ export default function Page() {
                                     background: "#fffaf5",
                                   }}
                                 >
-                                  <div style={{ fontSize: 13, color: "#4f3f30" }}>
-                                    {img.name || `${group.label} ${index + 1}`}
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => removeGroupImage(group.key, index)}
-                                    style={{
-                                      border: "1px solid #cebda4",
-                                      background: "#fff",
-                                      color: "#6f4428",
-                                      borderRadius: 8,
-                                      padding: "6px 10px",
-                                      cursor: "pointer",
-                                      fontSize: 12,
-                                    }}
-                                  >
+                                  <div style={{ fontSize: 13, color: "#4f3f30" }}>{img.name || `${group.label} ${index + 1}`}</div>
+                                  <button type="button" onClick={() => removeGroupImage(group.key, index)} style={tinyRemoveButton}>
                                     Remove
                                   </button>
                                 </div>
@@ -1254,112 +1129,56 @@ export default function Page() {
                 </SectionCard>
 
                 <SectionCard title="3. Intake Details">
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: 12,
-                    }}
-                  >
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <label style={{ display: "grid", gap: 6 }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Height (in)</span>
-                      <input
-                        value={intake.approximate_height}
-                        onChange={(e) => updateIntake("approximate_height", e.target.value)}
-                        style={inputStyle}
-                      />
+                      <input value={intake.approximate_height} onChange={(e) => updateIntake("approximate_height", e.target.value)} style={inputStyle} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6 }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Width (in)</span>
-                      <input
-                        value={intake.approximate_width}
-                        onChange={(e) => updateIntake("approximate_width", e.target.value)}
-                        style={inputStyle}
-                      />
+                      <input value={intake.approximate_width} onChange={(e) => updateIntake("approximate_width", e.target.value)} style={inputStyle} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6 }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Wood Species Guess</span>
-                      <input
-                        value={intake.primary_wood_guess}
-                        onChange={(e) => updateIntake("primary_wood_guess", e.target.value)}
-                        style={inputStyle}
-                      />
+                      <input value={intake.primary_wood_guess} onChange={(e) => updateIntake("primary_wood_guess", e.target.value)} style={inputStyle} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6 }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Where Acquired</span>
-                      <input
-                        value={intake.where_acquired}
-                        onChange={(e) => updateIntake("where_acquired", e.target.value)}
-                        style={inputStyle}
-                      />
+                      <input value={intake.where_acquired} onChange={(e) => updateIntake("where_acquired", e.target.value)} style={inputStyle} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>What do you think it is?</span>
-                      <input
-                        value={intake.user_category_guess}
-                        onChange={(e) => updateIntake("user_category_guess", e.target.value)}
-                        style={inputStyle}
-                      />
+                      <input value={intake.user_category_guess} onChange={(e) => updateIntake("user_category_guess", e.target.value)} style={inputStyle} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Known Provenance</span>
-                      <textarea
-                        value={intake.known_provenance}
-                        onChange={(e) => updateIntake("known_provenance", e.target.value)}
-                        style={textareaStyle}
-                        rows={3}
-                      />
+                      <textarea value={intake.known_provenance} onChange={(e) => updateIntake("known_provenance", e.target.value)} style={textareaStyle} rows={3} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>
-                        Alterations, Missing Parts, or Replacements
-                      </span>
-                      <textarea
-                        value={intake.known_alterations}
-                        onChange={(e) => updateIntake("known_alterations", e.target.value)}
-                        style={textareaStyle}
-                        rows={3}
-                      />
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Alterations, Missing Parts, or Replacements</span>
+                      <textarea value={intake.known_alterations} onChange={(e) => updateIntake("known_alterations", e.target.value)} style={textareaStyle} rows={3} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Condition Notes</span>
-                      <textarea
-                        value={intake.condition_notes}
-                        onChange={(e) => updateIntake("condition_notes", e.target.value)}
-                        style={textareaStyle}
-                        rows={3}
-                      />
+                      <textarea value={intake.condition_notes} onChange={(e) => updateIntake("condition_notes", e.target.value)} style={textareaStyle} rows={3} />
                     </label>
 
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Additional Notes</span>
-                      <textarea
-                        value={intake.notes}
-                        onChange={(e) => updateIntake("notes", e.target.value)}
-                        style={textareaStyle}
-                        rows={3}
-                      />
+                      <textarea value={intake.notes} onChange={(e) => updateIntake("notes", e.target.value)} style={textareaStyle} rows={3} />
                     </label>
                   </div>
 
                   <div style={{ marginTop: 14 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
-                      Functional Clues
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: 8,
-                      }}
-                    >
+                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Functional Clues</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {[
                         ["has_drawers", "Has drawers"],
                         ["has_doors", "Has doors"],
@@ -1380,9 +1199,7 @@ export default function Page() {
                           <input
                             type="checkbox"
                             checked={Boolean(intake[key as keyof IntakeState])}
-                            onChange={(e) =>
-                              updateIntake(key as keyof IntakeState, e.target.checked as any)
-                            }
+                            onChange={(e) => updateIntake(key as keyof IntakeState, e.target.checked as any)}
                           />
                           {label}
                         </label>
@@ -1437,14 +1254,10 @@ export default function Page() {
                   border: "1px solid #e5d7be",
                 }}
               >
-                <div style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>
-                  To strengthen results, if available:
-                </div>
+                <div style={{ fontWeight: 700, marginBottom: 8, fontSize: 14 }}>To strengthen results, if available:</div>
                 <ul style={{ margin: 0, paddingLeft: 18, color: "#5d4932", fontSize: 13, lineHeight: 1.55 }}>
                   {missingEvidenceSuggestions(activeMissingEvidence).length > 0 ? (
-                    missingEvidenceSuggestions(activeMissingEvidence).map((item) => (
-                      <li key={item}>{item}</li>
-                    ))
+                    missingEvidenceSuggestions(activeMissingEvidence).map((item) => <li key={item}>{item}</li>)
                   ) : (
                     <li>Core structural evidence is reasonably covered.</li>
                   )}
@@ -1478,11 +1291,7 @@ export default function Page() {
                     cursor: isRunning ? "wait" : "pointer",
                   }}
                 >
-                  {isRunning
-                    ? "Analyzing..."
-                    : analysisMode === "field_scan"
-                    ? "Run Field Scan"
-                    : "Run Analysis"}
+                  {isRunning ? "Analyzing..." : analysisMode === "field_scan" ? "Run Field Scan" : "Run Analysis"}
                 </button>
 
                 <button type="button" onClick={resetAll} style={secondaryButton}>
@@ -1490,97 +1299,34 @@ export default function Page() {
                 </button>
               </div>
             </SectionCard>
-
-            <SectionCard title="Phase Progress">
-              {phaseEvents.length === 0 ? (
-                <div style={{ color: "#6a5845", fontSize: 14 }}>
-                  No phases have run yet.
-                </div>
-              ) : (
-                <div style={{ display: "grid", gap: 10 }}>
-                  {phaseEvents.map((evt, index) => (
-                    <div
-                      key={`${evt.key}-${index}`}
-                      style={{
-                        border: "1px solid #e4d8c3",
-                        borderRadius: 10,
-                        padding: 10,
-                        background: "#fff",
-                      }}
-                    >
-                      <div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f" }}>
-                        {evt.label}
-                      </div>
-                      <div
-                        style={{
-                          marginTop: 6,
-                          fontSize: 12,
-                          color: "#665341",
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {safePreview(evt.payload)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </SectionCard>
           </div>
         </div>
 
         {report && analysisMode === "field_scan" && p2 && p3 && fieldValue && fieldRecommendation && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
             <SectionCard title="Field Scan Result">
-              <div
-                style={{
-                  ...recommendationStyle(fieldRecommendation.recommendation),
-                  borderRadius: 12,
-                  padding: 16,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 28,
-                    fontWeight: 800,
-                    letterSpacing: "0.03em",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  {fieldRecommendation.label}
-                </div>
-                <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.55 }}>
-                  {fieldRecommendation.explanation}
-                </div>
+              <div style={{ ...recommendationStyle(fieldRecommendation.recommendation), borderRadius: 12, padding: 16 }}>
+                <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: "0.03em", lineHeight: 1.1 }}>{fieldRecommendation.label}</div>
+                <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.55 }}>{fieldRecommendation.explanation}</div>
               </div>
             </SectionCard>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 18,
-              }}
-            >
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Likely Identification">
                 <div style={metaRowStyle}>
                   <span>Best reading</span>
                   <strong>{p3?.display_form || p3?.form || "Unknown"}</strong>
-                                  {p3?.style_context && (
+                </div>
+                {p3?.style_context && (
                   <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
                     Broad style context: {p3.style_context}
                   </div>
                 )}
-                </div>
-
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && (
                   <>
                     <div style={subheadStyle}>Alternate possibilities</div>
                     <ul style={listStyle}>
-                      {p3.alternatives.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
+                      {p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}
                     </ul>
                   </>
                 )}
@@ -1593,20 +1339,12 @@ export default function Page() {
                 </div>
                 <div style={metaRowStyle}>
                   <span>Confidence</span>
-                  <strong style={{ color: bandColor(p2?.confidence) }}>
-                    {p2?.confidence || "Inconclusive"}
-                  </strong>
+                  <strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong>
                 </div>
               </SectionCard>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 18,
-              }}
-            >
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Broad Resale Lane">
                 <div style={metaRowStyle}>
                   <span>Typical resale lane</span>
@@ -1618,16 +1356,37 @@ export default function Page() {
               </SectionCard>
 
               <SectionCard title="Main Caution">
-                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>
-                  {primaryCaution}
-                </div>
+                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{primaryCaution}</div>
               </SectionCard>
             </div>
 
-                        <SectionCard title="Next Best Evidence">
-              <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>
-                {nextBestEvidence}
-              </div>
+            <SectionCard title="Key Supporting Evidence">
+              {supportingEvidence.length > 0 ? (
+                <div style={{ display: "grid", gap: 12 }}>
+                  {supportingEvidence.map((item) => (
+                    <div
+                      key={item}
+                      style={{
+                        border: "1px solid #eadfcf",
+                        borderRadius: 10,
+                        padding: 12,
+                        background: "#fff",
+                      }}
+                    >
+                      <div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div>
+                      <div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>
+                        {evidenceMeaning(item)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={emptyText}>No supporting evidence was returned.</div>
+              )}
+            </SectionCard>
+
+            <SectionCard title="Next Best Evidence">
+              <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{nextBestEvidence}</div>
             </SectionCard>
 
             <SectionCard title="Refine This Result">
@@ -1643,99 +1402,47 @@ export default function Page() {
               </div>
 
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <label
-                  style={{
-                    display: "inline-block",
-                    background: "#5a3e1b",
-                    color: "#fffaf2",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
+                <label style={uploadBrownButton}>
                   Add Underside Photo
                   <input
                     type="file"
                     accept="image/*"
                     capture="environment"
                     style={{ display: "none" }}
-                    onChange={(e) =>
-                      handleFieldRefinementUpload("underside", e.target.files)
-                    }
+                    onChange={(e) => handleFieldRefinementUpload("underside", e.target.files)}
                   />
                 </label>
 
-                <label
-                  style={{
-                    display: "inline-block",
-                    background: "#7d6540",
-                    color: "#fffaf2",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
+                <label style={uploadTanButton}>
                   Add Back Photo
                   <input
                     type="file"
                     accept="image/*"
                     capture="environment"
                     style={{ display: "none" }}
-                    onChange={(e) =>
-                      handleFieldRefinementUpload("back", e.target.files)
-                    }
+                    onChange={(e) => handleFieldRefinementUpload("back", e.target.files)}
                   />
                 </label>
 
-                <label
-                  style={{
-                    display: "inline-block",
-                    background: "#8a6f47",
-                    color: "#fffaf2",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
+                <label style={uploadOliveButton}>
                   Add Construction Detail
                   <input
                     type="file"
                     accept="image/*"
                     capture="environment"
                     style={{ display: "none" }}
-                    onChange={(e) =>
-                      handleFieldRefinementUpload("joinery_closeup", e.target.files)
-                    }
+                    onChange={(e) => handleFieldRefinementUpload("joinery_closeup", e.target.files)}
                   />
                 </label>
 
-                <label
-                  style={{
-                    display: "inline-block",
-                    background: "#9a7d53",
-                    color: "#fffaf2",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
+                <label style={uploadGoldButton}>
                   Add Hardware Close-Up
                   <input
                     type="file"
                     accept="image/*"
                     capture="environment"
                     style={{ display: "none" }}
-                    onChange={(e) =>
-                      handleFieldRefinementUpload("hardware_closeup", e.target.files)
-                    }
+                    onChange={(e) => handleFieldRefinementUpload("hardware_closeup", e.target.files)}
                   />
                 </label>
               </div>
@@ -1760,295 +1467,108 @@ export default function Page() {
 
         {report && analysisMode === "full_analysis" && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
-            <SectionCard title="Final Report">
+            <SectionCard title="Analysis Summary">
               <div
                 style={{
                   fontSize: 15,
-                  lineHeight: 1.65,
+                  lineHeight: 1.7,
                   color: "#3e2f1f",
                   whiteSpace: "pre-wrap",
                 }}
               >
-                {report.final_report || "No final report text returned."}
+                {p6?.summary || report.final_report || "No final report text returned."}
               </div>
             </SectionCard>
 
-            <SectionCard title="Supported Findings">
-              {p6?.supported_findings?.length ? (
-                <ul style={listStyle}>
-                  {p6.supported_findings.map((item: string) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <div style={emptyText}>No supported findings were returned.</div>
-              )}
-            </SectionCard>
-
-            <SectionCard title="Tentative Findings">
-              {p6?.tentative_findings?.length ? (
-                <ul style={listStyle}>
-                  {p6.tentative_findings.map((item: string) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <div style={emptyText}>No tentative findings were returned.</div>
-              )}
-            </SectionCard>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 18,
-              }}
-            >
-              <SectionCard title="Form">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+              <SectionCard title="Primary Identification">
                 <div style={metaRowStyle}>
                   <span>Best reading</span>
-                  <strong>{p3?.form || "Unknown"}</strong>
+                  <strong>{p3?.display_form || p3?.form || "Unknown"}</strong>
                 </div>
                 <div style={metaRowStyle}>
                   <span>Confidence</span>
-                  <strong style={{ color: bandColor(p3?.confidence) }}>
-                    {p3?.confidence || "Inconclusive"}
-                  </strong>
+                  <strong style={{ color: bandColor(p3?.confidence) }}>{p3?.confidence || "Inconclusive"}</strong>
                 </div>
-
-                {p3?.support?.length > 0 && (
-                  <>
-                    <div style={subheadStyle}>Support</div>
-                    <ul style={listStyle}>
-                      {p3.support.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </>
+                {p3?.style_context && (
+                  <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                    Broad style context: {p3.style_context}
+                  </div>
                 )}
-
-                {p3?.alternatives?.length > 0 && (
+                {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && (
                   <>
-                    <div style={subheadStyle}>Alternatives</div>
-                    <ul style={listStyle}>
-                      {p3.alternatives.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
+                    <div style={subheadStyle}>Alternate possibilities</div>
+                    <ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul>
                   </>
                 )}
               </SectionCard>
 
-              <SectionCard title="Dating Window">
+              <SectionCard title="Dating Analysis">
                 <div style={metaRowStyle}>
-                  <span>Range</span>
+                  <span>Working range</span>
                   <strong>{p2?.range || "Unknown"}</strong>
                 </div>
                 <div style={metaRowStyle}>
                   <span>Confidence</span>
-                  <strong style={{ color: bandColor(p2?.confidence) }}>
-                    {p2?.confidence || "Inconclusive"}
-                  </strong>
+                  <strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong>
                 </div>
-
-                {p2?.support?.length > 0 && (
+                {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && (
                   <>
-                    <div style={subheadStyle}>Support</div>
-                    <ul style={listStyle}>
-                      {p2.support.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-
-                {p2?.limitations?.length > 0 && (
-                  <>
-                    <div style={subheadStyle}>Limitations</div>
-                    <ul style={listStyle}>
-                      {p2.limitations.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
+                    <div style={subheadStyle}>Current limitations</div>
+                    <ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul>
                   </>
                 )}
               </SectionCard>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 18,
-              }}
-            >
-              <SectionCard title="Evidence Gate">
-                <div style={metaRowStyle}>
-                  <span>Confidence cap</span>
-                  <strong style={{ color: bandColor(p1?.confidence_cap) }}>
-                    {p1?.confidence_cap || "Inconclusive"}
-                  </strong>
-                </div>
-                <div style={metaRowStyle}>
-                  <span>Confidence cap %</span>
-                  <strong>{typeof p1?.confidence_cap_pct === "number" ? p1.confidence_cap_pct : "—"}</strong>
-                </div>
-
-                <div style={subheadStyle}>Evidence sufficiency</div>
-                <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
-                  {p1?.evidence_sufficiency_summary || "No evidence gate summary returned."}
-                </div>
-
-                {p1?.next_best_evidence?.length > 0 && (
-                  <>
-                    <div style={subheadStyle}>Next Best Evidence</div>
-                    <ul style={listStyle}>
-                      {p1.next_best_evidence.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </SectionCard>
-
-              <SectionCard title="Conflict Review">
-                {p5?.conflict_notes?.length ? (
-                  <ul style={listStyle}>
-                    {p5.conflict_notes.map((item: string) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div style={emptyText}>No major conflicts were returned.</div>
-                )}
-
-                {p5?.restoration_interpretation && (
-                  <>
-                    <div style={subheadStyle}>Restoration Interpretation</div>
-                    <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
-                      {p5.restoration_interpretation}
-                    </div>
-                  </>
-                )}
-              </SectionCard>
-            </div>
-
-            <SectionCard title="Confidence Drivers">
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 18,
-                }}
-              >
-                <div>
-                  <div style={subheadStyle}>Increased Confidence</div>
-                  {p4?.confidence_drivers?.increased?.length ? (
-                    <ul style={listStyle}>
-                      {p4.confidence_drivers.increased.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div style={emptyText}>No strong confidence drivers were returned.</div>
-                  )}
-                </div>
-
-                <div>
-                  <div style={subheadStyle}>Limited Confidence</div>
-                  {p4?.confidence_drivers?.limited?.length ? (
-                    <ul style={listStyle}>
-                      {p4.confidence_drivers.limited.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div style={emptyText}>No limiting factors were returned.</div>
-                  )}
-                </div>
-              </div>
-            </SectionCard>
-
-            <SectionCard title="Weighted Clues">
-              {p4?.weighted_clues?.length ? (
-                <div style={{ display: "grid", gap: 10 }}>
-                  {p4.weighted_clues.slice(0, 12).map((clue: any) => (
+            <SectionCard title="Key Supporting Evidence">
+              {supportingEvidence.length > 0 ? (
+                <div style={{ display: "grid", gap: 12 }}>
+                  {supportingEvidence.map((item) => (
                     <div
-                      key={`${clue.clue}-${clue.display_label}`}
+                      key={item}
                       style={{
-                        border: "1px solid #e4d8c3",
+                        border: "1px solid #eadfcf",
                         borderRadius: 10,
                         padding: 12,
                         background: "#fff",
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          gap: 12,
-                          alignItems: "start",
-                        }}
-                      >
-                        <div>
-                          <div style={{ fontWeight: 700, color: "#3d2d1f" }}>
-                            {clue.display_label || humanize(clue.clue)}
-                            {clue.hard_negative ? " · Hard Negative" : ""}
-                          </div>
-                          <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
-                            {clue.confidence_reason}
-                          </div>
-                        </div>
-                        <div style={{ textAlign: "right", fontSize: 13 }}>
-                          <div><strong>{clue.category}</strong></div>
-                          <div>Weight: {clue.adjusted_weight}</div>
-                        </div>
+                      <div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div>
+                      <div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>
+                        {evidenceMeaning(item)}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div style={emptyText}>No weighted clues were returned.</div>
+                <div style={emptyText}>No supporting evidence was returned.</div>
               )}
             </SectionCard>
 
-            <SectionCard title="Category Scores">
-              {p4?.category_scores?.length ? (
-                <div style={{ display: "grid", gap: 10 }}>
-                  {p4.category_scores.map((row: any) => (
-                    <div key={row.category}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: 4,
-                          fontSize: 14,
-                        }}
-                      >
-                        <span>{humanize(row.category)}</span>
-                        <strong>{row.score}</strong>
-                      </div>
-                      <div
-                        style={{
-                          height: 10,
-                          background: "#ece2d2",
-                          borderRadius: 999,
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div
-                          style={{
-                            height: "100%",
-                            width: `${row.score}%`,
-                            background: "#7d6540",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+              <SectionCard title="Supported Findings">
+                {p6?.supported_findings?.length ? (
+                  <ul style={listStyle}>{p6.supported_findings.map((item: string) => <li key={item}>{item}</li>)}</ul>
+                ) : (
+                  <div style={emptyText}>No supported findings were returned.</div>
+                )}
+              </SectionCard>
+
+              <SectionCard title="Cautions and Conflicts">
+                {p6?.tentative_findings?.length ? (
+                  <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul>
+                ) : (
+                  <div style={emptyText}>No major cautions were returned.</div>
+                )}
+              </SectionCard>
+            </div>
+
+            <SectionCard title="Next Best Evidence">
+              {Array.isArray(p6?.more_evidence_needed) && p6.more_evidence_needed.length > 0 ? (
+                <ul style={listStyle}>{p6.more_evidence_needed.map((item: string) => <li key={item}>{item}</li>)}</ul>
               ) : (
-                <div style={emptyText}>No category scores were returned.</div>
+                <div style={emptyText}>No additional evidence recommendations were returned.</div>
               )}
             </SectionCard>
           </div>
@@ -2094,6 +1614,84 @@ const secondaryButton: React.CSSProperties = {
   cursor: "pointer",
 };
 
+const uploadBrownButton: React.CSSProperties = {
+  display: "inline-block",
+  background: "#5a3e1b",
+  color: "#fffaf2",
+  borderRadius: 8,
+  padding: "10px 14px",
+  cursor: "pointer",
+  fontSize: 14,
+  fontWeight: 700,
+};
+
+const uploadTanButton: React.CSSProperties = {
+  display: "inline-block",
+  background: "#7d6540",
+  color: "#fffaf2",
+  borderRadius: 8,
+  padding: "10px 14px",
+  cursor: "pointer",
+  fontSize: 14,
+  fontWeight: 700,
+};
+
+const uploadOliveButton: React.CSSProperties = {
+  display: "inline-block",
+  background: "#8a6f47",
+  color: "#fffaf2",
+  borderRadius: 8,
+  padding: "10px 14px",
+  cursor: "pointer",
+  fontSize: 14,
+  fontWeight: 700,
+};
+
+const uploadGoldButton: React.CSSProperties = {
+  display: "inline-block",
+  background: "#9a7d53",
+  color: "#fffaf2",
+  borderRadius: 8,
+  padding: "10px 14px",
+  cursor: "pointer",
+  fontSize: 14,
+  fontWeight: 700,
+};
+
+const uploadBrownButtonSmall: React.CSSProperties = {
+  ...uploadBrownButton,
+  padding: "9px 12px",
+  fontSize: 13,
+  fontWeight: 600,
+};
+
+const uploadTanButtonSmall: React.CSSProperties = {
+  ...uploadTanButton,
+  padding: "9px 12px",
+  fontSize: 13,
+  fontWeight: 600,
+};
+
+const smallRemoveButton: React.CSSProperties = {
+  border: "1px solid #cebda4",
+  background: "#fff8ee",
+  color: "#6f4428",
+  borderRadius: 8,
+  padding: "9px 12px",
+  cursor: "pointer",
+  fontSize: 13,
+};
+
+const tinyRemoveButton: React.CSSProperties = {
+  border: "1px solid #cebda4",
+  background: "#fff8ee",
+  color: "#6f4428",
+  borderRadius: 8,
+  padding: "6px 10px",
+  cursor: "pointer",
+  fontSize: 12,
+};
+
 const listStyle: React.CSSProperties = {
   margin: "8px 0 0",
   paddingLeft: 18,
@@ -2122,13 +1720,3 @@ const emptyText: React.CSSProperties = {
   fontSize: 14,
   color: "#6a5845",
 };
-
-function safePreview(value: any) {
-  if (value == null) return "No payload.";
-  if (typeof value === "string") return value;
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return String(value);
-  }
-}
