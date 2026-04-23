@@ -696,6 +696,27 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     ) {
       clue = null;
     }
+        if (
+      clue === "gateleg_support" &&
+      (
+        desc.includes("no gate leg") ||
+        desc.includes("no gate-leg") ||
+        desc.includes("no swing leg") ||
+        desc.includes("no swing-leg") ||
+        desc.includes("no gate leg mechanism") ||
+        desc.includes("no gate-leg mechanism") ||
+        desc.includes("no swing leg mechanism") ||
+        desc.includes("no swing-leg mechanism") ||
+        desc.includes("not clearly visible") ||
+        desc.includes("not visible") ||
+        desc.includes("not confirmed") ||
+        desc.includes("if any") ||
+        desc.includes("though the support mechanism") ||
+        desc.includes("without a swing-out leg support")
+      )
+    ) {
+      clue = null;
+    }
     const meta = clue ? CLUE_LIBRARY[clue] : null;
 
     normalized.push({
