@@ -160,11 +160,12 @@ const CLUE_LIBRARY: Record<
     dateHint: "1680–1800; revival 1880–1930",
     explanation: "Strong structural evidence for gate-leg/drop-leaf table forms.",
   },
-    rule_joint: {
+  rule_joint: {
     category: "joinery",
     baseWeight: 0.78,
     dateHint: "1700–1930",
-    explanation: "Useful joinery evidence for drop-leaf construction, but not by itself a decisive early-date indicator.",
+    explanation:
+      "Useful joinery evidence for drop-leaf construction, but not by itself a decisive early-date indicator.",
   },
   swing_leg: {
     category: "construction",
@@ -184,55 +185,63 @@ const CLUE_LIBRARY: Record<
     dateHint: "1700–present",
     explanation: "Case-form indicator; needs corroboration for precise form.",
   },
-    multi_board_back_panel: {
+  multi_board_back_panel: {
     category: "construction",
     baseWeight: 0.86,
     dateHint: "pre-1925",
-    explanation: "Multi-board back construction is a strong pre-plywood case-building clue.",
+    explanation:
+      "Multi-board back construction is a strong pre-plywood case-building clue.",
   },
   uneven_backboards: {
     category: "construction",
     baseWeight: 0.8,
     dateHint: "pre-1915",
-    explanation: "Uneven-width backboards support earlier case construction rather than later standardized sheet construction.",
+    explanation:
+      "Uneven-width backboards support earlier case construction rather than later standardized sheet construction.",
   },
   solid_drawer_bottom: {
     category: "construction",
     baseWeight: 0.84,
     dateHint: "pre-1925",
-    explanation: "Solid wood drawer bottoms support earlier construction than plywood-bottom drawer systems.",
+    explanation:
+      "Solid wood drawer bottoms support earlier construction than plywood-bottom drawer systems.",
   },
   side_runner_drawer: {
     category: "construction",
     baseWeight: 0.78,
     dateHint: "pre-1930",
-    explanation: "Traditional side-running drawer support is more consistent with earlier case construction than modern track systems.",
+    explanation:
+      "Traditional side-running drawer support is more consistent with earlier case construction than modern track systems.",
   },
   turned_wood_knob: {
     category: "hardware",
     baseWeight: 0.58,
     replacementRisk: 0.35,
     dateHint: "1850–1930",
-    explanation: "Turned wooden knobs support period context, though knobs can be replaced.",
+    explanation:
+      "Turned wooden knobs support period context, though knobs can be replaced.",
   },
   wooden_knob_attachment: {
     category: "hardware",
     baseWeight: 0.64,
     replacementRisk: 0.28,
     dateHint: "1850–1925",
-    explanation: "Wooden knob attachment without visible modern machine hardware supports older drawer hardware construction.",
+    explanation:
+      "Wooden knob attachment without visible modern machine hardware supports older drawer hardware construction.",
   },
   ogee_bracket_foot: {
     category: "construction",
     baseWeight: 0.66,
     dateHint: "1880–1930",
-    explanation: "Ogee or bracket-foot shaping supports late Victorian to Colonial Revival case styling.",
+    explanation:
+      "Ogee or bracket-foot shaping supports late Victorian to Colonial Revival case styling.",
   },
   colonial_revival_case: {
     category: "form",
     baseWeight: 0.64,
     dateHint: "1890–1935",
-    explanation: "Colonial Revival case proportions and drawer arrangement support an early 20th-century production lane.",
+    explanation:
+      "Colonial Revival case proportions and drawer arrangement support an early 20th-century production lane.",
   },
   drawer_present: {
     category: "construction",
@@ -443,36 +452,6 @@ const CLUE_LIBRARY: Record<
   },
 };
 
-const DATE_PRIORITY_ORDER = [
-  "pre-1800",
-  "1790–1890",
-  "post-1830",
-  "pre-1830",
-  "pre-1860",
-  "post-1860",
-  "post-1870",
-  "1830–1900",
-  "1865–1895",
-  "1870–1890",
-  "1820–1920",
-  "pre-1910",
-  "post-1880",
-  "1840–1935",
-  "1700–1860",
-  "1720–1930",
-  "1680–1800; revival 1880–1930",
-  "1780–1900",
-  "1700–1900",
-  "1700–present",
-  "post-1900",
-  "post-1920",
-  "post-1934",
-  "post-1945",
-  "post-1950",
-  "post-1960",
-  "1620–1920",
-];
-
 function cleanJsonText(raw: string): string {
   return String(raw || "")
     .replace(/```json/gi, "")
@@ -544,13 +523,10 @@ function extractBalancedJson(text: string): string | null {
 
 function parseModelJson(raw: string): any | null {
   const cleaned = cleanJsonText(raw);
-
   const full = tryJsonParse(cleaned);
   if (full) return full;
-
   const balanced = extractBalancedJson(cleaned);
   if (!balanced) return null;
-
   return tryJsonParse(balanced);
 }
 
@@ -621,44 +597,8 @@ function descriptionFromObservation(o: any): string {
 
 function detectClueFromText(text: string): string | null {
   const t = text.toLowerCase();
-  // --- Case & dresser structure clues ---
-if (t.includes("multiple drawers") || t.includes("bank of drawers") || t.includes("stacked drawers"))
-  return "multiple_drawer_case";
 
-if (t.includes("two over") || t.includes("2 over") || t.includes("small drawers over"))
-  return "multiple_drawer_case";
-
-if (t.includes("full width drawers") || t.includes("graduated drawers"))
-  return "multiple_drawer_case";
-
-// --- Back panel construction ---
-if (t.includes("back panel") && t.includes("multiple boards"))
-  return "multi_board_back_panel";
-
-if (t.includes("uneven boards") || t.includes("varied width boards"))
-  return "uneven_backboards";
-
-// --- Drawer construction ---
-if (t.includes("solid drawer bottom"))
-  return "solid_drawer_bottom";
-
-if (t.includes("side runner") || t.includes("wood runner"))
-  return "side_runner_drawer";
-
-// --- Hardware ---
-if (t.includes("wooden knob") || t.includes("turned knob"))
-  return "turned_wood_knob";
-
-if (t.includes("no metal hardware") || t.includes("wood knob only"))
-  return "wooden_knob_attachment";
-
-// --- Feet / form ---
-if (t.includes("bracket foot") || t.includes("ogee foot"))
-  return "ogee_bracket_foot";
-
-if (t.includes("colonial revival"))
-  return "colonial_revival_case";
-    if (t.includes("drop leaf") || t.includes("drop-leaf")) return "drop_leaf_hinged";
+  if (t.includes("drop leaf") || t.includes("drop-leaf")) return "drop_leaf_hinged";
 
   const mentionsGateLeg = t.includes("gate leg") || t.includes("gate-leg");
   const mentionsSwingLeg = t.includes("swing leg") || t.includes("swing-leg");
@@ -690,6 +630,26 @@ if (t.includes("colonial revival"))
   if (t.includes("roll top") || t.includes("tambour") || t.includes("cylinder roll")) return "cylinder_roll";
   if (t.includes("tilt top")) return "tilt_top";
   if (t.includes("extension mechanism")) return "extension_mechanism";
+
+  if (
+    t.includes("multiple drawers") ||
+    t.includes("bank of drawers") ||
+    t.includes("stacked drawers") ||
+    t.includes("graduated drawers")
+  ) return "multiple_drawer_case";
+
+  if (
+    t.includes("two over") ||
+    t.includes("2 over") ||
+    t.includes("small drawers over") ||
+    t.includes("two small drawers over") ||
+    t.includes("upper small drawers") ||
+    t.includes("side-by-side drawers") ||
+    t.includes("full-width drawers") ||
+    t.includes("full width drawers") ||
+    t.includes("lower full-width drawers")
+  ) return "colonial_revival_case";
+
   if (t.includes("drawer")) return "drawer_present";
   if (t.includes("door")) return "door_present";
 
@@ -698,8 +658,10 @@ if (t.includes("colonial revival"))
   if (t.includes("mortise") && t.includes("tenon")) return "mortise_and_tenon";
   if (t.includes("dowel")) return "dowel_joinery";
   if (t.includes("plywood drawer bottom")) return "plywood_drawer_bottom";
+  if (t.includes("solid drawer bottom") || t.includes("solid wood drawer bottom")) return "solid_drawer_bottom";
+  if (t.includes("side runner") || t.includes("side-running drawer") || t.includes("side-mounted runner") || t.includes("wood runner")) return "side_runner_drawer";
 
-    const mentionsPitSaw = t.includes("pit saw");
+  const mentionsPitSaw = t.includes("pit saw");
   const mentionsCircularSaw = t.includes("circular saw");
   const mentionsBandSaw = t.includes("band saw");
 
@@ -718,6 +680,21 @@ if (t.includes("colonial revival"))
 
   if (t.includes("hand plane") || t.includes("plane chatter")) return "hand_plane_chatter";
 
+  if (
+    t.includes("multi-board back") ||
+    t.includes("multiple horizontal boards") ||
+    t.includes("horizontal back boards") ||
+    (t.includes("back panel") && t.includes("multiple boards"))
+  ) return "multi_board_back_panel";
+
+  if (
+    t.includes("uneven-width back boards") ||
+    t.includes("unequal width back boards") ||
+    t.includes("uneven backboards") ||
+    t.includes("uneven boards") ||
+    t.includes("varied width boards")
+  ) return "uneven_backboards";
+
   if (t.includes("poplar")) return "poplar_secondary";
   if (t.includes("thick veneer")) return "thick_veneer";
   if (t.includes("structural plywood")) return "plywood_structural";
@@ -727,6 +704,14 @@ if (t.includes("colonial revival"))
   if (t.includes("batwing")) return "batwing_brass_pull";
   if (t.includes("eastlake")) return "eastlake_pull";
   if (t.includes("concealed hinge")) return "modern_concealed_hinge";
+  if (t.includes("turned wooden knob") || t.includes("wooden knob") || t.includes("turned knob")) return "turned_wood_knob";
+  if (
+    t.includes("no metal bail hardware") ||
+    t.includes("dowel-mounted wood knob") ||
+    t.includes("threaded or dowel-mounted wood") ||
+    t.includes("no metal hardware") ||
+    t.includes("wood knob only")
+  ) return "wooden_knob_attachment";
 
   if (t.includes("hand forged nail") || t.includes("hand-forged nail")) return "hand_forged_nail";
   if (t.includes("cut nail")) return "cut_nail";
@@ -739,6 +724,15 @@ if (t.includes("colonial revival"))
   if (t.includes("shellac")) return "shellac_crazing";
   if (t.includes("polyurethane")) return "polyurethane";
 
+  if (
+    t.includes("ogee bracket") ||
+    t.includes("bracket foot") ||
+    t.includes("scrolled bracket foot") ||
+    t.includes("ogee foot")
+  ) return "ogee_bracket_foot";
+
+  if (t.includes("colonial revival")) return "colonial_revival_case";
+
   return null;
 }
 
@@ -750,12 +744,13 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
 
   const push = (raw: any) => {
     const description = descriptionFromObservation(raw);
-        let clue =
+    let clue =
       normalizeClueKey(raw?.clue) ||
       normalizeClueKey(raw?.reference_id) ||
       detectClueFromText(description);
 
     const desc = description.toLowerCase();
+
     if (
       clue === "pit_saw_marks" &&
       (
@@ -771,6 +766,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
       else if (desc.includes("circular saw")) clue = "circular_saw_arcs";
       else clue = null;
     }
+
     if (
       clue === "polyurethane" &&
       (
@@ -782,7 +778,8 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     ) {
       clue = null;
     }
-        if (
+
+    if (
       clue === "gateleg_support" &&
       (
         desc.includes("no gate leg") ||
@@ -803,6 +800,20 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     ) {
       clue = null;
     }
+
+    if (
+      clue === "drawer_present" &&
+      (
+        desc.includes("drawer bottom") ||
+        desc.includes("drawer side") ||
+        desc.includes("drawer interior") ||
+        desc.includes("drawer runner") ||
+        desc.includes("drawer construction")
+      )
+    ) {
+      clue = null;
+    }
+
     const meta = clue ? CLUE_LIBRARY[clue] : null;
 
     normalized.push({
@@ -810,9 +821,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
       clue,
       description,
       confidence: clamp(
-        asNumber(raw?.confidence, NaN) ||
-          Math.round(asNumber(raw?.raw_confidence, 0.4) * 100) ||
-          45,
+        asNumber(raw?.confidence, NaN) || Math.round(asNumber(raw?.raw_confidence, 0.4) * 100) || 45,
         5,
         99
       ),
@@ -1050,9 +1059,7 @@ function computeClueWeights(observations: Observation[]): WeightedClue[] {
     else if (avgConfidence >= 0.6) adjusted += 0.03;
     else if (avgConfidence < 0.4) adjusted -= 0.1;
 
-    const sourceImages = uniq(
-      group.map((g) => g.source_image || "").filter(Boolean)
-    );
+    const sourceImages = uniq(group.map((g) => g.source_image || "").filter(Boolean));
 
     if (sourceImages.length >= 2) adjusted += 0.05;
     if (sourceImages.length >= 3) adjusted += 0.05;
@@ -1172,13 +1179,12 @@ function gateEvidence(digest: EvidenceDigest, missing: MissingEvidenceMap): Phas
   let capPct = 88;
   const nextBest: string[] = [];
 
-    const hasJoinery = (digest.by_type?.joinery || []).length > 0;
+  const hasJoinery = (digest.by_type?.joinery || []).length > 0;
   const hasHardware = (digest.by_type?.hardware || []).length > 0;
   const hasConstruction = (digest.by_type?.construction || []).length > 0;
   const hasFasteners = (digest.by_type?.fasteners || []).length > 0;
 
-  const structuralEvidenceCount =
-    [hasJoinery, hasConstruction, hasFasteners].filter(Boolean).length;
+  const structuralEvidenceCount = [hasJoinery, hasConstruction, hasFasteners].filter(Boolean).length;
 
   if (!hasFasteners && !hasConstruction) {
     nextBest.push("Underside photo for saw marks and fasteners");
@@ -1206,9 +1212,7 @@ function gateEvidence(digest: EvidenceDigest, missing: MissingEvidenceMap): Phas
 
   capPct = clamp(capPct, 20, 92);
 
-  const capBand = toConfidenceBand(capPct);
-
-    let summary = "Evidence is sufficient for a cautious evidence-first assessment.";
+  let summary = "Evidence is sufficient for a cautious evidence-first assessment.";
   if (obsCount < 3) {
     summary = "Evidence is sparse. Conclusions should stay tentative until more visible evidence is provided.";
   } else if (structuralEvidenceCount >= 2) {
@@ -1220,7 +1224,7 @@ function gateEvidence(digest: EvidenceDigest, missing: MissingEvidenceMap): Phas
   }
 
   return {
-    confidence_cap: capBand,
+    confidence_cap: toConfidenceBand(capPct),
     confidence_cap_pct: capPct,
     missing_evidence: missing,
     evidence_sufficiency_summary: summary,
@@ -1277,6 +1281,12 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
     clueSet.has("victorian_strap_hinge") ||
     clueSet.has("eastlake_pull");
 
+  const hasCaseConstruction =
+    clueSet.has("multi_board_back_panel") ||
+    clueSet.has("uneven_backboards") ||
+    clueSet.has("solid_drawer_bottom") ||
+    clueSet.has("side_runner_drawer");
+
   const hasMid19thStructural =
     clueSet.has("cut_nail") ||
     clueSet.has("circular_saw_arcs");
@@ -1287,13 +1297,23 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
     clueSet.has("hand_cut_dovetails") ||
     clueSet.has("slotted_handmade_screw");
 
-  const hasEarlierStyleJoinery =
-    clueSet.has("rule_joint");
+  const hasColonialRevivalCase =
+    clueSet.has("colonial_revival_case") ||
+    clueSet.has("ogee_bracket_foot");
 
   if (hasVeryLate) {
     return {
       range: "post-1935",
       confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 78)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasColonialRevivalCase && hasCaseConstruction && !hasVeryLate) {
+    return {
+      range: "1900–1930",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 76)),
       support,
       limitations,
     };
@@ -1308,10 +1328,19 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
     };
   }
 
-  if (hasVictorianEra && hasMid19thStructural) {
+  if (hasVictorianEra && hasCaseConstruction) {
     return {
-      range: "1850–1900",
-      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 76)),
+      range: "1880–1915",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 74)),
+      support,
+      limitations,
+    };
+  }
+
+  if (hasCaseConstruction && hasMid19thStructural) {
+    return {
+      range: "1850–1910",
+      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 72)),
       support,
       limitations,
     };
@@ -1320,15 +1349,6 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
   if (hasLaterIndustrial) {
     return {
       range: "1880–1920",
-      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 72)),
-      support,
-      limitations,
-    };
-  }
-
-  if (hasMid19thStructural && hasEarlierStyleJoinery) {
-    return {
-      range: "1830–1890",
       confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 72)),
       support,
       limitations,
@@ -1353,15 +1373,6 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
     };
   }
 
-  if (hasEarlierStyleJoinery) {
-    return {
-      range: "Broadly 19th century",
-      confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 62)),
-      support,
-      limitations,
-    };
-  }
-
   return {
     range: "Broadly antique or vintage, but not tightly dated",
     confidence: toConfidenceBand(Math.min(gate.confidence_cap_pct, 45)),
@@ -1371,10 +1382,9 @@ function dateFromEvidence(digest: EvidenceDigest, gate: Phase1Gate): Phase2Datin
       : ["No strong date-specific clues were identified."],
   };
 }
+
 function scoreFormCandidates(observations: Observation[], intake: GenericRecord): Record<string, number> {
-  const text = observations
-    .map((o) => `${o.clue || ""} ${o.description}`.toLowerCase())
-    .join(" | ");
+  const text = observations.map((o) => `${o.clue || ""} ${o.description}`.toLowerCase()).join(" | ");
 
   const score: Record<string, number> = {
     "Drop-leaf table": 0,
@@ -1398,12 +1408,34 @@ function scoreFormCandidates(observations: Observation[], intake: GenericRecord)
   if (text.includes("table")) score["Table"] += 2;
 
   if (text.includes("lift lid")) score["Blanket chest"] += 6;
-  if (text.includes("drawer")) {
-    score["Chest of drawers"] += 3;
-    score["Dresser"] += 3;
-  }
-  if (text.includes("door")) score["Cabinet"] += 3;
 
+  if (text.includes("drawer")) {
+    score["Chest of drawers"] += 4;
+    score["Dresser"] += 5;
+  }
+
+  if (
+    text.includes("multiple_drawer_case") ||
+    text.includes("multiple drawers") ||
+    text.includes("graduated drawers")
+  ) {
+    score["Chest of drawers"] += 3;
+    score["Dresser"] += 4;
+  }
+
+  if (
+    text.includes("two small drawers") ||
+    text.includes("side-by-side drawers") ||
+    text.includes("full-width drawers") ||
+    text.includes("upper small drawers") ||
+    text.includes("two small drawers over") ||
+    text.includes("lower full-width drawers")
+  ) {
+    score["Dresser"] += 5;
+    score["Chest of drawers"] += 2;
+  }
+
+  if (text.includes("door")) score["Cabinet"] += 3;
   if (text.includes("slant front") || text.includes("fall front")) score["Slant-front desk"] += 7;
   if (text.includes("roll top") || text.includes("tambour") || text.includes("cylinder roll")) {
     score["Roll-top desk"] += 8;
@@ -1415,7 +1447,7 @@ function scoreFormCandidates(observations: Observation[], intake: GenericRecord)
     score["Roll-top desk"] += 2;
   }
   if (guess.includes("cabinet")) score["Cabinet"] += 2;
-  if (guess.includes("dresser")) score["Dresser"] += 2;
+  if (guess.includes("dresser")) score["Dresser"] += 3;
   if (guess.includes("chest")) {
     score["Blanket chest"] += 2;
     score["Chest of drawers"] += 2;
@@ -1427,6 +1459,7 @@ function scoreFormCandidates(observations: Observation[], intake: GenericRecord)
 
   return score;
 }
+
 function deriveStyleContext(observations: Observation[], clueKeys: string[]): string | null {
   const text = observations.map((o) => o.description.toLowerCase()).join(" | ");
   const clueSet = new Set(clueKeys);
@@ -1434,7 +1467,7 @@ function deriveStyleContext(observations: Observation[], clueKeys: string[]): st
   const hasVictorianHardware =
     clueSet.has("porcelain_caster") || clueSet.has("victorian_strap_hinge");
 
-  const hasTurnedVictorianLegs =
+  const hasVictorianShaping =
     text.includes("turned") ||
     text.includes("ring-and-cylinder") ||
     text.includes("ring and cylinder") ||
@@ -1442,11 +1475,22 @@ function deriveStyleContext(observations: Observation[], clueKeys: string[]): st
     text.includes("reeded") ||
     text.includes("fluted");
 
-  if (hasVictorianHardware && hasTurnedVictorianLegs) {
+  const hasColonialRevivalShaping =
+    clueSet.has("colonial_revival_case") ||
+    clueSet.has("ogee_bracket_foot") ||
+    text.includes("bracket foot") ||
+    text.includes("scrolled bracket foot") ||
+    text.includes("ogee");
+
+  if (hasColonialRevivalShaping) {
+    return "Colonial Revival";
+  }
+
+  if (hasVictorianHardware && hasVictorianShaping) {
     return "Victorian";
   }
 
-  if (hasTurnedVictorianLegs) {
+  if (hasVictorianShaping) {
     return "Victorian-influenced";
   }
 
@@ -1479,12 +1523,9 @@ function deriveDisplayForm(form: string, styleContext: string | null, observatio
 
   return styleContext ? `${styleContext} ${form}` : form;
 }
-function applyFormPreference(
-  baseForm: string,
-  observations: Observation[],
-  clueKeys: string[]
-): string {
-  const text = observations.map(o => o.description.toLowerCase()).join(" | ");
+
+function applyFormPreference(baseForm: string, observations: Observation[], clueKeys: string[]): string {
+  const text = observations.map((o) => o.description.toLowerCase()).join(" | ");
   const clueSet = new Set(clueKeys);
 
   const isCasePiece =
@@ -1496,24 +1537,28 @@ function applyFormPreference(
     text.includes("stacked drawers") ||
     text.includes("drawer layout") ||
     text.includes("graduated drawers") ||
-    clueSet.has("drawer_present");
+    clueSet.has("drawer_present") ||
+    clueSet.has("multiple_drawer_case");
 
   const hasDresserSignals =
     text.includes("dresser") ||
     text.includes("top drawers") ||
     text.includes("wide case") ||
-    text.includes("two small drawers over larger drawers");
+    text.includes("two small drawers over larger drawers") ||
+    text.includes("two small drawers over") ||
+    text.includes("upper small drawers") ||
+    clueSet.has("colonial_revival_case");
 
-  // 👇 ONLY upgrade when we have strong support
   if (isCasePiece && hasDrawerStack && (hasDresserSignals || hasDrawerStack)) {
     return "Dresser";
   }
 
   return baseForm;
 }
+
 function identifyForm(observations: Observation[], digest: EvidenceDigest, gate: Phase1Gate, intake: GenericRecord): Phase3Form {
   if (!gate.can_run.form) {
-        return {
+    return {
       form: "Unknown",
       display_form: "Unknown",
       style_context: null,
@@ -1530,7 +1575,7 @@ function identifyForm(observations: Observation[], digest: EvidenceDigest, gate:
   const second = ranked[1];
 
   if (!best || best[1] <= 0) {
-        const fallbackForm = digest.likely_forms[0] || "Uncertain case or table form";
+    const fallbackForm = digest.likely_forms[0] || "Uncertain case or table form";
     const fallbackStyle = deriveStyleContext(observations, digest.clue_keys);
 
     return {
@@ -1547,7 +1592,7 @@ function identifyForm(observations: Observation[], digest: EvidenceDigest, gate:
   const rawPct = gap >= 4 ? 80 : gap >= 2 ? 68 : 52;
   const capped = Math.min(rawPct, gate.confidence_cap_pct);
 
-    const styleContext = deriveStyleContext(observations, digest.clue_keys);
+  const styleContext = deriveStyleContext(observations, digest.clue_keys);
   const preferredForm = applyFormPreference(best[0], observations, digest.clue_keys);
   const displayForm = deriveDisplayForm(preferredForm, styleContext, observations, digest.clue_keys);
 
@@ -1614,6 +1659,7 @@ function resolveConflicts(
     restorationInterpretation =
       "Some observed features appear later than a strict original antique reading would allow. That may reflect later repair, replacement, refinish, or a later manufacture date.";
   }
+
   const clueSet = new Set(weightedClues.map((w) => w.clue));
 
   const hasEarlierDatingPull =
@@ -1636,6 +1682,7 @@ function resolveConflicts(
     );
     adjustment -= 4;
   }
+
   return {
     conflict_notes: notes,
     confidence_adjustment: adjustment,
@@ -1654,7 +1701,7 @@ function synthesize(
   const tentative: string[] = [];
   const moreEvidence: string[] = [...gate.next_best_evidence];
 
-    supported.push(`The strongest supported reading is ${form.display_form} (${form.confidence.toLowerCase()} confidence).`);
+  supported.push(`The strongest supported reading is ${form.display_form} (${form.confidence.toLowerCase()} confidence).`);
 
   if (dating.range !== "Unknown") {
     supported.push(`Current dating evidence most strongly supports ${dating.range}.`);
@@ -1662,17 +1709,13 @@ function synthesize(
 
   if (weighting.confidence_drivers.increased.length) {
     supported.push(
-      `Confidence is most improved by ${weighting.confidence_drivers.increased
-        .slice(0, 3)
-        .join(", ")}.`
+      `Confidence is most improved by ${weighting.confidence_drivers.increased.slice(0, 3).join(", ")}.`
     );
   }
 
   if (weighting.confidence_drivers.limited.length) {
     tentative.push(
-      `Confidence remains limited by ${weighting.confidence_drivers.limited
-        .slice(0, 3)
-        .join(", ")}.`
+      `Confidence remains limited by ${weighting.confidence_drivers.limited.slice(0, 3).join(", ")}.`
     );
   }
 
@@ -1704,9 +1747,7 @@ function synthesize(
 
 function buildFinalReportText(synthesis: Phase6Synthesis): string {
   const lead = synthesis.supported_findings[0] || "Evidence-first assessment completed.";
-  const caution = synthesis.tentative_findings[0]
-    ? ` ${synthesis.tentative_findings[0]}`
-    : "";
+  const caution = synthesis.tentative_findings[0] ? ` ${synthesis.tentative_findings[0]}` : "";
   const next = synthesis.more_evidence_needed[0]
     ? ` Next best evidence: ${synthesis.more_evidence_needed[0]}.`
     : "";
@@ -1836,6 +1877,8 @@ Return JSON only in this exact structure:
 
 Known clue keys include:
 drop_leaf_hinged, gateleg_support, rule_joint, swing_leg, lift_lid, multiple_drawer_case,
+multi_board_back_panel, uneven_backboards, solid_drawer_bottom, side_runner_drawer,
+turned_wood_knob, wooden_knob_attachment, ogee_bracket_foot, colonial_revival_case,
 drawer_present, door_present, slant_front, cylinder_roll, tilt_top, extension_mechanism,
 hand_cut_dovetails, machine_dovetails, mortise_and_tenon, dowel_joinery, plywood_drawer_bottom,
 pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter,
@@ -1848,6 +1891,7 @@ Remember:
 - Lead with visible evidence.
 - Do not invent hidden structure you cannot see.
 - Do not overclaim originality.
+- Pay special attention to backboard construction, drawer-bottom construction, drawer-running method, foot shape, and knob attachment details when visible.
 `;
 
     const result = await this.callClaude(system, [
@@ -1882,7 +1926,9 @@ Remember:
       ok: true,
       observations,
       evidence_digest: digest,
-      note: result.ok ? "Evidence extracted from a single image pass." : "LLM extraction failed. Proceeding with limited or intake-derived evidence only.",
+      note: result.ok
+        ? "Evidence extracted from a single image pass."
+        : "LLM extraction failed. Proceeding with limited or intake-derived evidence only.",
       raw_error: result.ok ? null : result.error,
     };
 
@@ -1947,10 +1993,9 @@ Remember:
       low_confidence_flag: Boolean(o?.low_confidence_flag),
     })) as Observation[];
 
-    const digest =
-      observationsFromStore.length > 0
-        ? buildEvidenceDigest(observationsFromStore)
-        : p0.evidence_digest;
+    const digest = observationsFromStore.length > 0
+      ? buildEvidenceDigest(observationsFromStore)
+      : p0.evidence_digest;
 
     const p1 = this.p1(caseData, intake, digest, images);
     stage_outputs.p1 = p1;
