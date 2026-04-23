@@ -1393,6 +1393,38 @@ function deriveDisplayForm(form: string, styleContext: string | null, observatio
 
   return styleContext ? `${styleContext} ${form}` : form;
 }
+function applyFormPreference(
+  baseForm: string,
+  observations: Observation[],
+  clueKeys: string[]
+): string {
+  const text = observations.map(o => o.description.toLowerCase()).join(" | ");
+  const clueSet = new Set(clueKeys);
+
+  const isCasePiece =
+    baseForm.toLowerCase().includes("chest") ||
+    baseForm.toLowerCase().includes("case");
+
+  const hasDrawerStack =
+    text.includes("multiple drawers") ||
+    text.includes("stacked drawers") ||
+    text.includes("drawer layout") ||
+    text.includes("graduated drawers") ||
+    clueSet.has("drawer_present");
+
+  const hasDresserSignals =
+    text.includes("dresser") ||
+    text.includes("top drawers") ||
+    text.includes("wide case") ||
+    text.includes("two small drawers over larger drawers");
+
+  // 👇 ONLY upgrade when we have strong support
+  if (isCasePiece && hasDrawerStack && (hasDresserSignals || hasDrawerStack)) {
+    return "Dresser";
+  }
+
+  return baseForm;
+}
 function identifyForm(observations: Observation[], digest: EvidenceDigest, gate: Phase1Gate, intake: GenericRecord): Phase3Form {
   if (!gate.can_run.form) {
         return {
