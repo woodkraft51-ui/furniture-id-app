@@ -1,211 +1,823 @@
-// ==============================
-// ENGINE v2 — PERCEPTION FIRST
-// ==============================
+import { API } from "./store";
 
-export type Perception = {
-  materials: string[];
-  features: string[];
-  style: string[];
+export type RuntimeMode = "mock" | "live";
+export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
+
+export const RUNTIME_MODE: RuntimeMode = "live";
+
+export function getRuntimeProbe() {
+  return {
+    engine_mode: "LIVE" as EngineMode,
+    runtime_mode: "live" as RuntimeMode,
+    full_analysis_mode: "live" as RuntimeMode,
+    evidence_adapter_mode: "live" as RuntimeMode,
+    live_llm_enabled: true,
+    live_field_scan: true,
+    backend_endpoint: "/api/analyze",
+    simulation_reason: "NCW PE engine active. Phase 0 scans images once; later phases reason from stored evidence.",
+  };
+}
+
+type Observation = {
+  type: string;
+  clue?: string | null;
+  description: string;
+  confidence: number;
+  source_image?: string | null;
+  hard_negative?: boolean;
+  low_confidence_flag?: boolean;
+};
+
+type EvidenceDigest = {
+  observations: Observation[];
+  observation_count: number;
+  by_type: Record<string, Observation[]>;
+  clue_keys: string[];
+  hard_negatives: string[];
+  strongest_observations: Observation[];
+  perception?: Perception;
+};
+
+type Perception = {
   labels: string[];
-  rawText: string;
+  maker_names: string[];
+  materials: string[];
+  forms: string[];
+  functional_features: string[];
+  style_cues: string[];
+  construction_cues: string[];
+  condition_cues: string[];
+  visible_text: string[];
+  raw_text: string;
 };
 
-export type IdentificationResult = {
-  primary: string;
-  secondary: string | null;
-  confidence: "HIGH" | "MEDIUM" | "LOW";
-  reasoning: string[];
+type Phase1Gate = {
+  confidence_cap: "High" | "Moderate" | "Low" | "Inconclusive";
+  confidence_cap_pct: number;
+  missing_evidence: Record<string, boolean>;
+  evidence_sufficiency_summary: string;
+  can_run: Record<string, boolean>;
+  next_best_evidence: string[];
 };
 
+type ClaudeResult =
+  | { ok: true; parsed: any; raw: string }
+  | { ok: false; error: any };
 
-// ==============================
-// 🔎 PERCEPTION LAYER
-// ==============================
+const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; formHint?: string; dateHint?: string; weight: number }> = {
+  maker_label: { category: "label", weight: 0.98 },
+  roos_label: { category: "label", formHint: "Roos cedar chest / hope chest", dateHint: "c. 1940–1960", weight: 0.99 },
+  lane_label: { category: "label", formHint: "Lane cedar chest / hope chest", dateHint: "c. 1930–1965", weight: 0.99 },
 
-export function buildPerception(observations: any[]): Perception {
-  const text = observations
-    .map(o => `${o.clue || ""} ${o.description || ""}`)
-    .join(" ")
-    .toLowerCase();
+  seating_present: { category: "form", weight: 0.78 },
+  telephone_shelf: { category: "form", formHint: "Telephone bench", dateHint: "c. 1900–1935", weight: 0.9 },
+  drop_front_desk: { category: "construction", formHint: "Secretary desk", weight: 0.88 },
+  pigeonholes: { category: "construction", formHint: "Secretary desk", weight: 0.82 },
+  mirror_present: { category: "form", weight: 0.62 },
+  open_shelving: { category: "form", weight: 0.65 },
+  pedestal_column: { category: "form", formHint: "Pedestal stand", weight: 0.9 },
+  metal_bed_frame: { category: "form", formHint: "Iron bed frame", dateHint: "c. 1880–1920", weight: 0.92 },
+  armchair_form: { category: "form", formHint: "Armchair", weight: 0.86 },
+  upholstered_back: { category: "materials", weight: 0.72 },
 
-  const has = (words: string[]) => words.some(w => text.includes(w));
+  drawer_present: { category: "construction", weight: 0.45 },
+  multiple_drawer_case: { category: "construction", formHint: "Chest of drawers / dresser", weight: 0.78 },
+  door_present: { category: "construction", weight: 0.5 },
+  cabinet_form: { category: "form", formHint: "Cabinet", weight: 0.74 },
+  lift_lid: { category: "construction", formHint: "Blanket chest / storage chest", weight: 0.86 },
+  cedar_lining: { category: "materials", formHint: "Cedar chest / hope chest", weight: 0.88 },
 
-  const perception: Perception = {
-    materials: [],
-    features: [],
-    style: [],
-    labels: [],
-    rawText: text
+  cabriole_leg: { category: "style", dateHint: "18th century form; common revival c. 1890–1940", weight: 0.68 },
+  shell_carving: { category: "style", weight: 0.65 },
+  claw_or_pad_foot: { category: "style", weight: 0.62 },
+  barley_twist: { category: "style", dateHint: "Jacobean Revival c. 1890–1935", weight: 0.78 },
+  heavy_carving: { category: "style", weight: 0.65 },
+  spindle_gallery: { category: "style", weight: 0.62 },
+
+  drop_leaf_hinged: { category: "construction", formHint: "Drop-leaf table", dateHint: "1720–1930", weight: 0.9 },
+  gateleg_support: { category: "construction", formHint: "Gateleg table", dateHint: "1680–1800; revival 1880–1930", weight: 0.92 },
+  rule_joint: { category: "joinery", weight: 0.78 },
+  slant_front: { category: "construction", formHint: "Slant-front desk", dateHint: "1700–1860", weight: 0.9 },
+  cylinder_roll: { category: "construction", formHint: "Roll-top desk", dateHint: "1870–1920", weight: 0.92 },
+  extension_mechanism: { category: "construction", formHint: "Extension table", weight: 0.85 },
+
+  hand_cut_dovetails: { category: "joinery", dateHint: "pre-1860", weight: 0.88 },
+  machine_dovetails: { category: "joinery", dateHint: "post-1860", weight: 0.82 },
+  mortise_and_tenon: { category: "joinery", weight: 0.72 },
+  dowel_joinery: { category: "joinery", dateHint: "post-1900", weight: 0.72 },
+
+  pit_saw_marks: { category: "toolmarks", dateHint: "pre-1830", weight: 0.86 },
+  circular_saw_arcs: { category: "toolmarks", dateHint: "post-1830", weight: 0.78 },
+  band_saw_lines: { category: "toolmarks", dateHint: "post-1870", weight: 0.75 },
+
+  hand_forged_nail: { category: "fasteners", dateHint: "pre-1800", weight: 0.88 },
+  cut_nail: { category: "fasteners", dateHint: "1790–1890", weight: 0.82 },
+  wire_nail: { category: "fasteners", dateHint: "post-1880", weight: 0.72 },
+  phillips_screw: { category: "fasteners", hardNegative: true, dateHint: "post-1934", weight: 0.9 },
+  staple_fastener: { category: "fasteners", hardNegative: true, dateHint: "post-1945", weight: 0.9 },
+  plywood_structural: { category: "materials", hardNegative: true, dateHint: "post-1920", weight: 0.9 },
+  plywood_drawer_bottom: { category: "materials", hardNegative: true, dateHint: "post-1920", weight: 0.88 },
+  sheet_back_panel: { category: "materials", dateHint: "post-1900", weight: 0.72 },
+  modern_concealed_hinge: { category: "hardware", hardNegative: true, dateHint: "post-1950", weight: 0.92 },
+
+  porcelain_caster: { category: "hardware", dateHint: "1830–1900", weight: 0.65 },
+  decorative_bail_pull: { category: "hardware", weight: 0.55 },
+  round_wood_knob: { category: "hardware", weight: 0.5 },
+  shellac_crazing: { category: "finish", dateHint: "1800–1920", weight: 0.55 },
+  polyurethane: { category: "finish", dateHint: "post-1960", weight: 0.62 },
+};
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function asString(v: any) {
+  return typeof v === "string" ? v.trim() : "";
+}
+
+function uniq<T>(arr: T[]): T[] {
+  return Array.from(new Set(arr));
+}
+
+function toConfidenceBand(pct: number): "High" | "Moderate" | "Low" | "Inconclusive" {
+  if (pct >= 85) return "High";
+  if (pct >= 65) return "Moderate";
+  if (pct >= 40) return "Low";
+  return "Inconclusive";
+}
+
+function cleanJsonText(raw: string): string {
+  return String(raw || "").replace(/```json/gi, "").replace(/```/g, "").trim();
+}
+
+function tryJsonParse(text: string): any | null {
+  try { return JSON.parse(text); } catch { return null; }
+}
+
+function extractBalancedJson(text: string): string | null {
+  const cleaned = cleanJsonText(text);
+  const start = cleaned.indexOf("{");
+  if (start < 0) return null;
+  let depth = 0, inString = false, escaped = false;
+  for (let i = start; i < cleaned.length; i++) {
+    const ch = cleaned[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === "{") depth++;
+    else if (ch === "}") depth--;
+    if (depth === 0) return cleaned.slice(start, i + 1);
+  }
+  return null;
+}
+
+function parseModelJson(raw: string): any | null {
+  const cleaned = cleanJsonText(raw);
+  return tryJsonParse(cleaned) || tryJsonParse(extractBalancedJson(cleaned) || "");
+}
+
+function normalizeClueKey(v: any): string | null {
+  const key = asString(v).toLowerCase().replace(/-/g, "_").replace(/\s+/g, "_");
+  return key || null;
+}
+
+function includesAny(text: string, words: string[]) {
+  return words.some((w) => text.includes(w));
+}
+
+function collectText(value: any, out: string[] = []): string[] {
+  if (value == null) return out;
+  if (typeof value === "string") {
+    if (value.trim()) out.push(value.trim());
+    return out;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((v) => collectText(v, out));
+    return out;
+  }
+  if (typeof value === "object") Object.values(value).forEach((v) => collectText(v, out));
+  return out;
+}
+
+function detectClueFromText(text: string): string | null {
+  const t = text.toLowerCase();
+  if (includesAny(t, ["not visible", "not confirmed", "cannot confirm", "unclear"])) return null;
+
+  if (includesAny(t, ["roos", "sweetheart cedar"])) return "roos_label";
+  if (includesAny(t, ["lane cedar"])) return "lane_label";
+  if (includesAny(t, ["maker label", "manufacturer label", "paper label", "stamp"])) return "maker_label";
+
+  if (includesAny(t, ["telephone shelf", "phone shelf", "raised phone", "phone platform"])) return "telephone_shelf";
+  if (includesAny(t, ["drop front", "drop-front", "fall front", "writing surface"])) return "drop_front_desk";
+  if (includesAny(t, ["pigeonhole", "pigeon hole", "cubby", "cubbies"])) return "pigeonholes";
+  if (t.includes("mirror")) return "mirror_present";
+  if (includesAny(t, ["bench seat", "integrated seat", "seating"])) return "seating_present";
+  if (includesAny(t, ["pedestal", "single column", "display stand", "plant stand"])) return "pedestal_column";
+  if (includesAny(t, ["iron bed", "metal bed", "headboard", "footboard", "bed frame"])) return "metal_bed_frame";
+  if (includesAny(t, ["armchair", "upholstered chair"])) return "armchair_form";
+  if (includesAny(t, ["upholstered", "fabric", "cushion"])) return "upholstered_back";
+
+  if (includesAny(t, ["cedar lined", "cedar-lined", "cedar interior"])) return "cedar_lining";
+  if (includesAny(t, ["lift lid", "hinged lid", "blanket chest", "hope chest", "cedar chest"])) return "lift_lid";
+  if (includesAny(t, ["cabinet", "hutch", "cupboard"])) return "cabinet_form";
+  if (includesAny(t, ["multiple drawers", "stacked drawers", "bank of drawers", "graduated drawers"])) return "multiple_drawer_case";
+  if (t.includes("drawer")) return "drawer_present";
+  if (t.includes("door")) return "door_present";
+
+  if (t.includes("cabriole")) return "cabriole_leg";
+  if (includesAny(t, ["shell carving", "shell carved"])) return "shell_carving";
+  if (includesAny(t, ["claw foot", "pad foot", "hoof foot"])) return "claw_or_pad_foot";
+  if (includesAny(t, ["barley twist", "spiral turned", "twist leg"])) return "barley_twist";
+  if (includesAny(t, ["heavy carving", "heavily carved", "applied carving"])) return "heavy_carving";
+  if (includesAny(t, ["spindle", "spindles", "gallery rail"])) return "spindle_gallery";
+
+  if (includesAny(t, ["gate leg", "gate-leg"])) return "gateleg_support";
+  if (includesAny(t, ["drop leaf", "drop-leaf"])) return "drop_leaf_hinged";
+  if (includesAny(t, ["rule joint", "rule-joint"])) return "rule_joint";
+  if (t.includes("slant front")) return "slant_front";
+  if (includesAny(t, ["roll top", "tambour"])) return "cylinder_roll";
+  if (t.includes("extension mechanism")) return "extension_mechanism";
+
+  if (includesAny(t, ["hand cut dovetail", "hand-cut dovetail"])) return "hand_cut_dovetails";
+  if (t.includes("machine dovetail")) return "machine_dovetails";
+  if (t.includes("mortise") && t.includes("tenon")) return "mortise_and_tenon";
+  if (t.includes("dowel")) return "dowel_joinery";
+
+  if (t.includes("pit saw")) return "pit_saw_marks";
+  if (t.includes("circular saw")) return "circular_saw_arcs";
+  if (t.includes("band saw")) return "band_saw_lines";
+
+  if (includesAny(t, ["hand forged nail", "hand-forged nail"])) return "hand_forged_nail";
+  if (t.includes("cut nail")) return "cut_nail";
+  if (t.includes("wire nail")) return "wire_nail";
+  if (t.includes("phillips")) return "phillips_screw";
+  if (t.includes("staple")) return "staple_fastener";
+
+  if (t.includes("plywood drawer bottom")) return "plywood_drawer_bottom";
+  if (includesAny(t, ["plywood", "sheet back", "thin sheet", "hardboard back"])) return "sheet_back_panel";
+  if (t.includes("concealed hinge")) return "modern_concealed_hinge";
+
+  if (t.includes("porcelain caster")) return "porcelain_caster";
+  if (includesAny(t, ["bail pull", "brass pull"])) return "decorative_bail_pull";
+  if (includesAny(t, ["wood knob", "round knob"])) return "round_wood_knob";
+  if (t.includes("shellac")) return "shellac_crazing";
+  if (t.includes("polyurethane")) return "polyurethane";
+
+  return null;
+}
+
+function descriptionFromObservation(o: any): string {
+  return asString(o?.description) || asString(o?.observed_value_text) || asString(o?.text) || asString(o?.value) || "Unknown observation";
+}
+
+function normalizeObservationsFromParsed(parsed: any): Observation[] {
+  const direct = Array.isArray(parsed?.observations) ? parsed.observations : [];
+  const out: Observation[] = [];
+
+  const push = (raw: any) => {
+    const description = descriptionFromObservation(raw);
+    const clue = normalizeClueKey(raw?.clue) || normalizeClueKey(raw?.reference_id) || detectClueFromText(description);
+    const meta = clue ? CLUE_LIBRARY[clue] : undefined;
+    out.push({
+      type: asString(raw?.type) || meta?.category || "context",
+      clue,
+      description,
+      confidence: clamp(typeof raw?.confidence === "number" ? raw.confidence : 58, 5, 99),
+      source_image: asString(raw?.source_image) || null,
+      hard_negative: Boolean(raw?.hard_negative || meta?.hardNegative),
+      low_confidence_flag: typeof raw?.confidence === "number" ? raw.confidence < 45 : false,
+    });
   };
 
-  // ---- MATERIAL DETECTION ----
-  if (has(["metal", "iron", "steel", "brass"])) perception.materials.push("metal");
-  if (has(["upholstered", "fabric", "cushion"])) perception.materials.push("upholstery");
-  if (has(["wood", "oak", "cedar", "walnut"])) perception.materials.push("wood");
+  if (direct.length) direct.forEach(push);
+  else collectText(parsed).forEach((t) => {
+    const clue = detectClueFromText(t);
+    if (clue) push({ description: t, clue, confidence: 60 });
+  });
 
-  // ---- FEATURE DETECTION ----
-  if (has(["drawer"])) perception.features.push("drawers");
-  if (has(["door"])) perception.features.push("doors");
-  if (has(["bench", "seat"])) perception.features.push("seating");
-  if (has(["mirror"])) perception.features.push("mirror");
-  if (has(["drop front", "writing surface"])) perception.features.push("desk");
-  if (has(["pigeonhole", "cubby"])) perception.features.push("cubbies");
-  if (has(["telephone shelf", "phone shelf"])) perception.features.push("telephone");
-  if (has(["shelf", "shelves"])) perception.features.push("shelving");
-  if (has(["column", "pedestal"])) perception.features.push("pedestal");
-  if (has(["headboard", "footboard", "bed"])) perception.features.push("bed");
+  return dedupeObservations(out);
+}
 
-  // ---- STYLE DETECTION ----
-  if (has(["cabriole", "shell carving"])) perception.style.push("queen_anne");
-  if (has(["barley twist", "jacobean"])) perception.style.push("jacobean");
-  if (has(["mission", "arts and crafts"])) perception.style.push("mission");
+function dedupeObservations(observations: Observation[]): Observation[] {
+  const seen = new Set<string>();
+  return observations.filter((o) => {
+    const key = `${o.type}|${o.clue || ""}|${o.description.toLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
-  // ---- LABEL DETECTION ----
-  if (has(["roos"])) perception.labels.push("roos");
-  if (has(["lane"])) perception.labels.push("lane");
+function normalizePerception(parsed: any, observations: Observation[]): Perception {
+  const p = parsed?.perception || {};
+  const arr = (v: any) => Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : [];
+  const raw = [...collectText(p), ...observations.map((o) => `${o.clue || ""} ${o.description}`)].join(" | ");
+  const t = raw.toLowerCase();
+
+  const perception: Perception = {
+    labels: arr(p.labels),
+    maker_names: arr(p.maker_names),
+    materials: arr(p.materials),
+    forms: arr(p.forms),
+    functional_features: arr(p.functional_features),
+    style_cues: arr(p.style_cues),
+    construction_cues: arr(p.construction_cues),
+    condition_cues: arr(p.condition_cues),
+    visible_text: arr(p.visible_text),
+    raw_text: raw,
+  };
+
+  const add = (key: keyof Perception, value: string) => {
+    const current = perception[key];
+    if (Array.isArray(current) && !current.includes(value)) current.push(value);
+  };
+
+  if (includesAny(t, ["roos", "sweetheart cedar"])) { add("labels", "Roos label"); add("maker_names", "Roos"); }
+  if (includesAny(t, ["lane cedar"])) { add("labels", "Lane label"); add("maker_names", "Lane"); }
+  if (includesAny(t, ["metal", "iron", "steel", "brass"])) add("materials", "metal");
+  if (includesAny(t, ["upholstered", "fabric", "cushion"])) add("materials", "upholstery");
+  if (includesAny(t, ["wood", "oak", "cedar", "walnut"])) add("materials", "wood");
+  if (includesAny(t, ["telephone", "phone shelf"])) add("functional_features", "telephone shelf");
+  if (includesAny(t, ["bench", "seat", "seating"])) add("functional_features", "seating");
+  if (includesAny(t, ["drop front", "writing surface"])) add("functional_features", "drop-front desk");
+  if (includesAny(t, ["pigeonhole", "cubby"])) add("functional_features", "pigeonholes");
+  if (t.includes("mirror")) add("functional_features", "mirror");
+  if (includesAny(t, ["cabriole", "shell carving"])) add("style_cues", "Queen Anne / Colonial Revival");
+  if (includesAny(t, ["barley twist", "jacobean", "heavy carving"])) add("style_cues", "Jacobean Revival");
 
   return perception;
 }
 
+function promotePerceptionObservations(observations: Observation[], perception: Perception): Observation[] {
+  const out = [...observations];
+  const text = perception.raw_text.toLowerCase();
 
-// ==============================
-// 🧠 FORM CLASSIFIER (CORE FIX)
-// ==============================
-
-export function classifyForm(p: Perception): IdentificationResult {
-
-  const r: IdentificationResult = {
-    primary: "Unknown",
-    secondary: null,
-    confidence: "LOW",
-    reasoning: []
+  const add = (clue: string, description: string, confidence = 72, source = "perception") => {
+    if (out.some((o) => o.clue === clue)) return;
+    const meta = CLUE_LIBRARY[clue];
+    out.push({
+      type: meta?.category || "context",
+      clue,
+      description,
+      confidence,
+      source_image: source,
+      hard_negative: Boolean(meta?.hardNegative),
+      low_confidence_flag: confidence < 45,
+    });
   };
 
-  const has = (f: string) => p.features.includes(f);
-  const style = (s: string) => p.style.includes(s);
+  Object.keys(CLUE_LIBRARY).forEach((key) => {
+    if (detectClueFromText(text) === key) add(key, CLUE_LIBRARY[key].formHint || key.replace(/_/g, " "), 72);
+  });
 
-  // =========================
-  // 🏆 LABEL OVERRIDE (TOP)
-  // =========================
-  if (p.labels.includes("roos")) {
-    r.primary = "Roos Cedar Chest";
-    r.confidence = "HIGH";
-    r.reasoning.push("Manufacturer label detected");
-    return r;
-  }
+  if (includesAny(text, ["roos", "sweetheart cedar"])) add("roos_label", "Roos cedar chest label is visible", 94);
+  if (includesAny(text, ["telephone shelf", "phone shelf"])) add("telephone_shelf", "Telephone shelf or phone platform is visible", 86);
+  if (includesAny(text, ["bench", "seat"])) add("seating_present", "Integrated seating is visible", 78);
+  if (includesAny(text, ["drop front", "writing surface"])) add("drop_front_desk", "Drop-front writing surface is visible", 84);
+  if (includesAny(text, ["pigeonhole", "cubby"])) add("pigeonholes", "Interior cubbies or pigeonholes are visible", 78);
+  if (tIncludes(text, "mirror")) add("mirror_present", "Mirror is visible", 72);
+  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) add("metal_bed_frame", "Iron or metal bed frame is visible", 88);
+  if (includesAny(text, ["pedestal", "single column"])) add("pedestal_column", "Single-column pedestal form is visible", 84);
+  if (includesAny(text, ["armchair", "upholstered chair"])) add("armchair_form", "Armchair form is visible", 82);
+  if (includesAny(text, ["cabriole"])) add("cabriole_leg", "Cabriole legs are visible", 72);
+  if (includesAny(text, ["barley twist"])) add("barley_twist", "Barley twist supports are visible", 76);
 
-  if (p.labels.includes("lane")) {
-    r.primary = "Lane Cedar Chest";
-    r.confidence = "HIGH";
-    r.reasoning.push("Manufacturer label detected");
-    return r;
-  }
-
-  // =========================
-  // 🔥 HYBRID / FUNCTION FIRST
-  // =========================
-  if (has("seating") && has("telephone")) {
-    r.primary = "Telephone Bench";
-    r.secondary = "Hybrid Seating Storage";
-    r.confidence = "HIGH";
-    r.reasoning.push("Seating + telephone shelf combination");
-    return r;
-  }
-
-  if (has("seating") && has("desk")) {
-    r.primary = "Secretary / Telephone Bench Combo";
-    r.confidence = "HIGH";
-    r.reasoning.push("Seating + writing surface");
-    return r;
-  }
-
-  if (has("seating") && has("cubbies")) {
-    r.primary = "Telephone Bench / Secretary Hybrid";
-    r.confidence = "HIGH";
-    r.reasoning.push("Seating + cubbies");
-    return r;
-  }
-
-  // =========================
-  // 🛏️ MATERIAL-DRIVEN FORMS
-  // =========================
-  if (has("bed") && p.materials.includes("metal")) {
-    r.primary = "Iron Bed";
-    r.confidence = "HIGH";
-    r.reasoning.push("Metal + bed structure");
-    return r;
-  }
-
-  if (has("pedestal")) {
-    r.primary = "Pedestal Stand";
-    r.confidence = "HIGH";
-    r.reasoning.push("Column structure");
-    return r;
-  }
-
-  // =========================
-  // 🪑 UPHOLSTERED FURNITURE
-  // =========================
-  if (p.materials.includes("upholstery")) {
-    if (style("queen_anne")) {
-      r.primary = "Queen Anne Style Armchair";
-      r.confidence = "HIGH";
-      r.reasoning.push("Cabriole legs + upholstery");
-      return r;
-    }
-
-    r.primary = "Upholstered Chair";
-    r.confidence = "MEDIUM";
-    return r;
-  }
-
-  // =========================
-  // 🪵 CASE GOODS
-  // =========================
-  if (has("drawers") && has("doors")) {
-    r.primary = "Armoire / Dresser Combination";
-    r.confidence = "MEDIUM";
-    return r;
-  }
-
-  if (has("drawers")) {
-    r.primary = "Chest of Drawers";
-    r.confidence = "MEDIUM";
-    return r;
-  }
-
-  if (has("doors")) {
-    if (style("jacobean")) {
-      r.primary = "Jacobean Revival Cabinet";
-      r.confidence = "HIGH";
-      return r;
-    }
-
-    r.primary = "Cabinet";
-    r.confidence = "MEDIUM";
-    return r;
-  }
-
-  // =========================
-  // 🧠 FALLBACK
-  // =========================
-  r.primary = "Unclassified Furniture";
-  r.confidence = "LOW";
-  r.reasoning.push("Insufficient functional signals");
-
-  return r;
+  return dedupeObservations(out);
 }
 
-
-// ==============================
-// 🚀 MAIN ENGINE ENTRY
-// ==============================
-
-export function runEngine(observations: any[]): IdentificationResult {
-
-  const perception = buildPerception(observations);
-
-  const result = classifyForm(perception);
-
-  return result;
+function tIncludes(text: string, word: string) {
+  return text.includes(word);
 }
+
+function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
+  const by_type: Record<string, Observation[]> = {};
+  observations.forEach((o) => {
+    if (!by_type[o.type]) by_type[o.type] = [];
+    by_type[o.type].push(o);
+  });
+
+  const clue_keys = uniq(observations.map((o) => normalizeClueKey(o.clue)).filter(Boolean) as string[]);
+  const hard_negatives = uniq(observations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
+  const strongest_observations = [...observations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
+
+  return { observations, observation_count: observations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception };
+}
+
+function computeMissingEvidence(images: any[]) {
+  const types = new Set(images.map((img) => String(img?.image_type || "")));
+  return {
+    underside_photo: !types.has("underside"),
+    back_photo: !types.has("back"),
+    joinery_photo: !types.has("joinery_closeup"),
+    hardware_photo: !types.has("hardware_closeup"),
+    label_photo: !types.has("label_makers_mark"),
+  };
+}
+
+function buildIntakeSummary(intake: any): string {
+  if (!intake) return "No intake details provided.";
+  return Object.entries(intake)
+    .filter(([, v]) => v !== "" && v !== false && v != null)
+    .map(([k, v]) => `${k}: ${String(v)}`)
+    .join(" | ") || "No intake details provided.";
+}
+
+function addIntakeObservations(intake: any, observations: Observation[]): Observation[] {
+  const out = [...observations];
+  const add = (clue: string, description: string) => {
+    if (out.some((o) => o.clue === clue)) return;
+    const meta = CLUE_LIBRARY[clue];
+    out.push({ type: meta?.category || "context", clue, description, confidence: 55, source_image: "intake", hard_negative: false });
+  };
+  if (intake?.has_drawers) add("drawer_present", "User indicates drawers are present");
+  if (intake?.has_doors) add("door_present", "User indicates doors are present");
+  return dedupeObservations(out);
+}
+
+function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number; support: string[] }> {
+  const clues = new Set(digest.clue_keys);
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  const scores: Record<string, { form: string; score: number; support: string[] }> = {};
+
+  const add = (form: string, score: number, support: string) => {
+    if (!scores[form]) scores[form] = { form, score: 0, support: [] };
+    scores[form].score += score;
+    if (!scores[form].support.includes(support)) scores[form].support.push(support);
+  };
+
+  if (clues.has("roos_label")) add("Roos cedar chest / hope chest", 100, "Visible Roos label directly supports the identification.");
+  if (clues.has("lane_label")) add("Lane cedar chest / hope chest", 100, "Visible Lane label directly supports the identification.");
+
+  if (clues.has("seating_present") && clues.has("telephone_shelf")) add("Telephone bench", 70, "Integrated seating and telephone shelf are visible.");
+  if (clues.has("seating_present") && (clues.has("drop_front_desk") || clues.has("pigeonholes"))) add("Telephone bench / secretary combination", 90, "Integrated seating and desk/cubby features are visible.");
+  if (clues.has("mirror_present") && (clues.has("telephone_shelf") || clues.has("drop_front_desk"))) add("Telephone bench / secretary combination", 25, "Mirror reinforces hall or telephone furniture function.");
+
+  if (clues.has("metal_bed_frame")) add("Iron bed frame", 90, "Metal headboard/footboard bed structure is visible.");
+  if (clues.has("pedestal_column")) add("Pedestal stand", 85, "Single-column pedestal form is visible.");
+  if (clues.has("armchair_form")) add("Queen Anne style upholstered armchair", clues.has("cabriole_leg") ? 85 : 60, "Armchair form and exposed style cues are visible.");
+
+  if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving"])) add("Jacobean Revival cabinet / sideboard", 75, "Historicist carving and turned supports support Jacobean Revival context.");
+
+  if (clues.has("cedar_lining") || clues.has("lift_lid")) add("Cedar chest / hope chest", clues.has("cedar_lining") ? 75 : 55, "Chest form and/or cedar interior are visible.");
+
+  if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 80, "Drop-leaf construction is visible.");
+  if (clues.has("gateleg_support")) add("Gateleg table", 88, "Gate-leg support is visible.");
+  if (clues.has("slant_front")) add("Slant-front desk", 90, "Slant-front writing surface is visible.");
+  if (clues.has("cylinder_roll")) add("Roll-top desk", 92, "Roll-top/tambour mechanism is visible.");
+  if (clues.has("extension_mechanism")) add("Extension table", 78, "Extension mechanism is visible.");
+
+  if (clues.has("cabinet_form")) add("Cabinet", 35, "Cabinet form is visible.");
+  if (clues.has("door_present") && clues.has("drawer_present")) add("Armoire / dresser combination", 45, "Doors and drawers are both visible.");
+  if (clues.has("multiple_drawer_case") && !clues.has("seating_present") && !clues.has("telephone_shelf") && !clues.has("drop_front_desk")) {
+    add("Chest of drawers / dresser", 60, "Multiple stacked drawers are visible.");
+  }
+
+  return Object.values(scores).sort((a, b) => b.score - a.score);
+}
+
+function deriveStyleContext(digest: EvidenceDigest): string | null {
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  if (includesAny(text, ["jacobean", "barley_twist", "barley twist", "heavy carving"])) return "Jacobean Revival";
+  if (includesAny(text, ["queen anne", "cabriole", "shell carving", "pad foot", "claw foot"])) return "Queen Anne / Colonial Revival";
+  if (includesAny(text, ["mission", "arts and crafts", "quarter sawn", "quartersawn"])) return "Arts & Crafts / Mission";
+  if (includesAny(text, ["telephone", "drop front", "pigeonhole"])) return "Early 20th-century telephone or hall furniture";
+  return null;
+}
+
+function dateFromEvidence(digest: EvidenceDigest, form: string) {
+  const clues = new Set(digest.clue_keys);
+  const style = deriveStyleContext(digest);
+  const support = digest.strongest_observations.slice(0, 4).map((o) => o.description);
+  const limitations: string[] = [];
+
+  if (clues.has("roos_label")) return { range: "c. 1940–1960", confidence: "High", support, limitations };
+  if (clues.has("lane_label")) return { range: "c. 1930–1965", confidence: "High", support, limitations };
+  if (form.includes("Telephone bench")) return { range: "c. 1900–1935", confidence: "High", support, limitations };
+  if (form.includes("Iron bed")) return { range: "c. 1880–1920", confidence: "High", support, limitations };
+  if (form.includes("Jacobean Revival")) return { range: "c. 1915–1935", confidence: "High", support, limitations };
+  if (form.includes("Queen Anne style upholstered armchair")) return { range: "c. 1930–1970", confidence: "Moderate", support, limitations };
+  if (form.includes("Pedestal stand")) return { range: "Likely 20th century", confidence: "Moderate", support, limitations };
+  if (form.includes("Armoire / dresser")) return { range: "c. 1980–2000", confidence: "Moderate", support, limitations };
+
+  if (clues.has("phillips_screw") || clues.has("staple_fastener") || clues.has("modern_concealed_hinge")) return { range: "post-1935", confidence: "High", support, limitations };
+  if (clues.has("plywood_structural") || clues.has("plywood_drawer_bottom")) return { range: "post-1920", confidence: "High", support, limitations };
+  if (clues.has("pit_saw_marks") || clues.has("hand_forged_nail")) return { range: "pre-1830", confidence: "Moderate", support, limitations };
+  if (clues.has("hand_cut_dovetails") || clues.has("slotted_handmade_screw")) return { range: "pre-1860", confidence: "Moderate", support, limitations };
+  if (clues.has("cut_nail") || clues.has("circular_saw_arcs") || clues.has("porcelain_caster")) return { range: "c. 1830–1890", confidence: "Moderate", support, limitations };
+  if (clues.has("wire_nail") || clues.has("machine_dovetails") || clues.has("band_saw_lines") || clues.has("dowel_joinery") || clues.has("sheet_back_panel")) return { range: "c. 1880–1930", confidence: "Moderate", support, limitations };
+
+  return { range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated", confidence: "Low", support, limitations: ["More construction, underside, back, or label evidence would refine the date."] };
+}
+
+function valueBand(form: string, dateRange: string) {
+  let low = 25, high = 300;
+  if (form.includes("Telephone bench")) { low = 75; high = 500; }
+  else if (form.includes("Cedar chest") || form.includes("Roos") || form.includes("Lane")) { low = 75; high = 350; }
+  else if (form.includes("Iron bed")) { low = 40; high = 250; }
+  else if (form.includes("Queen Anne")) { low = 40; high = 250; }
+  else if (form.includes("Jacobean")) { low = 150; high = 650; }
+  else if (form.includes("Pedestal")) { low = 35; high = 175; }
+  else if (form.includes("Cabinet") || form.includes("dresser") || form.includes("drawers")) { low = 50; high = 450; }
+  if (dateRange.includes("1980")) { low = Math.round(low * 0.8); high = Math.round(high * 0.8); }
+  return { low, high, display: `$${low} – $${high}` };
+}
+
+function fieldRecommendation(asking: any, low: number, high: number) {
+  const price = Number(String(asking || "").replace(/[$,]/g, "").trim());
+  if (!Number.isFinite(price) || price <= 0) return { recommendation: "CONSIDER", label: "CONSIDER", explanation: "No asking price was entered, so this recommendation stays conservative." };
+  const margin = Math.round((low + high) / 2) - price;
+  if (margin >= 175) return { recommendation: "BUY_NOW", label: "BUY NOW", explanation: "The estimated value lane supports a strong buy at the entered price." };
+  if (margin >= 50) return { recommendation: "BUY", label: "BUY", explanation: "The piece appears promising at the entered price." };
+  if (margin >= 0) return { recommendation: "CONSIDER", label: "CONSIDER", explanation: "There may be upside, but margin is limited." };
+  return { recommendation: "PASS", label: "PASS", explanation: "The entered price appears high against the field-scan value lane." };
+}
+
+export const PE = {
+  async callClaude(system: string, content: any[]): Promise<ClaudeResult> {
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1800,
+          system,
+          messages: [{ role: "user", content }],
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { ok: false, error: data };
+      const raw = Array.isArray(data?.content) ? data.content.map((b: any) => b?.text || "").join("\n") : "";
+      const parsed = parseModelJson(raw);
+      return parsed ? { ok: true, parsed, raw } : { ok: false, error: "no_valid_json" };
+    } catch (e: any) {
+      return { ok: false, error: e?.message || "unknown_error" };
+    }
+  },
+
+  imgs(images: any[]) {
+    const out: any[] = [];
+    for (const img of images || []) {
+      if (!img?.data_url) continue;
+      const [head, base] = String(img.data_url).split(",");
+      const mediaType = head?.match(/data:(.*?);/)?.[1] || "image/jpeg";
+      out.push({ type: "image", source: { type: "base64", media_type: mediaType, data: base } });
+      out.push({ type: "text", text: `[Image type: ${img.image_type || "unknown"}]` });
+    }
+    return out;
+  },
+
+  async p0(caseData: any, images: any[], intake: any, onPhase?: any) {
+    const system = `
+You are the Phase 0 evidence scanner for New Creations Woodcraft.
+
+Scan the submitted photos ONCE. Extract visible evidence only. Do not perform final valuation.
+
+Return JSON only:
+{
+  "perception": {
+    "labels": [],
+    "maker_names": [],
+    "materials": [],
+    "forms": [],
+    "functional_features": [],
+    "style_cues": [],
+    "construction_cues": [],
+    "condition_cues": [],
+    "visible_text": []
+  },
+  "observations": [
+    {
+      "type": "construction | joinery | toolmarks | fasteners | materials | hardware | finish | form | style | label | context",
+      "clue": "optional_known_clue_key",
+      "description": "visible evidence statement",
+      "confidence": 0-100,
+      "source_image": "overall_front | overall_side | underside | back | hardware_closeup | joinery_closeup | label_makers_mark | unknown",
+      "hard_negative": false
+    }
+  ]
+}
+
+Important:
+- Functional features outrank storage features.
+- Do not call a telephone bench or secretary combination a dresser just because drawers are present.
+- Capture labels, maker marks, materials, forms, style cues, and construction cues.
+- Use clue keys when supported: telephone_shelf, seating_present, drop_front_desk, pigeonholes, mirror_present, metal_bed_frame, pedestal_column, armchair_form, roos_label, cedar_lining, multiple_drawer_case, cabinet_form, cabriole_leg, barley_twist, sheet_back_panel, phillips_screw, plywood_structural.
+`;
+
+    const result = await this.callClaude(system, [
+      ...this.imgs(images),
+      { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
+    ]);
+
+    let observations = result.ok ? normalizeObservationsFromParsed(result.parsed) : [];
+    let perception = normalizePerception(result.ok ? result.parsed : {}, observations);
+    observations = addIntakeObservations(intake, observations);
+    observations = promotePerceptionObservations(observations, perception);
+    perception = normalizePerception(result.ok ? result.parsed : {}, observations);
+    const digest = buildEvidenceDigest(observations, perception);
+
+    observations.forEach((obs) => {
+      API.addObservation(caseData.id, {
+        observation_type: obs.type,
+        clue: obs.clue || null,
+        reference_id: obs.clue || null,
+        observed_value_text: obs.description,
+        source_image: obs.source_image || null,
+        raw_confidence: Number((obs.confidence / 100).toFixed(3)),
+        effective_confidence: Number((obs.confidence / 100).toFixed(3)),
+        hard_negative: Boolean(obs.hard_negative),
+        low_confidence_flag: Boolean(obs.low_confidence_flag),
+      });
+    });
+
+    const res = {
+      ok: true,
+      observations,
+      perception,
+      evidence_digest: digest,
+      note: result.ok ? "Phase 0 scanned photos once and stored evidence." : "Phase 0 used limited intake-derived evidence because extraction failed.",
+      raw_error: result.ok ? null : result.error,
+    };
+    onPhase?.("p0", res);
+    return res;
+  },
+
+  p1(caseData: any, intake: any, digest: EvidenceDigest, images: any[]): Phase1Gate {
+    const missing = computeMissingEvidence(images);
+    const count = digest.observation_count;
+    const hasLabel = digest.clue_keys.some((k) => k.includes("label"));
+    const hasForm = (digest.by_type.form || []).length > 0;
+    const hasConstruction = ["construction", "joinery", "toolmarks", "fasteners", "materials"].some((t) => (digest.by_type[t] || []).length > 0);
+
+    let pct = 40;
+    if (count >= 4) pct += 15;
+    if (hasForm) pct += 15;
+    if (hasConstruction) pct += 15;
+    if (hasLabel) pct += 20;
+    pct = clamp(pct, 25, 94);
+
+    const next: string[] = [];
+    if (missing.label_photo) next.push("Maker's mark or label, if present");
+    if (missing.underside_photo) next.push("Underside photo for fasteners, tool marks, and structure");
+    if (missing.back_photo) next.push("Back photo for backboard and material evidence");
+    if (missing.joinery_photo) next.push("Joinery close-up if drawers or framing are accessible");
+
+    return {
+      confidence_cap: toConfidenceBand(pct),
+      confidence_cap_pct: pct,
+      missing_evidence: missing,
+      evidence_sufficiency_summary: hasLabel
+        ? "Label evidence gives the assessment a strong anchor."
+        : hasForm
+        ? "Visible form evidence supports a working identification; structural details can refine date and originality."
+        : "Evidence remains broad; more visible form or construction detail would improve the result.",
+      can_run: { dating: count > 0, form: count > 0, weighting: count > 0, conflict_check: count > 1, valuation_ready: count > 1 },
+      next_best_evidence: uniq(next).slice(0, 5),
+    };
+  },
+
+  p2(digest: EvidenceDigest, gate: Phase1Gate) {
+    const ranked = scoreForms(digest);
+    const best = ranked[0];
+    const form = best?.form || "Unclassified furniture";
+    return dateFromEvidence(digest, form);
+  },
+
+  p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any) {
+    const ranked = scoreForms(digest);
+    const best = ranked[0];
+    const alternatives = ranked.slice(1, 4).map((r) => r.form);
+    const style = deriveStyleContext(digest);
+    const form = best?.form || "Unclassified furniture";
+    const confidencePct = best ? Math.min(gate.confidence_cap_pct, best.score >= 80 ? 90 : best.score >= 45 ? 72 : 48) : 35;
+
+    return {
+      form,
+      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${form}` : form,
+      style_context: style,
+      confidence: toConfidenceBand(confidencePct),
+      support: best?.support || digest.strongest_observations.slice(0, 4).map((o) => o.description),
+      alternatives,
+    };
+  },
+
+  p4(digest: EvidenceDigest) {
+    const weighted_clues = digest.observations.map((o) => {
+      const meta = o.clue ? CLUE_LIBRARY[o.clue] : undefined;
+      const base = meta?.weight ?? 0.45;
+      const adjusted = clamp(base + (o.confidence >= 80 ? 0.05 : o.confidence < 45 ? -0.08 : 0), 0.05, 0.98);
+      return {
+        clue: o.clue || o.description,
+        display_label: (o.clue || o.description).replace(/_/g, " "),
+        category: meta?.category || o.type || "context",
+        base_weight: base,
+        adjusted_weight: Number(adjusted.toFixed(3)),
+        confidence_reason: o.description,
+        hard_negative: Boolean(o.hard_negative || meta?.hardNegative),
+        effective_confidence: Number((o.confidence / 100).toFixed(3)),
+        source_images: o.source_image ? [o.source_image] : [],
+      };
+    }).sort((a, b) => b.adjusted_weight - a.adjusted_weight);
+
+    return {
+      weighted_clues,
+      confidence_drivers: {
+        increased: weighted_clues.filter((w) => !w.hard_negative).slice(0, 5).map((w) => w.display_label),
+        limited: weighted_clues.filter((w) => w.hard_negative).map((w) => `${w.display_label} — hard negative`),
+      },
+      category_scores: [],
+    };
+  },
+
+  p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
+    const notes: string[] = [];
+    if (digest.hard_negatives.length) notes.push(`Hard negatives present: ${digest.hard_negatives.join(", ")}.`);
+    if ((form.form || "").includes("dresser") && digest.clue_keys.includes("telephone_shelf")) {
+      notes.push("Telephone furniture features outrank drawer/storage cues; avoid reducing this to a dresser.");
+    }
+    return {
+      conflict_notes: notes,
+      confidence_adjustment: notes.length ? -4 : 0,
+      restoration_interpretation: digest.hard_negatives.length ? "Some features may reflect later production, repair, or replacement." : null,
+    };
+  },
+
+  p6(gate: any, dating: any, form: any, weighting: any, conflict: any) {
+    const vb = valueBand(form.display_form || form.form || "Unknown", dating.range || "");
+    return {
+      supported_findings: [
+        `The strongest supported reading is ${form.display_form || form.form}.`,
+        `Current dating evidence supports ${dating.range}.`,
+        `Broad resale lane: ${vb.display}.`,
+      ],
+      tentative_findings: conflict.conflict_notes || [],
+      more_evidence_needed: gate.next_best_evidence || [],
+      summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${gate.evidence_sufficiency_summary}`,
+      valuation: vb,
+    };
+  },
+
+  async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
+    const stage_outputs: Record<string, any> = {};
+
+    const p0 = await this.p0(caseData, images, intake, onPhase);
+    stage_outputs.p0 = p0;
+
+    const stored = (API.getObservations(caseData.id) || []).map((o: any) => ({
+      type: asString(o.observation_type) || "context",
+      clue: normalizeClueKey(o.clue || o.reference_id),
+      description: descriptionFromObservation(o),
+      confidence: clamp(Math.round(Number(o.raw_confidence || 0.55) * 100), 5, 99),
+      source_image: asString(o.source_image) || null,
+      hard_negative: Boolean(o.hard_negative),
+      low_confidence_flag: Boolean(o.low_confidence_flag),
+    })) as Observation[];
+
+    const digest = stored.length ? buildEvidenceDigest(stored, p0.perception) : p0.evidence_digest;
+
+    const p1 = this.p1(caseData, intake, digest, images);
+    stage_outputs.p1 = p1; onPhase?.("p1", p1);
+
+    const p2 = this.p2(digest, p1);
+    stage_outputs.p2 = p2; onPhase?.("p2", p2);
+
+    const p3 = this.p3(digest, p1, intake);
+    stage_outputs.p3 = p3; onPhase?.("p3", p3);
+
+    const p4 = this.p4(digest);
+    stage_outputs.p4 = p4; onPhase?.("p4", p4);
+
+    const p5 = this.p5(digest, p4, p2, p3);
+    stage_outputs.p5 = p5; onPhase?.("p5", p5);
+
+    const p6 = this.p6(p1, p2, p3, p4, p5);
+    stage_outputs.p6 = p6; onPhase?.("p6", p6);
+
+    const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range);
+    const recommendation = fieldRecommendation(intake?.asking_price, fieldValue.low, fieldValue.high);
+
+    return {
+      id: caseData.id,
+      status: "complete",
+      analysis_mode: intake?.analysis_mode || caseData.analysis_mode || "full_analysis",
+      stage_outputs,
+      observations: digest.observations,
+      evidence_digest: digest,
+      final_report: p6.summary,
+      field_scan: {
+        identification: p3.display_form || p3.form,
+        confidence: p3.confidence,
+        date_range: p2.range,
+        valueRange: fieldValue.display,
+        recommendation: recommendation.recommendation,
+        recommendation_display: recommendation.label,
+        recommendation_reasoning: recommendation.explanation,
+      },
+    };
+  },
+};
