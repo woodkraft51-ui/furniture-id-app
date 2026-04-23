@@ -802,13 +802,12 @@ export default function Page() {
         </header>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.1fr 0.9fr",
-            gap: 18,
-            alignItems: "start",
-          }}
-        >
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: 18,
+  }}
+>
           <div style={{ display: "grid", gap: 18 }}>
             <SectionCard title="Analysis Mode">
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
