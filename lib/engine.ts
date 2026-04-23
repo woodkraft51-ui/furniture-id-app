@@ -621,7 +621,43 @@ function descriptionFromObservation(o: any): string {
 
 function detectClueFromText(text: string): string | null {
   const t = text.toLowerCase();
+  // --- Case & dresser structure clues ---
+if (t.includes("multiple drawers") || t.includes("bank of drawers") || t.includes("stacked drawers"))
+  return "multiple_drawer_case";
 
+if (t.includes("two over") || t.includes("2 over") || t.includes("small drawers over"))
+  return "multiple_drawer_case";
+
+if (t.includes("full width drawers") || t.includes("graduated drawers"))
+  return "multiple_drawer_case";
+
+// --- Back panel construction ---
+if (t.includes("back panel") && t.includes("multiple boards"))
+  return "multi_board_back_panel";
+
+if (t.includes("uneven boards") || t.includes("varied width boards"))
+  return "uneven_backboards";
+
+// --- Drawer construction ---
+if (t.includes("solid drawer bottom"))
+  return "solid_drawer_bottom";
+
+if (t.includes("side runner") || t.includes("wood runner"))
+  return "side_runner_drawer";
+
+// --- Hardware ---
+if (t.includes("wooden knob") || t.includes("turned knob"))
+  return "turned_wood_knob";
+
+if (t.includes("no metal hardware") || t.includes("wood knob only"))
+  return "wooden_knob_attachment";
+
+// --- Feet / form ---
+if (t.includes("bracket foot") || t.includes("ogee foot"))
+  return "ogee_bracket_foot";
+
+if (t.includes("colonial revival"))
+  return "colonial_revival_case";
     if (t.includes("drop leaf") || t.includes("drop-leaf")) return "drop_leaf_hinged";
 
   const mentionsGateLeg = t.includes("gate leg") || t.includes("gate-leg");
