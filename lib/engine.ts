@@ -1462,7 +1462,8 @@ function identifyForm(observations: Observation[], digest: EvidenceDigest, gate:
   const capped = Math.min(rawPct, gate.confidence_cap_pct);
 
     const styleContext = deriveStyleContext(observations, digest.clue_keys);
-  const displayForm = deriveDisplayForm(best[0], styleContext, observations, digest.clue_keys);
+  const preferredForm = applyFormPreference(best[0], observations, digest.clue_keys);
+  const displayForm = deriveDisplayForm(preferredForm, styleContext, observations, digest.clue_keys);
 
   return {
     form: best[0],
