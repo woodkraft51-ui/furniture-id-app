@@ -1567,6 +1567,11 @@ export default function Page() {
                 <div style={metaRowStyle}>
                   <span>Best reading</span>
                   <strong>{p3?.display_form || p3?.form || "Unknown"}</strong>
+                                  {p3?.style_context && (
+                  <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>
+                    Broad style context: {p3.style_context}
+                  </div>
+                )}
                 </div>
 
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && (
