@@ -1186,9 +1186,22 @@ export default function Page() {
                     <label style={{ display: "grid", gap: 6, gridColumn: "1 / -1" }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Additional Notes</span>
                       <textarea value={intake.notes} onChange={(e) => updateIntake("notes", e.target.value)} style={textareaStyle} rows={3} />
-                    </label>
+                      </label>
                   </div>
-
+                  <div style={{ marginTop: 14 }}>
+                  <button
+                  type="button"
+                  onClick={runAnalysis}
+                  disabled={isRunning || fieldPhotos.length < 2}
+                  style={{
+                   ...primaryButton,
+                  opacity: isRunning ? 0.7 : 1,
+                  cursor: isRunning ? "wait" : "pointer",
+                }}
+              >
+      {isRunning ? "Analyzing..." : "Run Full Analysis"}
+    </button>
+  </div>
                   <div style={{ marginTop: 14 }}>
                     <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Functional Clues</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
