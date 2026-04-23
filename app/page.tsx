@@ -972,6 +972,20 @@ export default function Page() {
                         ["folds_or_expands", "Folds or expands"],
                         ["has_mechanical_parts", "Has mechanical parts"],
                         ["suggests_prior_function", "Suggests prior function"],
+                <div style={{ marginTop: 14 }}>
+                <button
+                  type="button"
+                  onClick={runAnalysis}
+                  disabled={isRunning || fieldPhotos.length < 2}
+                  style={{
+                  ...primaryButton,
+                  opacity: isRunning ? 0.7 : 1,
+                  cursor: isRunning ? "wait" : "pointer",
+                }}
+              >
+              {isRunning ? "Analyzing..." : "Run Field Scan"}
+          </button>
+      </div>
                       ].map(([key, label]) => (
                         <label
                           key={key}
