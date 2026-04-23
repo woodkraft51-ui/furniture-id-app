@@ -1197,6 +1197,9 @@ export default function Page() {
                    ...primaryButton,
                   opacity: isRunning ? 0.7 : 1,
                   cursor: isRunning ? "wait" : "pointer",
+                    <div style={{ fontSize: 13, color: "#6b5c4f", marginBottom: 6 }}>
+                  Add more detail for a tighter result, or run it now.
+              </div>
                 }}
               >
       {isRunning ? "Analyzing..." : "Run Full Analysis"}
