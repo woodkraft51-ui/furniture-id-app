@@ -572,10 +572,33 @@ function descriptionFromObservation(o: any): string {
 function detectClueFromText(text: string): string | null {
   const t = text.toLowerCase();
 
-  if (t.includes("drop leaf") || t.includes("drop-leaf")) return "drop_leaf_hinged";
-  if (t.includes("gate leg") || t.includes("gate-leg")) return "gateleg_support";
+    if (t.includes("drop leaf") || t.includes("drop-leaf")) return "drop_leaf_hinged";
+
+  const mentionsGateLeg = t.includes("gate leg") || t.includes("gate-leg");
+  const mentionsSwingLeg = t.includes("swing leg") || t.includes("swing-leg");
+
+  const rejectsGateLeg =
+    t.includes("no gate leg") ||
+    t.includes("no gate-leg") ||
+    t.includes("no swing leg") ||
+    t.includes("no swing-leg") ||
+    t.includes("no gate leg mechanism") ||
+    t.includes("no gate-leg mechanism") ||
+    t.includes("no swing leg mechanism") ||
+    t.includes("no swing-leg mechanism") ||
+    t.includes("not clearly visible") ||
+    t.includes("not visible") ||
+    t.includes("not confirmed") ||
+    t.includes("if any") ||
+    t.includes("though the support mechanism") ||
+    t.includes("without a swing-out leg support");
+
+  if ((mentionsGateLeg || mentionsSwingLeg) && !rejectsGateLeg) {
+    return "gateleg_support";
+  }
+
   if (t.includes("rule joint") || t.includes("rule-joint")) return "rule_joint";
-  if (t.includes("swing leg")) return "swing_leg";
+  if (mentionsSwingLeg && !rejectsGateLeg) return "swing_leg";
   if (t.includes("lift lid") || t.includes("hinged lid")) return "lift_lid";
   if (t.includes("slant front") || t.includes("fall front")) return "slant_front";
   if (t.includes("roll top") || t.includes("tambour") || t.includes("cylinder roll")) return "cylinder_roll";
