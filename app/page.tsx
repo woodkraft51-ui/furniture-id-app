@@ -435,7 +435,7 @@ export default function Page() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         <header style={{ marginBottom: 24 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", border: "1px solid #d5c7ad", borderRadius: 999, padding: "6px 10px", background: "#fffaf0", color: "#5d4932", marginBottom: 10 }}>
-            "Live Engine"
+            "NCW Identification Engine"
           </div>
 
           {analysisMode === "field_scan" ? (
