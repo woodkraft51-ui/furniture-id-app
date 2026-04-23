@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import { API } from "../lib/store";
-import { getRuntimeProbe } from "../lib/engine";
 
 type ImageRecord = {
   image_type: string;
