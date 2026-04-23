@@ -1566,7 +1566,7 @@ export default function Page() {
               <SectionCard title="Likely Identification">
                 <div style={metaRowStyle}>
                   <span>Best reading</span>
-                  <strong>{p3?.form || "Unknown"}</strong>
+                  <strong>{p3?.display_form || p3?.form || "Unknown"}</strong>
                 </div>
 
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && (
