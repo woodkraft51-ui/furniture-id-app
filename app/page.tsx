@@ -45,8 +45,6 @@ type ReportShape = {
 
 type RecommendationLevel = "BUY_NOW" | "BUY" | "CONSIDER" | "PASS";
 
-const RUNTIME = getRuntimeProbe();
-
 const CORE_SLOTS = [
   { key: "overall_front", label: "Overall Front", desc: "Full front view of the piece.", required: true },
   { key: "overall_side", label: "Overall Side / Profile", desc: "Shows depth, silhouette, and side structure.", required: true },
