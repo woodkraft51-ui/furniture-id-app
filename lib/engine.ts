@@ -767,7 +767,11 @@ Important:
 
     const p0 = await this.p0(caseData, images, intake, onPhase);
     stage_outputs.p0 = p0;
-
+if (!observations || observations.length === 0) {
+  observations = [
+    { type: "fallback_form", value: "furniture_present", confidence: 0.2 }
+  ];
+}
     const stored = (API.getObservations(caseData.id) || []).map((o: any) => ({
       type: asString(o.observation_type) || "context",
       clue: normalizeClueKey(o.clue || o.reference_id),
