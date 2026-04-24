@@ -254,7 +254,6 @@ function evidenceMeaning(text: string): string {
   // ✅ DEFAULT: DO NOT OVERRIDE GOOD EVIDENCE
   return "";
 }
-}
 
 function pickSupportingEvidence(report: ReportShape | null): string[] {
   const p2 = report?.stage_outputs?.p2;
