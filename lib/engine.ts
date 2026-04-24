@@ -896,7 +896,13 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
 
     const p0 = await this.p0(caseData, images, intake, onPhase);
     stage_outputs.p0 = p0;
-
+// 🔍 DEBUG: Inspect Phase 0 output
+console.log("----- PHASE 0 DEBUG START -----");
+console.log("P0 RAW ERROR:", p0.raw_error);
+console.log("P0 PERCEPTION:", p0.perception);
+console.log("P0 OBSERVATIONS:", p0.observations);
+console.log("IMAGES PASSED TO P0:", images);
+console.log("----- PHASE 0 DEBUG END -----");
     // 🔒 Phase 0 guard: never allow the evidence pipeline to continue empty
 if (!p0.observations || p0.observations.length === 0) {
   p0.observations = [
