@@ -228,21 +228,32 @@ function deriveFieldRecommendation(args: { askingPrice: string; valueLow: number
 
   return { recommendation, label: recommendationLabel(recommendation), explanation };
 }
-
 function evidenceMeaning(text: string): string {
   const t = String(text || "").toLowerCase();
-  if (t.includes("cut nail")) return "Supports a 19th-century construction lane rather than a later factory build.";
-  if (t.includes("wire nail")) return "Suggests later fasteners or possible later repair activity.";
-  if (t.includes("machine screw")) return "Points toward later industrial hardware rather than very early handmade fastening.";
-  if (t.includes("porcelain caster")) return "Supports a later 19th-century furniture context, though hardware can be replaced.";
-  if (t.includes("shellac") || t.includes("crazing")) return "Supports an older finish character, though finish alone is not decisive for date.";
-  if (t.includes("drop leaf") || t.includes("drop-leaf")) return "Directly supports the form identification rather than just a general table reading.";
-  if (t.includes("multiple drawers") || t.includes("full-width drawers") || t.includes("side-by-side drawers")) return "Supports a dresser or chest-of-drawers form rather than a cabinet or table form.";
-  if (t.includes("back panel") || t.includes("back boards")) return "Backboard construction helps date the piece and judge whether the case construction feels earlier or later.";
-  if (t.includes("joinery") || t.includes("dovetail") || t.includes("rabbet") || t.includes("mortise") || t.includes("tenon")) return "Construction joinery helps narrow both date and originality when clearly visible.";
-  if (t.includes("oak") || t.includes("poplar") || t.includes("secondary wood")) return "Wood species and secondary wood help support period and construction context, but they are not decisive alone.";
-  if (t.includes("bracket") || t.includes("cabriole") || t.includes("ogee") || t.includes("reeded") || t.includes("fluted") || t.includes("turned")) return "This mainly supports broad style context and helps the form feel more historically grounded.";
-  return "This supports the current reading, but would be stronger when combined with hidden structure or fastener evidence.";
+
+  if (t.includes("seating surface") || t.includes("bench")) {
+    return "This confirms the piece was designed for sitting, which immediately narrows the form away from cabinets or tables.";
+  }
+
+  if (t.includes("secondary surface") || t.includes("writing surface")) {
+    return "This indicates a functional surface, supporting a writing bench or telephone bench rather than a simple chair.";
+  }
+
+  if (t.includes("spindle")) {
+    return "Spindle construction supports late 19th to early 20th century production and helps define the form structure.";
+  }
+
+  if (t.includes("turned")) {
+    return "Turned elements suggest lathe-based shaping, common in late 1800s to early 1900s production.";
+  }
+
+  if (t.includes("paint") || t.includes("finish")) {
+    return "Surface finish may indicate later refinishing and should be considered when judging originality.";
+  }
+
+  // ✅ DEFAULT: DO NOT OVERRIDE GOOD EVIDENCE
+  return "";
+}
 }
 
 function pickSupportingEvidence(report: ReportShape | null): string[] {
