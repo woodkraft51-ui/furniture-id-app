@@ -181,8 +181,19 @@ function extractBalancedJson(text: string): string | null {
 }
 
 function parseModelJson(raw: string): any | null {
-  const cleaned = cleanJsonText(raw);
-  return tryJsonParse(cleaned) || tryJsonParse(extractBalancedJson(cleaned) || "");
+  if (!raw) return null;
+
+  let text = String(raw).trim();
+
+  if (text.startsWith("```")) {
+    text = text
+      .replace(/^```json/i, "")
+      .replace(/^```/, "")
+      .replace(/```$/, "")
+      .trim();
+  }
+
+  return tryJsonParse(text) || tryJsonParse(extractBalancedJson(text) || "");
 }
 
 function normalizeClueKey(v: any): string | null {
