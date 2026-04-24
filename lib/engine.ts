@@ -629,7 +629,20 @@ export const PE = {
       if (!res.ok) return { ok: false, error: data };
       const raw = Array.isArray(data?.content) ? data.content.map((b: any) => b?.text || "").join("\n") : "";
       const parsed = parseModelJson(raw);
-      return parsed ? { ok: true, parsed, raw } : { ok: false, error: "no_valid_json" };
+
+if (parsed) {
+  return { ok: true, parsed, raw };
+}
+
+console.log("CLAUDE RAW NON-JSON RESPONSE:", raw);
+
+return {
+  ok: false,
+  error: {
+    type: "no_valid_json",
+    raw,
+  },
+};
     } catch (e: any) {
       return { ok: false, error: e?.message || "unknown_error" };
     }
