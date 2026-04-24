@@ -756,11 +756,39 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
       { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
     ]);
 
-    let observations = result.ok ? normalizeObservationsFromParsed(result.parsed) : [];
-    let perception = normalizePerception(result.ok ? result.parsed : {}, observations);
-    observations = addIntakeObservations(intake, observations);
-    observations = promotePerceptionObservations(observations, perception);
-    perception = normalizePerception(result.ok ? result.parsed : {}, observations);
+    const parsedForEvidence = result.ok
+  ? result.parsed
+  : result.error && result.error.raw
+  ? {
+      perception: {
+        labels: [],
+        maker_names: [],
+        materials: [],
+        forms: [],
+        functional_features: [],
+        style_cues: [],
+        construction_cues: [],
+        condition_cues: [],
+        visible_text: [String(result.error.raw)],
+      },
+      observations: [
+        {
+          category: "context",
+          key: "raw_model_evidence",
+          description: String(result.error.raw),
+          confidence: 35,
+          source_image: "unknown",
+          hard_negative: false,
+        },
+      ],
+    }
+  : {};
+
+let observations = normalizeObservationsFromParsed(parsedForEvidence);
+let perception = normalizePerception(parsedForEvidence, observations);
+observations = addIntakeObservations(intake, observations);
+observations = promotePerceptionObservations(observations, perception);
+perception = normalizePerception(parsedForEvidence, observations);
     const digest = buildEvidenceDigest(observations, perception);
 
     observations.forEach((obs) => {
