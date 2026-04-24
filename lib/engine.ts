@@ -521,7 +521,17 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
   if (clues.has("seating_present") && clues.has("telephone_shelf")) add("Telephone bench", 70, "Integrated seating and telephone shelf are visible.");
   if (clues.has("seating_present") && (clues.has("drop_front_desk") || clues.has("pigeonholes"))) add("Telephone bench / secretary combination", 90, "Integrated seating and desk/cubby features are visible.");
   if (clues.has("mirror_present") && (clues.has("telephone_shelf") || clues.has("drop_front_desk"))) add("Telephone bench / secretary combination", 25, "Mirror reinforces hall or telephone furniture function.");
-
+  if (
+  (clues.has("seating_surface") || clues.has("seating_present")) &&
+  (clues.has("backrest_present") || clues.has("spindle_back") || clues.has("spindle_gallery")) &&
+  (clues.has("secondary_surface") || clues.has("writing_surface"))
+  ) {
+  add(
+    "Telephone bench / writing bench combination",
+    105,
+    "Seating surface, backrest/spindle rail, and secondary writing surface are visible."
+  );
+}
   if (clues.has("metal_bed_frame")) add("Iron bed frame", 90, "Metal headboard/footboard bed structure is visible.");
   if (clues.has("pedestal_column")) add("Pedestal stand", 85, "Single-column pedestal form is visible.");
   if (clues.has("armchair_form")) add("Queen Anne style upholstered armchair", clues.has("cabriole_leg") ? 85 : 60, "Armchair form and exposed style cues are visible.");
