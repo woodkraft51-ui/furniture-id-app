@@ -896,6 +896,8 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
 
     const p0 = await this.p0(caseData, images, intake, onPhase);
     stage_outputs.p0 = p0;
+
+    // 🔒 Phase 0 guard: never allow the evidence pipeline to continue empty
 if (!p0.observations || p0.observations.length === 0) {
   p0.observations = [
     {
@@ -909,6 +911,9 @@ if (!p0.observations || p0.observations.length === 0) {
     },
   ];
 }
+
+// 🔁 IMPORTANT: rebuild digest after guard so later phases actually use it
+p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
     const stored = (API.getObservations(caseData.id) || []).map((o: any) => ({
       type: asString(o.observation_type) || "context",
       clue: normalizeClueKey(o.clue || o.reference_id),
