@@ -924,7 +924,7 @@ p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
       low_confidence_flag: Boolean(o.low_confidence_flag),
     })) as Observation[];
 
-    const digest = stored.length ? buildEvidenceDigest(stored, p0.perception) : p0.evidence_digest;
+    const digest = p0.evidence_digest;
 
     const p1 = this.p1(caseData, intake, digest, images);
     stage_outputs.p1 = p1; onPhase?.("p1", p1);
