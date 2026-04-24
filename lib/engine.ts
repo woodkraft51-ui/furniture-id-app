@@ -71,6 +71,11 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
 
   seating_present: { category: "form", weight: 0.78 },
   telephone_shelf: { category: "form", formHint: "Telephone bench", dateHint: "c. 1900–1935", weight: 0.9 },
+  seating_surface: { category: "form", formHint: "Bench or chair", weight: 0.78 },
+  backrest_present: { category: "structure", formHint: "Bench or chair", weight: 0.72 },
+  spindle_back: { category: "structure", formHint: "Bench or telephone bench", weight: 0.76 },
+  secondary_surface: { category: "function", formHint: "Writing bench or telephone bench", weight: 0.82 },
+  writing_surface: { category: "function", formHint: "Desk or writing bench", weight: 0.84 },
   drop_front_desk: { category: "construction", formHint: "Secretary desk", weight: 0.88 },
   pigeonholes: { category: "construction", formHint: "Secretary desk", weight: 0.82 },
   mirror_present: { category: "form", weight: 0.62 },
