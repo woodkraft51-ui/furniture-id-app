@@ -273,31 +273,61 @@ function detectClueFromText(text: string): string | null {
 function descriptionFromObservation(o: any): string {
   return asString(o?.description) || asString(o?.observed_value_text) || asString(o?.text) || asString(o?.value) || "Unknown observation";
 }
-
 function normalizeObservationsFromParsed(parsed: any): Observation[] {
   const direct = Array.isArray(parsed?.observations) ? parsed.observations : [];
   const out: Observation[] = [];
 
   const push = (raw: any) => {
-    const description = descriptionFromObservation(raw);
-    const clue = normalizeClueKey(raw?.clue) || normalizeClueKey(raw?.reference_id) || detectClueFromText(description);
+    const description =
+      asString(raw?.description) ||
+      asString(raw?.value) ||
+      asString(raw?.observed_value_text) ||
+      asString(raw?.text) ||
+      "Visible furniture evidence";
+
+    const clue =
+      normalizeClueKey(raw?.clue) ||
+      normalizeClueKey(raw?.key) ||
+      normalizeClueKey(raw?.reference_id) ||
+      detectClueFromText(description);
+
     const meta = clue ? CLUE_LIBRARY[clue] : undefined;
+
+    const type =
+      asString(raw?.type) ||
+      asString(raw?.category) ||
+      meta?.category ||
+      "context";
+
     out.push({
-      type: asString(raw?.type) || meta?.category || "context",
+      type,
       clue,
       description,
-      confidence: clamp(typeof raw?.confidence === "number" ? raw.confidence : 58, 5, 99),
+      confidence: clamp(
+        typeof raw?.confidence === "number" ? raw.confidence : 45,
+        5,
+        99
+      ),
       source_image: asString(raw?.source_image) || null,
       hard_negative: Boolean(raw?.hard_negative || meta?.hardNegative),
-      low_confidence_flag: typeof raw?.confidence === "number" ? raw.confidence < 45 : false,
+      low_confidence_flag:
+        typeof raw?.confidence === "number" ? raw.confidence < 45 : true,
     });
   };
 
-  if (direct.length) direct.forEach(push);
-  else collectText(parsed).forEach((t) => {
-    const clue = detectClueFromText(t);
-    if (clue) push({ description: t, clue, confidence: 60 });
-  });
+  if (direct.length) {
+    direct.forEach(push);
+  } else {
+    collectText(parsed).forEach((t) => {
+      const clue = detectClueFromText(t);
+      push({
+        category: clue ? CLUE_LIBRARY[clue]?.category : "context",
+        key: clue,
+        description: t,
+        confidence: clue ? 55 : 35,
+      });
+    });
+  }
 
   return dedupeObservations(out);
 }
