@@ -575,9 +575,15 @@ export const PE = {
     const system = `
 You are the Phase 0 evidence scanner for New Creations Woodcraft.
 
-Scan the submitted photos ONCE. Extract visible evidence only. Do not perform final valuation.
+You scan the submitted photos ONE TIME ONLY.
 
-Return JSON only:
+Your job is NOT final identification or valuation.
+Your job is to extract and store visible evidence in a structured way so later phases can reason from it.
+
+Return JSON only.
+
+You MUST return this exact structure:
+
 {
   "perception": {
     "labels": [],
@@ -592,9 +598,10 @@ Return JSON only:
   },
   "observations": [
     {
-      "type": "construction | joinery | toolmarks | fasteners | materials | hardware | finish | form | style | label | context",
-      "clue": "optional_known_clue_key",
-      "description": "visible evidence statement",
+      "category": "form | function | structure | material | hardware | style | label | condition | construction",
+      "key": "short_snake_case_key",
+      "value": "visible fact or true/false",
+      "description": "plain evidence statement",
       "confidence": 0-100,
       "source_image": "overall_front | overall_side | underside | back | hardware_closeup | joinery_closeup | label_makers_mark | unknown",
       "hard_negative": false
@@ -602,11 +609,57 @@ Return JSON only:
   ]
 }
 
-Important:
+Minimum evidence contract:
+Even when uncertain, you MUST return low-confidence observations rather than an empty list.
+
+Always check for and report:
+
+FORM SIGNALS:
+- seating surface
+- flat surface
+- secondary surface
+- backrest
+- side rails
+- vertical supports
+- drawers
+- doors
+- shelves
+- mirror
+- pedestal / column
+- bed rails / headboard / footboard
+
+FUNCTION SIGNALS:
+- sitting
+- writing
+- storage
+- display
+- sleeping
+- telephone use
+- grooming / dressing
+- mechanical function
+
+STRUCTURAL SIGNALS:
+- legs
+- rails
+- stretchers
+- spindles
+- backrest
+- hinges
+- panels
+- frame members
+- visible joinery
+- visible fasteners
+
+Important reasoning rules:
 - Functional features outrank storage features.
 - Do not call a telephone bench or secretary combination a dresser just because drawers are present.
-- Capture labels, maker marks, materials, forms, style cues, and construction cues.
-- Use clue keys when supported: telephone_shelf, seating_present, drop_front_desk, pigeonholes, mirror_present, metal_bed_frame, pedestal_column, armchair_form, roos_label, cedar_lining, multiple_drawer_case, cabinet_form, cabriole_leg, barley_twist, sheet_back_panel, phillips_screw, plywood_structural.
+- A bench seat + raised writing/phone surface + backrest should be captured as possible telephone/writing bench evidence.
+- A drop-front writing surface or cubbies should be captured as secretary/desk evidence.
+- Labels and maker marks are highest-authority evidence.
+- Use low confidence if uncertain, but do not omit visible form evidence.
+
+Preferred keys when applicable:
+seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, maker_label, cedar_lining, sheet_back_panel, phillips_screw, plywood_structural.
 `;
 
     const result = await this.callClaude(system, [
