@@ -405,21 +405,52 @@ function promotePerceptionObservations(observations: Observation[], perception: 
     });
   };
 
-  Object.keys(CLUE_LIBRARY).forEach((key) => {
-    if (detectClueFromText(text) === key) add(key, CLUE_LIBRARY[key].formHint || key.replace(/_/g, " "), 72);
-  });
+  // Broad form/function/structure guarantees
+  if (includesAny(text, ["seat", "seating", "bench", "sitting surface"])) {
+    add("seating_surface", "A seating surface or bench-like sitting area is visible.", 82);
+    add("seating_present", "Integrated seating is visible.", 78);
+  }
 
-  if (includesAny(text, ["roos", "sweetheart cedar"])) add("roos_label", "Roos cedar chest label is visible", 94);
-  if (includesAny(text, ["telephone shelf", "phone shelf"])) add("telephone_shelf", "Telephone shelf or phone platform is visible", 86);
-  if (includesAny(text, ["bench", "seat"])) add("seating_present", "Integrated seating is visible", 78);
-  if (includesAny(text, ["drop front", "writing surface"])) add("drop_front_desk", "Drop-front writing surface is visible", 84);
-  if (includesAny(text, ["pigeonhole", "cubby"])) add("pigeonholes", "Interior cubbies or pigeonholes are visible", 78);
-  if (tIncludes(text, "mirror")) add("mirror_present", "Mirror is visible", 72);
-  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) add("metal_bed_frame", "Iron or metal bed frame is visible", 88);
-  if (includesAny(text, ["pedestal", "single column"])) add("pedestal_column", "Single-column pedestal form is visible", 84);
-  if (includesAny(text, ["armchair", "upholstered chair"])) add("armchair_form", "Armchair form is visible", 82);
-  if (includesAny(text, ["cabriole"])) add("cabriole_leg", "Cabriole legs are visible", 72);
-  if (includesAny(text, ["barley twist"])) add("barley_twist", "Barley twist supports are visible", 76);
+  if (includesAny(text, ["backrest", "back rail", "spindle back", "spindled back", "rail back"])) {
+    add("backrest_present", "A backrest or back rail is visible.", 78);
+  }
+
+  if (includesAny(text, ["spindle", "spindles", "turned spindle", "spindle rail"])) {
+    add("spindle_back", "Spindles are visible in the back or side rail.", 78);
+    add("spindle_gallery", "Spindle gallery or rail detail is visible.", 70);
+  }
+
+  if (includesAny(text, ["secondary surface", "side surface", "raised surface", "raised platform", "small table surface", "writing surface", "work surface"])) {
+    add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
+  }
+
+  if (includesAny(text, ["writing", "writing surface", "desk surface", "work surface"])) {
+    add("writing_surface", "A writing or work surface is visible.", 84);
+  }
+
+  if (includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"])) {
+    add("telephone_shelf", "A telephone shelf or phone platform is visible.", 86);
+  }
+
+  if (includesAny(text, ["turned leg", "turned legs", "turned support", "turned supports"])) {
+    add("spindle_gallery", "Turned supports or spindle-like elements are visible.", 68);
+  }
+
+  // Existing specific clues
+  if (includesAny(text, ["roos", "sweetheart cedar"])) add("roos_label", "Roos cedar chest label is visible.", 94);
+  if (includesAny(text, ["lane cedar"])) add("lane_label", "Lane cedar chest label is visible.", 94);
+  if (includesAny(text, ["cedar lined", "cedar interior"])) add("cedar_lining", "Cedar-lined interior is visible.", 84);
+  if (includesAny(text, ["drop front", "drop-front", "fall front"])) add("drop_front_desk", "Drop-front writing surface is visible.", 84);
+  if (includesAny(text, ["pigeonhole", "pigeon hole", "cubby", "cubbies"])) add("pigeonholes", "Interior cubbies or pigeonholes are visible.", 78);
+  if (text.includes("mirror")) add("mirror_present", "Mirror is visible.", 72);
+  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
+  if (includesAny(text, ["pedestal", "single column"])) add("pedestal_column", "Single-column pedestal form is visible.", 84);
+  if (includesAny(text, ["armchair", "upholstered chair"])) add("armchair_form", "Armchair form is visible.", 82);
+  if (text.includes("cabriole")) add("cabriole_leg", "Cabriole legs are visible.", 72);
+  if (text.includes("barley twist")) add("barley_twist", "Barley twist supports are visible.", 76);
+  if (text.includes("drawer")) add("drawer_present", "Drawer evidence is visible.", 58);
+  if (text.includes("door")) add("door_present", "Door evidence is visible.", 58);
+  if (includesAny(text, ["cabinet", "cupboard", "hutch"])) add("cabinet_form", "Cabinet or cupboard form is visible.", 68);
 
   return dedupeObservations(out);
 }
