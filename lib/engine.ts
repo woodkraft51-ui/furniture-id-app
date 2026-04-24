@@ -855,9 +855,17 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
 
     const p0 = await this.p0(caseData, images, intake, onPhase);
     stage_outputs.p0 = p0;
-if (!observations || observations.length === 0) {
-  observations = [
-    { type: "fallback_form", value: "furniture_present", confidence: 0.2 }
+if (!p0.observations || p0.observations.length === 0) {
+  p0.observations = [
+    {
+      type: "form",
+      clue: "fallback_form",
+      description: "Furniture is visible, but Phase 0 did not return structured observations.",
+      confidence: 20,
+      source_image: "fallback",
+      hard_negative: false,
+      low_confidence_flag: true,
+    },
   ];
 }
     const stored = (API.getObservations(caseData.id) || []).map((o: any) => ({
