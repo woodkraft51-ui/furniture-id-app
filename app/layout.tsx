@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "NCW Furniture Identification Engine",
-  description: "American furniture identification and field scan tool — v0.4",
+  title: "Proof Sleuth — Where Evidence Tells the Story",
+description: "Evidence-based American furniture identification and evaluation with field scan and full analysis modes.",
 };
 
 export default function RootLayout({
