@@ -325,7 +325,11 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
         99
       ),
       source_image: asString(raw?.source_image) || null,
-      hard_negative: Boolean(raw?.hard_negative || meta?.hardNegative),
+      hard_negative: Boolean(
+  raw?.hard_negative === true &&
+  raw?.value !== false &&
+  String(raw?.value).toLowerCase() !== "false"
+),
       low_confidence_flag:
         typeof raw?.confidence === "number" ? raw.confidence < 45 : true,
     });
