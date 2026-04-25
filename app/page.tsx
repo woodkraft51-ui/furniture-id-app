@@ -448,7 +448,7 @@ export default function Page() {
             <img
   src="/proof-sleuth-logo.png"
   alt="Proof Sleuth"
-  style={{ height: 44, width: "auto", display: "block" }}
+  style={{ height: 80, width: "auto", display: "block" }}
 />
           </div>
 
