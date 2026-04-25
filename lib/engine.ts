@@ -991,34 +991,181 @@ perception = normalizePerception(parsedForEvidence, observations);
     };
   },
 
-  p4(digest: EvidenceDigest) {
-    const weighted_clues = digest.observations.map((o) => {
+ p4(digest: EvidenceDigest) {
+  const AUTHORITY_RANK: Record<string, number> = {
+    construction: 10,
+    joinery: 9,
+    toolmarks: 8,
+    fasteners: 8,
+    materials: 6,
+    hardware: 6,
+    label: 10,
+    form: 7,
+    function: 7,
+    structure: 7,
+    finish: 4,
+    alteration: 4,
+    style: 3,
+    context: 2,
+    other: 2,
+  };
+
+  const REPLACEMENT_RISK: Record<string, number> = {
+    modern_concealed_hinge: 0.1,
+    phillips_screw: 0.1,
+    staple_fastener: 0.05,
+    plywood_structural: 0.02,
+    plywood_drawer_bottom: 0.02,
+
+    decorative_bail_pull: 0.45,
+    porcelain_caster: 0.35,
+    round_wood_knob: 0.4,
+
+    shellac_crazing: 0.2,
+    polyurethane: 0.15,
+
+    cabriole_leg: 0.25,
+    shell_carving: 0.25,
+    claw_or_pad_foot: 0.3,
+    barley_twist: 0.25,
+    heavy_carving: 0.25,
+  };
+
+  const DATE_HINTS: Record<string, string> = {
+    hand_forged_nail: "pre-1800",
+    cut_nail: "1790–1890",
+    wire_nail: "post-1880",
+    phillips_screw: "post-1934",
+    staple_fastener: "post-1945",
+    hand_cut_dovetails: "pre-1860",
+    machine_dovetails: "post-1860",
+    dowel_joinery: "post-1900",
+    pit_saw_marks: "pre-1830",
+    circular_saw_arcs: "post-1830",
+    band_saw_lines: "post-1870",
+    plywood_structural: "post-1920",
+    plywood_drawer_bottom: "post-1920",
+    sheet_back_panel: "post-1900",
+    modern_concealed_hinge: "post-1950",
+    shellac_crazing: "1800–1920",
+    polyurethane: "post-1960",
+    thick_veneer: "pre-1910",
+    porcelain_caster: "1830–1900",
+    cylinder_roll: "1870–1920",
+    slant_front: "1700–1860",
+    gateleg_support: "1680–1800; revival 1880–1930",
+    drop_leaf_hinged: "1720–1930",
+  };
+
+  const photoCounts: Record<string, Set<string>> = {};
+
+  digest.observations.forEach((o) => {
+    const clue = o.clue || o.description;
+    if (!photoCounts[clue]) photoCounts[clue] = new Set();
+    if (o.source_image) photoCounts[clue].add(o.source_image);
+  });
+
+  const weighted_clues = digest.observations
+    .map((o) => {
       const meta = o.clue ? CLUE_LIBRARY[o.clue] : undefined;
+      const clue = o.clue || o.description;
+      const category = meta?.category || o.type || "context";
+
       const base = meta?.weight ?? 0.45;
-      const adjusted = clamp(base + (o.confidence >= 80 ? 0.05 : o.confidence < 45 ? -0.08 : 0), 0.05, 0.98);
+      const authority = AUTHORITY_RANK[category] || 2;
+      const effectiveConfidence = clamp(o.confidence / 100, 0.05, 0.99);
+      const replacementRisk = REPLACEMENT_RISK[clue] ?? 0.2;
+      const photoCount = photoCounts[clue]?.size || 1;
+
+      let adjusted = base;
+
+      if (authority >= 9) adjusted += 0.07;
+      else if (authority >= 7) adjusted += 0.04;
+      else if (authority <= 3) adjusted -= 0.08;
+
+      if (effectiveConfidence >= 0.8) adjusted += 0.06;
+      else if (effectiveConfidence >= 0.6) adjusted += 0.03;
+      else if (effectiveConfidence < 0.4) adjusted -= 0.1;
+
+      if (photoCount >= 3) adjusted += 0.08;
+      else if (photoCount === 2) adjusted += 0.04;
+
+      if (replacementRisk >= 0.35) adjusted -= replacementRisk * 0.22;
+
+      if (o.low_confidence_flag) adjusted -= 0.05;
+
+      if (o.hard_negative || meta?.hardNegative) adjusted = Math.max(adjusted, 0.88);
+
+      adjusted = clamp(adjusted, 0.05, 0.98);
+
+      const reasons: string[] = [];
+      reasons.push(meta?.dateHint || DATE_HINTS[clue] || "contextual evidence");
+      reasons.push(`authority ${authority}/10`);
+      if (photoCount > 1) reasons.push(`seen in ${photoCount} photo types`);
+      if (replacementRisk >= 0.35) reasons.push(`replacement risk ${Math.round(replacementRisk * 100)}%`);
+      if (o.hard_negative || meta?.hardNegative) reasons.push("hard negative");
+
       return {
-        clue: o.clue || o.description,
-        display_label: (o.clue || o.description).replace(/_/g, " "),
-        category: meta?.category || o.type || "context",
-        base_weight: base,
+        clue,
+        display_label: clue.replace(/_/g, " "),
+        category,
+        authority_rank: authority,
+        date_hint: meta?.dateHint || DATE_HINTS[clue] || null,
+        replacement_risk: replacementRisk,
+        base_weight: Number(base.toFixed(3)),
         adjusted_weight: Number(adjusted.toFixed(3)),
-        confidence_reason: o.description,
+        confidence_reason: `${o.description} (${reasons.join("; ")})`,
         hard_negative: Boolean(o.hard_negative || meta?.hardNegative),
-        effective_confidence: Number((o.confidence / 100).toFixed(3)),
+        effective_confidence: Number(effectiveConfidence.toFixed(3)),
         source_images: o.source_image ? [o.source_image] : [],
       };
-    }).sort((a, b) => b.adjusted_weight - a.adjusted_weight);
+    })
+    .sort((a, b) => {
+      if (a.hard_negative && !b.hard_negative) return -1;
+      if (!a.hard_negative && b.hard_negative) return 1;
+      if (b.authority_rank !== a.authority_rank) return b.authority_rank - a.authority_rank;
+      return b.adjusted_weight - a.adjusted_weight;
+    });
 
-    return {
-      weighted_clues,
-      confidence_drivers: {
-        increased: weighted_clues.filter((w) => !w.hard_negative).slice(0, 5).map((w) => w.display_label),
-        limited: weighted_clues.filter((w) => w.hard_negative).map((w) => `${w.display_label} — hard negative`),
-      },
-      category_scores: [],
-    };
-  },
+  const categoryMap: Record<string, { sum: number; count: number; maxAuthority: number }> = {};
 
+  weighted_clues.forEach((w) => {
+    if (!categoryMap[w.category]) {
+      categoryMap[w.category] = { sum: 0, count: 0, maxAuthority: 0 };
+    }
+    categoryMap[w.category].sum += w.adjusted_weight;
+    categoryMap[w.category].count += 1;
+    categoryMap[w.category].maxAuthority = Math.max(categoryMap[w.category].maxAuthority, w.authority_rank);
+  });
+
+  const category_scores = Object.entries(categoryMap)
+    .map(([category, v]) => ({
+      category,
+      avg_weight: Number((v.sum / v.count).toFixed(3)),
+      count: v.count,
+      authority_rank: v.maxAuthority,
+      score: Math.round((v.sum / v.count) * 100),
+    }))
+    .sort((a, b) => {
+      if (b.authority_rank !== a.authority_rank) return b.authority_rank - a.authority_rank;
+      return b.score - a.score;
+    });
+
+  return {
+    weighted_clues,
+    confidence_drivers: {
+      increased: weighted_clues
+        .filter((w) => !w.hard_negative && w.adjusted_weight >= 0.65)
+        .slice(0, 5)
+        .map((w) => `${w.display_label} — ${w.confidence_reason}`),
+      limited: weighted_clues
+        .filter((w) => w.hard_negative || w.adjusted_weight < 0.5)
+        .slice(0, 5)
+        .map((w) => w.hard_negative ? `${w.display_label} — hard negative` : `${w.display_label} — limited weight`),
+    },
+    category_scores,
+  };
+},
   p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
     const notes: string[] = [];
     if (digest.hard_negatives.length) notes.push(`Hard negatives present: ${digest.hard_negatives.join(", ")}.`);
