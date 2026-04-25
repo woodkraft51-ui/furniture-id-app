@@ -393,10 +393,8 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
       "Visible furniture evidence";
 
     const clue =
-      normalizeClueKey(raw?.clue) ||
-      normalizeClueKey(raw?.key) ||
-      normalizeClueKey(raw?.reference_id) ||
-      detectClueFromText(description);
+  normalizePhase0Clue(raw) ||
+  detectClueFromText(description);
 
     const meta = clue ? CLUE_LIBRARY[clue] : undefined;
 
