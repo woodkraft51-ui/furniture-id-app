@@ -734,7 +734,50 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
     .map((s) => ({ ...s, score: Math.max(1, s.score) }))
     .sort((a, b) => b.score - a.score);
 }
+function buildReportEvidenceSupport(digest: EvidenceDigest, formSupport: string[]): string[] {
+  const priorityOrder: Record<string, number> = {
+    construction: 1,
+    joinery: 1,
+    toolmarks: 1,
+    fasteners: 1,
+    materials: 2,
+    material: 2,
+    hardware: 3,
+    finish: 4,
+    condition: 5,
+    style: 6,
+    structure: 6,
+    form: 9,
+    function: 9,
+    context: 10,
+  };
 
+  const bannedPhrases = [
+    "drawer evidence is visible",
+    "drawers total visible",
+    "chest has multiple drawers",
+    "piece is a chest of drawers",
+    "drawer storage",
+  ];
+
+  const evidence = [...digest.observations]
+    .filter((o) => {
+      const text = o.description.toLowerCase();
+      if (bannedPhrases.some((p) => text.includes(p))) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const pa = priorityOrder[a.type] || 10;
+      const pb = priorityOrder[b.type] || 10;
+      if (pa !== pb) return pa - pb;
+      return b.confidence - a.confidence;
+    })
+    .map((o) => o.description);
+
+  const combined = [...evidence, ...formSupport];
+
+  return uniq(combined).slice(0, 4);
+}
 function deriveStyleContext(digest: EvidenceDigest): string | null {
   const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
   if (includesAny(text, ["jacobean", "barley_twist", "barley twist", "heavy carving"])) return "Jacobean Revival";
