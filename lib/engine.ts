@@ -130,6 +130,11 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   round_wood_knob: { category: "hardware", weight: 0.5 },
   shellac_crazing: { category: "finish", dateHint: "1800–1920", weight: 0.55 },
   polyurethane: { category: "finish", dateHint: "post-1960", weight: 0.62 },
+  possible_plywood_or_laminated_panel: {
+  category: "construction",
+  dateHint: "possible post-1920 material, but requires confirmation",
+  weight: 0.55,
+},
 };
 
 function clamp(n: number, min: number, max: number) {
