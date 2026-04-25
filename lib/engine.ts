@@ -219,6 +219,21 @@ function normalizePhase0Clue(raw: any): string | null {
 
   if (!key) return null;
 
+  if (key === "phillips_screw") {
+  const saysNoPhillips =
+    desc.includes("no phillips") ||
+    desc.includes("no visible phillips") ||
+    desc.includes("phillips screws not observed") ||
+    desc.includes("not observed") ||
+    desc.includes("without phillips");
+
+  if (saysNoPhillips) {
+    return "no_phillips_screws_observed";
+  }
+
+  return key;
+}
+  
   if (key === "plywood_structural" || key === "plywood_drawer_bottom") {
   const saysNoPlywood =
     valueText === "false" ||
