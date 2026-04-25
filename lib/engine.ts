@@ -735,7 +735,7 @@ export const PE = {
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 1800,
+          max_tokens: 4000,
           system,
           messages: [{ role: "user", content }],
         }),
