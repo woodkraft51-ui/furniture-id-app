@@ -208,12 +208,36 @@ function normalizePhase0Clue(raw: any): string | null {
 
   if (!key) return null;
 
-  if (
-    key === "plywood_structural" &&
-    (valueText === "false" || desc.includes("no plywood"))
-  ) {
+  if (key === "plywood_structural" || key === "plywood_drawer_bottom") {
+  const saysNoPlywood =
+    valueText === "false" ||
+    desc.includes("no plywood") ||
+    desc.includes("not plywood") ||
+    desc.includes("without visible laminate") ||
+    desc.includes("without laminate") ||
+    desc.includes("no visible laminate") ||
+    desc.includes("solid wood grain") ||
+    desc.includes("solid wood throughout") ||
+    desc.includes("solid wood planks");
+
+  const saysPossiblePlywood =
+    desc.includes("possible plywood") ||
+    desc.includes("possibly plywood") ||
+    desc.includes("could indicate") ||
+    desc.includes("may indicate") ||
+    desc.includes("laminated panel") ||
+    desc.includes("layered edge");
+
+  if (saysNoPlywood && !saysPossiblePlywood) {
     return "solid_wood_construction";
   }
+
+  if (saysPossiblePlywood) {
+    return "possible_plywood_or_laminated_panel";
+  }
+
+  return key;
+}
 
   if (
     key === "empire_style_feet" ||
