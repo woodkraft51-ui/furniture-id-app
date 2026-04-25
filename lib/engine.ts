@@ -518,6 +518,7 @@ function addIntakeObservations(intake: any, observations: Observation[]): Observ
 function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number; support: string[] }> {
   const clues = new Set(digest.clue_keys);
   const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
   const add = (form: string, score: number, support: string) => {
@@ -526,44 +527,147 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
     if (!scores[form].support.includes(support)) scores[form].support.push(support);
   };
 
-  if (clues.has("roos_label")) add("Roos cedar chest / hope chest", 100, "Visible Roos label directly supports the identification.");
-  if (clues.has("lane_label")) add("Lane cedar chest / hope chest", 100, "Visible Lane label directly supports the identification.");
+  const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
 
-  if (clues.has("seating_present") && clues.has("telephone_shelf")) add("Telephone bench", 70, "Integrated seating and telephone shelf are visible.");
-  if (clues.has("seating_present") && (clues.has("drop_front_desk") || clues.has("pigeonholes"))) add("Telephone bench / secretary combination", 90, "Integrated seating and desk/cubby features are visible.");
-  if (clues.has("mirror_present") && (clues.has("telephone_shelf") || clues.has("drop_front_desk"))) add("Telephone bench / secretary combination", 25, "Mirror reinforces hall or telephone furniture function.");
-  if (
-  (clues.has("seating_surface") || clues.has("seating_present")) &&
-  (clues.has("backrest_present") || clues.has("spindle_back") || clues.has("spindle_gallery")) &&
-  (clues.has("secondary_surface") || clues.has("writing_surface"))
-  ) {
-  add(
-    "Telephone bench / writing bench combination",
-    105,
-    "Seating surface, backrest/spindle rail, and secondary writing surface are visible."
-  );
-}
-  if (clues.has("metal_bed_frame")) add("Iron bed frame", 90, "Metal headboard/footboard bed structure is visible.");
-  if (clues.has("pedestal_column")) add("Pedestal stand", 85, "Single-column pedestal form is visible.");
-  if (clues.has("armchair_form")) add("Queen Anne style upholstered armchair", clues.has("cabriole_leg") ? 85 : 60, "Armchair form and exposed style cues are visible.");
+  // Highest-authority maker/form labels
+  if (clues.has("roos_label")) add("Roos cedar chest / hope chest", 120, "Visible Roos label directly supports the identification.");
+  if (clues.has("lane_label")) add("Lane cedar chest / hope chest", 120, "Visible Lane label directly supports the identification.");
 
-  if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving"])) add("Jacobean Revival cabinet / sideboard", 75, "Historicist carving and turned supports support Jacobean Revival context.");
+  // Composite seating / telephone / writing bench pattern
+  let benchScore = 0;
+  const benchSupport: string[] = [];
 
-  if (clues.has("cedar_lining") || clues.has("lift_lid")) add("Cedar chest / hope chest", clues.has("cedar_lining") ? 75 : 55, "Chest form and/or cedar interior are visible.");
-
-  if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 80, "Drop-leaf construction is visible.");
-  if (clues.has("gateleg_support")) add("Gateleg table", 88, "Gate-leg support is visible.");
-  if (clues.has("slant_front")) add("Slant-front desk", 90, "Slant-front writing surface is visible.");
-  if (clues.has("cylinder_roll")) add("Roll-top desk", 92, "Roll-top/tambour mechanism is visible.");
-  if (clues.has("extension_mechanism")) add("Extension table", 78, "Extension mechanism is visible.");
-
-  if (clues.has("cabinet_form")) add("Cabinet", 35, "Cabinet form is visible.");
-  if (clues.has("door_present") && clues.has("drawer_present")) add("Armoire / dresser combination", 45, "Doors and drawers are both visible.");
-  if (clues.has("multiple_drawer_case") && !clues.has("seating_present") && !clues.has("telephone_shelf") && !clues.has("drop_front_desk")) {
-    add("Chest of drawers / dresser", 60, "Multiple stacked drawers are visible.");
+  if (hasAny("seating_surface", "seating_present")) {
+    benchScore += 35;
+    benchSupport.push("seating surface");
   }
 
-  return Object.values(scores).sort((a, b) => b.score - a.score);
+  if (hasAny("backrest_present", "spindle_back", "spindle_gallery")) {
+    benchScore += 25;
+    benchSupport.push("backrest or spindle rail");
+  }
+
+  if (hasAny("secondary_surface", "writing_surface")) {
+    benchScore += 35;
+    benchSupport.push("secondary writing or side surface");
+  }
+
+  if (clues.has("telephone_shelf")) {
+    benchScore += 45;
+    benchSupport.push("telephone shelf or phone platform");
+  }
+
+  if (hasAny("drop_front_desk", "pigeonholes")) {
+    benchScore += 35;
+    benchSupport.push("desk or secretary features");
+  }
+
+  if (benchScore >= 65) {
+    const label =
+      hasAny("drop_front_desk", "pigeonholes")
+        ? "Telephone bench / secretary combination"
+        : hasAny("telephone_shelf")
+        ? "Telephone bench"
+        : "Telephone bench / writing bench combination";
+
+    add(
+      label,
+      benchScore,
+      `Composite functional pattern: ${benchSupport.join(", ")}.`
+    );
+  }
+
+  // Desk and secretary forms
+  if (clues.has("drop_front_desk")) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
+  if (clues.has("pigeonholes")) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
+  if (clues.has("slant_front")) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
+  if (clues.has("cylinder_roll")) add("Roll-top desk", 105, "Roll-top or tambour mechanism is visible.");
+
+  // Table forms
+  if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
+  if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");
+  if (clues.has("extension_mechanism")) add("Extension table", 82, "Extension mechanism is visible.");
+  if (clues.has("pedestal_column")) add("Pedestal stand", 88, "Single-column pedestal form is visible.");
+
+  // Chest and storage forms
+  if (clues.has("cedar_lining") || clues.has("lift_lid")) {
+    add(
+      "Cedar chest / hope chest",
+      clues.has("cedar_lining") ? 85 : 65,
+      "Chest form and/or cedar interior are visible."
+    );
+  }
+
+  // Case furniture forms
+  if (clues.has("multiple_drawer_case")) {
+    add("Chest of drawers / dresser", 70, "Multiple stacked drawers are visible.");
+  }
+
+  if (clues.has("drawer_present") && !hasAny("seating_present", "seating_surface", "telephone_shelf", "secondary_surface", "writing_surface")) {
+    add("Dresser / drawer case", 42, "Drawer evidence is visible without stronger competing functional features.");
+  }
+
+  if (clues.has("door_present") && clues.has("drawer_present")) {
+    add("Cabinet / dresser combination", 48, "Doors and drawers are both visible.");
+  }
+
+  if (clues.has("cabinet_form")) {
+    add("Cabinet", 35, "Cabinet form is visible.");
+  }
+
+  if (clues.has("open_shelving")) {
+    add("Bookcase / open shelving unit", 60, "Open shelving is visible.");
+  }
+
+  // Seating forms
+  if (clues.has("armchair_form")) {
+    add(
+      "Upholstered armchair",
+      clues.has("cabriole_leg") ? 82 : 62,
+      "Armchair form is visible."
+    );
+  }
+
+  if (hasAny("seating_surface", "seating_present") && !hasAny("secondary_surface", "writing_surface", "telephone_shelf", "drop_front_desk", "pigeonholes")) {
+    add("Bench / seating furniture", 55, "Seating surface is visible without stronger desk or telephone features.");
+  }
+
+  // Bed forms
+  if (clues.has("metal_bed_frame")) {
+    add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
+  }
+
+  // Style-context forms
+  if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving", "spiral turned", "twist leg"])) {
+    add("Jacobean Revival cabinet / sideboard", 72, "Historicist carving or turned supports support Jacobean Revival context.");
+  }
+
+  if (clues.has("cabriole_leg") || clues.has("shell_carving") || clues.has("claw_or_pad_foot")) {
+    add("Queen Anne / Colonial Revival furniture", 48, "Cabriole legs, shell carving, or related revival style cues are visible.");
+  }
+
+  // Functional hierarchy corrections
+  const strongFunctionalSignals = hasAny(
+    "seating_surface",
+    "seating_present",
+    "telephone_shelf",
+    "secondary_surface",
+    "writing_surface",
+    "drop_front_desk",
+    "pigeonholes"
+  );
+
+  if (strongFunctionalSignals) {
+    if (scores["Cabinet"]) scores["Cabinet"].score -= 25;
+    if (scores["Dresser / drawer case"]) scores["Dresser / drawer case"].score -= 25;
+    if (scores["Chest of drawers / dresser"]) scores["Chest of drawers / dresser"].score -= 20;
+    if (scores["Cabinet / dresser combination"]) scores["Cabinet / dresser combination"].score -= 15;
+  }
+
+  // Avoid negative or zero-score results
+  return Object.values(scores)
+    .map((s) => ({ ...s, score: Math.max(1, s.score) }))
+    .sort((a, b) => b.score - a.score);
 }
 
 function deriveStyleContext(digest: EvidenceDigest): string | null {
