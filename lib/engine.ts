@@ -923,9 +923,7 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
     !has("plywood_structural") &&
     !has("plywood_drawer_bottom");
   
-  const phase0EarlyBias = includesAny(text, ["1850", "1860", "victorian", "transitional"]);
-
-  const phase0EarlyBias =
+    const phase0EarlyBias =
     includesAny(text, ["1850", "1860", "1870", "1880", "1890", "victorian", "transitional"]);
 
   if (strongPre1920Signals >= 2 && absenceOfModern) {
