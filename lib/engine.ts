@@ -874,7 +874,7 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
     const parsedForEvidence = result.ok
   ? result.parsed
   : result.error && result.error.raw
-  ? {
+  ? parseModelJson(String(result.error.raw).replace(/^json\s*/i, "")) || {
       perception: {
         labels: [],
         maker_names: [],
@@ -884,14 +884,15 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
         style_cues: [],
         construction_cues: [],
         condition_cues: [],
-        visible_text: [String(result.error.raw)],
+        visible_text: [],
       },
       observations: [
         {
           category: "context",
-          key: "raw_model_evidence",
-          description: String(result.error.raw),
-          confidence: 35,
+          key: "phase0_extraction_limited",
+          description:
+            "Phase 0 did not return clean structured evidence. The report relies on available intake and visible form signals.",
+          confidence: 20,
           source_image: "unknown",
           hard_negative: false,
         },
