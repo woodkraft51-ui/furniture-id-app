@@ -201,6 +201,58 @@ function normalizeClueKey(v: any): string | null {
   return key || null;
 }
 
+function normalizePhase0Clue(raw: any): string | null {
+  const key = normalizeClueKey(raw?.clue || raw?.key || raw?.reference_id);
+  const valueText = String(raw?.value ?? "").toLowerCase();
+  const desc = descriptionFromObservation(raw).toLowerCase();
+
+  if (!key) return null;
+
+  if (
+    key === "plywood_structural" &&
+    (valueText === "false" || desc.includes("no plywood"))
+  ) {
+    return "solid_wood_construction";
+  }
+
+  if (
+    key === "empire_style_feet" ||
+    key === "scrolled_empire_feet" ||
+    key === "scrolled_feet" ||
+    key === "rounded_pilaster_stiles" ||
+    key === "empire_style" ||
+    key === "ogee_curved_top_rail"
+  ) {
+    return "american_empire_style";
+  }
+
+  if (
+    key === "drawer_configuration" ||
+    key === "drawer_count" ||
+    key === "total_drawer_count"
+  ) {
+    return "multiple_drawer_case";
+  }
+
+  if (key === "primary_wood_oak") {
+    return "oak_primary";
+  }
+
+  if (
+    key === "secondary_wood_drawer_box" ||
+    key === "drawer_bottom_material" ||
+    key === "drawer_runner_type"
+  ) {
+    return "solid_wood_drawer_construction";
+  }
+
+  if (key === "back_panel_construction" || key === "plank_back_panels") {
+    return "solid_plank_back";
+  }
+
+  return key;
+}
+
 function includesAny(text: string, words: string[]) {
   return words.some((w) => text.includes(w));
 }
