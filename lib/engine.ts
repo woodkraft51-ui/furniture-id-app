@@ -229,6 +229,10 @@ function normalizePhase0Clue(raw: any): string | null {
     desc.includes("no visible laminate") ||
     desc.includes("solid wood grain") ||
     desc.includes("solid wood throughout") ||
+    desc.includes("rather than plywood") ||
+    desc.includes("pre-plywood") ||
+    desc.includes("not a plywood") ||
+    desc.includes("no visible plywood") ||
     desc.includes("solid wood planks");
 
   const saysPossiblePlywood =
