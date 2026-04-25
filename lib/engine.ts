@@ -1052,7 +1052,7 @@ perception = normalizePerception(parsedForEvidence, observations);
       display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${form}` : form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
-      support: best?.support || digest.strongest_observations.slice(0, 4).map((o) => o.description),
+      support: buildReportEvidenceSupport(digest, best?.support || []),
       alternatives,
     };
   },
