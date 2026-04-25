@@ -910,7 +910,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   const empireOrRevival =
     style === "American Empire / late Classical Revival" ||
     includesAny(text, ["empire", "scroll feet", "scrolled feet", "serpentine", "ogee", "turned wood knobs"]);
+    const strongPre1920Signals =
+    (has("solid_plank_back") ? 1 : 0) +
+    (has("wooden_drawer_runners") ? 1 : 0) +
+    (has("solid_wood_construction") ? 1 : 0) +
+    (has("solid_wood_drawer_construction") ? 1 : 0);
 
+  const absenceOfModern =
+    !has("phillips_screw") &&
+    !has("staple_fastener") &&
+    !has("modern_concealed_hinge") &&
+    !has("plywood_structural") &&
+    !has("plywood_drawer_bottom");
+
+  const phase0EarlyBias =
+    includesAny(text, ["1850", "1860", "1870", "1880", "1890", "victorian", "transitional"]);
   if (earlyHandmadeScore >= 3 && !transitionalFactoryScore) {
     return {
       range: "c. 1830–1890",
