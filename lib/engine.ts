@@ -821,6 +821,9 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
   const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
   if (includesAny(text, ["jacobean", "barley_twist", "barley twist", "heavy carving"])) return "Jacobean Revival";
   if (includesAny(text, ["queen anne", "cabriole", "shell carving", "pad foot", "claw foot"])) return "Queen Anne / Colonial Revival";
+ if (includesAny(text, ["empire", "scrolled feet", "scrolled bracket feet", "serpentine top rail", "flat cornice top", "highboy_style"])) {
+  return "American Empire / late Classical Revival";
+}
   if (includesAny(text, ["mission", "arts and crafts", "quarter sawn", "quartersawn"])) return "Arts & Crafts / Mission";
   if (includesAny(text, ["telephone", "drop front", "pigeonhole"])) return "Early 20th-century telephone or hall furniture";
   return null;
