@@ -803,7 +803,34 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   if (form.includes("Armoire / dresser")) return { range: "c. 1980–2000", confidence: "Moderate", support, limitations };
 
   if (clues.has("phillips_screw") || clues.has("staple_fastener") || clues.has("modern_concealed_hinge")) return { range: "post-1935", confidence: "High", support, limitations };
-  if (clues.has("plywood_structural") || clues.has("plywood_drawer_bottom")) return { range: "post-1920", confidence: "High", support, limitations };
+ if (clues.has("plywood_structural") || clues.has("plywood_drawer_bottom")) {
+  const plywoodObs = digest.observations.find((o) =>
+    o.clue === "plywood_structural" || o.clue === "plywood_drawer_bottom"
+  );
+
+  const hasOlderStyleContext =
+    clues.has("american_empire_style") ||
+    includesAny(`${digest.perception?.raw_text || ""}`.toLowerCase(), [
+      "empire",
+      "scrolled feet",
+      "pilaster",
+      "wood knob",
+      "solid wood",
+      "plank",
+      "secondary wood",
+    ]);
+
+  if ((plywoodObs?.confidence || 0) < 65 && hasOlderStyleContext) {
+    return {
+      range: "c. 1890–1930; post-1920 possible if laminated side panel is confirmed",
+      confidence: "Moderate",
+      support,
+      limitations: ["The possible plywood/laminated side-panel clue is low-confidence and should be confirmed with a close-up edge or underside photo."],
+    };
+  }
+
+  return { range: "post-1920", confidence: "High", support, limitations };
+}
   if (clues.has("pit_saw_marks") || clues.has("hand_forged_nail")) return { range: "pre-1830", confidence: "Moderate", support, limitations };
   if (clues.has("hand_cut_dovetails") || clues.has("slotted_handmade_screw")) return { range: "pre-1860", confidence: "Moderate", support, limitations };
   if (clues.has("cut_nail") || clues.has("circular_saw_arcs") || clues.has("porcelain_caster")) return { range: "c. 1830–1890", confidence: "Moderate", support, limitations };
