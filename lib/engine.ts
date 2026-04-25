@@ -1166,18 +1166,64 @@ perception = normalizePerception(parsedForEvidence, observations);
     category_scores,
   };
 },
-  p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
-    const notes: string[] = [];
-    if (digest.hard_negatives.length) notes.push(`Hard negatives present: ${digest.hard_negatives.join(", ")}.`);
-    if ((form.form || "").includes("dresser") && digest.clue_keys.includes("telephone_shelf")) {
-      notes.push("Telephone furniture features outrank drawer/storage cues; avoid reducing this to a dresser.");
+p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
+  const { weighted_clues } = weighting;
+
+  const highAuthority = weighted_clues.filter(w => w.authority_rank >= 8);
+  const lowAuthority = weighted_clues.filter(w => w.authority_rank <= 4);
+  const hardNegatives = weighted_clues.filter(w => w.hard_negative);
+
+  const conflicts: string[] = [];
+  const resolutions: string[] = [];
+
+  // Detect conflicts
+  highAuthority.forEach((strong) => {
+    lowAuthority.forEach((weak) => {
+      if (
+        strong.date_hint &&
+        weak.date_hint &&
+        strong.date_hint !== weak.date_hint
+      ) {
+        conflicts.push(
+          `${weak.display_label} (${weak.date_hint}) conflicts with ${strong.display_label} (${strong.date_hint})`
+        );
+
+        // Resolve by authority
+        resolutions.push(
+          `${strong.display_label} carries greater authority (${strong.authority_rank}/10) and is favored over ${weak.display_label}.`
+        );
+      }
+    });
+  });
+
+  // Hard negative overrides
+  hardNegatives.forEach((hn) => {
+    resolutions.push(
+      `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
+    );
+  });
+
+  // Replacement logic
+  weighted_clues.forEach((w) => {
+    if (w.replacement_risk >= 0.35 && w.authority_rank <= 6) {
+      resolutions.push(
+        `${w.display_label} has elevated replacement risk and is down-weighted in interpretation.`
+      );
     }
-    return {
-      conflict_notes: notes,
-      confidence_adjustment: notes.length ? -4 : 0,
-      restoration_interpretation: digest.hard_negatives.length ? "Some features may reflect later production, repair, or replacement." : null,
-    };
-  },
+  });
+
+  // Consolidated summary
+  const summary =
+    resolutions.length > 0
+      ? "Conflicts were resolved by prioritizing higher-authority construction and structural evidence over stylistic or replaceable features."
+      : "No significant conflicts detected between evidence categories.";
+
+  return {
+    conflicts: conflicts.slice(0, 6),
+    resolutions: resolutions.slice(0, 6),
+    summary,
+  };
+},
 
   p6(gate: any, dating: any, form: any, weighting: any, conflict: any) {
     const vb = valueBand(form.display_form || form.form || "Unknown", dating.range || "");
