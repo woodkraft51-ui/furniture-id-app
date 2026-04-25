@@ -135,7 +135,11 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   dateHint: "possible post-1920 material, but requires confirmation",
   weight: 0.55,
    }, 
-  
+  no_phillips_screws_observed: {
+  category: "fasteners",
+  dateHint: "absence of visible Phillips screws; removes post-1934 fastener evidence but does not independently date the piece",
+  weight: 0.35,
+},
     solid_wood_construction: {
   category: "construction",
   dateHint: "solid wood construction; not a plywood indicator",
