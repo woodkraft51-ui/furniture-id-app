@@ -134,11 +134,12 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   category: "construction",
   dateHint: "possible post-1920 material, but requires confirmation",
   weight: 0.55,
+   }, 
+  
     solid_wood_construction: {
   category: "construction",
   dateHint: "solid wood construction; not a plywood indicator",
   weight: 0.72,
-},
 },
 };
 
