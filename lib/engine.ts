@@ -457,7 +457,16 @@ function normalizePerception(parsed: any, observations: Observation[]): Percepti
 function promotePerceptionObservations(observations: Observation[], perception: Perception): Observation[] {
   const out = [...observations];
   const text = perception.raw_text.toLowerCase();
-
+const negatesSeatingOrWriting =
+  includesAny(text, [
+    "no seating",
+    "no seating surface",
+    "no visible seating",
+    "no writing surface",
+    "no secondary function",
+    "no seating, writing surface",
+    "no seating, writing surface, or other secondary function",
+  ]);
   const add = (clue: string, description: string, confidence = 72, source = "perception") => {
     if (out.some((o) => o.clue === clue)) return;
     const meta = CLUE_LIBRARY[clue];
@@ -473,7 +482,7 @@ function promotePerceptionObservations(observations: Observation[], perception: 
   };
 
   // Broad form/function/structure guarantees
-  if (includesAny(text, ["seat", "seating", "bench", "sitting surface"])) {
+  if (!negatesSeatingOrWriting && includesAny(text, ["seat", "seating", "bench", "sitting surface"])) {
     add("seating_surface", "A seating surface or bench-like sitting area is visible.", 82);
     add("seating_present", "Integrated seating is visible.", 78);
   }
@@ -487,15 +496,15 @@ function promotePerceptionObservations(observations: Observation[], perception: 
     add("spindle_gallery", "Spindle gallery or rail detail is visible.", 70);
   }
 
-  if (includesAny(text, ["secondary surface", "side surface", "raised surface", "raised platform", "small table surface", "writing surface", "work surface"])) {
+  if (!negatesSeatingOrWriting && includesAny(text, ["secondary surface", "side surface", "raised surface", "raised platform", "small table surface", "writing surface", "work surface"])) {
     add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
   }
 
-  if (includesAny(text, ["writing", "writing surface", "desk surface", "work surface"])) {
+  if (!negatesSeatingOrWriting && includesAny(text, ["writing", "writing surface", "desk surface", "work surface"])) {
     add("writing_surface", "A writing or work surface is visible.", 84);
   }
 
-  if (includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"])) {
+  if (!negatesSeatingOrWriting && includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"])) {
     add("telephone_shelf", "A telephone shelf or phone platform is visible.", 86);
   }
 
