@@ -444,7 +444,7 @@ export default function Page() {
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         <header style={{ marginBottom: 24 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", border: "1px solid #d5c7ad", borderRadius: 999, padding: "6px 10px", background: "#fffaf0", color: "#5d4932", marginBottom: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
             <img
   src="/proof-sleuth-logo.png"
   alt="Proof Sleuth"
