@@ -849,53 +849,110 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
 function dateFromEvidence(digest: EvidenceDigest, form: string) {
   const clues = new Set(digest.clue_keys);
   const style = deriveStyleContext(digest);
-  const support = digest.strongest_observations.slice(0, 4).map((o) => o.description);
+  const support = buildReportEvidenceSupport(digest, []);
   const limitations: string[] = [];
 
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations
+    .map((o) => `${o.clue || ""} ${o.description}`)
+    .join(" ")}`.toLowerCase();
+
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+
+  // Label/form-specific anchors stay first.
   if (clues.has("roos_label")) return { range: "c. 1940–1960", confidence: "High", support, limitations };
   if (clues.has("lane_label")) return { range: "c. 1930–1965", confidence: "High", support, limitations };
   if (form.includes("Telephone bench")) return { range: "c. 1900–1935", confidence: "High", support, limitations };
   if (form.includes("Iron bed")) return { range: "c. 1880–1920", confidence: "High", support, limitations };
-  if (form.includes("Jacobean Revival")) return { range: "c. 1915–1935", confidence: "High", support, limitations };
-  if (form.includes("Queen Anne style upholstered armchair")) return { range: "c. 1930–1970", confidence: "Moderate", support, limitations };
-  if (form.includes("Pedestal stand")) return { range: "Likely 20th century", confidence: "Moderate", support, limitations };
-  if (form.includes("Armoire / dresser")) return { range: "c. 1980–2000", confidence: "Moderate", support, limitations };
 
-  if (clues.has("phillips_screw") || clues.has("staple_fastener") || clues.has("modern_concealed_hinge")) return { range: "post-1935", confidence: "High", support, limitations };
- if (clues.has("plywood_structural") || clues.has("plywood_drawer_bottom")) {
-  const plywoodObs = digest.observations.find((o) =>
-    o.clue === "plywood_structural" || o.clue === "plywood_drawer_bottom"
+  // True hard negatives only.
+  const confirmedModernHardNegative = has(
+    "phillips_screw",
+    "staple_fastener",
+    "modern_concealed_hinge",
+    "plywood_structural",
+    "plywood_drawer_bottom"
   );
 
-  const hasOlderStyleContext =
-    clues.has("american_empire_style") ||
-    includesAny(`${digest.perception?.raw_text || ""}`.toLowerCase(), [
-      "empire",
-      "scrolled feet",
-      "pilaster",
-      "wood knob",
-      "solid wood",
-      "plank",
-      "secondary wood",
-    ]);
-
-  if ((plywoodObs?.confidence || 0) < 65 && hasOlderStyleContext) {
+  if (confirmedModernHardNegative) {
     return {
-      range: "c. 1890–1930; post-1920 possible if laminated side panel is confirmed",
-      confidence: "Moderate",
+      range: has("modern_concealed_hinge") ? "post-1950" : has("staple_fastener") ? "post-1945" : has("phillips_screw") ? "post-1935" : "post-1920",
+      confidence: "High",
       support,
-      limitations: ["The possible plywood/laminated side-panel clue is low-confidence and should be confirmed with a close-up edge or underside photo."],
+      limitations,
     };
   }
 
-  return { range: "post-1920", confidence: "High", support, limitations };
-}
-  if (clues.has("pit_saw_marks") || clues.has("hand_forged_nail")) return { range: "pre-1830", confidence: "Moderate", support, limitations };
-  if (clues.has("hand_cut_dovetails") || clues.has("slotted_handmade_screw")) return { range: "pre-1860", confidence: "Moderate", support, limitations };
-  if (clues.has("cut_nail") || clues.has("circular_saw_arcs") || clues.has("porcelain_caster")) return { range: "c. 1830–1890", confidence: "Moderate", support, limitations };
-  if (clues.has("wire_nail") || clues.has("machine_dovetails") || clues.has("band_saw_lines") || clues.has("dowel_joinery") || clues.has("sheet_back_panel")) return { range: "c. 1880–1930", confidence: "Moderate", support, limitations };
+  // Evidence groups, modeled from the older weighting file: construction/joinery outrank style.
+  const traditionalConstructionScore =
+    (has("solid_plank_back") ? 2 : 0) +
+    (has("solid_wood_construction") ? 2 : 0) +
+    (has("solid_wood_side_panels") ? 1.5 : 0) +
+    (has("frame_and_panel_sides") ? 1.5 : 0) +
+    (has("solid_wood_drawer_construction") ? 1.5 : 0) +
+    (has("wooden_drawer_runners") ? 1.5 : 0) +
+    (has("no_phillips_screws_observed") ? 0.5 : 0);
 
-  return { range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated", confidence: "Low", support, limitations: ["More construction, underside, back, or label evidence would refine the date."] };
+  const transitionalFactoryScore =
+    (has("machine_dovetails") ? 2 : 0) +
+    (has("dowel_joinery") ? 2 : 0) +
+    (has("wire_nail") ? 1.5 : 0) +
+    (has("band_saw_lines") ? 1.5 : 0) +
+    (has("sheet_back_panel") ? 1 : 0) +
+    (has("possible_plywood_or_laminated_panel") ? 0.5 : 0);
+
+  const earlyHandmadeScore =
+    (has("hand_cut_dovetails") ? 2.5 : 0) +
+    (has("cut_nail") ? 2 : 0) +
+    (has("hand_forged_nail") ? 3 : 0) +
+    (has("pit_saw_marks") ? 3 : 0) +
+    (has("slotted_handmade_screw") ? 2 : 0);
+
+  const empireOrRevival =
+    style === "American Empire / late Classical Revival" ||
+    includesAny(text, ["empire", "scroll feet", "scrolled feet", "serpentine", "ogee", "turned wood knobs"]);
+
+  if (earlyHandmadeScore >= 3 && !transitionalFactoryScore) {
+    return {
+      range: "c. 1830–1890",
+      confidence: "Moderate",
+      support,
+      limitations,
+    };
+  }
+
+  if (traditionalConstructionScore >= 4 && empireOrRevival) {
+    return {
+      range: "c. 1890–1930",
+      confidence: transitionalFactoryScore >= 1 ? "High" : "Moderate",
+      support,
+      limitations,
+    };
+  }
+
+  if (traditionalConstructionScore >= 3) {
+    return {
+      range: "late 19th to early 20th century",
+      confidence: "Moderate",
+      support,
+      limitations,
+    };
+  }
+
+  if (transitionalFactoryScore >= 2) {
+    return {
+      range: "c. 1880–1935",
+      confidence: "Moderate",
+      support,
+      limitations,
+    };
+  }
+
+  return {
+    range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated",
+    confidence: "Low",
+    support,
+    limitations: ["More construction, underside, back, or label evidence would refine the date."],
+  };
 }
 
 function valueBand(form: string, dateRange: string) {
