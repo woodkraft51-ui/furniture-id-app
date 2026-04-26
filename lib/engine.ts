@@ -1012,10 +1012,6 @@ if (empireOrRevival && strongPre1880Signals >= 2) {
     ],
   };
 }
- if (traditionalConstructionScore >= 4 && empireOrRevival) {
-  const conflictingSignals =
-    has("possible_plywood_or_laminated_panel") &&
-    has("solid_wood_construction");
 
   const trueEarlyEmpireEvidence =
     earlyHandmadeScore >= 2 ||
