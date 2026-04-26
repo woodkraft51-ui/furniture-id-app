@@ -1113,7 +1113,15 @@ function valueBand(form: string, dateRange: string) {
   else if (form.includes("Pedestal")) { low = 35; high = 175; }
   else if (form.includes("Cabinet") || form.includes("dresser") || form.includes("drawers")) { low = 50; high = 450; }
   if (dateRange.includes("1980")) { low = Math.round(low * 0.8); high = Math.round(high * 0.8); }
-  return { low, high, display: `$${low} – $${high}` };
+  const mid = (low + high) / 2;
+
+return {
+  dealer_buy: [Math.round(low * 0.4), Math.round(low * 0.7)],
+  quick_sale: [Math.round(low * 0.6), Math.round(mid * 0.8)],
+  marketplace: [Math.round(mid * 0.8), Math.round(high)],
+  as_found_retail: [Math.round(high * 0.9), Math.round(high * 1.3)],
+  restored_retail: [Math.round(high * 1.5), Math.round(high * 2.2)]
+};
 }
 
 function fieldRecommendation(asking: any, low: number, high: number) {
