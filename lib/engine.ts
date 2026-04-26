@@ -931,8 +931,7 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
   if (clues.has("metal_bed_frame")) {
     add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
   }
-  {
-   // Non-wood and mixed-material form families
+     // Non-wood and mixed-material form families
   if (hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
     add("Metal furniture", 62, "Metal frame or metal furniture construction is visible.");
   }
