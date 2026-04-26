@@ -668,7 +668,14 @@ export default function Page() {
               </SectionCard>
               <SectionCard title="Main Caution"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{primaryCaution}</div></SectionCard>
             </div>
-
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+  <SectionCard title="Negotiating Tips">
+    <TipsList items={p7?.negotiation_tips} />
+  </SectionCard>
+  <SectionCard title="Selling Tips">
+    <TipsList items={p7?.selling_tips} />
+  </SectionCard>
+</div>
             <SectionCard title="Key Supporting Evidence">
               {supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div>{evidenceMeaning(item) && (
   <div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>
