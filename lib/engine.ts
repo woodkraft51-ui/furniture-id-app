@@ -134,7 +134,106 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   category: "construction",
   dateHint: "uncertain panel construction; does not confirm modern manufacture",
   weight: 0.25,
-},
+
+  metal_frame: {
+    category: "materials",
+    dateHint: "metal furniture construction; date depends on form, joints, plating, and fasteners",
+    weight: 0.70,
+  },
+  tubular_steel: {
+    category: "materials",
+    dateHint: "tubular steel furniture became especially associated with modernist and mid-century production",
+    weight: 0.78,
+  },
+  wrought_iron: {
+    category: "materials",
+    dateHint: "wrought iron furniture spans Victorian, garden, and revival production; date depends on construction and finish",
+    weight: 0.72,
+  },
+  cast_iron: {
+    category: "materials",
+    dateHint: "cast iron furniture and bed components are common in late 19th and early 20th century production",
+    weight: 0.74,
+  },
+  brass_frame: {
+    category: "materials",
+    dateHint: "brass beds and brass-mounted furniture were especially common from the late Victorian period into the early 20th century",
+    weight: 0.72,
+  },
+  chrome_frame: {
+    category: "materials",
+    dateHint: "chrome-plated furniture strongly suggests Art Deco, Machine Age, mid-century, or later modern production",
+    weight: 0.78,
+  },
+
+  fully_upholstered: {
+    category: "materials",
+    dateHint: "upholstered seating spans many periods; dating depends on frame, springs, stuffing, legs, and upholstery method",
+    weight: 0.68,
+  },
+  visible_springs: {
+    category: "construction",
+    dateHint: "visible spring construction supports upholstered seating analysis; coil, sinuous, and webbing types affect dating",
+    weight: 0.72,
+  },
+  tufted_upholstery: {
+    category: "style",
+    dateHint: "tufted upholstery is common across Victorian, Chesterfield, traditional, and revival seating forms",
+    weight: 0.58,
+  },
+  exposed_upholstery_tacks: {
+    category: "construction",
+    dateHint: "visible upholstery tacks can support older or traditional upholstery methods, but may also be decorative",
+    weight: 0.58,
+  },
+
+  woven_body: {
+    category: "materials",
+    dateHint: "woven wicker or reed construction appears in Victorian, porch, Arts and Crafts, and later revival furniture",
+    weight: 0.72,
+  },
+  rattan_frame: {
+    category: "materials",
+    dateHint: "rattan furniture is common in porch, tropical, mid-century, and revival production",
+    weight: 0.72,
+  },
+  cane_panels: {
+    category: "materials",
+    dateHint: "cane panels appear on many 19th and 20th century chairs, settees, beds, and Colonial Revival forms",
+    weight: 0.62,
+  },
+
+  glass_top: {
+    category: "materials",
+    dateHint: "glass tops are often replacement or protective surfaces unless integrated into the original design",
+    weight: 0.42,
+  },
+  laminate_surface: {
+    category: "materials",
+    dateHint: "laminate surfaces generally support mid-century or later production unless used as a later alteration",
+    weight: 0.68,
+  },
+  formica_surface: {
+    category: "materials",
+    dateHint: "Formica or similar laminate is strongly associated with mid-century and later furniture",
+    weight: 0.70,
+  },
+  chrome_and_laminate: {
+    category: "materials",
+    dateHint: "chrome and laminate combinations strongly support mid-century kitchen, dinette, or utility furniture",
+    weight: 0.78,
+  },
+
+  molded_plastic: {
+    category: "materials",
+    dateHint: "molded plastic furniture generally indicates postwar modern or later production",
+    weight: 0.76,
+  },
+  acrylic_clear: {
+    category: "materials",
+    dateHint: "clear acrylic or Lucite furniture generally indicates mid-20th century or later modern production",
+    weight: 0.78,
+  },
   no_phillips_screws_observed: {
   category: "fasteners",
   dateHint: "absence of visible Phillips screws; removes post-1934 fastener evidence but does not independently date the piece",
