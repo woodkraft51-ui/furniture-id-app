@@ -17,7 +17,7 @@ export function getRuntimeProbe() {
     simulation_reason: "NCW PE engine active. Phase 0 scans images once; later phases reason from stored evidence.",
   };
 }
-
+ 
 type Observation = {
   type: string;
   clue?: string | null;
