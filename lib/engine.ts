@@ -1077,7 +1077,6 @@ if (conflictingSignals) {
     support,
     limitations,
   };
-}
 
   if (traditionalConstructionScore >= 3) {
     return {
