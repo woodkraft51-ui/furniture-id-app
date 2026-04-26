@@ -1341,7 +1341,7 @@ if (missing.back_photo) {
 if (missing.label_photo) {
   next.push("Maker's mark or label, if present");
 }
-
+ 
     return {
       confidence_cap: toConfidenceBand(pct),
       confidence_cap_pct: pct,
