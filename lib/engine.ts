@@ -2306,4 +2306,4 @@ const recommendation = fieldRecommendation(
   };
 },
 };
-  if (textHas("finish loss", "worn finish", "water stain", "
+ 
