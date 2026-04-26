@@ -1123,25 +1123,95 @@ if (conflictingSignals) {
   };
 }
 
-function valueBand(form: string, dateRange: string) {
-  let low = 25, high = 300;
-  if (form.includes("Telephone bench")) { low = 75; high = 500; }
-  else if (form.includes("Cedar chest") || form.includes("Roos") || form.includes("Lane")) { low = 75; high = 350; }
-  else if (form.includes("Iron bed")) { low = 40; high = 250; }
-  else if (form.includes("Queen Anne")) { low = 40; high = 250; }
-  else if (form.includes("Jacobean")) { low = 150; high = 650; }
-  else if (form.includes("Pedestal")) { low = 35; high = 175; }
-  else if (form.includes("Cabinet") || form.includes("dresser") || form.includes("drawers")) { low = 50; high = 450; }
-  if (dateRange.includes("1980")) { low = Math.round(low * 0.8); high = Math.round(high * 0.8); }
-  const mid = (low + high) / 2;
+function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
+  let low = 25;
+  let high = 300;
 
-return {
-  dealer_buy: [Math.round(low * 0.4), Math.round(low * 0.7)],
-  quick_sale: [Math.round(low * 0.6), Math.round(mid * 0.8)],
-  marketplace: [Math.round(mid * 0.8), Math.round(high)],
-  as_found_retail: [Math.round(high * 0.9), Math.round(high * 1.3)],
-  restored_retail: [Math.round(high * 1.5), Math.round(high * 2.2)]
-};
+  const f = String(form || "").toLowerCase();
+  const d = String(dateRange || "").toLowerCase();
+  const clues = new Set(digest?.clue_keys || []);
+  const text = `${digest?.perception?.raw_text || ""} ${(digest?.observations || [])
+    .map((o) => `${o.clue || ""} ${o.description}`)
+    .join(" ")}`.toLowerCase();
+
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+  const textHas = (...words: string[]) => words.some((w) => text.includes(w));
+
+  // Base form lanes
+  if (f.includes("telephone bench")) {
+    low = 60; high = 325;
+  } else if (f.includes("cedar chest") || f.includes("roos") || f.includes("lane")) {
+    low = 60; high = 300;
+  } else if (f.includes("iron bed")) {
+    low = 40; high = 225;
+  } else if (f.includes("queen anne")) {
+    low = 50; high = 300;
+  } else if (f.includes("jacobean")) {
+    low = 125; high = 550;
+  } else if (f.includes("pedestal")) {
+    low = 35; high = 175;
+  } else if (f.includes("cabinet") || f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) {
+    low = 75; high = 350;
+  }
+
+  // Date / age influence
+  let ageFactor = 1;
+  if (d.includes("1830") || d.includes("1860")) ageFactor *= 1.15;
+  else if (d.includes("1870") || d.includes("1890") || d.includes("1910") || d.includes("1920")) ageFactor *= 1.08;
+  else if (d.includes("post-1950") || d.includes("post-1960") || d.includes("1980")) ageFactor *= 0.75;
+
+  // Sellability score: market reality, not theoretical appraisal value
+  let sellability = 50;
+
+  // Positive signals
+  if (has("solid_wood_construction")) sellability += 5;
+  if (has("solid_plank_back")) sellability += 5;
+  if (has("frame_and_panel_sides")) sellability += 4;
+  if (has("solid_wood_drawer_construction")) sellability += 4;
+  if (has("maker_label", "roos_label", "lane_label")) sellability += 8;
+  if (textHas("empire", "jacobean", "mission", "arts and crafts", "queen anne")) sellability += 4;
+  if (textHas("unusual", "scarce", "rare", "highboy", "telephone")) sellability += 5;
+
+  // Market dampeners
+  if (f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) sellability -= 8;
+  if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) sellability -= 12;
+  if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) sellability -= 8;
+  if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) sellability -= 15;
+  if (has("possible_plywood_or_laminated_panel")) sellability -= 8;
+  if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) sellability -= 5;
+
+  sellability = clamp(sellability, 20, 90);
+
+  // Convert sellability into value pressure
+  const marketFactor = 0.65 + sellability / 140; // about 0.79 to 1.29
+  const finalLow = Math.round(low * ageFactor * marketFactor);
+  const finalHigh = Math.round(high * ageFactor * marketFactor);
+
+  const mid = (finalLow + finalHigh) / 2;
+
+  return {
+    dealer_buy: [
+      Math.round(finalLow * 0.35),
+      Math.round(finalLow * 0.75),
+    ],
+    quick_sale: [
+      Math.round(finalLow * 0.65),
+      Math.round(mid * 0.75),
+    ],
+    marketplace: [
+      Math.round(mid * 0.65),
+      Math.round(finalHigh * 0.9),
+    ],
+    as_found_retail: [
+      Math.round(finalHigh * 0.8),
+      Math.round(finalHigh * 1.15),
+    ],
+    restored_retail: [
+      Math.round(finalHigh * 1.15),
+      Math.round(finalHigh * 1.85),
+    ],
+    sellability_score: sellability,
+  };
 }
 
 function fieldRecommendation(asking: any, low: number, high: number) {
