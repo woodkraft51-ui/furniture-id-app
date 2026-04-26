@@ -2036,15 +2036,27 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
   stage_outputs.p5 = p5; onPhase?.("p5", p5);
 
   const p6 = this.p6(p1, p2, p3, p4, p5, digest);
-  stage_outputs.p6 = p6; onPhase?.("p6", p6);
+stage_outputs.p6 = p6; onPhase?.("p6", p6);
 
-  const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);
-  const recommendation = fieldRecommendation(
-    intake?.asking_price,
-    fieldValue.low,
-    fieldValue.high
-  );
+const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);
 
+const p7 = buildDecisionGuidance({
+  gate: p1,
+  dating: p2,
+  form: p3,
+  conflict: p5,
+  valuation: fieldValue,
+  digest,
+  intake,
+});
+
+stage_outputs.p7 = p7; onPhase?.("p7", p7);
+
+const recommendation = fieldRecommendation(
+  intake?.asking_price,
+  fieldValue.low,
+  fieldValue.high
+);
   return {
     id: caseData.id,
     status: "complete",
