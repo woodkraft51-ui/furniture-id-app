@@ -981,7 +981,22 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       limitations,
     };
   }
+const strongPre1880Signals =
+  (has("hand_cut_dovetails") ? 1 : 0) +
+  (has("cut_nail") ? 1 : 0) +
+  (has("hand_forged_nail") ? 1 : 0) +
+  (has("pit_saw_marks") ? 1 : 0);
 
+if (empireOrRevival && strongPre1880Signals >= 2) {
+  return {
+    range: "c. 1830–1860",
+    confidence: "Moderate",
+    support,
+    limitations: [
+      "Style strongly matches Empire period; confirmation of early fasteners or joinery would increase confidence.",
+    ],
+  };
+}
  if (traditionalConstructionScore >= 4 && empireOrRevival) {
   // If strong traditional signals AND no modern indicators → tighten date earlier
  if (absenceOfModern && strongPre1920Signals >= 2) {
