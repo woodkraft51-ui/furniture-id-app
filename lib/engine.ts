@@ -1293,10 +1293,54 @@ perception = normalizePerception(parsedForEvidence, observations);
     pct = clamp(pct, 25, 94);
 
     const next: string[] = [];
-    if (missing.label_photo) next.push("Maker's mark or label, if present");
-    if (missing.underside_photo) next.push("Underside photo for fasteners, tool marks, and structure");
-    if (missing.back_photo) next.push("Back photo for backboard and material evidence");
-    if (missing.joinery_photo) next.push("Joinery close-up if drawers or framing are accessible");
+
+const hasDatingEvidence = digest.clue_keys.some((k) =>
+  [
+    "hand_cut_dovetails",
+    "machine_dovetails",
+    "cut_nail",
+    "wire_nail",
+    "hand_forged_nail",
+    "phillips_screw",
+    "staple_fastener",
+    "solid_plank_back",
+    "solid_wood_construction",
+    "plywood_structural",
+    "plywood_drawer_bottom",
+  ].includes(k)
+);
+
+const hasDrawerCase =
+  digest.clue_keys.includes("drawer_present") ||
+  digest.clue_keys.includes("multiple_drawer_case");
+
+const hasPossiblePanelConflict =
+  digest.clue_keys.includes("possible_plywood_or_laminated_panel") ||
+  digest.perception?.raw_text?.toLowerCase().includes("plywood_or_solid");
+
+if (hasPossiblePanelConflict) {
+  next.push("Close-up of side panel edge to confirm solid wood vs. plywood or laminate");
+}
+
+if (hasDrawerCase) {
+  next.push("Clear drawer-corner close-up to confirm dovetail, dado, nailed, or butt construction");
+}
+
+if (missing.underside_photo) {
+  next.push("Underside photo for fasteners, tool marks, drawer runners, and case construction");
+}
+
+if (!hasDatingEvidence && missing.hardware_photo) {
+  next.push("Hardware or fastener close-up if screws, nails, locks, hinges, or casters are visible");
+}
+
+if (missing.back_photo) {
+  next.push("Back photo for backboard, panel, and material evidence");
+}
+
+if (missing.label_photo) {
+  next.push("Maker's mark or label, if present");
+}
 
     return {
       confidence_cap: toConfidenceBand(pct),
