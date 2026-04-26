@@ -1443,44 +1443,40 @@ function buildDecisionGuidance(args: {
   digest: EvidenceDigest;
   intake: any;
 }) {
+  const { gate, dating, form, conflict, valuation, digest, intake } = args;
   const { gate, form, conflict, valuation, digest, intake } = args;
 
   const text = `${digest.perception?.raw_text || ""} ${digest.observations
     .map((o) => `${o.clue || ""} ${o.description}`)
-    .join(" ")} ${String(intake?.condition_notes || "")} ${String(intake?.known_alterations || "")}`.toLowerCase();
-
-  const clues = new Set(digest.clue_keys || []);
-  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
-  const textHas = (...words: string[]) => words.some((w) => text.includes(w));
-
-  const negotiation: string[] = [];
-  const selling: string[] = [];
-
-  const addPair = (buyerTip: string, sellerTip: string) => {
-    if (!negotiation.includes(buyerTip)) negotiation.push(buyerTip);
+@@ -1461,20 +1461,18 @@
     if (!selling.includes(sellerTip)) selling.push(sellerTip);
   };
 
+  // Universal, non-contradictory base guidance
   negotiation.push("Verify the areas not shown in the photos before committing, especially underside, back, drawer corners, and fasteners.");
   selling.push("Use clear, level photos of the full form first, then add close-ups of construction, hardware, labels, and condition details.");
 
+  // Confidence / missing evidence
   if (gate.confidence_cap === "Low" || gate.confidence_cap === "Inconclusive") {
     addPair(
       "Use the limited evidence as negotiation leverage; the price should reflect that the identification and date are still broad.",
       "Reduce buyer hesitation by adding the missing evidence photos before listing, especially the strongest structural views."
+      "Reduce buyer hesitation by adding missing evidence photos before listing, especially the strongest structural views."
     );
   } else if (gate.confidence_cap === "Moderate") {
     addPair(
       "Negotiate conservatively if the seller is pricing it as a confirmed antique without enough structural proof.",
       "Present the identification as evidence-supported but avoid overstating certainty beyond the visible construction clues."
+      "Negotiate conservatively if the seller is pricing it as confirmed without enough structural proof.",
+      "Present the identification as evidence-supported, but avoid overstating certainty beyond the visible construction clues."
     );
   } else {
     addPair(
-      "The evidence is stronger than average, so negotiate from market reality rather than trying to dismiss the identification.",
-      "Lead with the strongest confirmed evidence because it gives buyers confidence in the identification."
+@@ -1483,808 +1481,4 @@
     );
   }
 
+  // Condition weakness: leverage vs mitigation
   if (textHas("finish loss", "worn finish", "water stain", "white haze", "scratches", "surface damage", "veneer loss", "missing", "broken", "loose", "structural damage")) {
     addPair(
       "Use visible wear, damage, missing parts, or loose structure as fair reasons to ask for a lower price.",
@@ -1488,6 +1484,7 @@ function buildDecisionGuidance(args: {
     );
   }
 
+  // Refinishing / surface alteration
   if (textHas("refinished", "polyurethane", "later finish", "painted", "paint loss") || has("polyurethane")) {
     addPair(
       "If the surface appears refinished or later-treated, negotiate below prices for untouched original finish examples.",
@@ -1495,6 +1492,7 @@ function buildDecisionGuidance(args: {
     );
   }
 
+  // Hardware / replacement risk
   if (textHas("replacement hardware", "replaced hardware", "hardware replacement") || has("phillips_screw", "staple_fastener", "modern_concealed_hinge")) {
     addPair(
       "Use modern or replacement hardware as a reason to avoid paying full original-period pricing.",
@@ -1502,6 +1500,7 @@ function buildDecisionGuidance(args: {
     );
   }
 
+  // Strong construction evidence
   if (has("solid_wood_construction", "solid_plank_back", "frame_and_panel_sides", "hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "mortise_and_tenon")) {
     addPair(
       "Acknowledge the stronger construction evidence, but still compare the price to realistic local resale rather than theoretical antique value.",
@@ -1509,27 +1508,7 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  if (has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
-    addPair(
-      "For metal furniture, check welds, bends, plating wear, rust, and structural looseness before agreeing to the price.",
-      "For metal furniture, highlight clean lines, original finish or plating, stable joints, and any distinctive design features."
-    );
-  }
-
-  if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
-    addPair(
-      "For upholstered pieces, use fabric wear, odor risk, spring condition, and reupholstery cost as negotiation points.",
-      "For upholstered pieces, photograph the full silhouette, legs, frame clues, tufting, fabric condition, and underside construction if accessible."
-    );
-  }
-
-  if (has("woven_body", "rattan_frame", "cane_panels")) {
-    addPair(
-      "For wicker, rattan, or cane, negotiate based on breaks, sagging, missing strands, brittle areas, and repair difficulty.",
-      "For wicker, rattan, or cane, highlight intact weaving, attractive shape, light weight, porch or sunroom appeal, and any unusual form."
-    );
-  }
-
+  // Labels / maker marks
   if (has("maker_label", "roos_label", "lane_label")) {
     addPair(
       "A maker label improves confidence, so focus negotiation more on condition, demand, and resale margin than on identity.",
@@ -1537,6 +1516,7 @@ function buildDecisionGuidance(args: {
     );
   }
 
+  // Form-specific market notes
   const formText = String(form?.display_form || form?.form || "").toLowerCase();
 
   if (formText.includes("dresser") || formText.includes("chest of drawers") || formText.includes("drawer case")) {
@@ -1567,6 +1547,7 @@ function buildDecisionGuidance(args: {
     );
   }
 
+  // Market / valuation lane
   const marketplace = valuation?.platform_breakdown?.marketplace?.range || valuation?.display;
   if (marketplace) {
     negotiation.push(`Use the marketplace lane as the practical ceiling for negotiation; this scan points to about ${marketplace} for typical resale exposure.`);
@@ -1587,6 +1568,7 @@ function buildDecisionGuidance(args: {
     }
   }
 
+  // Conflict logic
   if (Array.isArray(conflict?.conflict_notes) && conflict.conflict_notes.length > 0) {
     addPair(
       "Use mixed evidence or possible restoration as a reason to stay below top-of-market pricing.",
@@ -1594,10 +1576,10 @@ function buildDecisionGuidance(args: {
     );
   }
 
+  // Fallbacks
   if (negotiation.length < 4) {
     negotiation.push("Leave room for transportation, cleaning, small repairs, and the time it may take to resell.");
   }
-
   if (selling.length < 4) {
     selling.push("Include dimensions, clear condition photos, and the strongest identification evidence in the first few listing lines.");
   }
@@ -1608,16 +1590,12 @@ function buildDecisionGuidance(args: {
     contradiction_guard: "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths.",
   };
 }
-
 export const PE = {
   async callClaude(system: string, content: any[]): Promise<ClaudeResult> {
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "anthropic-version": "2023-06-01",
-        },
+        headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens: 4000,
@@ -1625,29 +1603,24 @@ export const PE = {
           messages: [{ role: "user", content }],
         }),
       });
-
       const data = await res.json();
       if (!res.ok) return { ok: false, error: data };
-
-      const raw = Array.isArray(data?.content)
-        ? data.content.map((b: any) => b?.text || "").join("\n")
-        : "";
-
+      const raw = Array.isArray(data?.content) ? data.content.map((b: any) => b?.text || "").join("\n") : "";
       const parsed = parseModelJson(raw);
 
-      if (parsed) {
-        return { ok: true, parsed, raw };
-      }
+if (parsed) {
+  return { ok: true, parsed, raw };
+}
 
-      console.log("CLAUDE RAW NON-JSON RESPONSE:", raw);
+console.log("CLAUDE RAW NON-JSON RESPONSE:", raw);
 
-      return {
-        ok: false,
-        error: {
-          type: "no_valid_json",
-          raw,
-        },
-      };
+return {
+  ok: false,
+  error: {
+    type: "no_valid_json",
+    raw,
+  },
+};
     } catch (e: any) {
       return { ok: false, error: e?.message || "unknown_error" };
     }
@@ -1655,28 +1628,13 @@ export const PE = {
 
   imgs(images: any[]) {
     const out: any[] = [];
-
     for (const img of images || []) {
       if (!img?.data_url) continue;
-
       const [head, base] = String(img.data_url).split(",");
       const mediaType = head?.match(/data:(.*?);/)?.[1] || "image/jpeg";
-
-      out.push({
-        type: "image",
-        source: {
-          type: "base64",
-          media_type: mediaType,
-          data: base,
-        },
-      });
-
-      out.push({
-        type: "text",
-        text: `[Image type: ${img.image_type || "unknown"}]`,
-      });
+      out.push({ type: "image", source: { type: "base64", media_type: mediaType, data: base } });
+      out.push({ type: "text", text: `[Image type: ${img.image_type || "unknown"}]` });
     }
-
     return out;
   },
 
@@ -1759,28 +1717,8 @@ STRUCTURAL SIGNALS:
 - visible joinery
 - visible fasteners
 
-NON-WOOD MATERIAL SIGNALS:
-- metal frame
-- tubular steel
-- wrought iron
-- cast iron
-- brass frame
-- chrome frame
-- upholstered surfaces
-- visible springs
-- tufting
-- upholstery tacks
-- wicker
-- rattan
-- cane panels
-- glass top
-- laminate or Formica surface
-- molded plastic
-- acrylic or Lucite
-
 Important reasoning rules:
 - Functional features outrank storage features.
-- Material evidence must not be forced into wood-case furniture assumptions.
 - Do not call a telephone bench or secretary combination a dresser just because drawers are present.
 - A bench seat + raised writing/phone surface + backrest should be captured as possible telephone/writing bench evidence.
 - A drop-front writing surface or cubbies should be captured as secretary/desk evidence.
@@ -1788,4 +1726,559 @@ Important reasoning rules:
 - Use low confidence if uncertain, but do not omit visible form evidence.
 
 Preferred keys when applicable:
-seating_surface, backrest_present, spindle_back
+seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, maker_label, cedar_lining, sheet_back_panel, phillips_screw, plywood_structural.
+`;
+
+    const result = await this.callClaude(system, [
+      ...this.imgs(images),
+      { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
+    ]);
+
+    const parsedForEvidence = result.ok
+  ? result.parsed
+  : result.error && result.error.raw
+  ? parseModelJson(String(result.error.raw).replace(/^json\s*/i, "")) || {
+      perception: {
+        labels: [],
+        maker_names: [],
+        materials: [],
+        forms: [],
+        functional_features: [],
+        style_cues: [],
+        construction_cues: [],
+        condition_cues: [],
+        visible_text: [],
+      },
+      observations: [
+        {
+          category: "context",
+          key: "phase0_extraction_limited",
+          description:
+            "Phase 0 did not return clean structured evidence. The report relies on available intake and visible form signals.",
+          confidence: 20,
+          source_image: "unknown",
+          hard_negative: false,
+        },
+      ],
+    }
+  : {};
+
+let observations = normalizeObservationsFromParsed(parsedForEvidence);
+let perception = normalizePerception(parsedForEvidence, observations);
+observations = addIntakeObservations(intake, observations);
+observations = promotePerceptionObservations(observations, perception);
+perception = normalizePerception(parsedForEvidence, observations);
+    const digest = buildEvidenceDigest(observations, perception);
+
+    observations.forEach((obs) => {
+      API.addObservation(caseData.id, {
+        observation_type: obs.type,
+        clue: obs.clue || null,
+        reference_id: obs.clue || null,
+        observed_value_text: obs.description,
+        source_image: obs.source_image || null,
+        raw_confidence: Number((obs.confidence / 100).toFixed(3)),
+        effective_confidence: Number((obs.confidence / 100).toFixed(3)),
+        hard_negative: Boolean(obs.hard_negative),
+        low_confidence_flag: Boolean(obs.low_confidence_flag),
+      });
+    });
+
+    const res = {
+      ok: true,
+      observations,
+      perception,
+      evidence_digest: digest,
+      note: result.ok ? "Phase 0 scanned photos once and stored evidence." : "Phase 0 used limited intake-derived evidence because extraction failed.",
+      raw_error: result.ok ? null : result.error,
+    };
+    onPhase?.("p0", res);
+    return res;
+  },
+
+  p1(caseData: any, intake: any, digest: EvidenceDigest, images: any[]): Phase1Gate {
+    const missing = computeMissingEvidence(images);
+    const count = digest.observation_count;
+    const hasLabel = digest.clue_keys.some((k) => k.includes("label"));
+    const hasForm = (digest.by_type.form || []).length > 0;
+    const hasConstruction = ["construction", "joinery", "toolmarks", "fasteners", "materials"].some((t) => (digest.by_type[t] || []).length > 0);
+
+    let pct = 40;
+    if (count >= 4) pct += 15;
+    if (hasForm) pct += 15;
+    if (hasConstruction) pct += 15;
+    if (hasLabel) pct += 20;
+    pct = clamp(pct, 25, 94);
+
+    const next: string[] = [];
+
+const hasDatingEvidence = digest.clue_keys.some((k) =>
+  [
+    "hand_cut_dovetails",
+    "machine_dovetails",
+    "cut_nail",
+    "wire_nail",
+    "hand_forged_nail",
+    "phillips_screw",
+    "staple_fastener",
+    "solid_plank_back",
+    "solid_wood_construction",
+    "plywood_structural",
+    "plywood_drawer_bottom",
+  ].includes(k)
+);
+
+const hasDrawerCase =
+  digest.clue_keys.includes("drawer_present") ||
+  digest.clue_keys.includes("multiple_drawer_case");
+
+const hasPossiblePanelConflict =
+  digest.clue_keys.includes("possible_plywood_or_laminated_panel") ||
+  digest.perception?.raw_text?.toLowerCase().includes("plywood_or_solid");
+
+if (hasPossiblePanelConflict) {
+  next.push("Close-up of side panel edge to confirm solid wood vs. plywood or laminate");
+}
+
+if (hasDrawerCase) {
+  next.push("Clear drawer-corner close-up to confirm dovetail, dado, nailed, or butt construction");
+}
+
+if (missing.underside_photo) {
+  next.push("Underside photo for fasteners, tool marks, drawer runners, and case construction");
+}
+
+if (!hasDatingEvidence && missing.hardware_photo) {
+  next.push("Hardware or fastener close-up if screws, nails, locks, hinges, or casters are visible");
+}
+
+if (missing.back_photo) {
+  next.push("Back photo for backboard, panel, and material evidence");
+}
+
+if (missing.label_photo) {
+  next.push("Maker's mark or label, if present");
+}
+ 
+    return {
+      confidence_cap: toConfidenceBand(pct),
+      confidence_cap_pct: pct,
+      missing_evidence: missing,
+      evidence_sufficiency_summary: hasLabel
+        ? "Label evidence gives the assessment a strong anchor."
+        : hasForm
+        ? "Visible form evidence supports a working identification; structural details can refine date and originality."
+        : "Evidence remains broad; more visible form or construction detail would improve the result.",
+      can_run: { dating: count > 0, form: count > 0, weighting: count > 0, conflict_check: count > 1, valuation_ready: count > 1 },
+      next_best_evidence: uniq(next).slice(0, 5),
+    };
+  },
+
+  p2(digest: EvidenceDigest, gate: Phase1Gate) {
+    const ranked = scoreForms(digest);
+    const best = ranked[0];
+    const form = best?.form || "Unclassified furniture";
+    return dateFromEvidence(digest, form);
+  },
+
+  p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any) {
+    const ranked = scoreForms(digest);
+    const best = ranked[0];
+    const alternatives = ranked.slice(1, 4).map((r) => r.form);
+    const style = deriveStyleContext(digest);
+    const form = best?.form || "Unclassified furniture";
+    const confidencePct = best ? Math.min(gate.confidence_cap_pct, best.score >= 80 ? 90 : best.score >= 45 ? 72 : 48) : 35;
+
+    return {
+      form,
+      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${form}` : form,
+      style_context: style,
+      confidence: toConfidenceBand(confidencePct),
+      support: buildReportEvidenceSupport(digest, best?.support || []),
+      alternatives,
+    };
+  },
+
+ p4(digest: EvidenceDigest) {
+  const AUTHORITY_RANK: Record<string, number> = {
+    construction: 10,
+    joinery: 9,
+    toolmarks: 8,
+    fasteners: 8,
+    materials: 6,
+    hardware: 6,
+    label: 10,
+    form: 7,
+    function: 7,
+    structure: 7,
+    finish: 4,
+    alteration: 4,
+    style: 3,
+    context: 2,
+    other: 2,
+  };
+
+  const REPLACEMENT_RISK: Record<string, number> = {
+    modern_concealed_hinge: 0.1,
+    phillips_screw: 0.1,
+    staple_fastener: 0.05,
+    plywood_structural: 0.02,
+    plywood_drawer_bottom: 0.02,
+
+    decorative_bail_pull: 0.45,
+    porcelain_caster: 0.35,
+    round_wood_knob: 0.4,
+
+    shellac_crazing: 0.2,
+    polyurethane: 0.15,
+
+    cabriole_leg: 0.25,
+    shell_carving: 0.25,
+    claw_or_pad_foot: 0.3,
+    barley_twist: 0.25,
+    heavy_carving: 0.25,
+  };
+
+  const DATE_HINTS: Record<string, string> = {
+    hand_forged_nail: "pre-1800",
+    cut_nail: "1790–1890",
+    wire_nail: "post-1880",
+    phillips_screw: "post-1934",
+    staple_fastener: "post-1945",
+    hand_cut_dovetails: "pre-1860",
+    machine_dovetails: "post-1860",
+    dowel_joinery: "post-1900",
+    pit_saw_marks: "pre-1830",
+    circular_saw_arcs: "post-1830",
+    band_saw_lines: "post-1870",
+    plywood_structural: "post-1920",
+    plywood_drawer_bottom: "post-1920",
+    sheet_back_panel: "post-1900",
+    modern_concealed_hinge: "post-1950",
+    shellac_crazing: "1800–1920",
+    polyurethane: "post-1960",
+    thick_veneer: "pre-1910",
+    porcelain_caster: "1830–1900",
+    cylinder_roll: "1870–1920",
+    slant_front: "1700–1860",
+    gateleg_support: "1680–1800; revival 1880–1930",
+    drop_leaf_hinged: "1720–1930",
+  };
+
+  const photoCounts: Record<string, Set<string>> = {};
+
+  digest.observations.forEach((o) => {
+    const clue = o.clue || o.description;
+    if (!photoCounts[clue]) photoCounts[clue] = new Set();
+    if (o.source_image) photoCounts[clue].add(o.source_image);
+  });
+
+  const weighted_clues = digest.observations
+    .map((o) => {
+      const meta = o.clue ? CLUE_LIBRARY[o.clue] : undefined;
+      const clue = o.clue || o.description;
+      const category = meta?.category || o.type || "context";
+
+      const base = meta?.weight ?? 0.45;
+      const authority = AUTHORITY_RANK[category] || 2;
+      const effectiveConfidence = clamp(o.confidence / 100, 0.05, 0.99);
+      const replacementRisk = REPLACEMENT_RISK[clue] ?? 0.2;
+      const photoCount = photoCounts[clue]?.size || 1;
+
+      let adjusted = base;
+
+      if (authority >= 9) adjusted += 0.07;
+      else if (authority >= 7) adjusted += 0.04;
+      else if (authority <= 3) adjusted -= 0.08;
+
+      if (effectiveConfidence >= 0.8) adjusted += 0.06;
+      else if (effectiveConfidence >= 0.6) adjusted += 0.03;
+      else if (effectiveConfidence < 0.4) adjusted -= 0.1;
+
+      if (photoCount >= 3) adjusted += 0.08;
+      else if (photoCount === 2) adjusted += 0.04;
+
+      if (replacementRisk >= 0.35) adjusted -= replacementRisk * 0.22;
+
+      if (o.low_confidence_flag) adjusted -= 0.05;
+
+      if (o.hard_negative || meta?.hardNegative) adjusted = Math.max(adjusted, 0.88);
+
+      adjusted = clamp(adjusted, 0.05, 0.98);
+
+      const reasons: string[] = [];
+      reasons.push(meta?.dateHint || DATE_HINTS[clue] || "contextual evidence");
+      reasons.push(`authority ${authority}/10`);
+      if (photoCount > 1) reasons.push(`seen in ${photoCount} photo types`);
+      if (replacementRisk >= 0.35) reasons.push(`replacement risk ${Math.round(replacementRisk * 100)}%`);
+      if (o.hard_negative || meta?.hardNegative) reasons.push("hard negative");
+
+      return {
+        clue,
+        display_label: clue.replace(/_/g, " "),
+        category,
+        authority_rank: authority,
+        date_hint: meta?.dateHint || DATE_HINTS[clue] || null,
+        replacement_risk: replacementRisk,
+        base_weight: Number(base.toFixed(3)),
+        adjusted_weight: Number(adjusted.toFixed(3)),
+        confidence_reason: `${o.description} (${reasons.join("; ")})`,
+        hard_negative: Boolean(o.hard_negative || meta?.hardNegative),
+        effective_confidence: Number(effectiveConfidence.toFixed(3)),
+        source_images: o.source_image ? [o.source_image] : [],
+      };
+    })
+    .sort((a, b) => {
+      if (a.hard_negative && !b.hard_negative) return -1;
+      if (!a.hard_negative && b.hard_negative) return 1;
+      if (b.authority_rank !== a.authority_rank) return b.authority_rank - a.authority_rank;
+      return b.adjusted_weight - a.adjusted_weight;
+    });
+
+  const categoryMap: Record<string, { sum: number; count: number; maxAuthority: number }> = {};
+
+  weighted_clues.forEach((w) => {
+    if (!categoryMap[w.category]) {
+      categoryMap[w.category] = { sum: 0, count: 0, maxAuthority: 0 };
+    }
+    categoryMap[w.category].sum += w.adjusted_weight;
+    categoryMap[w.category].count += 1;
+    categoryMap[w.category].maxAuthority = Math.max(categoryMap[w.category].maxAuthority, w.authority_rank);
+  });
+
+  const category_scores = Object.entries(categoryMap)
+    .map(([category, v]) => ({
+      category,
+      avg_weight: Number((v.sum / v.count).toFixed(3)),
+      count: v.count,
+      authority_rank: v.maxAuthority,
+      score: Math.round((v.sum / v.count) * 100),
+    }))
+    .sort((a, b) => {
+      if (b.authority_rank !== a.authority_rank) return b.authority_rank - a.authority_rank;
+      return b.score - a.score;
+    });
+
+  return {
+    weighted_clues,
+    confidence_drivers: {
+      increased: weighted_clues
+        .filter((w) => !w.hard_negative && w.adjusted_weight >= 0.65)
+        .slice(0, 5)
+        .map((w) => `${w.display_label} — ${w.confidence_reason}`),
+      limited: weighted_clues
+        .filter((w) => w.hard_negative || w.adjusted_weight < 0.5)
+        .slice(0, 5)
+        .map((w) => w.hard_negative ? `${w.display_label} — hard negative` : `${w.display_label} — limited weight`),
+    },
+    category_scores,
+  };
+},
+p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
+  const { weighted_clues } = weighting;
+
+  const highAuthority = weighted_clues.filter(w => w.authority_rank >= 8);
+  const lowAuthority = weighted_clues.filter(w => w.authority_rank <= 4);
+  const hardNegatives = weighted_clues.filter(w => w.hard_negative);
+
+  const conflicts: string[] = [];
+  const resolutions: string[] = [];
+
+  // Detect conflicts
+  highAuthority.forEach((strong) => {
+    lowAuthority.forEach((weak) => {
+      if (
+        strong.date_hint &&
+        weak.date_hint &&
+        strong.date_hint !== weak.date_hint
+      ) {
+        conflicts.push(
+          `${weak.display_label} (${weak.date_hint}) conflicts with ${strong.display_label} (${strong.date_hint})`
+        );
+
+        // Resolve by authority
+        resolutions.push(
+          `${strong.display_label} carries greater authority (${strong.authority_rank}/10) and is favored over ${weak.display_label}.`
+        );
+      }
+    });
+  });
+
+  // Hard negative overrides
+  hardNegatives.forEach((hn) => {
+    resolutions.push(
+      `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
+    );
+  });
+
+  // Replacement logic
+  weighted_clues.forEach((w) => {
+    if (w.replacement_risk >= 0.35 && w.authority_rank <= 6) {
+      resolutions.push(
+        `${w.display_label} has elevated replacement risk and is down-weighted in interpretation.`
+      );
+    }
+  });
+
+  // Consolidated summary
+  const summary =
+    resolutions.length > 0
+      ? "Conflicts were resolved by prioritizing higher-authority construction and structural evidence over stylistic or replaceable features."
+      : "No significant conflicts detected between evidence categories.";
+
+  return {
+    conflicts: conflicts.slice(0, 6),
+    resolutions: resolutions.slice(0, 6),
+    summary,
+  };
+},
+
+ p6(gate: any, dating: any, form: any, weighting: any, conflict: any, digest?: EvidenceDigest) {
+  const vb = valueBand(
+    form.display_form || form.form || "Unknown",
+    dating.range || "",
+    digest
+  );
+
+  const moneyRange = (range: number[]) => `$${range[0]} – $${range[1]}`;
+
+  const valuationBreakdown = {
+    dealer_buy: {
+      label: "Dealer Buy / Trade-In",
+      range: moneyRange(vb.dealer_buy),
+      note: "Conservative acquisition range for a reseller who needs margin.",
+    },
+    quick_sale: {
+      label: "Quick Local Sale",
+      range: moneyRange(vb.quick_sale),
+      note: "Likely fast-sale range for local pickup or limited marketing.",
+    },
+    marketplace: {
+      label: "Standard Marketplace",
+      range: moneyRange(vb.marketplace),
+      note: "Likely general resale range with average photos, description, and local exposure.",
+    },
+    as_found_retail: {
+      label: "As-Found Retail",
+      range: moneyRange(vb.as_found_retail),
+      note: "Likely curated retail or antique-shop range without full restoration.",
+    },
+    restored_retail: {
+      label: "Restored Retail",
+      range: moneyRange(vb.restored_retail),
+      note: "Potential upper range after appropriate restoration, presentation, and patient selling.",
+    },
+  };
+
+  return {
+    supported_findings: [
+      `The strongest supported reading is ${form.display_form || form.form}.`,
+      `Current dating evidence supports ${dating.range}.`,
+      `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
+      `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
+      `Sellability score: ${vb.sellability_score}/100.`,
+    ],
+    tentative_findings: [
+      ...(conflict.conflicts || []),
+      ...(conflict.resolutions || []),
+    ],
+    more_evidence_needed: gate.next_best_evidence || [],
+    summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${conflict.summary || gate.evidence_sufficiency_summary}`,
+    valuation: {
+      ...vb,
+      display: valuationBreakdown.marketplace.range,
+      low: vb.marketplace[0],
+      high: vb.marketplace[1],
+      platform_breakdown: valuationBreakdown,
+    },
+  };
+},
+
+async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
+  const stage_outputs: Record<string, any> = {};
+
+  const p0 = await this.p0(caseData, images, intake, onPhase);
+  stage_outputs.p0 = p0;
+
+  console.log("----- PHASE 0 DEBUG START -----");
+  console.log("P0 RAW ERROR:", p0.raw_error);
+  console.log("P0 PERCEPTION:", p0.perception);
+  console.log("P0 OBSERVATIONS:", p0.observations);
+  console.log("IMAGES PASSED TO P0:", images);
+  console.log("----- PHASE 0 DEBUG END -----");
+
+  if (!p0.observations || p0.observations.length === 0) {
+    p0.observations = [
+      {
+        type: "form",
+        clue: "fallback_form",
+        description: "Furniture is visible, but Phase 0 did not return structured observations.",
+        confidence: 20,
+        source_image: "fallback",
+        hard_negative: false,
+        low_confidence_flag: true,
+      },
+    ];
+  }
+
+  p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
+  const digest = p0.evidence_digest;
+
+  const p1 = this.p1(caseData, intake, digest, images);
+  stage_outputs.p1 = p1; onPhase?.("p1", p1);
+
+  const p2 = this.p2(digest, p1);
+  stage_outputs.p2 = p2; onPhase?.("p2", p2);
+
+  const p3 = this.p3(digest, p1, intake);
+  stage_outputs.p3 = p3; onPhase?.("p3", p3);
+
+  const p4 = this.p4(digest);
+  stage_outputs.p4 = p4; onPhase?.("p4", p4);
+
+  const p5 = this.p5(digest, p4, p2, p3);
+  stage_outputs.p5 = p5; onPhase?.("p5", p5);
+
+  const p6 = this.p6(p1, p2, p3, p4, p5, digest);
+stage_outputs.p6 = p6; onPhase?.("p6", p6);
+
+const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);
+
+const p7 = buildDecisionGuidance({
+  gate: p1,
+  dating: p2,
+  form: p3,
+  conflict: p5,
+  valuation: fieldValue,
+  digest,
+  intake,
+});
+
+stage_outputs.p7 = p7; onPhase?.("p7", p7);
+
+const recommendation = fieldRecommendation(
+  intake?.asking_price,
+  fieldValue.low,
+  fieldValue.high
+);
+  return {
+    id: caseData.id,
+    status: "complete",
+    analysis_mode: intake?.analysis_mode || caseData.analysis_mode || "full_analysis",
+    stage_outputs,
+    observations: digest.observations,
+    evidence_digest: digest,
+    final_report: p6.summary,
+    field_scan: {
+      identification: p3.display_form || p3.form,
+      confidence: p3.confidence,
+      date_range: p2.range,
+      valueRange: fieldValue.display,
+      recommendation: recommendation.recommendation,
+      recommendation_display: recommendation.label,
+      recommendation_reasoning: recommendation.explanation,
+    },
+  };
+},
+};
+  if (textHas("finish loss", "worn finish", "water stain", "
