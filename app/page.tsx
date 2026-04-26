@@ -363,8 +363,7 @@ export default function Page() {
   }, [analysisMode, coreImages, groupImages, fieldPhotos]);
       return (
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
-    <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         <header style={{ marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
             <img
