@@ -998,7 +998,10 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   if (absenceOfModern && strongPre1920Signals >= 2) {
     return {
       range: "c. 1900–1920",
-      confidence: phase0EarlyBias ? "High" : "Moderate",
+      confidence:
+  strongPre1920Signals >= 3 && earlyHandmadeScore >= 1
+    ? "High"
+    : "Moderate",
       support,
       limitations,
     };
