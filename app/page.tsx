@@ -278,18 +278,25 @@ function SectionCard({ title, children }: { title: string; children: React.React
 function RunButton({ label, disabled, isRunning, onClick }: { label: string; disabled: boolean; isRunning: boolean; onClick: () => void }) {
   return (
     <div style={{ marginTop: 14 }}>
-      <div style={{ fontSize: 13, color: "#6b5c4f", marginBottom: 6 }}>Add more detail for a tighter result, or run it now.</div>
+      <div style={{ fontSize: 13, color: "#6b5c4f", marginBottom: 6 }}>
+        Add more detail for a tighter result, or run it now.
+      </div>
       <button
         type="button"
         onClick={onClick}
         disabled={disabled}
-        style={{ ...primaryButton, opacity: disabled || isRunning ? 0.7 : 1, cursor: disabled || isRunning ? "not-allowed" : "pointer" }}
+        style={{
+          ...primaryButton,
+          opacity: disabled || isRunning ? 0.7 : 1,
+          cursor: disabled || isRunning ? "not-allowed" : "pointer",
+        }}
       >
         {isRunning ? "Analyzing..." : label}
       </button>
     </div>
   );
 }
+
 function TipsList({ items }: { items?: string[] }) {
   if (!Array.isArray(items) || items.length === 0) {
     return <div style={emptyText}>No tips were returned.</div>;
@@ -303,9 +310,21 @@ function TipsList({ items }: { items?: string[] }) {
     </ul>
   );
 }
+
 export default function Page() {
-  const [coreImages, setCoreImages] = useState<CoreImageMap>({ overall_front: null, overall_side: null, underside: null, back: null, label_makers_mark: null });
-  const [groupImages, setGroupImages] = useState<GroupImageMap>({ hardware: [], construction: [] });
+  const [coreImages, setCoreImages] = useState<CoreImageMap>({
+    overall_front: null,
+    overall_side: null,
+    underside: null,
+    back: null,
+    label_makers_mark: null,
+  });
+
+  const [groupImages, setGroupImages] = useState<GroupImageMap>({
+    hardware: [],
+    construction: [],
+  });
+
   const [fieldPhotos, setFieldPhotos] = useState<ImageRecord[]>([]);
   const [intake, setIntake] = useState<IntakeState>(INITIAL_INTAKE);
   const [report, setReport] = useState<ReportShape | null>(null);
@@ -315,145 +334,33 @@ export default function Page() {
 
   const analysisMode = intake.analysis_mode;
 
-  const structuredMissingEvidence = useMemo(() => computeMissingEvidenceFromStructured(coreImages, groupImages), [coreImages, groupImages]);
-  const fieldMissingEvidence = useMemo(() => computeMissingEvidenceFromImages(fieldPhotos), [fieldPhotos]);
+  const structuredMissingEvidence = useMemo(
+    () => computeMissingEvidenceFromStructured(coreImages, groupImages),
+    [coreImages, groupImages]
+  );
+
+  const fieldMissingEvidence = useMemo(
+    () => computeMissingEvidenceFromImages(fieldPhotos),
+    [fieldPhotos]
+  );
+
   const totalPhotos = useMemo(() => {
     if (analysisMode === "field_scan") return fieldPhotos.length;
+
     const coreCount = Object.values(coreImages).filter(Boolean).length;
     const groupCount = Object.values(groupImages).reduce((sum, arr) => sum + arr.length, 0);
+
     return coreCount + groupCount;
   }, [analysisMode, coreImages, groupImages, fieldPhotos]);
 
   const allImages = useMemo(() => {
     if (analysisMode === "field_scan") return fieldPhotos;
+
     const core = Object.values(coreImages).filter(Boolean) as ImageRecord[];
     const grouped = Object.values(groupImages).flat();
+
     return [...core, ...grouped];
   }, [analysisMode, coreImages, groupImages, fieldPhotos]);
-
-  async function handleCoreUpload(slotKey: string, fileList: FileList | null) {
-    if (!fileList || !fileList[0]) return;
-    const file = fileList[0];
-    const dataUrl = await fileToDataUrl(file);
-    setCoreImages((prev) => ({ ...prev, [slotKey]: { image_type: slotKey, data_url: dataUrl, name: file.name } }));
-  }
-
-  async function handleGroupUpload(groupKey: string, imageType: string, fileList: FileList | null) {
-    if (!fileList || fileList.length === 0) return;
-    const files = Array.from(fileList);
-    const nextImages: ImageRecord[] = [];
-    for (const file of files) nextImages.push({ image_type: imageType, data_url: await fileToDataUrl(file), name: file.name });
-    setGroupImages((prev) => ({ ...prev, [groupKey]: [...(prev[groupKey] || []), ...nextImages] }));
-  }
-
-  async function handleFieldUpload(fileList: FileList | null) {
-    if (!fileList || fileList.length === 0) return;
-    const files = Array.from(fileList);
-    const nextImages: ImageRecord[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const nextIndex = fieldPhotos.length + nextImages.length;
-      nextImages.push({ image_type: inferFieldImageType(nextIndex), data_url: await fileToDataUrl(file), name: file.name });
-    }
-    setFieldPhotos((prev) => [...prev, ...nextImages]);
-  }
-
-  async function handleFieldRefinementUpload(imageType: string, fileList: FileList | null) {
-    if (!fileList || fileList.length === 0) return;
-    const files = Array.from(fileList);
-    const nextImages: ImageRecord[] = [];
-    for (const file of files) nextImages.push({ image_type: imageType, data_url: await fileToDataUrl(file), name: file.name });
-    setFieldPhotos((prev) => [...prev, ...nextImages]);
-  }
-
-  function removeCoreImage(slotKey: string) {
-    setCoreImages((prev) => ({ ...prev, [slotKey]: null }));
-  }
-
-  function removeGroupImage(groupKey: string, index: number) {
-    setGroupImages((prev) => ({ ...prev, [groupKey]: prev[groupKey].filter((_, i) => i !== index) }));
-  }
-
-  function removeFieldPhoto(index: number) {
-    setFieldPhotos((prev) => prev.filter((_, i) => i !== index).map((img, i) => ({ ...img, image_type: inferFieldImageType(i) })));
-  }
-
-  function updateIntake<K extends keyof IntakeState>(key: K, value: IntakeState[K]) {
-    setIntake((prev) => ({ ...prev, [key]: value }));
-  }
-
-  async function runAnalysis() {
-    setError("");
-    setReport(null);
-
-    if (analysisMode === "field_scan") {
-      if (fieldPhotos.length < 2) {
-        setError("Please add at least two photos before running Field Scan.");
-        return;
-      }
-    } else {
-      if (!coreImages.overall_front || !coreImages.overall_side) {
-        setError("Please upload at least an Overall Front and Overall Side photo before analyzing.");
-        return;
-      }
-      if (allImages.length < 2) {
-        setError("Please upload at least two photos before analyzing.");
-        return;
-      }
-    }
-
-    setIsRunning(true);
-    try {
-      const created = API.createCase({ notes: intake.notes, analysis_mode: intake.analysis_mode });
-      const caseId = created.case_id;
-      setActiveCaseId(caseId);
-      for (const img of allImages) API.addImage(caseId, img);
-      await API.analyzeCase(caseId, intake);
-      setReport(API.getReport(caseId));
-    } catch (e: any) {
-      setError(e?.message || "Analysis failed.");
-    } finally {
-      setIsRunning(false);
-    }
-  }
-
-  function resetAll() {
-    setCoreImages({ overall_front: null, overall_side: null, underside: null, back: null, label_makers_mark: null });
-    setGroupImages({ hardware: [], construction: [] });
-    setFieldPhotos([]);
-    setIntake(INITIAL_INTAKE);
-    setReport(null);
-    setActiveCaseId("");
-    setError("");
-    setIsRunning(false);
-  }
-
-  const stageOutputs = report?.stage_outputs || {};
-  const p1 = stageOutputs.p1 || null;
-  const p2 = stageOutputs.p2 || null;
-  const p3 = stageOutputs.p3 || null;
-  const p5 = stageOutputs.p5 || null;
-  const p6 = stageOutputs.p6 || null;
-
-  const fieldValue = useMemo(() => {
-    if (!p2 || !p3) return null;
-    return fieldValueBand(p3?.display_form || p3?.form || "Unknown", p2?.range || "Unknown", Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0, p1?.confidence_cap);
-  }, [p1, p2, p3, p5]);
-
-  const fieldRecommendation = useMemo(() => {
-    if (!fieldValue) return null;
-    return deriveFieldRecommendation({ askingPrice: intake.asking_price, valueLow: fieldValue.low, valueHigh: fieldValue.high, confidenceBand: p1?.confidence_cap, conflictCount: Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0 });
-  }, [fieldValue, intake.asking_price, p1, p5]);
-
-  const supportingEvidence = useMemo(() => pickSupportingEvidence(report), [report]);
-  const primaryCaution = (Array.isArray(p5?.conflict_notes) && p5.conflict_notes[0]) || (Array.isArray(p2?.limitations) && p2.limitations[0]) || "Results remain broad until more structural evidence is visible.";
-  const nextBestEvidence = (Array.isArray(p1?.next_best_evidence) && p1.next_best_evidence[0]) || "Add a structural detail such as an underside, back, or joinery view if accessible.";
-
-  const fieldReady = fieldPhotos.length >= 2;
-  const fullReady = Boolean(coreImages.overall_front && coreImages.overall_side && allImages.length >= 2);
-
-  return (
-    <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         <header style={{ marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
