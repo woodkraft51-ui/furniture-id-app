@@ -1921,9 +1921,7 @@ if (missing.label_photo) {
     const ranked = scoreForms(digest);
     const best = ranked[0];
     const alternatives = ranked.slice(1, 4).map((r) => r.form);
-    const style =
-  deriveStyleContext(digest) ||
-  (digest.clue_keys.includes("victorian_style") ? "Victorian" : null);
+    
     const form = best?.form || "Unclassified furniture";
     const confidencePct = best ? Math.min(gate.confidence_cap_pct, best.score >= 80 ? 90 : best.score >= 45 ? 72 : 48) : 35;
 
