@@ -872,7 +872,7 @@ function buildReportEvidenceSupport(digest: EvidenceDigest, formSupport: string[
 
   const combined = [...evidence, ...formSupport];
 
-  return uniq(combined).slice(0, 4);
+  return uniq(combined).slice(0, 10);
 }
 function deriveStyleContext(digest: EvidenceDigest): string | null {
     const text = `${digest.perception?.raw_text || ""} ${digest.observations
