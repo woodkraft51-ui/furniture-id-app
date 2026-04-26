@@ -1938,7 +1938,7 @@ const styleFromObservation = observedStyle
 const style = deriveStyleContext(digest) || styleFromObservation;
     return {
       form,
-      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${form}` : form,
+      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
       support: buildReportEvidenceSupport(digest, best?.support || []),
