@@ -1698,23 +1698,58 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
 },
 
   p6(gate: any, dating: any, form: any, weighting: any, conflict: any) {
-    const vb = valueBand(form.display_form || form.form || "Unknown", dating.range || "");
-    return {
-      supported_findings: [
-        `The strongest supported reading is ${form.display_form || form.form}.`,
-        `Current dating evidence supports ${dating.range}.`,
-        `Broad resale lane: $${vb.marketplace[0]} – $${vb.marketplace[1]}.`,
-       
-      ],
-      tentative_findings: [
-  ...(conflict.conflicts || []),
-  ...(conflict.resolutions || []),
-],
-      more_evidence_needed: gate.next_best_evidence || [],
-      summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${conflict.summary || gate.evidence_sufficiency_summary}`,
-      valuation: vb,
-    };
-  },
+  const vb = valueBand(form.display_form || form.form || "Unknown", dating.range || "");
+
+  const moneyRange = (range: number[]) => `$${range[0]} – $${range[1]}`;
+
+  const valuationBreakdown = {
+    dealer_buy: {
+      label: "Dealer Buy / Trade-In",
+      range: moneyRange(vb.dealer_buy),
+      note: "Likely conservative acquisition range for a reseller who needs margin.",
+    },
+    quick_sale: {
+      label: "Quick Local Sale",
+      range: moneyRange(vb.quick_sale),
+      note: "Likely fast-sale range for Facebook Marketplace, local pickup, or limited marketing.",
+    },
+    marketplace: {
+      label: "Standard Marketplace",
+      range: moneyRange(vb.marketplace),
+      note: "Likely general resale range with average photos, description, and local exposure.",
+    },
+    as_found_retail: {
+      label: "As-Found Retail",
+      range: moneyRange(vb.as_found_retail),
+      note: "Likely curated retail or antique-shop range without full restoration.",
+    },
+    restored_retail: {
+      label: "Restored Retail",
+      range: moneyRange(vb.restored_retail),
+      note: "Potential upper range after appropriate restoration, presentation, and patient selling.",
+    },
+  };
+
+  return {
+    supported_findings: [
+      `The strongest supported reading is ${form.display_form || form.form}.`,
+      `Current dating evidence supports ${dating.range}.`,
+      `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
+      `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
+    ],
+    tentative_findings: [
+      ...(conflict.conflicts || []),
+      ...(conflict.resolutions || []),
+    ],
+    more_evidence_needed: gate.next_best_evidence || [],
+    summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${conflict.summary || gate.evidence_sufficiency_summary}`,
+    valuation: {
+      ...vb,
+      display: valuationBreakdown.marketplace.range,
+      platform_breakdown: valuationBreakdown,
+    },
+  };
+},
 
   async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
     const stage_outputs: Record<string, any> = {};
