@@ -922,7 +922,38 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
   if (clues.has("metal_bed_frame")) {
     add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
   }
+  {
+  form: "metal bed",
+  weight: (c: any) =>
+    (c.materials?.includes("metal") ? 3 : 0) +
+    (c.structure?.includes("headboard") ? 2 : 0)
+},
 
+{
+  form: "upholstered seating",
+  weight: (c: any) =>
+    (c.materials?.includes("upholstery") ? 3 : 0) +
+    (c.structure?.includes("seat") ? 2 : 0)
+},
+
+{
+  form: "wicker furniture",
+  weight: (c: any) =>
+    (c.materials?.includes("wicker") ? 4 : 0)
+},
+
+{
+  form: "glass-top table",
+  weight: (c: any) =>
+    (c.materials?.includes("glass") ? 3 : 0) +
+    (c.structure?.includes("table") ? 2 : 0)
+},
+
+{
+  form: "modern plastic furniture",
+  weight: (c: any) =>
+    (c.materials?.includes("plastic") ? 4 : 0)
+},
   // Style-context forms
   if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving", "spiral turned", "twist leg"])) {
     add("Jacobean Revival cabinet / sideboard", 72, "Historicist carving or turned supports support Jacobean Revival context.");
