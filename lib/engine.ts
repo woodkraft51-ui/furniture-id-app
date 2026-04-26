@@ -1091,7 +1091,18 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
 
 function dateFromEvidence(digest: EvidenceDigest, form: string) {
   const clues = new Set(digest.clue_keys);
-  const style = deriveStyleContext(digest);
+  const observedStyle = [...(digest.observations || [])]
+  .filter((o) => o.type === "style" && o.clue && (o.confidence || 0) >= 70)
+  .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
+
+const styleFromObservation = observedStyle
+  ? String(observedStyle.clue)
+      .replace(/_style$/i, "")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+  : null;
+
+const style = deriveStyleContext(digest) || styleFromObservation;
   const support = buildReportEvidenceSupport(digest, []);
   const limitations: string[] = [];
 
