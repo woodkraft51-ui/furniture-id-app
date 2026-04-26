@@ -332,12 +332,20 @@ function normalizePhase0Clue(raw: any): string | null {
   }
 
   if (
-    key === "drawer_configuration" ||
-    key === "drawer_count" ||
-    key === "total_drawer_count"
-  ) {
-    return "multiple_drawer_case";
-  }
+  key === "drawer_configuration" ||
+  key === "drawer_count" ||
+  key === "tall_chest_form" ||
+  key === "top_row_split_drawers" ||
+  key === "split_top_drawer_row" ||
+  key === "drawer_depth_graduation" ||
+  key === "storage" ||
+  key === "chest_of_drawers" ||
+  key === "tall_chest" ||
+  key === "highboy_form" ||
+  key === "highboy_style"
+) {
+  return "multiple_drawer_case";
+}
 
   if (key === "primary_wood_oak") {
     return "oak_primary";
