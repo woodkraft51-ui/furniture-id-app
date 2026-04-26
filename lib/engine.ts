@@ -1467,12 +1467,12 @@ function buildDecisionGuidance(args: {
   if (gate.confidence_cap === "Low" || gate.confidence_cap === "Inconclusive") {
     addPair(
       "Use the limited evidence as negotiation leverage; the price should reflect that the identification and date are still broad.",
-      "Reduce buyer hesitation by adding missing evidence photos before listing, especially the strongest structural views."
+      "Reduce buyer hesitation by adding the missing evidence photos before listing, especially the strongest structural views."
     );
   } else if (gate.confidence_cap === "Moderate") {
     addPair(
-      "Negotiate conservatively if the seller is pricing it as confirmed without enough structural proof.",
-      "Present the identification as evidence-supported, but avoid overstating certainty beyond the visible construction clues."
+      "Negotiate conservatively if the seller is pricing it as a confirmed antique without enough structural proof.",
+      "Present the identification as evidence-supported but avoid overstating certainty beyond the visible construction clues."
     );
   } else {
     addPair(
@@ -1481,4 +1481,311 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  if (textHas("finish loss", "worn finish", "water stain", "
+  if (textHas("finish loss", "worn finish", "water stain", "white haze", "scratches", "surface damage", "veneer loss", "missing", "broken", "loose", "structural damage")) {
+    addPair(
+      "Use visible wear, damage, missing parts, or loose structure as fair reasons to ask for a lower price.",
+      "Do not frame condition problems as strengths; clean, stabilize, and photograph them honestly while emphasizing stronger form and construction features."
+    );
+  }
+
+  if (textHas("refinished", "polyurethane", "later finish", "painted", "paint loss") || has("polyurethane")) {
+    addPair(
+      "If the surface appears refinished or later-treated, negotiate below prices for untouched original finish examples.",
+      "Describe the surface honestly and focus the listing on form, usability, construction, and decorative appeal rather than original finish."
+    );
+  }
+
+  if (textHas("replacement hardware", "replaced hardware", "hardware replacement") || has("phillips_screw", "staple_fastener", "modern_concealed_hinge")) {
+    addPair(
+      "Use modern or replacement hardware as a reason to avoid paying full original-period pricing.",
+      "If hardware may be replaced, avoid calling it all original; instead, highlight the structure, form, and any hardware that is clearly period-appropriate."
+    );
+  }
+
+  if (has("solid_wood_construction", "solid_plank_back", "frame_and_panel_sides", "hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "mortise_and_tenon")) {
+    addPair(
+      "Acknowledge the stronger construction evidence, but still compare the price to realistic local resale rather than theoretical antique value.",
+      "Highlight the strongest construction clues in the listing because informed buyers respond to visible evidence."
+    );
+  }
+
+  if (has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+    addPair(
+      "For metal furniture, check welds, bends, plating wear, rust, and structural looseness before agreeing to the price.",
+      "For metal furniture, highlight clean lines, original finish or plating, stable joints, and any distinctive design features."
+    );
+  }
+
+  if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
+    addPair(
+      "For upholstered pieces, use fabric wear, odor risk, spring condition, and reupholstery cost as negotiation points.",
+      "For upholstered pieces, photograph the full silhouette, legs, frame clues, tufting, fabric condition, and underside construction if accessible."
+    );
+  }
+
+  if (has("woven_body", "rattan_frame", "cane_panels")) {
+    addPair(
+      "For wicker, rattan, or cane, negotiate based on breaks, sagging, missing strands, brittle areas, and repair difficulty.",
+      "For wicker, rattan, or cane, highlight intact weaving, attractive shape, light weight, porch or sunroom appeal, and any unusual form."
+    );
+  }
+
+  if (has("maker_label", "roos_label", "lane_label")) {
+    addPair(
+      "A maker label improves confidence, so focus negotiation more on condition, demand, and resale margin than on identity.",
+      "Photograph the label clearly and mention it early in the listing because labels reduce buyer uncertainty."
+    );
+  }
+
+  const formText = String(form?.display_form || form?.form || "").toLowerCase();
+
+  if (formText.includes("dresser") || formText.includes("chest of drawers") || formText.includes("drawer case")) {
+    addPair(
+      "Large drawer cases can be slower to sell; use size, transport difficulty, and local demand as negotiation points.",
+      "Measure it clearly and show scale; for drawer cases, buyers need to know it will fit and that drawers operate properly."
+    );
+  }
+
+  if (formText.includes("telephone bench") || formText.includes("writing bench")) {
+    addPair(
+      "Because this is a niche form, negotiate based on how quickly you realistically expect to resell it.",
+      "Use the unusual function as a selling hook; photograph the seat, back, and side writing or phone surface together."
+    );
+  }
+
+  if (formText.includes("desk") || formText.includes("secretary") || formText.includes("roll-top") || formText.includes("slant-front")) {
+    addPair(
+      "Check writing surfaces, cubbies, hinges, and moving parts before paying; repairs can quickly reduce margin.",
+      "Show the writing surface open and closed, plus interior compartments, because function drives buyer interest."
+    );
+  }
+
+  if (formText.includes("table")) {
+    addPair(
+      "Check wobble, leaf movement, repairs, and top condition before agreeing to the price.",
+      "Photograph the top, base, and any extension or leaf mechanism; table buyers care about stability and usable surface."
+    );
+  }
+
+  const marketplace = valuation?.platform_breakdown?.marketplace?.range || valuation?.display;
+  if (marketplace) {
+    negotiation.push(`Use the marketplace lane as the practical ceiling for negotiation; this scan points to about ${marketplace} for typical resale exposure.`);
+    selling.push(`Price near the realistic marketplace lane, about ${marketplace}, unless better photos or stronger evidence justify the upper end.`);
+  }
+
+  if (typeof valuation?.sellability_score === "number") {
+    if (valuation.sellability_score < 45) {
+      addPair(
+        "Because sellability is weak, only buy if the price leaves room for a slow sale or added cleanup work.",
+        "Improve sellability before listing with better photos, light cleaning, accurate measurements, and honest condition notes."
+      );
+    } else if (valuation.sellability_score >= 70) {
+      addPair(
+        "The piece appears reasonably sellable, so do not expect extreme discounts unless condition or transport issues are present.",
+        "Lean into the piece’s strongest visual and evidence-supported features; the sellability score suggests there is buyer interest if priced realistically."
+      );
+    }
+  }
+
+  if (Array.isArray(conflict?.conflict_notes) && conflict.conflict_notes.length > 0) {
+    addPair(
+      "Use mixed evidence or possible restoration as a reason to stay below top-of-market pricing.",
+      "Explain mixed evidence plainly; buyers trust listings that separate confirmed construction from possible later changes."
+    );
+  }
+
+  if (negotiation.length < 4) {
+    negotiation.push("Leave room for transportation, cleaning, small repairs, and the time it may take to resell.");
+  }
+
+  if (selling.length < 4) {
+    selling.push("Include dimensions, clear condition photos, and the strongest identification evidence in the first few listing lines.");
+  }
+
+  return {
+    negotiation_tips: uniq(negotiation).slice(0, 6),
+    selling_tips: uniq(selling).slice(0, 6),
+    contradiction_guard: "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths.",
+  };
+}
+
+export const PE = {
+  async callClaude(system: string, content: any[]): Promise<ClaudeResult> {
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 4000,
+          system,
+          messages: [{ role: "user", content }],
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) return { ok: false, error: data };
+
+      const raw = Array.isArray(data?.content)
+        ? data.content.map((b: any) => b?.text || "").join("\n")
+        : "";
+
+      const parsed = parseModelJson(raw);
+
+      if (parsed) {
+        return { ok: true, parsed, raw };
+      }
+
+      console.log("CLAUDE RAW NON-JSON RESPONSE:", raw);
+
+      return {
+        ok: false,
+        error: {
+          type: "no_valid_json",
+          raw,
+        },
+      };
+    } catch (e: any) {
+      return { ok: false, error: e?.message || "unknown_error" };
+    }
+  },
+
+  imgs(images: any[]) {
+    const out: any[] = [];
+
+    for (const img of images || []) {
+      if (!img?.data_url) continue;
+
+      const [head, base] = String(img.data_url).split(",");
+      const mediaType = head?.match(/data:(.*?);/)?.[1] || "image/jpeg";
+
+      out.push({
+        type: "image",
+        source: {
+          type: "base64",
+          media_type: mediaType,
+          data: base,
+        },
+      });
+
+      out.push({
+        type: "text",
+        text: `[Image type: ${img.image_type || "unknown"}]`,
+      });
+    }
+
+    return out;
+  },
+
+  async p0(caseData: any, images: any[], intake: any, onPhase?: any) {
+    const system = `
+You are the Phase 0 evidence scanner for New Creations Woodcraft.
+
+You scan the submitted photos ONE TIME ONLY.
+
+Your job is NOT final identification or valuation.
+Your job is to extract and store visible evidence in a structured way so later phases can reason from it.
+
+Return JSON only.
+
+You MUST return this exact structure:
+
+{
+  "perception": {
+    "labels": [],
+    "maker_names": [],
+    "materials": [],
+    "forms": [],
+    "functional_features": [],
+    "style_cues": [],
+    "construction_cues": [],
+    "condition_cues": [],
+    "visible_text": []
+  },
+  "observations": [
+    {
+      "category": "form | function | structure | material | hardware | style | label | condition | construction",
+      "key": "short_snake_case_key",
+      "value": "visible fact or true/false",
+      "description": "plain evidence statement",
+      "confidence": 0-100,
+      "source_image": "overall_front | overall_side | underside | back | hardware_closeup | joinery_closeup | label_makers_mark | unknown",
+      "hard_negative": false
+    }
+  ]
+}
+
+Minimum evidence contract:
+Even when uncertain, you MUST return low-confidence observations rather than an empty list.
+
+Always check for and report:
+
+FORM SIGNALS:
+- seating surface
+- flat surface
+- secondary surface
+- backrest
+- side rails
+- vertical supports
+- drawers
+- doors
+- shelves
+- mirror
+- pedestal / column
+- bed rails / headboard / footboard
+
+FUNCTION SIGNALS:
+- sitting
+- writing
+- storage
+- display
+- sleeping
+- telephone use
+- grooming / dressing
+- mechanical function
+
+STRUCTURAL SIGNALS:
+- legs
+- rails
+- stretchers
+- spindles
+- backrest
+- hinges
+- panels
+- frame members
+- visible joinery
+- visible fasteners
+
+NON-WOOD MATERIAL SIGNALS:
+- metal frame
+- tubular steel
+- wrought iron
+- cast iron
+- brass frame
+- chrome frame
+- upholstered surfaces
+- visible springs
+- tufting
+- upholstery tacks
+- wicker
+- rattan
+- cane panels
+- glass top
+- laminate or Formica surface
+- molded plastic
+- acrylic or Lucite
+
+Important reasoning rules:
+- Functional features outrank storage features.
+- Material evidence must not be forced into wood-case furniture assumptions.
+- Do not call a telephone bench or secretary combination a dresser just because drawers are present.
+- A bench seat + raised writing/phone surface + backrest should be captured as possible telephone/writing bench evidence.
+- A drop-front writing surface or cubbies should be captured as secretary/desk evidence.
+- Labels and maker marks are highest-authority evidence.
+- Use low confidence if uncertain, but do not omit visible form evidence.
+
+Preferred keys when applicable:
+seating_surface, backrest_present, spindle_back
