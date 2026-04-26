@@ -1684,7 +1684,7 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
         `The strongest supported reading is ${form.display_form || form.form}.`,
         `Current dating evidence supports ${dating.range}.`,
         `Broad resale lane: $${vb.marketplace[0]} – $${vb.marketplace[1]}.`,
-       `Broad resale lane: ${displayRange}.`,
+       
       ],
       tentative_findings: [
   ...(conflict.conflicts || []),
