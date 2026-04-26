@@ -736,9 +736,17 @@ const negatesSeatingOrWriting =
   if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
   if (includesAny(text, ["pedestal", "single column"])) add("pedestal_column", "Single-column pedestal form is visible.", 84);
   if (includesAny(text, ["armchair", "upholstered chair"])) add("armchair_form", "Armchair form is visible.", 82);
- if (c.materials?.includes("metal")) push("materials", "metal_frame", "Metal structure visible", 70);
-if (c.materials?.includes("wicker")) push("materials", "woven_body", "Woven material detected", 70);
-if (c.materials?.includes("upholstery")) push("materials", "fully_upholstered", "Upholstered surface detected", 70);
+   if (includesAny(text, ["metal frame", "metal furniture", "metal structure", "steel frame", "iron frame"])) {
+    add("metal_frame", "Metal frame or metal furniture structure is visible.", 72);
+  }
+
+  if (includesAny(text, ["wicker", "woven reed", "woven body", "reed furniture"])) {
+    add("woven_body", "Woven wicker or reed body construction is visible.", 76);
+  }
+
+  if (includesAny(text, ["upholstered", "fabric covered", "cushion", "cushioned", "padded seat", "padded back"])) {
+    add("fully_upholstered", "Upholstered or cushioned surfaces are visible.", 74);
+  }
   if (
   text.includes("cabriole") &&
   !includesAny(text, ["no cabriole", "no turned or cabriole", "not cabriole"])
