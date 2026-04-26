@@ -724,6 +724,15 @@ const p7 = stageOutputs.p7 || null;
               <SectionCard title="Cautions and Conflicts">{p6?.tentative_findings?.length ? <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>
             </div>
             <SectionCard title="Next Best Evidence">{Array.isArray(p6?.more_evidence_needed) && p6.more_evidence_needed.length > 0 ? <ul style={listStyle}>{p6.more_evidence_needed.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No additional evidence recommendations were returned.</div>}</SectionCard>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <SectionCard title="Negotiating Tips">
+              <TipsList items={p7?.negotiation_tips} />
+            </SectionCard>
+
+            <SectionCard title="Selling Tips">
+              <TipsList items={p7?.selling_tips} />
+            </SectionCard>
+        </div>
           </div>
         )}
       </div>
