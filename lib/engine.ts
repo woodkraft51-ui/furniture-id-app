@@ -525,6 +525,29 @@ function detectClueFromText(text: string): string | null {
   // MATERIAL / CONSTRUCTION
   if (!isNegated("plywood") && includesAny(t, ["plywood", "sheet back"])) return "sheet_back_panel";
 
+// --- NON-WOOD MATERIAL DETECTION ---
+
+if (t.includes("metal")) return "metal_frame";
+if (t.includes("steel")) return "tubular_steel";
+if (t.includes("iron")) return "wrought_iron";
+if (t.includes("brass")) return "brass_frame";
+if (t.includes("chrome")) return "chrome_frame";
+
+if (t.includes("upholstered") || t.includes("fabric") || t.includes("cushion")) return "fully_upholstered";
+if (t.includes("tufted")) return "tufted_upholstery";
+if (t.includes("springs")) return "visible_springs";
+
+if (t.includes("wicker")) return "woven_body";
+if (t.includes("rattan")) return "rattan_frame";
+if (t.includes("cane")) return "cane_panels";
+
+if (t.includes("glass")) return "glass_top";
+if (t.includes("laminate")) return "laminate_surface";
+if (t.includes("formica")) return "formica_surface";
+
+if (t.includes("plastic")) return "molded_plastic";
+if (t.includes("acrylic") || t.includes("lucite")) return "acrylic_clear";
+ 
   return null;
 }
 function descriptionFromObservation(o: any): string {
