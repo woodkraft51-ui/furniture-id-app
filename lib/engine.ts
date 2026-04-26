@@ -1767,8 +1767,12 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
   };
 },
 
-  p6(gate: any, dating: any, form: any, weighting: any, conflict: any) {
-  const vb = valueBand(form.display_form || form.form || "Unknown", dating.range || "");
+ p6(gate: any, dating: any, form: any, weighting: any, conflict: any, digest?: EvidenceDigest) {
+  const vb = valueBand(
+    form.display_form || form.form || "Unknown",
+    dating.range || "",
+    digest
+  );
 
   const moneyRange = (range: number[]) => `$${range[0]} – $${range[1]}`;
 
@@ -1776,12 +1780,12 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
     dealer_buy: {
       label: "Dealer Buy / Trade-In",
       range: moneyRange(vb.dealer_buy),
-      note: "Likely conservative acquisition range for a reseller who needs margin.",
+      note: "Conservative acquisition range for a reseller who needs margin.",
     },
     quick_sale: {
       label: "Quick Local Sale",
       range: moneyRange(vb.quick_sale),
-      note: "Likely fast-sale range for Facebook Marketplace, local pickup, or limited marketing.",
+      note: "Likely fast-sale range for local pickup or limited marketing.",
     },
     marketplace: {
       label: "Standard Marketplace",
@@ -1806,6 +1810,7 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
       `Current dating evidence supports ${dating.range}.`,
       `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
       `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
+      `Sellability score: ${vb.sellability_score}/100.`,
     ],
     tentative_findings: [
       ...(conflict.conflicts || []),
@@ -1816,90 +1821,85 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
     valuation: {
       ...vb,
       display: valuationBreakdown.marketplace.range,
+      low: vb.marketplace[0],
+      high: vb.marketplace[1],
       platform_breakdown: valuationBreakdown,
     },
   };
 },
 
-  async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
-    const stage_outputs: Record<string, any> = {};
+async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
+  const stage_outputs: Record<string, any> = {};
 
-    const p0 = await this.p0(caseData, images, intake, onPhase);
-    stage_outputs.p0 = p0;
-// 🔍 DEBUG: Inspect Phase 0 output
-console.log("----- PHASE 0 DEBUG START -----");
-console.log("P0 RAW ERROR:", p0.raw_error);
-console.log("P0 PERCEPTION:", p0.perception);
-console.log("P0 OBSERVATIONS:", p0.observations);
-console.log("IMAGES PASSED TO P0:", images);
-console.log("----- PHASE 0 DEBUG END -----");
-    // 🔒 Phase 0 guard: never allow the evidence pipeline to continue empty
-if (!p0.observations || p0.observations.length === 0) {
-  p0.observations = [
-    {
-      type: "form",
-      clue: "fallback_form",
-      description: "Furniture is visible, but Phase 0 did not return structured observations.",
-      confidence: 20,
-      source_image: "fallback",
-      hard_negative: false,
-      low_confidence_flag: true,
-    },
-  ];
-}
+  const p0 = await this.p0(caseData, images, intake, onPhase);
+  stage_outputs.p0 = p0;
 
-// 🔁 IMPORTANT: rebuild digest after guard so later phases actually use it
-p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
-    const stored = (API.getObservations(caseData.id) || []).map((o: any) => ({
-      type: asString(o.observation_type) || "context",
-      clue: normalizeClueKey(o.clue || o.reference_id),
-      description: descriptionFromObservation(o),
-      confidence: clamp(Math.round(Number(o.raw_confidence || 0.55) * 100), 5, 99),
-      source_image: asString(o.source_image) || null,
-      hard_negative: Boolean(o.hard_negative),
-      low_confidence_flag: Boolean(o.low_confidence_flag),
-    })) as Observation[];
+  console.log("----- PHASE 0 DEBUG START -----");
+  console.log("P0 RAW ERROR:", p0.raw_error);
+  console.log("P0 PERCEPTION:", p0.perception);
+  console.log("P0 OBSERVATIONS:", p0.observations);
+  console.log("IMAGES PASSED TO P0:", images);
+  console.log("----- PHASE 0 DEBUG END -----");
 
-    const digest = p0.evidence_digest;
-
-    const p1 = this.p1(caseData, intake, digest, images);
-    stage_outputs.p1 = p1; onPhase?.("p1", p1);
-
-    const p2 = this.p2(digest, p1);
-    stage_outputs.p2 = p2; onPhase?.("p2", p2);
-
-    const p3 = this.p3(digest, p1, intake);
-    stage_outputs.p3 = p3; onPhase?.("p3", p3);
-
-    const p4 = this.p4(digest);
-    stage_outputs.p4 = p4; onPhase?.("p4", p4);
-
-    const p5 = this.p5(digest, p4, p2, p3);
-    stage_outputs.p5 = p5; onPhase?.("p5", p5);
-
-    const p6 = this.p6(p1, p2, p3, p4, p5);
-    stage_outputs.p6 = p6; onPhase?.("p6", p6);
-
-    const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range);
-    const recommendation = fieldRecommendation(intake?.asking_price, fieldValue.low, fieldValue.high);
-
-    return {
-      id: caseData.id,
-      status: "complete",
-      analysis_mode: intake?.analysis_mode || caseData.analysis_mode || "full_analysis",
-      stage_outputs,
-      observations: digest.observations,
-      evidence_digest: digest,
-      final_report: p6.summary,
-      field_scan: {
-        identification: p3.display_form || p3.form,
-        confidence: p3.confidence,
-        date_range: p2.range,
-        valueRange: fieldValue.display,
-        recommendation: recommendation.recommendation,
-        recommendation_display: recommendation.label,
-        recommendation_reasoning: recommendation.explanation,
+  if (!p0.observations || p0.observations.length === 0) {
+    p0.observations = [
+      {
+        type: "form",
+        clue: "fallback_form",
+        description: "Furniture is visible, but Phase 0 did not return structured observations.",
+        confidence: 20,
+        source_image: "fallback",
+        hard_negative: false,
+        low_confidence_flag: true,
       },
-    };
-  },
+    ];
+  }
+
+  p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
+  const digest = p0.evidence_digest;
+
+  const p1 = this.p1(caseData, intake, digest, images);
+  stage_outputs.p1 = p1; onPhase?.("p1", p1);
+
+  const p2 = this.p2(digest, p1);
+  stage_outputs.p2 = p2; onPhase?.("p2", p2);
+
+  const p3 = this.p3(digest, p1, intake);
+  stage_outputs.p3 = p3; onPhase?.("p3", p3);
+
+  const p4 = this.p4(digest);
+  stage_outputs.p4 = p4; onPhase?.("p4", p4);
+
+  const p5 = this.p5(digest, p4, p2, p3);
+  stage_outputs.p5 = p5; onPhase?.("p5", p5);
+
+  const p6 = this.p6(p1, p2, p3, p4, p5, digest);
+  stage_outputs.p6 = p6; onPhase?.("p6", p6);
+
+  const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);
+  const recommendation = fieldRecommendation(
+    intake?.asking_price,
+    fieldValue.low,
+    fieldValue.high
+  );
+
+  return {
+    id: caseData.id,
+    status: "complete",
+    analysis_mode: intake?.analysis_mode || caseData.analysis_mode || "full_analysis",
+    stage_outputs,
+    observations: digest.observations,
+    evidence_digest: digest,
+    final_report: p6.summary,
+    field_scan: {
+      identification: p3.display_form || p3.form,
+      confidence: p3.confidence,
+      date_range: p2.range,
+      valueRange: fieldValue.display,
+      recommendation: recommendation.recommendation,
+      recommendation_display: recommendation.label,
+      recommendation_reasoning: recommendation.explanation,
+    },
+  };
+},
 };
