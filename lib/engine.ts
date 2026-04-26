@@ -378,71 +378,48 @@ function collectText(value: any, out: string[] = []): string[] {
 
 function detectClueFromText(text: string): string | null {
   const t = text.toLowerCase();
+
+  // GLOBAL NEGATION GUARD
+  const isNegated = (phrase: string) =>
+    includesAny(t, [
+      `no ${phrase}`,
+      `not ${phrase}`,
+      `without ${phrase}`,
+      `${phrase} not`,
+      `absence of ${phrase}`,
+      `no visible ${phrase}`,
+    ]);
+
+  // Skip vague / uncertain statements entirely
   if (includesAny(t, ["not visible", "not confirmed", "cannot confirm", "unclear"])) return null;
 
+  // LABELS
   if (includesAny(t, ["roos", "sweetheart cedar"])) return "roos_label";
   if (includesAny(t, ["lane cedar"])) return "lane_label";
   if (includesAny(t, ["maker label", "manufacturer label", "paper label", "stamp"])) return "maker_label";
 
-  if (includesAny(t, ["telephone shelf", "phone shelf", "raised phone", "phone platform"])) return "telephone_shelf";
-  if (includesAny(t, ["drop front", "drop-front", "fall front", "writing surface"])) return "drop_front_desk";
-  if (includesAny(t, ["pigeonhole", "pigeon hole", "cubby", "cubbies"])) return "pigeonholes";
-  if (t.includes("mirror")) return "mirror_present";
-  if (includesAny(t, ["bench seat", "integrated seat", "seating"])) return "seating_present";
-  if (includesAny(t, ["pedestal", "single column", "display stand", "plant stand"])) return "pedestal_column";
-  if (includesAny(t, ["iron bed", "metal bed", "headboard", "footboard", "bed frame"])) return "metal_bed_frame";
-  if (includesAny(t, ["armchair", "upholstered chair"])) return "armchair_form";
-  if (includesAny(t, ["upholstered", "fabric", "cushion"])) return "upholstered_back";
+  // FUNCTION (HIGH PRIORITY)
+  if (!isNegated("telephone") && includesAny(t, ["telephone", "phone shelf", "telephone shelf"])) return "telephone_shelf";
+  if (!isNegated("writing surface") && includesAny(t, ["writing surface", "desk surface"])) return "writing_surface";
+  if (!isNegated("secondary surface") && includesAny(t, ["secondary surface", "raised surface"])) return "secondary_surface";
 
-  if (includesAny(t, ["cedar lined", "cedar-lined", "cedar interior"])) return "cedar_lining";
-  if (includesAny(t, ["lift lid", "hinged lid", "blanket chest", "hope chest", "cedar chest"])) return "lift_lid";
-  if (includesAny(t, ["cabinet", "hutch", "cupboard"])) return "cabinet_form";
-  if (includesAny(t, ["multiple drawers", "stacked drawers", "bank of drawers", "graduated drawers"])) return "multiple_drawer_case";
-  if (t.includes("drawer")) return "drawer_present";
-  if (t.includes("door")) return "door_present";
+  // FORM
+  if (!isNegated("seating") && includesAny(t, ["bench seat", "integrated seat", "seating"])) return "seating_present";
+  if (!isNegated("backrest") && includesAny(t, ["backrest", "back rail"])) return "backrest_present";
 
-  if (t.includes("cabriole")) return "cabriole_leg";
-  if (includesAny(t, ["shell carving", "shell carved"])) return "shell_carving";
-  if (includesAny(t, ["claw foot", "pad foot", "hoof foot"])) return "claw_or_pad_foot";
-  if (includesAny(t, ["barley twist", "spiral turned", "twist leg"])) return "barley_twist";
-  if (includesAny(t, ["heavy carving", "heavily carved", "applied carving"])) return "heavy_carving";
-  if (includesAny(t, ["spindle", "spindles", "gallery rail"])) return "spindle_gallery";
+  // DRAWERS (lower priority)
+  if (!isNegated("drawer") && t.includes("drawer")) return "drawer_present";
+  if (!isNegated("door") && t.includes("door")) return "door_present";
 
-  if (includesAny(t, ["gate leg", "gate-leg"])) return "gateleg_support";
-  if (includesAny(t, ["drop leaf", "drop-leaf"])) return "drop_leaf_hinged";
-  if (includesAny(t, ["rule joint", "rule-joint"])) return "rule_joint";
-  if (t.includes("slant front")) return "slant_front";
-  if (includesAny(t, ["roll top", "tambour"])) return "cylinder_roll";
-  if (t.includes("extension mechanism")) return "extension_mechanism";
+  // STYLE (low authority, guard heavily)
+  if (!isNegated("cabriole") && t.includes("cabriole")) return "cabriole_leg";
+  if (!isNegated("barley twist") && t.includes("barley twist")) return "barley_twist";
 
-  if (includesAny(t, ["hand cut dovetail", "hand-cut dovetail"])) return "hand_cut_dovetails";
-  if (t.includes("machine dovetail")) return "machine_dovetails";
-  if (t.includes("mortise") && t.includes("tenon")) return "mortise_and_tenon";
-  if (t.includes("dowel")) return "dowel_joinery";
-
-  if (t.includes("pit saw")) return "pit_saw_marks";
-  if (t.includes("circular saw")) return "circular_saw_arcs";
-  if (t.includes("band saw")) return "band_saw_lines";
-
-  if (includesAny(t, ["hand forged nail", "hand-forged nail"])) return "hand_forged_nail";
-  if (t.includes("cut nail")) return "cut_nail";
-  if (t.includes("wire nail")) return "wire_nail";
-  if (t.includes("phillips")) return "phillips_screw";
-  if (t.includes("staple")) return "staple_fastener";
-
-  if (t.includes("plywood drawer bottom")) return "plywood_drawer_bottom";
-  if (includesAny(t, ["plywood", "sheet back", "thin sheet", "hardboard back"])) return "sheet_back_panel";
-  if (t.includes("concealed hinge")) return "modern_concealed_hinge";
-
-  if (t.includes("porcelain caster")) return "porcelain_caster";
-  if (includesAny(t, ["bail pull", "brass pull"])) return "decorative_bail_pull";
-  if (includesAny(t, ["wood knob", "round knob"])) return "round_wood_knob";
-  if (t.includes("shellac")) return "shellac_crazing";
-  if (t.includes("polyurethane")) return "polyurethane";
+  // MATERIAL / CONSTRUCTION
+  if (!isNegated("plywood") && includesAny(t, ["plywood", "sheet back"])) return "sheet_back_panel";
 
   return null;
 }
-
 function descriptionFromObservation(o: any): string {
   return asString(o?.description) || asString(o?.observed_value_text) || asString(o?.text) || asString(o?.value) || "Unknown observation";
 }
@@ -567,8 +544,6 @@ const negatesSeatingOrWriting =
     "no visible seating",
     "no writing surface",
     "no secondary function",
-    "no seating, writing surface",
-    "no seating, writing surface, or other secondary function",
   ]);
   const add = (clue: string, description: string, confidence = 72, source = "perception") => {
     if (out.some((o) => o.clue === clue)) return;
@@ -892,15 +867,46 @@ function buildReportEvidenceSupport(digest: EvidenceDigest, formSupport: string[
   return uniq(combined).slice(0, 4);
 }
 function deriveStyleContext(digest: EvidenceDigest): string | null {
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
-  if (includesAny(text, ["jacobean", "barley_twist", "barley twist", "heavy carving"])) return "Jacobean Revival";
-  if (includesAny(text, ["queen anne", "cabriole", "shell carving", "pad foot", "claw foot"])) return "Queen Anne / Colonial Revival";
- if (includesAny(text, ["empire", "scrolled feet", "scrolled bracket feet", "serpentine top rail", "flat cornice top", "highboy_style"])) {
-  return "American Empire / late Classical Revival";
-}
-  if (includesAny(text, ["mission", "arts and crafts", "quarter sawn", "quartersawn"])) return "Arts & Crafts / Mission";
-  if (includesAny(text, ["telephone", "drop front", "pigeonhole"])) return "Early 20th-century telephone or hall furniture";
+    const text = `${digest.perception?.raw_text || ""} ${digest.observations
+    .map((o) => `${o.clue || ""} ${o.description}`)
+    .join(" ")}`.toLowerCase();
+
+  const has = (word: string) => text.includes(word);
+
+  const not = (word: string) =>
+    includesAny(text, [
+      `no ${word}`,
+      `not ${word}`,
+      `without ${word}`,
+      `${word} not`,
+    ]);
+
+  // Jacobean
+  if (
+    (has("barley twist") && !not("barley twist")) ||
+    (has("heavy carving") && !not("heavy carving"))
+  ) {
+    return "Jacobean Revival";
+  }
+
+  // Queen Anne ONLY if clearly present
+  if (
+    (has("cabriole") && !not("cabriole")) ||
+    (has("shell carving") && !not("shell"))
+  ) {
+    return "Queen Anne / Colonial Revival";
+  }
+
+  // Empire
+  if (
+    includesAny(text, ["empire", "scrolled feet", "ogee", "serpentine"]) &&
+    !includesAny(text, ["not empire", "no empire"])
+  ) {
+    return "American Empire / late Classical Revival";
+  }
+
   return null;
+}
 }
 
 function dateFromEvidence(digest: EvidenceDigest, form: string) {
@@ -1061,7 +1067,15 @@ if (empireOrRevival && strongPre1880Signals >= 2) {
       ],
     };
   }
+const conflictingSignals =
+  has("possible_plywood_or_laminated_panel") &&
+  has("solid_wood_construction");
 
+if (conflictingSignals) {
+  limitations.push(
+    "Conflicting panel signals detected; solid wood vs possible laminated construction should be verified."
+  );
+}
   return {
     range: "c. 1890–1930",
     confidence: "Moderate",
