@@ -427,7 +427,8 @@ export default function Page() {
     setError("");
     setIsRunning(false);
   }
-
+  
+const stageOutputs = report?.stage_outputs || {};
   const p1 = stageOutputs.p1 || null;
 const p2 = stageOutputs.p2 || null;
 const p3 = stageOutputs.p3 || null;
