@@ -134,7 +134,8 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   category: "construction",
   dateHint: "uncertain panel construction; does not confirm modern manufacture",
   weight: 0.25,
-
+  },
+ 
   metal_frame: {
     category: "materials",
     dateHint: "metal furniture construction; date depends on form, joints, plating, and fasteners",
