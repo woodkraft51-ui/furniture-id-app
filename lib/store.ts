@@ -58,10 +58,12 @@ export const API = {
       onPhase
     );
 
-    c.stage_outputs = result.stage_outputs;
-    c.final_report = result.final_report;
-    c.evidence_digest = result.evidence_digest || null;
-    c.status = "complete";
+    c.stage_outputs = result.stage_outputs || {};
+c.final_report = result.final_report || "";
+c.evidence_digest = result.evidence_digest || null;
+c.observations = result.observations || c.observations || [];
+c.field_scan = result.field_scan || null;
+c.status = "complete";
 
     return { case_id: caseId };
   },
