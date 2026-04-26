@@ -621,11 +621,21 @@ const negatesSeatingOrWriting =
   if (includesAny(text, ["cedar lined", "cedar interior"])) add("cedar_lining", "Cedar-lined interior is visible.", 84);
   if (includesAny(text, ["drop front", "drop-front", "fall front"])) add("drop_front_desk", "Drop-front writing surface is visible.", 84);
   if (includesAny(text, ["pigeonhole", "pigeon hole", "cubby", "cubbies"])) add("pigeonholes", "Interior cubbies or pigeonholes are visible.", 78);
-  if (text.includes("mirror")) add("mirror_present", "Mirror is visible.", 72);
+  if (
+  text.includes("mirror") &&
+  !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"])
+) {
+  add("mirror_present", "Mirror is visible.", 72);
+}
   if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
   if (includesAny(text, ["pedestal", "single column"])) add("pedestal_column", "Single-column pedestal form is visible.", 84);
   if (includesAny(text, ["armchair", "upholstered chair"])) add("armchair_form", "Armchair form is visible.", 82);
-  if (text.includes("cabriole")) add("cabriole_leg", "Cabriole legs are visible.", 72);
+  if (
+  text.includes("cabriole") &&
+  !includesAny(text, ["no cabriole", "no turned or cabriole", "not cabriole"])
+) {
+  add("cabriole_leg", "Cabriole legs are visible.", 72);
+}
   if (text.includes("barley twist")) add("barley_twist", "Barley twist supports are visible.", 76);
   if (text.includes("drawer")) add("drawer_present", "Drawer evidence is visible.", 58);
   if (text.includes("door")) add("door_present", "Door evidence is visible.", 58);
