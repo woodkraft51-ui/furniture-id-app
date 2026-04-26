@@ -1450,40 +1450,44 @@ function buildDecisionGuidance(args: {
   digest: EvidenceDigest;
   intake: any;
 }) {
-  const { gate, dating, form, conflict, valuation, digest, intake } = args;
   const { gate, form, conflict, valuation, digest, intake } = args;
 
   const text = `${digest.perception?.raw_text || ""} ${digest.observations
     .map((o) => `${o.clue || ""} ${o.description}`)
-@@ -1461,20 +1461,18 @@
+    .join(" ")} ${String(intake?.condition_notes || "")} ${String(intake?.known_alterations || "")}`.toLowerCase();
+
+  const clues = new Set(digest.clue_keys || []);
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+  const textHas = (...words: string[]) => words.some((w) => text.includes(w));
+
+  const negotiation: string[] = [];
+  const selling: string[] = [];
+
+  const addPair = (buyerTip: string, sellerTip: string) => {
+    if (!negotiation.includes(buyerTip)) negotiation.push(buyerTip);
     if (!selling.includes(sellerTip)) selling.push(sellerTip);
   };
 
-  // Universal, non-contradictory base guidance
   negotiation.push("Verify the areas not shown in the photos before committing, especially underside, back, drawer corners, and fasteners.");
   selling.push("Use clear, level photos of the full form first, then add close-ups of construction, hardware, labels, and condition details.");
 
-  // Confidence / missing evidence
   if (gate.confidence_cap === "Low" || gate.confidence_cap === "Inconclusive") {
     addPair(
       "Use the limited evidence as negotiation leverage; the price should reflect that the identification and date are still broad.",
       "Reduce buyer hesitation by adding the missing evidence photos before listing, especially the strongest structural views."
-      "Reduce buyer hesitation by adding missing evidence photos before listing, especially the strongest structural views."
     );
   } else if (gate.confidence_cap === "Moderate") {
     addPair(
       "Negotiate conservatively if the seller is pricing it as a confirmed antique without enough structural proof.",
       "Present the identification as evidence-supported but avoid overstating certainty beyond the visible construction clues."
-      "Negotiate conservatively if the seller is pricing it as confirmed without enough structural proof.",
-      "Present the identification as evidence-supported, but avoid overstating certainty beyond the visible construction clues."
     );
   } else {
     addPair(
-@@ -1483,808 +1481,4 @@
+      "The evidence is stronger than average, so negotiate from market reality rather than trying to dismiss the identification.",
+      "Lead with the strongest confirmed evidence because it gives buyers confidence in the identification."
     );
   }
 
-  // Condition weakness: leverage vs mitigation
   if (textHas("finish loss", "worn finish", "water stain", "white haze", "scratches", "surface damage", "veneer loss", "missing", "broken", "loose", "structural damage")) {
     addPair(
       "Use visible wear, damage, missing parts, or loose structure as fair reasons to ask for a lower price.",
@@ -1491,7 +1495,6 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Refinishing / surface alteration
   if (textHas("refinished", "polyurethane", "later finish", "painted", "paint loss") || has("polyurethane")) {
     addPair(
       "If the surface appears refinished or later-treated, negotiate below prices for untouched original finish examples.",
@@ -1499,7 +1502,6 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Hardware / replacement risk
   if (textHas("replacement hardware", "replaced hardware", "hardware replacement") || has("phillips_screw", "staple_fastener", "modern_concealed_hinge")) {
     addPair(
       "Use modern or replacement hardware as a reason to avoid paying full original-period pricing.",
@@ -1507,7 +1509,6 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Strong construction evidence
   if (has("solid_wood_construction", "solid_plank_back", "frame_and_panel_sides", "hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "mortise_and_tenon")) {
     addPair(
       "Acknowledge the stronger construction evidence, but still compare the price to realistic local resale rather than theoretical antique value.",
@@ -1515,7 +1516,27 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Labels / maker marks
+  if (has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+    addPair(
+      "For metal furniture, check welds, bends, plating wear, rust, and structural looseness before agreeing to the price.",
+      "For metal furniture, highlight clean lines, original finish or plating, stable joints, and any distinctive design features."
+    );
+  }
+
+  if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
+    addPair(
+      "For upholstered pieces, use fabric wear, odor risk, spring condition, and reupholstery cost as negotiation points.",
+      "For upholstered pieces, photograph the full silhouette, legs, frame clues, tufting, fabric condition, and underside construction if accessible."
+    );
+  }
+
+  if (has("woven_body", "rattan_frame", "cane_panels")) {
+    addPair(
+      "For wicker, rattan, or cane, negotiate based on breaks, sagging, missing strands, brittle areas, and repair difficulty.",
+      "For wicker, rattan, or cane, highlight intact weaving, attractive shape, light weight, porch/sunroom appeal, and any unusual form."
+    );
+  }
+
   if (has("maker_label", "roos_label", "lane_label")) {
     addPair(
       "A maker label improves confidence, so focus negotiation more on condition, demand, and resale margin than on identity.",
@@ -1523,7 +1544,6 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Form-specific market notes
   const formText = String(form?.display_form || form?.form || "").toLowerCase();
 
   if (formText.includes("dresser") || formText.includes("chest of drawers") || formText.includes("drawer case")) {
@@ -1554,7 +1574,6 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Market / valuation lane
   const marketplace = valuation?.platform_breakdown?.marketplace?.range || valuation?.display;
   if (marketplace) {
     negotiation.push(`Use the marketplace lane as the practical ceiling for negotiation; this scan points to about ${marketplace} for typical resale exposure.`);
@@ -1575,7 +1594,6 @@ function buildDecisionGuidance(args: {
     }
   }
 
-  // Conflict logic
   if (Array.isArray(conflict?.conflict_notes) && conflict.conflict_notes.length > 0) {
     addPair(
       "Use mixed evidence or possible restoration as a reason to stay below top-of-market pricing.",
@@ -1583,10 +1601,10 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  // Fallbacks
   if (negotiation.length < 4) {
     negotiation.push("Leave room for transportation, cleaning, small repairs, and the time it may take to resell.");
   }
+
   if (selling.length < 4) {
     selling.push("Include dimensions, clear condition photos, and the strongest identification evidence in the first few listing lines.");
   }
