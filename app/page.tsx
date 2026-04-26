@@ -290,7 +290,19 @@ function RunButton({ label, disabled, isRunning, onClick }: { label: string; dis
     </div>
   );
 }
+function TipsList({ items }: { items?: string[] }) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return <div style={emptyText}>No tips were returned.</div>;
+  }
 
+  return (
+    <ul style={listStyle}>
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  );
+}
 export default function Page() {
   const [coreImages, setCoreImages] = useState<CoreImageMap>({ overall_front: null, overall_side: null, underside: null, back: null, label_makers_mark: null });
   const [groupImages, setGroupImages] = useState<GroupImageMap>({ hardware: [], construction: [] });
