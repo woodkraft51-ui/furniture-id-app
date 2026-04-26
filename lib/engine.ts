@@ -924,37 +924,46 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
     add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
   }
   {
-  form: "metal bed",
-  weight: (c: any) =>
-    (c.materials?.includes("metal") ? 3 : 0) +
-    (c.structure?.includes("headboard") ? 2 : 0)
-},
+   // Non-wood and mixed-material form families
+  if (hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+    add("Metal furniture", 62, "Metal frame or metal furniture construction is visible.");
+  }
 
-{
-  form: "upholstered seating",
-  weight: (c: any) =>
-    (c.materials?.includes("upholstery") ? 3 : 0) +
-    (c.structure?.includes("seat") ? 2 : 0)
-},
+  if (hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
+    add("Modernist / chrome-frame furniture", 74, "Tubular steel, chrome, or chrome-and-laminate construction supports a modernist or mid-century furniture reading.");
+  }
 
-{
-  form: "wicker furniture",
-  weight: (c: any) =>
-    (c.materials?.includes("wicker") ? 4 : 0)
-},
+  if (hasAny("wrought_iron", "cast_iron")) {
+    add("Iron furniture", 72, "Iron or cast/wrought metal construction is visible.");
+  }
 
-{
-  form: "glass-top table",
-  weight: (c: any) =>
-    (c.materials?.includes("glass") ? 3 : 0) +
-    (c.structure?.includes("table") ? 2 : 0)
-},
+  if (hasAny("brass_frame")) {
+    add("Brass bed or brass-frame furniture", 70, "Brass frame or brass rail construction is visible.");
+  }
 
-{
-  form: "modern plastic furniture",
-  weight: (c: any) =>
-    (c.materials?.includes("plastic") ? 4 : 0)
-},
+  if (hasAny("fully_upholstered", "visible_springs", "tufted_upholstery", "exposed_upholstery_tacks")) {
+    add("Upholstered seating", 76, "Upholstery, cushion, spring, or upholstery-tack evidence is visible.");
+  }
+
+  if (hasAny("woven_body", "rattan_frame")) {
+    add("Wicker / rattan furniture", 78, "Woven wicker, reed, or rattan construction is visible.");
+  }
+
+  if (hasAny("cane_panels")) {
+    add("Caned seating or caned-back furniture", 62, "Cane panel, cane seat, or cane back construction is visible.");
+  }
+
+  if (hasAny("glass_top")) {
+    add("Glass-top table or mixed-material table", 48, "Glass top or glass shelf evidence is visible.");
+  }
+
+  if (hasAny("laminate_surface", "formica_surface", "chrome_and_laminate")) {
+    add("Mid-century laminate / dinette furniture", 72, "Laminate, Formica, chrome, or utility-surface evidence supports mid-century or later furniture.");
+  }
+
+  if (hasAny("molded_plastic", "acrylic_clear")) {
+    add("Modern plastic / acrylic furniture", 74, "Molded plastic, acrylic, or Lucite-style furniture material is visible.");
+  }
   // Style-context forms
   if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving", "spiral turned", "twist leg"])) {
     add("Jacobean Revival cabinet / sideboard", 72, "Historicist carving or turned supports support Jacobean Revival context.");
