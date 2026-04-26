@@ -1313,6 +1313,59 @@ if (digest?.materials?.includes("wicker")) {
 if (digest?.materials?.includes("plastic")) {
   return { low: 30, high: 300 };
 }
+ // --- NON-WOOD MATERIAL ADJUSTMENTS (REALISTIC MARKET LANES) ---
+
+// Plastic / Acrylic (lower ceiling, design-dependent upside)
+if (has("molded_plastic", "acrylic_clear")) {
+  low = Math.max(low, 30);
+  high = Math.min(high, 300);
+  sellability += 5; // modern appeal, but common
+}
+
+// Laminate / Formica / Dinette
+if (has("laminate_surface", "formica_surface", "chrome_and_laminate")) {
+  low = Math.max(low, 60);
+  high = Math.min(high, 450);
+  sellability += 8; // strong resale in right markets
+}
+
+// Wicker / Rattan
+if (has("woven_body", "rattan_frame")) {
+  low = Math.max(low, 75);
+  high = Math.min(high, 500);
+  sellability += 10; // strong lifestyle demand
+}
+
+// Upholstered seating
+if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
+  low = Math.max(low, 75);
+  high = Math.min(high, 600);
+  sellability += 6; // condition-sensitive but desirable
+}
+
+// Metal furniture (general)
+if (has("metal_frame", "wrought_iron", "cast_iron", "brass_frame")) {
+  low = Math.max(low, 50);
+  high = Math.min(high, 400);
+  sellability += 6;
+}
+
+// Tubular steel / chrome modernist (higher ceiling)
+if (has("tubular_steel", "chrome_frame")) {
+  low = Math.max(low, 120);
+  high = Math.max(high, 900); // allow upside for Bauhaus/MCM
+  sellability += 12; // strong collector interest
+}
+
+// Glass elements (neutral modifier)
+if (has("glass_top")) {
+  sellability += 2;
+}
+
+// Slight penalty if mixed low-signal modern materials
+if (has("laminate_surface") && has("molded_plastic")) {
+  sellability -= 5;
+}
   // Base form lanes
   if (f.includes("telephone bench")) {
     low = 60; high = 325;
