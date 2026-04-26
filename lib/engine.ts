@@ -1924,7 +1924,18 @@ if (missing.label_photo) {
     
     const form = best?.form || "Unclassified furniture";
     const confidencePct = best ? Math.min(gate.confidence_cap_pct, best.score >= 80 ? 90 : best.score >= 45 ? 72 : 48) : 35;
+    const observedStyle = [...(digest.observations || [])]
+  .filter((o) => o.type === "style" && o.clue && (o.confidence || 0) >= 70)
+  .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
 
+const styleFromObservation = observedStyle
+  ? String(observedStyle.clue)
+      .replace(/_style$/i, "")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
+  : null;
+
+const style = deriveStyleContext(digest) || styleFromObservation;
     return {
       form,
       display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${form}` : form,
