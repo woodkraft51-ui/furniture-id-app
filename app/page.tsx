@@ -8,7 +8,7 @@ type ImageRecord = {
   data_url: string;
   name?: string;
 };
-
+ 
 type CoreImageMap = Record<string, ImageRecord | null>;
 type GroupImageMap = Record<string, ImageRecord[]>;
 
