@@ -987,7 +987,19 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   
     const phase0EarlyBias =
     includesAny(text, ["1850", "1860", "1870", "1880", "1890", "victorian", "transitional"]);
+    const strongStyleAlignment =
+  style === "American Empire / late Classical Revival" &&
+  strongPre1920Signals >= 2 &&
+  absenceOfModern;
 
+if (strongStyleAlignment) {
+  return {
+    range: "c. 1870–1910",
+    confidence: strongPre1920Signals >= 3 ? "High" : "Moderate",
+    support,
+    limitations,
+  };
+}
     if (earlyHandmadeScore >= 3 && !transitionalFactoryScore) {
     return {
       range: "c. 1830–1890",
