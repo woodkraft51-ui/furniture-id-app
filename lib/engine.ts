@@ -1051,7 +1051,9 @@ if (empireOrRevival && strongPre1880Signals >= 2) {
       ],
     };
   }
-
+const conflictingSignals =
+  has("possible_plywood_or_laminated_panel") &&
+  has("solid_wood_construction");
   if (absenceOfModern && strongPre1920Signals >= 2) {
     return {
       range: conflictingSignals ? "c. 1900–1930" : "c. 1890–1920",
@@ -1062,9 +1064,6 @@ if (empireOrRevival && strongPre1880Signals >= 2) {
       ],
     };
   }
-const conflictingSignals =
-  has("possible_plywood_or_laminated_panel") &&
-  has("solid_wood_construction");
 
 if (conflictingSignals) {
   limitations.push(
