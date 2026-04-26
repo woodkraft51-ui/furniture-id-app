@@ -263,7 +263,7 @@ function pickSupportingEvidence(report: ReportShape | null): string[] {
   if (Array.isArray(p3?.support)) out.push(...p3.support);
   if (Array.isArray(p2?.support)) out.push(...p2.support);
   if (Array.isArray(p4?.confidence_drivers?.increased)) out.push(...p4.confidence_drivers.increased);
-  return Array.from(new Set(out.map((item) => String(item || "").trim()).filter(Boolean))).slice(0, 4);
+  return Array.from(new Set(out.map((item) => String(item || "").trim()).filter(Boolean))).slice(0, 10);
 }
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
