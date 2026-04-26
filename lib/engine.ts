@@ -145,6 +145,53 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   dateHint: "solid wood construction; not a plywood indicator",
   weight: 0.72,
 },
+  solid_wood_side_panels: {
+  category: "construction",
+  dateHint: "solid side-panel construction; supports pre-plywood or traditional case construction",
+  weight: 0.72,
+},
+
+frame_and_panel_sides: {
+  category: "construction",
+  dateHint: "traditional frame-and-panel side construction; dating depends on joinery and fasteners",
+  weight: 0.74,
+},
+
+solid_plank_back: {
+  category: "construction",
+  dateHint: "solid plank back construction; usually pre-plywood or traditional case construction",
+  weight: 0.78,
+},
+
+wood_knob_pulls: {
+  category: "hardware",
+  dateHint: "wooden knob pulls are common on 19th and early 20th century case furniture, but may be replaced",
+  weight: 0.55,
+},
+
+lock_escutcheons: {
+  category: "hardware",
+  dateHint: "drawer lock escutcheons support period case-furniture construction but are not independently decisive",
+  weight: 0.56,
+},
+
+drawer_box_joinery: {
+  category: "joinery",
+  dateHint: "drawer-box joinery evidence; dating depends on whether hand-cut, machine-cut, dado, or butt construction is visible",
+  weight: 0.62,
+},
+
+rope_carved_pilasters: {
+  category: "style",
+  dateHint: "Empire or transitional case-furniture style cue; lower authority than construction",
+  weight: 0.58,
+},
+
+overhanging_top: {
+  category: "structure",
+  dateHint: "overhanging cornice or top board supports Empire or transitional case-furniture form",
+  weight: 0.58,
+},
 };
 
 function clamp(n: number, min: number, max: number) {
