@@ -132,9 +132,9 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   polyurethane: { category: "finish", dateHint: "post-1960", weight: 0.62 },
   possible_plywood_or_laminated_panel: {
   category: "construction",
-  dateHint: "possible post-1920 material, but requires confirmation",
-  weight: 0.55,
-   }, 
+  dateHint: "uncertain panel construction; does not confirm modern manufacture",
+  weight: 0.25,
+},
   no_phillips_screws_observed: {
   category: "fasteners",
   dateHint: "absence of visible Phillips screws; removes post-1934 fastener evidence but does not independently date the piece",
