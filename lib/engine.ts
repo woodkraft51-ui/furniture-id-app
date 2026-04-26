@@ -995,17 +995,25 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
 
  if (traditionalConstructionScore >= 4 && empireOrRevival) {
   // If strong traditional signals AND no modern indicators → tighten date earlier
-  if (absenceOfModern && strongPre1920Signals >= 2) {
-    return {
-      range: "c. 1900–1920",
-      confidence:
-  strongPre1920Signals >= 3 && earlyHandmadeScore >= 1
-    ? "High"
-    : "Moderate",
-      support,
-      limitations,
-    };
-  }
+ if (absenceOfModern && strongPre1920Signals >= 2) {
+  const conflictingSignals =
+    has("possible_plywood_or_laminated_panel") &&
+    has("solid_wood_construction");
+
+  const confidence =
+    conflictingSignals
+      ? "Moderate"
+      : strongPre1920Signals >= 3 && earlyHandmadeScore >= 1
+      ? "High"
+      : "Moderate";
+
+  return {
+    range: conflictingSignals ? "c. 1900–1930" : "c. 1900–1920",
+    confidence,
+    support,
+    limitations,
+  };
+}
 
   return {
     range: "c. 1900–1930",
