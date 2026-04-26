@@ -1511,9 +1511,12 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
         `Current dating evidence supports ${dating.range}.`,
         `Broad resale lane: ${vb.display}.`,
       ],
-      tentative_findings: conflict.conflict_notes || [],
+      tentative_findings: [
+  ...(conflict.conflicts || []),
+  ...(conflict.resolutions || []),
+],
       more_evidence_needed: gate.next_best_evidence || [],
-      summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${gate.evidence_sufficiency_summary}`,
+      summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${conflict.summary || gate.evidence_sufficiency_summary}`,
       valuation: vb,
     };
   },
