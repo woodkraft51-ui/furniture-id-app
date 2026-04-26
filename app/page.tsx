@@ -428,12 +428,13 @@ export default function Page() {
     setIsRunning(false);
   }
 
-  const stageOutputs = report?.stage_outputs || {};
   const p1 = stageOutputs.p1 || null;
-  const p2 = stageOutputs.p2 || null;
-  const p3 = stageOutputs.p3 || null;
-  const p5 = stageOutputs.p5 || null;
-  const p6 = stageOutputs.p6 || null;
+const p2 = stageOutputs.p2 || null;
+const p3 = stageOutputs.p3 || null;
+const p5 = stageOutputs.p5 || null;
+const p6 = stageOutputs.p6 || null;
+const p7 = stageOutputs.p7 || null;
+  
 
   const fieldValue = useMemo(() => {
     if (!p2 || !p3) return null;
