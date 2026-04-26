@@ -998,30 +998,63 @@ if (empireOrRevival && strongPre1880Signals >= 2) {
   };
 }
  if (traditionalConstructionScore >= 4 && empireOrRevival) {
-  // If strong traditional signals AND no modern indicators → tighten date earlier
- if (absenceOfModern && strongPre1920Signals >= 2) {
   const conflictingSignals =
     has("possible_plywood_or_laminated_panel") &&
     has("solid_wood_construction");
 
-  const confidence =
-    conflictingSignals
-      ? "Moderate"
-      : strongPre1920Signals >= 3 && earlyHandmadeScore >= 1
-      ? "High"
-      : "Moderate";
+  const trueEarlyEmpireEvidence =
+    earlyHandmadeScore >= 2 ||
+    has("hand_cut_dovetails") ||
+    has("cut_nail") ||
+    has("hand_forged_nail") ||
+    has("pit_saw_marks") ||
+    has("slotted_handmade_screw");
+
+  const revivalEvidence =
+    has("oak_primary") ||
+    has("solid_wood_drawer_construction") ||
+    has("wire_nail") ||
+    has("machine_dovetails") ||
+    has("dowel_joinery") ||
+    has("band_saw_lines") ||
+    includesAny(text, ["oak", "quartersawn", "quarter sawn", "late victorian", "revival"]);
+
+  if (trueEarlyEmpireEvidence && !revivalEvidence) {
+    return {
+      range: "c. 1830–1860",
+      confidence: "Moderate",
+      support,
+      limitations: [
+        "Empire-period styling is supported, but confirmation from drawer joinery, fasteners, or tool marks would strengthen the date.",
+      ],
+    };
+  }
+
+  if (trueEarlyEmpireEvidence && revivalEvidence) {
+    return {
+      range: "c. 1830–1860 possible; c. 1890–1920 also plausible",
+      confidence: "Low",
+      support,
+      limitations: [
+        "The piece shows Empire styling plus mixed construction/material evidence. Close drawer-corner, fastener, and underside photos are needed to separate original Empire from later revival production.",
+      ],
+    };
+  }
+
+  if (absenceOfModern && strongPre1920Signals >= 2) {
+    return {
+      range: conflictingSignals ? "c. 1900–1930" : "c. 1890–1920",
+      confidence: conflictingSignals ? "Moderate" : "Moderate",
+      support,
+      limitations: [
+        "No confirmed modern materials are visible, but early handmade joinery or fasteners are not confirmed. Treat this as likely revival or transitional production unless stronger early construction evidence appears.",
+      ],
+    };
+  }
 
   return {
-    range: conflictingSignals ? "c. 1900–1930" : "c. 1900–1920",
-    confidence,
-    support,
-    limitations,
-  };
-}
-
-  return {
-    range: "c. 1900–1930",
-    confidence: transitionalFactoryScore >= 1 ? "High" : "Moderate",
+    range: "c. 1890–1930",
+    confidence: "Moderate",
     support,
     limitations,
   };
