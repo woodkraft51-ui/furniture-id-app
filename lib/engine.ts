@@ -1292,7 +1292,17 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
   const textHas = (...words: string[]) => words.some((w) => text.includes(w));
+ if (digest?.materials?.includes("metal")) {
+  return { low: 50, high: 400 };
+}
 
+if (digest?.materials?.includes("wicker")) {
+  return { low: 75, high: 500 };
+}
+
+if (digest?.materials?.includes("plastic")) {
+  return { low: 30, high: 300 };
+}
   // Base form lanes
   if (f.includes("telephone bench")) {
     low = 60; high = 325;
