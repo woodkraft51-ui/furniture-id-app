@@ -993,14 +993,24 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
     };
   }
 
-  if (traditionalConstructionScore >= 4 && empireOrRevival) {
+ if (traditionalConstructionScore >= 4 && empireOrRevival) {
+  // If strong traditional signals AND no modern indicators → tighten date earlier
+  if (absenceOfModern && strongPre1920Signals >= 2) {
     return {
-      range: "c. 1890–1930",
-      confidence: transitionalFactoryScore >= 1 ? "High" : "Moderate",
+      range: "c. 1900–1920",
+      confidence: phase0EarlyBias ? "High" : "Moderate",
       support,
       limitations,
     };
   }
+
+  return {
+    range: "c. 1900–1930",
+    confidence: transitionalFactoryScore >= 1 ? "High" : "Moderate",
+    support,
+    limitations,
+  };
+}
 
   if (traditionalConstructionScore >= 3) {
     return {
