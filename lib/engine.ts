@@ -907,7 +907,6 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
 
   return null;
 }
-}
 
 function dateFromEvidence(digest: EvidenceDigest, form: string) {
   const clues = new Set(digest.clue_keys);
