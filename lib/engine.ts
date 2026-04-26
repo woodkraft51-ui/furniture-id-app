@@ -1302,18 +1302,7 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
   const textHas = (...words: string[]) => words.some((w) => text.includes(w));
- if (digest?.materials?.includes("metal")) {
-  return { low: 50, high: 400 };
-}
 
-if (digest?.materials?.includes("wicker")) {
-  return { low: 75, high: 500 };
-}
-
-if (digest?.materials?.includes("plastic")) {
-  return { low: 30, high: 300 };
-}
- 
   // Base form lanes
   if (f.includes("telephone bench")) {
     low = 60; high = 325;
@@ -1339,51 +1328,52 @@ if (digest?.materials?.includes("plastic")) {
 
   // Sellability score: market reality, not theoretical appraisal value
   let sellability = 50;
- // --- NON-WOOD MATERIAL ADJUSTMENTS (REALISTIC MARKET LANES) ---
 
-if (has("molded_plastic", "acrylic_clear")) {
-  low = Math.max(low, 30);
-  high = Math.min(high, 300);
-  sellability += 5;
-}
+  // Non-wood material adjustments
+  if (has("molded_plastic", "acrylic_clear")) {
+    low = Math.max(low, 30);
+    high = Math.min(high, 300);
+    sellability += 5;
+  }
 
-if (has("laminate_surface", "formica_surface", "chrome_and_laminate")) {
-  low = Math.max(low, 60);
-  high = Math.min(high, 450);
-  sellability += 8;
-}
+  if (has("laminate_surface", "formica_surface", "chrome_and_laminate")) {
+    low = Math.max(low, 60);
+    high = Math.min(high, 450);
+    sellability += 8;
+  }
 
-if (has("woven_body", "rattan_frame")) {
-  low = Math.max(low, 75);
-  high = Math.min(high, 500);
-  sellability += 10;
-}
+  if (has("woven_body", "rattan_frame")) {
+    low = Math.max(low, 75);
+    high = Math.min(high, 500);
+    sellability += 10;
+  }
 
-if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
-  low = Math.max(low, 75);
-  high = Math.min(high, 600);
-  sellability += 6;
-}
+  if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
+    low = Math.max(low, 75);
+    high = Math.min(high, 600);
+    sellability += 6;
+  }
 
-if (has("metal_frame", "wrought_iron", "cast_iron", "brass_frame")) {
-  low = Math.max(low, 50);
-  high = Math.min(high, 400);
-  sellability += 6;
-}
+  if (has("metal_frame", "wrought_iron", "cast_iron", "brass_frame")) {
+    low = Math.max(low, 50);
+    high = Math.min(high, 400);
+    sellability += 6;
+  }
 
-if (has("tubular_steel", "chrome_frame")) {
-  low = Math.max(low, 120);
-  high = Math.max(high, 900);
-  sellability += 12;
-}
+  if (has("tubular_steel", "chrome_frame")) {
+    low = Math.max(low, 120);
+    high = Math.max(high, 900);
+    sellability += 12;
+  }
 
-if (has("glass_top")) {
-  sellability += 2;
-}
+  if (has("glass_top")) {
+    sellability += 2;
+  }
 
-if (has("laminate_surface") && has("molded_plastic")) {
-  sellability -= 5;
-}
+  if (has("laminate_surface") && has("molded_plastic")) {
+    sellability -= 5;
+  }
+
   // Positive signals
   if (has("solid_wood_construction")) sellability += 5;
   if (has("solid_plank_back")) sellability += 5;
@@ -1404,7 +1394,7 @@ if (has("laminate_surface") && has("molded_plastic")) {
   sellability = clamp(sellability, 20, 90);
 
   // Convert sellability into value pressure
-  const marketFactor = 0.65 + sellability / 140; // about 0.79 to 1.29
+  const marketFactor = 0.65 + sellability / 140;
   const finalLow = Math.round(low * ageFactor * marketFactor);
   const finalHigh = Math.round(high * ageFactor * marketFactor);
 
