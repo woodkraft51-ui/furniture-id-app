@@ -715,18 +715,33 @@ export default function Page() {
                 {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
             </div>
-            <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>{evidenceMeaning(item)}</div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-              <SectionCard title="Supported Findings">{p6?.supported_findings?.length ? <ul style={listStyle}>{p6.supported_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No supported findings were returned.</div>}</SectionCard>
-              <SectionCard title="Cautions and Conflicts">{p6?.tentative_findings?.length ? <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>
-            </div>
-            <SectionCard title="Next Best Evidence">{Array.isArray(p6?.more_evidence_needed) && p6.more_evidence_needed.length > 0 ? <ul style={listStyle}>{p6.more_evidence_needed.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No additional evidence recommendations were returned.</div>}</SectionCard>
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
+            <SectionCard title="Key Supporting Evidence">
+  ...
+</SectionCard>
+
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+  <SectionCard title="Supported Findings">
+    ...
+  </SectionCard>
+
+  <SectionCard title="Cautions and Conflicts">
+    ...
+  </SectionCard>
+</div>
+
+<SectionCard title="Next Best Evidence">
+  ...
+</SectionCard>
+
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+  <SectionCard title="Negotiating Tips">
+    <TipsList items={p7?.negotiation_tips} />
+  </SectionCard>
+
+  <SectionCard title="Selling Tips">
+    <TipsList items={p7?.selling_tips} />
+  </SectionCard>
+</div>
 
 const inputStyle: React.CSSProperties = { width: "100%", border: "1px solid #d7c8af", borderRadius: 8, padding: "10px 12px", background: "#fffefb", color: "#2f2418", fontSize: 14 };
 const textareaStyle: React.CSSProperties = { ...inputStyle, resize: "vertical" };
