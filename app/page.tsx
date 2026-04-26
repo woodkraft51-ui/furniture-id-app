@@ -679,6 +679,15 @@ const p7 = stageOutputs.p7 || null;
             </SectionCard>
 
             <SectionCard title="Next Best Evidence"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{nextBestEvidence}</div></SectionCard>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <SectionCard title="Negotiating Tips">
+            <TipsList items={p7?.negotiation_tips} />
+            </SectionCard>
+
+            <SectionCard title="Selling Tips">
+            <TipsList items={p7?.selling_tips} />
+            </SectionCard>
+          </div>
 
             <SectionCard title="Refine This Result">
               <div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6, marginBottom: 12 }}>Add a follow-up photo to tighten the result without starting over.</div>
