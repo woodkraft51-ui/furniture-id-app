@@ -2260,8 +2260,7 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
     "Date should be shifted forward because material evidence overrides traditional style cues."
   );
 }
-  });
-
+ 
   // Hard negative overrides
   hardNegatives.forEach((hn) => {
     resolutions.push(
