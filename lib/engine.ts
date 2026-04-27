@@ -1143,6 +1143,22 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     .join(" ")}`.toLowerCase();
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+ // Modern upholstered revival override
+if (
+  has("chesterfield_tufting", "cabriole_leg", "nailhead_trim") &&
+  has("vinyl_or_bonded_leather")
+) {
+  return {
+    range: "c. 1980–present",
+    confidence: "High",
+    support: [
+      "Traditional Chesterfield / Queen Anne styling is present, but synthetic vinyl or bonded-leather upholstery indicates modern revival production.",
+    ],
+    limitations: [
+      "Style imitates earlier forms; dating is based on material evidence rather than decorative styling.",
+    ],
+  };
+}
   // Maker mark / label date anchor
 const makerMarkObservation = (digest.observations || [])
   .filter((o) => o.type === "label" && o.clue)
