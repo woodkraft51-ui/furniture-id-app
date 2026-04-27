@@ -1854,6 +1854,8 @@ let perception = normalizePerception(parsedForEvidence, observations);
 observations = addIntakeObservations(intake, observations);
 observations = promotePerceptionObservations(observations, perception);
 perception = normalizePerception(parsedForEvidence, observations);
+const makerMarkMatches = matchMakerMarks(perception.raw_text || "");
+observations = dedupeObservations([...observations, ...makerMarkMatches]);   
     const digest = buildEvidenceDigest(observations, perception);
 
     observations.forEach((obs) => {
