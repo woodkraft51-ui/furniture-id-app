@@ -2209,6 +2209,8 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
 
   const conflicts: string[] = [];
   const resolutions: string[] = [];
+  const clues = new Set(digest.clue_keys || []);
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
   // Detect conflicts
   highAuthority.forEach((strong) => {
@@ -2227,7 +2229,21 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
           `${strong.display_label} carries greater authority (${strong.authority_rank}/10) and is favored over ${weak.display_label}.`
         );
       }
-    });
+       });
+  });
+
+  if (
+    has("chesterfield_tufting", "cabriole_leg", "nailhead_trim") &&
+    has("vinyl_or_bonded_leather")
+  ) {
+  conflicts.push(
+    "Traditional Chesterfield / Queen Anne styling is present, but synthetic vinyl or bonded-leather upholstery points to modern revival production rather than an original period piece."
+  );
+
+  resolutions.push(
+    "Date should be shifted forward because material evidence overrides traditional style cues."
+  );
+}
   });
 
   // Hard negative overrides
