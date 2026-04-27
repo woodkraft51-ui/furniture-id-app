@@ -238,4 +238,20 @@ export const MAKER_MARKS: MakerMarkEntry[] = [
   confidence_weight: 0.95,
   dating_authority: "high"
 },
+  {
+  id: "globe_wernicke_gw_office_equip_service_label",
+  maker: "Globe-Wernicke",
+  mark_text_patterns: [
+    "G W",
+    "GW",
+    "Office Equip Service",
+    "Office Equipment Service",
+    "Dependable Quality"
+  ],
+  mark_type: "paper_label",
+  date_range: "c. 1920–1940",
+  confidence_weight: 0.82,
+  dating_authority: "moderate",
+  notes: "Partial GW shield-style office equipment/service label. Treat as a moderate-confidence Globe-Wernicke-related label unless fuller wording is visible.",
+},
 ];
