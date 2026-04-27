@@ -1160,6 +1160,23 @@ if (
     ],
   };
 }
+ // Queen Anne / Georgian Revival upholstered chair override
+if (
+  has("queen_anne_georgian_revival") &&
+  has("channel_back_fan_back", "open_wood_arms", "carved_arm_terminal") &&
+  has("upholstery_fabric", "fully_upholstered")
+) {
+  return {
+    range: "c. 1930–1970",
+    confidence: "Moderate",
+    support: [
+      "Queen Anne / Georgian styling is present, but the channel-back upholstery, fabric treatment, and revival construction point to mid-20th-century reproduction rather than an original 18th-century or early period chair.",
+    ],
+    limitations: [
+      "An underside photo, frame construction, and label evidence would help narrow the date further.",
+    ],
+  };
+}
   // Maker mark / label date anchor
 const makerMarkObservation = (digest.observations || [])
   .filter((o) => o.type === "label" && o.clue)
