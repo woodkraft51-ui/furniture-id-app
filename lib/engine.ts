@@ -1195,6 +1195,23 @@ if (
     ]
   };
 }
+ if (
+  has("regency_style_cues", "regency_federal_style") &&
+  has("fully_upholstered") &&
+  has("single_loose_seat_cushion", "tight_back_upholstery") &&
+  has("upholstery_fabric_type")
+) {
+  return {
+    range: "c. 1930–1970",
+    confidence: "Moderate",
+    support: [
+      "Regency/Federal styling is present, but the fully upholstered frame, tight-back upholstery, single loose cushion, and uniform woven fabric point to mid-20th-century revival production rather than an early 19th-century original.",
+    ],
+    limitations: [
+      "Underside frame construction, spring system, tacking evidence, and label evidence would help narrow the date further.",
+    ],
+  };
+}
   // Maker mark / label date anchor
 const makerMarkObservation = (digest.observations || [])
   .filter((o) => o.type === "label" && o.clue)
