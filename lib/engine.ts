@@ -882,7 +882,20 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
   if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");
   if (clues.has("extension_mechanism")) add("Extension table", 82, "Extension mechanism is visible.");
-  if (clues.has("pedestal_column")) add("Pedestal stand", 88, "Single-column pedestal form is visible.");
+  if (
+  clues.has("pedestal_column") &&
+  !hasAny(
+    "seating_surface",
+    "backrest_present",
+    "toledo_industrial_style",
+    "mid_century_industrial_office",
+    "height_adjustment_mechanism",
+    "swivel_mechanism",
+    "four_leg_caster_base"
+  )
+) {
+  add("Pedestal stand", 88, "Single-column pedestal form is visible.");
+}
 
   // Chest and storage forms
   if (clues.has("cedar_lining") || clues.has("lift_lid")) {
@@ -913,7 +926,25 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
   if (clues.has("open_shelving")) {
     add("Bookcase / open shelving unit", 60, "Open shelving is visible.");
   }
-
+ // Industrial / Toledo-style task chair
+if (
+  hasAny(
+    "toledo_industrial_style",
+    "mid_century_industrial_office",
+    "height_adjustment_mechanism",
+    "swivel_mechanism",
+    "stamped_metal_seat_support_bracket",
+    "four_leg_caster_base",
+    "circular_footring_stretcher"
+  )
+) {
+  add(
+    "Toledo-style mid-century industrial task chair",
+    hasAny("toledo_industrial_style", "mid_century_industrial_office") ? 115 : 85,
+    "Bent plywood seat/back, painted steel frame, casters, height adjustment, swivel mechanism, and footring/stretcher pattern support a Toledo-style industrial task chair reading."
+  );
+}
+ 
   // Seating forms
   if (clues.has("armchair_form")) {
     add(
