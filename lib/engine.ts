@@ -1658,6 +1658,24 @@ function buildDecisionGuidance(args: {
     contradiction_guard: "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths.",
   };
 }
+function matchMakerMarks(rawText: string) {
+  const text = String(rawText || "").toLowerCase();
+  if (!text) return [];
+
+  return MAKER_MARKS.filter((mark) =>
+    mark.mark_text_patterns.some((pattern) =>
+      text.includes(String(pattern).toLowerCase())
+    )
+  ).map((mark) => ({
+    type: "label",
+    clue: mark.id,
+    description: `Detected maker mark: ${mark.maker}. Mark type: ${mark.mark_type}. Dating reference: ${mark.date_range}.`,
+    confidence: Math.round(mark.confidence_weight * 100),
+    source_image: "phase0_visible_text",
+    hard_negative: false,
+    low_confidence_flag: mark.confidence_weight < 0.7,
+  }));
+}
 export const PE = {
   async callClaude(system: string, content: any[]): Promise<ClaudeResult> {
     try {
