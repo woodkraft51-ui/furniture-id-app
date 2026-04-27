@@ -4,7 +4,17 @@ export type MakerMarkEntry = {
   id: string;
   maker: string;
   mark_text_patterns: string[];
-  mark_type: "paper_label" | "branded_mark" | "stamp" | "metal_tag" | "decal" | "signature" | "unknown";
+  mark_type:
+  | "paper_label"
+  | "branded_mark"
+  | "brand"
+  | "stamp"
+  | "stencil"
+  | "label"
+  | "metal_tag"
+  | "decal"
+  | "signature"
+  | "unknown";
   date_range: string;
   confidence_weight: number; // 0–1 scale
   dating_authority: "high" | "moderate" | "low";
