@@ -1145,8 +1145,9 @@ const style = deriveStyleContext(digest) || styleFromObservation;
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
  // Modern upholstered revival override
 if (
-  has("chesterfield_tufting", "cabriole_leg", "nailhead_trim") &&
-  has("vinyl_or_bonded_leather")
+  has("cabriole_leg", "nailhead_trim") &&
+  has("button_tufting", "chesterfield_tufting", "chesterfield_adjacent") &&
+  has("vinyl_or_bonded_leather", "upholstery_material")
 ) {
   return {
     range: "c. 1980–present",
@@ -2248,10 +2249,11 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
        });
   });
 
-  if (
-    has("chesterfield_tufting", "cabriole_leg", "nailhead_trim") &&
-    has("vinyl_or_bonded_leather")
-  ) {
+ if (
+  has("cabriole_leg", "nailhead_trim") &&
+  has("button_tufting", "chesterfield_tufting", "chesterfield_adjacent") &&
+  has("vinyl_or_bonded_leather", "upholstery_material")
+) {
   conflicts.push(
     "Traditional Chesterfield / Queen Anne styling is present, but synthetic vinyl or bonded-leather upholstery points to modern revival production rather than an original period piece."
   );
