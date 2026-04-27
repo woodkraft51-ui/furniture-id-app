@@ -1143,7 +1143,34 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     .join(" ")}`.toLowerCase();
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+  // Maker mark / label date anchor
+const makerMarkObservation = (digest.observations || [])
+  .filter((o) => o.type === "label" && o.clue)
+  .map((o) => {
+    const mark = MAKER_MARKS.find((m) => m.id === o.clue);
+    return mark ? { observation: o, mark } : null;
+  })
+  .filter(Boolean)[0] as any;
 
+if (
+  makerMarkObservation &&
+  makerMarkObservation.observation.confidence >= 70 &&
+  makerMarkObservation.mark.dating_authority !== "low"
+) {
+  return {
+    range: makerMarkObservation.mark.date_range,
+    confidence: makerMarkObservation.mark.dating_authority === "high" ? "High" : "Moderate",
+    support: [
+      `Maker mark detected: ${makerMarkObservation.mark.maker}.`,
+      `Mark type: ${makerMarkObservation.mark.mark_type}.`,
+      `Dating reference: ${makerMarkObservation.mark.date_range}.`,
+      ...support,
+    ],
+    limitations: [
+      "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
+    ],
+  };
+}
   // Label/form-specific anchors stay first.
   if (clues.has("roos_label")) return { range: "c. 1940–1960", confidence: "High", support, limitations };
   if (clues.has("lane_label")) return { range: "c. 1930–1965", confidence: "High", support, limitations };
