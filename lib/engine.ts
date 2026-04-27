@@ -1177,6 +1177,24 @@ if (
     ],
   };
 }
+ // Regency / Federal upholstered sofa reproduction override
+if (
+  has("regency_style_cues") &&
+  has("fully_upholstered") &&
+  has("loose_seat_cushion") &&
+  has("upholstery_fabric_type")
+) {
+  return {
+    range: "c. 1930–1970",
+    confidence: "Moderate",
+    support: [
+      "Regency/Federal styling is present, but full upholstery construction, loose cushion format, and uniform woven fabric indicate a mid-20th-century revival piece rather than an early 19th-century original."
+    ],
+    limitations: [
+      "Underside frame construction and internal upholstery methods would help confirm age more precisely."
+    ]
+  };
+}
   // Maker mark / label date anchor
 const makerMarkObservation = (digest.observations || [])
   .filter((o) => o.type === "label" && o.clue)
