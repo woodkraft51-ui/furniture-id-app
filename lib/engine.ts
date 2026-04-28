@@ -722,7 +722,98 @@ function dedupeObservations(observations: Observation[]): Observation[] {
     return true;
   });
 }
+function normalizePerception(parsed: any, observations: Observation[]): Perception {
+  const p = parsed?.perception || {};
 
+  const arr = (v: any) =>
+    Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : [];
+
+  const raw = [
+    ...(p.raw_text ? [String(p.raw_text)] : []),
+    ...observations.map((o) => `${o.clue || ""} ${o.description || ""}`),
+  ].join(" | ");
+
+  const t = raw.toLowerCase();
+
+  const perception: Perception = {
+    labels: arr(p.labels),
+    maker_names: arr(p.maker_names),
+    materials: arr(p.materials),
+    forms: arr(p.forms),
+    functional_features: arr(p.functional_features),
+    style_cues: arr(p.style_cues),
+    construction_cues: arr(p.construction_cues),
+    condition_cues: arr(p.condition_cues),
+    visible_text: arr(p.visible_text),
+    raw_text: raw,
+  };
+
+  const add = (key: keyof Perception, value: string) => {
+    const current = perception[key];
+    if (Array.isArray(current) && !current.includes(value)) {
+      current.push(value);
+    }
+  };
+
+  const includesAny = (text: string, terms: string[]) =>
+    terms.some((term) => text.includes(term));
+
+  // 🔹 Maker / labels
+  if (includesAny(t, ["roos", "sweetheart cedar"])) {
+    add("labels", "Roos label");
+    add("maker_names", "Roos");
+  }
+
+  if (includesAny(t, ["lane cedar"])) {
+    add("labels", "Lane label");
+    add("maker_names", "Lane");
+  }
+
+  // 🔹 Materials
+  if (includesAny(t, ["metal", "iron", "steel", "brass"])) {
+    add("materials", "metal");
+  }
+
+  if (includesAny(t, ["upholstered", "fabric", "cushion"])) {
+    add("materials", "upholstery");
+  }
+
+  if (includesAny(t, ["wood", "oak", "cedar", "walnut"])) {
+    add("materials", "wood");
+  }
+
+  // 🔹 Function
+  if (includesAny(t, ["telephone", "phone shelf"])) {
+    add("functional_features", "telephone shelf");
+  }
+
+  if (includesAny(t, ["bench", "seat", "seating"])) {
+    add("functional_features", "seating");
+  }
+
+  if (includesAny(t, ["drop front", "writing surface"])) {
+    add("functional_features", "drop-front desk");
+  }
+
+  if (includesAny(t, ["pigeonhole", "cubby"])) {
+    add("functional_features", "pigeonholes");
+  }
+
+  if (t.includes("mirror")) {
+    add("functional_features", "mirror");
+  }
+
+  // 🔹 Style cues
+  if (includesAny(t, ["cabriole", "shell carving"])) {
+    add("style_cues", "Queen Anne / Colonial Revival");
+  }
+
+  if (includesAny(t, ["barley twist", "jacobean", "heavy carving"])) {
+    add("style_cues", "Jacobean Revival");
+  }
+
+  return perception;
+}
 function tIncludes(text: string, word: string) {
   return text.includes(word);
 }
