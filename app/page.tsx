@@ -504,7 +504,7 @@ const p7 = stageOutputs.p7 || null;
   }, [fieldValue, intake.asking_price, p1, p5]);
 
   const supportingEvidence = useMemo(() => pickSupportingEvidence(report), [report]);
-  const primaryCaution = (Array.isArray(p5?.conflict_notes) && p5.conflict_notes[0]) || (Array.isArray(p2?.limitations) && p2.limitations[0]) || "Results remain broad until more structural evidence is visible.";
+  const primaryCaution = (Array.isArray(p5?.conflict_notes) && p5.conflict_notes[0]) || (Array.isArray(p2?.limitations) && p2.limitations[0]) || "Exact dating depends on construction evidence such as joinery, fasteners, and structural details. Without these, visible style may suggest a period but cannot confirm it.";
   const nextBestEvidence = (Array.isArray(p1?.next_best_evidence) && p1.next_best_evidence[0]) || "Add a structural detail such as an underside, back, or joinery view if accessible.";
 
   const fieldReady = fieldPhotos.length >= 2;
