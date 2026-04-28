@@ -2741,13 +2741,17 @@ const strongRevivalStructure =
   hasStyle("reeded_tapered_front_legs") ||
   hasStyle("fluted_turned_front_legs") ||
   hasStyle("saber_rear_legs") ||
-  hasStyle("open_arm_construction");
+  hasStyle("sabre_rear_legs") ||
+  hasStyle("open_arm_construction") ||
+  hasStyle("open_arm_design") ||
+  hasStyle("shaped_apron");
 
 const strongRevivalStyle =
   hasStyle("louis_xvi_neoclassical_style") ||
+  hasStyle("neoclassical_louis_xvi_style") ||
   hasStyle("neoclassical_style_reference") ||
-  hasStyle("medallion_oval_back");
-
+  hasStyle("medallion_oval_back") ||
+  hasStyle("oval_medallion_back");
 const dateFloorOverride =
   earlyCount === 0 &&
   (
