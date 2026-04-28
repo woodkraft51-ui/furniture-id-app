@@ -1712,17 +1712,6 @@ if (has("mcm_structural_pattern")) {
     date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
-    confidence: "Moderate",
-    support: [
-      "The combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern production pattern.",
-      ...support,
-    ],
-    limitations: [
-      "Underside construction, joinery, fasteners, or maker-label evidence would be needed to narrow the date further.",
-    ],
-    date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
  if (has("queen_anne_revival_pattern")) {
   return {
     range: "c. 1930–1970",
