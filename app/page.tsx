@@ -256,14 +256,61 @@ function evidenceMeaning(text: string): string {
 }
 
 function pickSupportingEvidence(report: ReportShape | null): string[] {
-  const p2 = report?.stage_outputs?.p2;
-  const p3 = report?.stage_outputs?.p3;
-  const p4 = report?.stage_outputs?.p4;
-  const out: string[] = [];
-  if (Array.isArray(p3?.support)) out.push(...p3.support);
-  if (Array.isArray(p2?.support)) out.push(...p2.support);
-  if (Array.isArray(p4?.confidence_drivers?.increased)) out.push(...p4.confidence_drivers.increased);
-  return Array.from(new Set(out.map((item) => String(item || "").trim()).filter(Boolean))).slice(0, 10);
+  const digest = report?.evidence_digest;
+  const observations = Array.isArray(digest?.observations)
+    ? digest.observations
+    : [];
+
+  if (!observations.length) {
+    const p2 = report?.stage_outputs?.p2;
+    const p3 = report?.stage_outputs?.p3;
+    const p4 = report?.stage_outputs?.p4;
+    const fallback: string[] = [];
+
+    if (Array.isArray(p3?.support)) fallback.push(...p3.support);
+    if (Array.isArray(p2?.support)) fallback.push(...p2.support);
+    if (Array.isArray(p4?.confidence_drivers?.increased)) {
+      fallback.push(...p4.confidence_drivers.increased);
+    }
+
+    return Array.from(
+      new Set(fallback.map((item) => String(item || "").trim()).filter(Boolean))
+    ).slice(0, 10);
+  }
+
+  const priority: Record<string, number> = {
+    construction: 1,
+    joinery: 1,
+    toolmarks: 1,
+    fasteners: 1,
+    materials: 2,
+    material: 2,
+    hardware: 3,
+    finish: 4,
+    alteration: 4,
+    condition: 5,
+    style: 6,
+    structure: 7,
+    form: 8,
+    function: 8,
+    context: 10,
+  };
+
+  return Array.from(
+    new Set(
+      [...observations]
+        .filter((o: any) => String(o?.description || "").trim())
+        .sort((a: any, b: any) => {
+          const pa = priority[String(a?.type || "context")] || 10;
+          const pb = priority[String(b?.type || "context")] || 10;
+
+          if (pa !== pb) return pa - pb;
+
+          return Number(b?.confidence || 0) - Number(a?.confidence || 0);
+        })
+        .map((o: any) => String(o.description).trim())
+    )
+  ).slice(0, 10);
 }
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
