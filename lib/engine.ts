@@ -1924,22 +1924,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
     };
   }
 
-  if (has("mission_arts_crafts_structural_pattern")) {
+    if (has("mission_arts_crafts_structural_pattern")) {
     return {
       range: "c. 1900–1925",
       confidence: "Moderate",
       support: [
-        "Slat back, rectilinear form, and exposed joinery support an Arts & Crafts / Mission period construction pattern.",
+        "Slat or spindle back, rectilinear legs, exposed or mortise-and-tenon joinery, and oak construction support a Mission / Arts & Crafts production pattern.",
         ...support,
       ],
       limitations: [
-        "Joinery details, fasteners, and underside construction would refine the date further.",
+        "Joinery details, fasteners, underside construction, and maker-label evidence would refine the date further.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
-
   if (has("neoclassical_cane_barrel_pattern")) {
     return {
       range: "c. 1940–1970",
