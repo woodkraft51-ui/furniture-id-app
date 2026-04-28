@@ -1071,7 +1071,34 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
-
+   if (
+    (hasClue("armchair_form") ||
+      hasText("armchair", "upholstered chair", "throne chair", "club chair")) &&
+    (hasClue("barley_twist") ||
+      hasText("barley twist", "rope twist", "spiral rope", "twisted columns")) &&
+    (hasClue("acanthus_carving") ||
+      hasClue("acanthus_carved_columns") ||
+      hasText("acanthus", "scrollwork", "heavily carved columns")) &&
+    (hasClue("claw_feet") ||
+      hasClue("paw_feet") ||
+      hasText("claw feet", "paw feet", "carved paw")) &&
+    (hasClue("channel_back") ||
+      hasClue("channel_fan_back") ||
+      hasText("channel back", "fan back", "fan-shaped", "channel-tufted", "channel pleating")) &&
+    (hasClue("fully_upholstered") ||
+      hasText("fully upholstered", "upholstered", "damask fabric"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "renaissance_revival_upholstered_armchair_pattern",
+      description:
+        "Armchair form with heavily carved barley/rope-twist supports, acanthus carving, claw or paw feet, fan/channel back, and full upholstery forms a consistent Renaissance Revival / late Victorian parlor chair pattern.",
+      confidence: 88,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
   if (
     (hasClue("barrel_tub_frame") ||
       hasText("barrel chair", "tub chair", "barrel/tub form")) &&
