@@ -790,7 +790,80 @@ function computeMissingEvidence(images: any[]) {
     label_photo: !types.has("label_makers_mark"),
   };
 }
+function buildDateTighteningEvidence(digest: EvidenceDigest) {
+  const clues = new Set(digest.clue_keys || []);
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
+  const needs: string[] = [];
+
+  const hadHardware = has(
+    "hardware_present",
+    "original_hardware",
+    "brass_hardware",
+    "caster",
+    "lock",
+    "hinge",
+    "drawer_pull"
+  );
+
+  const hadJoinery = has(
+    "dovetail",
+    "hand_cut_dovetail",
+    "machine_cut_dovetail",
+    "mortise_tenon",
+    "joinery_visible"
+  );
+
+  const hadUnderside = has(
+    "underside_visible",
+    "seat_underside",
+    "case_bottom",
+    "drawer_bottom",
+    "frame_bottom"
+  );
+
+  const hadFasteners = has(
+    "screw",
+    "nail",
+    "cut_nail",
+    "wire_nail",
+    "phillips_screw",
+    "slotted_screw"
+  );
+
+  const hadLabel = has(
+    "maker_label",
+    "paper_label",
+    "brand_mark",
+    "stamp",
+    "metal_tag"
+  );
+
+  const hadUpholsterySystem = has(
+    "webbing",
+    "springs",
+    "tacking",
+    "dust_cover",
+    "upholstery_underlayer"
+  );
+
+  needs.push(hadUnderside ? "additional underside photos" : "underside photos");
+  needs.push(hadJoinery ? "additional joinery details" : "joinery details");
+  needs.push(hadFasteners ? "additional fastener evidence" : "fastener evidence");
+  needs.push(hadHardware ? "additional hardware details" : "hardware details");
+
+  if (has("fully_upholstered", "upholstery_fabric", "upholstery_material")) {
+    needs.push(
+      hadUpholsterySystem
+        ? "additional upholstery-system evidence"
+        : "upholstery-system evidence such as webbing, springs, tacking, or dust cover"
+    );
+  }
+
+  needs.push(hadLabel ? "additional label or maker-mark photos" : "maker label or stamp photos");
+
+  return `A tighter date would require ${needs.slice(0, 4).join(", ")}.`;
+}
 function buildIntakeSummary(intake: any): string {
   if (!intake) return "No intake details provided.";
   return Object.entries(intake)
