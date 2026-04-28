@@ -1696,8 +1696,22 @@ if (
   if (form.includes("Iron bed")) return { range: "c. 1880–1920", confidence: "High", support, limitations };
 
 if (has("mcm_structural_pattern")) {
+  const frameRange = "c. 1950–1975";
+
   return {
-    range: "c. 1950–1975",
+    range: frameRange,
+    confidence: "Moderate",
+    support: [
+      "The combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern production pattern.",
+      ...support,
+    ],
+    limitations: [
+      "Underside construction, joinery, fasteners, or maker-label evidence would be needed to narrow the date further.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
     confidence: "Moderate",
     support: [
       "The combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern production pattern.",
