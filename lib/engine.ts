@@ -2707,7 +2707,37 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
+  // 🧠 NEGATIVE EVIDENCE DATE FLOOR (CONSERVATIVE)
 
+const clues = new Set(digest.clue_keys || []);
+
+const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+
+const earlySignals = [
+  "hand_cut_dovetails",
+  "hand_forged_nail",
+  "pit_saw_marks",
+  "rosehead_nail",
+  "irregular_hand_joinery"
+];
+
+const modernSignals = [
+  "wire_nail",
+  "machine_dovetails",
+  "plywood_structural",
+  "phillips_screw",
+  "staple_fastener",
+  "modern_concealed_hinge"
+];
+
+const earlyCount = earlySignals.filter(has).length;
+const modernCount = modernSignals.filter(has).length;
+
+// If NO early evidence AND multiple modern indicators → set a floor
+if (earlyCount === 0 && modernCount >= 2) {
+  range = "c. 1930–present";
+  confidence = confidence === "Low" ? "Moderate" : confidence;
+}
   return {
     range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated",
     confidence: "Low",
