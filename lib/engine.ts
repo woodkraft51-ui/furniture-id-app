@@ -1189,6 +1189,13 @@ if (
 }
  
   // Seating forms
+ if (clues.has("mcm_structural_pattern")) {
+  add(
+    "Mid-century modern spindle-back lounge chair",
+    105,
+    "Combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern chair reading."
+  );
+}
   if (clues.has("armchair_form")) {
     add(
       "Upholstered armchair",
