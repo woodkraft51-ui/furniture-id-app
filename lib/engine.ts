@@ -557,34 +557,34 @@ function descriptionFromObservation(o: any): string {
 }
 function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
   const authorityCap: Record<string, number> = {
-  // 🔴 Highest authority (structure)
-  construction: 96,
-  joinery: 95,
-  toolmarks: 94,
-  fasteners: 92,
+    // 🔴 Highest authority (structure)
+    construction: 96,
+    joinery: 95,
+    toolmarks: 94,
+    fasteners: 92,
 
-  // 🟠 Strong but secondary
-  materials: 84,
-  material: 84,
-  structure: 82,
+    // 🟠 Strong but secondary
+    materials: 84,
+    material: 84,
+    structure: 82,
 
-  // 🟡 Moderate support
-  hardware: 66,
-  function: 70,
-  form: 68,
+    // 🟡 Moderate support
+    hardware: 66,
+    function: 70,
+    form: 68,
 
-  // 🔵 Weak / easily altered
-  finish: 56,
-  alteration: 54,
-  condition: 54,
+    // 🔵 Weak / easily altered
+    finish: 56,
+    alteration: 54,
+    condition: 54,
 
-  // ⚪ Lowest authority
-  style: 52,
-  context: 48,
+    // ⚪ Lowest authority
+    style: 52,
+    context: 48,
 
-  // 🟣 Special case
-  label: 85,
-};
+    // 🟣 Special case
+    label: 85,
+  };
 
   const replacementRiskCap: Record<string, number> = {
     hardware: 62,
@@ -592,6 +592,13 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
     alteration: 50,
     style: 55,
   };
+
+  const clueCounts: Record<string, number> = {};
+
+  for (const o of observations) {
+    const key = `${o.type || "context"}:${o.clue || ""}`;
+    clueCounts[key] = (clueCounts[key] || 0) + 1;
+  }
 
   return observations
     .filter((o) => {
@@ -611,6 +618,7 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
     .map((o) => {
       const text = String(o.description || "").toLowerCase();
       const type = String(o.type || "context");
+      const clue = String(o.clue || "");
       let confidence = Number(o.confidence || 50);
 
       if (
@@ -621,24 +629,26 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
         confidence = Math.min(confidence, 45);
       }
 
-      // Authority cap: construction evidence is allowed to stay strong;
-      // style, finish, hardware, and general form evidence are capped lower.
       confidence = Math.min(confidence, authorityCap[type] ?? 50);
 
-      // Replacement-risk cap: hardware/finish/style can support, but should not dominate.
       if (replacementRiskCap[type] != null && !o.hard_negative) {
         confidence = Math.min(confidence, replacementRiskCap[type]);
       }
 
-      // Hard negatives should remain powerful when truly detected.
       if (o.hard_negative) {
         confidence = Math.max(confidence, 85);
       }
 
+      const key = `${type}:${clue}`;
+      const occurrences = clueCounts[key] || 1;
+      const multiPhotoBoost = Math.min((occurrences - 1) * 3, 6);
+
+      const finalConfidence = clamp(confidence + multiPhotoBoost, 1, 99);
+
       return {
         ...o,
-        confidence,
-        low_confidence_flag: confidence < 45,
+        confidence: finalConfidence,
+        low_confidence_flag: finalConfidence < 45,
       };
     });
 }
