@@ -745,13 +745,15 @@ function normalizePerception(parsed: any, observations: Observation[]): Percepti
 function promotePerceptionObservations(observations: Observation[], perception: Perception): Observation[] {
   const out = [...observations];
   const text = perception.raw_text.toLowerCase();
-const negatesSeatingOrWriting =
+const isNegated = (phrase: string) =>
   includesAny(text, [
-    "no seating",
-    "no seating surface",
-    "no visible seating",
-    "no writing surface",
-    "no secondary function",
+    `no ${phrase}`,
+    `not ${phrase}`,
+    `without ${phrase}`,
+    `${phrase} not`,
+    `no visible ${phrase}`,
+    `no ${phrase} present`,
+    `no ${phrase} evident`,
   ]);
   const add = (clue: string, description: string, confidence = 72, source = "perception") => {
     if (out.some((o) => o.clue === clue)) return;
