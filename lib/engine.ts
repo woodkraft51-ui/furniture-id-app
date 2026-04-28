@@ -1434,7 +1434,63 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-  return out;
+    // 🧠 PATTERN CONFLICT CLEANUP (PRIORITY FILTER)
+
+  const PRIORITY_ORDER = [
+    "mcm_structural_pattern",
+    "queen_anne_revival_pattern",
+    "mission_arts_crafts_structural_pattern",
+    "colonial_revival_pattern",
+    "shaker_pattern",
+    "william_and_mary_pattern",
+    "chippendale_pattern",
+    "federal_hepplewhite_sheraton_pattern",
+    "victorian_eastlake_pattern",
+    "rococo_revival_pattern",
+    "gothic_revival_pattern",
+    "art_deco_pattern",
+    "jacobean_tudor_revival_case_pattern",
+    "neoclassical_cane_barrel_pattern"
+  ];
+
+  // Sort by priority AND confidence
+  const sorted = [...out].sort((a, b) => {
+    const aPriority = PRIORITY_ORDER.indexOf(a.clue || "");
+    const bPriority = PRIORITY_ORDER.indexOf(b.clue || "");
+
+    const aRank = aPriority === -1 ? 999 : aPriority;
+    const bRank = bPriority === -1 ? 999 : bPriority;
+
+    if (aRank !== bRank) return aRank - bRank;
+
+    return b.confidence - a.confidence;
+  });
+
+  const selected: Observation[] = [];
+  const usedFamilies = new Set<string>();
+
+  const getFamily = (clue: string) => {
+    if (clue.includes("queen_anne") || clue.includes("colonial")) return "colonial_family";
+    if (clue.includes("federal")) return "federal_family";
+    if (clue.includes("rococo")) return "rococo_family";
+    if (clue.includes("jacobean")) return "jacobean_family";
+    if (clue.includes("mcm")) return "modern_family";
+    if (clue.includes("art_deco")) return "modern_family";
+    if (clue.includes("mission")) return "craftsman_family";
+    return clue;
+  };
+
+  for (const pattern of sorted) {
+    const family = getFamily(pattern.clue || "");
+
+    // Prevent multiple patterns from same competing family
+    if (usedFamilies.has(family)) continue;
+
+    selected.push(pattern);
+    usedFamilies.add(family);
+  }
+
+  return selected;
 }
 
  
