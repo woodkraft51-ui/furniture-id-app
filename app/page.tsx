@@ -721,10 +721,44 @@ const p7 = stageOutputs.p7 || null;
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && <><div style={subheadStyle}>Alternate possibilities</div><ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
               <SectionCard title="Broad Date Lane">
-                <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
-                <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
-              </SectionCard>
-            </div>
+  {/* Frame date */}
+  <div style={metaRowStyle}>
+    <span>Frame date</span>
+    <strong>{p2?.range || "Unknown"}</strong>
+  </div>
+
+  <div style={metaRowStyle}>
+    <span>Frame confidence</span>
+    <strong style={{ color: bandColor(p2?.confidence) }}>
+      {p2?.confidence || "Inconclusive"}
+    </strong>
+  </div>
+
+  {/* Upholstery date (ONLY if present) */}
+  {p2?.upholstery_layer && (
+    <>
+      <div style={{ marginTop: 10, borderTop: "1px solid #e5d8c2", paddingTop: 10 }} />
+
+      <div style={metaRowStyle}>
+        <span>Upholstery date</span>
+        <strong>{p2.upholstery_layer.range}</strong>
+      </div>
+
+      <div style={metaRowStyle}>
+        <span>Upholstery confidence</span>
+        <strong style={{ color: bandColor(p2.upholstery_layer.confidence) }}>
+          {p2.upholstery_layer.confidence}
+        </strong>
+      </div>
+
+      {p2.upholstery_layer.note && (
+        <div style={{ marginTop: 8, fontSize: 13, color: "#5c4a37", lineHeight: 1.5 }}>
+          {p2.upholstery_layer.note}
+        </div>
+      )}
+    </>
+  )}
+</SectionCard>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Broad Resale Lane">
