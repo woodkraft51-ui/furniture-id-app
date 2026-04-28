@@ -279,22 +279,31 @@ function pickSupportingEvidence(report: ReportShape | null): string[] {
   }
 
   const priority: Record<string, number> = {
-    construction: 1,
-    joinery: 1,
-    toolmarks: 1,
-    fasteners: 1,
-    materials: 2,
-    material: 2,
-    hardware: 3,
-    finish: 4,
-    alteration: 4,
-    condition: 5,
-    style: 6,
-    structure: 7,
-    form: 8,
-    function: 8,
-    context: 10,
-  };
+  // 🔴 Highest authority (structure)
+  construction: 1,
+  joinery: 2,
+  toolmarks: 3,
+  fasteners: 4,
+
+  // 🟠 Strong secondary
+  materials: 5,
+  material: 5,
+  structure: 6,
+
+  // 🟡 Moderate
+  hardware: 7,
+  function: 8,
+  form: 9,
+
+  // 🔵 Weak / easily altered
+  finish: 10,
+  alteration: 10,
+  condition: 11,
+
+  // ⚪ Lowest authority
+  style: 12,
+  context: 13,
+};
 
   return Array.from(
     new Set(
