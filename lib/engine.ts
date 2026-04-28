@@ -655,7 +655,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     });
   }
 
-  return dedupeObservations(out);
+  return dedupeObservations(normalizeEvidenceStrength(out));
 }
 
 function dedupeObservations(observations: Observation[]): Observation[] {
