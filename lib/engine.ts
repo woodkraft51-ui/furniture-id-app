@@ -933,8 +933,63 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-  return out;
+// 🔹 Queen Anne / Colonial Revival upholstered cluster
+if (
+  (
+    hasClue("cabriole_leg") ||
+    hasText("cabriole leg", "queen anne leg", "curved leg")
+  ) &&
+  (
+    hasClue("channel_back_fan_back") ||
+    hasText("channel back", "fan back upholstery", "radiating upholstery")
+  ) &&
+  (
+    hasClue("upholstery_fabric") ||
+    hasText("fully upholstered", "upholstered armchair")
+  )
+) {
+  out.push({
+    type: "structure",
+    clue: "queen_anne_revival_pattern",
+    description:
+      "Cabriole legs, channel/fan back upholstery, and fully upholstered frame form a consistent Queen Anne / Colonial Revival upholstered pattern.",
+    confidence: 84,
+    source_image: "derived",
+    hard_negative: false,
+    low_confidence_flag: false,
+  });
 }
+
+// 🔹 Mission / Arts & Crafts structural cluster
+if (
+  (
+    hasClue("slat_back") ||
+    hasText("vertical slats", "ladder back", "slat back")
+  ) &&
+  (
+    hasClue("square_legs") ||
+    hasText("square legs", "rectilinear legs")
+  ) &&
+  (
+    hasClue("exposed_joinery") ||
+    hasText("through tenon", "exposed joinery", "pegged joinery")
+  )
+) {
+  out.push({
+    type: "structure",
+    clue: "mission_structural_pattern",
+    description:
+      "Slat back, rectilinear legs, and exposed joinery form a consistent Arts & Crafts / Mission structural pattern.",
+    confidence: 88,
+    source_image: "derived",
+    hard_negative: false,
+    low_confidence_flag: false,
+  });
+}
+
+return out;
+}
+
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   const by_type: Record<string, Observation[]> = {};
   observations.forEach((o) => {
