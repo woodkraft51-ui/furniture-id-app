@@ -1014,6 +1014,37 @@ function computeMissingEvidence(images: any[]) {
     label_photo: !types.has("label_makers_mark"),
   };
 }
+function detectUpholsteryLayer(digest: EvidenceDigest) {
+  const clues = new Set(digest.clue_keys);
+
+  const hasUpholstery =
+    clues.has("upholstery_fabric") ||
+    clues.has("fully_upholstered") ||
+    clues.has("upholstered_wrap_barrel_back") ||
+    clues.has("upholstered_seat_pad");
+
+  const modernUpholsterySignals =
+    clues.has("synthetic_fabric_pattern") ||
+    clues.has("vinyl_or_bonded_leather") ||
+    clues.has("uniform_machine_tufting") ||
+    clues.has("clean_modern_fabric");
+
+  if (!hasUpholstery) return null;
+
+  if (modernUpholsterySignals) {
+    return {
+      range: "c. 1950–present",
+      confidence: "Moderate",
+      note: "Upholstery materials and construction suggest later application or replacement.",
+    };
+  }
+
+  return {
+    range: "unknown (possibly original or early)",
+    confidence: "Low",
+    note: "Upholstery is present but insufficient detail to date independently.",
+  };
+}
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
   const clues = new Set(digest.clue_keys || []);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
