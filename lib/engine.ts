@@ -2731,8 +2731,8 @@ const modernSignals = [
   "modern_concealed_hinge"
 ];
 
-const earlyCount = earlySignals.filter(hasDateFloorClue).length;
-const modernCount = modernSignals.filter(hasDateFloorClue).length;
+const earlyCount = earlySignals.filter((key) => hasDateFloorClue(key)).length;
+const modernCount = modernSignals.filter((key) => hasDateFloorClue(key)).length;
 
 // If NO early evidence AND multiple modern indicators → set a floor
 if (earlyCount === 0 && modernCount >= 2) {
