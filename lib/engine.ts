@@ -2764,8 +2764,10 @@ const dateFloorOverride =
       }
     : null;
   return {
-    range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated",
-    confidence: "Low",
+    range:
+      dateFloorOverride?.range ||
+      (style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated"),
+    confidence: dateFloorOverride?.confidence || "Low",
     support,
     limitations: [
       ...limitations,
