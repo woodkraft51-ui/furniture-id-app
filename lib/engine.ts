@@ -1940,10 +1940,17 @@ function buildDecisionGuidance(args: {
     contradiction_guard: "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths.",
   };
 }
-function matchMakerMarks(rawText: string) {
+function matchMakerMarks(rawText: string, observations: any[] = []) {
   const text = String(rawText || "").toLowerCase();
   if (!text) return [];
+   // 🔒 HARD GUARD: only allow maker mark detection if valid label/text evidence exists
+  const hasValidLabelEvidence = observations.some((obs) =>
+    obs.type === "label" ||
+    obs.source_image === "label_makers_mark" ||
+    obs.source_image === "phase0_visible_text"
+  );
 
+  if (!hasValidLabelEvidence) return [];
   return MAKER_MARKS.filter((mark) =>
     mark.mark_text_patterns.some((pattern) =>
       text.includes(String(pattern).toLowerCase())
