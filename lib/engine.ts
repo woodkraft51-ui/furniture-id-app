@@ -1052,20 +1052,24 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-  if (
+    if (
     (hasClue("slat_back") ||
-      hasText("vertical slats", "ladder back", "slat back")) &&
+      hasClue("spindle_back") ||
+      hasText("vertical slats", "ladder back", "slat back", "spindle back")) &&
     (hasClue("square_legs") ||
-      hasText("square legs", "rectilinear legs")) &&
+      hasText("square legs", "rectilinear legs", "straight legs", "blocky legs")) &&
     (hasClue("exposed_joinery") ||
-      hasText("through tenon", "exposed joinery", "pegged joinery"))
+      hasClue("mortise_and_tenon") ||
+      hasText("through tenon", "exposed joinery", "pegged joinery", "mortise and tenon", "visible tenon")) &&
+    (hasClue("oak_primary") ||
+      hasText("oak", "quartersawn oak", "quarter sawn oak", "ray fleck"))
   ) {
     out.push({
       type: "structure",
-      clue: "mission_structural_pattern",
+      clue: "mission_arts_crafts_structural_pattern",
       description:
-        "Slat back, rectilinear legs, and exposed joinery form a consistent Arts & Crafts / Mission structural pattern.",
-      confidence: 88,
+        "Slat or spindle back, rectilinear legs, exposed or mortise-and-tenon joinery, and oak construction form a consistent Mission / Arts & Crafts structural pattern.",
+      confidence: 90,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
@@ -1504,6 +1508,13 @@ if (
       "Renaissance Revival upholstered armchair",
       118,
       "Combined armchair form, carved barley/rope-twist supports, acanthus carving, claw or paw feet, fan/channel back, and full upholstery support a Renaissance Revival / late Victorian parlor chair reading."
+    );
+  }
+   if (clues.has("mission_arts_crafts_structural_pattern")) {
+    add(
+      "Mission / Arts & Crafts furniture",
+      116,
+      "Slat or spindle back, rectilinear legs, exposed or mortise-and-tenon joinery, and oak construction support a Mission / Arts & Crafts reading."
     );
   }
  if (clues.has("mcm_structural_pattern")) {
