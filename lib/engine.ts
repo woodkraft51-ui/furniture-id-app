@@ -1230,6 +1230,34 @@ if (
     ],
   };
 }
+ // Narrow Louis XVI revival window when stronger modern signals are present
+if (
+  has("oval_medallion_back", "reeded_tapered_front_legs") &&
+  has("scroll_arm_terminals", "saber_rear_legs") &&
+  has("upholstery_striped_floral_fabric") &&
+  has("show_wood_open_arm_frame") &&
+  has("frame_finish_wear") &&
+
+  // tightening triggers (must hit at least 2–3 of these)
+  (
+    has("machine_lathe_uniformity") ||
+    has("synthetic_fabric_pattern") ||
+    has("modern_finish_sheen") ||
+    has("mass_production_symmetry") ||
+    has("empire_influenced_sweep") // hybrid styling = later
+  )
+) {
+  return {
+    range: "c. 1940–1980",
+    confidence: "Moderate",
+    support: [
+      "Consistent Neoclassical revival form with additional indicators of mid-20th-century production such as uniform machine turning, hybrid styling, or modern upholstery materials."
+    ],
+    limitations: [
+      "Exact decade requires underside construction, joinery, and upholstery system inspection."
+    ],
+  };
+}
   // Maker mark / label date anchor
 const makerMarkObservation = (digest.observations || [])
   .filter((o) => o.type === "label" && o.clue)
