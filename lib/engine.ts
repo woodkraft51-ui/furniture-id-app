@@ -1099,6 +1099,32 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+  if (
+    (hasClue("cabriole_leg") ||
+      hasText("cabriole leg", "cabriole legs", "curved leg", "queen anne leg")) &&
+    (hasClue("shell_carving") ||
+      hasClue("claw_or_pad_foot") ||
+      hasText("shell carving", "shell motif", "claw foot", "pad foot", "ball and claw")) &&
+    (hasClue("symmetrical_case_form") ||
+      hasClue("drawer_present") ||
+      hasClue("multiple_drawer_case") ||
+      hasClue("armchair_form") ||
+      hasText("symmetrical", "dresser", "chest", "sideboard", "chair", "armchair")) &&
+    !hasClue("hand_cut_dovetails") &&
+    !hasClue("hand_forged_nail")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "colonial_revival_pattern",
+      description:
+        "Cabriole legs, shell or claw/pad-foot ornament, and symmetrical case or seating form create a consistent Colonial Revival pattern rather than proof of 18th-century origin.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+ 
    if (
     (hasClue("barley_twist") ||
       hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
@@ -1561,8 +1587,18 @@ if (
     );
   }
 
-  if (clues.has("cabriole_leg") || clues.has("shell_carving") || clues.has("claw_or_pad_foot")) {
-    add("Queen Anne / Colonial Revival furniture", 48, "Cabriole legs, shell carving, or related revival style cues are visible.");
+    if (clues.has("colonial_revival_pattern")) {
+    add(
+      "Colonial Revival furniture",
+      104,
+      "Cabriole legs, shell or claw/pad-foot ornament, and symmetrical case or seating form support a Colonial Revival reading rather than proof of 18th-century origin."
+    );
+  } else if (clues.has("cabriole_leg") || clues.has("shell_carving") || clues.has("claw_or_pad_foot")) {
+    add(
+      "Queen Anne / Colonial Revival furniture",
+      48,
+      "Cabriole legs, shell carving, or related revival style cues are visible."
+    );
   }
 
   // Functional hierarchy corrections
@@ -1825,6 +1861,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Frame date is based on visible structural and decorative patterning; drawer joinery, fasteners, secondary woods, and maker-label evidence would be needed to narrow the date further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("colonial_revival_pattern")) {
+    return {
+      range: "c. 1890–1940",
+      confidence: "Moderate",
+      support: [
+        "Cabriole legs, shell or claw/pad-foot ornament, and symmetrical case or seating form support a Colonial Revival production pattern rather than proof of 18th-century origin.",
+        ...support,
+      ],
+      limitations: [
+        "Frame date is based on visible revival-style patterning; drawer joinery, fasteners, underside construction, secondary woods, and maker-label evidence would be needed to narrow the date further.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
