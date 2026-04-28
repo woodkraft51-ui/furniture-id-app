@@ -556,11 +556,36 @@ function descriptionFromObservation(o: any): string {
   return asString(o?.description) || asString(o?.observed_value_text) || asString(o?.text) || asString(o?.value) || "Unknown observation";
 }
 function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
+  const authorityCap: Record<string, number> = {
+    construction: 95,
+    joinery: 95,
+    toolmarks: 92,
+    fasteners: 90,
+    materials: 82,
+    material: 82,
+    hardware: 68,
+    finish: 58,
+    alteration: 55,
+    condition: 55,
+    style: 55,
+    structure: 78,
+    form: 78,
+    function: 72,
+    context: 50,
+    label: 80,
+  };
+
+  const replacementRiskCap: Record<string, number> = {
+    hardware: 62,
+    finish: 55,
+    alteration: 50,
+    style: 55,
+  };
+
   return observations
     .filter((o) => {
       const text = String(o.description || "").toLowerCase();
 
-      // ❌ Hard filter: unusable observations
       if (
         text.includes("not visible") ||
         text.includes("cannot confirm") ||
@@ -574,9 +599,9 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
     })
     .map((o) => {
       const text = String(o.description || "").toLowerCase();
+      const type = String(o.type || "context");
       let confidence = Number(o.confidence || 50);
 
-      // ⚠️ Downgrade speculative language
       if (
         text.includes("possibly") ||
         text.includes("may be") ||
@@ -585,10 +610,19 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
         confidence = Math.min(confidence, 45);
       }
 
-      // ⚠️ Cap weaker evidence categories
-      if (o.type === "style") confidence = Math.min(confidence, 60);
-      if (o.type === "finish") confidence = Math.min(confidence, 55);
-      if (o.type === "hardware") confidence = Math.min(confidence, 65);
+      // Authority cap: construction evidence is allowed to stay strong;
+      // style, finish, hardware, and general form evidence are capped lower.
+      confidence = Math.min(confidence, authorityCap[type] ?? 50);
+
+      // Replacement-risk cap: hardware/finish/style can support, but should not dominate.
+      if (replacementRiskCap[type] != null && !o.hard_negative) {
+        confidence = Math.min(confidence, replacementRiskCap[type]);
+      }
+
+      // Hard negatives should remain powerful when truly detected.
+      if (o.hard_negative) {
+        confidence = Math.max(confidence, 85);
+      }
 
       return {
         ...o,
