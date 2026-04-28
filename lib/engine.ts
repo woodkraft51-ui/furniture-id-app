@@ -986,23 +986,6 @@ if (
     low_confidence_flag: false,
   });
 }
-if (has("neoclassical_cane_barrel_pattern")) {
-  return {
-    range: "c. 1940–1970",
-    confidence: "Moderate",
-    support: [
-      "Barrel form, cane panels, fluted legs, and rosette ornamentation align with mid-century neoclassical and Hollywood Regency production.",
-      ...support,
-    ],
-    limitations: [
-      "Joinery, fasteners, and upholstery construction would refine dating further.",
-    ],
-    upholstery_layer: upholsteryLayer,
-    date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
-return out;
-}
 
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   const by_type: Record<string, Observation[]> = {};
@@ -1485,7 +1468,7 @@ const styleFromObservation = observedStyle
 
 const style = deriveStyleContext(digest) || styleFromObservation;
   const support = buildReportEvidenceSupport(digest, []);
- const upholsteryLayer = detectUpholsteryLayer(digest);
+  const upholsteryLayer = detectUpholsteryLayer(digest);
   const limitations: string[] = [];
 
   const text = `${digest.perception?.raw_text || ""} ${digest.observations
@@ -1755,6 +1738,24 @@ if (has("mission_structural_pattern")) {
     date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
+ if (has("neoclassical_cane_barrel_pattern")) {
+  return {
+    range: "c. 1940–1970",
+    confidence: "Moderate",
+    support: [
+      "Barrel form, cane panels, fluted legs, and rosette ornamentation align with mid-century neoclassical and Hollywood Regency production.",
+      ...support,
+    ],
+    limitations: [
+      "Joinery, fasteners, and upholstery construction would refine dating further.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
+return out;
+}
+
   // True hard negatives only.
   const confirmedModernHardNegative = has(
     "phillips_screw",
