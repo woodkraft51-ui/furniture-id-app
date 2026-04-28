@@ -2735,8 +2735,25 @@ const earlyCount = earlySignals.filter((key) => hasDateFloorClue(key)).length;
 const modernCount = modernSignals.filter((key) => hasDateFloorClue(key)).length;
 
 // If NO early evidence AND multiple modern indicators → set a floor
+const hasStyle = (k: string) => (digest.clue_keys || []).includes(k);
+
+const strongRevivalStructure =
+  hasStyle("reeded_tapered_front_legs") ||
+  hasStyle("fluted_turned_front_legs") ||
+  hasStyle("saber_rear_legs") ||
+  hasStyle("open_arm_construction");
+
+const strongRevivalStyle =
+  hasStyle("louis_xvi_neoclassical_style") ||
+  hasStyle("neoclassical_style_reference") ||
+  hasStyle("medallion_oval_back");
+
 const dateFloorOverride =
-  earlyCount === 0 && modernCount >= 2
+  earlyCount === 0 &&
+  (
+    modernCount >= 2 ||
+    (strongRevivalStructure && strongRevivalStyle)
+  )
     ? {
         range: "c. 1930–present",
         confidence: "Moderate" as const,
