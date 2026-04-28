@@ -1588,9 +1588,8 @@ function detectUpholsteryLayer(digest: EvidenceDigest) {
   };
 }
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
-  const dateFloorClues = new Set(digest.clue_keys || []);
-  const hasDateFloorClue = (...keys: string[]) =>
-  keys.some((k) => dateFloorClues.has(k));
+  const clues = new Set(digest.clue_keys || []);
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
   const needs: string[] = [];
 
