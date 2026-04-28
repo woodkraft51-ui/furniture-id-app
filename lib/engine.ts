@@ -1213,6 +1213,30 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
    if (
+    (hasClue("pointed_arch") ||
+      hasClue("gothic_arch") ||
+      hasText("pointed arch", "gothic arch", "lancet arch", "ogee arch")) &&
+    (hasClue("tracery") ||
+      hasClue("pierced_tracery") ||
+      hasText("tracery", "pierced tracery", "open tracery", "gothic fretwork")) &&
+    (hasClue("clustered_column") ||
+      hasClue("buttress_detail") ||
+      hasClue("cathedral_panel") ||
+      hasText("clustered column", "buttress", "cathedral panel", "church-like", "ecclesiastical")) &&
+    !hasClue("modern_concealed_hinge")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "gothic_revival_pattern",
+      description:
+        "Pointed or lancet arches, tracery, and clustered-column, buttress, or cathedral-panel details create a consistent Gothic Revival pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+   if (
     (hasClue("barley_twist") ||
       hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
     (hasClue("heavy_carving") ||
@@ -1701,6 +1725,13 @@ if (
       "Cabriole or sinuous legs, scroll carving, naturalistic floral or fruit carving, and serpentine or flowing outlines support a Rococo Revival reading."
     );
   }
+   if (clues.has("gothic_revival_pattern")) {
+    add(
+      "Gothic Revival furniture",
+      114,
+      "Pointed or lancet arches, tracery, and clustered-column, buttress, or cathedral-panel details support a Gothic Revival reading."
+    );
+  }
     if (clues.has("colonial_revival_pattern")) {
     add(
       "Colonial Revival furniture",
@@ -2020,6 +2051,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible Rococo Revival design vocabulary and structure; joinery, fasteners, secondary woods, upholstery system, underside construction, and maker-label evidence would help confirm or narrow the range.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("gothic_revival_pattern")) {
+    return {
+      range: "c. 1840–1880",
+      confidence: "Moderate",
+      support: [
+        "Pointed or lancet arches, tracery, and clustered-column, buttress, or cathedral-panel details support a Gothic Revival production pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Gothic Revival design vocabulary and structural ornament; joinery, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
