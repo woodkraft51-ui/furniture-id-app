@@ -1135,11 +1135,18 @@ function detectUpholsteryLayer(digest: EvidenceDigest) {
   if (!hasUpholstery) return null;
 
   const hasTraditional =
-    clues.has("horsehair_stuffing") ||
-    clues.has("horsehair_cotton_stuffing") ||
-    clues.has("burlap_visible") ||
-    clues.has("burlap_foundation") ||
-    clues.has("cotton_batting");
+  clues.has("horsehair_stuffing") ||
+  clues.has("horsehair_cotton_stuffing") ||
+  clues.has("burlap_visible") ||
+  clues.has("burlap_foundation") ||
+  clues.has("cotton_batting") ||
+
+  // 🔴 ADD THESE (your real-world matches)
+  clues.has("dark_coarse_fibrous_stuffing") ||
+  clues.has("coarse_black_fiber_stuffing") ||
+  clues.has("traditional_upholstery_fill") ||
+  clues.has("burlap_backing") ||
+  clues.has("webbing_visible");
 
   const hasModern =
     clues.has("synthetic_fabric_pattern") ||
