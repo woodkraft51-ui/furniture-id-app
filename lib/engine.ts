@@ -1143,6 +1143,18 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     .join(" ")}`.toLowerCase();
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+ // Style can support dating only when confirmed by construction/material evidence.
+// Style alone cannot anchor an early date.
+const styleOnlyDatingRisk =
+  hasStyleEvidence &&
+  !hasEarlyConstructionEvidence &&
+  !hasMakerDateAnchor;
+
+if (styleOnlyDatingRisk) {
+  limitations.push(
+    "Style is treated as design vocabulary, not proof of age; construction evidence is needed to support an early date."
+  );
+}
  // Modern upholstered revival override
 if (
   has("cabriole_leg", "nailhead_trim") &&
