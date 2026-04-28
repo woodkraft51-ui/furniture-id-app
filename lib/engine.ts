@@ -1588,8 +1588,9 @@ function detectUpholsteryLayer(digest: EvidenceDigest) {
   };
 }
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
-  const clues = new Set(digest.clue_keys || []);
-  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+  const dateFloorClues = new Set(digest.clue_keys || []);
+  const hasDateFloorClue = (...keys: string[]) =>
+  keys.some((k) => dateFloorClues.has(k));
 
   const needs: string[] = [];
 
@@ -2730,8 +2731,8 @@ const modernSignals = [
   "modern_concealed_hinge"
 ];
 
-const earlyCount = earlySignals.filter(has).length;
-const modernCount = modernSignals.filter(has).length;
+const earlyCount = earlySignals.filter(hasDateFloorClue).length;
+const modernCount = modernSignals.filter(hasDateFloorClue).length;
 
 // If NO early evidence AND multiple modern indicators → set a floor
 if (earlyCount === 0 && modernCount >= 2) {
