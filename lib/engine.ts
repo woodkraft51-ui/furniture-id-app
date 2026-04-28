@@ -1200,7 +1200,8 @@ if (styleOnlyDatingRisk && hasModernSignals) {
     ],
     limitations: [
       "Exact dating requires underside construction, joinery, fasteners, and upholstery system inspection."
-    ]
+    ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
  // Modern upholstered revival override
@@ -1218,6 +1219,7 @@ if (
     limitations: [
       "Style imitates earlier forms; dating is based on material evidence rather than decorative styling.",
     ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
  // Queen Anne / Georgian Revival upholstered chair override
@@ -1235,6 +1237,7 @@ if (
     limitations: [
       "An underside photo, frame construction, and label evidence would help narrow the date further.",
     ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
  // Regency / Federal upholstered sofa reproduction override
@@ -1252,7 +1255,8 @@ if (
     ],
     limitations: [
       "Underside frame construction and internal upholstery methods would help confirm age more precisely."
-    ]
+    ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
  if (
@@ -1270,6 +1274,7 @@ if (
     limitations: [
       "Underside frame construction, spring system, tacking evidence, and label evidence would help narrow the date further.",
     ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
  // Louis XVI / Neoclassical revival open armchair override
@@ -1288,6 +1293,7 @@ if (
     limitations: [
       "Underside construction, joinery, fasteners, webbing/tacking, spring system, and label evidence would be needed to support an earlier date.",
     ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
  // Narrow Louis XVI revival window when stronger modern signals are present
@@ -1316,6 +1322,7 @@ if (
     limitations: [
       "Exact decade requires underside construction, joinery, and upholstery system inspection."
     ],
+   date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
   // Maker mark / label date anchor
