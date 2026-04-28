@@ -901,7 +901,40 @@ const isNegated = (phrase: string) =>
 function tIncludes(text: string, word: string) {
   return text.includes(word);
 }
+function detectStructuralPatterns(observations: Observation[]): Observation[] {
+  const hasClue = (clue: string) =>
+    observations.some((o) => o.clue === clue);
 
+  const text = observations
+    .map((o) => `${o.clue || ""} ${o.description || ""}`)
+    .join(" ")
+    .toLowerCase();
+
+  const hasText = (...phrases: string[]) =>
+    phrases.some((phrase) => text.includes(phrase));
+
+  const out: Observation[] = [];
+
+  // Mid-century modern / Scandinavian-style structural cluster
+  if (
+    (hasClue("flat_paddle_armrests") || hasText("paddle armrests", "flat wooden armrests", "flat paddle")) &&
+    (hasClue("spindle_back") || hasText("spindle back", "vertical turned spindles")) &&
+    (hasClue("splayed_legs") || hasText("splayed legs", "outward splay", "tapered legs"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "mcm_structural_pattern",
+      description:
+        "Combined paddle arms, spindle back, and splayed/tapered legs form a consistent mid-century modern structural pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  return out;
+}
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   const by_type: Record<string, Observation[]> = {};
   observations.forEach((o) => {
