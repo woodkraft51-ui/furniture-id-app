@@ -1099,6 +1099,30 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+   if (
+    (hasClue("barley_twist") ||
+      hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
+    (hasClue("heavy_carving") ||
+      hasText("heavy carving", "geometric carving", "carved panels", "applied carving")) &&
+    (hasClue("frame_and_panel_sides") ||
+      hasClue("panel_door") ||
+      hasText("frame and panel", "paneled door", "paneled sides", "recessed panels")) &&
+    (hasClue("cabinet_form") ||
+      hasClue("door_present") ||
+      hasClue("drawer_present") ||
+      hasText("cabinet", "sideboard", "buffet", "dresser", "case furniture"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "jacobean_tudor_revival_case_pattern",
+      description:
+        "Barley-twist or spiral-turned supports, heavy geometric carving, paneled construction, and case-furniture form create a consistent Jacobean / Tudor Revival case-furniture pattern.",
+      confidence: 88,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
   if (
     (hasClue("barrel_tub_frame") ||
       hasText("barrel chair", "tub chair", "barrel/tub form")) &&
@@ -1523,8 +1547,18 @@ if (
     add("Modern plastic / acrylic furniture", 74, "Molded plastic, acrylic, or Lucite-style furniture material is visible.");
   }
   // Style-context forms
-  if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving", "spiral turned", "twist leg"])) {
-    add("Jacobean Revival cabinet / sideboard", 72, "Historicist carving or turned supports support Jacobean Revival context.");
+    if (clues.has("jacobean_tudor_revival_case_pattern")) {
+    add(
+      "Jacobean / Tudor Revival case furniture",
+      116,
+      "Barley-twist or spiral-turned supports, heavy geometric carving, paneled construction, and case-furniture form support a Jacobean / Tudor Revival cabinet, sideboard, buffet, or dresser reading."
+    );
+  } else if (clues.has("barley_twist") || includesAny(text, ["jacobean", "heavy carving", "spiral turned", "twist leg"])) {
+    add(
+      "Jacobean Revival cabinet / sideboard",
+      72,
+      "Historicist carving or turned supports support Jacobean Revival context."
+    );
   }
 
   if (clues.has("cabriole_leg") || clues.has("shell_carving") || clues.has("claw_or_pad_foot")) {
@@ -1776,6 +1810,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Frame date is based on visible form and carved structural vocabulary; underside, joinery, fasteners, and internal frame construction would be needed to confirm or tighten the date.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("jacobean_tudor_revival_case_pattern")) {
+    return {
+      range: "c. 1890–1935",
+      confidence: "Moderate",
+      support: [
+        "The combined barley-twist or spiral-turned supports, heavy geometric carving, paneled construction, and case-furniture form support a Jacobean / Tudor Revival production pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Frame date is based on visible structural and decorative patterning; drawer joinery, fasteners, secondary woods, and maker-label evidence would be needed to narrow the date further.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
