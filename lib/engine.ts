@@ -814,6 +814,186 @@ function normalizePerception(parsed: any, observations: Observation[]): Percepti
 
   return perception;
 }
+function promotePerceptionObservations(
+  observations: Observation[],
+  perception: Perception
+): Observation[] {
+  const out = [...observations];
+  const text = perception.raw_text.toLowerCase();
+
+  const isNegated = (phrase: string) =>
+    includesAny(text, [
+      `no ${phrase}`,
+      `not ${phrase}`,
+      `without ${phrase}`,
+      `${phrase} not`,
+      `no visible ${phrase}`,
+      `no ${phrase} present`,
+      `no ${phrase} evident`,
+    ]);
+
+  const add = (
+    clue: string,
+    description: string,
+    confidence = 72,
+    source = "perception"
+  ) => {
+    if (out.some((o) => o.clue === clue)) return;
+
+    const meta = CLUE_LIBRARY[clue];
+
+    out.push({
+      type: meta?.category || "context",
+      clue,
+      description,
+      confidence,
+      source_image: source,
+      hard_negative: Boolean(meta?.hardNegative),
+      low_confidence_flag: confidence < 45,
+    });
+  };
+
+  if (
+    includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+    !isNegated("seat") &&
+    !isNegated("seating") &&
+    !isNegated("bench") &&
+    !isNegated("sitting surface")
+  ) {
+    add("seating_surface", "A seating surface or bench-like sitting area is visible.", 82);
+    add("seating_present", "Integrated seating is visible.", 78);
+  }
+
+  if (
+    includesAny(text, ["backrest", "back rail", "spindle back", "spindled back", "rail back"])
+  ) {
+    add("backrest_present", "A backrest or back rail is visible.", 78);
+  }
+
+  if (includesAny(text, ["spindle", "spindles", "turned spindle", "spindle rail"])) {
+    add("spindle_back", "Spindles are visible in the back or side rail.", 78);
+    add("spindle_gallery", "Spindle gallery or rail detail is visible.", 70);
+  }
+
+  if (
+    includesAny(text, [
+      "secondary surface",
+      "side surface",
+      "raised surface",
+      "raised platform",
+      "small table surface",
+      "writing surface",
+      "work surface",
+    ]) &&
+    !isNegated("secondary surface") &&
+    !isNegated("side surface") &&
+    !isNegated("raised surface") &&
+    !isNegated("raised platform") &&
+    !isNegated("table surface") &&
+    !isNegated("writing surface") &&
+    !isNegated("work surface")
+  ) {
+    add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
+  }
+
+  if (
+    includesAny(text, ["writing", "writing surface", "desk surface", "work surface"]) &&
+    !isNegated("writing") &&
+    !isNegated("writing surface") &&
+    !isNegated("desk") &&
+    !isNegated("desk surface") &&
+    !isNegated("work surface")
+  ) {
+    add("writing_surface", "A writing or work surface is visible.", 84);
+  }
+
+  if (
+    includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"]) &&
+    !isNegated("telephone") &&
+    !isNegated("phone") &&
+    !isNegated("phone shelf") &&
+    !isNegated("telephone shelf") &&
+    !isNegated("phone platform")
+  ) {
+    add("telephone_shelf", "A telephone shelf or phone platform is visible.", 86);
+  }
+
+  if (includesAny(text, ["roos", "sweetheart cedar"])) {
+    add("roos_label", "Roos cedar chest label is visible.", 94);
+  }
+
+  if (includesAny(text, ["lane cedar"])) {
+    add("lane_label", "Lane cedar chest label is visible.", 94);
+  }
+
+  if (includesAny(text, ["cedar lined", "cedar interior"])) {
+    add("cedar_lining", "Cedar-lined interior is visible.", 84);
+  }
+
+  if (includesAny(text, ["drop front", "drop-front", "fall front"])) {
+    add("drop_front_desk", "Drop-front writing surface is visible.", 84);
+  }
+
+  if (includesAny(text, ["pigeonhole", "pigeon hole", "cubby", "cubbies"])) {
+    add("pigeonholes", "Interior cubbies or pigeonholes are visible.", 78);
+  }
+
+  if (
+    text.includes("mirror") &&
+    !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"])
+  ) {
+    add("mirror_present", "Mirror is visible.", 72);
+  }
+
+  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) {
+    add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
+  }
+
+  if (includesAny(text, ["pedestal", "single column"])) {
+    add("pedestal_column", "Single-column pedestal form is visible.", 84);
+  }
+
+  if (includesAny(text, ["armchair", "upholstered chair"])) {
+    add("armchair_form", "Armchair form is visible.", 82);
+  }
+
+  if (includesAny(text, ["metal frame", "metal furniture", "metal structure", "steel frame", "iron frame"])) {
+    add("metal_frame", "Metal frame or metal furniture structure is visible.", 72);
+  }
+
+  if (includesAny(text, ["wicker", "woven reed", "woven body", "reed furniture"])) {
+    add("woven_body", "Woven wicker or reed body construction is visible.", 76);
+  }
+
+  if (includesAny(text, ["upholstered", "fabric covered", "cushion", "cushioned", "padded seat", "padded back"])) {
+    add("fully_upholstered", "Upholstered or cushioned surfaces are visible.", 74);
+  }
+
+  if (
+    text.includes("cabriole") &&
+    !includesAny(text, ["no cabriole", "no turned or cabriole", "not cabriole"])
+  ) {
+    add("cabriole_leg", "Cabriole legs are visible.", 72);
+  }
+
+  if (text.includes("barley twist")) {
+    add("barley_twist", "Barley twist supports are visible.", 76);
+  }
+
+  if (text.includes("drawer")) {
+    add("drawer_present", "Drawer evidence is visible.", 58);
+  }
+
+  if (text.includes("door")) {
+    add("door_present", "Door evidence is visible.", 58);
+  }
+
+  if (includesAny(text, ["cabinet", "cupboard", "hutch"])) {
+    add("cabinet_form", "Cabinet or cupboard form is visible.", 68);
+  }
+
+  return dedupeObservations(out);
+}
 function tIncludes(text: string, word: string) {
   return text.includes(word);
 }
