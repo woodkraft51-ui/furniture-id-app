@@ -723,6 +723,10 @@ function dedupeObservations(observations: Observation[]): Observation[] {
   });
 }
 
+function tIncludes(text: string, word: string) {
+  return text.includes(word);
+}
+
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
     observations.some((o) => o.clue === clue);
@@ -737,7 +741,6 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
 
   const out: Observation[] = [];
 
-  // Mid-century modern / Scandinavian-style structural cluster
   if (
     (hasClue("flat_paddle_armrests") ||
       hasText("paddle armrests", "flat wooden armrests", "flat paddle")) &&
@@ -758,7 +761,6 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-  // Queen Anne / Colonial Revival upholstered cluster
   if (
     (hasClue("cabriole_leg") ||
       hasText("cabriole leg", "queen anne leg", "curved leg")) &&
@@ -779,7 +781,6 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-  // Mission / Arts & Crafts structural cluster
   if (
     (hasClue("slat_back") ||
       hasText("vertical slats", "ladder back", "slat back")) &&
@@ -800,7 +801,6 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-  // Neoclassical revival cane barrel lounge cluster
   if (
     (hasClue("barrel_tub_frame") ||
       hasText("barrel chair", "tub chair", "barrel/tub form")) &&
@@ -825,9 +825,6 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   }
 
   return out;
-}
-function tIncludes(text: string, word: string) {
-  return text.includes(word);
 }
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
