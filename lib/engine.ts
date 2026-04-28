@@ -1753,8 +1753,6 @@ if (has("mission_structural_pattern")) {
     date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
-return out;
-}
 
   // True hard negatives only.
   const confirmedModernHardNegative = has(
