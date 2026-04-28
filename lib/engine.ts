@@ -1766,6 +1766,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   }
 
   // Pattern-based dating
+   if (has("renaissance_revival_upholstered_armchair_pattern")) {
+    return {
+      range: "c. 1870–1900",
+      confidence: "Moderate",
+      support: [
+        "The combined armchair form, heavily carved barley/rope-twist supports, acanthus carving, claw or paw feet, fan/channel back, and full upholstery support a Renaissance Revival / late Victorian parlor chair pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Frame date is based on visible form and carved structural vocabulary; underside, joinery, fasteners, and internal frame construction would be needed to confirm or tighten the date.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
   if (has("mcm_structural_pattern")) {
     return {
       range: "c. 1950–1975",
