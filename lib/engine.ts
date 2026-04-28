@@ -1155,6 +1155,30 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+        if (
+    (hasClue("whiplash_curve") ||
+      hasText("whiplash", "flowing curve", "organic curve", "sinuous line")) &&
+    (hasClue("organic_motif") ||
+      hasClue("floral_motif") ||
+      hasText("organic motif", "floral motif", "plant form", "vine", "natural form")) &&
+    (hasClue("curved_frame") ||
+      hasClue("asymmetrical_form") ||
+      hasText("curved frame", "asymmetrical", "flowing outline", "non symmetrical")) &&
+    !hasClue("heavy_geometric_paneling") &&
+    !hasClue("barley_twist") &&
+    !hasClue("boxy_rectilinear_form")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "art_nouveau_pattern",
+      description:
+        "Whiplash curves, organic or floral motifs, and asymmetrical or flowing forms create a consistent Art Nouveau pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
        if (
     (hasClue("ladder_back") ||
       hasClue("slat_back") ||
@@ -1887,6 +1911,13 @@ if (
       "Slender tapered legs, light inlay or painted detail, and delicate proportions, oval mirror, or light gallery details support an Edwardian reading."
     );
   }
+       if (clues.has("art_nouveau_pattern")) {
+    add(
+      "Art Nouveau furniture",
+      110,
+      "Whiplash curves, organic or floral motifs, and asymmetrical or flowing forms support an Art Nouveau reading."
+    );
+  }
      if (clues.has("shaker_pattern")) {
     add(
       "Shaker furniture",
@@ -2288,6 +2319,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible Edwardian design and construction vocabulary; joinery, fasteners, underside construction, secondary woods, and maker-label evidence would help confirm or refine the date.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+       if (has("art_nouveau_pattern")) {
+    return {
+      range: "c. 1890–1915",
+      confidence: "Moderate",
+      support: [
+        "Whiplash curves, organic or floral motifs, and asymmetrical or flowing forms support an Art Nouveau pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Art Nouveau design vocabulary; joinery, fasteners, underside construction, secondary woods, and maker-label evidence would help confirm or refine the date.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
