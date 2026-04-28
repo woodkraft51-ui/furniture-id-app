@@ -1179,6 +1179,30 @@ if (styleOnlyDatingRisk) {
     "Style is treated as design vocabulary, not proof of age; construction, underside, upholstery-system, or maker evidence is required to support an early date."
   );
 }
+ // MODERN CONSTRUCTION FORWARD PRESSURE
+const hasModernSignals =
+  has(
+    "hardwood_frame_dark_finish",
+    "uniform_machine_turning",
+    "reeded_fluted_front_legs",
+    "carved_oval_back_frame",
+    "upholstery_condition_good",
+    "fully_upholstered"
+  );
+
+if (styleOnlyDatingRisk && hasModernSignals) {
+  return {
+    range: "c. 1920–1980",
+    confidence: "Moderate",
+    support: [
+      "Classical Louis XVI styling is present, but construction consistency, finish quality, and upholstery condition indicate later revival production rather than early period work.",
+      "Uniform turning and finish suggest machine-assisted production typical of 20th-century manufacturing."
+    ],
+    limitations: [
+      "Exact dating requires underside construction, joinery, fasteners, and upholstery system inspection."
+    ]
+  };
+}
  // Modern upholstered revival override
 if (
   has("cabriole_leg", "nailhead_trim") &&
