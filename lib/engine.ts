@@ -1128,6 +1128,31 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+     if (
+    (hasClue("turned_leg") ||
+      hasClue("bulbous_turning") ||
+      hasClue("ball_turning") ||
+      hasText("turned leg", "bulbous turning", "ball turning", "vase turning", "ring turning")) &&
+    (hasClue("stretcher_base") ||
+      hasClue("box_stretcher") ||
+      hasText("stretcher", "box stretcher", "peripheral stretcher", "cross stretcher")) &&
+    (hasClue("rectangular_case") ||
+      hasClue("drawer_present") ||
+      hasText("chest", "highboy", "lowboy", "case piece", "rectangular form")) &&
+    !hasClue("plywood_structural") &&
+    !hasClue("phillips_screw")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "william_and_mary_pattern",
+      description:
+        "Turned bulbous or vase-form legs, stretcher base, and rectilinear case form create a consistent William and Mary pattern.",
+      confidence: 82,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
    if (
     (hasClue("tapered_leg") ||
       hasClue("square_tapered_leg") ||
@@ -1730,6 +1755,13 @@ if (
       "Historicist carving or turned supports support Jacobean Revival context."
     );
   }
+       if (clues.has("william_and_mary_pattern")) {
+    add(
+      "William and Mary furniture",
+      108,
+      "Turned bulbous or vase-form legs, stretcher base, and rectilinear case form support a William and Mary reading."
+    );
+  }
      if (clues.has("federal_hepplewhite_sheraton_pattern")) {
     add(
       "Federal / Hepplewhite / Sheraton furniture",
@@ -2039,6 +2071,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Frame date is based on visible structural and decorative patterning; drawer joinery, fasteners, secondary woods, and maker-label evidence would be needed to narrow the date further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+     if (has("william_and_mary_pattern")) {
+    return {
+      range: "c. 1690–1730",
+      confidence: "Moderate",
+      support: [
+        "Turned bulbous or vase-form legs, stretcher base, and rectilinear case form support a William and Mary pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible structural patterning; joinery, fasteners, secondary woods, surface oxidation, underside construction, and provenance would be needed to distinguish period production from later revival work.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
