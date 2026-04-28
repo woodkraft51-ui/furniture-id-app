@@ -1143,16 +1143,40 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     .join(" ")}`.toLowerCase();
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
- // Style can support dating only when confirmed by construction/material evidence.
-// Style alone cannot anchor an early date.
+ // Style role guard: style supports identification, but should not prove age by itself
+const hasStyleEvidence = has(
+  "neoclassical_louis_xvi_style",
+  "queen_anne_georgian_revival",
+  "regency_style_cues",
+  "regency_federal_style",
+  "oval_medallion_back",
+  "cabriole_leg",
+  "reeded_tapered_front_legs",
+  "saber_rear_legs",
+  "scroll_arm_terminals"
+);
+
+const hasEarlyConstructionEvidence = has(
+  "hand_cut_joinery",
+  "hand_cut_dovetails",
+  "hand_forged_nail",
+  "cut_nail",
+  "early_webbing",
+  "early_tacking",
+  "irregular_hand_turning",
+  "tool_mark_variation"
+);
+
+const hasMakerDateAnchor = (digest.observations || []).some(
+  (o) => o.type === "label" && o.clue && o.confidence > 80
+);
+
 const styleOnlyDatingRisk =
-  hasStyleEvidence &&
-  !hasEarlyConstructionEvidence &&
-  !hasMakerDateAnchor;
+  hasStyleEvidence && !hasEarlyConstructionEvidence && !hasMakerDateAnchor;
 
 if (styleOnlyDatingRisk) {
   limitations.push(
-    "Style is treated as design vocabulary, not proof of age; construction evidence is needed to support an early date."
+    "Style is treated as design vocabulary, not proof of age; construction, underside, upholstery-system, or maker evidence is required to support an early date."
   );
 }
  // Modern upholstered revival override
