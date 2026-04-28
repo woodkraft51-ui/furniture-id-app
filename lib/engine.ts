@@ -985,8 +985,9 @@ if (
     hard_negative: false,
     low_confidence_flag: false,
   });
+ 
+return out;
 }
-
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   const by_type: Record<string, Observation[]> = {};
   observations.forEach((o) => {
