@@ -1128,6 +1128,30 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+       if (
+    (hasClue("ladder_back") ||
+      hasClue("slat_back") ||
+      hasText("ladder back", "slat back", "simple vertical slats")) &&
+    (hasClue("tapered_leg") ||
+      hasText("tapered leg", "simple tapered leg", "straight leg")) &&
+    (hasClue("minimal_ornament") ||
+      hasText("plain", "minimal", "no carving", "unadorned", "simple form")) &&
+    !hasClue("inlay") &&
+    !hasClue("heavy_carving") &&
+    !hasClue("scroll_carving") &&
+    !hasClue("decorative_veneer")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "shaker_pattern",
+      description:
+        "Ladder-back or slat-back form, simple tapered legs, and minimal ornament with absence of carving or decorative veneer create a consistent Shaker pattern.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
      if (
     (hasClue("turned_leg") ||
       hasClue("bulbous_turning") ||
@@ -1829,6 +1853,13 @@ if (
       "Stepped or waterfall profile, geometric or figured veneer, and chrome, Bakelite, or streamlined hardware support an Art Deco / Machine Age reading."
     );
   }
+     if (clues.has("shaker_pattern")) {
+    add(
+      "Shaker furniture",
+      110,
+      "Ladder-back or slat-back form, simple tapered legs, and minimal ornament with absence of carving or decorative veneer support a Shaker reading."
+    );
+  }
     if (clues.has("colonial_revival_pattern")) {
     add(
       "Colonial Revival furniture",
@@ -2208,6 +2239,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible Art Deco / Machine Age design and construction cues; drawer joinery, hardware backs, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+     if (has("shaker_pattern")) {
+    return {
+      range: "c. 1820–1900",
+      confidence: "Moderate",
+      support: [
+        "Ladder-back or slat-back form, simple tapered legs, and minimal ornament with absence of carving or decorative veneer support a Shaker pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Shaker design and construction vocabulary; joinery, fasteners, underside construction, secondary woods, surface oxidation, and provenance would be needed to distinguish true Shaker production from later Shaker-style or vernacular work.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
