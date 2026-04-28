@@ -1910,39 +1910,32 @@ if (conflictingSignals) {
     "Conflicting panel signals detected; solid wood vs possible laminated construction should be verified."
   );
 }
+
+if (traditionalConstructionScore >= 3) {
   return {
-    range: "c. 1890–1930",
+    range: "late 19th to early 20th century",
     confidence: "Moderate",
     support,
     limitations,
   };
+}
 
-  if (traditionalConstructionScore >= 3) {
-    return {
-      range: "late 19th to early 20th century",
-      confidence: "Moderate",
-      support,
-      limitations,
-    };
-  }
-
-  if (transitionalFactoryScore >= 2) {
-    return {
-      range: "c. 1880–1935",
-      confidence: "Moderate",
-      support,
-      limitations,
-    };
-  }
-
+if (transitionalFactoryScore >= 2) {
   return {
-    range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated",
-    confidence: "Low",
+    range: "c. 1880–1935",
+    confidence: "Moderate",
     support,
-    limitations: ["More construction, underside, back, or label evidence would refine the date."],
+    limitations,
   };
 }
 
+return {
+  range: "c. 1890–1930",
+  confidence: "Moderate",
+  support,
+  limitations,
+};
+}
 function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
   let low = 25;
   let high = 300;
