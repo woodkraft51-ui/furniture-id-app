@@ -770,10 +770,16 @@ const isNegated = (phrase: string) =>
   };
 
   // Broad form/function/structure guarantees
-  if (!negatesSeatingOrWriting && includesAny(text, ["seat", "seating", "bench", "sitting surface"])) {
-    add("seating_surface", "A seating surface or bench-like sitting area is visible.", 82);
-    add("seating_present", "Integrated seating is visible.", 78);
-  }
+  if (
+  includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+  !isNegated("seat") &&
+  !isNegated("seating") &&
+  !isNegated("bench") &&
+  !isNegated("sitting surface")
+) {
+  add("seating_surface", "A seating surface or bench-like sitting area is visible.", 82);
+  add("seating_present", "Integrated seating is visible.", 78);
+}
 
   if (includesAny(text, ["backrest", "back rail", "spindle back", "spindled back", "rail back"])) {
     add("backrest_present", "A backrest or back rail is visible.", 78);
@@ -784,17 +790,48 @@ const isNegated = (phrase: string) =>
     add("spindle_gallery", "Spindle gallery or rail detail is visible.", 70);
   }
 
-  if (!negatesSeatingOrWriting && includesAny(text, ["secondary surface", "side surface", "raised surface", "raised platform", "small table surface", "writing surface", "work surface"])) {
-    add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
-  }
+  if (
+  includesAny(text, [
+    "secondary surface",
+    "side surface",
+    "raised surface",
+    "raised platform",
+    "small table surface",
+    "writing surface",
+    "work surface"
+  ]) &&
+  !isNegated("secondary surface") &&
+  !isNegated("side surface") &&
+  !isNegated("raised surface") &&
+  !isNegated("raised platform") &&
+  !isNegated("table surface") &&
+  !isNegated("writing surface") &&
+  !isNegated("work surface")
+) {
+  add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
+}
 
-  if (!negatesSeatingOrWriting && includesAny(text, ["writing", "writing surface", "desk surface", "work surface"])) {
-    add("writing_surface", "A writing or work surface is visible.", 84);
-  }
+  if (
+  includesAny(text, ["writing", "writing surface", "desk surface", "work surface"]) &&
+  !isNegated("writing") &&
+  !isNegated("writing surface") &&
+  !isNegated("desk") &&
+  !isNegated("desk surface") &&
+  !isNegated("work surface")
+) {
+  add("writing_surface", "A writing or work surface is visible.", 84);
+}
 
-  if (!negatesSeatingOrWriting && includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"])) {
-    add("telephone_shelf", "A telephone shelf or phone platform is visible.", 86);
-  }
+  if (
+  includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"]) &&
+  !isNegated("telephone") &&
+  !isNegated("phone") &&
+  !isNegated("phone shelf") &&
+  !isNegated("telephone shelf") &&
+  !isNegated("phone platform")
+) {
+  add("telephone_shelf", "A telephone shelf or phone platform is visible.", 86);
+}
 
   if (includesAny(text, ["turned leg", "turned legs", "turned support", "turned supports"])) {
     add("spindle_gallery", "Turned supports or spindle-like elements are visible.", 68);
