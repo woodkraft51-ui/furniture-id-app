@@ -1677,7 +1677,35 @@ if (has("mcm_structural_pattern")) {
     date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
- 
+ if (has("queen_anne_revival_pattern")) {
+  return {
+    range: "c. 1930–1970",
+    confidence: "Moderate",
+    support: [
+      "Cabriole legs, fan/channel back upholstery, and fully upholstered frame support a mid-20th-century Queen Anne / Colonial Revival pattern.",
+      ...support,
+    ],
+    limitations: [
+      "Underside construction, joinery, fasteners, and upholstery system would refine dating further.",
+    ],
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
+
+if (has("mission_structural_pattern")) {
+  return {
+    range: "c. 1900–1925",
+    confidence: "Moderate",
+    support: [
+      "Slat back, rectilinear form, and exposed joinery support an Arts & Crafts / Mission period construction pattern.",
+      ...support,
+    ],
+    limitations: [
+      "Joinery details, fasteners, and underside construction would refine the date further.",
+    ],
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
   // True hard negatives only.
   const confirmedModernHardNegative = has(
     "phillips_screw",
