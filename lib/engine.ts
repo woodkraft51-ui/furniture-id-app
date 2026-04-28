@@ -2710,9 +2710,10 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   }
   // 🧠 NEGATIVE EVIDENCE DATE FLOOR (CONSERVATIVE)
 
-const clues = new Set(digest.clue_keys || []);
+const dateFloorClues = new Set(digest.clue_keys || []);
 
-const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+const hasDateFloorClue = (...keys: string[]) =>
+  keys.some((k) => dateFloorClues.has(k));
 
 const earlySignals = [
   "hand_cut_dovetails",
