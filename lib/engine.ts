@@ -1237,6 +1237,32 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
    if (
+    (hasClue("stepped_profile") ||
+      hasClue("waterfall_edge") ||
+      hasText("stepped profile", "stepped front", "waterfall edge", "waterfall front", "tiered shape")) &&
+    (hasClue("geometric_veneer") ||
+      hasClue("bookmatched_veneer") ||
+      hasClue("burled_veneer") ||
+      hasText("geometric veneer", "bookmatched veneer", "burled veneer", "matched veneer", "figured veneer")) &&
+    (hasClue("chrome_hardware") ||
+      hasClue("bakelite_pull") ||
+      hasClue("streamlined_hardware") ||
+      hasText("chrome hardware", "bakelite", "streamlined pull", "machine age", "speed line")) &&
+    !hasClue("hand_cut_dovetails") &&
+    !hasClue("hand_forged_nail")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "art_deco_pattern",
+      description:
+        "Stepped or waterfall profile, geometric or figured veneer, and chrome, Bakelite, or streamlined hardware create a consistent Art Deco / Machine Age furniture pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+   if (
     (hasClue("barley_twist") ||
       hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
     (hasClue("heavy_carving") ||
@@ -1732,6 +1758,13 @@ if (
       "Pointed or lancet arches, tracery, and clustered-column, buttress, or cathedral-panel details support a Gothic Revival reading."
     );
   }
+     if (clues.has("art_deco_pattern")) {
+    add(
+      "Art Deco / Machine Age furniture",
+      114,
+      "Stepped or waterfall profile, geometric or figured veneer, and chrome, Bakelite, or streamlined hardware support an Art Deco / Machine Age reading."
+    );
+  }
     if (clues.has("colonial_revival_pattern")) {
     add(
       "Colonial Revival furniture",
@@ -2066,6 +2099,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible Gothic Revival design vocabulary and structural ornament; joinery, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+     if (has("art_deco_pattern")) {
+    return {
+      range: "c. 1925–1945",
+      confidence: "Moderate",
+      support: [
+        "Stepped or waterfall profile, geometric or figured veneer, and chrome, Bakelite, or streamlined hardware support an Art Deco / Machine Age production pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Art Deco / Machine Age design and construction cues; drawer joinery, hardware backs, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
