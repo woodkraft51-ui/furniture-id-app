@@ -3443,7 +3443,33 @@ const styleFromObservation = observedStyle
 const style = deriveStyleContext(digest) || styleFromObservation;
     return {
       form,
-      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form,
+      display_form: (() => {
+  const clueKeys = digest.clue_keys || [];
+
+  const has = (key: string) => clueKeys.includes(key);
+
+  const neoclassicalLouisXVI =
+    has("neoclassical_louis_xvi_style") ||
+    has("louis_xvi_neoclassical_style") ||
+    has("oval_medallion_back") ||
+    has("medallion_oval_back");
+
+  const cleanStyle =
+    neoclassicalLouisXVI ||
+    String(style || "").toLowerCase().includes("empire") ||
+    String(style || "").toLowerCase().includes("classical")
+      ? "Neoclassical (Louis XVI / Late Classical Revival)"
+      : style;
+
+  const cleanForm =
+    form.toLowerCase().includes("upholstered seating")
+      ? "Armchair"
+      : form;
+
+  return cleanStyle && !cleanForm.toLowerCase().includes(String(cleanStyle).toLowerCase())
+    ? `${cleanStyle} ${cleanForm}`
+    : cleanForm;
+})(),
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
       support: buildReportEvidenceSupport(digest, best?.support || []),
