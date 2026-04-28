@@ -1154,6 +1154,31 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
    if (
+    (hasClue("cabriole_leg") ||
+      hasText("cabriole leg", "cabriole legs", "curved leg")) &&
+    (hasClue("ball_and_claw_foot") ||
+      hasClue("claw_or_pad_foot") ||
+      hasText("ball and claw", "claw foot", "claw-and-ball", "claw feet")) &&
+    (hasClue("pierced_splat") ||
+      hasClue("ribbon_back") ||
+      hasClue("china_cabinet_broken_pediment") ||
+      hasText("pierced splat", "ribbon back", "fretwork", "broken pediment", "flame finial")) &&
+    !hasClue("phillips_screw") &&
+    !hasClue("staple_fastener") &&
+    !hasClue("plywood_structural")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "chippendale_pattern",
+      description:
+        "Cabriole legs, claw or ball-and-claw feet, and pierced splat, ribbon-back, fretwork, broken-pediment, or flame-finial details create a Chippendale pattern.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+   if (
     (hasClue("tapered_leg") ||
       hasClue("square_tapered_leg") ||
       hasText("tapered leg", "square tapered leg", "straight tapered leg", "slender tapered leg")) &&
@@ -1769,6 +1794,13 @@ if (
       "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues support a Federal / Hepplewhite / Sheraton reading."
     );
   }
+     if (clues.has("chippendale_pattern")) {
+    add(
+      "Chippendale furniture",
+      110,
+      "Cabriole legs, claw or ball-and-claw feet, and pierced splat, ribbon-back, fretwork, broken-pediment, or flame-finial details support a Chippendale reading."
+    );
+  }
    if (clues.has("victorian_eastlake_pattern")) {
     add(
       "Victorian Eastlake furniture",
@@ -2101,6 +2133,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible design and construction patterning; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would be needed to distinguish period production from later revival work.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("chippendale_pattern")) {
+    return {
+      range: "c. 1750–1780",
+      confidence: "Moderate",
+      support: [
+        "Cabriole legs, claw or ball-and-claw feet, and pierced splat, ribbon-back, fretwork, broken-pediment, or flame-finial details support a Chippendale pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Chippendale design vocabulary; joinery, fasteners, secondary woods, underside construction, surface oxidation, and provenance would be needed to distinguish period production from later revival work.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
