@@ -1924,7 +1924,7 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
     };
   }
 
-  if (has("mission_structural_pattern")) {
+  if (has("mission_arts_crafts_structural_pattern")) {
     return {
       range: "c. 1900–1925",
       confidence: "Moderate",
