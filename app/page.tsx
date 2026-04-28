@@ -557,12 +557,19 @@ const p7 = stageOutputs.p7 || null;
                 <div style={{ border: "1px dashed #ccbca2", borderRadius: 12, background: "#fffaf2", padding: 16 }}>
                   <div style={{ fontWeight: 700, fontSize: 16, color: "#3d2d1f" }}>Add 2–5 photos. We’ll handle the rest.</div>
                   <div style={{ marginTop: 10, fontSize: 14, lineHeight: 1.65, color: "#5b4935" }}>
-                    <div style={{ fontWeight: 700, marginBottom: 6 }}>For best results, include:</div>
-                    <div>• The overall form from multiple angles</div>
-                    <div>• Visible construction details, if accessible</div>
-                    <div>• Hardware or surface finish</div>
-                    <div style={{ marginTop: 8 }}>Additional views help refine accuracy, but are not required.</div>
-                  </div>
+  <div style={{ fontWeight: 700, marginBottom: 6 }}>For best results, include:</div>
+  <div>• Overall form from multiple angles</div>
+  <div>• Underside or back (frame and structure)</div>
+  <div>• Joinery (corners, joints, drawer construction)</div>
+  <div>• Hardware (screws, nails, brackets)</div>
+  <div>• Close-up of materials</div>
+
+  <div style={{ marginTop: 10, fontWeight: 700, color: "#4a3725" }}>Important:</div>
+  <div>
+    Dating and identification rely heavily on construction details.  
+    Without joinery, fasteners, or structural views, results may remain broad even if the style appears clear.
+  </div>
+</div>
                   <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
                     <label style={uploadBrownButton}>Upload Photos<input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={(e) => handleFieldUpload(e.target.files)} /></label>
                     <label style={uploadTanButton}>Take Photo<input type="file" accept="image/*" capture="environment" multiple style={{ display: "none" }} onChange={(e) => handleFieldUpload(e.target.files)} /></label>
