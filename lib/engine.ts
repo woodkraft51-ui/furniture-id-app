@@ -2014,9 +2014,38 @@ if (
   }
 
   // Avoid negative or zero-score results
-  return Object.values(scores)
-    .map((s) => ({ ...s, score: Math.max(1, s.score) }))
-    .sort((a, b) => b.score - a.score);
+  // 🧠 GENERIC FORM SUPPRESSION (ANTI-REGRESSION)
+
+let results = Object.values(scores).map((s) => ({
+  ...s,
+  score: Math.max(1, s.score),
+}));
+
+const GENERIC_FORMS = [
+  "seating",
+  "chair",
+  "armchair",
+  "upholstered seating",
+  "table",
+  "cabinet",
+  "case furniture",
+  "furniture",
+];
+
+const isGeneric = (form: string) =>
+  GENERIC_FORMS.some((g) => form.toLowerCase().includes(g));
+
+const hasSpecific = results.some(
+  (r) => r.score >= 60 && !isGeneric(r.form)
+);
+
+if (hasSpecific) {
+  results = results.filter(
+    (r) => !isGeneric(r.form) || r.score >= 55
+  );
+}
+
+return results.sort((a, b) => b.score - a.score);
 }
 function buildReportEvidenceSupport(digest: EvidenceDigest, formSupport: string[]): string[] {
   const priorityOrder: Record<string, number> = {
