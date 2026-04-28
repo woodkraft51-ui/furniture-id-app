@@ -1385,18 +1385,6 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
 
 function dateFromEvidence(digest: EvidenceDigest, form: string) {
   const clues = new Set(digest.clue_keys);
-  const observedStyle = [...(digest.observations || [])]
-  .filter((o) => o.type === "style" && o.clue && (o.confidence || 0) >= 70)
-  .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
-
-const styleFromObservation = observedStyle
-  ? String(observedStyle.clue)
-      .replace(/_style$/i, "")
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase())
-  : null;
-
-const style = deriveStyleContext(digest) || styleFromObservation;
   const support = buildReportEvidenceSupport(digest, []);
   const upholsteryLayer = detectUpholsteryLayer(digest);
   const limitations: string[] = [];
@@ -1406,285 +1394,186 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     .join(" ")}`.toLowerCase();
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
- // Style role guard: style supports identification, but should not prove age by itself
-const hasStyleEvidence = has(
-  "neoclassical_louis_xvi_style",
-  "queen_anne_georgian_revival",
-  "regency_style_cues",
-  "regency_federal_style",
-  "oval_medallion_back",
-  "cabriole_leg",
-  "reeded_tapered_front_legs",
-  "saber_rear_legs",
-  "scroll_arm_terminals"
-);
 
-const hasEarlyConstructionEvidence = has(
-  "hand_cut_joinery",
-  "hand_cut_dovetails",
-  "hand_forged_nail",
-  "cut_nail",
-  "early_webbing",
-  "early_tacking",
-  "irregular_hand_turning",
-  "tool_mark_variation"
-);
+  const style = deriveStyleContext(digest);
 
-const hasMakerDateAnchor = (digest.observations || []).some(
-  (o) => o.type === "label" && o.clue && o.confidence > 80
-);
-
-const styleOnlyDatingRisk =
-  hasStyleEvidence && !hasEarlyConstructionEvidence && !hasMakerDateAnchor;
-
-if (styleOnlyDatingRisk) {
-  limitations.push(
-    "Style is treated as design vocabulary, not proof of age; construction, underside, upholstery-system, or maker evidence is required to support an early date."
-  );
-}
- // MODERN CONSTRUCTION FORWARD PRESSURE
-const hasModernSignals =
-  has(
-    "hardwood_frame_dark_finish",
-    "uniform_machine_turning",
-    "reeded_fluted_front_legs",
-    "carved_oval_back_frame",
-    "upholstery_condition_good",
-    "fully_upholstered"
+  const hasStyleEvidence = has(
+    "neoclassical_louis_xvi_style",
+    "queen_anne_georgian_revival",
+    "regency_style_cues",
+    "regency_federal_style",
+    "oval_medallion_back",
+    "cabriole_leg",
+    "reeded_tapered_front_legs",
+    "saber_rear_legs",
+    "scroll_arm_terminals"
   );
 
-if (styleOnlyDatingRisk && hasModernSignals) {
-  return {
-    range: "c. 1920–1980",
-    confidence: "Moderate",
-    support: [
-      "Classical Louis XVI styling is present, but construction consistency, finish quality, and upholstery condition indicate later revival production rather than early period work.",
-      "Uniform turning and finish suggest machine-assisted production typical of 20th-century manufacturing."
-    ],
-    limitations: [
-      "Exact dating requires underside construction, joinery, fasteners, and upholstery system inspection."
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- // Modern upholstered revival override
-if (
-  has("cabriole_leg", "nailhead_trim") &&
-  has("button_tufting", "chesterfield_tufting", "chesterfield_adjacent") &&
-  has("vinyl_or_bonded_leather", "upholstery_material")
-) {
-  return {
-    range: "c. 1980–present",
-    confidence: "High",
-    support: [
-      "Traditional Chesterfield / Queen Anne styling is present, but synthetic vinyl or bonded-leather upholstery indicates modern revival production.",
-    ],
-    limitations: [
-      "Style imitates earlier forms; dating is based on material evidence rather than decorative styling.",
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- // Queen Anne / Georgian Revival upholstered chair override
-if (
-  has("queen_anne_georgian_revival") &&
-  has("channel_back_fan_back", "open_wood_arms", "carved_arm_terminal") &&
-  has("upholstery_fabric", "fully_upholstered")
-) {
-  return {
-    range: "c. 1930–1970",
-    confidence: "Moderate",
-    support: [
-      "Queen Anne / Georgian styling is present, but the channel-back upholstery, fabric treatment, and revival construction point to mid-20th-century reproduction rather than an original 18th-century or early period chair.",
-    ],
-    limitations: [
-      "An underside photo, frame construction, and label evidence would help narrow the date further.",
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- // Regency / Federal upholstered sofa reproduction override
-if (
-  has("regency_style_cues") &&
-  has("fully_upholstered") &&
-  has("loose_seat_cushion") &&
-  has("upholstery_fabric_type")
-) {
-  return {
-    range: "c. 1930–1970",
-    confidence: "Moderate",
-    support: [
-      "Regency/Federal styling is present, but full upholstery construction, loose cushion format, and uniform woven fabric indicate a mid-20th-century revival piece rather than an early 19th-century original."
-    ],
-    limitations: [
-      "Underside frame construction and internal upholstery methods would help confirm age more precisely."
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- if (
-  has("regency_style_cues", "regency_federal_style") &&
-  has("fully_upholstered") &&
-  has("single_loose_seat_cushion", "tight_back_upholstery") &&
-  has("upholstery_fabric_type")
-) {
-  return {
-    range: "c. 1930–1970",
-    confidence: "Moderate",
-    support: [
-      "Regency/Federal styling is present, but the fully upholstered frame, tight-back upholstery, single loose cushion, and uniform woven fabric point to mid-20th-century revival production rather than an early 19th-century original.",
-    ],
-    limitations: [
-      "Underside frame construction, spring system, tacking evidence, and label evidence would help narrow the date further.",
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- // Louis XVI / Neoclassical revival open armchair override
-if (
-  has("oval_medallion_back", "reeded_tapered_legs") &&
-  has("scroll_arm_terminals", "open_arm_supports", "saber_rear_legs") &&
-  has("upholstery_fabric", "fully_upholstered") &&
-  !has("hand_cut_joinery", "hand_cut_dovetails", "hand_forged_nail", "cut_nail")
-) {
-  return {
-    range: "c. 1930–1990",
-    confidence: "Moderate",
-    support: [
-      "Louis XVI / Neoclassical styling is present, but the evidence shown is decorative and form-based rather than early structural proof; without hand joinery, early fasteners, or underside construction, this should be treated as a 20th-century revival reading.",
-    ],
-    limitations: [
-      "Underside construction, joinery, fasteners, webbing/tacking, spring system, and label evidence would be needed to support more precise dating."
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- // Narrow Louis XVI revival window when stronger modern signals are present
-if (
-  has("oval_medallion_back", "reeded_tapered_front_legs") &&
-  has("scroll_arm_terminals", "saber_rear_legs") &&
-  has("upholstery_striped_floral_fabric") &&
-  has("show_wood_open_arm_frame") &&
-  has("frame_finish_wear") &&
+  const hasEarlyConstructionEvidence = has(
+    "hand_cut_joinery",
+    "hand_cut_dovetails",
+    "hand_forged_nail",
+    "cut_nail",
+    "early_webbing",
+    "early_tacking",
+    "irregular_hand_turning",
+    "tool_mark_variation"
+  );
 
-  // tightening triggers (must hit at least 2–3 of these)
-  (
-    has("machine_lathe_uniformity") ||
-    has("synthetic_fabric_pattern") ||
-    has("modern_finish_sheen") ||
-    has("mass_production_symmetry") ||
-    has("empire_influenced_sweep") // hybrid styling = later
-  )
-) {
-  return {
-    range: "c. 1940–1980",
-    confidence: "Moderate",
-    support: [
-      "Consistent Neoclassical revival form with additional indicators of mid-20th-century production such as uniform machine turning, hybrid styling, or modern upholstery materials."
-    ],
-    limitations: [
-      "Exact decade requires underside construction, joinery, and upholstery system inspection."
-    ],
-   date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
-  // Maker mark / label date anchor
-const makerMarkObservation = (digest.observations || [])
-  .filter((o) => o.type === "label" && o.clue)
-  .map((o) => {
-    const mark = MAKER_MARKS.find((m) => m.id === o.clue);
-    return mark ? { observation: o, mark } : null;
-  })
-  .filter(Boolean)[0] as any;
+  const hasMakerDateAnchor = (digest.observations || []).some(
+    (o) => o.type === "label" && o.clue && o.confidence > 80
+  );
 
-if (
-  makerMarkObservation &&
-  makerMarkObservation.observation.confidence >= 70 &&
-  makerMarkObservation.mark.dating_authority !== "low"
-) {
-  return {
-    range: makerMarkObservation.mark.date_range,
-    confidence: makerMarkObservation.mark.dating_authority === "high" ? "High" : "Moderate",
-    support: [
-      `Maker mark detected: ${makerMarkObservation.mark.maker}.`,
-      `Mark type: ${makerMarkObservation.mark.mark_type}.`,
-      `Dating reference: ${makerMarkObservation.mark.date_range}.`,
-      ...support,
-    ],
-    limitations: [
-      "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
-    ],
-  };
-}
-  // Label/form-specific anchors stay first.
-  if (clues.has("roos_label")) return { range: "c. 1940–1960", confidence: "High", support, limitations };
-  if (clues.has("lane_label")) return { range: "c. 1930–1965", confidence: "High", support, limitations };
-  if (form.includes("Telephone bench")) return { range: "c. 1900–1935", confidence: "High", support, limitations };
-  if (form.includes("Iron bed")) return { range: "c. 1880–1920", confidence: "High", support, limitations };
+  if (hasStyleEvidence && !hasEarlyConstructionEvidence && !hasMakerDateAnchor) {
+    limitations.push(
+      "Style is treated as design vocabulary, not proof of age; construction, underside, upholstery-system, or maker evidence is required to support an early date."
+    );
+  }
 
-if (has("mcm_structural_pattern")) {
-  const frameRange = "c. 1950–1975";
+  const makerMarkObservation = (digest.observations || [])
+    .filter((o) => o.type === "label" && o.clue)
+    .map((o) => {
+      const mark = MAKER_MARKS.find((m) => m.id === o.clue);
+      return mark ? { observation: o, mark } : null;
+    })
+    .filter(Boolean)[0] as any;
 
-  return {
-    range: frameRange,
-    confidence: "Moderate",
-    support: [
-      "The combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern production pattern.",
-      ...support,
-    ],
-    limitations: [
-      "Underside construction, joinery, fasteners, or maker-label evidence would be needed to narrow the date further.",
-    ],
-    upholstery_layer: upholsteryLayer,
-    date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- if (has("queen_anne_revival_pattern")) {
-  return {
-    range: "c. 1930–1970",
-    confidence: "Moderate",
-    support: [
-      "Cabriole legs, fan/channel back upholstery, and fully upholstered frame support a mid-20th-century Queen Anne / Colonial Revival pattern.",
-      ...support,
-    ],
-    limitations: [
-      "Underside construction, joinery, fasteners, and upholstery system would refine dating further.",
-    ],
-    date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
+  if (
+    makerMarkObservation &&
+    makerMarkObservation.observation.confidence >= 70 &&
+    makerMarkObservation.mark.dating_authority !== "low"
+  ) {
+    return {
+      range: makerMarkObservation.mark.date_range,
+      confidence:
+        makerMarkObservation.mark.dating_authority === "high"
+          ? "High"
+          : "Moderate",
+      support: [
+        `Maker mark detected: ${makerMarkObservation.mark.maker}.`,
+        `Mark type: ${makerMarkObservation.mark.mark_type}.`,
+        `Dating reference: ${makerMarkObservation.mark.date_range}.`,
+        ...support,
+      ],
+      limitations: [
+        "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
 
-if (has("mission_structural_pattern")) {
-  return {
-    range: "c. 1900–1925",
-    confidence: "Moderate",
-    support: [
-      "Slat back, rectilinear form, and exposed joinery support an Arts & Crafts / Mission period construction pattern.",
-      ...support,
-    ],
-    limitations: [
-      "Joinery details, fasteners, and underside construction would refine the date further.",
-    ],
-    date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
- if (has("neoclassical_cane_barrel_pattern")) {
-  return {
-    range: "c. 1940–1970",
-    confidence: "Moderate",
-    support: [
-      "Barrel form, cane panels, fluted legs, and rosette ornamentation align with mid-century neoclassical and Hollywood Regency production.",
-      ...support,
-    ],
-    limitations: [
-      "Joinery, fasteners, and upholstery construction would refine dating further.",
-    ],
-    upholstery_layer: upholsteryLayer,
-    date_tightening_evidence: buildDateTighteningEvidence(digest),
-  };
-}
+  // Label/form-specific anchors
+  if (clues.has("roos_label")) {
+    return {
+      range: "c. 1940–1960",
+      confidence: "High",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
 
-  // True hard negatives only.
+  if (clues.has("lane_label")) {
+    return {
+      range: "c. 1930–1965",
+      confidence: "High",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  if (form.includes("Telephone bench")) {
+    return {
+      range: "c. 1900–1935",
+      confidence: "High",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  if (form.includes("Iron bed")) {
+    return {
+      range: "c. 1880–1920",
+      confidence: "High",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  // Pattern-based dating
+  if (has("mcm_structural_pattern")) {
+    return {
+      range: "c. 1950–1975",
+      confidence: "Moderate",
+      support: [
+        "The combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern production pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Underside construction, joinery, fasteners, or maker-label evidence would be needed to narrow the date further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  if (has("queen_anne_revival_pattern")) {
+    return {
+      range: "c. 1930–1970",
+      confidence: "Moderate",
+      support: [
+        "Cabriole legs, fan/channel back upholstery, and fully upholstered frame support a mid-20th-century Queen Anne / Colonial Revival pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Underside construction, joinery, fasteners, and upholstery system would refine dating further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  if (has("mission_structural_pattern")) {
+    return {
+      range: "c. 1900–1925",
+      confidence: "Moderate",
+      support: [
+        "Slat back, rectilinear form, and exposed joinery support an Arts & Crafts / Mission period construction pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Joinery details, fasteners, and underside construction would refine the date further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  if (has("neoclassical_cane_barrel_pattern")) {
+    return {
+      range: "c. 1940–1970",
+      confidence: "Moderate",
+      support: [
+        "Barrel form, cane panels, fluted legs, and rosette ornamentation align with mid-century neoclassical and Hollywood Regency production.",
+        ...support,
+      ],
+      limitations: [
+        "Joinery, fasteners, and upholstery construction would refine dating further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  // Hard modern anchors
   const confirmedModernHardNegative = has(
     "phillips_screw",
     "staple_fastener",
@@ -1695,14 +1584,21 @@ if (has("mission_structural_pattern")) {
 
   if (confirmedModernHardNegative) {
     return {
-      range: has("modern_concealed_hinge") ? "post-1950" : has("staple_fastener") ? "post-1945" : has("phillips_screw") ? "post-1935" : "post-1920",
+      range: has("modern_concealed_hinge")
+        ? "post-1950"
+        : has("staple_fastener")
+        ? "post-1945"
+        : has("phillips_screw")
+        ? "post-1935"
+        : "post-1920",
       confidence: "High",
       support,
       limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
 
-  // Evidence groups, modeled from the older weighting file: construction/joinery outrank style.
   const traditionalConstructionScore =
     (has("solid_plank_back") ? 2 : 0) +
     (has("solid_wood_construction") ? 2 : 0) +
@@ -1727,10 +1623,7 @@ if (has("mission_structural_pattern")) {
     (has("pit_saw_marks") ? 3 : 0) +
     (has("slotted_handmade_screw") ? 2 : 0);
 
-  const empireOrRevival =
-    style === "American Empire / late Classical Revival" ||
-    includesAny(text, ["empire", "scroll feet", "scrolled feet", "serpentine", "ogee", "turned wood knobs"]);
-    const strongPre1920Signals =
+  const strongPre1920Signals =
     (has("solid_plank_back") ? 1 : 0) +
     (has("wooden_drawer_runners") ? 1 : 0) +
     (has("solid_wood_construction") ? 1 : 0) +
@@ -1742,130 +1635,89 @@ if (has("mission_structural_pattern")) {
     !has("modern_concealed_hinge") &&
     !has("plywood_structural") &&
     !has("plywood_drawer_bottom");
-  
-    const phase0EarlyBias =
-    includesAny(text, ["1850", "1860", "1870", "1880", "1890", "victorian", "transitional"]);
-    const strongStyleAlignment =
-  style === "American Empire / late Classical Revival" &&
-  strongPre1920Signals >= 2 &&
-  absenceOfModern;
 
-if (strongStyleAlignment) {
-  return {
-    range: "c. 1870–1910",
-    confidence: strongPre1920Signals >= 3 ? "High" : "Moderate",
-    support,
-    limitations,
-  };
-}
-    if (earlyHandmadeScore >= 3 && !transitionalFactoryScore) {
+  const conflictingSignals =
+    has("possible_plywood_or_laminated_panel") &&
+    has("solid_wood_construction");
+
+  if (conflictingSignals) {
+    limitations.push(
+      "Conflicting panel signals detected; solid wood vs possible laminated construction should be verified."
+    );
+  }
+
+  if (
+    style === "American Empire / late Classical Revival" &&
+    strongPre1920Signals >= 2 &&
+    absenceOfModern
+  ) {
+    return {
+      range: "c. 1870–1910",
+      confidence: strongPre1920Signals >= 3 ? "High" : "Moderate",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
+  if (earlyHandmadeScore >= 3 && !transitionalFactoryScore) {
     return {
       range: "c. 1830–1890",
       confidence: "Moderate",
       support,
       limitations,
-    };
-  }
-const strongPre1880Signals =
-  (has("hand_cut_dovetails") ? 1 : 0) +
-  (has("cut_nail") ? 1 : 0) +
-  (has("hand_forged_nail") ? 1 : 0) +
-  (has("pit_saw_marks") ? 1 : 0);
-
-if (empireOrRevival && strongPre1880Signals >= 2) {
-  return {
-    range: "c. 1830–1860",
-    confidence: "Moderate",
-    support,
-    limitations: [
-      "Style strongly matches Empire period; confirmation of early fasteners or joinery would increase confidence.",
-    ],
-  };
-}
-
-  const trueEarlyEmpireEvidence =
-    earlyHandmadeScore >= 2 ||
-    has("hand_cut_dovetails") ||
-    has("cut_nail") ||
-    has("hand_forged_nail") ||
-    has("pit_saw_marks") ||
-    has("slotted_handmade_screw");
-
-  const revivalEvidence =
-    has("oak_primary") ||
-    has("solid_wood_drawer_construction") ||
-    has("wire_nail") ||
-    has("machine_dovetails") ||
-    has("dowel_joinery") ||
-    has("band_saw_lines") ||
-    includesAny(text, ["oak", "quartersawn", "quarter sawn", "late victorian", "revival"]);
-
-  if (trueEarlyEmpireEvidence && !revivalEvidence) {
-    return {
-      range: "c. 1830–1860",
-      confidence: "Moderate",
-      support,
-      limitations: [
-        "Empire-period styling is supported, but confirmation from drawer joinery, fasteners, or tool marks would strengthen the date.",
-      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
 
-  if (trueEarlyEmpireEvidence && revivalEvidence) {
-    return {
-      range: "c. 1830–1860 possible; c. 1890–1920 also plausible",
-      confidence: "Low",
-      support,
-      limitations: [
-        "The piece shows Empire styling plus mixed construction/material evidence. Close drawer-corner, fastener, and underside photos are needed to separate original Empire from later revival production.",
-      ],
-    };
-  }
-const conflictingSignals =
-  has("possible_plywood_or_laminated_panel") &&
-  has("solid_wood_construction");
   if (absenceOfModern && strongPre1920Signals >= 2) {
     return {
       range: conflictingSignals ? "c. 1900–1930" : "c. 1890–1920",
-      confidence: conflictingSignals ? "Moderate" : "Moderate",
+      confidence: "Moderate",
       support,
-      limitations: [
-        "No confirmed modern materials are visible, but early handmade joinery or fasteners are not confirmed. Treat this as likely revival or transitional production unless stronger early construction evidence appears.",
-      ],
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
 
-if (conflictingSignals) {
-  limitations.push(
-    "Conflicting panel signals detected; solid wood vs possible laminated construction should be verified."
-  );
-}
+  if (traditionalConstructionScore >= 3) {
+    return {
+      range: "late 19th to early 20th century",
+      confidence: "Moderate",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
 
-if (traditionalConstructionScore >= 3) {
+  if (transitionalFactoryScore >= 2) {
+    return {
+      range: "c. 1880–1935",
+      confidence: "Moderate",
+      support,
+      limitations,
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+
   return {
-    range: "late 19th to early 20th century",
-    confidence: "Moderate",
+    range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated",
+    confidence: "Low",
     support,
-    limitations,
+    limitations: [
+      ...limitations,
+      "More construction, underside, back, or label evidence would refine the date.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
 }
-
-if (transitionalFactoryScore >= 2) {
-  return {
-    range: "c. 1880–1935",
-    confidence: "Moderate",
-    support,
-    limitations,
-  };
-}
-
-return {
-  range: "c. 1890–1930",
-  confidence: "Moderate",
-  support,
-  limitations,
-};
-}
+ 
 function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
   let low = 25;
   let high = 300;
