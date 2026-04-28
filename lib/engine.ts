@@ -1183,6 +1183,36 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
    if (
+    (hasClue("cabriole_leg") ||
+      hasClue("curved_leg") ||
+      hasText("cabriole leg", "curved leg", "sinuous leg", "scrolling leg")) &&
+    (hasClue("scroll_carving") ||
+      hasClue("c_scroll") ||
+      hasClue("s_scroll") ||
+      hasText("c-scroll", "s-scroll", "scroll carving", "scrollwork", "rocaille")) &&
+    (hasClue("floral_carving") ||
+      hasClue("rose_carving") ||
+      hasClue("fruit_carving") ||
+      hasText("floral carving", "rose carving", "fruit carving", "naturalistic carving")) &&
+    (hasClue("serpentine_front") ||
+      hasClue("curved_back") ||
+      hasClue("balloon_back") ||
+      hasText("serpentine front", "curved back", "balloon back", "rounded crest", "flowing outline")) &&
+    !hasClue("plywood_structural") &&
+    !hasClue("modern_concealed_hinge")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "rococo_revival_pattern",
+      description:
+        "Cabriole or sinuous legs, scroll carving, naturalistic floral or fruit carving, and serpentine or flowing outlines create a consistent Rococo Revival pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+   if (
     (hasClue("barley_twist") ||
       hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
     (hasClue("heavy_carving") ||
@@ -1664,6 +1694,13 @@ if (
       "Incised linear carving, spindle gallery or turned-spindle detail, and geometric applied ornament support a Victorian Eastlake reading."
     );
   }
+   if (clues.has("rococo_revival_pattern")) {
+    add(
+      "Rococo Revival furniture",
+      114,
+      "Cabriole or sinuous legs, scroll carving, naturalistic floral or fruit carving, and serpentine or flowing outlines support a Rococo Revival reading."
+    );
+  }
     if (clues.has("colonial_revival_pattern")) {
     add(
       "Colonial Revival furniture",
@@ -1968,6 +2005,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible Eastlake design vocabulary and structural ornament; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("rococo_revival_pattern")) {
+    return {
+      range: "c. 1840–1870",
+      confidence: "Moderate",
+      support: [
+        "Cabriole or sinuous legs, scroll carving, naturalistic floral or fruit carving, and serpentine or flowing outlines support a Rococo Revival production pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Rococo Revival design vocabulary and structure; joinery, fasteners, secondary woods, upholstery system, underside construction, and maker-label evidence would help confirm or narrow the range.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
