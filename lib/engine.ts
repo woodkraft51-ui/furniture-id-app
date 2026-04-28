@@ -555,6 +555,48 @@ if (t.includes("acrylic") || t.includes("lucite")) return "acrylic_clear";
 function descriptionFromObservation(o: any): string {
   return asString(o?.description) || asString(o?.observed_value_text) || asString(o?.text) || asString(o?.value) || "Unknown observation";
 }
+function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
+  return observations
+    .filter((o) => {
+      const text = String(o.description || "").toLowerCase();
+
+      // ❌ Hard filter: unusable observations
+      if (
+        text.includes("not visible") ||
+        text.includes("cannot confirm") ||
+        text.includes("unclear") ||
+        text.includes("unknown observation")
+      ) return false;
+
+      if (!o.clue && o.confidence < 45) return false;
+
+      return true;
+    })
+    .map((o) => {
+      const text = String(o.description || "").toLowerCase();
+      let confidence = Number(o.confidence || 50);
+
+      // ⚠️ Downgrade speculative language
+      if (
+        text.includes("possibly") ||
+        text.includes("may be") ||
+        text.includes("appears to")
+      ) {
+        confidence = Math.min(confidence, 45);
+      }
+
+      // ⚠️ Cap weaker evidence categories
+      if (o.type === "style") confidence = Math.min(confidence, 60);
+      if (o.type === "finish") confidence = Math.min(confidence, 55);
+      if (o.type === "hardware") confidence = Math.min(confidence, 65);
+
+      return {
+        ...o,
+        confidence,
+        low_confidence_flag: confidence < 45,
+      };
+    });
+}
 function normalizeObservationsFromParsed(parsed: any): Observation[] {
   const direct = Array.isArray(parsed?.observations) ? parsed.observations : [];
   const out: Observation[] = [];
