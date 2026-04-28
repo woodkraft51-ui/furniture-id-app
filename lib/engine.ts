@@ -1212,6 +1212,24 @@ if (
     ],
   };
 }
+ // Louis XVI / Neoclassical revival open armchair override
+if (
+  has("oval_medallion_back", "reeded_tapered_legs") &&
+  has("scroll_arm_terminals", "open_arm_supports", "saber_rear_legs") &&
+  has("upholstery_fabric", "fully_upholstered") &&
+  !has("hand_cut_joinery", "hand_cut_dovetails", "hand_forged_nail", "cut_nail")
+) {
+  return {
+    range: "c. 1930–1990",
+    confidence: "Moderate",
+    support: [
+      "Louis XVI / Neoclassical styling is present, but the evidence shown is decorative and form-based rather than early structural proof; without hand joinery, early fasteners, or underside construction, this should be treated as a 20th-century revival reading.",
+    ],
+    limitations: [
+      "Underside construction, joinery, fasteners, webbing/tacking, spring system, and label evidence would be needed to support an earlier date.",
+    ],
+  };
+}
   // Maker mark / label date anchor
 const makerMarkObservation = (digest.observations || [])
   .filter((o) => o.type === "label" && o.clue)
