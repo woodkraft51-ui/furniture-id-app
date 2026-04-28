@@ -1158,6 +1158,31 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
    if (
+    (hasClue("incised_carving") ||
+      hasClue("linear_incision") ||
+      hasText("incised carving", "incised lines", "linear carving", "scratch carving")) &&
+    (hasClue("spindle_gallery") ||
+      hasClue("turned_spindles") ||
+      hasClue("spindle_back") ||
+      hasText("spindle gallery", "turned spindles", "small spindles", "stick-and-ball")) &&
+    (hasClue("geometric_paneling") ||
+      hasClue("applied_geometric_blocks") ||
+      hasText("geometric panel", "applied blocks", "rectangular carving", "angular ornament")) &&
+    !hasClue("plywood_structural") &&
+    !hasClue("modern_concealed_hinge")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "victorian_eastlake_pattern",
+      description:
+        "Incised linear carving, spindle gallery or turned-spindle detail, and geometric applied ornament create a consistent Victorian Eastlake pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+   if (
     (hasClue("barley_twist") ||
       hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
     (hasClue("heavy_carving") ||
@@ -1632,6 +1657,13 @@ if (
       "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues support a Federal / Hepplewhite / Sheraton reading."
     );
   }
+   if (clues.has("victorian_eastlake_pattern")) {
+    add(
+      "Victorian Eastlake furniture",
+      112,
+      "Incised linear carving, spindle gallery or turned-spindle detail, and geometric applied ornament support a Victorian Eastlake reading."
+    );
+  }
     if (clues.has("colonial_revival_pattern")) {
     add(
       "Colonial Revival furniture",
@@ -1921,6 +1953,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible design and construction patterning; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would be needed to distinguish period production from later revival work.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("victorian_eastlake_pattern")) {
+    return {
+      range: "c. 1870–1890",
+      confidence: "Moderate",
+      support: [
+        "Incised linear carving, spindle gallery or turned-spindle detail, and geometric applied ornament support a Victorian Eastlake production pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Eastlake design vocabulary and structural ornament; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
