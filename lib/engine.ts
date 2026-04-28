@@ -1127,31 +1127,62 @@ function detectUpholsteryLayer(digest: EvidenceDigest) {
   const clues = new Set(digest.clue_keys);
 
   const hasUpholstery =
-    clues.has("upholstery_fabric") ||
     clues.has("fully_upholstered") ||
-    clues.has("upholstered_wrap_barrel_back") ||
-    clues.has("upholstered_seat_pad");
+    clues.has("upholstery_fabric") ||
+    clues.has("visible_springs") ||
+    clues.has("exposed_upholstery_tacks");
 
-  const modernUpholsterySignals =
+  if (!hasUpholstery) return null;
+
+  const hasTraditional =
+    clues.has("horsehair_stuffing") ||
+    clues.has("horsehair_cotton_stuffing") ||
+    clues.has("burlap_visible") ||
+    clues.has("burlap_foundation") ||
+    clues.has("cotton_batting");
+
+  const hasModern =
     clues.has("synthetic_fabric_pattern") ||
     clues.has("vinyl_or_bonded_leather") ||
     clues.has("uniform_machine_tufting") ||
     clues.has("clean_modern_fabric");
 
-  if (!hasUpholstery) return null;
-
-  if (modernUpholsterySignals) {
+  // 🔴 Strong traditional upholstery system
+  if (hasTraditional && !hasModern) {
     return {
-      range: "c. 1950–present",
+      range: "c. 1880–1920",
       confidence: "Moderate",
-      note: "Upholstery materials and construction suggest later application or replacement.",
+      note:
+        "Horsehair stuffing, burlap foundation, and cotton batting support traditional upholstery methods consistent with late 19th to early 20th century work. Upholstery may be original or an early reupholstery.",
     };
   }
 
+  // 🟡 Mixed signals (possible reupholstery)
+  if (hasTraditional && hasModern) {
+    return {
+      range: "mixed periods (reupholstered)",
+      confidence: "Moderate",
+      note:
+        "Traditional upholstery materials are present alongside later fabric or construction cues, indicating likely reupholstery.",
+    };
+  }
+
+  // 🔵 Modern upholstery
+  if (hasModern) {
+    return {
+      range: "post-1950",
+      confidence: "Moderate",
+      note:
+        "Upholstery materials and construction suggest later modern or replacement upholstery.",
+    };
+  }
+
+  // ⚪ Weak evidence
   return {
-    range: "unknown (possibly original or early)",
+    range: "unknown upholstery date",
     confidence: "Low",
-    note: "Upholstery is present but insufficient detail to date independently.",
+    note:
+      "Upholstery is present but lacks clear construction or material evidence for independent dating.",
   };
 }
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
