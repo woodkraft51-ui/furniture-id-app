@@ -1608,6 +1608,21 @@ if (
   if (form.includes("Telephone bench")) return { range: "c. 1900–1935", confidence: "High", support, limitations };
   if (form.includes("Iron bed")) return { range: "c. 1880–1920", confidence: "High", support, limitations };
 
+if (has("mcm_structural_pattern")) {
+  return {
+    range: "c. 1950–1975",
+    confidence: "Moderate",
+    support: [
+      "The combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern production pattern.",
+      ...support,
+    ],
+    limitations: [
+      "Underside construction, joinery, fasteners, or maker-label evidence would be needed to narrow the date further.",
+    ],
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
+ 
   // True hard negatives only.
   const confirmedModernHardNegative = has(
     "phillips_screw",
