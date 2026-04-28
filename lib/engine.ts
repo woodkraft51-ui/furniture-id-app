@@ -2735,10 +2735,13 @@ const earlyCount = earlySignals.filter((key) => hasDateFloorClue(key)).length;
 const modernCount = modernSignals.filter((key) => hasDateFloorClue(key)).length;
 
 // If NO early evidence AND multiple modern indicators → set a floor
-if (earlyCount === 0 && modernCount >= 2) {
-  range = "c. 1930–present";
-  confidence = confidence === "Low" ? "Moderate" : confidence;
-}
+const dateFloorOverride =
+  earlyCount === 0 && modernCount >= 2
+    ? {
+        range: "c. 1930–present",
+        confidence: "Moderate" as const,
+      }
+    : null;
   return {
     range: style ? "Broadly late 19th to 20th century" : "Broad, not tightly dated",
     confidence: "Low",
