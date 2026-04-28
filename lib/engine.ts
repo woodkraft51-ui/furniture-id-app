@@ -1994,7 +1994,66 @@ if (
       "Cabriole legs, shell carving, or related revival style cues are visible."
     );
   }
+    // 🧠 PATTERN → FORM LOCKING
+  // Strong structural patterns should protect their matching form from generic regression.
+  // This does not create new evidence; it only reinforces already-detected derived patterns.
 
+  const protectForm = (form: string, bonus: number, support: string) => {
+    if (!scores[form]) return;
+    scores[form].score += bonus;
+
+    if (!scores[form].support.includes(support)) {
+      scores[form].support.push(support);
+    }
+  };
+
+  if (clues.has("renaissance_revival_upholstered_armchair_pattern")) {
+    protectForm(
+      "Renaissance Revival upholstered armchair",
+      18,
+      "Pattern-to-form lock: Renaissance Revival upholstered armchair pattern protects this specific form from generic upholstered seating."
+    );
+  }
+
+  if (clues.has("mission_arts_crafts_structural_pattern")) {
+    protectForm(
+      "Mission / Arts & Crafts furniture",
+      16,
+      "Pattern-to-form lock: Mission / Arts & Crafts structural pattern protects this specific form from generic seating or case furniture."
+    );
+  }
+
+  if (clues.has("mcm_structural_pattern")) {
+    protectForm(
+      "Mid-century modern spindle-back lounge chair",
+      16,
+      "Pattern-to-form lock: MCM structural pattern protects this specific chair form from generic seating."
+    );
+  }
+
+  if (clues.has("jacobean_tudor_revival_case_pattern")) {
+    protectForm(
+      "Jacobean / Tudor Revival case furniture",
+      16,
+      "Pattern-to-form lock: Jacobean / Tudor Revival case pattern protects this specific case-furniture reading from generic cabinet fallback."
+    );
+  }
+
+  if (clues.has("federal_hepplewhite_sheraton_pattern")) {
+    protectForm(
+      "Federal / Hepplewhite / Sheraton furniture",
+      14,
+      "Pattern-to-form lock: Federal / Hepplewhite / Sheraton pattern protects this specific style-form reading."
+    );
+  }
+
+  if (clues.has("colonial_revival_pattern")) {
+    protectForm(
+      "Colonial Revival furniture",
+      12,
+      "Pattern-to-form lock: Colonial Revival pattern protects this revival reading from loose Queen Anne or generic case-furniture fallback."
+    );
+  }
   // Functional hierarchy corrections
   const strongFunctionalSignals = hasAny(
     "seating_surface",
