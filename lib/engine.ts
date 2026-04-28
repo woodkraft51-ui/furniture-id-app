@@ -1128,7 +1128,35 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
- 
+   if (
+    (hasClue("tapered_leg") ||
+      hasClue("square_tapered_leg") ||
+      hasText("tapered leg", "square tapered leg", "straight tapered leg", "slender tapered leg")) &&
+    (hasClue("inlay") ||
+      hasClue("string_inlay") ||
+      hasClue("banding") ||
+      hasText("string inlay", "line inlay", "banding", "crossbanding", "bellflower", "bell flower")) &&
+    (hasClue("bow_front") ||
+      hasClue("serpentine_front") ||
+      hasClue("shield_back") ||
+      hasClue("spade_foot") ||
+      hasText("bow front", "serpentine front", "shield back", "spade foot", "delicate proportions")) &&
+    !hasClue("phillips_screw") &&
+    !hasClue("staple_fastener") &&
+    !hasClue("plywood_structural") &&
+    !hasClue("modern_concealed_hinge")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "federal_hepplewhite_sheraton_pattern",
+      description:
+        "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues create a Federal / Hepplewhite / Sheraton pattern.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
    if (
     (hasClue("barley_twist") ||
       hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
@@ -1597,7 +1625,13 @@ if (
       "Historicist carving or turned supports support Jacobean Revival context."
     );
   }
-
+     if (clues.has("federal_hepplewhite_sheraton_pattern")) {
+    add(
+      "Federal / Hepplewhite / Sheraton furniture",
+      112,
+      "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues support a Federal / Hepplewhite / Sheraton reading."
+    );
+  }
     if (clues.has("colonial_revival_pattern")) {
     add(
       "Colonial Revival furniture",
@@ -1872,6 +1906,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Frame date is based on visible structural and decorative patterning; drawer joinery, fasteners, secondary woods, and maker-label evidence would be needed to narrow the date further.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+   if (has("federal_hepplewhite_sheraton_pattern")) {
+    return {
+      range: "c. 1780–1830",
+      confidence: "Moderate",
+      support: [
+        "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues support a Federal / Hepplewhite / Sheraton pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible design and construction patterning; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would be needed to distinguish period production from later revival work.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
