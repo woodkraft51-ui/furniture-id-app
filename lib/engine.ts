@@ -557,23 +557,34 @@ function descriptionFromObservation(o: any): string {
 }
 function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
   const authorityCap: Record<string, number> = {
-    construction: 95,
-    joinery: 95,
-    toolmarks: 92,
-    fasteners: 90,
-    materials: 82,
-    material: 82,
-    hardware: 68,
-    finish: 58,
-    alteration: 55,
-    condition: 55,
-    style: 55,
-    structure: 78,
-    form: 78,
-    function: 72,
-    context: 50,
-    label: 80,
-  };
+  // 🔴 Highest authority (structure)
+  construction: 96,
+  joinery: 95,
+  toolmarks: 94,
+  fasteners: 92,
+
+  // 🟠 Strong but secondary
+  materials: 84,
+  material: 84,
+  structure: 82,
+
+  // 🟡 Moderate support
+  hardware: 66,
+  function: 70,
+  form: 68,
+
+  // 🔵 Weak / easily altered
+  finish: 56,
+  alteration: 54,
+  condition: 54,
+
+  // ⚪ Lowest authority
+  style: 52,
+  context: 48,
+
+  // 🟣 Special case
+  label: 85,
+};
 
   const replacementRiskCap: Record<string, number> = {
     hardware: 62,
