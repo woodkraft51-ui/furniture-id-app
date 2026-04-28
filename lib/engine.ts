@@ -986,7 +986,21 @@ if (
     low_confidence_flag: false,
   });
 }
-
+if (has("neoclassical_cane_barrel_pattern")) {
+  return {
+    range: "c. 1940–1970",
+    confidence: "Moderate",
+    support: [
+      "Barrel form, cane panels, fluted legs, and rosette ornamentation align with mid-century neoclassical and Hollywood Regency production.",
+      ...support,
+    ],
+    limitations: [
+      "Joinery, fasteners, and upholstery construction would refine dating further.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
 return out;
 }
 
