@@ -723,181 +723,109 @@ function dedupeObservations(observations: Observation[]): Observation[] {
   });
 }
 
-function normalizePerception(parsed: any, observations: Observation[]): Perception {
-  const p = parsed?.perception || {};
-  const arr = (v: any) => Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : [];
-  const raw = [...collectText(p), ...observations.map((o) => `${o.clue || ""} ${o.description}`)].join(" | ");
-  const t = raw.toLowerCase();
+function detectStructuralPatterns(observations: Observation[]): Observation[] {
+  const hasClue = (clue: string) =>
+    observations.some((o) => o.clue === clue);
 
-  const perception: Perception = {
-    labels: arr(p.labels),
-    maker_names: arr(p.maker_names),
-    materials: arr(p.materials),
-    forms: arr(p.forms),
-    functional_features: arr(p.functional_features),
-    style_cues: arr(p.style_cues),
-    construction_cues: arr(p.construction_cues),
-    condition_cues: arr(p.condition_cues),
-    visible_text: arr(p.visible_text),
-    raw_text: raw,
-  };
+  const text = observations
+    .map((o) => `${o.clue || ""} ${o.description || ""}`)
+    .join(" ")
+    .toLowerCase();
 
-  const add = (key: keyof Perception, value: string) => {
-    const current = perception[key];
-    if (Array.isArray(current) && !current.includes(value)) current.push(value);
-  };
+  const hasText = (...phrases: string[]) =>
+    phrases.some((phrase) => text.includes(phrase));
 
-  if (includesAny(t, ["roos", "sweetheart cedar"])) { add("labels", "Roos label"); add("maker_names", "Roos"); }
-  if (includesAny(t, ["lane cedar"])) { add("labels", "Lane label"); add("maker_names", "Lane"); }
-  if (includesAny(t, ["metal", "iron", "steel", "brass"])) add("materials", "metal");
-  if (includesAny(t, ["upholstered", "fabric", "cushion"])) add("materials", "upholstery");
-  if (includesAny(t, ["wood", "oak", "cedar", "walnut"])) add("materials", "wood");
-  if (includesAny(t, ["telephone", "phone shelf"])) add("functional_features", "telephone shelf");
-  if (includesAny(t, ["bench", "seat", "seating"])) add("functional_features", "seating");
-  if (includesAny(t, ["drop front", "writing surface"])) add("functional_features", "drop-front desk");
-  if (includesAny(t, ["pigeonhole", "cubby"])) add("functional_features", "pigeonholes");
-  if (t.includes("mirror")) add("functional_features", "mirror");
-  if (includesAny(t, ["cabriole", "shell carving"])) add("style_cues", "Queen Anne / Colonial Revival");
-  if (includesAny(t, ["barley twist", "jacobean", "heavy carving"])) add("style_cues", "Jacobean Revival");
+  const out: Observation[] = [];
 
-  return perception;
-}
-
-function promotePerceptionObservations(observations: Observation[], perception: Perception): Observation[] {
-  const out = [...observations];
-  const text = perception.raw_text.toLowerCase();
-const isNegated = (phrase: string) =>
-  includesAny(text, [
-    `no ${phrase}`,
-    `not ${phrase}`,
-    `without ${phrase}`,
-    `${phrase} not`,
-    `no visible ${phrase}`,
-    `no ${phrase} present`,
-    `no ${phrase} evident`,
-  ]);
-  const add = (clue: string, description: string, confidence = 72, source = "perception") => {
-    if (out.some((o) => o.clue === clue)) return;
-    const meta = CLUE_LIBRARY[clue];
+  // Mid-century modern / Scandinavian-style structural cluster
+  if (
+    (hasClue("flat_paddle_armrests") ||
+      hasText("paddle armrests", "flat wooden armrests", "flat paddle")) &&
+    (hasClue("spindle_back") ||
+      hasText("spindle back", "vertical turned spindles")) &&
+    (hasClue("splayed_legs") ||
+      hasText("splayed legs", "outward splay", "tapered legs"))
+  ) {
     out.push({
-      type: meta?.category || "context",
-      clue,
-      description,
-      confidence,
-      source_image: source,
-      hard_negative: Boolean(meta?.hardNegative),
-      low_confidence_flag: confidence < 45,
+      type: "structure",
+      clue: "mcm_structural_pattern",
+      description:
+        "Combined paddle arms, spindle back, and splayed/tapered legs form a consistent mid-century modern structural pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
     });
-  };
-
-  // Broad form/function/structure guarantees
-  if (
-  includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
-  !isNegated("seat") &&
-  !isNegated("seating") &&
-  !isNegated("bench") &&
-  !isNegated("sitting surface")
-) {
-  add("seating_surface", "A seating surface or bench-like sitting area is visible.", 82);
-  add("seating_present", "Integrated seating is visible.", 78);
-}
-
-  if (includesAny(text, ["backrest", "back rail", "spindle back", "spindled back", "rail back"])) {
-    add("backrest_present", "A backrest or back rail is visible.", 78);
   }
 
-  if (includesAny(text, ["spindle", "spindles", "turned spindle", "spindle rail"])) {
-    add("spindle_back", "Spindles are visible in the back or side rail.", 78);
-    add("spindle_gallery", "Spindle gallery or rail detail is visible.", 70);
+  // Queen Anne / Colonial Revival upholstered cluster
+  if (
+    (hasClue("cabriole_leg") ||
+      hasText("cabriole leg", "queen anne leg", "curved leg")) &&
+    (hasClue("channel_back_fan_back") ||
+      hasText("channel back", "fan back upholstery", "radiating upholstery")) &&
+    (hasClue("upholstery_fabric") ||
+      hasText("fully upholstered", "upholstered armchair"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "queen_anne_revival_pattern",
+      description:
+        "Cabriole legs, channel/fan back upholstery, and fully upholstered frame form a consistent Queen Anne / Colonial Revival upholstered pattern.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
   }
 
+  // Mission / Arts & Crafts structural cluster
   if (
-  includesAny(text, [
-    "secondary surface",
-    "side surface",
-    "raised surface",
-    "raised platform",
-    "small table surface",
-    "writing surface",
-    "work surface"
-  ]) &&
-  !isNegated("secondary surface") &&
-  !isNegated("side surface") &&
-  !isNegated("raised surface") &&
-  !isNegated("raised platform") &&
-  !isNegated("table surface") &&
-  !isNegated("writing surface") &&
-  !isNegated("work surface")
-) {
-  add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
-}
-
-  if (
-  includesAny(text, ["writing", "writing surface", "desk surface", "work surface"]) &&
-  !isNegated("writing") &&
-  !isNegated("writing surface") &&
-  !isNegated("desk") &&
-  !isNegated("desk surface") &&
-  !isNegated("work surface")
-) {
-  add("writing_surface", "A writing or work surface is visible.", 84);
-}
-
-  if (
-  includesAny(text, ["telephone", "phone shelf", "telephone shelf", "phone platform"]) &&
-  !isNegated("telephone") &&
-  !isNegated("phone") &&
-  !isNegated("phone shelf") &&
-  !isNegated("telephone shelf") &&
-  !isNegated("phone platform")
-) {
-  add("telephone_shelf", "A telephone shelf or phone platform is visible.", 86);
-}
-
-  if (includesAny(text, ["turned leg", "turned legs", "turned support", "turned supports"])) {
-    add("spindle_gallery", "Turned supports or spindle-like elements are visible.", 68);
+    (hasClue("slat_back") ||
+      hasText("vertical slats", "ladder back", "slat back")) &&
+    (hasClue("square_legs") ||
+      hasText("square legs", "rectilinear legs")) &&
+    (hasClue("exposed_joinery") ||
+      hasText("through tenon", "exposed joinery", "pegged joinery"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "mission_structural_pattern",
+      description:
+        "Slat back, rectilinear legs, and exposed joinery form a consistent Arts & Crafts / Mission structural pattern.",
+      confidence: 88,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
   }
 
-  // Existing specific clues
-  if (includesAny(text, ["roos", "sweetheart cedar"])) add("roos_label", "Roos cedar chest label is visible.", 94);
-  if (includesAny(text, ["lane cedar"])) add("lane_label", "Lane cedar chest label is visible.", 94);
-  if (includesAny(text, ["cedar lined", "cedar interior"])) add("cedar_lining", "Cedar-lined interior is visible.", 84);
-  if (includesAny(text, ["drop front", "drop-front", "fall front"])) add("drop_front_desk", "Drop-front writing surface is visible.", 84);
-  if (includesAny(text, ["pigeonhole", "pigeon hole", "cubby", "cubbies"])) add("pigeonholes", "Interior cubbies or pigeonholes are visible.", 78);
+  // Neoclassical revival cane barrel lounge cluster
   if (
-  text.includes("mirror") &&
-  !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"])
-) {
-  add("mirror_present", "Mirror is visible.", 72);
-}
-  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
-  if (includesAny(text, ["pedestal", "single column"])) add("pedestal_column", "Single-column pedestal form is visible.", 84);
-  if (includesAny(text, ["armchair", "upholstered chair"])) add("armchair_form", "Armchair form is visible.", 82);
-   if (includesAny(text, ["metal frame", "metal furniture", "metal structure", "steel frame", "iron frame"])) {
-    add("metal_frame", "Metal frame or metal furniture structure is visible.", 72);
+    (hasClue("barrel_tub_frame") ||
+      hasText("barrel chair", "tub chair", "barrel/tub form")) &&
+    (hasClue("cane_panel_back") ||
+      hasClue("cane_panel_sides") ||
+      hasText("cane panel", "cane panels")) &&
+    (hasClue("fluted_legs") ||
+      hasText("fluted legs", "fluted tapered legs")) &&
+    (hasClue("carved_arm_block_rosette") ||
+      hasText("rosette", "floral block", "arm block rosette"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "neoclassical_cane_barrel_pattern",
+      description:
+        "Barrel/tub form with cane panels, fluted legs, and rosette arm blocks forms a mid-century neoclassical / Hollywood Regency hybrid pattern.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
   }
 
-  if (includesAny(text, ["wicker", "woven reed", "woven body", "reed furniture"])) {
-    add("woven_body", "Woven wicker or reed body construction is visible.", 76);
-  }
-
-  if (includesAny(text, ["upholstered", "fabric covered", "cushion", "cushioned", "padded seat", "padded back"])) {
-    add("fully_upholstered", "Upholstered or cushioned surfaces are visible.", 74);
-  }
-  if (
-  text.includes("cabriole") &&
-  !includesAny(text, ["no cabriole", "no turned or cabriole", "not cabriole"])
-) {
-  add("cabriole_leg", "Cabriole legs are visible.", 72);
+  return out;
 }
-  if (text.includes("barley twist")) add("barley_twist", "Barley twist supports are visible.", 76);
-  if (text.includes("drawer")) add("drawer_present", "Drawer evidence is visible.", 58);
-  if (text.includes("door")) add("door_present", "Door evidence is visible.", 58);
-  if (includesAny(text, ["cabinet", "cupboard", "hutch"])) add("cabinet_form", "Cabinet or cupboard form is visible.", 68);
-
-  return dedupeObservations(out);
-}
-
 function tIncludes(text: string, word: string) {
   return text.includes(word);
 }
@@ -988,6 +916,7 @@ if (
  
 return out;
 }
+ 
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   const by_type: Record<string, Observation[]> = {};
   observations.forEach((o) => {
