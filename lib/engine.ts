@@ -1364,7 +1364,7 @@ if (
       "Louis XVI / Neoclassical styling is present, but the evidence shown is decorative and form-based rather than early structural proof; without hand joinery, early fasteners, or underside construction, this should be treated as a 20th-century revival reading.",
     ],
     limitations: [
-      "Underside construction, joinery, fasteners, webbing/tacking, spring system, and label evidence would be needed to support an earlier date.",
+      "Underside construction, joinery, fasteners, webbing/tacking, spring system, and label evidence would be needed to support more precise dating."
     ],
    date_tightening_evidence: buildDateTighteningEvidence(digest),
   };
