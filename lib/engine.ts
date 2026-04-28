@@ -1128,6 +1128,33 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+         if (
+    (hasClue("slender_tapered_leg") ||
+      hasClue("tapered_leg") ||
+      hasText("slender tapered leg", "thin tapered leg", "light tapered leg", "delicate leg")) &&
+    (hasClue("satinwood_inlay") ||
+      hasClue("string_inlay") ||
+      hasClue("painted_detail") ||
+      hasText("satinwood", "string inlay", "painted detail", "painted decoration", "light inlay")) &&
+    (hasClue("oval_mirror") ||
+      hasClue("delicate_gallery") ||
+      hasClue("light_case_form") ||
+      hasText("oval mirror", "delicate gallery", "light case", "small scale", "delicate proportions")) &&
+    !hasClue("heavy_carving") &&
+    !hasClue("barley_twist") &&
+    !hasClue("plywood_structural")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "edwardian_pattern",
+      description:
+        "Slender tapered legs, light inlay or painted detail, and delicate proportions, oval mirror, or light gallery details create a consistent Edwardian furniture pattern.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
        if (
     (hasClue("ladder_back") ||
       hasClue("slat_back") ||
@@ -1853,6 +1880,13 @@ if (
       "Stepped or waterfall profile, geometric or figured veneer, and chrome, Bakelite, or streamlined hardware support an Art Deco / Machine Age reading."
     );
   }
+       if (clues.has("edwardian_pattern")) {
+    add(
+      "Edwardian furniture",
+      108,
+      "Slender tapered legs, light inlay or painted detail, and delicate proportions, oval mirror, or light gallery details support an Edwardian reading."
+    );
+  }
      if (clues.has("shaker_pattern")) {
     add(
       "Shaker furniture",
@@ -2239,6 +2273,21 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
       ],
       limitations: [
         "Date is based on visible Art Deco / Machine Age design and construction cues; drawer joinery, hardware backs, fasteners, secondary woods, underside construction, and maker-label evidence would help confirm or narrow the range.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
+       if (has("edwardian_pattern")) {
+    return {
+      range: "c. 1900–1915",
+      confidence: "Moderate",
+      support: [
+        "Slender tapered legs, light inlay or painted detail, and delicate proportions, oval mirror, or light gallery details support an Edwardian pattern.",
+        ...support,
+      ],
+      limitations: [
+        "Date is based on visible Edwardian design and construction vocabulary; joinery, fasteners, underside construction, secondary woods, and maker-label evidence would help confirm or refine the date.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
