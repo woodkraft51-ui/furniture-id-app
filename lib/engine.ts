@@ -1449,6 +1449,13 @@ if (
 }
  
   // Seating forms
+   if (clues.has("renaissance_revival_upholstered_armchair_pattern")) {
+    add(
+      "Renaissance Revival upholstered armchair",
+      118,
+      "Combined armchair form, carved barley/rope-twist supports, acanthus carving, claw or paw feet, fan/channel back, and full upholstery support a Renaissance Revival / late Victorian parlor chair reading."
+    );
+  }
  if (clues.has("mcm_structural_pattern")) {
   add(
     "Mid-century modern spindle-back lounge chair",
@@ -1489,7 +1496,10 @@ if (
     add("Brass bed or brass-frame furniture", 70, "Brass frame or brass rail construction is visible.");
   }
 
-  if (hasAny("fully_upholstered", "visible_springs", "tufted_upholstery", "exposed_upholstery_tacks")) {
+    if (
+    hasAny("fully_upholstered", "visible_springs", "tufted_upholstery", "exposed_upholstery_tacks") &&
+    !clues.has("renaissance_revival_upholstered_armchair_pattern")
+  ) {
     add("Upholstered seating", 76, "Upholstery, cushion, spring, or upholstery-tack evidence is visible.");
   }
 
