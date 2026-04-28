@@ -2309,12 +2309,19 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
 
 let observations = normalizeObservationsFromParsed(parsedForEvidence);
 let perception = normalizePerception(parsedForEvidence, observations);
+
 observations = addIntakeObservations(intake, observations);
 observations = promotePerceptionObservations(observations, perception);
+
+const structuralPatternMatches = detectStructuralPatterns(observations);
+observations = dedupeObservations([...observations, ...structuralPatternMatches]);
+
 perception = normalizePerception(parsedForEvidence, observations);
+
 const makerMarkMatches = matchMakerMarks(perception.raw_text || "");
-observations = dedupeObservations([...observations, ...makerMarkMatches]);   
-    const digest = buildEvidenceDigest(observations, perception);
+observations = dedupeObservations([...observations, ...makerMarkMatches]);
+
+const digest = buildEvidenceDigest(observations, perception);
 
     observations.forEach((obs) => {
       API.addObservation(caseData.id, {
