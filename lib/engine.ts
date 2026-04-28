@@ -1471,6 +1471,7 @@ const styleFromObservation = observedStyle
 
 const style = deriveStyleContext(digest) || styleFromObservation;
   const support = buildReportEvidenceSupport(digest, []);
+ const upholsteryLayer = detectUpholsteryLayer(digest);
   const limitations: string[] = [];
 
   const text = `${digest.perception?.raw_text || ""} ${digest.observations
