@@ -3698,9 +3698,12 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
 
   console.log("----- PHASE 0 DEBUG START -----");
   console.log("P0 RAW ERROR:", p0.raw_error);
-  console.log("P0 PERCEPTION:", p0.perception);
-  console.log("P0 OBSERVATIONS:", p0.observations);
-  console.log("IMAGES PASSED TO P0:", images);
+console.log("P0 DEBUG:", p0.debug);
+console.log("P0 RAW RESULT:", p0.raw_result);
+console.log("P0 PARSED RESULT:", p0.parsed_result);
+console.log("P0 PERCEPTION:", p0.perception);
+console.log("P0 OBSERVATIONS:", p0.observations);
+console.log("IMAGES PASSED TO P0:", images);
   console.log("----- PHASE 0 DEBUG END -----");
 
   if (!p0.observations || p0.observations.length === 0) {
