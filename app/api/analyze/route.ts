@@ -4,8 +4,23 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const apiKey = process.env.ANTHROPIC_API_KEY;
-    const ENGINE_MODE = process.env.ENGINE_MODE || "LIVE";
-    
+    const engineMode = process.env.ENGINE_MODE || "LIVE";
+
+    if (engineMode === "MOCK") {
+      return Response.json({
+        ok: true,
+        content: [
+          {
+            text: JSON.stringify({
+              observations: [],
+              perception: {},
+              debug: "MOCK MODE ENABLED - no Anthropic call made",
+            }),
+          },
+        ],
+      });
+    }
+
     if (!apiKey) {
       return Response.json(
         {
