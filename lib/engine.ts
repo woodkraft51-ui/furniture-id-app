@@ -1798,8 +1798,8 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (clues.has("slant_front")) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
     if (clues.has("cylinder_roll")) {
     add(
-      hasAny("parquetry_veneer", "ormolu_mounts", "brass_foot_sabots", "louis_xvi_french_neoclassical")
-        ? "French Louis XVI style bureau à cylindre / cylinder desk"
+      hasAny("parquetry_veneer", "ormolu_mounts", "brass_foot_sabots", "louis_xvi_french_neoclassical", "louis_xvi_revival_pattern")
+        ? "Louis XVI Revival cylinder desk (bureau à cylindre)"
         : "Cylinder roll-top desk",
       125,
       "Cylinder roll-top closure, writing surface, interior compartments, and kneehole desk configuration support a cylinder desk reading."
