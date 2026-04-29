@@ -1078,26 +1078,40 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   // MODERN / NON-WOOD FRIENDLY
   // =========================
 
-  if (
-    (hasClue("flat_paddle_armrests") ||
-      hasText("paddle armrests", "flat wooden armrests", "flat paddle")) &&
-    (hasClue("spindle_back") ||
-      hasText("spindle back", "vertical turned spindles")) &&
-    (hasClue("splayed_legs") ||
-      hasText("splayed legs", "outward splay", "tapered legs"))
-  ) {
-    out.push({
-      type: "structure",
-      clue: "mcm_structural_pattern",
-      description:
-        "Combined paddle arms, spindle back, and splayed/tapered legs form a consistent mid-century modern structural pattern.",
-      confidence: 86,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-
+ if (
+  (hasClue("flat_paddle_armrests") ||
+    hasText(
+      "paddle armrests",
+      "flat wooden armrests",
+      "flat paddle",
+      "flat wood arm caps",
+      "wood arm caps",
+      "flat arm caps"
+    )) &&
+  (hasClue("spindle_back") ||
+    hasText("spindle back", "vertical turned spindles")) &&
+  (hasClue("splayed_legs") ||
+    hasClue("tapered_leg") ||
+    hasText(
+      "splayed legs",
+      "outward splay",
+      "tapered legs",
+      "splayed outward",
+      "splayed outward slightly",
+      "four round tapered legs"
+    ))
+) {
+  out.push({
+    type: "structure",
+    clue: "mcm_structural_pattern",
+    description:
+      "Combined paddle or flat arm caps, spindle back, and splayed/tapered legs form a consistent mid-century modern structural pattern.",
+    confidence: 86,
+    source_image: "derived",
+    hard_negative: false,
+    low_confidence_flag: false,
+  });
+}
   // =========================
   // UPHOLSTERED (ALWAYS ALLOW)
   // =========================
