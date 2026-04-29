@@ -2366,7 +2366,7 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
    if (has("federal_hepplewhite_sheraton_pattern")) {
     return {
           range: hasEarlyConstructionEvidence ? "c. 1780–1830" : "c. 1890–1940",
-    confidence: "Moderate",,
+    confidence: "Moderate",
       support: [
         "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues support a Federal / Hepplewhite / Sheraton pattern.",
         ...support,
