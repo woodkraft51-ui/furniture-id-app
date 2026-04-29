@@ -997,7 +997,10 @@ function promotePerceptionObservations(
 function tIncludes(text: string, word: string) {
   return text.includes(word);
 }
-
+function classifyPrimaryMaterial(digest: EvidenceDigest): {
+  primary: "wood" | "metal" | "woven" | "plastic" | "mixed" | "unknown";
+  confidence: number;
+}
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
     observations.some((o) => o.clue === clue);
