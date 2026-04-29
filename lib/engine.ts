@@ -2365,14 +2365,16 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   }
    if (has("federal_hepplewhite_sheraton_pattern")) {
     return {
-      range: "c. 1780–1830",
-      confidence: "Moderate",
+          range: hasEarlyConstructionEvidence ? "c. 1780–1830" : "c. 1890–1940",
+    confidence: "Moderate",,
       support: [
         "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues support a Federal / Hepplewhite / Sheraton pattern.",
         ...support,
       ],
       limitations: [
-        "Date is based on visible design and construction patterning; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would be needed to distinguish period production from later revival work.",
+        hasEarlyConstructionEvidence
+  ? "Early construction evidence supports a possible period Federal / Hepplewhite / Sheraton date; drawer joinery, fasteners, secondary woods, underside construction, and maker-label evidence would refine it further."
+  : "Federal / Hepplewhite / Sheraton styling is treated as revival-era unless early joinery, fasteners, tool marks, secondary woods, or provenance confirm true period production.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
