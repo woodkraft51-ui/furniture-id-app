@@ -534,7 +534,8 @@ function normalizePhase0Clue(raw: any): string | null {
     key === "parquetry_veneer" ||
     key === "marquetry_veneer" ||
     key === "herringbone_veneer" ||
-    key === "chevron_veneer"
+    key === "chevron_veneer" ||
+    key === "quartered_parquetry"
   ) {
     return "parquetry_veneer";
   }
