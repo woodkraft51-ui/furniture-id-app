@@ -3318,7 +3318,41 @@ const makerMarkMatches = matchMakerMarks(perception.raw_text || "");
 observations = dedupeObservations([...observations, ...makerMarkMatches]);
 
 const digest = buildEvidenceDigest(observations, perception);
+const languageAlignmentDebug = {
+  raw_phase0_observations: Array.isArray(parsedForEvidence?.observations)
+    ? parsedForEvidence.observations.map((o: any) => ({
+        raw_type: o?.type || o?.category || null,
+        raw_clue: o?.clue || o?.key || o?.reference_id || null,
+        raw_description:
+          o?.description ||
+          o?.observed_value_text ||
+          o?.text ||
+          o?.value ||
+          null,
+      }))
+    : [],
 
+  normalized_observations: observations.map((o) => ({
+    type: o.type,
+    clue: o.clue || null,
+    description: o.description,
+    confidence: o.confidence,
+    source_image: o.source_image || null,
+  })),
+
+  digest_clue_keys: digest.clue_keys,
+
+  derived_pattern_clues: observations
+    .filter((o) => o.source_image === "derived")
+    .map((o) => o.clue)
+    .filter(Boolean),
+
+  unmatched_observations: observations
+    .filter((o) => !o.clue)
+    .map((o) => o.description),
+};
+
+console.log("[NCW LANGUAGE ALIGNMENT DEBUG]", languageAlignmentDebug);
     observations.forEach((obs) => {
       API.addObservation(caseData.id, {
         observation_type: obs.type,
