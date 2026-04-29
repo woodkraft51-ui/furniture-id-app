@@ -3254,7 +3254,9 @@ const digest = buildEvidenceDigest(observations, perception);
     ? "Phase 0 scanned photos once and stored evidence."
     : "Phase 0 used limited intake-derived evidence because extraction failed.",
   raw_error: result.ok ? null : result.error,
-  debug: {
+raw_result: result.ok ? result.raw : null,
+parsed_result: result.ok ? result.parsed : null,
+debug: {
     phase0_result_ok: result.ok,
     phase0_error: result.ok ? null : result.error,
     image_count: Array.isArray(images) ? images.length : 0,
