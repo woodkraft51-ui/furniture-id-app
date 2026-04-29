@@ -2464,6 +2464,21 @@ const materialDateGuard = (() => {
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
+     if (has("louis_xvi_revival_pattern")) {
+    return {
+      range: "c. 1880–1925",
+      confidence: "Moderate",
+      support: [
+        "Louis XVI / French neoclassical style vocabulary combined with tapered legs, parquetry veneer, stringing inlay, ormolu mounts, brass foot sabots, or cylinder-roll construction supports a Louis XVI Revival pattern. In the American market this style is treated as late-Victorian to early-20th-century revival production rather than 18th-century French manufacture.",
+        ...support,
+      ],
+      limitations: [
+        "Construction details, joinery, fasteners, secondary woods, underside evidence, and any maker labels are needed to narrow the date and to distinguish American or European revival production from later 20th-century reproductions.",
+      ],
+      upholstery_layer: upholsteryLayer,
+      date_tightening_evidence: buildDateTighteningEvidence(digest),
+    };
+  }
      if (has("william_and_mary_pattern")) {
     return {
       range: hasEarlyConstructionEvidence ? "c. 1690–1730" : "c. 1890–1930",
