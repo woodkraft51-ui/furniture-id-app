@@ -2382,14 +2382,16 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   }
    if (has("chippendale_pattern")) {
     return {
-      range: "c. 1750–1780",
-      confidence: "Moderate",
+          range: hasEarlyConstructionEvidence ? "c. 1750–1780" : "c. 1890–1940",
+    confidence: "Moderate",
       support: [
         "Cabriole legs, claw or ball-and-claw feet, and pierced splat, ribbon-back, fretwork, broken-pediment, or flame-finial details support a Chippendale pattern.",
         ...support,
       ],
       limitations: [
-        "Date is based on visible Chippendale design vocabulary; joinery, fasteners, secondary woods, underside construction, surface oxidation, and provenance would be needed to distinguish period production from later revival work.",
+        hasEarlyConstructionEvidence
+  ? "Early construction evidence supports a possible period Chippendale date; joinery, fasteners, secondary woods, underside construction, surface oxidation, and provenance would refine it further."
+  : "Chippendale styling is treated as revival-era unless early joinery, fasteners, tool marks, secondary woods, surface oxidation, or provenance confirm true period production.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
