@@ -541,9 +541,13 @@ function normalizePhase0Clue(raw: any): string | null {
 
   if (
     key === "stringing_inlay" ||
+    key === "satinwood_stringing_inlay" ||
+    key === "boxwood_stringing_inlay" ||
     key === "brass_stringing" ||
     key === "boxwood_stringing" ||
+    key === "satinwood_stringing" ||
     key === "crossbanded_borders" ||
+    key === "crossbanding" ||
     key === "banding_inlay"
   ) {
     return "stringing_inlay";
