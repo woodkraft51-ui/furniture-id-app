@@ -509,8 +509,10 @@ function normalizePhase0Clue(raw: any): string | null {
   }
  if (
     key === "cylinder_roll_top" ||
+    key === "cylinder_roll_top_desk" ||
     key === "roll_top_cylinder" ||
     key === "cylinder_rolltop" ||
+    key === "cylinder_desk" ||
     key === "barrel_roll_top" ||
     key === "bureau_a_cylindre"
   ) {
