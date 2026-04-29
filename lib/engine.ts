@@ -2650,19 +2650,26 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   }
 
   if (
-    style === "American Empire / late Classical Revival" &&
-    strongPre1920Signals >= 2 &&
-    absenceOfModern
-  ) {
-    return {
-      range: "c. 1870–1910",
-      confidence: strongPre1920Signals >= 3 ? "High" : "Moderate",
-      support,
-      limitations,
-      upholstery_layer: upholsteryLayer,
-      date_tightening_evidence: buildDateTighteningEvidence(digest),
-    };
-  }
+  style === "American Empire / late Classical Revival" &&
+  strongPre1920Signals >= 2 &&
+  absenceOfModern
+) {
+  const hasTrueEarlyEmpireConstruction = earlyHandmadeScore >= 3;
+
+  return {
+    range: hasTrueEarlyEmpireConstruction ? "c. 1830–1870" : "c. 1890–1920",
+    confidence: "Moderate",
+    support,
+    limitations: [
+      ...limitations,
+      hasTrueEarlyEmpireConstruction
+        ? "Early handmade construction evidence supports the possibility of earlier Empire or Late Classical production."
+        : "Empire or Late Classical styling is treated as revival-era unless early handmade construction, fasteners, tool marks, or joinery confirm an earlier date.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
 
   if (earlyHandmadeScore >= 3 && !transitionalFactoryScore) {
     return {
