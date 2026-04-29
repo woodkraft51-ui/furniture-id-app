@@ -573,7 +573,10 @@ function normalizePhase0Clue(raw: any): string | null {
   if (
     key === "french_louis_xvi_style" ||
     key === "louis_xvi_style" ||
-    key === "french_neoclassical"
+    key === "louis_xvi_neoclassical_style" ||
+    key === "neoclassical_louis_xvi_style" ||
+    key === "french_neoclassical" ||
+    key === "neoclassical_style_reference"
   ) {
     return "louis_xvi_french_neoclassical";
   }
