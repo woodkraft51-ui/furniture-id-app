@@ -1513,13 +1513,54 @@ function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
-  const add = (form: string, score: number, support: string) => {
-    if (!scores[form]) scores[form] = { form, score: 0, support: [] };
-    scores[form].score += score;
-    if (!scores[form].support.includes(support)) scores[form].support.push(support);
-  };
+const material = classifyPrimaryMaterial(digest);
 
-  const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
+const blocksTraditionalWoodForms =
+  material.primary === "metal" ||
+  material.primary === "plastic" ||
+  material.primary === "woven";
+
+const isBlockedTraditionalForm = (form: string) => {
+  if (!blocksTraditionalWoodForms) return false;
+
+  const f = form.toLowerCase();
+
+  return (
+    f.includes("cabinet") ||
+    f.includes("case furniture") ||
+    f.includes("sideboard") ||
+    f.includes("buffet") ||
+    f.includes("dresser") ||
+    f.includes("chest of drawers") ||
+    f.includes("bookcase") ||
+    f.includes("secretary") ||
+    f.includes("drop-front") ||
+    f.includes("slant-front") ||
+    f.includes("roll-top") ||
+    f.includes("william and mary") ||
+    f.includes("chippendale") ||
+    f.includes("federal") ||
+    f.includes("hepplewhite") ||
+    f.includes("sheraton") ||
+    f.includes("jacobean") ||
+    f.includes("tudor") ||
+    f.includes("rococo") ||
+    f.includes("gothic") ||
+    f.includes("eastlake") ||
+    f.includes("colonial revival") ||
+    f.includes("shaker")
+  );
+};
+
+const add = (form: string, score: number, support: string) => {
+  if (isBlockedTraditionalForm(form)) return;
+
+  if (!scores[form]) scores[form] = { form, score: 0, support: [] };
+  scores[form].score += score;
+  if (!scores[form].support.includes(support)) scores[form].support.push(support);
+};
+
+const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
 
   // Highest-authority maker/form labels
   if (clues.has("roos_label")) add("Roos cedar chest / hope chest", 120, "Visible Roos label directly supports the identification.");
