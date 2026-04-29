@@ -1737,7 +1737,14 @@ const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
     benchSupport.push("desk or secretary features");
   }
 
-  if (benchScore >= 65) {
+  const hasTelephoneBenchEvidence =
+  clues.has("telephone_shelf") ||
+  (
+    hasAny("seating_surface", "seating_present") &&
+    hasAny("secondary_surface")
+  );
+
+if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     const label =
       hasAny("drop_front_desk", "pigeonholes")
         ? "Telephone bench / secretary combination"
