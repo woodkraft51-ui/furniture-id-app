@@ -4,7 +4,8 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const apiKey = process.env.ANTHROPIC_API_KEY;
-
+    const ENGINE_MODE = process.env.ENGINE_MODE || "LIVE";
+    
     if (!apiKey) {
       return Response.json(
         {
