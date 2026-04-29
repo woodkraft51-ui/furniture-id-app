@@ -426,70 +426,7 @@ function normalizePhase0Clue(raw: any): string | null {
   if (saysNoPhillips) {
     return "no_phillips_screws_observed";
   }
-    if (
-    key === "cylinder_roll_top" ||
-    key === "roll_top_cylinder" ||
-    key === "cylinder_rolltop" ||
-    key === "barrel_roll_top" ||
-    key === "bureau_a_cylindre"
-  ) {
-    return "cylinder_roll";
-  }
-
-  if (
-    key === "legs" &&
-    (
-      desc.includes("tapered") ||
-      valueText.includes("tapered")
-    )
-  ) {
-    return "tapered_leg";
-  }
-
-  if (
-    key === "veneer_parquetry" ||
-    key === "parquetry_veneer" ||
-    key === "marquetry_veneer" ||
-    key === "herringbone_veneer" ||
-    key === "chevron_veneer"
-  ) {
-    return "parquetry_veneer";
-  }
-
-  if (
-    key === "stringing_inlay" ||
-    key === "brass_stringing" ||
-    key === "boxwood_stringing" ||
-    key === "crossbanded_borders" ||
-    key === "banding_inlay"
-  ) {
-    return "stringing_inlay";
-  }
-
-  if (
-    key === "ormolu_corner_mounts" ||
-    key === "ormolu_mounts" ||
-    key === "brass_ormolu_mounts" ||
-    key === "bronze_ormolu_mounts"
-  ) {
-    return "ormolu_mounts";
-  }
-
-  if (
-    key === "acanthus_foot_sabots" ||
-    key === "brass_foot_sabots" ||
-    key === "foot_sabots"
-  ) {
-    return "brass_foot_sabots";
-  }
-
-  if (
-    key === "french_louis_xvi_style" ||
-    key === "louis_xvi_style" ||
-    key === "french_neoclassical"
-  ) {
-    return "louis_xvi_french_neoclassical";
-  }
+    
   return key;
 }
   
@@ -570,7 +507,70 @@ function normalizePhase0Clue(raw: any): string | null {
   if (key === "back_panel_construction" || key === "plank_back_panels") {
     return "solid_plank_back";
   }
+ if (
+    key === "cylinder_roll_top" ||
+    key === "roll_top_cylinder" ||
+    key === "cylinder_rolltop" ||
+    key === "barrel_roll_top" ||
+    key === "bureau_a_cylindre"
+  ) {
+    return "cylinder_roll";
+  }
 
+  if (
+    key === "legs" &&
+    (
+      desc.includes("tapered") ||
+      valueText.includes("tapered")
+    )
+  ) {
+    return "tapered_leg";
+  }
+
+  if (
+    key === "veneer_parquetry" ||
+    key === "parquetry_veneer" ||
+    key === "marquetry_veneer" ||
+    key === "herringbone_veneer" ||
+    key === "chevron_veneer"
+  ) {
+    return "parquetry_veneer";
+  }
+
+  if (
+    key === "stringing_inlay" ||
+    key === "brass_stringing" ||
+    key === "boxwood_stringing" ||
+    key === "crossbanded_borders" ||
+    key === "banding_inlay"
+  ) {
+    return "stringing_inlay";
+  }
+
+  if (
+    key === "ormolu_corner_mounts" ||
+    key === "ormolu_mounts" ||
+    key === "brass_ormolu_mounts" ||
+    key === "bronze_ormolu_mounts"
+  ) {
+    return "ormolu_mounts";
+  }
+
+  if (
+    key === "acanthus_foot_sabots" ||
+    key === "brass_foot_sabots" ||
+    key === "foot_sabots"
+  ) {
+    return "brass_foot_sabots";
+  }
+
+  if (
+    key === "french_louis_xvi_style" ||
+    key === "louis_xvi_style" ||
+    key === "french_neoclassical"
+  ) {
+    return "louis_xvi_french_neoclassical";
+  }
   return key;
 }
 
