@@ -1000,6 +1000,55 @@ function tIncludes(text: string, word: string) {
 function classifyPrimaryMaterial(digest: EvidenceDigest): {
   primary: "wood" | "metal" | "woven" | "plastic" | "mixed" | "unknown";
   confidence: number;
+} {
+  const clues = new Set(digest.clue_keys || []);
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
+
+  const metalScore =
+    (has("metal_frame") ? 2 : 0) +
+    (has("tubular_steel") ? 3 : 0) +
+    (has("wrought_iron") ? 2 : 0) +
+    (has("cast_iron") ? 2 : 0) +
+    (has("brass_frame") ? 2 : 0) +
+    (has("chrome_frame") ? 3 : 0);
+
+  const wovenScore =
+    (has("woven_body") ? 3 : 0) +
+    (has("rattan_frame") ? 3 : 0) +
+    (has("cane_panels") ? 1 : 0);
+
+  const plasticScore =
+    (has("molded_plastic") ? 3 : 0) +
+    (has("acrylic_clear") ? 3 : 0);
+
+  const woodScore =
+    (has("solid_wood_construction") ? 2 : 0) +
+    (has("solid_plank_back") ? 2 : 0) +
+    (has("frame_and_panel_sides") ? 2 : 0) +
+    (has("drawer_box_joinery") ? 1 : 0);
+
+  const scores = [
+    { type: "metal", score: metalScore },
+    { type: "woven", score: wovenScore },
+    { type: "plastic", score: plasticScore },
+    { type: "wood", score: woodScore },
+  ].sort((a, b) => b.score - a.score);
+
+  const top = scores[0];
+  const second = scores[1];
+
+  if (!top || top.score === 0) {
+    return { primary: "unknown", confidence: 0 };
+  }
+
+  if (second && second.score > 0 && Math.abs(top.score - second.score) <= 1) {
+    return { primary: "mixed", confidence: 0.6 };
+  }
+
+  return {
+    primary: top.type as "wood" | "metal" | "woven" | "plastic",
+    confidence: Math.min(1, top.score / 5),
+  };
 }
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
