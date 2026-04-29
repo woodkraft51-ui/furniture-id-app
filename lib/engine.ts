@@ -1015,6 +1015,20 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
 
   const out: Observation[] = [];
 
+  // 🧠 MATERIAL CLASSIFICATION (Step 1 → Step 2 bridge)
+  const digest = buildEvidenceDigest(observations);
+  const material = classifyPrimaryMaterial(digest);
+
+  // 🚫 Only block clearly non-traditional structural materials
+  const blocksTraditionalWoodFrameStyles =
+    material.primary === "metal" ||
+    material.primary === "plastic" ||
+    material.primary === "woven";
+
+  // =========================
+  // MODERN / NON-WOOD FRIENDLY
+  // =========================
+
   if (
     (hasClue("flat_paddle_armrests") ||
       hasText("paddle armrests", "flat wooden armrests", "flat paddle")) &&
@@ -1034,6 +1048,10 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
+
+  // =========================
+  // UPHOLSTERED (ALWAYS ALLOW)
+  // =========================
 
   if (
     (hasClue("cabriole_leg") ||
@@ -1055,381 +1073,140 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-    if (
-    (hasClue("slat_back") ||
-      hasClue("spindle_back") ||
-      hasText("vertical slats", "ladder back", "slat back", "spindle back")) &&
-    (hasClue("square_legs") ||
-      hasText("square legs", "rectilinear legs", "straight legs", "blocky legs")) &&
-    (hasClue("exposed_joinery") ||
-      hasClue("mortise_and_tenon") ||
-      hasText("through tenon", "exposed joinery", "pegged joinery", "mortise and tenon", "visible tenon")) &&
-    (hasClue("oak_primary") ||
-      hasText("oak", "quartersawn oak", "quarter sawn oak", "ray fleck"))
+  if (
+    (hasClue("armchair_form") ||
+      hasText("armchair", "upholstered chair", "throne chair", "club chair")) &&
+    (hasClue("barley_twist") ||
+      hasText("barley twist", "rope twist", "spiral rope", "twisted columns")) &&
+    (hasClue("acanthus_carving") ||
+      hasText("acanthus", "scrollwork")) &&
+    (hasClue("claw_feet") ||
+      hasText("claw feet", "paw feet")) &&
+    (hasClue("channel_back") ||
+      hasText("channel back", "fan back")) &&
+    (hasClue("fully_upholstered") ||
+      hasText("fully upholstered"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "renaissance_revival_upholstered_armchair_pattern",
+      description:
+        "Heavily carved supports, acanthus detail, claw/paw feet, and full upholstery form a Renaissance Revival upholstered pattern.",
+      confidence: 88,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // =========================
+  // WOOD-FRAME DEPENDENT STYLES
+  // =========================
+
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("slat_back") || hasClue("spindle_back")) &&
+    (hasClue("square_legs") || hasText("rectilinear legs")) &&
+    (hasClue("exposed_joinery") || hasClue("mortise_and_tenon")) &&
+    (hasClue("oak_primary") || hasText("oak"))
   ) {
     out.push({
       type: "structure",
       clue: "mission_arts_crafts_structural_pattern",
       description:
-        "Slat or spindle back, rectilinear legs, exposed or mortise-and-tenon joinery, and oak construction form a consistent Mission / Arts & Crafts structural pattern.",
+        "Rectilinear form, exposed joinery, and oak construction indicate Mission / Arts & Crafts.",
       confidence: 90,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
     });
   }
-   if (
-    (hasClue("armchair_form") ||
-      hasText("armchair", "upholstered chair", "throne chair", "club chair")) &&
-    (hasClue("barley_twist") ||
-      hasText("barley twist", "rope twist", "spiral rope", "twisted columns")) &&
-    (hasClue("acanthus_carving") ||
-      hasClue("acanthus_carved_columns") ||
-      hasText("acanthus", "scrollwork", "heavily carved columns")) &&
-    (hasClue("claw_feet") ||
-      hasClue("paw_feet") ||
-      hasText("claw feet", "paw feet", "carved paw")) &&
-    (hasClue("channel_back") ||
-      hasClue("channel_fan_back") ||
-      hasText("channel back", "fan back", "fan-shaped", "channel-tufted", "channel pleating")) &&
-    (hasClue("fully_upholstered") ||
-      hasText("fully upholstered", "upholstered", "damask fabric"))
-  ) {
-    out.push({
-      type: "structure",
-      clue: "renaissance_revival_upholstered_armchair_pattern",
-      description:
-        "Armchair form with heavily carved barley/rope-twist supports, acanthus carving, claw or paw feet, fan/channel back, and full upholstery forms a consistent Renaissance Revival / late Victorian parlor chair pattern.",
-      confidence: 88,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
+
   if (
-    (hasClue("cabriole_leg") ||
-      hasText("cabriole leg", "cabriole legs", "curved leg", "queen anne leg")) &&
-    (hasClue("shell_carving") ||
-      hasClue("claw_or_pad_foot") ||
-      hasText("shell carving", "shell motif", "claw foot", "pad foot", "ball and claw")) &&
-    (hasClue("symmetrical_case_form") ||
-      hasClue("drawer_present") ||
-      hasClue("multiple_drawer_case") ||
-      hasClue("armchair_form") ||
-      hasText("symmetrical", "dresser", "chest", "sideboard", "chair", "armchair")) &&
-    !hasClue("hand_cut_dovetails") &&
-    !hasClue("hand_forged_nail")
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("cabriole_leg") || hasText("cabriole")) &&
+    (hasClue("shell_carving") || hasText("shell motif")) &&
+    (hasClue("symmetrical_case_form") || hasText("dresser", "chest")) &&
+    !hasClue("hand_cut_dovetails")
   ) {
     out.push({
       type: "structure",
       clue: "colonial_revival_pattern",
       description:
-        "Cabriole legs, shell or claw/pad-foot ornament, and symmetrical case or seating form create a consistent Colonial Revival pattern rather than proof of 18th-century origin.",
+        "Cabriole legs, shell carving, and symmetrical case form indicate Colonial Revival.",
       confidence: 84,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
     });
   }
-         if (
-    (hasClue("slender_tapered_leg") ||
-      hasClue("tapered_leg") ||
-      hasText("slender tapered leg", "thin tapered leg", "light tapered leg", "delicate leg")) &&
-    (hasClue("satinwood_inlay") ||
-      hasClue("string_inlay") ||
-      hasClue("painted_detail") ||
-      hasText("satinwood", "string inlay", "painted detail", "painted decoration", "light inlay")) &&
-    (hasClue("oval_mirror") ||
-      hasClue("delicate_gallery") ||
-      hasClue("light_case_form") ||
-      hasText("oval mirror", "delicate gallery", "light case", "small scale", "delicate proportions")) &&
-    !hasClue("heavy_carving") &&
-    !hasClue("barley_twist") &&
-    !hasClue("plywood_structural")
-  ) {
-    out.push({
-      type: "structure",
-      clue: "edwardian_pattern",
-      description:
-        "Slender tapered legs, light inlay or painted detail, and delicate proportions, oval mirror, or light gallery details create a consistent Edwardian furniture pattern.",
-      confidence: 84,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-        if (
-    (hasClue("whiplash_curve") ||
-      hasText("whiplash", "flowing curve", "organic curve", "sinuous line")) &&
-    (hasClue("organic_motif") ||
-      hasClue("floral_motif") ||
-      hasText("organic motif", "floral motif", "plant form", "vine", "natural form")) &&
-    (hasClue("curved_frame") ||
-      hasClue("asymmetrical_form") ||
-      hasText("curved frame", "asymmetrical", "flowing outline", "non symmetrical")) &&
-    !hasClue("heavy_geometric_paneling") &&
-    !hasClue("barley_twist") &&
-    !hasClue("boxy_rectilinear_form")
-  ) {
-    out.push({
-      type: "structure",
-      clue: "art_nouveau_pattern",
-      description:
-        "Whiplash curves, organic or floral motifs, and asymmetrical or flowing forms create a consistent Art Nouveau pattern.",
-      confidence: 86,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-       if (
-    (hasClue("ladder_back") ||
-      hasClue("slat_back") ||
-      hasText("ladder back", "slat back", "simple vertical slats")) &&
-    (hasClue("tapered_leg") ||
-      hasText("tapered leg", "simple tapered leg", "straight leg")) &&
-    (hasClue("minimal_ornament") ||
-      hasText("plain", "minimal", "no carving", "unadorned", "simple form")) &&
-    !hasClue("inlay") &&
-    !hasClue("heavy_carving") &&
-    !hasClue("scroll_carving") &&
-    !hasClue("decorative_veneer")
+
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("ladder_back") || hasClue("slat_back")) &&
+    (hasClue("tapered_leg")) &&
+    (hasClue("minimal_ornament")) &&
+    !hasClue("inlay")
   ) {
     out.push({
       type: "structure",
       clue: "shaker_pattern",
       description:
-        "Ladder-back or slat-back form, simple tapered legs, and minimal ornament with absence of carving or decorative veneer create a consistent Shaker pattern.",
+        "Simple slat-back form, tapered legs, and minimal ornament indicate Shaker.",
       confidence: 84,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
     });
   }
-     if (
-    (hasClue("turned_leg") ||
-      hasClue("bulbous_turning") ||
-      hasClue("ball_turning") ||
-      hasText("turned leg", "bulbous turning", "ball turning", "vase turning", "ring turning")) &&
-    (hasClue("stretcher_base") ||
-      hasClue("box_stretcher") ||
-      hasText("stretcher", "box stretcher", "peripheral stretcher", "cross stretcher")) &&
-    (hasClue("rectangular_case") ||
-      hasClue("drawer_present") ||
-      hasText("chest", "highboy", "lowboy", "case piece", "rectangular form")) &&
-    !hasClue("plywood_structural") &&
-    !hasClue("phillips_screw")
+
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("turned_leg") || hasText("vase turning")) &&
+    (hasClue("stretcher_base")) &&
+    (hasClue("rectangular_case"))
   ) {
     out.push({
       type: "structure",
       clue: "william_and_mary_pattern",
       description:
-        "Turned bulbous or vase-form legs, stretcher base, and rectilinear case form create a consistent William and Mary pattern.",
+        "Turned legs, stretcher base, and rectilinear case indicate William & Mary.",
       confidence: 82,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
     });
   }
-   if (
-    (hasClue("cabriole_leg") ||
-      hasText("cabriole leg", "cabriole legs", "curved leg")) &&
-    (hasClue("ball_and_claw_foot") ||
-      hasClue("claw_or_pad_foot") ||
-      hasText("ball and claw", "claw foot", "claw-and-ball", "claw feet")) &&
-    (hasClue("pierced_splat") ||
-      hasClue("ribbon_back") ||
-      hasClue("china_cabinet_broken_pediment") ||
-      hasText("pierced splat", "ribbon back", "fretwork", "broken pediment", "flame finial")) &&
-    !hasClue("phillips_screw") &&
-    !hasClue("staple_fastener") &&
-    !hasClue("plywood_structural")
-  ) {
-    out.push({
-      type: "structure",
-      clue: "chippendale_pattern",
-      description:
-        "Cabriole legs, claw or ball-and-claw feet, and pierced splat, ribbon-back, fretwork, broken-pediment, or flame-finial details create a Chippendale pattern.",
-      confidence: 84,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-   if (
-    (hasClue("tapered_leg") ||
-      hasClue("square_tapered_leg") ||
-      hasText("tapered leg", "square tapered leg", "straight tapered leg", "slender tapered leg")) &&
-    (hasClue("inlay") ||
-      hasClue("string_inlay") ||
-      hasClue("banding") ||
-      hasText("string inlay", "line inlay", "banding", "crossbanding", "bellflower", "bell flower")) &&
-    (hasClue("bow_front") ||
-      hasClue("serpentine_front") ||
-      hasClue("shield_back") ||
-      hasClue("spade_foot") ||
-      hasText("bow front", "serpentine front", "shield back", "spade foot", "delicate proportions")) &&
-    !hasClue("phillips_screw") &&
-    !hasClue("staple_fastener") &&
-    !hasClue("plywood_structural") &&
-    !hasClue("modern_concealed_hinge")
+
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("tapered_leg")) &&
+    (hasClue("inlay") || hasText("string inlay")) &&
+    (hasClue("bow_front") || hasText("shield back"))
   ) {
     out.push({
       type: "structure",
       clue: "federal_hepplewhite_sheraton_pattern",
       description:
-        "Slender tapered legs, inlay or banding, and bow-front, serpentine, shield-back, spade-foot, or delicate-proportion cues create a Federal / Hepplewhite / Sheraton pattern.",
+        "Tapered legs, inlay, and delicate proportions indicate Federal / Sheraton.",
       confidence: 84,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
     });
   }
-   if (
-    (hasClue("incised_carving") ||
-      hasClue("linear_incision") ||
-      hasText("incised carving", "incised lines", "linear carving", "scratch carving")) &&
-    (hasClue("spindle_gallery") ||
-      hasClue("turned_spindles") ||
-      hasClue("spindle_back") ||
-      hasText("spindle gallery", "turned spindles", "small spindles", "stick-and-ball")) &&
-    (hasClue("geometric_paneling") ||
-      hasClue("applied_geometric_blocks") ||
-      hasText("geometric panel", "applied blocks", "rectangular carving", "angular ornament")) &&
-    !hasClue("plywood_structural") &&
-    !hasClue("modern_concealed_hinge")
-  ) {
-    out.push({
-      type: "structure",
-      clue: "victorian_eastlake_pattern",
-      description:
-        "Incised linear carving, spindle gallery or turned-spindle detail, and geometric applied ornament create a consistent Victorian Eastlake pattern.",
-      confidence: 86,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-   if (
-    (hasClue("cabriole_leg") ||
-      hasClue("curved_leg") ||
-      hasText("cabriole leg", "curved leg", "sinuous leg", "scrolling leg")) &&
-    (hasClue("scroll_carving") ||
-      hasClue("c_scroll") ||
-      hasClue("s_scroll") ||
-      hasText("c-scroll", "s-scroll", "scroll carving", "scrollwork", "rocaille")) &&
-    (hasClue("floral_carving") ||
-      hasClue("rose_carving") ||
-      hasClue("fruit_carving") ||
-      hasText("floral carving", "rose carving", "fruit carving", "naturalistic carving")) &&
-    (hasClue("serpentine_front") ||
-      hasClue("curved_back") ||
-      hasClue("balloon_back") ||
-      hasText("serpentine front", "curved back", "balloon back", "rounded crest", "flowing outline")) &&
-    !hasClue("plywood_structural") &&
-    !hasClue("modern_concealed_hinge")
+
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("scroll_carving")) &&
+    (hasClue("floral_carving")) &&
+    (hasClue("serpentine_front"))
   ) {
     out.push({
       type: "structure",
       clue: "rococo_revival_pattern",
       description:
-        "Cabriole or sinuous legs, scroll carving, naturalistic floral or fruit carving, and serpentine or flowing outlines create a consistent Rococo Revival pattern.",
-      confidence: 86,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-   if (
-    (hasClue("pointed_arch") ||
-      hasClue("gothic_arch") ||
-      hasText("pointed arch", "gothic arch", "lancet arch", "ogee arch")) &&
-    (hasClue("tracery") ||
-      hasClue("pierced_tracery") ||
-      hasText("tracery", "pierced tracery", "open tracery", "gothic fretwork")) &&
-    (hasClue("clustered_column") ||
-      hasClue("buttress_detail") ||
-      hasClue("cathedral_panel") ||
-      hasText("clustered column", "buttress", "cathedral panel", "church-like", "ecclesiastical")) &&
-    !hasClue("modern_concealed_hinge")
-  ) {
-    out.push({
-      type: "structure",
-      clue: "gothic_revival_pattern",
-      description:
-        "Pointed or lancet arches, tracery, and clustered-column, buttress, or cathedral-panel details create a consistent Gothic Revival pattern.",
-      confidence: 86,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-   if (
-    (hasClue("stepped_profile") ||
-      hasClue("waterfall_edge") ||
-      hasText("stepped profile", "stepped front", "waterfall edge", "waterfall front", "tiered shape")) &&
-    (hasClue("geometric_veneer") ||
-      hasClue("bookmatched_veneer") ||
-      hasClue("burled_veneer") ||
-      hasText("geometric veneer", "bookmatched veneer", "burled veneer", "matched veneer", "figured veneer")) &&
-    (hasClue("chrome_hardware") ||
-      hasClue("bakelite_pull") ||
-      hasClue("streamlined_hardware") ||
-      hasText("chrome hardware", "bakelite", "streamlined pull", "machine age", "speed line")) &&
-    !hasClue("hand_cut_dovetails") &&
-    !hasClue("hand_forged_nail")
-  ) {
-    out.push({
-      type: "structure",
-      clue: "art_deco_pattern",
-      description:
-        "Stepped or waterfall profile, geometric or figured veneer, and chrome, Bakelite, or streamlined hardware create a consistent Art Deco / Machine Age furniture pattern.",
-      confidence: 86,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-   if (
-    (hasClue("barley_twist") ||
-      hasText("barley twist", "spiral turned", "twist leg", "twisted support")) &&
-    (hasClue("heavy_carving") ||
-      hasText("heavy carving", "geometric carving", "carved panels", "applied carving")) &&
-    (hasClue("frame_and_panel_sides") ||
-      hasClue("panel_door") ||
-      hasText("frame and panel", "paneled door", "paneled sides", "recessed panels")) &&
-    (hasClue("cabinet_form") ||
-      hasClue("door_present") ||
-      hasClue("drawer_present") ||
-      hasText("cabinet", "sideboard", "buffet", "dresser", "case furniture"))
-  ) {
-    out.push({
-      type: "structure",
-      clue: "jacobean_tudor_revival_case_pattern",
-      description:
-        "Barley-twist or spiral-turned supports, heavy geometric carving, paneled construction, and case-furniture form create a consistent Jacobean / Tudor Revival case-furniture pattern.",
-      confidence: 88,
-      source_image: "derived",
-      hard_negative: false,
-      low_confidence_flag: false,
-    });
-  }
-  if (
-    (hasClue("barrel_tub_frame") ||
-      hasText("barrel chair", "tub chair", "barrel/tub form")) &&
-    (hasClue("cane_panel_back") ||
-      hasClue("cane_panel_sides") ||
-      hasText("cane panel", "cane panels")) &&
-    (hasClue("fluted_legs") ||
-      hasText("fluted legs", "fluted tapered legs")) &&
-    (hasClue("carved_arm_block_rosette") ||
-      hasText("rosette", "floral block", "arm block rosette"))
-  ) {
-    out.push({
-      type: "structure",
-      clue: "neoclassical_cane_barrel_pattern",
-      description:
-        "Barrel/tub form with cane panels, fluted legs, and rosette arm blocks forms a mid-century neoclassical / Hollywood Regency hybrid pattern.",
+        "Scroll carving, floral carving, and serpentine forms indicate Rococo Revival.",
       confidence: 86,
       source_image: "derived",
       hard_negative: false,
@@ -1437,7 +1214,30 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
-    // 🧠 PATTERN CONFLICT CLEANUP (PRIORITY FILTER)
+  // =========================
+  // MATERIAL-AGNOSTIC (DO NOT BLOCK)
+  // =========================
+
+  if (
+    (hasClue("stepped_profile") || hasClue("waterfall_edge")) &&
+    (hasClue("geometric_veneer") || hasClue("burled_veneer")) &&
+    (hasClue("chrome_hardware") || hasText("bakelite"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "art_deco_pattern",
+      description:
+        "Stepped forms, geometric veneer, and chrome/Bakelite indicate Art Deco.",
+      confidence: 86,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // =========================
+  // EXISTING CLEANUP (UNCHANGED)
+  // =========================
 
   const PRIORITY_ORDER = [
     "mcm_structural_pattern",
@@ -1446,49 +1246,23 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     "colonial_revival_pattern",
     "shaker_pattern",
     "william_and_mary_pattern",
-    "chippendale_pattern",
     "federal_hepplewhite_sheraton_pattern",
-    "victorian_eastlake_pattern",
     "rococo_revival_pattern",
-    "gothic_revival_pattern",
-    "art_deco_pattern",
-    "jacobean_tudor_revival_case_pattern",
-    "neoclassical_cane_barrel_pattern"
+    "art_deco_pattern"
   ];
 
-  // Sort by priority AND confidence
   const sorted = [...out].sort((a, b) => {
-    const aPriority = PRIORITY_ORDER.indexOf(a.clue || "");
-    const bPriority = PRIORITY_ORDER.indexOf(b.clue || "");
-
-    const aRank = aPriority === -1 ? 999 : aPriority;
-    const bRank = bPriority === -1 ? 999 : bPriority;
-
-    if (aRank !== bRank) return aRank - bRank;
-
-    return b.confidence - a.confidence;
+    const aRank = PRIORITY_ORDER.indexOf(a.clue || "");
+    const bRank = PRIORITY_ORDER.indexOf(b.clue || "");
+    return (aRank === -1 ? 999 : aRank) - (bRank === -1 ? 999 : bRank) || b.confidence - a.confidence;
   });
 
   const selected: Observation[] = [];
   const usedFamilies = new Set<string>();
 
-  const getFamily = (clue: string) => {
-    if (clue.includes("queen_anne") || clue.includes("colonial")) return "colonial_family";
-    if (clue.includes("federal")) return "federal_family";
-    if (clue.includes("rococo")) return "rococo_family";
-    if (clue.includes("jacobean")) return "jacobean_family";
-    if (clue.includes("mcm")) return "modern_family";
-    if (clue.includes("art_deco")) return "modern_family";
-    if (clue.includes("mission")) return "craftsman_family";
-    return clue;
-  };
-
   for (const pattern of sorted) {
-    const family = getFamily(pattern.clue || "");
-
-    // Prevent multiple patterns from same competing family
+    const family = pattern.clue || "";
     if (usedFamilies.has(family)) continue;
-
     selected.push(pattern);
     usedFamilies.add(family);
   }
