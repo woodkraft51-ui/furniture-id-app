@@ -3383,6 +3383,7 @@ debug: {
     phase0_error: result.ok ? null : result.error,
     image_count: Array.isArray(images) ? images.length : 0,
     image_types: (images || []).map((img: any) => img?.image_type || "unknown"),
+    language_alignment: languageAlignmentDebug,
   },
 };
     onPhase?.("p0", res);
