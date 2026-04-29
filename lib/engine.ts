@@ -528,7 +528,14 @@ function normalizePhase0Clue(raw: any): string | null {
   ) {
     return "tapered_leg";
   }
-
+  if (
+    key === "tapered_square_legs" ||
+    key === "tapered_round_legs" ||
+    key === "square_tapered_legs" ||
+    key === "round_tapered_legs"
+  ) {
+    return "tapered_leg";
+  }
   if (
     key === "veneer_parquetry" ||
     key === "parquetry_veneer" ||
