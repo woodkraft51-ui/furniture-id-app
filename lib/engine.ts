@@ -2350,14 +2350,16 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   }
      if (has("william_and_mary_pattern")) {
     return {
-      range: "c. 1690–1730",
-      confidence: "Moderate",
+      range: hasEarlyConstructionEvidence ? "c. 1690–1730" : "c. 1890–1930",
+    confidence: "Moderate",
       support: [
         "Turned bulbous or vase-form legs, stretcher base, and rectilinear case form support a William and Mary pattern.",
         ...support,
       ],
       limitations: [
-        "Date is based on visible structural patterning; joinery, fasteners, secondary woods, surface oxidation, underside construction, and provenance would be needed to distinguish period production from later revival work.",
+        hasEarlyConstructionEvidence
+  ? "Early construction evidence supports a possible period William and Mary date; joinery, fasteners, secondary woods, surface oxidation, underside construction, and provenance would refine it further."
+  : "William and Mary styling is treated as revival-era unless early joinery, fasteners, tool marks, secondary woods, surface oxidation, or provenance confirm true period production.",
       ],
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
