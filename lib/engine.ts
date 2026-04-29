@@ -1466,6 +1466,7 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     "queen_anne_revival_pattern",
     "colonial_georgian_revival_upholstered_armchair_pattern",
     "mission_arts_crafts_structural_pattern",
+    "louis_xvi_revival_pattern",
     "colonial_revival_pattern",
     "shaker_pattern",
     "william_and_mary_pattern",
