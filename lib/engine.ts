@@ -124,6 +124,7 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   plywood_structural: { category: "materials", hardNegative: true, dateHint: "post-1920", weight: 0.9 },
   plywood_drawer_bottom: { category: "materials", hardNegative: true, dateHint: "post-1920", weight: 0.88 },
   sheet_back_panel: { category: "materials", dateHint: "post-1900", weight: 0.72 },
+ 
   modern_concealed_hinge: { category: "hardware", hardNegative: true, dateHint: "post-1950", weight: 0.92 },
 
   porcelain_caster: { category: "hardware", dateHint: "1830–1900", weight: 0.65 },
@@ -136,7 +137,36 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   dateHint: "uncertain panel construction; does not confirm modern manufacture",
   weight: 0.25,
   },
- 
+    parquetry_veneer: {
+    category: "materials",
+    dateHint: "parquetry or marquetry veneer supports formal revival, French-style, or high-style cabinetmaking; dating depends on construction",
+    weight: 0.72,
+  },
+  stringing_inlay: {
+    category: "materials",
+    dateHint: "stringing and banding support neoclassical, Federal/Sheraton, Louis XVI, or revival cabinetmaking",
+    weight: 0.68,
+  },
+  ormolu_mounts: {
+    category: "hardware",
+    dateHint: "ormolu or gilt-bronze style mounts support French neoclassical or Louis XVI revival context",
+    weight: 0.62,
+  },
+  brass_foot_sabots: {
+    category: "hardware",
+    dateHint: "brass foot sabots support French neoclassical, Louis XVI, or later revival furniture",
+    weight: 0.6,
+  },
+  louis_xvi_french_neoclassical: {
+    category: "style",
+    dateHint: "French Louis XVI / neoclassical style; style supports context but does not independently date construction",
+    weight: 0.58,
+  },
+  tapered_leg: {
+    category: "structure",
+    dateHint: "tapered legs are common in Federal, Sheraton, Louis XVI, neoclassical, and revival furniture",
+    weight: 0.64,
+  },
   metal_frame: {
     category: "materials",
     dateHint: "metal furniture construction; date depends on form, joints, plating, and fasteners",
@@ -370,6 +400,20 @@ function normalizePhase0Clue(raw: any): string | null {
   const desc = descriptionFromObservation(raw).toLowerCase();
 
   if (!key) return null;
+    if (key === "maker_label") {
+    const saysNoMaker =
+      valueText === "false" ||
+      desc.includes("no visible maker") ||
+      desc.includes("no maker") ||
+      desc.includes("no label") ||
+      desc.includes("no stamp") ||
+      desc.includes("no mark detected") ||
+      desc.includes("maker's label") && desc.includes("no visible");
+
+    if (saysNoMaker) return null;
+
+    return key;
+  }
 
   if (key === "phillips_screw") {
   const saysNoPhillips =
@@ -382,7 +426,70 @@ function normalizePhase0Clue(raw: any): string | null {
   if (saysNoPhillips) {
     return "no_phillips_screws_observed";
   }
+    if (
+    key === "cylinder_roll_top" ||
+    key === "roll_top_cylinder" ||
+    key === "cylinder_rolltop" ||
+    key === "barrel_roll_top" ||
+    key === "bureau_a_cylindre"
+  ) {
+    return "cylinder_roll";
+  }
 
+  if (
+    key === "legs" &&
+    (
+      desc.includes("tapered") ||
+      valueText.includes("tapered")
+    )
+  ) {
+    return "tapered_leg";
+  }
+
+  if (
+    key === "veneer_parquetry" ||
+    key === "parquetry_veneer" ||
+    key === "marquetry_veneer" ||
+    key === "herringbone_veneer" ||
+    key === "chevron_veneer"
+  ) {
+    return "parquetry_veneer";
+  }
+
+  if (
+    key === "stringing_inlay" ||
+    key === "brass_stringing" ||
+    key === "boxwood_stringing" ||
+    key === "crossbanded_borders" ||
+    key === "banding_inlay"
+  ) {
+    return "stringing_inlay";
+  }
+
+  if (
+    key === "ormolu_corner_mounts" ||
+    key === "ormolu_mounts" ||
+    key === "brass_ormolu_mounts" ||
+    key === "bronze_ormolu_mounts"
+  ) {
+    return "ormolu_mounts";
+  }
+
+  if (
+    key === "acanthus_foot_sabots" ||
+    key === "brass_foot_sabots" ||
+    key === "foot_sabots"
+  ) {
+    return "brass_foot_sabots";
+  }
+
+  if (
+    key === "french_louis_xvi_style" ||
+    key === "louis_xvi_style" ||
+    key === "french_neoclassical"
+  ) {
+    return "louis_xvi_french_neoclassical";
+  }
   return key;
 }
   
@@ -875,26 +982,30 @@ function promotePerceptionObservations(
     add("spindle_gallery", "Spindle gallery or rail detail is visible.", 70);
   }
 
-  if (
-    includesAny(text, [
-      "secondary surface",
-      "side surface",
-      "raised surface",
-      "raised platform",
-      "small table surface",
-      "writing surface",
-      "work surface",
-    ]) &&
-    !isNegated("secondary surface") &&
-    !isNegated("side surface") &&
-    !isNegated("raised surface") &&
-    !isNegated("raised platform") &&
-    !isNegated("table surface") &&
-    !isNegated("writing surface") &&
-    !isNegated("work surface")
-  ) {
-    add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
-  }
+  const hasSeatingContext =
+  includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+  !isNegated("seat") &&
+  !isNegated("seating") &&
+  !isNegated("bench") &&
+  !isNegated("sitting surface");
+
+if (
+  hasSeatingContext &&
+  includesAny(text, [
+    "secondary surface",
+    "side surface",
+    "raised surface",
+    "raised platform",
+    "small table surface",
+  ]) &&
+  !isNegated("secondary surface") &&
+  !isNegated("side surface") &&
+  !isNegated("raised surface") &&
+  !isNegated("raised platform") &&
+  !isNegated("table surface")
+) {
+  add("secondary_surface", "A secondary raised surface is visible beside the seating area.", 86);
+}
 
   if (
     includesAny(text, ["writing", "writing surface", "desk surface", "work surface"]) &&
@@ -1645,7 +1756,15 @@ const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
   if (clues.has("drop_front_desk")) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
   if (clues.has("pigeonholes")) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
   if (clues.has("slant_front")) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
-  if (clues.has("cylinder_roll")) add("Roll-top desk", 105, "Roll-top or tambour mechanism is visible.");
+    if (clues.has("cylinder_roll")) {
+    add(
+      hasAny("parquetry_veneer", "ormolu_mounts", "brass_foot_sabots", "louis_xvi_french_neoclassical")
+        ? "French Louis XVI style bureau à cylindre / cylinder desk"
+        : "Cylinder roll-top desk",
+      125,
+      "Cylinder roll-top closure, writing surface, interior compartments, and kneehole desk configuration support a cylinder desk reading."
+    );
+  }
 
   // Table forms
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
@@ -3318,6 +3437,7 @@ const makerMarkMatches = matchMakerMarks(perception.raw_text || "");
 observations = dedupeObservations([...observations, ...makerMarkMatches]);
 
 const digest = buildEvidenceDigest(observations, perception);
+
 const languageAlignmentDebug = {
   raw_phase0_observations: Array.isArray(parsedForEvidence?.observations)
     ? parsedForEvidence.observations.map((o: any) => ({
