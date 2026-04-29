@@ -2469,7 +2469,26 @@ const materialDateGuard = (() => {
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
-
+    if (
+  has("fluted_legs") &&
+  has("reeded_arm_stiles") &&
+  has("upholstered_seat_and_back") &&
+  has("curved_arm_supports")
+) {
+  return {
+    range: "c. 1940–1970",
+    confidence: "Moderate",
+    support: [
+      "Fluted legs, reeded arm supports, and fully upholstered seat and back support a mid-20th-century formal dining or parlor armchair pattern.",
+      ...support,
+    ],
+    limitations: [
+      "Styling references earlier Georgian or Chippendale design, but construction and upholstery indicate later production; joinery and underside construction would refine the date further.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
     if (has("mission_arts_crafts_structural_pattern")) {
     return {
       range: "c. 1900–1925",
