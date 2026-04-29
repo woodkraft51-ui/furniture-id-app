@@ -2072,7 +2072,47 @@ function dateFromEvidence(digest: EvidenceDigest, form: string) {
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
   const style = deriveStyleContext(digest);
+  const material = classifyPrimaryMaterial(digest);
 
+const materialDateGuard = (() => {
+  if (material.primary === "plastic") {
+    return {
+      range: "post-1945",
+      confidence: "Moderate" as const,
+      note:
+        "Plastic or acrylic furniture material prevents an early antique date unless there is separate evidence of later replacement parts on an older frame.",
+    };
+  }
+
+  if (has("acrylic_clear", "molded_plastic")) {
+    return {
+      range: "post-1945",
+      confidence: "Moderate" as const,
+      note:
+        "Molded plastic, acrylic, or Lucite-style material supports postwar modern or later production.",
+    };
+  }
+
+  if (has("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
+    return {
+      range: "c. 1925–1975",
+      confidence: "Moderate" as const,
+      note:
+        "Tubular steel, chrome, or chrome-and-laminate construction supports Machine Age, modernist, mid-century, or later production rather than early wood-frame dating.",
+    };
+  }
+
+  if (material.primary === "woven" || has("woven_body", "rattan_frame")) {
+    return {
+      range: "broadly late 19th to 20th century",
+      confidence: "Low" as const,
+      note:
+        "Wicker, reed, or rattan construction requires form, joinery, wrapping method, finish, and hardware evidence for tighter dating.",
+    };
+  }
+
+  return null;
+})();
   const hasStyleEvidence = has(
     "neoclassical_louis_xvi_style",
     "queen_anne_georgian_revival",
