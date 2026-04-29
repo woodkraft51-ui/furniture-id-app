@@ -3246,13 +3246,21 @@ const digest = buildEvidenceDigest(observations, perception);
     });
 
     const res = {
-      ok: true,
-      observations,
-      perception,
-      evidence_digest: digest,
-      note: result.ok ? "Phase 0 scanned photos once and stored evidence." : "Phase 0 used limited intake-derived evidence because extraction failed.",
-      raw_error: result.ok ? null : result.error,
-    };
+  ok: true,
+  observations,
+  perception,
+  evidence_digest: digest,
+  note: result.ok
+    ? "Phase 0 scanned photos once and stored evidence."
+    : "Phase 0 used limited intake-derived evidence because extraction failed.",
+  raw_error: result.ok ? null : result.error,
+  debug: {
+    phase0_result_ok: result.ok,
+    phase0_error: result.ok ? null : result.error,
+    image_count: Array.isArray(images) ? images.length : 0,
+    image_types: (images || []).map((img: any) => img?.image_type || "unknown"),
+  },
+};
     onPhase?.("p0", res);
     return res;
   },
