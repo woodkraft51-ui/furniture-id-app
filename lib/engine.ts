@@ -2564,20 +2564,24 @@ const materialDateGuard = (() => {
 
   if (
   style === "American Empire / late Classical Revival" &&
-  strongPre1920Signals >= 2 &&
+  has("american_empire_style") &&
+  has("multiple_drawer_case") &&
+  has("solid_wood_side_panels", "solid_plank_back", "side_panel_frame_and_panel") &&
   absenceOfModern
 ) {
-  const hasTrueEarlyEmpireConstruction = earlyHandmadeScore >= 3;
+  const hasTighteningEvidence =
+    has("drawer_joinery_visible") ||
+    has("wooden_knob_pulls") ||
+    has("keyhole_escutcheons") ||
+    earlyHandmadeScore >= 2;
 
   return {
-    range: hasTrueEarlyEmpireConstruction ? "c. 1830–1870" : "c. 1890–1920",
-    confidence: "Moderate",
+    range: "c. 1830–1870",
+    confidence: hasTighteningEvidence ? "Moderate" : "Low",
     support,
     limitations: [
       ...limitations,
-      hasTrueEarlyEmpireConstruction
-        ? "Early handmade construction evidence supports the possibility of earlier Empire or Late Classical production."
-        : "Empire or Late Classical styling is treated as revival-era unless early handmade construction, fasteners, tool marks, or joinery confirm an earlier date.",
+      "American Empire / late Classical styling is supported by the scrolled feet and case form, while solid side panels, plank back, and frame-and-panel construction support a 19th-century working range. A tighter date still requires clear dovetail, nail, underside, or fastener evidence.",
     ],
     upholstery_layer: upholsteryLayer,
     date_tightening_evidence: buildDateTighteningEvidence(digest),
