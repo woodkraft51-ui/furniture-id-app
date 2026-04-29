@@ -1309,7 +1309,22 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   // =========================
   // WOOD-FRAME DEPENDENT STYLES
   // =========================
-
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("louis_xvi_french_neoclassical") || hasText("louis xvi", "louis 16", "french neoclassical")) &&
+    (hasClue("tapered_leg") || hasClue("cylinder_roll") || hasClue("parquetry_veneer") || hasClue("stringing_inlay") || hasClue("ormolu_mounts") || hasClue("brass_foot_sabots"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "louis_xvi_revival_pattern",
+      description:
+        "Louis XVI / French neoclassical style vocabulary combined with tapered legs, parquetry veneer, stringing inlay, ormolu mounts, brass foot sabots, or cylinder-roll construction supports a Louis XVI Revival pattern. In the American market this is treated as revival-era production rather than 18th-century French manufacture.",
+      confidence: 84,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
   if (
     !blocksTraditionalWoodFrameStyles &&
     (hasClue("slat_back") || hasClue("spindle_back")) &&
