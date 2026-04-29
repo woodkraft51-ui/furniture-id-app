@@ -1147,7 +1147,23 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       low_confidence_flag: false,
     });
   }
-
+  if (
+  (hasClue("armchair_form") || hasText("armchair", "upholstered chair")) &&
+  (hasClue("fluted_legs") || hasText("fluted legs", "reeded legs")) &&
+  (hasClue("arm_supports") || hasText("reeded arm", "curved arm support", "arm supports")) &&
+  (hasClue("upholstery_fabric") || hasClue("fully_upholstered") || hasText("upholstered seat", "upholstered back", "damask"))
+) {
+  out.push({
+    type: "structure",
+    clue: "colonial_georgian_revival_upholstered_armchair_pattern",
+    description:
+      "Fluted or reeded legs, exposed curved arm supports, and full upholstery form a Colonial / Georgian Revival upholstered armchair pattern.",
+    confidence: 86,
+    source_image: "derived",
+    hard_negative: false,
+    low_confidence_flag: false,
+  });
+}
   // =========================
   // WOOD-FRAME DEPENDENT STYLES
   // =========================
@@ -1291,6 +1307,7 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const PRIORITY_ORDER = [
     "mcm_structural_pattern",
     "queen_anne_revival_pattern",
+    "colonial_georgian_revival_upholstered_armchair_pattern",
     "mission_arts_crafts_structural_pattern",
     "colonial_revival_pattern",
     "shaker_pattern",
@@ -1703,6 +1720,13 @@ if (
     "Mid-century modern spindle-back lounge chair",
     105,
     "Combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern chair reading."
+  );
+}
+  if (clues.has("colonial_georgian_revival_upholstered_armchair_pattern")) {
+  add(
+    "Colonial / Georgian Revival upholstered armchair",
+    112,
+    "Fluted or reeded legs, exposed curved arm supports, and full upholstery support a Colonial / Georgian Revival upholstered armchair reading."
   );
 }
   if (clues.has("armchair_form")) {
@@ -2484,6 +2508,21 @@ const materialDateGuard = (() => {
     ],
     limitations: [
       "Styling references earlier Georgian or Chippendale design, but construction and upholstery indicate later production; joinery and underside construction would refine the date further.",
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
+    if (has("colonial_georgian_revival_upholstered_armchair_pattern")) {
+  return {
+    range: "c. 1940–1970",
+    confidence: "Moderate",
+    support: [
+      "Fluted or reeded legs, exposed curved arm supports, and full upholstery support a mid-20th-century Colonial / Georgian Revival upholstered armchair pattern.",
+      ...support,
+    ],
+    limitations: [
+      "The styling references earlier Georgian or Chippendale design vocabulary, but the visible upholstered form and revival construction support later production. Underside construction, joinery, fasteners, and upholstery system would refine the date further.",
     ],
     upholstery_layer: upholsteryLayer,
     date_tightening_evidence: buildDateTighteningEvidence(digest),
