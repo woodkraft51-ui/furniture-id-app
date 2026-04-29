@@ -2223,7 +2223,19 @@ const materialDateGuard = (() => {
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
   }
-
+  if (materialDateGuard && !hasMakerDateAnchor) {
+  return {
+    range: materialDateGuard.range,
+    confidence: materialDateGuard.confidence,
+    support,
+    limitations: [
+      ...limitations,
+      materialDateGuard.note,
+    ],
+    upholstery_layer: upholsteryLayer,
+    date_tightening_evidence: buildDateTighteningEvidence(digest),
+  };
+}
   // Pattern-based dating
    if (has("renaissance_revival_upholstered_armchair_pattern")) {
     return {
