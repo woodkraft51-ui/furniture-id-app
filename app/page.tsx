@@ -688,7 +688,12 @@ const p7 = stageOutputs.p7 || null;
                           <div>
                             <div style={{ fontWeight: 700, color: "#3d2d1f" }}>{slot.label} {slot.required ? "*" : ""}</div>
                             <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>{slot.desc}</div>
-                            {current?.name && <div style={{ marginTop: 8, fontSize: 12, color: "#46603e" }}>Loaded: {current.name}</div>}
+                            {current && (
+                              <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600, color: "#5d4932" }}>
+                                <span style={{ color: "#46603e", marginRight: 6 }}>✓</span>
+                                Loaded: {current.name || "photo on file"}
+                              </div>
+                            )}
                           </div>
                           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                             <label style={uploadBrownButtonSmall}>Upload Photo<input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleCoreUpload(slot.key, e.target.files)} /></label>
