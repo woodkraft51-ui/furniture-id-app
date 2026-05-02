@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Proof Sleuth — Where Evidence Tells the Story",
-description: "Evidence-based American furniture identification and evaluation with field scan and full analysis modes.",
+  title: "Proof Sleuth — Antique Furniture ID & Dating",
+description: "\"Should I buy it?\" Evidence-based identification, dating, and valuation for American antique furniture. Field Scan for buyers, Full Analysis for depth.",
 };
 
 export default function RootLayout({
