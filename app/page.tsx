@@ -514,17 +514,8 @@ const p7 = stageOutputs.p7 || null;
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         <header style={{ marginBottom: 24 }}>
-          <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-            <img
-  src="/proof-sleuth-logo.png"
-  alt="Proof Sleuth"
-  style={{ height: 80, width: "auto", display: "block" }}
-/>
-          </div>
-
           {analysisMode === "field_scan" ? (
             <>
-              <div style={{ marginBottom: 6, fontSize: 14, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: "#5d4932" }}>New Creations Woodcraft</div>
               <h1 style={{ margin: 0, fontSize: 34, lineHeight: 1.15, color: "#352719" }}>Field Scan</h1>
               <p style={{ margin: "10px 0 0", maxWidth: 860, lineHeight: 1.6, color: "#594734", fontSize: 16 }}>Quick Identification and Buying Guidance · Rooted in Evidence</p>
               <p style={{ margin: "8px 0 0", maxWidth: 860, lineHeight: 1.6, color: "#6a5845", fontSize: 15 }}>Upload a few photos and receive a clear, evidence-based evaluation.</p>
