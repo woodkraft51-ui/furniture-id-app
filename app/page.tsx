@@ -331,6 +331,33 @@ function SectionCard({ title, children }: { title: string; children: React.React
   );
 }
 
+function UploadTooLargeNotice({ onAdjust, onSwitchToFull }: { onAdjust: () => void; onSwitchToFull: () => void }) {
+  return (
+    <div style={{ marginTop: 14, padding: 16, borderRadius: 12, background: "#fdf7ec", border: "1px solid #e3d3b3", color: "#3d2d1f" }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: "#352719" }}>Photos too large to scan together.</div>
+      <div style={{ marginTop: 8, lineHeight: 1.6, color: "#594734" }}>
+        Modern phones often produce files large enough to exceed what a single Field Scan can handle in one go. Two ways forward:
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <div style={{ fontWeight: 700, color: "#4a3725" }}>Reduce photo count.</div>
+        <div style={{ marginTop: 4, lineHeight: 1.6, color: "#594734" }}>
+          Fewer high-detail photos almost always produce better results than many — the engine relies on construction detail more than photo count, so dropping one or two photos rarely hurts identification.
+        </div>
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <div style={{ fontWeight: 700, color: "#4a3725" }}>Switch to Full Analysis.</div>
+        <div style={{ marginTop: 4, lineHeight: 1.6, color: "#594734" }}>
+          Designed for deeper looks where more photos are useful. Your photos and the details you've entered will carry over.
+        </div>
+      </div>
+      <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <button type="button" onClick={onAdjust} style={uploadTanButton}>Adjust photos</button>
+        <button type="button" onClick={onSwitchToFull} style={uploadBrownButton}>Switch to Full Analysis with these photos</button>
+      </div>
+    </div>
+  );
+}
+
 function RunButton({ label, disabled, isRunning, onClick }: { label: string; disabled: boolean; isRunning: boolean; onClick: () => void }) {
   return (
     <div style={{ marginTop: 14 }}>
@@ -368,6 +395,7 @@ export default function Page() {
   const [activeCaseId, setActiveCaseId] = useState<string>("");
   const [isRunning, setIsRunning] = useState(false);
   const [error, setError] = useState("");
+  const [uploadTooLarge, setUploadTooLarge] = useState(false);
 
   const analysisMode = intake.analysis_mode;
 
@@ -440,6 +468,7 @@ export default function Page() {
 
   async function runAnalysis() {
     setError("");
+    setUploadTooLarge(false);
     setReport(null);
 
     if (analysisMode === "field_scan") {
@@ -467,10 +496,40 @@ export default function Page() {
       await API.analyzeCase(caseId, intake);
       setReport(API.getReport(caseId));
     } catch (e: any) {
-      setError(e?.message || "Analysis failed.");
+      const msg = e?.message || "";
+      const is413 =
+        e?.name === "PayloadTooLargeError" ||
+        /\b413\b|payload too large|request entity too large/i.test(msg);
+      if (is413) {
+        setUploadTooLarge(true);
+      } else {
+        setError(msg || "Analysis failed.");
+      }
     } finally {
       setIsRunning(false);
     }
+  }
+
+  function switchToFullAnalysisWithPhotos() {
+    const photos = fieldPhotos;
+    const nextCore: CoreImageMap = {
+      overall_front: photos[0]
+        ? { ...photos[0], image_type: "overall_front" }
+        : null,
+      overall_side: photos[1]
+        ? { ...photos[1], image_type: "overall_side" }
+        : null,
+      underside: null,
+      back: null,
+      label_makers_mark: null,
+    };
+    const extras = photos.slice(2).map((p) => ({ ...p, image_type: "joinery_closeup" }));
+    setCoreImages(nextCore);
+    setGroupImages((prev) => ({ ...prev, construction: [...prev.construction, ...extras] }));
+    setFieldPhotos([]);
+    setUploadTooLarge(false);
+    setError("");
+    updateIntake("analysis_mode", "full_analysis" as any);
   }
 
   function resetAll() {
@@ -481,6 +540,7 @@ export default function Page() {
     setReport(null);
     setActiveCaseId("");
     setError("");
+    setUploadTooLarge(false);
     setIsRunning(false);
   }
   
@@ -557,8 +617,11 @@ const p7 = stageOutputs.p7 || null;
 
   <div style={{ marginTop: 10, fontWeight: 700, color: "#4a3725" }}>Important:</div>
   <div>
-    Dating and identification rely heavily on construction details.  
+    Dating and identification rely heavily on construction details.
     Without joinery, fasteners, or structural views, results may remain broad even if the style appears clear.
+  </div>
+  <div style={{ marginTop: 8 }}>
+    If your photos won't upload, you'll have a chance to either reduce the number of photos or switch to Full Analysis with the same photos already in place.
   </div>
 </div>
                   <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -603,7 +666,14 @@ const p7 = stageOutputs.p7 || null;
                   </div>
                 </div>
                 <RunButton label="Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} />
-                {error && <div style={errorStyle}>{error}</div>}
+                {uploadTooLarge ? (
+                  <UploadTooLargeNotice
+                    onAdjust={() => setUploadTooLarge(false)}
+                    onSwitchToFull={switchToFullAnalysisWithPhotos}
+                  />
+                ) : (
+                  error && <div style={errorStyle}>{error}</div>
+                )}
               </SectionCard>
             </>
           ) : (

@@ -3322,6 +3322,11 @@ export const PE = {
           messages: [{ role: "user", content }],
         }),
       });
+      if (res.status === 413) {
+        const err = new Error("Payload too large");
+        err.name = "PayloadTooLargeError";
+        throw err;
+      }
       const data = await res.json();
       if (!res.ok) return { ok: false, error: data };
       const raw = Array.isArray(data?.content) ? data.content.map((b: any) => b?.text || "").join("\n") : "";
@@ -3341,6 +3346,7 @@ return {
   },
 };
     } catch (e: any) {
+      if (e?.name === "PayloadTooLargeError") throw e;
       return { ok: false, error: e?.message || "unknown_error" };
     }
   },
