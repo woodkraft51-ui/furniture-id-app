@@ -1,5 +1,5 @@
 import { API } from "./store";
-import { MAKER_MARKS } from "./makerMarks";
+import { MAKER_MARKS } from "./constraints/makerMarks";
 
 export type RuntimeMode = "mock" | "live";
 export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";

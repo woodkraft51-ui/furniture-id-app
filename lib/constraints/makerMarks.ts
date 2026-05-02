@@ -239,6 +239,23 @@ export const MAKER_MARKS: MakerMarkEntry[] = [
   dating_authority: "high"
 },
   {
+    id: "roos_sweetheart_label",
+    maker: "Ed Roos Company",
+    mark_text_patterns: [
+      "Roos",
+      "Sweetheart",
+      "Sweetheart Cedar Chest",
+      "Genuine Sweetheart",
+      "Ed Roos Company",
+      "Forest Park"
+    ],
+    mark_type: "paper_label",
+    date_range: "1920–1939",
+    confidence_weight: 0.95,
+    dating_authority: "high",
+    notes: "Sweetheart label era; one of multiple Roos label variants. Heart-and-sweetheart graphic with 'Genuine Sweetheart Cedar Chest' text. Ed Roos Company name and Forest Park, IL address typically appear. Earlier Roos label variants (Roos Mfg. Co. Chicago, Ed Roos Company pre-Sweetheart, tree symbol) are not yet canonical pending appraiser research; see audit log.",
+  },
+  {
   id: "globe_wernicke_gw_office_equip_service_label",
   maker: "Globe-Wernicke",
   mark_text_patterns: [
