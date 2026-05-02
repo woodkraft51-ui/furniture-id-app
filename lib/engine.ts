@@ -3305,14 +3305,19 @@ function matchMakerMarks(rawText: string, observations: any[] = []) {
   }));
 }
 export const PE = {
-  async callClaude(system: string, content: any[]): Promise<ClaudeResult> {
+  async callClaude(
+    system: string,
+    content: any[],
+    mode: "field_scan" | "full_analysis"
+  ): Promise<ClaudeResult> {
     try {
+      const max_tokens = mode === "full_analysis" ? 8000 : 4000;
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 4000,
+          max_tokens,
           system,
           messages: [{ role: "user", content }],
         }),
@@ -3443,10 +3448,14 @@ Preferred keys when applicable:
 seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, maker_label, cedar_lining, sheet_back_panel, phillips_screw, plywood_structural.
 `;
 
-    const result = await this.callClaude(system, [
-      ...this.imgs(images),
-      { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
-    ]);
+    const result = await this.callClaude(
+      system,
+      [
+        ...this.imgs(images),
+        { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
+      ],
+      intake.analysis_mode
+    );
 
     const parsedForEvidence = result.ok
   ? result.parsed
