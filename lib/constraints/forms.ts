@@ -6,6 +6,56 @@
  */
 import { CanonicalEntry } from "./entryShape";
 
+/**
+ * Subtypes of a form. Per appraiser definition: "same form structure,
+ * different decorative or functional fitting." Structural distinctness
+ * elevates a variant to form-level rather than subtype-level (e.g.,
+ * rocking chair is a form, not a subtype of chair, because the rocker
+ * mechanism is structurally distinct).
+ */
+export interface FormSubtype {
+  /**
+   * Identifier within the parent form. Format: subtype_<descriptor>.
+   */
+  id: string;
+
+  /**
+   * Display name (e.g., "Lady's Dresser", "Bachelor's Chest").
+   */
+  name: string;
+
+  /**
+   * What makes this subtype distinct within the form. Decorative features,
+   * proportional differences, functional specializations, era-specific
+   * construction approaches, etc.
+   */
+  distinguishing_attributes: string[];
+
+  /**
+   * Optional date range if subtype has narrower production envelope than
+   * parent form.
+   */
+  date_floor?: number;
+  date_ceiling?: number;
+
+  /**
+   * Optional dimensional thresholds if subtype proportions differ
+   * meaningfully from parent form. All length measurements in inches;
+   * weight in pounds.
+   */
+  dimensional_thresholds?: {
+    width_min?: number;
+    width_max?: number;
+    height_min?: number;
+    height_max?: number;
+    depth_min?: number;
+    depth_max?: number;
+    weight_min?: number;
+    weight_max?: number;
+    notes?: string;
+  };
+}
+
 export interface FormEntry extends CanonicalEntry {
   category: "form";
   name: string;
@@ -48,6 +98,35 @@ export interface FormEntry extends CanonicalEntry {
    * Format: "alias name (context note)" — e.g., "buffet (especially in retail use)".
    */
   common_aliases?: string[];
+
+  /**
+   * Reference to the family this form belongs to. Required for new
+   * entries; existing entries populated during retrofit (Session 3
+   * scheduled work).
+   */
+  family_id?: string;
+
+  /**
+   * Reference to the spatial behavior this form belongs to within its
+   * family. Required for new entries; existing entries populated during
+   * retrofit (Session 3 scheduled work).
+   */
+  spatial_behavior_id?: string;
+
+  /**
+   * Subtypes of this form. See FormSubtype interface for shape and rules.
+   */
+  subtypes?: FormSubtype[];
+
+  /**
+   * Forms with which this form has hybrid or secondary associations. Used
+   * for hybrid forms where primary classification is one form but
+   * secondary functional or structural association exists with another
+   * (e.g., mule chest primarily chest of drawers subtype with secondary
+   * association to blanket chest; settle primarily seating with secondary
+   * storage association). Array of form ids.
+   */
+  secondary_form_associations?: string[];
 }
 
 export const FORMS: FormEntry[] = [
