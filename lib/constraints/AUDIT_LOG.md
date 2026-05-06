@@ -294,4 +294,48 @@ All three fields are optional, so the 21 entries that don't populate them remain
 
 ---
 
+### 2026-05-06 — Session 3 Block 5 Batch 2 — forms.ts — six bedroom forms authored at canonical depth, completing bedroom family
+
+**Authoring scope:** Six fully-authored canonical bedroom form entries shipped, completing bedroom family canonical authoring. One entry (form_wardrobe) replaced existing stub from the original Part B migration. Five entries (form_nightstand, form_dressing_table, form_chifforobe, form_bedstead, form_armoire) added as new entries. All six use full canonical structure: distinguishing_features, subtypes, cousin_form_contrasts, dimensional_thresholds, common_aliases, regional_period_notes, plus family_id and spatial_behavior_id.
+
+**Subtype-vs-form classification (locked decisions per appraiser confirmation):**
+- Nightstand subtypes: simple bedside table, one-drawer, door-and-drawer, open-shelf, commode-style (5 subtypes)
+- Dressing table subtypes: vanity table, triple-mirror vanity, kneehole, lowboy dressing table, princess vanity, dressing table with bench (6 subtypes)
+- Chifforobe subtypes: single-door, double-door, mirrored, gentleman's, compactum (5 subtypes)
+- Wardrobe subtypes: single, double, triple, mirrored, knockdown (5 subtypes)
+- Armoire subtypes: clothing, linen, French, country, entertainment (5 subtypes)
+- Bedstead subtypes: standard, four-poster, tester, half-tester, low-post, rope, sleigh, spool, panel (9 subtypes)
+
+**Bedstead subtype decisions:** Per locked subtype rule, four-poster bed and tester bed and half-tester bed are bedstead subtypes (not parallel forms). Structural distinctness — bedstead with vertical posts; bedstead with vertical posts plus canopy; bedstead with partial canopy — is decorative-and-functional fitting on the same structural form, not structural distinctness sufficient to elevate to form-level. Tester subtype carries date range 1720-1840 reflecting original production; half-tester carries 1820-1900 reflecting later formal production.
+
+**Chifforobe form-level date range with open ceiling:** form_chifforobe carries date_floor: 1900 with no date_ceiling field. The form emerged c. 1900 and mainstream factory production largely ended in the late 1960s as built-in closets became standard residential construction, but boutique reproduction and revival production continue. Per established convention (used previously for tall chest subtype with date_floor 1800 and no ceiling), the open ceiling reflects continuing limited production. The date_floor enforces anti-back-classification (don't classify pre-1900 hybrid pieces as chifforobe); regional notes capture the production-curve detail for engine reasoning.
+
+**Wardrobe and armoire intentionally have no form-level date range:** Both forms span American production from colonial period through present without clear emergence dates. Subtype-level dates capture the meaningful production windows: knockdown wardrobe 1850-1930, entertainment armoire 1980-2010. The form-level date absence reflects continuous production with stylistic evolution rather than form emergence and obsolescence.
+
+**Bedstead dimensional_thresholds with weight-only structured fields:** Per locked appraiser decision during extraction review, bedstead dimensional_thresholds includes only weight_min and weight_max as structured numeric fields (60-300 pounds), with all other dimensional content captured in the notes field. Reason: bed dimensions vary too much across mattress sizes (twin through California king) and post heights (low-post through tester) to anchor as single ranges. Comprehensive notes field captures all standard mattress sizes and substantial commentary on headboard, footboard, and post height ranges.
+
+**Lowboy treatment continued from Batch 1:** Lowboy referenced again in dressing table subtypes (subtype_lowboy_dressing_table with date range 1700-1800) and in cousin_form_contrasts. The subtype captures the dressing-table-functional aspect of lowboy as bedroom dressing furniture; the standalone lowboy form remains a backlog item for future authoring (likely placement: Tables family with cabriole legs and table-like proportions).
+
+**Compactum as chifforobe subtype:** Per appraiser confirmation in Batch 2 review, compactum (British term for fitted wardrobe with hanging space and drawers/trays) is a chifforobe subtype with explicit note about overlap with wardrobe territory. Classification depends on whether the drawer/tray system is structurally substantial enough to qualify as a true chifforobe-style hybrid.
+
+**Wardrobe-armoire-chifforobe cousin trio:** All three forms share spatial_behavior_id: spatial_clothing_enclosure but represent distinct structural identities. Cousin contrasts are explicitly captured on each form's cousin_form_contrasts array, with the wardrobe-vs-armoire pair particularly carefully framed (overlapping retail terminology requires structural-evidence-driven classification rather than listing-title-driven). The three-form structural distinction:
+- Wardrobe: primarily hanging storage with secondary shelves/drawers
+- Chifforobe: substantial drawer bank co-equal with hanging compartment
+- Armoire: broader cabinet-storage character with varied interior configurations
+
+**Anti-back-classification guidance recurrence (continuing pattern from prior sessions):** Multiple Batch 2 entries include explicit anti-back-classification guidance: nightstand warns against projecting modern nightstand identity backward without bedside scale and suite-coordination evidence; chifforobe warns against classifying pre-1900 hybrid pieces as chifforobe; armoire warns against assuming French origin or antique date from the word alone. Combined with prior occurrences (server, pump organ cabinet, dresser, chest of drawers, blanket chest from Batch 1), the pattern has now appeared in 8+ form entries. Schema observation tracker continues to flag potential schema field promotion (anti_classification_guidance or similar dedicated field) for future architectural review.
+
+**Bedroom family canonical authoring complete:** With Batch 2 shipped, bedroom family has 12 canonically-authored forms covering all six spatial behaviors:
+- Horizontal Storage: dresser, low chest
+- Vertical Storage: chest of drawers, highboy, blanket chest
+- Clothing Enclosure: wardrobe, armoire, chifforobe
+- Sleep Furniture: bedstead
+- Bedside Furniture: nightstand
+- Personal Hygiene / Dressing Support: washstand, dressing table
+- Plus form_trunk in family without spatial_behavior_id (Path B at form level)
+
+**Foundation status:** With bedroom family canonical authoring complete, the constraint library now has a fully-authored reference family demonstrating the complete pattern (12 forms, 53 subtypes, all schema fields exercised, full taxonomy traversal possible). Future family authoring (Tables, Seating, Desks, etc.) can reference bedroom family as the established pattern.
+
+---
+
 
