@@ -263,4 +263,35 @@ All three fields are optional, so the 21 entries that don't populate them remain
 
 ---
 
+### 2026-05-05 — Session 3 Block 5 Batch 1 — forms.ts — six bedroom forms authored at canonical depth
+
+**Authoring scope:** Six fully-authored canonical bedroom form entries shipped using the new four-level taxonomy. Three entries (form_dresser, form_chest_of_drawers, form_blanket_chest) replaced existing stubs from the original Part B migration. Three entries (form_low_chest, form_highboy, form_trunk) added as new entries. All six use full canonical structure: distinguishing_features, subtypes (with FormSubtype objects), cousin_form_contrasts, dimensional_thresholds, common_aliases, regional_period_notes, plus family_id and (where applicable) spatial_behavior_id.
+
+**Subtype-vs-form classification (locked decisions per appraiser confirmation):**
+- Dresser subtypes: standard, double, triple, princess, gentleman's, lady's, hat box (7 subtypes)
+- Chest of drawers subtypes: standard, tall chest, lingerie chest, semainier, chest-on-chest (borderline subtype with note), bachelor's chest, mule chest (7 subtypes)
+- Low chest subtypes: small low chest, low bachelor's chest, bedside chest, low drawer chest (4 subtypes)
+- Highboy subtypes: flat-top, bonnet-top, broken-arch, Queen Anne, Chippendale (5 subtypes)
+- Blanket chest subtypes: six-board chest, paneled, painted, dower chest, hope chest, cedar chest (6 subtypes)
+- Trunk subtypes: flat-top, dome-top, steamer, wardrobe, footlocker, Jenny Lind, immigrant (7 subtypes)
+
+**Hybrid form handling:** Mule chest implemented as chest of drawers subtype with parent-form `secondary_form_associations: ["form_blanket_chest"]`. The form-level association captures the structural-hybrid identity (mule chest combines lift-top blanket chest upper compartment with drawer-based lower section) without requiring schema extension to the FormSubtype interface.
+
+**Trunk spatial_behavior_id intentionally undefined:** Trunk has `family_id: "family_bedroom_clothing_storage"` but no `spatial_behavior_id` reference. None of the bedroom spatial behaviors fit trunk's portable transitional storage character cleanly. Schema makes spatial_behavior_id optional (commit e67178a), so this works without modification. Future revisiting may add a "Transitional Portable Storage" spatial behavior, but Path B principle holds: false placement is worse than acknowledged absence.
+
+**Lowboy treatment:** Lowboy referenced in low chest cousin_form_contrasts as a separate form not yet authored in canonical library. Future authoring scope will determine whether lowboy is its own form (likely placement: dining/general storage with cabriole legs and table-like proportions), a subtype of dressing table, or a subtype of low chest. Cousin contrast acknowledges the placement question without forcing premature classification.
+
+**Form-level date ranges added:** Highboy 1700-1900, blanket chest 1700-1900, trunk 1700-1940. These ranges reflect actual production envelopes rather than form existence — Colonial Revival production extends highboy and blanket chest into early 20th century, trunk production effectively ends with the rise of modern luggage in mid-20th century.
+
+**Subtype-level date ranges added:** Several subtypes carry their own date ranges where production is narrower than parent form: princess dresser 1890-1930, gentleman's dresser 1880-1950, lady's dresser 1850-1930, hat box dresser 1890-1925, tall chest 1800+, semainier 1800-1900, bachelor's chest 1750-1850, mule chest 1700-1850, Queen Anne highboy 1720-1755, Chippendale highboy 1755-1790, steamer trunk 1870-1930, wardrobe trunk 1900-1940, Jenny Lind trunk 1850-1880.
+
+**Three new patterns surfaced for schema observation tracking:**
+1. **Subtype dimensional thresholds:** Multiple subtypes have meaningfully different dimensions from parent form (gentleman's dresser height extends to 44 vs standard dresser 38; lingerie chest narrower than standard chest; bachelor's chest much smaller than standard chest). FormSubtype.dimensional_thresholds field handles this cleanly. Pattern occurrence: 4 forms in this batch (dresser, chest of drawers, highboy, trunk).
+2. **Subtype-level secondary form associations not yet supported:** Mule chest's secondary association to blanket chest currently lives at parent form level (chest of drawers). If future forms have multiple subtypes with different secondary associations, FormSubtype interface may need extension to support subtype-level secondary_form_associations. Pattern occurrence: 1 form so far (chest of drawers/mule chest).
+3. **Anti-back-classification guidance recurrence:** Following server (commit e3efc7d) and pump organ cabinet (commit b3750ca) precedents, several entries in this batch include explicit "do not back-classify" guidance: dresser warns against using "commode" without supporting evidence; chest of drawers warns about ambiguous "chest" terminology; blanket chest warns against assuming early date from chest form alone; nightstand (Batch 2) will likely include similar guidance. Pattern occurrence: 3 forms in this batch alone, with prior occurrences in cousin trio and pump organ work. Approaching threshold for potential schema field promotion (`anti_classification_guidance` or similar).
+
+**Foundation status:** With Batch 1 complete, six bedroom forms are fully authored at canonical depth. Bedroom family canonical authoring is approximately half complete; Batch 2 (wardrobe, armoire, chifforobe, bedstead, nightstand, dressing table) will complete bedroom form authoring. After Batch 2, bedroom family will have 12 canonically-authored forms covering all six spatial behaviors.
+
+---
+
 
