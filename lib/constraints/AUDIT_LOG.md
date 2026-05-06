@@ -338,4 +338,35 @@ All three fields are optional, so the 21 entries that don't populate them remain
 
 ---
 
+### 2026-05-06 — Session 4 Block 1 Batch 1 — forms.ts — Tables family form authoring begins (3 forms shipped)
+
+**Authoring scope:** Three fully-authored canonical Tables family form entries shipped, establishing the canonical pattern for Tables family. One stub (form_drop_leaf_table) replaced in place with canonical entry. One stub (form_gate_leg_table) removed because gate-leg is now captured as subtype within form_drop_leaf_table per locked architectural decision (subtype rule applied: same expansion mechanism — hinged side leaves — with structural variant of swinging support legs as decorative-and-functional fitting, not structural distinctness sufficient to elevate to form). Two new entries added (form_dining_table, form_extension_table). All three use full canonical structure: distinguishing_features, subtypes, cousin_form_contrasts, dimensional_thresholds, common_aliases, regional_period_notes, plus family_id and spatial_behavior_id.
+
+**First Tables family commit:** Tables family canonical authoring begins with this batch. Bedroom family (commits 08a8abe and 88610d0) established the four-level taxonomy pattern with 12 canonical forms; Tables family applies the same pattern. Authoring proceeds in 3 batches per cousin-overlap groupings:
+- Batch 1 (this commit): Dining and Expandable Tables — 3 forms (dining_table, extension_table, drop_leaf_table)
+- Batch 2 (planned): Central Support, Auxiliary, and Display Tables — 12 forms
+- Batch 3 (planned): Specialty Surface and Lounge Tables — 9 forms
+
+**Subtype-vs-form classification (locked decisions per appraiser confirmation during Tables family authoring review):**
+Multiple structural distinctions in the appraiser's authoring document were resolved as subtypes rather than separate forms per the locked subtype rule (same form structure + different decorative or functional fitting → subtype; structural distinctness → form):
+- Kitchen table, breakfast table, harvest/farmhouse table, refectory table, pedestal-dining table, trestle dining table → all subtypes of form_dining_table (same structural identity — large horizontal eating surface for seated meal use; different decorative or functional fitting)
+- Gate-leg table, Pembroke table, Sutherland table, butterfly table → all subtypes of form_drop_leaf_table (same hinged-leaf expansion mechanism; different structural variants)
+- Center-split, draw-leaf, self-storing, butterfly-leaf → all subtypes of form_extension_table (same insertion-or-fold-out expansion mechanism)
+
+This consolidation reduces the appraiser's authored 32 Tables family forms to approximately 18-22 canonical forms across all three batches.
+
+**Stub removal (form_gate_leg_table):** The existing form_gate_leg_table stub from the original Part B migration (commit 893944d) is removed because gate-leg is now a drop-leaf subtype, not a parallel form. Gate-leg content is captured as subtype_gate_leg_table within form_drop_leaf_table. This is the second stub-removal-due-to-subtype-promotion in the project (precedent: chest-on-chest as chest of drawers subtype rather than separate form, though chest-on-chest stub never existed).
+
+**Subtype-level date ranges added:** Multiple subtypes carry their own date ranges where production is narrower than parent form: Pembroke table 1770-1820, Sutherland table 1850-1920, butterfly table 1700-1770. Several subtypes also carry their own dimensional thresholds (Pembroke, Sutherland) where proportions differ meaningfully from parent form ranges.
+
+**Drop-leaf vs extension table cousin pair (architectural distinction surfaced):** Drop-leaf table and extension table are separate forms because the mechanism class is genuinely different — drop-leaf uses hinged side leaves dropping vertically; extension uses slides, inserts, or fold-outs from within the top system. Both expand surface area but through fundamentally different structural approaches. Cousin contrasts on each form explicitly capture this distinction. This pattern parallels the wardrobe vs chifforobe vs armoire cousin trio in bedroom (related forms with structurally distinct identities) but with mechanism class as the distinguishing axis rather than storage organization.
+
+**Refectory dining table revival production guidance:** Refectory dining table subtype includes explicit note that "most American refectory tables are revival production, not medieval or early English originals." This continues the anti-back-classification pattern observed across canonical authoring (now appearing in 9+ form entries across the constraint library, well past the 3+ schema-promotion threshold; schema observation tracker continues to flag potential anti_classification_guidance schema field for future architectural review).
+
+**Cross-form architectural guidance from Tables family authoring document:** The appraiser's Tables family authoring document closed with a "User-Trust Protection Notes" section capturing cross-form architectural guidance: support structure and height should outrank style name; placement should inform but not control classification; expansion/tilt/drop-leaf/gateleg/fold-over mechanisms should be captured as structural evidence; lowboy as auxiliary table-form case hybrid (not chest subtype); tilt-top tables under central support tables; game/card tables under specialty surface tables; style terms should not replace form identification; form should be identified first then refined by style/period/materials/construction. These guidances are not yet promoted to schema fields but are captured here as the appraiser's framework guidance for engine reasoning at the family level. Pattern observation tracker flags this as potential future schema work for cross-form guidance representation.
+
+**Tables family taxonomy reference status:** With Batch 1 complete, Tables family has 3 canonically authored forms across 2 of 5 spatial behaviors (spatial_dining_tables: 1 form; spatial_expandable_tables: 2 forms). Remaining work in Batches 2-3 will populate spatial_central_support_tables, spatial_auxiliary_tables, spatial_specialty_surface_tables.
+
+---
+
 
