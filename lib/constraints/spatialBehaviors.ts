@@ -390,18 +390,26 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
   },
 
   // ============================================================
-  // FAMILY: Seating Furniture (6 spatial behaviors)
+  // FAMILY: Seating Furniture (9 spatial behaviors)
   // ============================================================
 
   {
     id: "spatial_single_user_seating",
     category: "spatial_behavior",
-    name: "Single-User Seating",
+    name: "Upright Single-User Seating",
     family_id: "family_seating",
-    description: "Supports one individual in an upright seated position.",
-    structural_attributes: ["Seat, back, and leg system", "Ergonomic proportions"],
+    description:
+      "Supports one individual in upright seated position with full back support. Body posture is task-oriented or formal rather than lounge-relaxed. Distinguished from upholstered lounge seating by upright posture and from modern casual seating by conventional frame structure with seat, back, and leg system.",
+    structural_attributes: [
+      "Seat, back, and leg system",
+      "Upright posture orientation",
+      "Conventional frame construction (wood, metal, or hybrid)",
+      "Back support is structurally meaningful",
+      "Seat height typically 16-19 inches aligned with seated ergonomic use",
+    ],
     dimensional_patterns: {
-      notes: "Seat height within human ergonomic range (typically 16-19 inches).",
+      notes:
+        "Seat height commonly 16-19 inches. Overall height commonly 30-42 inches. Seat width commonly 16-24 inches. Seat depth commonly 15-22 inches. Bar chair examples extend the height range to 28-32 inches at seat for bar/counter use.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,
@@ -413,11 +421,18 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     category: "spatial_behavior",
     name: "Motion Seating",
     family_id: "family_seating",
-    description: "Introduces controlled movement into seating, typically for comfort.",
-    structural_attributes: ["Curved or pivoting base", "Dynamic support system"],
+    description:
+      "Single-user seating with controlled motion mechanism — rocking, gliding, swiveling, or pivoting. The motion mechanism is structurally defining and distinguishes motion seating from static single-user seating. Common motion mechanisms include curved rockers, platform rocking systems, mechanical glider linkages, and swivel bases.",
+    structural_attributes: [
+      "Single-user seating with motion mechanism",
+      "Curved rockers, platform mechanism, glider linkage, or swivel base",
+      "Back support typically present",
+      "Frame construction supports both seating and motion",
+      "Motion mechanism is structurally integral, not an after-market addition",
+    ],
     dimensional_patterns: {
       notes:
-        "Similar to single-user seating dimensions, with rocker or pivot base adding to overall footprint.",
+        "Seat height commonly 15-19 inches. Overall height commonly 35-48 inches. Width commonly 20-32 inches. Depth including rocker runners commonly 28-42 inches. Platform rockers and upholstered glider rockers may be heavier (often 50-100 pounds) than traditional curved-rocker forms.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,
@@ -429,11 +444,18 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     category: "spatial_behavior",
     name: "Upholstered Lounge Seating",
     family_id: "family_seating",
-    description: "Supports extended comfort and relaxation, prioritizing cushioning.",
-    structural_attributes: ["Upholstered surfaces", "Deep seating profiles"],
+    description:
+      "Single-user comfort-oriented seating with deep upholstery, relaxed posture, and substantial cushioning. Distinguished from upright single-user seating by lounge-comfort identity (deeper seat, lower seat height, angled back) and from multi-user upholstered seating by single-occupant scale. Includes both fixed lounge forms and adjustable-back lounge forms.",
+    structural_attributes: [
+      "Single-user upholstered seating",
+      "Deep seat and relaxed posture orientation",
+      "Substantial upholstery, padding, or cushioning",
+      "Arms commonly present but not always",
+      "May include adjustable back, reclining mechanism, or wing structure",
+    ],
     dimensional_patterns: {
       notes:
-        "Larger depth than standard seating to accommodate cushioning and reclined posture.",
+        "Seat height commonly 14-19 inches (lower than upright single-user seating). Width commonly 24-40 inches. Depth commonly 28-45 inches. Overall height commonly 28-42 inches. Recliners and large upholstered lounge chairs may exceed 150 pounds.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,
@@ -443,13 +465,20 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
   {
     id: "spatial_multi_user_seating",
     category: "spatial_behavior",
-    name: "Multi-User Seating",
+    name: "Multi-User Upholstered Seating",
     family_id: "family_seating",
-    description: "Supports multiple occupants simultaneously.",
-    structural_attributes: ["Extended seat width", "Shared structural support"],
+    description:
+      "Multi-user upholstered seating supporting two or more occupants with shared structural support. Covers both formal upright multi-user seating (settee scale, more upright posture, often exposed-frame) and lounge multi-user seating (sofa scale, deeper seat, full upholstery). Distinguished from single-user upholstered lounge by multi-occupant capacity and shared seat structure.",
+    structural_attributes: [
+      "Multi-user seating capacity (typically 2-4 occupants)",
+      "Shared structural support across seat width",
+      "Upholstered seat and back",
+      "Arms commonly present",
+      "Width substantially exceeds single-user seating",
+    ],
     dimensional_patterns: {
       notes:
-        "Width significantly greater than single seating — typically scaled to accommodate two or more users.",
+        "Width commonly 42-96 inches depending on configuration (settee 42-72 inches; loveseat 48-72 inches as sofa subtype; standard sofa 72-96 inches; sectional 90-150+ inches). Seat height commonly 16-20 inches. Depth commonly 20-45 inches. Sleeper sofas and reclining sofas may exceed 350 pounds.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,
@@ -461,10 +490,18 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     category: "spatial_behavior",
     name: "Reclining or Extended Seating",
     family_id: "family_seating",
-    description: "Supports reclined or extended body positions.",
-    structural_attributes: ["Elongated form", "Adjusted back or support angles"],
+    description:
+      "Seating supporting horizontal or near-horizontal body posture with extended-leg or reclined orientation. Length exceeds standard upright seating. Covers chaise longue forms (one-person reclining seat) and daybed forms (mattress-like horizontal surface supporting reclining or occasional sleeping).",
+    structural_attributes: [
+      "Elongated horizontal seat surface",
+      "Body posture is reclining, semi-reclining, or extended-leg",
+      "May have back support at one end, asymmetrical end configuration, or partial back along one long side",
+      "Length exceeds standard chair seat depth — often 60-84 inches",
+      "Distinguished from sofa by single-user orientation (chaise) or mattress-like depth (daybed)",
+    ],
     dimensional_patterns: {
-      notes: "Length exceeds standard seating to support reclined posture.",
+      notes:
+        "Length commonly 60-84 inches. Width commonly 24-42 inches. Seat or mattress height commonly 14-24 inches. Daybeds approach twin-bed scale (72-80 inches length, 30-42 inches width). Chaise longues vary from formal parlor scale to casual modern lounge scale.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,
@@ -472,17 +509,91 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
   },
 
   {
-    id: "spatial_hybrid_bench_seating",
+    id: "spatial_bench_seating",
     category: "spatial_behavior",
-    name: "Hybrid Bench Seating",
+    name: "Bench Seating",
     family_id: "family_seating",
-    description: "Combines seating with enclosure or panel-based structure.",
+    description:
+      "Elongated seating supporting one or more users, structurally simpler than upholstered multi-user seating. May be backless (basic bench), backed (settle, hall bench, garden bench), storage-bearing (storage bench, blanket-chest-bench hybrid), or context-specific (piano bench, dining bench, window bench). Bench identity is the elongated seat with simpler frame construction; settle is one bench subtype with high panel-back enclosure rather than the central form.",
     structural_attributes: [
-      "Bench form with enclosed sides or back",
-      "Mixed frame and panel construction",
+      "Elongated seat supporting multiple users or one user with extended seat",
+      "Simpler frame construction than upholstered multi-user seating",
+      "May be backless, backed with simple back rail, or backed with panel/enclosed back (settle)",
+      "Arms may be absent, present as simple posts, or fully panel-enclosed (settle)",
+      "Surface may be wood plank, upholstered, hinged storage lid, or context-specific configuration",
     ],
     dimensional_patterns: {
-      notes: "Variable.",
+      notes:
+        "Length commonly 36-96 inches; institutional and church benches may exceed this. Seat height commonly 16-19 inches. Depth commonly 14-24 inches. Overall height with back commonly 30-60 inches. Stone, cast iron, settle, church, or outdoor benches may exceed 300 pounds.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_compact_single_user_support",
+    category: "spatial_behavior",
+    name: "Compact Single-User Support",
+    family_id: "family_seating",
+    description:
+      "Compact seating or foot-support furniture without full back structure. Covers stools (single-user seating without back, varying heights from low to bar-height) and ottomans/footstools (foot-support and lounge-zone hybrid forms). Compact-support identity distinguishes these forms from chairs (which have backs) and from benches (which are elongated for multiple users).",
+    structural_attributes: [
+      "Compact single-user footprint",
+      "No full back structure (stool) or no back at all (footstool/ottoman)",
+      "Three-leg, four-leg, pedestal, swivel, or frameless support base",
+      "Footrest or stretcher may be present on taller stool forms",
+      "Ottomans/footstools often upholstered; stools often hard-surface or lightly padded",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Height varies dramatically by use class. Low stool/footstool 10-16 inches. Standard stool 16-19 inches. Counter stool 24-27 inches. Bar stool 28-32 inches. Ottoman 12-18 inches typically. Width or diameter commonly 12-24 inches for stools; ottomans 20-48 inches. Storage ottomans and cocktail ottomans may exceed 150 pounds.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_modern_casual_seating",
+    category: "spatial_behavior",
+    name: "Modern Casual Seating",
+    family_id: "family_seating",
+    description:
+      "Late-20th and 21st century casual seating with frameless, semi-frameless, or alternative-frame structures supporting relaxed body postures. Distinguished from upholstered lounge seating by frame-character (frameless filled bags, bowl-and-cushion bowls, suspended slings) rather than conventional upholstery over wood/metal frame. Forms in this spatial behavior have explicit form-emergence dates from c. 1938 onward.",
+    structural_attributes: [
+      "Frameless, semi-frameless, or alternative-frame construction",
+      "Relaxed body posture orientation (often near-floor or low seat)",
+      "Filled-bag construction (bean bag), bowl-and-cushion construction (papasan), or suspended sling construction (butterfly/sling)",
+      "Often lightweight relative to seating size",
+      "Modern emergence dates — none of these forms exist in pre-1938 American furniture",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable by form. Bean bag chairs commonly 28-60 inches diameter, 18-36 inches height, 5-60 pounds. Papasan chairs commonly 36-54 inches bowl diameter, 12-18 inches seat height. Butterfly/sling chairs commonly 26-36 inches width, 12-18 inches seat height, 8-40 pounds. All forms in this behavior carry explicit form-level date_floor values.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_outdoor_specialty_institutional_seating",
+    category: "spatial_behavior",
+    name: "Outdoor Specialty and Institutional Seating",
+    family_id: "family_seating",
+    description:
+      "Seating with structurally-distinct identity tied to specific outdoor or institutional contexts beyond simple environmental use-layer. Covers outdoor furniture with structural distinctness sufficient for separate form identification (Adirondack chair plank construction with sloped seat and wide arms; porch/lawn glider mechanical motion mounted on suspended or geared base) and institutional row-seating with mounting/folding structural systems (pew with end panels and book racks; theater/auditorium seat with folding seat pan and cast-iron standards). General outdoor use of standard chairs/benches/sofas is captured as regional_period_notes layer on those forms rather than via this spatial behavior.",
+    structural_attributes: [
+      "Structurally-distinct outdoor or institutional context-specific design",
+      "Plank construction with sloped seat and wide arms (Adirondack)",
+      "Mechanical glider mechanism on suspended or geared base (porch glider)",
+      "Institutional row-mounting with end panels, book racks, kneelers (pew)",
+      "Folding seat pan and cast-iron/steel standards (theater seat)",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable by form. Adirondack: front seat 12-16 inches, overall height 34-40 inches, width 28-34 inches. Porch glider: width 24-72 inches, seat height 15-19 inches. Pew: length 48-144 inches, seat height 16-19 inches, back height 32-42 inches. Theater seat: 18-24 inches per seat, 16-19 inches seat height. All forms carry significant period and context evidence requirements.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,

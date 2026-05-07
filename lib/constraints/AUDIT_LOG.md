@@ -435,4 +435,40 @@ This is the second family canonically completed in Phase 2 (after bedroom family
 
 ---
 
+### 2026-05-07 — Session 5 Block 1 — spatialBehaviors.ts — Seating family spatial behavior expansion (6 → 9 entries)
+
+**Authoring scope:** Seating family spatial behaviors expanded from 6 to 9 to support upcoming Seating family canonical authoring (planned 26 forms across the 9 spatial behaviors). Five existing entries refined in place with expanded descriptions/structural_attributes/dimensional_patterns content matching the depth of Tables family spatial behavior work. One existing entry renamed from spatial_hybrid_bench_seating to spatial_bench_seating with broader scope (settle is now one subtype within bench rather than the central form). Three new entries added covering compact single-user support (stool, ottoman/footstool), modern casual seating (bean bag, papasan, butterfly/sling), and outdoor specialty/institutional seating (Adirondack, porch glider, pew, theater seat).
+
+**Refinements (5 entries, ids unchanged):**
+- spatial_single_user_seating renamed display name "Single-User Seating" → "Upright Single-User Seating" (clarifies upright posture identity vs lounge or modern casual seating)
+- spatial_motion_seating refined to clarify motion mechanism as structurally defining
+- spatial_upholstered_lounge_seating refined to clarify single-user comfort identity (vs multi-user upholstered seating)
+- spatial_multi_user_seating renamed display name "Multi-User Seating" → "Multi-User Upholstered Seating" (clarifies upholstered character covering settee + sofa)
+- spatial_reclining_extended_seating refined to clarify horizontal posture identity covering chaise + daybed
+
+**Rename + expansion (1 entry):**
+- spatial_hybrid_bench_seating → spatial_bench_seating. Display name "Hybrid Bench Seating" → "Bench Seating". Description narrowed framing of "combines seating with enclosure or panel-based structure" (settle-like) replaced with broader Bench Seating covering all bench variants. Settle is now one subtype within bench form rather than the central spatial behavior identity.
+
+**Additions (3 new entries):**
+- spatial_compact_single_user_support: stools and ottomans/footstools
+- spatial_modern_casual_seating: bean bag, papasan, butterfly/sling chairs (all carry form-emergence dates 1938 onward)
+- spatial_outdoor_specialty_institutional_seating: Adirondack, porch/lawn glider, pew, theater/auditorium seat (structural-distinctness-warranting outdoor/institutional forms)
+
+**Architectural decisions captured from Session 4 architectural review of Seating Forms authoring document:**
+- Outdoor as use-layer not form: general outdoor use of standard chairs/benches/sofas captured in regional_period_notes on those forms; only structurally-distinct outdoor forms (Adirondack, porch glider) get spatial behavior placement
+- Modern casual seating as separate spatial behavior: bean bag/papasan/butterfly are structurally distinct from upholstered lounge seating because of frameless or alternative-frame construction
+- Bench Seating broader than original Hybrid Bench Seating framing: backless benches, dining benches, piano benches, storage benches, window benches, garden benches, school benches all join the bench form with settle as one subtype
+- Compact Single-User Support as separate spatial behavior: stools and ottomans warrant separate behavior from upright single-user seating because of absent back structure and from upholstered lounge seating because of compact scale
+- Institutional seating (pew, theater seat) grouped with outdoor specialty seating: shared characteristic is structural distinctness from domestic seating forms warranting separate canonical form classification
+
+**Path A schema reconciliation (resolved during planning):** The appraiser's source content for the 9 entries included two fields that did not match the current SpatialBehaviorEntry interface: `construction_logic_id: "construction_frame"` (not a field on the interface — none of the 28 existing spatial behaviors carries it) and `dimensional_patterns: "<string>"` (interface requires an object). Resolved per Path A (zero schema changes): construction_logic_id dropped from all 9 entries (construction logic remains reachable via family_id → family_seating.construction_logic_id transitive lookup wired in families.ts:108); dimensional_patterns prose strings wrapped as `{ notes: "<same string>" }` per existing schema convention used by all 28 prior spatial behaviors. Zero information loss; consistent with existing corpus.
+
+**No form-side changes in this batch.** Three existing seating-form stubs (form_windsor_chair, form_rocking_chair, form_milking_stool) remain unmodified at lines 4281-4309 — they will be retrofitted with family_id and spatial_behavior_id during their canonical authoring in subsequent batches.
+
+**No spatial_behavior_id reference updates needed.** Verification confirmed zero forms currently reference any seating spatial behavior id, so the rename of spatial_hybrid_bench_seating → spatial_bench_seating has no downstream impact on existing forms.
+
+**Schema observation:** Spatial behavior content depth standardization. The 5 refined Seating entries plus 3 new entries now match the content depth standard set by Tables family spatial behaviors (multi-element structural_attributes lists, descriptive dimensional_patterns notes). The 22 spatial behaviors not refined in this batch may benefit from similar depth refinement during their respective family canonical authoring sessions; this is a future refinement opportunity rather than urgent work.
+
+---
+
 
