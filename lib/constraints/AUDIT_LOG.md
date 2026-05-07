@@ -471,4 +471,30 @@ This is the second family canonically completed in Phase 2 (after bedroom family
 
 ---
 
+### 2026-05-07 — Session 5 Block 2 Step 1 — forms.ts — Schema extension: AntiClassificationGuidance interface and FormEntry.anti_classification_guidance field
+
+**Schema-only change with zero data population.** This is Step 1 of a two-step pattern. Step 1 (this commit): interface definition addition only. Step 2 (separate commit): data population across forms with crisp date boundaries. The two-step pattern provides clean failure isolation — schema extension lands first and verifies clean compile before retrofit work begins.
+
+**Pattern history motivating schema promotion.** Anti-back-classification guidance has appeared in 21+ form occurrences across the canonical library through Phase 2 Session 4 Tables family completion. The pattern crossed the project's 3+ schema-promotion threshold during Bedroom family Batch 2 (commit 88610d0); continuing accumulation through Tables family work pushed the count past 6x the threshold. Two prominence patterns emerged organically: standard placement (regional_period_notes for revival cautions, broad period guidance) and prominent placement (distinguishing_features for crisp date boundaries — used for lowboy form-extinction at 1720 emergence and 1940 ceiling, and for coffee_table form-emergence at 1920).
+
+**Schema decision (per Session 5 Block 2 architectural review):** comprehensive promotion via dedicated AntiClassificationGuidance interface with selective population. Forms with crisp date boundaries (form-emergence or form-extinction) populate the field; forms with revival-caution-only narrative without crisp boundaries continue using regional_period_notes. Estimated final populated count after Step 2 retrofit: 14-17 forms across bedroom, Tables, and Seating families.
+
+**Schema design decisions (per pre-execution clarification):**
+- boundary_date as single number (year): narrative softening of soft boundaries captured in guidance_text rather than via range fields. Simpler structure, supports lowboy's c. 1720 framing without overengineering.
+- pre_boundary_classifications and post_boundary_classifications as form id arrays: structured cross-reference enables engine reasoning about classification suggestions; missing form ids surface as TypeScript errors rather than silent data quality issues.
+- prominence field with "prominent" | "standard" union: preserves the two-prominence-pattern observation from Bedroom and Tables families. prominent placement (parallels lowboy and coffee_table distinguishing_features placement) signals user-facing report emphasis.
+- Single-or-array union via FormEntry field type: accommodates lowboy's 4-phase production history (4 boundaries) while remaining simple for single-boundary forms. Both single-object and array forms compile against the same field type.
+
+**Multi-boundary support architectural note:** lowboy's 4-phase production history (pre-1720 emergence prohibition, 1790 core-extinction, 1870 active-revival-emergence, 1940 lingering-revival-extinction) is the architectural use case for array form support. No other current canonical form has 4+ boundaries, but pier_table (2 boundaries: 1780 emergence, 1930 extinction) and possibly other Seating forms (Recliner, Bean Bag, Adirondack with single emergence boundaries) exercise the field structure across the single-object and array spectrum.
+
+**No data populated in this step.** Schema extension is interface-only. All 36 existing canonical forms compile unchanged because the field is optional. Step 2 (Phase 2 Session 5 Block 2 Step 2) will populate the field across forms with crisp date boundaries per comprehensive retrofit plan.
+
+**Forward-compatibility.** Future canonical authoring (Seating family extraction beginning in subsequent sessions) will populate the field naturally during initial extraction rather than requiring later retrofit. Estimated Seating forms requiring field population: 7 (Recliner 1928, Bean Bag 1969, Adirondack 1903, Papasan 1950, Butterfly/Sling 1938, Porch/Lawn Glider 1910, Morris Chair 1890 American emergence).
+
+**Schema observation tracker update:** anti-back-classification pattern formally promoted from observation tracker to dedicated schema field. Pattern observation tracker continues to monitor other recurring patterns including subtype-level dimensional_thresholds (5+ form occurrences, well-supported), subtype-level secondary_form_associations (1 occurrence at mule chest, tracking), cross-form architectural guidance from authoring documents (1 occurrence at Tables family User-Trust Protection Notes section, monitoring).
+
+**File location reconciliation (Path A):** The original Block 2 Step 1 prompt scoped the schema extension to `entryShape.ts`. Verified file state during planning: `entryShape.ts` contains only the `CanonicalEntry` base interface; `FormEntry` and `FormSubtype` actually live in `forms.ts` (added in commit e67178a). Per pre-execution Path A decision, both the new `AntiClassificationGuidance` interface and the new `FormEntry.anti_classification_guidance` field declaration land in `forms.ts` — single-file change, consistent with the FormSubtype precedent (form-specific interfaces co-located with FormEntry rather than in the shared-base entryShape.ts file). Audit header adjusted from "entryShape.ts" to "forms.ts" to match what shipped. Zero changes to entryShape.ts.
+
+---
+
 
