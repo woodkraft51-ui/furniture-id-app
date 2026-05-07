@@ -369,4 +369,37 @@ This consolidation reduces the appraiser's authored 32 Tables family forms to ap
 
 ---
 
+### 2026-05-06 — Session 4 Block 1 Batch 2 — forms.ts — Tables family expansion (12 forms shipped, largest single batch in project)
+
+**Authoring scope:** Twelve fully-authored canonical Tables family form entries shipped, the largest single content batch in project history. All twelve are entirely new entries (no stub replacements). Forms join the existing Tables family cluster from Batch 1 (commit 3a26fc8) in spatial-behavior-coherent ordering. Tables family canonical authoring reaches 15 forms across 3 of 5 spatial behaviors after this batch.
+
+**Forms shipped per spatial behavior:**
+- spatial_central_support_tables: form_pedestal_table (7 subtypes), form_tea_table (5 subtypes)
+- spatial_auxiliary_tables: form_side_table (5 subtypes), form_sofa_table (4 subtypes), form_console_table (5 subtypes), form_lowboy (5 subtypes), form_candle_stand (5 subtypes), form_nesting_tables (4 subtypes), form_tray_table (4 subtypes), form_center_table (6 subtypes), form_pier_table (3 subtypes), form_etagere_table (4 subtypes)
+
+Total: 57 subtypes across 12 forms.
+
+**Architectural decision: center_table, pier_table, etagere_table placement under spatial_auxiliary_tables.** The appraiser's authoring document organized these three forms under a "Display and Room-Center Tables" category that does not map to the 5 Tables family spatial behaviors defined in commit e8c0676 (Dining Tables, Expandable Tables, Central Support Tables, Auxiliary Tables, Specialty Surface Tables). Per locked architectural decision during Tables family Batch 2 review, these three forms are placed under spatial_auxiliary_tables for now with explicit acknowledgment that "Auxiliary Tables" is broader than ideal for these display-oriented forms. Future Phase 2 work may add a "Display Tables" or "Seating-Zone Tables" spatial behavior if pattern warrants spatial behavior expansion.
+
+**Subtype consolidation continuing pattern from Batch 1:** Multiple structural distinctions in the appraiser's authoring document were resolved as subtypes per the locked subtype rule. Pedestal table absorbs drum, tilt-top, piecrust, tulip as subtypes (same central-support structural identity, different decorative or functional fitting). Console table absorbs hall console, sofa console, demilune console, pier console, credenza-console hybrid as subtypes (same wall-oriented narrow surface structural identity). Center table absorbs parlor table, marble-top parlor table, pedestal center table, Renaissance Revival, Rococo Revival, Eastlake parlor table as subtypes (same room-centered display structural identity). Side table absorbs end table, lamp table, tier table, drum side table, bedside side table as subtypes. Candle stand combined with plant stand into single form per locked decision (shared small-object-support structural identity).
+
+**Lowboy form-level date range with 4-phase production history (architectural innovation):** form_lowboy ships with date_floor: 1720 and date_ceiling: 1940 capturing the form's emergence and production envelope. Critical anti-back-classification guidance prominently placed in distinguishing_features (rather than only in regional_period_notes per usual pattern) explicitly states that pieces dated pre-1720 should NOT be classified as lowboy because the form identification did not exist yet. Five subtypes capture the four-phase production history: Queen Anne lowboy 1720-1755, Chippendale lowboy 1755-1790, dressing lowboy (functional subtype without date range), active revival lowboy 1870-1900 (genuine Colonial Revival reinterpretation), lingering revival lowboy 1900-1940 (continuing production with heavy period styling influence). This is the most architecturally complex form-level date range in the constraint library and demonstrates the engine's capacity to reason about multi-phase production histories with explicit anti-back-classification at the form-emergence boundary.
+
+**Pier table form-level date range with 2-phase production history:** form_pier_table ships with date_floor: 1780 and date_ceiling: 1930 (extended from initial proposal of 1880 per appraiser confirmation that lingering production continued in formal parlor contexts through revival production). Regional period notes explicitly capture peak production 1780-1880 corresponding to active formal-architectural-interior design and lingering production 1880-1930 continuing as Colonial Revival, Federal Revival, and neoclassical revival pieces. Per appraiser preference, lingering production captured entirely in regional period notes without dedicated subtype (less clean architecturally but more accurate to the actual production history character).
+
+**Anti-back-classification guidance recurrence (continuing pattern):** Multiple Batch 2 entries include explicit anti-back-classification guidance: lowboy with prominently placed pre-1720 guidance in distinguishing_features (most explicit anti-back-classification framing in any canonical entry to date); pier table with regional notes addressing post-1930 wall-oriented formal tables; tea table with revival production caution; pedestal table with revival production caution across multiple periods; nesting tables with cautions about set-context loss affecting identification; candle stand with cautions about small-scale dating unreliability. Combined with prior occurrences across the constraint library, the anti-back-classification pattern has now appeared in approximately 15+ form entries. Schema observation tracker continues to flag potential anti_classification_guidance schema field for future architectural review; the pattern is well past 3+ promotion threshold and should be formally evaluated at next session checkpoint.
+
+**Cross-form references throughout subtype distinguishing_attributes:** Multiple subtypes include explicit cross-references to other canonical forms (drum side table cross-references form_pedestal_table; bedside side table cross-references form_nightstand; drop-leaf sofa table cross-references form_drop_leaf_table; pedestal center table cross-references form_pedestal_table; pier console cross-references form_pier_table; demilune console cross-references the pier-table-tradition; plant tier table cross-references form_candle_stand; etc.). This cross-referencing density reflects Tables family's heavy cousin-overlap character and supports engine reasoning at the subtype level when multiple forms share structural features.
+
+**Tables family taxonomy reference status:** With Batch 2 complete, Tables family has 15 canonically authored forms across 3 of 5 spatial behaviors:
+- spatial_dining_tables: 1 form (form_dining_table from Batch 1)
+- spatial_expandable_tables: 2 forms (form_extension_table, form_drop_leaf_table from Batch 1)
+- spatial_central_support_tables: 2 forms (form_pedestal_table, form_tea_table from Batch 2)
+- spatial_auxiliary_tables: 10 forms (all from Batch 2)
+- spatial_specialty_surface_tables: 0 forms (all to be authored in Batch 3)
+
+Batch 3 will populate spatial_specialty_surface_tables (game table, drafting table, sewing table, work table, library table, writing table) plus add coffee table, ottoman table, and pub table to spatial_auxiliary_tables completing Tables family canonical authoring at approximately 24 forms.
+
+---
+
 
