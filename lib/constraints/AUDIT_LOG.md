@@ -497,4 +497,33 @@ This is the second family canonically completed in Phase 2 (after bedroom family
 
 ---
 
+### 2026-05-07 — Session 5 Block 2 Step 2 — forms.ts — Comprehensive retrofit: anti_classification_guidance populated on 7 forms with crisp date boundaries (12 total boundary entries)
+
+**Step 2 of two-step pattern.** Step 1 (commit a5a047d) shipped the AntiClassificationGuidance interface and optional FormEntry.anti_classification_guidance field. Step 2 (this commit) populates the field on 7 forms identified during Session 5 Block 2 architectural review as having crisp date boundaries — form-emergence, form-extinction, or both. Forms with revival-caution-only narrative without crisp boundaries continue using regional_period_notes for guidance and are not modified in this batch.
+
+**Forms populated (7) with boundary counts:**
+- form_lowboy: 4 boundaries (array form — architectural test case for multi-boundary forms)
+- form_pier_table: 2 boundaries (array form — emergence and extinction)
+- form_highboy: 2 boundaries (array form — emergence and extinction)
+- form_coffee_table: 1 boundary (object form — emergence; prominent placement matching existing distinguishing_features placement)
+- form_chifforobe: 1 boundary (object form — emergence)
+- form_pump_organ_cabinet: 1 boundary (object form — emergence)
+- form_washstand: 1 boundary (object form — emergence)
+
+**Total: 12 AntiClassificationGuidance entries across 7 forms.** Distribution: 4 form-emergence boundaries with pre_boundary_classifications cross-references (lowboy 1720, highboy 1700, chifforobe 1900); 5 form-emergence boundaries with empty pre_boundary_classifications (lowboy 1870, coffee_table 1920, pump_organ_cabinet 1870, washstand 1820, pier_table 1780); 3 form-extinction boundaries with empty post_boundary_classifications (lowboy 1790, lowboy 1940, pier_table 1930, highboy 1900). Empty cross-reference arrays per Session 5 Block 2 decision: don't force-fit fuzzy mappings; only populate cross-references where genuine cousin-form mappings exist.
+
+**Prominence pattern preserved.** 2 forms with prominent placement (lowboy 1720 emergence, coffee_table 1920 emergence) match the existing distinguishing_features placement pattern from prior canonical authoring. 5 forms with standard placement throughout match existing regional_period_notes placement. The schema field's prominence sub-field carries the placement decision as structured data; existing narrative content stays in place because the schema field complements rather than replaces narrative guidance.
+
+**Multi-boundary architectural validation.** form_lowboy with 4 boundary entries validates the array form support added in Step 1. The 4 boundaries capture the 4-phase production history (1720 emergence prohibition, 1790 core extinction, 1870 active revival emergence, 1940 lingering revival extinction) as structured data accessible to engine reasoning. form_pier_table and form_highboy validate the 2-boundary array form. form_coffee_table, form_chifforobe, form_pump_organ_cabinet, and form_washstand validate the single-object form.
+
+**Cross-reference cross-family architectural decision.** Form id cross-references in pre_boundary_classifications cross family boundaries naturally: lowboy pre-1720 references form_low_chest (Bedroom family), form_dressing_table (Bedroom family), form_side_table (Tables family). Per Session 5 Block 2 decision, cross-family cross-references are accepted because engine reasoning naturally crosses family boundaries when classifying. The schema field's cross-reference structure enables explicit cousin-form suggestions across family boundaries without forcing within-family-only restrictions.
+
+**Light narrative extensions for pump_organ_cabinet and washstand.** Both forms had crisp date_floor values but minimal pre-emergence narrative in existing regional_period_notes. The structured guidance_text in their populated AntiClassificationGuidance entries authors light narrative extension making the form-emergence boundary explicit (parallel to chifforobe's existing explicit pre-1900 framing). The extension is small and consistent with existing authorial framing; no canonical entry's regional_period_notes or distinguishing_features fields are modified in this batch.
+
+**Forms not populated in this batch.** Forms with revival-caution-only narrative without crisp date boundaries continue using regional_period_notes for guidance: form_dresser, form_chest_of_drawers, form_blanket_chest, form_low_chest, form_nightstand (borderline declined per Q1), form_dressing_table, form_wardrobe, form_armoire (borderline declined per Q2), form_bedstead, form_pedestal_table, form_tea_table, form_candle_stand, form_nesting_tables (borderline declined per Q3), form_center_table, form_etagere_table, form_game_table, form_drafting_table, form_sewing_table, form_work_table, form_library_table, form_writing_table, form_ottoman_table (borderline declined per Q4), form_pub_table, form_server, form_sideboard, form_buffet, form_dining_table, form_extension_table, form_drop_leaf_table, form_side_table, form_sofa_table, form_console_table, form_tray_table, form_trunk, form_chifforobe (already populated), and form_pie_safe (stub-only, not canonically authored). Forms with subtype-level dates rather than form-level boundaries (form_drafting_table industrial subtype, form_sewing_table needlework/sewing-machine subtypes, form_pub_table historic_tavern_table subtype) keep their dates at subtype level without form-level anti_classification_guidance population.
+
+**Schema observation tracker update.** Anti-classification pattern formally promoted from observation tracker (commit 88610d0) to dedicated schema field (commit a5a047d) and now populated comprehensively across all forms with crisp date boundaries (this commit). Pattern observation tracker continues to monitor other recurring patterns including subtype-level dimensional_thresholds (5+ form occurrences, well-supported), subtype-level secondary_form_associations (1 occurrence at mule chest, tracking), and cross-form architectural guidance from authoring documents (1 occurrence at Tables family User-Trust Protection Notes section, monitoring). Future canonical authoring (Seating family extraction beginning in subsequent sessions) will populate the field naturally during initial extraction for forms with crisp date boundaries (estimated 7 Seating forms: Recliner 1928, Bean Bag 1969, Adirondack 1903, Papasan 1950, Butterfly/Sling 1938, Porch/Lawn Glider 1910, Morris Chair American 1890).
+
+---
+
 

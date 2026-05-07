@@ -212,6 +212,13 @@ export const FORMS: FormEntry[] = [
       notes: "Original keyboard surface dimensions: depth typically ≤10 inches (more reliable test than height for distinguishing converted desks, where actual desk depth is typically ≥18 inches). Keyboard surface height (28-30 inches) overlaps with desk surface height (28-31 inches) and low cabinet top height (30-36 inches) but not bar height (40-42 inches), so height alone does not distinguish desk vs cabinet conversions. Weight ranges distinguish from upright piano (300-800+ lbs) and parlor pipe organ (500-1500 lbs).",
     },
     regional_period_notes: "Manufactured industrial product, not regional craft tradition. Major American production concentrated in two regions during the 1870-1900 peak. New England producers — Estey Organ Company (Brattleboro, Vermont), Mason & Hamlin (Boston, Massachusetts) — generally produced premium-tier instruments with refined cabinetry, pressure-system action, and high construction standards. Midwest producers — Story & Clark (Chicago, Illinois), W. W. Kimball (Chicago, Illinois) — generally produced factory-standardized instruments at higher volume, with Kimball notably transitioning from reed organs to pianos as the major arc of the company. Identification by specific maker typically relies on stenciled or embossed manufacturer marks on the action, fall board, or back panel rather than regional joinery traits. Per-maker production-trait detail is being progressively researched and verified; entries will be expanded as scholarship is confirmed.",
+    anti_classification_guidance: {
+      boundary_date: 1870,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "Pump organ cabinet emerged as a distinct form c. 1870 with the rise of American pump organ manufacturing as a major industrial product. Pre-1870 American household musical-instrument cabinetry (early melodeons, parlor organ predecessors) is structurally distinct from the pump organ cabinet form — earlier instruments used different action mechanisms, smaller cabinet structures, and different production traditions. Pre-1870 pieces resembling pump organ cabinets should be classified by their earlier instrument-cabinet identity rather than as pump organ cabinets in the canonical sense.",
+      prominence: "standard",
+    },
   },
   {
     id: "form_washstand",
@@ -238,6 +245,13 @@ export const FORMS: FormEntry[] = [
       "Evidence of removed water-service components — missing basin ring, gallery, towel rail, marble slab, or rear splash structure may be visible as mounting holes, repaired fastener locations, or finish discontinuities",
     ],
     regional_period_notes: "Washstands are fundamentally a pre-plumbing solution; their evolution and decline are directly tied to indoor plumbing adoption, which proceeded unevenly across class, region, and urban/rural settings. Form was originally bedroom-located, briefly migrating to kitchens during the early plumbing transition, and ultimately replaced by bathroom installations as plumbing became standard. Regional traditions during the peak development period (1860–1885): Urban Northeast and Mid-Atlantic produced refined marble-top examples aligned with major cabinetmaking centers (New York, Philadelphia, Boston), with mahogany, cherry, and walnut common. Midwest production mixed factory and regional cabinetmaking with practical hybrid forms and earlier adoption of standardized components, primarily walnut, oak, poplar, and mixed woods. Southern examples persist longer due to slower plumbing infrastructure, use local woods (walnut, pine, regional hardwoods), and often lag urban stylistic trends. Rural and Appalachian production maintains plain vernacular forms with painted finishes long after urban styles have moved on; pine and poplar are common; older styles continue well into later decades. Critical engine caution: confirm dating with construction evidence (joinery, fasteners, finish layering, machine evidence) rather than stylistic markers in isolation. Rural production lags urban styles substantially, painted and plain examples often appear earlier than they are stylistically, and marble tops can be added or replaced later. Bedroom-private functional furniture (washstands, dressing tables, chamber pot cabinets) shows additional ~10 year style lag from urban trends due to private domestic placement insulating the form from rapid stylistic turnover.",
+    anti_classification_guidance: {
+      boundary_date: 1820,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "Washstand emerged as a distinct American bedroom form c. 1820 as urban domestic hygiene practices and bedroom furniture suite culture developed. Pre-1820 American domestic hygiene was supported primarily by portable basin sets, chamber furniture, and informal bedroom arrangements rather than by dedicated washstand furniture. Pre-1820 pieces resembling washstands should be classified by their earlier furniture identity (typically as small chests, side tables, or basin stands) rather than as washstands in the canonical bedroom-suite sense.",
+      prominence: "standard",
+    },
   },
   {
     id: "form_sideboard",
@@ -895,6 +909,23 @@ export const FORMS: FormEntry[] = [
       "bonnet-top highboy",
     ],
     regional_period_notes: "Highboy is important in eighteenth-century American furniture, with strong regional traditions in New England (particularly Boston, Newport, and Connecticut River Valley) and Philadelphia (where the form reached its most elaborate Chippendale expression). Later Colonial Revival highboys (late 19th and early 20th century) imitate eighteenth-century forms with varying degrees of accuracy. Critical engine caution: construction evidence is critical for separating period examples from revival or reproduction pieces. Machine-cut joinery, plywood, modern screws, and factory finish indicate later production regardless of stylistic features. Period highboys show hand-cut dovetails, hand-shaped legs, secondary woods consistent with regional traditions, and signs of long-term use and repair. Specific datable construction features within this evolution belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+    anti_classification_guidance: [
+      {
+        boundary_date: 1700,
+        boundary_type: "form_emergence",
+        guidance_text:
+          "Highboy emerged as a distinct American form c. 1700 with strong regional traditions in New England (Boston, Newport, Connecticut River Valley) and Philadelphia. Pre-1700 American furniture did not have the chest-on-stand structural configuration that defines highboy form; pre-1700 storage furniture should be classified by cousin form (typically chest of drawers or other earlier case forms).",
+        pre_boundary_classifications: ["form_chest_of_drawers"],
+        prominence: "standard",
+      },
+      {
+        boundary_date: 1900,
+        boundary_type: "form_extinction",
+        guidance_text:
+          "Original and active-revival highboy production effectively ended c. 1900. Post-1900 pieces in highboy form are typically Colonial Revival reproductions, traditional bedroom furniture continuing 18th century vocabulary, or later decorative production. Post-1900 highboy classification should be approached with strong revival/reproduction-likelihood weighting; machine-cut joinery, plywood, modern screws, and factory finish indicate later production regardless of stylistic features.",
+        prominence: "standard",
+      },
+    ],
   },
   {
     id: "form_blanket_chest",
@@ -1449,6 +1480,14 @@ export const FORMS: FormEntry[] = [
       "combination wardrobe",
     ],
     regional_period_notes: "Chifforobe shows strong early to mid-20th century American usage, especially common in houses with limited or no closet space. Spelling varies regionally and casually — chifforobe, chifferobe, chiffrobe are all used interchangeably without semantic distinction. The form is common in oak, walnut, mahogany, waterfall, Art Deco, Depression-era, and mid-century bedroom suites. Mainstream factory production largely ended in the late 1960s as built-in closets became standard residential construction, but boutique reproduction and revival production continue, so no firm production end date is set. Critical engine caution: chifforobe emerged as a distinct form c. 1900 — forms predating that date that combine hanging and drawer storage should be classified as wardrobe-with-drawers or armoire (with appropriate cabinet-storage character) rather than as chifforobe. The chifforobe identity carries specific 20th century American suite-coordinated production context that should not be back-projected onto earlier hybrid forms. Structural recognition is more reliable than spelling or listing title for identification.",
+    anti_classification_guidance: {
+      boundary_date: 1900,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "Chifforobe emerged as a distinct form c. 1900 with American 20th century bedroom suite production. Pre-1900 pieces that combine hanging and drawer storage should be classified as wardrobe-with-drawers or armoire (with appropriate cabinet-storage character) rather than as chifforobe. The chifforobe identity carries specific 20th century American suite-coordinated production context that should not be back-projected onto earlier hybrid forms.",
+      pre_boundary_classifications: ["form_wardrobe", "form_armoire"],
+      prominence: "standard",
+    },
   },
   {
     id: "form_wardrobe",
@@ -2803,6 +2842,37 @@ export const FORMS: FormEntry[] = [
       "table chest (loosely)",
     ],
     regional_period_notes: "Lowboy production history spans approximately 220 years across four distinct phases that engine reasoning should treat differently. Pre-1720: the lowboy structural form (drawer case raised on legs) existed in early American production, but the 'lowboy' identification did not exist; pieces from this period were classified as their nearest cousin form (small chest, dressing table, side table) rather than as lowboys. Core production 1720-1790: lowboy emerges as a distinct form identification in 18th century American furniture, especially Queen Anne (1720-1755) and Chippendale (1755-1790) traditions, with strong regional production in New England (particularly Boston and Connecticut River Valley) and Philadelphia (where the form reached its most elaborate Chippendale expression). Active revival 1870-1900: late Victorian Colonial Revival movement returned to 18th century lowboy forms as part of broader American taste for Colonial aesthetics; revival-era cabinetmakers produced substantial new lowboys in 18th century vocabulary. Lingering revival 1900-1940: continued production with heavy period styling influence, often featuring Queen Anne or Chippendale stylistic vocabulary on machine-cut and factory-finished construction; this represents traditional taste persistence rather than active revival movement. Critical engine caution: cabriole legs, brasses, and shaped apron alone are not enough to prove 18th century origin — drawer construction (hand-cut vs machine-cut dovetails), secondary woods (regional patterns), tool marks, case construction, foot construction, hardware, and finish must control dating across all production phases. For app architecture, lowboy is treated as an auxiliary table-form case hybrid in Tables family rather than as a bedroom chest subtype — the table-like legged structure governs classification despite the drawer storage function. Specific datable construction features within this evolution belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+    anti_classification_guidance: [
+      {
+        boundary_date: 1720,
+        boundary_type: "form_emergence",
+        guidance_text:
+          "The 'lowboy' identification did not exist before c. 1720. Pieces dated pre-1720 that structurally resemble lowboy form (drawer case raised on legs) should be classified by cousin form most likely active in that period. Pre-1720 lowboy classification is back-projection of a form-name onto pieces that predate the form's identification.",
+        pre_boundary_classifications: ["form_low_chest", "form_dressing_table", "form_side_table"],
+        prominence: "prominent",
+      },
+      {
+        boundary_date: 1790,
+        boundary_type: "form_extinction",
+        guidance_text:
+          "Core production of original lowboy forms ended c. 1790 as Federal-period furniture vocabulary moved away from cabriole-leg case-on-legs hybrids. Pieces dated 1790-1870 that structurally resemble lowboys are unusual; the form was effectively dormant during this gap. Pieces in this date range require careful construction evaluation — late persistence of regional Chippendale traditions, transitional Federal pieces with lowboy-like proportions, and isolated rural production may exist but are not common.",
+        prominence: "standard",
+      },
+      {
+        boundary_date: 1870,
+        boundary_type: "form_emergence",
+        guidance_text:
+          "Active revival production of lowboy forms began c. 1870 with the Colonial Revival movement. Revival lowboys are genuine reinterpretations of 18th century forms by revival-era cabinetmakers, not period pieces. The 1870-1900 active revival window produced substantial new lowboys in 18th century vocabulary; construction evidence (machine-cut joinery, modern fasteners, factory finish) distinguishes revival from period production.",
+        prominence: "standard",
+      },
+      {
+        boundary_date: 1940,
+        boundary_type: "form_extinction",
+        guidance_text:
+          "Lingering revival production with heavy period styling influence effectively ended c. 1940. Post-1940 pieces in lowboy form are typically reproductions or traditional bedroom furniture rather than active revival production. Post-1940 lowboy classification should be approached with strong reproduction-likelihood weighting; construction evidence controls dating.",
+        prominence: "standard",
+      },
+    ],
   },
   {
     id: "form_candle_stand",
@@ -3271,6 +3341,22 @@ export const FORMS: FormEntry[] = [
       "Victorian console (when subtyped)",
     ],
     regional_period_notes: "Pier tables are significant in formal 19th century American interiors, with strong association to Federal and Empire neoclassical architectural design (where the table integrated visually with pier mirrors and architectural details between windows). The form's production history spans roughly 150 years across two phases: peak production c. 1780-1880 corresponded to active formal-architectural-interior design integrating pier tables with pier mirrors as room-defining elements; lingering production c. 1880-1930 continued in formal parlor contexts as Colonial Revival, Federal Revival, and neoclassical revival pieces with strong period styling. Many surviving examples have lost their original pier mirror or architectural context and are difficult to identify as pier tables without that context — marble tops, gilt surfaces, carved supports, and wall-facing back finishing are useful clues even when the pier mirror is gone. Critical engine caution: post-1930 wall-oriented formal tables in pier-table style are typically reproductions or modern decorative furniture rather than period pier tables; construction evidence, hardware analysis, and decorative-quality assessment should drive dating. Pier table production effectively ended by 1930 as American interior design moved away from formal architectural integration. Specific datable construction features within this evolution belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+    anti_classification_guidance: [
+      {
+        boundary_date: 1780,
+        boundary_type: "form_emergence",
+        guidance_text:
+          "Pier table emerged as a distinct form c. 1780 with American Federal and Empire neoclassical architectural design integrating pier tables with pier mirrors as room-defining elements. Pre-1780 wall-oriented narrow tables in American production lacked the formal architectural pier-table integration that defines the form; the pier table identity should not be back-projected onto earlier wall-oriented surface furniture.",
+        prominence: "standard",
+      },
+      {
+        boundary_date: 1930,
+        boundary_type: "form_extinction",
+        guidance_text:
+          "Pier table production effectively ended by 1930 as American interior design moved away from formal architectural integration. Post-1930 wall-oriented formal tables in pier-table style are typically reproductions or modern decorative furniture rather than period pier tables. Construction evidence, hardware analysis, and decorative-quality assessment should drive dating of post-1930 pieces.",
+        prominence: "standard",
+      },
+    ],
   },
   {
     id: "form_etagere_table",
@@ -3468,6 +3554,13 @@ export const FORMS: FormEntry[] = [
       "storage coffee table (when subtyped)",
     ],
     regional_period_notes: "Coffee tables are a distinctly 20th century American furniture innovation — the form emerged c. 1920 with the rise of modern living-room arrangements that placed low seating around a central low table. The form is genuinely modern; pre-1920 American interiors did not have coffee tables in the modern sense. Mid-century modern (1950-1970) was particularly significant for coffee table design with iconic forms from designers like Noguchi, Saarinen, Knoll, and Eames. Critical engine caution: the very low height is a strong modern/living-room clue but very low height alone is not a date by itself — some 20th century coffee tables imitate earlier table forms with reduced height. Construction evidence (joinery type, materials, hardware) should drive dating. Pre-1920 pieces structurally resembling coffee tables are typically cut-down forms (originally taller tables that later owners shortened) or repurposed pieces — period coffee tables genuinely do not exist before approximately 1920. Specific datable construction features within this evolution belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+    anti_classification_guidance: {
+      boundary_date: 1920,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "The 'coffee table' identification did not exist before c. 1920. Pieces dated pre-1920 that structurally resemble coffee tables (low front-of-seating tables) are typically cut-down forms (originally taller tables shortened by later owners) or repurposed pieces, NOT period coffee tables. Pre-1920 'coffee table' classification is back-projection of a form-name onto pieces that predate the form's emergence. The form is genuinely a 20th century American innovation tied to modern living-room arrangements.",
+      prominence: "prominent",
+    },
   },
   {
     id: "form_ottoman_table",
