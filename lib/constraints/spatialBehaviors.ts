@@ -681,18 +681,27 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
   },
 
   // ============================================================
-  // FAMILY: Desks (2 spatial behaviors)
+  // FAMILY: Desks (12 spatial behaviors)
   // ============================================================
 
   {
-    id: "spatial_writing_surfaces",
+    id: "spatial_portable_writing_forms",
     category: "spatial_behavior",
-    name: "Writing Surfaces",
+    name: "Portable Writing Forms",
     family_id: "family_desks",
-    description: "Supports writing and administrative tasks in open format.",
-    structural_attributes: ["Flat working surface", "Integrated drawers"],
+    description:
+      "Compact, transportable writing furniture designed for use in transit, in the field, or in temporary settings rather than at a fixed location. The portability is structurally defining — the form supports writing while accommodating relocation, military campaign use, ship cabin use, expedition contexts, or generally mobile professional work. Distinguished from Open Writing Stations by reduced scale and built-in transport features (handles, hinges, knockdown construction, fitted carrying cases). Distinguished from Field Desks specifically when the writing surface is fully enclosed within a hinged box rather than supported on legs.",
+    structural_attributes: [
+      "Portable, transportable, or relocatable construction",
+      "Reduced scale relative to fixed-location desks",
+      "Hinged, folding, knockdown, or fitted-case construction common",
+      "Writing surface may be lid-of-box (writing box), removable panel (tabletop desk), or fold-out (field desk)",
+      "Storage typically integrated into transport structure (compartments within the box, fitted drawers within knockdown frame)",
+      "Construction supports repeated assembly/disassembly or repeated transport without structural failure",
+    ],
     dimensional_patterns: {
-      notes: "Seated-use height (typically 28-30 inches at writing surface).",
+      notes:
+        "Highly variable by form. Writing boxes commonly 12-20 inches wide, 8-14 inches deep, 4-8 inches tall when closed. Tabletop desks commonly 18-30 inches wide, 12-20 inches deep, 6-12 inches tall. Field desks vary widely from compact (24-36 inches wide when assembled) to officer-scale (36-54 inches wide). Weight typically optimized for portability — most forms 5-40 pounds with knockdown field desks ranging higher when assembled.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,
@@ -700,18 +709,266 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
   },
 
   {
-    id: "spatial_enclosed_workstations",
+    id: "spatial_open_writing_stations",
     category: "spatial_behavior",
-    name: "Enclosed Workstations",
+    name: "Open Writing Stations",
     family_id: "family_desks",
     description:
-      "Encloses work activity for organization, privacy, or protection. Per the hybrid CL III/CL IV decision (commit 0718ad1 audit entry), desks with mechanical concealment such as roll-top and cylinder desks belong here as forms with mechanical features, not in CL IV.",
+      "Writing furniture with an open, accessible writing surface and visible storage organization, designed for fixed-location use without enclosed mechanisms or concealment features. Covers French neoclassical bureau plat traditions (flat-top with leather inset and characteristic proportions), French ladies' writing furniture with cabinet superstructure (bonheur du jour), kidney-shaped Victorian/Edwardian writing desks, U-shaped Carlton House desks, and other open-form writing pieces. Distinguished from Fall-Front / Drop-Front Enclosed Desks by absence of concealing mechanism. Distinguished from Tables family writing tables by structural identity as desk-form furniture (often with fitted drawer configurations and writing-specific surface treatments) rather than as adapted general-purpose tables.",
     structural_attributes: [
-      "Enclosing elements",
-      "Mechanical components possible (tambour, cylinder, fall-front systems)",
+      "Open, accessible writing surface without enclosing mechanism",
+      "Fixed-location construction (not portable)",
+      "Drawers, frieze drawers, or cabinet compartments visible or accessible without unlocking/folding",
+      "Writing surface often has leather inset, tooled leather panel, or specialized writing finish",
+      "Often features period-specific decorative elements (cabriole legs, neoclassical proportions, kidney-shape, U-shape)",
+      "Scale supports seated single-user writing work",
     ],
     dimensional_patterns: {
-      notes: "Slightly larger and deeper than open desks to accommodate enclosing structure.",
+      notes:
+        "Width commonly 36-72 inches depending on form. Bureau plat 50-72 inches wide. Bonheur du jour 28-40 inches wide. Kidney desk 42-60 inches wide. Carlton House 48-66 inches wide. Depth commonly 22-36 inches. Height commonly 28-32 inches at writing surface, with bonheur du jour and Carlton House superstructures extending overall height to 38-50 inches. Weight commonly 60-180 pounds depending on construction quality and material.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_kneehole_workstations",
+    category: "spatial_behavior",
+    name: "Kneehole Workstations",
+    family_id: "family_desks",
+    description:
+      "Desk furniture with a central knee opening flanked by drawer pedestals, designed for seated work with structural drawer access on both sides of the user's seated position. Covers traditional kneehole desks (18th century English/American origins), pedestal desks (19th-20th century broader pattern), Davenport desks (small portable English form with sloped writing surface and side drawers), executive desks (large pedestal variants with suite-coordination context), and credenza desks (credenza serving as primary writing surface). The pedestal-flanked-kneehole structure is the defining spatial behavior — the user sits between drawer storage rather than at a single-side desk configuration.",
+    structural_attributes: [
+      "Central knee opening (kneehole) for seated user positioning",
+      "Drawer pedestals on either side of the kneehole",
+      "Writing surface spans across the pedestals and over the kneehole",
+      "Often features full-depth drawers in pedestals (typically 3-4 drawers per side)",
+      "May include central drawer above kneehole",
+      "Scale supports professional/office single-user work",
+      "Often part of suite configurations (return, bridge, credenza arrangements)",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Width commonly 48-72 inches for standard pedestal/kneehole desks; executive variants 60-84 inches. Depth commonly 28-36 inches. Height commonly 28-31 inches at writing surface. Davenport desks substantially smaller — width 18-24 inches, depth 18-24 inches. Weight commonly 80-300 pounds with executive variants and steel tanker variants reaching 350+ pounds.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_fall_front_drop_front_enclosed_desks",
+    category: "spatial_behavior",
+    name: "Fall-Front / Drop-Front Enclosed Desks",
+    family_id: "family_desks",
+    description:
+      "Desks with a hinged front panel that drops or falls forward to reveal a writing surface and concealed interior with pigeonholes, small drawers, and document compartments. The enclosing-mechanism is structurally defining and creates concealment when closed. Covers slant-front desks (English/American 18th-19th century with sloped face when closed), fall-front desks (European Continental tradition with vertical face when closed), secretary desks (combined desk + bookcase superstructure), escritoires (French fall-front cabinet desks), secrétaires à abattant (tall vertical French Empire/Restoration tradition), and bureau à gradins (writing desk with tiered superstructure of stepped shelves above writing surface). Distinguished from Roll-Top / Tambour Enclosed by the hinged-flat-panel mechanism vs the rolling-flexible-cover mechanism.",
+    structural_attributes: [
+      "Hinged front panel that drops or falls forward to expose writing surface",
+      "Slant-front geometry (sloped face when closed) or fall-front geometry (vertical face when closed)",
+      "Concealed interior with pigeonholes, small drawers, document slots, and writing-tool compartments",
+      "Often features lock or latch on the falling front panel for security",
+      "Lower case typically contains storage (drawers, cabinet, chest)",
+      "Optional upper superstructure (bookcase, tiered shelves, gradins) common in secretary and bureau à gradins forms",
+      "Writing surface revealed only when front panel is opened",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Width commonly 36-48 inches. Depth commonly 20-28 inches when closed. Height varies dramatically by form: slant-front and fall-front typically 42-52 inches; secretary desks (with bookcase) 72-96 inches; secrétaire à abattant 60-90 inches; bureau à gradins 48-66 inches. Weight commonly 100-400 pounds for substantial period examples.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_roll_top_tambour_enclosed_desks",
+    category: "spatial_behavior",
+    name: "Roll-Top / Tambour Enclosed Desks",
+    family_id: "family_desks",
+    description:
+      "Desks with a rolling, flexible, or rigid-curved cover mechanism that retracts to expose a writing surface and concealed interior with pigeonholes and small drawers. The rolling/sliding-cover mechanism is structurally defining. Covers roll-top desks (large office-scale flexible tambour mechanism that retracts into a curved housing), cylinder desks (rigid quarter-cylinder cover that lifts as a single piece), tambour desks (smaller domestic-scale vertical-tambour or front-tambour mechanism), and Wooton desks (patented late-19th century American secretary cabinet with rotating central section). Distinguished from Fall-Front / Drop-Front Enclosed by the rolling-cover mechanism vs hinged-flat-panel mechanism.",
+    structural_attributes: [
+      "Rolling, sliding, or rigid-curved cover mechanism for concealment",
+      "Cover retracts into housing (top-roll for roll-top, lift-up for cylinder) or slides vertically (tambour desks)",
+      "Concealed interior with extensive pigeonholes, small drawers, document slots, and writing-tool compartments",
+      "Lower case typically contains pedestal storage with full-depth drawers",
+      "Often features locking mechanism on the cover for overnight security",
+      "Cover assembly is a defining structural feature of the form",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Roll-top desks commonly 48-66 inches wide, 30-36 inches deep, 44-54 inches tall when cover closed. Cylinder desks similar scale. Tambour desks smaller — 30-42 inches wide. Wooton desks substantial — 42-54 inches wide, 30-36 inches deep, 60-78 inches tall. Weight commonly 150-500 pounds for substantial period examples.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_cabinet_armoire_hideaway_workstations",
+    category: "spatial_behavior",
+    name: "Cabinet / Armoire / Hideaway Workstations",
+    family_id: "family_desks",
+    description:
+      "Desks integrated into cabinet, armoire, or wardrobe-form furniture where the writing workspace is concealed within enclosed cabinetry when not in use. Distinguished from Fall-Front / Drop-Front Enclosed by the cabinet-form furniture identity (pieces appear as armoires or cabinets when closed, not as recognizable desks) and from Roll-Top / Tambour Enclosed by the door-based concealment mechanism rather than rolling-cover mechanism. Covers armoire desks (factory-built or original-construction desks within armoire/wardrobe forms), hutch desks (desk with integrated upper hutch), and Murphy desks (fold-down wall-mounted desks). The armoire/cabinet identity dominates the visual signature when closed; the desk function is revealed only when doors open.",
+    structural_attributes: [
+      "Cabinet-form, armoire-form, or wardrobe-form furniture identity dominant when closed",
+      "Writing surface concealed behind doors (not behind hinged front panel or rolling cover)",
+      "Door-based concealment mechanism (full-height doors covering both writing surface and storage)",
+      "Interior writing surface may pull out, fold down, or remain fixed depending on form",
+      "Often includes substantial storage above and beside the writing area",
+      "Pieces visually similar to non-desk armoires/cabinets when closed",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Width commonly 36-54 inches. Depth commonly 22-30 inches. Height substantial — armoire desks 60-84 inches tall; hutch desks 60-78 inches tall (inclusive of upper hutch); Murphy desks vary by configuration but typically 36-72 inches tall when closed against wall. Weight commonly 150-400 pounds for substantial cabinet construction.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_shared_double_sided_workstations",
+    category: "spatial_behavior",
+    name: "Shared / Double-Sided Workstations",
+    family_id: "family_desks",
+    description:
+      "Desk furniture designed for two or more simultaneous users, with structural configurations supporting bilateral access, face-to-face arrangement, side-by-side seating, or modern open-plan multi-user benching systems. The multi-user structural identity is defining — these are not single-user desks placed adjacent to each other but furniture designed as a single unified piece serving multiple users. Covers partner's desks (large desk with bilateral symmetry; two users facing across single piece; English origin 18th-19th century legal/banking traditions) and benching desks (modern open-plan multi-user shared linear work surface; late-20th and 21st century form).",
+    structural_attributes: [
+      "Multi-user structural configuration",
+      "Bilateral access (drawers/storage on both sides) for partner's desk forms",
+      "Single unified piece rather than adjacent multiple pieces",
+      "Width substantially exceeds single-user desk scale",
+      "Often features symmetrical or repeating structural elements",
+      "Modern benching variants emphasize linear/modular configuration",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Partner's desks commonly 60-84 inches wide, 40-54 inches deep (deeper than single-user desks to accommodate bilateral users), 30-32 inches tall. Benching desks vary widely by configuration — typically 60-180 inches long depending on user count, 30-36 inches deep per user position. Weight commonly 200-500 pounds for substantial partner's desks.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_commercial_institutional_workstations",
+    category: "spatial_behavior",
+    name: "Commercial / Institutional Workstations",
+    family_id: "family_desks",
+    description:
+      "Desk furniture designed for commercial, institutional, educational, or ceremonial contexts rather than domestic use. Structural identity is shaped by use-context requirements (ledger work, classroom configuration, customer-counter interaction, ecclesiastical/academic standing use, transaction processing). Covers clerk's desks (high desk with sloped writing surface for ledger work), standing desks (full-height desks for standing use including modern adjustable-height and sit-stand configurations), school desks (student desks with attached or attached-seat configurations), teacher's desks (instructor pedestal desks with classroom-specific configurations), reception desks (counter-style desks for greeting/checking-in visitors), lectern desks (sloped writing surface on standing-height pedestal/column base; ecclesiastical, academic, ceremonial), and transaction counter desks (high counter desks for cashier, teller, sales, customer service contexts). Distinguished from domestic workstation forms by commercial/institutional structural features (durability requirements, customer-facing configurations, classroom-specific elements, ledger-specific slope and height).",
+    structural_attributes: [
+      "Commercial, institutional, educational, or ceremonial use-context structural features",
+      "Often elevated or full-height for standing/clerk use",
+      "Customer-facing counter configurations (reception, transaction)",
+      "Classroom-specific elements (attached seats, lift-lid mechanisms, tablet arms)",
+      "Sloped writing surfaces common for ledger, ecclesiastical, lectern variants",
+      "Durability/repeated-use construction (often steel or industrial materials)",
+      "Configurations support specific institutional workflows",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable by form. Standing desks 38-46 inches at writing surface (vs 28-32 for seated); modern adjustable variants span 24-50 inches. Clerk's desks similar standing height. School desks scaled to student size — width 18-30 inches, depth 18-24 inches, height variable. Teacher's desks scaled to standard pedestal range — 48-66 inches wide. Reception and transaction counters 42-44 inches tall on customer side. Lectern desks 38-46 inches tall. Weight commonly 50-300 pounds depending on form and construction.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_technical_drafting_professional_workstations",
+    category: "spatial_behavior",
+    name: "Technical / Drafting / Professional Workstations",
+    family_id: "family_desks",
+    description:
+      "Specialized work surfaces designed for technical, drafting, artistic, or scientific professional work with task-specific structural features (heavy-duty construction, tilting/adjustable surfaces, chemical-resistant materials, integrated equipment). Covers workbench desks (heavy-duty work surface with tool storage and reinforced construction; jeweler/watchmaker/shop variants), artist's desks (tilting/adjustable writing or drawing surface for artistic work), and laboratory desks (science/technical work surface with chemical-resistant materials and equipment integration). Distinguished from Open Writing Stations and Kneehole Workstations by task-specific structural features that adapt the work surface to particular professional requirements.",
+    structural_attributes: [
+      "Task-specific structural features for technical, artistic, or scientific professional work",
+      "Heavy-duty reinforced construction for workbench variants",
+      "Tilting/adjustable writing surface for artist variants",
+      "Chemical-resistant materials and integrated equipment for laboratory variants",
+      "Often modular or bench-style configurations for laboratory and workshop contexts",
+      "Storage configurations specialized for tools, drawing materials, or technical equipment",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable by form. Workbench desks 48-72 inches wide, 24-36 inches deep, 32-40 inches tall (often standing-height for shop work). Artist's desks 30-48 inches wide with tilting surfaces 0-90 degrees. Laboratory desks often modular, base configurations 36-72 inches wide, 24-30 inches deep, 32-36 inches tall. Weight commonly 100-400 pounds depending on construction.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_computer_systems_modular_workstations",
+    category: "spatial_behavior",
+    name: "Computer / Systems / Modular Workstations",
+    family_id: "family_desks",
+    description:
+      "Desk furniture designed for typewriter, computer, or modular office system use, with structural features supporting equipment integration (keyboard trays, monitor surfaces, tower storage, cable management) or modular reconfiguration (panel-based systems, L-shape, U-shape, modular workstations). Covers typewriter desks (mid-20th century desk specifically configured for typewriter use with drop-well configuration), computer desks (configured for computer use with keyboard tray, monitor surface, tower storage), modular workstation desks (modular office system with panel-based configurations), L-shaped desks (right-angle return), and U-shaped desks (two right-angle returns forming U configuration). Distinguished from Kneehole Workstations and Open Writing Stations by equipment-integration structural features that adapt to specific 20th-21st century office equipment requirements.",
+    structural_attributes: [
+      "Equipment-integration structural features (keyboard tray, monitor surface, tower storage, cable management)",
+      "Drop-well configuration for typewriter desk variants",
+      "Modular reconfiguration support (panel-based systems, components, returns)",
+      "L-shape or U-shape configurations expanding work surface",
+      "Often features grommets, cable management channels, or integrated power",
+      "20th-21st century office equipment compatibility",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Typewriter desks commonly 40-52 inches wide with drop-well at 26-27 inches typing height. Computer desks 42-72 inches wide; corner/L-shape variants 60-84 inches per leg; U-shape variants 60-84 inches per side. Depth commonly 24-30 inches; corner/L/U configurations often deeper at the corner. Height commonly 28-30 inches at writing surface. Weight commonly 80-300 pounds.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_built_in_architectural_desks",
+    category: "spatial_behavior",
+    name: "Built-In / Architectural Desks",
+    family_id: "family_desks",
+    description:
+      "Desk furniture integrated into room architecture (cabinetry, alcoves, niches, window seats) or wall-mounted as freestanding furniture, where the architectural integration or wall-mounting is structurally defining. Covers built-in desks (desk integrated into room architecture; requires architectural alteration to install/remove), wall desks (wall-mounted freestanding desk; not architecturally integrated; can be removed without altering room structure), and wall unit desks (desk integrated into modular wall unit furniture system). Distinguished from freestanding desk forms by structural relationship to wall or architectural elements; distinguished from Cabinet / Armoire / Hideaway Workstations by the wall-mounting or built-in identity rather than freestanding cabinet identity.",
+    structural_attributes: [
+      "Architectural integration or wall-mounting structurally defining",
+      "Built-in variants require architectural alteration to install/remove",
+      "Wall-mounted variants supported by wall fasteners (not freestanding legs)",
+      "Wall unit variants integrate into modular wall storage furniture",
+      "Often configured to specific room features (alcove dimensions, window seat width, niche depth)",
+      "Storage often integrated with architectural cabinetry or wall unit components",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable based on architectural integration. Built-in alcove and niche desks fitted to specific architectural openings. Window seat desks typically 36-72 inches wide, 18-24 inches deep, 28-30 inches tall. Wall-mounted floating desks 36-60 inches wide, 12-24 inches deep. Wall unit desks integrated into 60-120 inch wall unit systems. Weight varies widely; built-in components may not be weighable as discrete pieces.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_convertible_repurposed_desk_forms",
+    category: "spatial_behavior",
+    name: "Convertible / Repurposed Desk Forms",
+    family_id: "family_desks",
+    description:
+      "Desk furniture with convertible mechanisms (designed-as-convertible) or repurposed identity (originally other furniture, later converted to desk use). Covers two distinct sub-patterns: convertible desks (drop-leaf desks with hinged extension panels; gateleg desks with gateleg extension structure; telephone desks with telephone shelf integration including gossip bench variants; monk's bench desks as convertible bench-and-table pieces) and repurposed/converted desks (factory-built piano-form decorative desks; converted organ desks from pump/reed/parlor organs; converted piano desks from upright/square pianos; converted cabinet desks from armoires/wardrobes/cupboards; converted dresser desks from dressers/chests/vanities; converted industrial desks from workbenches/factory carts/machine bases). The convertible mechanism or conversion identity is structurally defining. Conversion forms preserve evidence of the original furniture identity (piano case proportions, organ housing, dresser drawer banks) and require explicit identification of the conversion in user reports.",
+    structural_attributes: [
+      "Convertible mechanism (drop-leaf, gateleg, fold-down, hinged conversion) for designed-as-convertible variants",
+      "Original furniture identity preserved in repurposed/converted variants",
+      "Conversion evidence visible (piano case proportions, organ housing characteristics, dresser drawer construction)",
+      "Specialty domestic context for many forms (telephone desks, gossip benches, monk's benches)",
+      "Modern repurposing trend for converted industrial desks (mid-20th century to current industrial-style decor)",
+      "Identification requires recognizing both desk-use configuration and original-furniture origins",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable by form. Drop-leaf desks 36-54 inches wide closed, expanding 12-24 inches per leaf. Gateleg desks similar. Telephone desks compact 18-30 inches wide, 14-22 inches deep with integrated seat or shelf. Monk's bench desks 42-66 inches wide. Piano desks (factory-built decorative) variable, often 30-54 inches wide. Converted piano desks reflect original piano case proportions — upright piano shells 56-66 inches wide, 22-28 inches deep. Converted organ desks reflect pump organ proportions — 36-54 inches wide. Converted cabinet/dresser desks reflect original storage furniture proportions. Converted industrial desks reflect original workbench/factory cart proportions.",
     },
     positive_authority: 8,
     hard_negative_authority: 8,

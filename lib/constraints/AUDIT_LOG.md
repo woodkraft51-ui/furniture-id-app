@@ -526,4 +526,30 @@ This is the second family canonically completed in Phase 2 (after bedroom family
 
 ---
 
+### 2026-05-08 — Session 6 Block 1 — spatialBehaviors.ts — Desks family spatial behavior expansion (2 → 12 entries)
+
+**Authoring scope.** Desks family spatial behavior layer expanded from 2 to 12 entries, parallel to Phase 2 Session 5 Block 1 Seating expansion (commit 0371ab1). The 2 existing entries (spatial_writing_surfaces, spatial_enclosed_workstations) had skeletal content paralleling pre-Session-5-Block-1 Seating pattern (description + 2-element structural_attributes + notes-only dimensional_patterns) authored as scope-marker content during early canonical work, not deeply researched canonical content. The 12-grouping architecture locked during Session 6 Block 1 architectural conversation supersedes the original 2-entry structure.
+
+**Renames and content replacements (2 entries).**
+- spatial_writing_surfaces renamed to spatial_open_writing_stations with full content replacement; new content captures the broader Open Writing Stations grouping covering Bureau Plat, Bonheur du Jour, Kidney Desk, Carlton House Desk canonical forms plus extensive cross-family alias additions to Tables family writing tables and Bedroom family dressing tables/nightstands.
+- spatial_enclosed_workstations renamed to spatial_fall_front_drop_front_enclosed_desks with full content replacement; new content captures the Fall-Front / Drop-Front Enclosed Desks grouping covering Slant-Front Desk, Fall-Front Desk, Secretary Desk, Escritoire, Secrétaire à Abattant, Bureau à Gradins canonical forms.
+
+**Additions (10 new entries):** spatial_portable_writing_forms, spatial_kneehole_workstations, spatial_roll_top_tambour_enclosed_desks, spatial_cabinet_armoire_hideaway_workstations, spatial_shared_double_sided_workstations, spatial_commercial_institutional_workstations, spatial_technical_drafting_professional_workstations, spatial_computer_systems_modular_workstations, spatial_built_in_architectural_desks, spatial_convertible_repurposed_desk_forms.
+
+**Architectural decisions captured:**
+- Twelve-grouping structure locked during Session 6 architectural conversation reflects 55-form canonical Desks family (architecture summary captured in conversation; full form list ready for canonical authoring batches).
+- Framing A consolidation pattern with strategic exceptions (form-before-style precedent from Session 5): structural distinctness controls canonical form treatment; use-context variants captured as common_aliases or subtypes. 18 strategic exceptions evaluated and locked during architectural conversation.
+- Cross-family alias additions: ~85 entries from the original 138-form Desks list consolidate as common_aliases on existing Tables and Bedroom family canonical forms (form_writing_table, form_library_table, form_work_table, form_console_table, form_sofa_table, form_side_table, form_sewing_table, form_drafting_table, form_dressing_table, form_nightstand). These cross-family alias enrichments will be applied during respective forms' canonical-content updates rather than in this spatial behavior expansion.
+- Conversion identity explicit on user reports: 5 conversion-identity canonical forms (form_converted_organ_desk, form_converted_piano_desk, form_converted_cabinet_desk, form_converted_dresser_desk, form_converted_industrial_desk) preserved as separate forms (rather than subtypes) so that conversion identification appears explicitly in user-facing reports. form_piano_desk (factory-built decorative piano-form furniture) preserved as separate canonical form from form_converted_piano_desk to distinguish factory-built decorative novelty from actual piano conversion.
+
+**Path A schema reconciliation applied (parallel to Session 5 Block 1):** All 12 entries authored without construction_logic_id field (redundant with family_id transitive lookup; reachable via family_desks → families.ts construction_logic_id). All 12 entries use dimensional_patterns as object with notes sub-field (per existing schema convention). All 12 entries include category: "spatial_behavior" per interface requirement.
+
+**No form-side changes.** Two legacy stubs with parent_category: "desk" (form_secretary_desk, form_slant_front_desk at lines 4399-4420) lack family_id and spatial_behavior_id; they pre-date the four-level taxonomy retrofit and remain unmodified in this batch. They will be retrofitted during their canonical authoring in subsequent batches when family_id: "family_desks" and spatial_behavior_id references will be added.
+
+**No cross-file reference updates needed.** Per pre-execution verification: zero cross-file references to either current Desks spatial behavior id (spatial_writing_surfaces, spatial_enclosed_workstations) exist in forms.ts, families.ts, constructionLogic.ts, makerMarks.ts, or AUDIT_LOG.md. Renames have no downstream impact.
+
+**Architectural foundation for upcoming canonical authoring:** With 12 spatial behaviors locked, Desks family canonical authoring proceeds through approximately 15-20 batches across multiple sessions to cover all 55 canonical forms. First batch likely Grouping 1 (Portable Writing Forms — 3 forms) for cluster coherence.
+
+---
+
 
