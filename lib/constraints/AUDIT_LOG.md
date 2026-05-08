@@ -552,4 +552,46 @@ This is the second family canonically completed in Phase 2 (after bedroom family
 
 ---
 
+### 2026-05-08 — Session 6 Block 2 — forms.ts — Seating family canonical authoring Batch 1: Upright Single-User Seating sub-cluster (6 forms)
+
+**Authoring scope.** First batch of Seating family canonical authoring covering the Upright Single-User Seating sub-cluster (spatial_single_user_seating spatial behavior). 6 forms authored: form_side_chair, form_armchair, form_bar_chair, form_folding_chair, form_windsor_chair (retrofit from existing stub), form_ladderback_chair. Pattern parallels Tables family Batch 1 in scope and structure.
+
+**Form-before-style architectural principle applied.** Construction-tradition subtypes with functional crossover relocate to functional parent forms:
+- subtype_armchair_windsor and subtype_armchair_ladderback added to form_armchair (relocated from Windsor Chair and Ladderback Chair sections of Seating Forms restructured document)
+- subtype_side_chair_windsor (new addition not in restructured document) and subtype_side_chair_ladderback (relocated from Ladderback Chair section as side ladderback) added to form_side_chair
+- form_windsor_chair retains 8 subtypes covering Windsor-construction variants without functional crossover (sack-back, comb-back, bow-back, fan-back, continuous-arm, rod-back, low-back, hoop-back)
+- form_ladderback_chair retains 6 subtypes covering ladderback-construction variants without functional crossover (Shaker, Appalachian/Southern, rush-seat, splint-seat, cane-seat, child's)
+- subtype_rocking_chair_windsor and subtype_rocking_chair_ladderback NOT authored in Batch 1; documented in form_windsor_chair and form_ladderback_chair cousin_form_contrasts only; canonical authoring pending in Motion Seating batch (form_rocking_chair canonical authoring)
+
+**X-frame curule naming convention.** X-frame variants use "curule" descriptor instead of "x_frame": subtype_side_chair_curule, subtype_armchair_curule, subtype_folding_chair_curule. Naming choice resolves ambiguity between geometric-X-frame and Roman/Renaissance curule descendants while preserving cross-form consistency.
+
+**form_windsor_chair stub retrofit (Path A in-place).** Existing stub at lines 4421-4430 (corrected from prompt-asserted 4281-4309 per pre-execution verification) retrofitted in place with full canonical content. Form id preserved (form_windsor_chair). Stub replaced from skeletal pre-four-level-taxonomy state (no family_id, no spatial_behavior_id, parent_category: "seating", minimal content) to canonical entry with parent_category: "chair", family_id: "family_seating", spatial_behavior_id: "spatial_single_user_seating", and full canonical content per the 6-form Batch 1 scope.
+
+**Cross-cluster cousin_form_contrast handling (Path A).** Cross-cluster subtype references (Windsor rocker, ladderback rocker — relocated to form_rocking_chair per form-before-style) captured as cousin_form_contrast notes in form_windsor_chair and form_ladderback_chair without forward-reference noise. Engine reasoning works whether the referenced subtypes exist yet or not because cousin_form_contrasts capture cross-form architectural relationships at the canonical form level.
+
+**No anti_classification_guidance population in Batch 1.** None of the 6 Batch 1 forms have crisp date boundaries warranting AntiClassificationGuidance schema field population. Schema field stays unset across all 6 entries (consistent with optional field design from Session 5 Block 2 Step 1). Future Seating batches with form-emergence-date forms (Recliner 1928, Bean Bag 1969, Adirondack 1903, Papasan 1950, Butterfly/Sling 1938, Porch/Lawn Glider 1910, Morris Chair American 1890) will populate the field naturally during their canonical authoring.
+
+**Subtype inventory:** 14 subtypes on form_side_chair, 11 subtypes on form_armchair, 6 subtypes on form_bar_chair, 7 subtypes on form_folding_chair, 8 subtypes on form_windsor_chair, 6 subtypes on form_ladderback_chair. Total Batch 1 subtypes: 52.
+
+**No cross-family alias additions in Batch 1.** Cross-family alias enrichments to existing Tables and Bedroom canonical forms (per Session 6 Block 1 Desks family architectural conversation) are deferred to future content updates on those existing forms.
+
+**Architectural foundation for upcoming Seating canonical authoring:** With Batch 1 complete, Seating family canonical authoring continues across approximately 4-5 additional batches:
+- Batch 2: Motion Seating (form_rocking_chair with subtype_rocking_chair_windsor and subtype_rocking_chair_ladderback population per form-before-style)
+- Batch 3: Upholstered Lounge Seating (form_lounge_chair, form_morris_chair, form_wing_chair, form_recliner — recliner with anti_classification_guidance for 1928 emergence)
+- Batch 4: Multi-User Upholstered Seating + Reclining or Extended Seating (form_settee, form_sofa, form_chaise_longue, form_daybed)
+- Batch 5: Bench Seating + Compact Single-User Support + Modern Casual Seating + Outdoor Specialty and Institutional Seating (form_bench, form_stool, form_ottoman_footstool, form_bean_bag_chair, form_papasan_chair, form_butterfly_sling_chair, form_adirondack_chair, form_porch_lawn_glider, form_pew, form_theater_auditorium_seat — most with anti_classification_guidance for form-emergence dates)
+
+Estimated Seating family completion: 4-5 batches across multiple sessions, similar pacing to Tables family canonical authoring.
+
+**Path A schema reconciliation applied.** The prompt's source content used several fields not present in the current FormEntry / FormSubtype schema. Per pre-execution Path A decision (parallel to Session 5 Block 1 and Session 6 Block 1 spatial behavior expansions), source content adapted to existing schema rather than schema extended:
+- Top-level `description: "..."` field on each form dropped (FormEntry schema does not include description; existing 36+ canonical forms use distinguishing_features + regional_period_notes for form identity).
+- Each subtype's `description: "<string>"` converted to `distinguishing_attributes: ["<same string>"]` (single-element array) per FormSubtype required field.
+- `dimensional_thresholds.overall_height_min/max` renamed to `height_min/max` (schema's height fields ARE overall-height); `seat_height_min/max` and `arm_height_min/max` (form_armchair only) moved to `notes` prose.
+- Form names normalized to lowercase per existing convention ("side chair", "armchair", "bar chair", "folding chair", "Windsor chair" preserving "Windsor" as proper noun, "ladderback chair") rather than prompt's Title Case.
+- form_windsor_chair stub line range corrected from prompt-asserted 4281-4309 (29 lines) to verified actual 4421-4430 (10-line skeletal stub). Lines shifted due to recent commits a5a047d, a53aaa2, 7396ab8.
+
+Zero canonical content meaningfully lost; all adaptations preserve information fidelity through Path A field-rewriting rather than content removal.
+
+---
+
 

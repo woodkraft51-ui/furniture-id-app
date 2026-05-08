@@ -4419,14 +4419,714 @@ export const FORMS: FormEntry[] = [
     migration_status: "partial",
   },
   {
+    id: "form_side_chair",
+    category: "form",
+    name: "side chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1650,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "One-person seating with seat and meaningful back support",
+      "Arms absent — structurally defining feature",
+      "Usually narrower and easier to move than armchairs",
+      "Often used in sets, especially around dining tables",
+      "Seat may be wood, slip-seat, cane, rush, splint, upholstered, or molded",
+      "Often fits under or near tables more easily than an armchair",
+      "Structure may be open-frame, upholstered, molded, metal, wicker, or mixed material",
+      "Period and style spans Queen Anne, Chippendale, Federal, Empire, Victorian, Colonial Revival, Mission, Art Deco, mid-century, and contemporary traditional production",
+    ],
+    subtypes: [
+      {
+        id: "subtype_side_chair_dining",
+        name: "Dining side chair",
+        distinguishing_attributes: [
+          "Upright armless chair scaled to dining table use; seat height commonly 17-19 inches.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_parlor",
+        name: "Parlor side chair",
+        distinguishing_attributes: [
+          "More decorative side chair, often upholstered or carved; usually used for formal occasional seating.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_hall",
+        name: "Hall side chair",
+        distinguishing_attributes: [
+          "Upright decorative side chair, often placed against a wall or in an entry context.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_bedroom",
+        name: "Bedroom side chair",
+        distinguishing_attributes: [
+          "Smaller or lighter occasional chair used in bedroom context.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_vanity",
+        name: "Vanity chair",
+        distinguishing_attributes: [
+          "Smaller dressing-table chair, often lighter, lower, or upholstered; core popularity c. 1890-1940.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_school",
+        name: "School chair",
+        distinguishing_attributes: [
+          "Durable institutional chair, often smaller or simplified; broad range c. 1850-present, core mass range c. 1880-1970.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_slipper",
+        name: "Slipper chair",
+        distinguishing_attributes: [
+          "Armless, low, often upholstered chair; may lean lounge-like, but remains a side-chair subtype when it lacks arms and does not become a full lounge form.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_cane_seat",
+        name: "Cane-seat side chair",
+        distinguishing_attributes: [
+          "Side chair with cane seat or cane back; cane may be original or replacement.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_rush_seat",
+        name: "Rush-seat side chair",
+        distinguishing_attributes: [
+          "Side chair with rush or fiber woven seat, common in vernacular and revival forms.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_slip_seat",
+        name: "Slip-seat side chair",
+        distinguishing_attributes: [
+          "Side chair with removable upholstered seat frame, common in Queen Anne, Chippendale, Federal, Colonial Revival, and later dining furniture.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_corner",
+        name: "Corner side chair",
+        distinguishing_attributes: [
+          "Armless or semi-enclosing diagonal chair intended for corner or angled sitting; core period range c. 1730-1780, revival c. 1870-1930.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_curule",
+        name: "Curule / X-frame side chair",
+        distinguishing_attributes: [
+          "Crossed-frame ceremonial, hall, library, Renaissance Revival, or Spanish Revival side chair; American revival range especially c. 1870-1930.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_windsor",
+        name: "Windsor side chair",
+        distinguishing_attributes: [
+          "Side chair with Windsor construction (spindle-back socketed into solid plank seat with splayed legs) but no arms. Per form-before-style architectural principle, classified as side chair primary identity with Windsor construction as subtype distinction. Core American period range c. 1740-1820.",
+        ],
+      },
+      {
+        id: "subtype_side_chair_ladderback",
+        name: "Ladderback side chair",
+        distinguishing_attributes: [
+          "Side chair with ladderback construction (horizontal slats between rear posts) but no arms. Per form-before-style architectural principle, classified as side chair primary identity with ladderback construction as subtype distinction. Strong vernacular, rural, Shaker, Southern, and Appalachian traditions.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs armchair: side chair has no arms; armchair has arm supports.",
+      "Vs stool: side chair has meaningful back support; stool usually lacks a back or has only minimal back support.",
+      "Vs slipper chair: slipper chair is lower and more lounge-oriented; side chair is broader. (Slipper chair classified as side_chair subtype per form-before-style — see subtypes list.)",
+      "Vs lounge chair: lounge chair is deeper, softer, lower, or more reclined; side chair is typically upright.",
+      "Vs bench: side chair is single-user; bench is elongated and often multi-user.",
+      "Vs Windsor chair: Windsor chair is a construction-tradition canonical form with distinctive spindle-and-plank-seat structure. Windsor side chair is classified as side_chair subtype per form-before-style; Windsor chair canonical form covers Windsor-construction variants without armchair, side-chair, or rocking-chair functional crossover (sack-back, comb-back, bow-back, fan-back, continuous-arm, rod-back, low-back, hoop-back).",
+      "Vs ladderback chair: Ladderback chair is a construction-tradition canonical form with horizontal slat back. Ladderback side chair is classified as side_chair subtype per form-before-style; Ladderback chair canonical form covers ladderback-construction variants without armchair or rocking-chair functional crossover (Shaker, Appalachian/Southern, rush-seat, splint-seat, cane-seat, child's).",
+    ],
+    dimensional_thresholds: {
+      width_min: 16,
+      width_max: 22,
+      height_min: 30,
+      height_max: 42,
+      depth_min: 16,
+      depth_max: 22,
+      weight_min: 8,
+      weight_max: 40,
+      notes:
+        "Seat height typically 17-19 inches for dining side chairs. Vanity chairs and slipper chairs may sit lower (14-17 inches). School chairs often smaller scale.",
+    },
+    common_aliases: [
+      "Dining chair",
+      "Armless chair",
+      "Accent chair",
+      "Occasional chair",
+      "Parlor chair",
+      "Hall chair",
+      "Bedroom chair",
+      "Vanity chair",
+      "Slipper chair",
+      "Side seat",
+    ],
+    regional_period_notes:
+      "Side chairs are heavily revived across nearly every American furniture period, making silhouette alone unreliable for dating. Date by joinery, underside construction, seat attachment, fasteners, toolmarks, finish, wear, and material evidence. Cane, rush, splint, upholstery, and slip seats are commonly replaced over time, so frame date and seat material date may differ. Continuous production across Queen Anne (1720-1755), Chippendale (1755-1790), Federal (1780-1820), Empire (1815-1840), Victorian (1840-1900), Colonial Revival (1870-1940), Mission (1895-1925), Art Deco (1920-1940), mid-century (1945-1970), and contemporary traditional means construction evidence must control dating across all production phases.",
+  },
+  {
+    id: "form_armchair",
+    category: "form",
+    name: "armchair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1650,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "One-person seating with seat, back support, and arms",
+      "Arms present — structurally defining feature",
+      "Usually wider than a side chair",
+      "May be used at table ends, desks, parlors, libraries, bedrooms, porches, or living rooms",
+      "May be wood-framed, upholstered, cane, rush, leather, wicker, metal, or mixed material",
+      "Arms may be open, upholstered, scrolled, paddle-shaped, curved, rounded, or continuous with the back",
+      "Often indicates hierarchy within a furniture suite (head/foot of dining table, primary armchair vs side chairs)",
+    ],
+    subtypes: [
+      {
+        id: "subtype_armchair_dining",
+        name: "Dining armchair / host chair",
+        distinguishing_attributes: [
+          "Armchair used at the head or foot of a dining table; seat height usually aligns with dining chairs (17-19 inches).",
+        ],
+      },
+      {
+        id: "subtype_armchair_library",
+        name: "Library armchair",
+        distinguishing_attributes: [
+          "Larger, more comfortable reading armchair, often leather or upholstered.",
+        ],
+      },
+      {
+        id: "subtype_armchair_desk",
+        name: "Desk armchair",
+        distinguishing_attributes: [
+          "Work-positioned armchair; may have swivel, casters, or adjustable height.",
+        ],
+      },
+      {
+        id: "subtype_armchair_bergere",
+        name: "Bergère-style armchair",
+        distinguishing_attributes: [
+          "Upholstered seat and back with exposed wood frame; French-inspired or revival vocabulary.",
+        ],
+      },
+      {
+        id: "subtype_armchair_open_arm",
+        name: "Open-arm armchair",
+        distinguishing_attributes: [
+          "Armchair with exposed arm supports and open sides.",
+        ],
+      },
+      {
+        id: "subtype_armchair_fully_upholstered",
+        name: "Fully upholstered armchair",
+        distinguishing_attributes: [
+          "Armchair with arms, back, and seat covered in upholstery.",
+        ],
+      },
+      {
+        id: "subtype_armchair_captains",
+        name: "Captain's chair",
+        distinguishing_attributes: [
+          "Rounded or continuous-arm chair, often office, dining, or Colonial Revival usage.",
+        ],
+      },
+      {
+        id: "subtype_armchair_curule",
+        name: "Curule / X-frame armchair",
+        distinguishing_attributes: [
+          "Crossed-frame chair with arms, often Renaissance Revival, Spanish Revival, library, hall, or ceremonial use.",
+        ],
+      },
+      {
+        id: "subtype_armchair_corner",
+        name: "Corner armchair",
+        distinguishing_attributes: [
+          "Diagonal or corner-oriented chair with arms or partial enclosing rails.",
+        ],
+      },
+      {
+        id: "subtype_armchair_windsor",
+        name: "Windsor armchair",
+        distinguishing_attributes: [
+          "Windsor construction with arms. Per form-before-style architectural principle, classified as armchair primary identity with Windsor construction as subtype distinction. Core American period range c. 1740-1820. Distinct from form_windsor_chair canonical form which covers Windsor-construction variants without functional crossover.",
+        ],
+      },
+      {
+        id: "subtype_armchair_ladderback",
+        name: "Ladderback armchair",
+        distinguishing_attributes: [
+          "Ladderback chair with arms. Per form-before-style architectural principle, classified as armchair primary identity with ladderback construction as subtype distinction. Strong vernacular, rural, Shaker, Southern, and Appalachian traditions.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs side chair: armchair has arms; side chair does not.",
+      "Vs lounge chair: lounge chair is posture-based (deeper seat, lower seat height, angled back); armchair is arm-based and may be upright.",
+      "Vs club chair: club chair is a deep upholstered armchair subtype, but classified under lounge_chair per architectural decision; armchair canonical covers broader arm-presence forms.",
+      "Vs wing chair: wing chair has upper side wings; armchair does not require wings.",
+      "Vs desk chair: desk chair is task-positioned and may swivel or roll; armchair may be domestic and static.",
+      "Vs recliner: recliner has mechanical reclining function; armchair only requires arms.",
+      "Vs Windsor chair: Windsor chair is a construction-tradition canonical form. Windsor armchair is classified as armchair subtype per form-before-style; Windsor chair canonical form covers Windsor-construction variants without armchair functional crossover.",
+      "Vs ladderback chair: Ladderback chair is a construction-tradition canonical form. Ladderback armchair is classified as armchair subtype per form-before-style; ladderback chair canonical form covers ladderback-construction variants without armchair functional crossover.",
+    ],
+    dimensional_thresholds: {
+      width_min: 22,
+      width_max: 36,
+      height_min: 30,
+      height_max: 45,
+      depth_min: 18,
+      depth_max: 36,
+      weight_min: 15,
+      weight_max: 100,
+      notes:
+        "Seat height typically 16-19 inches. Arm height typically 24-27 inches from floor. Large upholstered examples may exceed 125 pounds.",
+    },
+    common_aliases: [
+      "Arm chair",
+      "Easy chair",
+      "Reading chair",
+      "Library chair",
+      "Club chair",
+      "Host chair",
+      "Captain's chair",
+      "Occasional chair",
+      "Lounge chair",
+      "Tub chair",
+      "Barrel chair",
+    ],
+    regional_period_notes:
+      "Armchairs often mark hierarchical status within dining or parlor suites (head/foot armchairs paired with side chairs). Upholstered examples require separating frame date from upholstery date because upholstery is commonly replaced. \"Captain's chair,\" \"host chair,\" \"library chair,\" and \"easy chair\" are often use or retail terms rather than strict form names — the arms-presence structural identity controls canonical classification regardless of common-alias usage. Outdoor-use evidence should be treated as a material and wear layer, not as a separate armchair form unless the structure is truly Adirondack, glider, or another distinct outdoor canonical form.",
+  },
+  {
+    id: "form_bar_chair",
+    category: "form",
+    name: "bar chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1880,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Elevated seat height (counter-height 24-26 inches or bar-height 28-32 inches)",
+      "Meaningful back support — distinguishes from bar stool",
+      "Foot rail or footrest often present",
+      "Long legs, pedestal base, metal frame, or swivel base common",
+      "Sized for counter, bar, tavern, kitchen island, work counter, or commercial use",
+      "May have arms, but arms are not required",
+      "Often narrower than lounge or dining armchairs",
+      "Construction often metal, chrome, vinyl, or industrial materials in 20th century examples",
+    ],
+    subtypes: [
+      {
+        id: "subtype_bar_chair_counter_height",
+        name: "Counter-height bar chair",
+        distinguishing_attributes: [
+          "Seat commonly 24-26 inches; used with 34-36 inch counters.",
+        ],
+      },
+      {
+        id: "subtype_bar_chair_bar_height",
+        name: "Bar-height chair",
+        distinguishing_attributes: [
+          "Seat commonly 28-32 inches; used with 40-42 inch bars.",
+        ],
+      },
+      {
+        id: "subtype_bar_chair_swivel",
+        name: "Swivel bar chair",
+        distinguishing_attributes: [
+          "Bar chair with rotating seat or pedestal base; common in commercial and domestic 20th century examples.",
+        ],
+      },
+      {
+        id: "subtype_bar_chair_tavern",
+        name: "Tavern chair",
+        distinguishing_attributes: [
+          "Wood-framed, durable bar chair, often traditional or commercial vocabulary.",
+        ],
+      },
+      {
+        id: "subtype_bar_chair_soda_fountain",
+        name: "Soda-fountain chair",
+        distinguishing_attributes: [
+          "Metal, chrome, vinyl, pedestal, or fixed base bar chair; especially c. 1920-1960.",
+        ],
+      },
+      {
+        id: "subtype_bar_chair_kitchen_island",
+        name: "Kitchen island chair",
+        distinguishing_attributes: [
+          "Domestic elevated chair, especially late 20th century to present; counter-height typical.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs stool: bar chair has meaningful back support; stool may lack back support.",
+      "Vs bar stool: bar stool is usually backless or minimally backed; bar chair has a chair-like back.",
+      "Vs side chair: side chair is standard seated height (16-19 inches); bar chair is elevated (24-32 inches).",
+      "Vs armchair: armchair is defined by arms; bar chair is defined by elevated height and back support.",
+      "Vs counter stool: counter stool may be backless; counter-height bar chair has a back.",
+      "Vs dining chair: dining chair is table-height (16-19 inches seat); bar chair is counter or bar-height.",
+    ],
+    dimensional_thresholds: {
+      width_min: 16,
+      width_max: 24,
+      height_min: 36,
+      height_max: 48,
+      depth_min: 16,
+      depth_max: 24,
+      weight_min: 12,
+      weight_max: 60,
+      notes:
+        "Counter seat height 24-26 inches; bar seat height 28-32 inches. Heavy commercial swivel examples may exceed 75 pounds.",
+    },
+    common_aliases: [
+      "Bar stool with back",
+      "Backed bar stool",
+      "Counter chair",
+      "Counter-height chair",
+      "Bar-height chair",
+      "Pub chair",
+      "Tavern chair",
+      "Island chair",
+      "Swivel bar chair",
+    ],
+    regional_period_notes:
+      "Bar chairs are especially tied to commercial, restaurant, tavern, soda-fountain, and later domestic kitchen-island use. The form emerges with American commercial bar/counter culture in the late 19th century and expands through 20th century commercial and domestic kitchen evolution. Date by base construction, metal type, swivel hardware, upholstery material, fasteners, finish, and wear. Do not back-classify elevated modern kitchen chairs into early forms merely because they use traditional styling — early bar chairs are tied to specific commercial contexts (taverns, soda fountains) and modern domestic kitchen-island bar chairs are post-1970 forms.",
+  },
+  {
+    id: "form_folding_chair",
+    category: "form",
+    name: "folding chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1700,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Single-user seating with hinged, pivoting, scissor, or collapsible frame",
+      "Designed for portability or compact storage",
+      "Foldability is structural, not merely visual",
+      "May be wood, metal, canvas, leather, plastic, or mixed material",
+      "Seat and back may be rigid, slatted, woven, fabric, or sling-based",
+      "Often lighter than permanent chairs",
+      "Construction supports repeated folding/unfolding cycles",
+    ],
+    subtypes: [
+      {
+        id: "subtype_folding_chair_standard",
+        name: "Standard folding chair",
+        distinguishing_attributes: [
+          "Simple hinged folding chair, often wood, metal, plastic, or mixed material.",
+        ],
+      },
+      {
+        id: "subtype_folding_chair_directors",
+        name: "Director's chair",
+        distinguishing_attributes: [
+          "X-frame or scissor frame with fabric sling seat/back; broad range c. 1890-present, core popular c. 1920-present.",
+        ],
+      },
+      {
+        id: "subtype_folding_chair_campaign",
+        name: "Campaign folding chair",
+        distinguishing_attributes: [
+          "Portable military, travel, or field-use folding chair; often leather, canvas, brass, wood, or metal.",
+        ],
+      },
+      {
+        id: "subtype_folding_chair_lawn",
+        name: "Lawn folding chair",
+        distinguishing_attributes: [
+          "Outdoor portable folding chair, often metal, aluminum, webbing, vinyl strap, or fabric.",
+        ],
+      },
+      {
+        id: "subtype_folding_chair_institutional",
+        name: "Institutional folding chair",
+        distinguishing_attributes: [
+          "Church, school, civic, funeral home, or event seating; mass range c. 1870-present.",
+        ],
+      },
+      {
+        id: "subtype_folding_chair_card_table",
+        name: "Card-table folding chair",
+        distinguishing_attributes: [
+          "Domestic or game-table seating folding chair, often sold in sets.",
+        ],
+      },
+      {
+        id: "subtype_folding_chair_curule",
+        name: "Curule / X-frame folding chair",
+        distinguishing_attributes: [
+          "Ceremonial or revival crossed-frame folding chair, common in Renaissance Revival and decorator forms.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs side chair: side chair may be fixed; folding chair has collapsible structure.",
+      "Vs director's chair: director's chair is a folding chair subtype with sling seat/back and X-frame behavior.",
+      "Vs butterfly chair: butterfly chair has a sling suspended from a shaped frame, often not chair-folding in the same way; classified as separate canonical form (Modern Casual Seating).",
+      "Vs campaign chair: campaign chair is a portable use subtype; folding chair canonical is broader (covers institutional, lawn, card-table, ceremonial variants).",
+      "Vs lawn chair: lawn chair may fold or not; folding chair is defined by collapsibility.",
+      "Vs stool: folding stool may lack a back; folding chair has back support.",
+    ],
+    dimensional_thresholds: {
+      width_min: 15,
+      width_max: 22,
+      height_min: 28,
+      height_max: 38,
+      depth_min: 16,
+      depth_max: 24,
+      weight_min: 5,
+      weight_max: 35,
+      notes:
+        "Seat height typically 16-19 inches. Folded thickness commonly 2-8 inches.",
+    },
+    common_aliases: [
+      "Folding seat",
+      "Collapsible chair",
+      "Camp chair",
+      "Campaign chair",
+      "Director's chair",
+      "Event chair",
+      "Church chair",
+      "Card chair",
+      "Lawn chair",
+    ],
+    regional_period_notes:
+      "Folding structures exist in earlier ceremonial, campaign, and travel furniture, but mass American folding seating expands strongly in the late 19th and 20th centuries. Outdoor use should be supported by materials, finish, hardware, and wear, not merely current use. Many modern folding chairs use revival silhouettes without period construction; date by hinge mechanism, metal type, fasteners, fabric, and frame construction.",
+  },
+  {
+    id: "form_ladderback_chair",
+    category: "form",
+    name: "ladderback chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1650,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Horizontal slats between rear posts — structurally defining",
+      "Rear posts extend above the seat",
+      "Post-and-rung construction common",
+      "Woven rush, cane, splint, tape, or wood seats common",
+      "Often lighter and more vernacular than formal upholstered chairs",
+      "Slat count, slat shape, post turning, and seat weaving are diagnostic",
+      "Strong rural, Shaker, Southern, Appalachian, and revival associations",
+    ],
+    subtypes: [
+      {
+        id: "subtype_ladderback_chair_shaker",
+        name: "Shaker ladderback",
+        distinguishing_attributes: [
+          "Restrained ladderback form with woven tape seat, carefully proportioned; attribution requires proof from maker marks or community provenance.",
+        ],
+      },
+      {
+        id: "subtype_ladderback_chair_appalachian_southern",
+        name: "Appalachian / Southern ladderback",
+        distinguishing_attributes: [
+          "Rural post-and-rung ladderback construction, often hickory, oak, maple, or mixed woods. Strong vernacular tradition.",
+        ],
+      },
+      {
+        id: "subtype_ladderback_chair_rush_seat",
+        name: "Rush-seat ladderback",
+        distinguishing_attributes: [
+          "Ladderback with rush or fiber woven seat.",
+        ],
+      },
+      {
+        id: "subtype_ladderback_chair_splint_seat",
+        name: "Splint-seat ladderback",
+        distinguishing_attributes: [
+          "Ladderback with wood splint woven seat.",
+        ],
+      },
+      {
+        id: "subtype_ladderback_chair_cane_seat",
+        name: "Cane-seat ladderback",
+        distinguishing_attributes: [
+          "Ladderback with cane seat or cane panel.",
+        ],
+      },
+      {
+        id: "subtype_ladderback_chair_childs",
+        name: "Child's ladderback",
+        distinguishing_attributes: [
+          "Ladderback chair at reduced scale for children's use.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs Windsor chair: ladderback uses horizontal slats between posts; Windsor uses spindles socketed into a plank seat. Construction-tradition canonical forms parallel to each other.",
+      "Vs side chair: side chair is functional armless structure; ladderback is construction system. Per form-before-style, armless ladderback-construction chairs classified as subtype_side_chair_ladderback.",
+      "Vs armchair: armchair is functional arms-presence structure; ladderback is construction system. Per form-before-style, ladderback-construction chairs with arms classified as subtype_armchair_ladderback.",
+      "Vs rocking chair: rocking chair is functional motion-based structure; ladderback is construction system. Per form-before-style, ladderback-construction chairs on rockers classified as subtype_rocking_chair_ladderback (canonical authoring pending in Motion Seating batch).",
+      "Vs Shaker chair: Shaker is an attribution or making tradition; ladderback is the broader construction canonical form. Shaker ladderbacks are subtype_ladderback_chair_shaker.",
+      "Vs slat-back dining chair: slat-back describes back structure; dining describes use. The construction-tradition identity controls canonical classification.",
+      "Vs rush-seat chair: rush seat is a seat material applied across multiple chair forms, not a canonical form. Rush-seat ladderbacks are subtype_ladderback_chair_rush_seat.",
+    ],
+    dimensional_thresholds: {
+      width_min: 16,
+      width_max: 25,
+      height_min: 34,
+      height_max: 48,
+      depth_min: 16,
+      depth_max: 22,
+      weight_min: 8,
+      weight_max: 45,
+      notes: "Seat height typically 16-18 inches.",
+    },
+    common_aliases: [
+      "Slat-back chair",
+      "Ladder chair",
+      "Country chair",
+      "Rush-seat chair",
+      "Splint-seat chair",
+      "Shaker chair",
+      "Post-and-rung chair",
+    ],
+    regional_period_notes:
+      "Ladderbacks have strong vernacular, rural, Shaker, Southern, Appalachian, and revival traditions. Core early/vernacular range c. 1700-1900; Shaker and rural continuation c. 1800-1930; revival and reproduction range c. 1870-present. Seat weaving (rush, splint, cane, tape) is often replaced over time. Date by post turning, rung joinery, wear at foot and seat rails, toolmarks, fasteners, finish, and weaving attachment rather than the presence of slats alone. Per form-before-style architectural principle, this canonical form covers ladderback-construction variants without armchair or rocking-chair functional crossover; ladderback armchairs and rockers are classified under their respective functional canonical forms.",
+  },
+  {
     id: "form_windsor_chair",
     category: "form",
     name: "Windsor chair",
-    parent_category: "seating",
-    date_floor: 1700,
-    positive_authority: 7,
-    hard_negative_authority: 7,
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1720,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
     migration_status: "partial",
+    distinguishing_features: [
+      "Solid plank seat — structurally defining",
+      "Back spindles socketed into the seat",
+      "Legs socketed directly into the seat",
+      "Splayed legs common",
+      "Turned components common",
+      "Bow, hoop, comb, fan, sack-back, rod-back, or continuous-arm backs possible",
+      "Frame is not a conventional rail-and-stile chair back",
+      "Strong American 18th-19th century tradition with Colonial Revival continuation",
+    ],
+    subtypes: [
+      {
+        id: "subtype_windsor_chair_sack_back",
+        name: "Sack-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with continuous arm rail forming a rounded back structure.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_comb_back",
+        name: "Comb-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with high back and comb-like crest rail.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_bow_back",
+        name: "Bow-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with bow-shaped top rail defining the back outline.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_fan_back",
+        name: "Fan-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with spindles flaring outward in fan arrangement.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_continuous_arm",
+        name: "Continuous-arm Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with arm rail visually or structurally continuous around the back.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_rod_back",
+        name: "Rod-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with simpler rod or spindle back.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_low_back",
+        name: "Low-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with lower back and compact profile.",
+        ],
+      },
+      {
+        id: "subtype_windsor_chair_hoop_back",
+        name: "Hoop-back Windsor",
+        distinguishing_attributes: [
+          "Windsor chair with rounded hoop-like back frame.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs ladderback chair: Windsor uses socketed spindles and plank seat; ladderback uses horizontal slats between rear posts. Construction-tradition canonical forms parallel to each other.",
+      "Vs side chair: side chair is functional armless structure; Windsor is construction system. Per form-before-style, armless Windsor-construction chairs classified as subtype_side_chair_windsor.",
+      "Vs armchair: armchair is functional arms-presence structure; Windsor is construction system. Per form-before-style, Windsor-construction chairs with arms classified as subtype_armchair_windsor.",
+      "Vs rocking chair: rocking chair is functional motion-based structure; Windsor is construction system. Per form-before-style, Windsor-construction chairs on rockers classified as subtype_rocking_chair_windsor (canonical authoring pending in Motion Seating batch).",
+      "Vs spindle-back chair: spindle-back is a broader description; Windsor specifically requires plank seat and socketed spindle construction.",
+      "Vs Windsor-style chair: later Colonial Revival reproductions imitate the form but may show modern machining, fasteners, finish, and toolmarks. Construction evidence controls dating.",
+    ],
+    dimensional_thresholds: {
+      width_min: 18,
+      width_max: 28,
+      height_min: 32,
+      height_max: 48,
+      depth_min: 16,
+      depth_max: 22,
+      weight_min: 10,
+      weight_max: 45,
+      notes: "Seat height typically 16-18 inches.",
+    },
+    common_aliases: [
+      "Spindle chair",
+      "Sack-back chair",
+      "Bow-back chair",
+      "Comb-back chair",
+      "Fan-back chair",
+      "Hoop-back chair",
+      "Colonial chair",
+    ],
+    regional_period_notes:
+      "Windsor chairs are important in 18th- and 19th-century American furniture, especially Philadelphia, New England, New York, and regional production centers. Core American period range c. 1740-1820 with 19th century continuation through c. 1900. Heavily reproduced in Colonial Revival (c. 1870-present) and contemporary traditional production. Original paint, seat shaping, wedged joints, underside wear, turnings, and toolmarks are critical for dating. Per form-before-style architectural principle, this canonical form covers Windsor-construction variants without armchair, side-chair, or rocking-chair functional crossover; Windsor armchairs, side chairs, and rockers are classified under their respective functional canonical forms.",
   },
   {
     id: "form_rocking_chair",
