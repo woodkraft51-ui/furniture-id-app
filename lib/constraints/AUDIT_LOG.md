@@ -628,4 +628,24 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 5 — forms.ts — Desks family canonical authoring Batch 3: Kneehole Workstations sub-cluster (5 forms)
+
+**Authoring scope.** Third batch of Desks family canonical authoring covering the Kneehole Workstations sub-cluster (spatial_kneehole_workstations spatial behavior). 5 new canonical forms authored: form_kneehole_desk, form_pedestal_desk, form_davenport_desk, form_executive_desk, form_credenza_desk. Pattern parallels Desks Batches 1-2 in scope and structure. Source content: Andy's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory:** 9 subtypes on form_kneehole_desk, 7 subtypes on form_pedestal_desk, 5 subtypes on form_davenport_desk, 6 subtypes on form_executive_desk, 5 subtypes on form_credenza_desk. Total Batch 3 subtypes: 32.
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-2):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for scale variations within the spatial behavior (Davenport variants smaller; executive variants larger). Form names lowercased per existing canonical convention; proper nouns "Davenport", "Georgian", "Queen Anne", "Chippendale", "Federal", "Victorian" preserved.
+
+**form_pedestal_desk consolidation pattern applied:** form_pedestal_desk carries the largest common_aliases list in the Desks family — 38 aliases covering use-context variants (bank desk, government desk, lawyer's desk, tanker desk, foreman's desk, etc.) per the Session 6 Block 1 Framing A consolidation decision. Use-context variants consolidate to this canonical form rather than creating duplicate canonical forms; structural distinctness (pedestal-flanked-kneehole structure) controls canonical classification.
+
+**form_executive_desk configuration-pattern note captured in regional_period_notes:** Return Desk and Bridge Desk arrangements are documented in regional_period_notes prose as office-arrangement configurations rather than as separate canonical forms or subtypes per the Session 6 Block 1 architectural decision. A return desk is a perpendicular secondary work surface positioned next to the primary executive desk; a bridge desk connects the primary desk to a credenza placed behind it.
+
+**No anti_classification_guidance population in Batch 3.** None of the 5 Kneehole Workstations forms have crisp date boundaries warranting structured schema field population.
+
+**No legacy stub retrofits in Batch 3.** form_secretary_desk and form_slant_front_desk stubs (lines 4399-4420) belong to the Fall-Front/Drop-Front Enclosed grouping and will retrofit in place during Batch 4.
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** Insertion point immediately before form_rocking_chair stub. Cumulative file order in Desks region after Block 5: Seating Batch 1 cluster → Desks Batch 1 cluster (3 forms from Block 3) → Desks Batch 2 cluster (4 forms from Block 4) → Desks Batch 3 cluster (5 forms from Block 5) → Seating stubs → other stubs.
+
+---
+
 
