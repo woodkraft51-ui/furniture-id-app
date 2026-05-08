@@ -711,4 +711,35 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 9 — forms.ts — Desks family canonical authoring Bundle 1 covering Batches 7-9 (12 forms across three spatial groupings)
+
+**Bundle architectural decision (Session 6 evening 2026-05-08):** Mike requested bundling six remaining Desks batches into two larger Claude Code operations to reduce round-trip overhead. Bundle 1 (this Block) covers Batches 7-9 sequentially in a single operation. Bundle 2 (Block 10) will cover Batches 10-12.
+
+**Authoring scope.** Bundle 1 covers 12 new canonical forms across three spatial behaviors:
+- Batch 7 (spatial_shared_double_sided_workstations, 2 forms): form_partners_desk, form_benching_desk
+- Batch 8 (spatial_commercial_institutional_workstations, 7 forms): form_clerks_desk, form_standing_desk, form_school_desk, form_teachers_desk, form_reception_desk, form_lectern_desk, form_transaction_counter_desk
+- Batch 9 (spatial_technical_drafting_professional_workstations, 3 forms): form_workbench_desk, form_artists_desk, form_laboratory_desk
+
+Source content: Mike's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory by batch:**
+- Batch 7: 9 subtypes on form_partners_desk, 7 subtypes on form_benching_desk = 16 subtypes
+- Batch 8: 5 + 10 + 11 + 5 + 5 + 6 + 6 = 48 subtypes across the 7 commercial/institutional forms
+- Batch 9: 5 + 5 + 4 = 14 subtypes across the 3 technical forms
+- Bundle 1 total: 78 subtypes across 12 forms
+
+**form_reception_desk and form_transaction_counter_desk consolidation patterns applied:** Both forms carry use-context-variant aliases (hotel/concierge/check-in for reception; cashier/teller/host stand/sales/order/customer service for transaction) consolidated as common_aliases per the Session 6 Block 1 Framing A consolidation decision. Structural distinctness (counter-style configuration with public-facing customer side and reception-vs-transaction prioritization) controls canonical classification.
+
+**form_workbench_desk vs form_converted_industrial_desk architectural distinction captured:** form_workbench_desk regional_period_notes explicitly distinguishes original-construction workbench desks (this canonical form) from form_converted_industrial_desk (Batch 12 Convertible/Repurposed grouping) which covers workbenches/factory carts/machine bases/tool chests converted to desk use post-original-construction. This parallels the form_armoire_desk vs form_converted_cabinet_desk distinction captured in Block 8.
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-6):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for use-specific dimensional patterns (counter heights, standing/sit-stand ranges, tilting surface degrees, modular configurations). Form names lowercased per existing canonical convention. No proper-noun preservation needed in this bundle (no maker-named forms).
+
+**No anti_classification_guidance population in Bundle 1.** None of the 12 forms have crisp date boundaries warranting structured schema field population. Bundle 2 (Block 10) will populate the field for form_computer_desk (c. 1975 emergence with microcomputer adoption) and form_modular_workstation_desk (c. 1960 emergence with Action Office / systems furniture) per Mike's D4 architectural decision.
+
+**No legacy stub retrofits in Bundle 1.** Zero remaining canonical-pending Desks stubs after Block 6 (form_secretary_desk and form_slant_front_desk retrofits). All future Desks batches are pure new-form insertions.
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** Insertion point immediately before form_rocking_chair stub. All 12 Bundle 1 forms inserted contiguously in single Edit operation.
+
+---
+
 
