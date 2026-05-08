@@ -648,4 +648,27 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 6 — forms.ts — Desks family canonical authoring Batch 4: Fall-Front/Drop-Front Enclosed Desks sub-cluster (6 forms including 2 stub retrofits)
+
+**Authoring scope.** Most architecturally complex Desks family canonical authoring batch — combines 4 new canonical form insertions with 2 legacy stub retrofits. 6 forms in scope: form_slant_front_desk (RETROFIT), form_secretary_desk (RETROFIT), form_fall_front_desk (NEW), form_escritoire (NEW), form_secretaire_a_abattant (NEW), form_bureau_a_gradins (NEW). All 6 forms reference family_desks and spatial_fall_front_drop_front_enclosed_desks. Source content: Andy's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory:** 3 subtypes on form_slant_front_desk, 9 subtypes on form_secretary_desk, 6 subtypes on form_fall_front_desk, 5 subtypes on form_escritoire, 3 subtypes on form_secretaire_a_abattant, 3 subtypes on form_bureau_a_gradins. Total Batch 4 subtypes: 29.
+
+**Two stub retrofits in place (parallel to form_windsor_chair retrofit pattern from Seating Batch 1, commit f1d57d0):**
+- form_secretary_desk retrofitted in place at lines 4399-4409 (preserved form_id, replaced skeletal stub content with full canonical content). Added family_id: "family_desks" and spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks" which were absent on the stub. Added full canonical content with 9 subtypes covering chest secretary, bonnet-top, block-front, breakfront, plus period subtypes (Chippendale, Federal, Empire, Victorian, revival). Date envelope expanded from stub's c. 1700-1999 to c. 1700-2030. Authority levels updated from 7/7 to 8/8.
+- form_slant_front_desk retrofitted in place at lines 4410-4420 (same pattern). Added family_id and spatial_behavior_id. Added full distinguishing_features, subtypes (3 entries), dimensional_thresholds, cousin_form_contrasts, common_aliases, regional_period_notes. Date envelope expanded from stub's c. 1700-1899 to c. 1690-2030. Authority levels updated from 7/7 to 8/8.
+- Both retrofits preserve form_id as the canonical identifier; no form_id changes. Stub line ranges as verified during planning: form_secretary_desk at 4399-4409 (first), form_slant_front_desk at 4410-4420 (second) — corrected from prompt-asserted reverse ordering.
+
+**4 new canonical form insertions:** form_fall_front_desk, form_escritoire, form_secretaire_a_abattant, form_bureau_a_gradins inserted contiguously immediately before form_rocking_chair stub per Option A insertion anchor pattern locked from Block 3.
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-3):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for closed-vs-open dimensional distinctions. Form names lowercased per existing canonical convention; French diacritical marks preserved in "secrétaire à abattant" and "bureau à gradins"; English proper nouns "Chippendale", "Federal", "Empire", "Victorian", "French" preserved in subtype names.
+
+**No anti_classification_guidance population in Batch 4.** None of the 6 Fall-Front/Drop-Front Enclosed forms have crisp date boundaries warranting structured schema field population.
+
+**No more legacy Desks stubs after Batch 4.** With form_secretary_desk and form_slant_front_desk retrofits complete, no remaining canonical-pending Desks family stubs in forms.ts. Future Desks batches (Batches 5-12) are pure new-form insertions with no retrofit operations.
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** The 4 new canonical forms inserted immediately before form_rocking_chair stub. The 2 stub retrofits operate at original stub locations. Cumulative file order in Desks region after Block 6: form_secretary_desk (retrofitted at 4399) → form_slant_front_desk (retrofitted at 4410) → Seating Batch 1 cluster → Desks Batch 1 cluster → Desks Batch 2 cluster → Desks Batch 3 cluster → Desks Batch 4 cluster (4 new forms) → Seating stubs → other stubs.
+
+---
+
 

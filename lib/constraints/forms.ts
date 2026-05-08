@@ -4401,22 +4401,207 @@ export const FORMS: FormEntry[] = [
     category: "form",
     name: "secretary desk",
     parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1700,
-    date_ceiling: 1999,
-    positive_authority: 7,
-    hard_negative_authority: 7,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
     migration_status: "partial",
+    distinguishing_features: [
+      "Hinged, falling, sloping, or cabinet-front writing access",
+      "Interior fitted with pigeonholes, small drawers, document slots, or shelves",
+      "Writing surface often formed by lid, fall, or pull-out support",
+      "Exterior conceals working interior when closed",
+      "May combine desk function with bookcase, chest, or cabinet storage",
+      "Open/closed state is critical to identification",
+    ],
+    subtypes: [
+      {
+        id: "subtype_secretary_desk_chest_secretary",
+        name: "chest secretary",
+        distinguishing_attributes: [
+          "Alias cluster covering chest-on-chest secretary, bureau secretary. Identify by the shared structural behavior rather than the wording of the market name. Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_bonnet_top",
+        name: "bonnet-top secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_block_front",
+        name: "block-front secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_breakfront",
+        name: "breakfront secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_chippendale",
+        name: "Chippendale secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_federal",
+        name: "Federal secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_empire",
+        name: "Empire secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_victorian",
+        name: "Victorian secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretary_desk_revival",
+        name: "revival secretary",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 60,
+      height_max: 96,
+      width_min: 30,
+      width_max: 60,
+      depth_min: 16,
+      depth_max: 30,
+      weight_min: 100,
+      weight_max: 400,
+      notes:
+        "Writing height when open: 28-31 inches. Secretary desks (with bookcase superstructure) typically substantial overall height 72-96 inches. Open depth may increase when fall deployed.",
+    },
+    cousin_form_contrasts: [
+      "Slant-front vs. fall-front: slant-front has an angled closed face; fall-front may be vertical when closed.",
+      "Secretary vs. escritoire: secretary often combines desk with bookcase or chest storage; escritoire is more cabinet-like.",
+      "Secrétaire à abattant vs. generic fall-front: the abattant is usually a tall French cabinet form with a vertical fall.",
+      "Bureau à gradins vs. hutch desk: gradins are desk-born tiers or galleries; hutch desks use larger upper storage units.",
+      "Secretary vs. bookcase desk: bookcase presence alone is not enough; a desk interior or writing fall must be present.",
+    ],
+    common_aliases: [
+      "Secretary desk",
+      "Secretary bookcase",
+      "Secretary bureau",
+      "Secretary cabinet",
+      "Desk-and-bookcase",
+      "Bureau bookcase",
+      "Slant-front secretary",
+      "Fall-front secretary",
+      "Drop-front secretary",
+      "Bonnet-top secretary",
+      "Block-front secretary",
+      "Breakfront secretary",
+      "Chippendale secretary",
+      "Federal secretary",
+      "Empire secretary",
+      "Victorian secretary",
+      "Revival secretary",
+      "Secretary chest",
+      "Chest secretary",
+      "Chest-on-chest secretary",
+      "Bureau secretary",
+      "Bookcase desk",
+      "Desk bookcase",
+    ],
+    regional_period_notes:
+      "Enclosed writing furniture of the secretary desk family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. Combined desk-plus-bookcase superstructure is the structurally defining feature. Date envelope: c. 1700-present broad use; strongest American diagnostic range c. 1720-1840 for period secretary/bookcase forms and c. 1870-present for revival, domestic, and bookcase-desk variants. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Revival production is common. Period claims require age-consistent secondary woods, joinery, hardware, toolmarks, oxidation, and finish evidence rather than the enclosing mechanism alone.",
   },
   {
     id: "form_slant_front_desk",
     category: "form",
     name: "slant-front desk",
     parent_category: "desk",
-    date_floor: 1700,
-    date_ceiling: 1899,
-    positive_authority: 7,
-    hard_negative_authority: 7,
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
+    date_floor: 1690,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
     migration_status: "partial",
+    distinguishing_features: [
+      "Hinged, falling, sloping, or cabinet-front writing access",
+      "Interior fitted with pigeonholes, small drawers, document slots, or shelves",
+      "Writing surface often formed by lid, fall, or pull-out support",
+      "Exterior conceals working interior when closed",
+      "May combine desk function with bookcase, chest, or cabinet storage",
+      "Open/closed state is critical to identification",
+    ],
+    subtypes: [
+      {
+        id: "subtype_slant_front_desk_low",
+        name: "low slant-front desk",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_slant_front_desk_high",
+        name: "high slant-front desk",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_slant_front_desk_bureau_on_frame",
+        name: "bureau on frame",
+        distinguishing_attributes: [
+          "Distinguished as a bureau on frame variant by its proportions, storage arrangement, work-surface behavior, and context within the parent slant-front desk form.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 36,
+      height_max: 84,
+      width_min: 24,
+      width_max: 60,
+      depth_min: 12,
+      depth_max: 30,
+      weight_min: 60,
+      weight_max: 350,
+      notes:
+        "Writing height when open: 28-31 inches. Tall cabinet and secretary forms often 60-90 inches overall height. Open depth may increase to 28-42 inches when fall/slant deployed.",
+    },
+    cousin_form_contrasts: [
+      "Slant-front vs. fall-front: slant-front has an angled closed face; fall-front may be vertical when closed.",
+      "Secretary vs. escritoire: secretary often combines desk with bookcase or chest storage; escritoire is more cabinet-like.",
+      "Secrétaire à abattant vs. generic fall-front: the abattant is usually a tall French cabinet form with a vertical fall.",
+      "Bureau à gradins vs. hutch desk: gradins are desk-born tiers or galleries; hutch desks use larger upper storage units.",
+      "Secretary vs. bookcase desk: bookcase presence alone is not enough; a desk interior or writing fall must be present.",
+    ],
+    common_aliases: [
+      "Slant-front desk",
+      "Slant-lid desk",
+      "Slant-top desk",
+      "Sloped-front desk",
+      "Bureau desk (slant-front context)",
+      "Bureau on frame",
+      "Low slant-front desk",
+      "High slant-front desk",
+    ],
+    regional_period_notes:
+      "Enclosed writing furniture of the slant-front desk family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. Date envelope: c. 1690-present broad use; strongest American diagnostic range c. 1720-1820 for period examples and c. 1870-1940 for revival production; later pieces are generally revival or decorative secretary variants. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Revival production is common. Period claims require age-consistent secondary woods, joinery, hardware, toolmarks, oxidation, and finish evidence rather than the enclosing mechanism alone.",
   },
   {
     id: "form_side_chair",
@@ -6324,6 +6509,330 @@ export const FORMS: FormEntry[] = [
     ],
     regional_period_notes:
       "Low, storage-forward office desk or secondary work surface that combines cabinet storage with a usable writing, computer, or support surface, often used behind or beside a primary desk. Date envelope: c. 1920-present broad use; strongest diagnostic range c. 1950-present for office-suite and computer-compatible credenza workstations. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_fall_front_desk",
+    category: "form",
+    name: "fall-front desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
+    date_floor: 1700,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Hinged, falling, sloping, or cabinet-front writing access",
+      "Interior fitted with pigeonholes, small drawers, document slots, or shelves",
+      "Writing surface often formed by lid, fall, or pull-out support",
+      "Exterior conceals working interior when closed",
+      "May combine desk function with bookcase, chest, or cabinet storage",
+      "Open/closed state is critical to identification",
+    ],
+    subtypes: [
+      {
+        id: "subtype_fall_front_desk_drop_front",
+        name: "drop-front desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface.",
+        ],
+      },
+      {
+        id: "subtype_fall_front_desk_fall_lid",
+        name: "fall-lid desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface.",
+        ],
+      },
+      {
+        id: "subtype_fall_front_desk_folding_front",
+        name: "folding-front desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface.",
+        ],
+      },
+      {
+        id: "subtype_fall_front_desk_cabinet",
+        name: "fall-front cabinet desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype.",
+        ],
+      },
+      {
+        id: "subtype_fall_front_desk_wall_mounted",
+        name: "wall-mounted fall-front desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype.",
+        ],
+      },
+      {
+        id: "subtype_fall_front_desk_compact",
+        name: "compact fall-front desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 36,
+      height_max: 84,
+      width_min: 24,
+      width_max: 60,
+      depth_min: 12,
+      depth_max: 30,
+      weight_min: 60,
+      weight_max: 350,
+      notes:
+        "Writing height when open: 28-31 inches. Tall cabinet and secretary forms often 60-90 inches overall. Open depth may increase to 28-42 inches when fall deployed.",
+    },
+    cousin_form_contrasts: [
+      "Slant-front vs. fall-front: slant-front has an angled closed face; fall-front may be vertical when closed.",
+      "Secretary vs. escritoire: secretary often combines desk with bookcase or chest storage; escritoire is more cabinet-like.",
+      "Secrétaire à abattant vs. generic fall-front: the abattant is usually a tall French cabinet form with a vertical fall.",
+      "Bureau à gradins vs. hutch desk: gradins are desk-born tiers or galleries; hutch desks use larger upper storage units.",
+      "Secretary vs. bookcase desk: bookcase presence alone is not enough; a desk interior or writing fall must be present.",
+    ],
+    common_aliases: [
+      "Fall-front desk",
+      "Drop-front desk",
+      "Fall-lid desk",
+      "Folding-front desk",
+      "Fall-front cabinet desk",
+      "Wall-mounted fall-front desk",
+      "Compact fall-front desk",
+    ],
+    regional_period_notes:
+      "Enclosed writing furniture of the fall-front desk family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. Vertical hinged front panel that drops forward is the structurally defining feature, distinguished from slant-front by the closed-face geometry. European Continental tradition. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-present across cabinet, wall, compact, and secretary-related forms; modern examples are often wall-mounted or compact apartment desks. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Revival production is common. Period claims require age-consistent secondary woods, joinery, hardware, toolmarks, oxidation, and finish evidence rather than the enclosing mechanism alone.",
+  },
+  {
+    id: "form_escritoire",
+    category: "form",
+    name: "escritoire",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
+    date_floor: 1700,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Hinged, falling, sloping, or cabinet-front writing access",
+      "Interior fitted with pigeonholes, small drawers, document slots, or shelves",
+      "Writing surface often formed by lid, fall, or pull-out support",
+      "Exterior conceals working interior when closed",
+      "May combine desk function with bookcase, chest, or cabinet storage",
+      "Open/closed state is critical to identification",
+    ],
+    subtypes: [
+      {
+        id: "subtype_escritoire_french",
+        name: "French escritoire",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_escritoire_cabinet",
+        name: "cabinet escritoire",
+        distinguishing_attributes: [
+          "Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype. Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_escritoire_fall_front",
+        name: "fall-front escritoire",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_escritoire_tall",
+        name: "tall escritoire",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_escritoire_compact",
+        name: "compact escritoire",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 36,
+      height_max: 84,
+      width_min: 24,
+      width_max: 60,
+      depth_min: 12,
+      depth_max: 30,
+      weight_min: 60,
+      weight_max: 350,
+      notes:
+        "Writing height when open: 28-31 inches. French cabinet writing furniture variants. Tall variants 60-90 inches overall.",
+    },
+    cousin_form_contrasts: [
+      "Slant-front vs. fall-front: slant-front has an angled closed face; fall-front may be vertical when closed.",
+      "Secretary vs. escritoire: secretary often combines desk with bookcase or chest storage; escritoire is more cabinet-like.",
+      "Secrétaire à abattant vs. generic fall-front: the abattant is usually a tall French cabinet form with a vertical fall.",
+      "Bureau à gradins vs. hutch desk: gradins are desk-born tiers or galleries; hutch desks use larger upper storage units.",
+      "Secretary vs. bookcase desk: bookcase presence alone is not enough; a desk interior or writing fall must be present.",
+    ],
+    common_aliases: [
+      "Escritoire",
+      "French escritoire",
+      "Cabinet escritoire",
+      "Fall-front escritoire",
+      "Tall escritoire",
+      "Compact escritoire",
+    ],
+    regional_period_notes:
+      "Enclosed writing furniture of the escritoire family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. French fall-front cabinet desk tradition. Date envelope: c. 1700-present broad use; strongest American diagnostic range c. 1800-1900 for French-influenced cabinet writing forms and c. 1880-1930 for revival/decorator examples. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_secretaire_a_abattant",
+    category: "form",
+    name: "secrétaire à abattant",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
+    date_floor: 1750,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Hinged, falling, sloping, or cabinet-front writing access",
+      "Interior fitted with pigeonholes, small drawers, document slots, or shelves",
+      "Writing surface often formed by lid, fall, or pull-out support",
+      "Exterior conceals working interior when closed",
+      "May combine desk function with bookcase, chest, or cabinet storage",
+      "Open/closed state is critical to identification",
+    ],
+    subtypes: [
+      {
+        id: "subtype_secretaire_a_abattant_tall_fall_front",
+        name: "tall fall-front secretary",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretaire_a_abattant_french_fall_front",
+        name: "French fall-front cabinet desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype.",
+        ],
+      },
+      {
+        id: "subtype_secretaire_a_abattant_drop_front_secretary",
+        name: "drop-front cabinet secretary",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype. Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 60,
+      height_max: 96,
+      width_min: 24,
+      width_max: 48,
+      depth_min: 16,
+      depth_max: 24,
+      weight_min: 100,
+      weight_max: 350,
+      notes:
+        "Writing height when open: 28-31 inches. Tall vertical French Empire/Restoration cabinet form. Overall height typically 60-90 inches.",
+    },
+    cousin_form_contrasts: [
+      "Slant-front vs. fall-front: slant-front has an angled closed face; fall-front may be vertical when closed.",
+      "Secretary vs. escritoire: secretary often combines desk with bookcase or chest storage; escritoire is more cabinet-like.",
+      "Secrétaire à abattant vs. generic fall-front: the abattant is usually a tall French cabinet form with a vertical fall.",
+      "Bureau à gradins vs. hutch desk: gradins are desk-born tiers or galleries; hutch desks use larger upper storage units.",
+      "Secretary vs. bookcase desk: bookcase presence alone is not enough; a desk interior or writing fall must be present.",
+    ],
+    common_aliases: [
+      "Secrétaire à abattant",
+      "Tall fall-front secretary",
+      "French fall-front cabinet desk",
+      "Drop-front cabinet secretary",
+    ],
+    regional_period_notes:
+      "Enclosed writing furniture of the secrétaire à abattant family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. Tall vertical French Empire/Restoration tradition with vertical fall-front mechanism. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1800-1900 for French and French-influenced fall-front cabinet desks; later examples are normally revival or decorator forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_bureau_a_gradins",
+    category: "form",
+    name: "bureau à gradins",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
+    date_floor: 1750,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Hinged, falling, sloping, or cabinet-front writing access",
+      "Interior fitted with pigeonholes, small drawers, document slots, or shelves",
+      "Writing surface often formed by lid, fall, or pull-out support",
+      "Exterior conceals working interior when closed",
+      "May combine desk function with bookcase, chest, or cabinet storage",
+      "Open/closed state is critical to identification",
+    ],
+    subtypes: [
+      {
+        id: "subtype_bureau_a_gradins_writing_with_superstructure",
+        name: "writing desk with superstructure",
+        distinguishing_attributes: [
+          "Distinguished as a writing desk with superstructure variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bureau à gradins form.",
+        ],
+      },
+      {
+        id: "subtype_bureau_a_gradins_gallery",
+        name: "gallery writing desk",
+        distinguishing_attributes: [
+          "Distinguished as a gallery writing desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bureau à gradins form.",
+        ],
+      },
+      {
+        id: "subtype_bureau_a_gradins_tiered",
+        name: "tiered writing desk",
+        distinguishing_attributes: [
+          "Distinguished as a tiered writing desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bureau à gradins form.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 48,
+      height_max: 66,
+      width_min: 30,
+      width_max: 54,
+      depth_min: 18,
+      depth_max: 28,
+      weight_min: 80,
+      weight_max: 250,
+      notes:
+        "Writing height when used: 28-31 inches. Tiered superstructure (gradins/stepped shelves) above writing surface adds vertical height.",
+    },
+    cousin_form_contrasts: [
+      "Slant-front vs. fall-front: slant-front has an angled closed face; fall-front may be vertical when closed.",
+      "Secretary vs. escritoire: secretary often combines desk with bookcase or chest storage; escritoire is more cabinet-like.",
+      "Secrétaire à abattant vs. generic fall-front: the abattant is usually a tall French cabinet form with a vertical fall.",
+      "Bureau à gradins vs. hutch desk: gradins are desk-born tiers or galleries; hutch desks use larger upper storage units.",
+      "Secretary vs. bookcase desk: bookcase presence alone is not enough; a desk interior or writing fall must be present.",
+    ],
+    common_aliases: [
+      "Bureau à gradins",
+      "Writing desk with superstructure",
+      "Gallery writing desk",
+      "Tiered writing desk",
+    ],
+    regional_period_notes:
+      "Enclosed writing furniture of the bureau à gradins family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. Distinguished by tiered superstructure (gradins, stepped shelves) above the writing surface. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1800-1900 for writing desks with raised shelves, galleries, or tiered superstructures; later examples are usually revival or decorator forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
   },
   {
     id: "form_rocking_chair",
