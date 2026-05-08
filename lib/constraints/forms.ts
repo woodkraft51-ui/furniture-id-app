@@ -5129,6 +5129,325 @@ export const FORMS: FormEntry[] = [
       "Windsor chairs are important in 18th- and 19th-century American furniture, especially Philadelphia, New England, New York, and regional production centers. Core American period range c. 1740-1820 with 19th century continuation through c. 1900. Heavily reproduced in Colonial Revival (c. 1870-present) and contemporary traditional production. Original paint, seat shaping, wedged joints, underside wear, turnings, and toolmarks are critical for dating. Per form-before-style architectural principle, this canonical form covers Windsor-construction variants without armchair, side-chair, or rocking-chair functional crossover; Windsor armchairs, side chairs, and rockers are classified under their respective functional canonical forms.",
   },
   {
+    id: "form_writing_box",
+    category: "form",
+    name: "writing box",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_portable_writing_forms",
+    date_floor: 1650,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Portable box or case body with hinged opening",
+      "Writing slope or fold-out writing plane, often leather, baize, or wood-lined",
+      "Interior wells, trays, pen channels, document pockets, or secret compartments",
+      "Small scale suitable for tabletop or lap use",
+      "Carrying hardware, lock, escutcheon, reinforced corners, or travel fittings may be present",
+      "Absence of full-height legs or fixed kneehole structure",
+    ],
+    subtypes: [
+      {
+        id: "subtype_writing_box_writing_slope",
+        name: "writing slope",
+        distinguishing_attributes: [
+          "Distinguished as a writing slope variant by its proportions, storage arrangement, work-surface behavior, and context within the parent writing box form.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_lap_desk",
+        name: "lap desk",
+        distinguishing_attributes: [
+          "Distinguished as a lap desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent writing box form.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_campaign",
+        name: "campaign writing box",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_officers",
+        name: "officer's writing box",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator. Occupational scale, public-facing layout, office storage, or institutional context supports the subtype.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_ship_captains",
+        name: "ship captain's writing box",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_traveling",
+        name: "traveling writing box",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_portable_clerks",
+        name: "portable clerk's box",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_writing_box_portable_dispatch",
+        name: "portable dispatch box",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 3,
+      height_max: 14,
+      width_min: 12,
+      width_max: 28,
+      depth_min: 8,
+      depth_max: 20,
+      weight_min: 3,
+      weight_max: 35,
+      notes:
+        "Larger examples may approach small cabinet scale, but lack freestanding desk-height support.",
+    },
+    cousin_form_contrasts: [
+      "Writing box vs. tabletop desk: a writing box is portable and case-like; a tabletop desk is an organizer or cabinet meant to sit on furniture.",
+      "Field desk vs. campaign desk: field desk implies mobile work use; campaign hardware alone does not prove field function.",
+      "Lap desk vs. laptop desk: historical lap desks serve writing storage; modern laptop desks serve device support.",
+      "Portable clerk's box vs. clerk's desk: the box travels; the desk is fixed-height commercial furniture.",
+      "Dispatch box vs. document box: a dispatch box may lack a true writing surface and should not be forced into desk classification without work-surface evidence.",
+    ],
+    common_aliases: [
+      "Writing box",
+      "Writing slope",
+      "Lap desk",
+      "Lap laptop desk",
+      "Laptop desk (small portable variant)",
+    ],
+    regional_period_notes:
+      "Portable case-form writing furniture that opens to provide a small writing surface and storage for papers, pens, ink, seals, or correspondence, normally intended for travel or use on a table or lap rather than as a freestanding desk. Date envelope: c. 1650-present broad use; strongest American diagnostic range c. 1750-1900 for antique portable writing boxes; later examples after c. 1900 are usually travel, souvenir, hobby, laptop, or decorative revival forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_tabletop_desk",
+    category: "form",
+    name: "tabletop desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_portable_writing_forms",
+    date_floor: 1700,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Designed to rest on another surface rather than stand independently",
+      "Cabinet, slope, drawer, pigeonhole, or document-organizer body",
+      "Limited work surface or correspondence surface",
+      "Small footprint relative to freestanding desks",
+      "May include fall front, lid, miniature drawers, or document slots",
+      "No full desk-height leg or pedestal system",
+    ],
+    subtypes: [
+      {
+        id: "subtype_tabletop_desk_writing_cabinet",
+        name: "tabletop writing cabinet",
+        distinguishing_attributes: [
+          "Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype.",
+        ],
+      },
+      {
+        id: "subtype_tabletop_desk_secretaire",
+        name: "tabletop secrétaire",
+        distinguishing_attributes: [
+          "Distinguished as a tabletop secrétaire variant by its proportions, storage arrangement, work-surface behavior, and context within the parent tabletop desk form.",
+        ],
+      },
+      {
+        id: "subtype_tabletop_desk_correspondence",
+        name: "tabletop correspondence desk",
+        distinguishing_attributes: [
+          "Distinguished as a tabletop correspondence desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent tabletop desk form.",
+        ],
+      },
+      {
+        id: "subtype_tabletop_desk_clerks",
+        name: "tabletop clerk's desk",
+        distinguishing_attributes: [
+          "Distinguished as a tabletop clerk's desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent tabletop desk form.",
+        ],
+      },
+      {
+        id: "subtype_tabletop_desk_document",
+        name: "tabletop document desk",
+        distinguishing_attributes: [
+          "Distinguished as a tabletop document desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent tabletop desk form.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 3,
+      height_max: 14,
+      width_min: 12,
+      width_max: 28,
+      depth_min: 8,
+      depth_max: 20,
+      weight_min: 3,
+      weight_max: 35,
+      notes:
+        "Larger examples may approach small cabinet scale, but lack freestanding desk-height support.",
+    },
+    cousin_form_contrasts: [
+      "Writing box vs. tabletop desk: a writing box is portable and case-like; a tabletop desk is an organizer or cabinet meant to sit on furniture.",
+      "Field desk vs. campaign desk: field desk implies mobile work use; campaign hardware alone does not prove field function.",
+      "Lap desk vs. laptop desk: historical lap desks serve writing storage; modern laptop desks serve device support.",
+      "Portable clerk's box vs. clerk's desk: the box travels; the desk is fixed-height commercial furniture.",
+      "Dispatch box vs. document box: a dispatch box may lack a true writing surface and should not be forced into desk classification without work-surface evidence.",
+    ],
+    common_aliases: ["Tabletop desk", "Tabletop writing cabinet", "Tabletop secrétaire"],
+    regional_period_notes:
+      "Small desk-form or cabinet-form writing furniture intended to sit on another table, counter, chest, or work surface, providing document organization and a limited writing or correspondence function without freestanding desk legs. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1900 for cabinet-like tabletop writing furniture; modern examples are usually organizer, correspondence, or decorative desktop forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_field_desk",
+    category: "form",
+    name: "field desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_portable_writing_forms",
+    date_floor: 1700,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Portable, folding, knockdown, or compact field-use structure",
+      "Reinforced corners, campaign hardware, carrying handles, straps, or transit fittings may appear",
+      "Writing surface sized for maps, dispatches, logs, or field paperwork",
+      "Durable construction prioritizing movement and protection",
+      "May include removable legs, trestle supports, folding frame, or case-like storage",
+      "Contextual association with military, naval, survey, mission, or expedition use",
+    ],
+    subtypes: [
+      {
+        id: "subtype_field_desk_portable",
+        name: "portable field desk",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_folding",
+        name: "folding field desk",
+        distinguishing_attributes: [
+          "Defined by a hinged, folding, lifting, or deployable work surface. Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_campaign",
+        name: "campaign field desk",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_military",
+        name: "military field desk",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_naval",
+        name: "naval field desk",
+        distinguishing_attributes: [
+          "Alias cluster covering ship captain's field desk, marine writing field desk, shipboard field desk. Identify by the shared structural behavior rather than the wording of the market name. Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_surveyor",
+        name: "surveyor's field desk",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_missionary",
+        name: "missionary field desk",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_colonial",
+        name: "colonial field desk",
+        distinguishing_attributes: [
+          "Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+      {
+        id: "subtype_field_desk_expedition",
+        name: "expedition field desk",
+        distinguishing_attributes: [
+          "Alias cluster covering explorer's field desk, survey expedition field desk, colonial expedition field desk. Identify by the shared structural behavior rather than the wording of the market name. Portable-use context, reinforced construction, compact storage, or travel hardware is the key separator.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 4,
+      height_max: 30,
+      width_min: 18,
+      width_max: 48,
+      depth_min: 12,
+      depth_max: 30,
+      weight_min: 10,
+      weight_max: 120,
+      notes:
+        "Packed (closed) dimensions. Working height usually 28-42 inches when assembled with legs deployed. Weight depends on case, legs, and military/campaign fittings.",
+    },
+    cousin_form_contrasts: [
+      "Writing box vs. tabletop desk: a writing box is portable and case-like; a tabletop desk is an organizer or cabinet meant to sit on furniture.",
+      "Field desk vs. campaign desk: field desk implies mobile work use; campaign hardware alone does not prove field function.",
+      "Lap desk vs. laptop desk: historical lap desks serve writing storage; modern laptop desks serve device support.",
+      "Portable clerk's box vs. clerk's desk: the box travels; the desk is fixed-height commercial furniture.",
+      "Dispatch box vs. document box: a dispatch box may lack a true writing surface and should not be forced into desk classification without work-surface evidence.",
+    ],
+    common_aliases: [
+      "Field desk",
+      "Portable field desk",
+      "Folding field desk",
+      "Campaign desk",
+      "Campaign writing table",
+      "Folding campaign desk",
+      "Knockdown campaign desk",
+      "Officer's campaign desk",
+      "Military desk",
+      "Officer's desk",
+      "Field officer's desk",
+      "Barracks desk (portable variants)",
+      "Army field desk",
+      "Navy writing desk",
+      "Naval desk",
+      "Ship captain's desk (field-portable variants)",
+      "Marine writing desk",
+      "Shipboard desk",
+      "Expedition desk",
+      "Explorer's desk",
+      "Survey expedition desk",
+      "Colonial expedition desk",
+      "Folding laptop desk",
+    ],
+    regional_period_notes:
+      "Portable or collapsible work furniture designed for writing, record keeping, surveying, command, mission, expedition, or military use away from a fixed office, often emphasizing durability, compactness, and transportability. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1945 for military, naval, survey, campaign, and expedition contexts; later examples tend to be camping, field-office, reproduction, or portable laptop variants. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
     id: "form_rocking_chair",
     category: "form",
     name: "rocking chair",

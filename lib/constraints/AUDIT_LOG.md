@@ -594,4 +594,22 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 3 — forms.ts — Desks family canonical authoring Batch 1: Portable Writing Forms sub-cluster (3 forms)
+
+**Authoring scope.** First batch of Desks family canonical authoring covering the Portable Writing Forms sub-cluster (spatial_portable_writing_forms spatial behavior). 3 new canonical forms authored: form_writing_box, form_tabletop_desk, form_field_desk. Pattern parallels Seating Batch 1 (commit f1d57d0) in scope and structure. Source content: Andy's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory:** 8 subtypes on form_writing_box, 5 subtypes on form_tabletop_desk, 9 subtypes on form_field_desk. Total Batch 1 subtypes: 22.
+
+**Path A schema reconciliation applied (parallel to Seating Batch 1):** Source document's "Description" prose folded into regional_period_notes leading sentence. Source document's "Date Range" prose folded into regional_period_notes (FormEntry has no separate date_range field; date_floor and date_ceiling capture the numeric envelope). Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses height/width/depth/weight numeric ranges (no top-level description, no seat_height/arm_height fields per schema). Form names lowercased per existing canonical convention.
+
+**No anti_classification_guidance population in Batch 1.** None of the 3 Portable Writing Forms have crisp date boundaries warranting structured schema field population. Future Desks batches will populate the field for form_wooton_desk in Batch 5 (1874-1898 original production window), form_computer_desk in Batch 10 (c. 1975 emergence), and form_modular_workstation_desk in Batch 10 (c. 1960 emergence).
+
+**No legacy stub retrofits in Batch 1.** form_secretary_desk and form_slant_front_desk stubs (lines 4399-4420, parent_category: "desk", lacking family_id and spatial_behavior_id) belong to the Fall-Front/Drop-Front Enclosed grouping and will retrofit in place during Batch 4. Batch 1 does not touch them.
+
+**No cross-family alias additions in Batch 1.** Cross-family alias enrichments to existing Tables and Bedroom canonical forms (per Session 6 Block 1 Desks family architectural conversation) are deferred to future content updates on those existing forms.
+
+**Architectural foundation for upcoming Desks batches:** With Batch 1 complete, Desks family canonical authoring continues across 11 additional batches (one per remaining spatial grouping). Plan: Batch 2 Open Writing Stations (4 forms), Batch 3 Kneehole Workstations (5 forms), Batch 4 Fall-Front/Drop-Front Enclosed (6 forms including 2 stub retrofits), Batch 5 Roll-Top/Tambour Enclosed (4 forms), Batch 6 Cabinet/Armoire/Hideaway (3 forms), Batch 7 Shared/Double-Sided (2 forms), Batch 8 Commercial/Institutional (7 forms), Batch 9 Technical/Drafting/Professional (3 forms), Batch 10 Computer/Systems/Modular (5 forms), Batch 11 Built-In/Architectural (3 forms), Batch 12 Convertible/Repurposed (10 forms).
+
+---
+
 
