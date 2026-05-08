@@ -691,4 +691,24 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 8 — forms.ts — Desks family canonical authoring Batch 6: Cabinet/Armoire/Hideaway Workstations sub-cluster (3 forms)
+
+**Authoring scope.** Sixth batch of Desks family canonical authoring covering the Cabinet/Armoire/Hideaway Workstations sub-cluster (spatial_cabinet_armoire_hideaway_workstations spatial behavior). 3 new canonical forms authored: form_armoire_desk, form_hutch_desk, form_murphy_desk. Pattern parallels Desks Batch 1 (commit 9747d02) for 3-form batch structure. Source content: Andy's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory:** 6 subtypes on form_armoire_desk, 4 subtypes on form_hutch_desk, 2 subtypes on form_murphy_desk. Total Batch 6 subtypes: 12.
+
+**Architectural distinction captured: form_armoire_desk vs form_converted_cabinet_desk.** Per Session 6 Block 1 architectural decision, form_armoire_desk covers factory-built or original-construction armoire-form desks, while form_converted_cabinet_desk (Batch 12, Convertible/Repurposed grouping) covers cabinets/armoires/wardrobes/cupboards converted to desk use post-original-construction. The form_armoire_desk regional_period_notes captures this distinction explicitly to direct user reports to the correct canonical form.
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-5):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for closed-vs-deployed dimensional distinctions (Murphy desk's small closed depth expands substantially when deployed). Form names lowercased per existing canonical convention; "Murphy" preserved as proper noun (William Lawrence Murphy, who patented the related Murphy bed mechanism in 1900).
+
+**No anti_classification_guidance population in Batch 6.** None of the 3 Cabinet/Armoire/Hideaway Workstations forms have crisp date boundaries warranting structured schema field population. form_murphy_desk has a related-product emergence (Murphy bed patent 1900) but the desk variant itself emerged broadly across the early-20th-century period without a single crisp emergence date. Per Block 7 precedent, schema population requires structurally crisp date boundaries (Wooton Manufacturing Company specific 1874 patent), which Murphy desks lack.
+
+**No legacy stub retrofits in Batch 6.**
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** Insertion point immediately before form_rocking_chair stub. Cumulative file order in Desks region after Block 8: form_secretary_desk and form_slant_front_desk retrofits (lines 4400, 4532) → Seating Batch 1 cluster → Desks Batches 1-5 clusters → Desks Batch 6 cluster (3 new forms from Block 8) → Seating stubs → other stubs.
+
+**Mandatory stamina checkpoint.** Per Andy's Option D agreement, this is the pre-checkpoint final batch in tonight's planned 12-batch sequence. After Batch 6 ships, conversation pauses for stamina assessment before continuing to Batches 7-12 tonight or splitting to tomorrow.
+
+---
+
 
