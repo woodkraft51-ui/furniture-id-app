@@ -6835,6 +6835,370 @@ export const FORMS: FormEntry[] = [
       "Enclosed writing furniture of the bureau à gradins family, defined by a front, lid, or superstructure that organizes writing materials and often conceals compartments, drawers, pigeonholes, or a secondary writing surface. Distinguished by tiered superstructure (gradins, stepped shelves) above the writing surface. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1800-1900 for writing desks with raised shelves, galleries, or tiered superstructures; later examples are usually revival or decorator forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
   },
   {
+    id: "form_roll_top_desk",
+    category: "form",
+    name: "roll-top desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
+    date_floor: 1850,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
+      "Interior organization for correspondence, ledgers, papers, or office tools",
+      "Track, slat, cylinder, hinge, or cabinet-door evidence supports mechanism type",
+      "Writing surface remains fixed or is revealed when the cover opens",
+      "Often contains drawers, pigeonholes, cubbies, or locking systems",
+      "Mechanism and interior layout distinguish it from ordinary pedestal desks",
+    ],
+    subtypes: [
+      {
+        id: "subtype_roll_top_desk_s_roll",
+        name: "S-roll tambour desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_c_roll",
+        name: "C-roll roll-top desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_high_back",
+        name: "high-back roll-top desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_low_back",
+        name: "low-back roll-top desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_office",
+        name: "office roll-top desk",
+        distinguishing_attributes: [
+          "Occupational scale, public-facing layout, office storage, or institutional context supports the subtype. Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_domestic",
+        name: "domestic roll-top desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_double_pedestal",
+        name: "double-pedestal roll-top desk",
+        distinguishing_attributes: [
+          "Multi-user access, bilateral finish, repeated stations, or shared work-surface geometry is diagnostic. Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_single_pedestal",
+        name: "single-pedestal roll-top desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_quarter_sawn_oak",
+        name: "quarter-sawn oak roll-top desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_roll_top_desk_cutler",
+        name: "Cutler patent roll-top desk",
+        distinguishing_attributes: [
+          "Alias cluster covering Cutler patent desk, Cutler office desk, Cutler cabinet desk. Identify by the shared structural behavior rather than the wording of the market name. Cutler patent locking and concealment features are diagnostic. Occupational scale, public-facing layout, office storage, or institutional context supports the subtype. Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 36,
+      height_max: 84,
+      width_min: 36,
+      width_max: 72,
+      depth_min: 24,
+      depth_max: 36,
+      weight_min: 100,
+      weight_max: 400,
+      notes:
+        "Writing height when open: 28-31 inches. Tall office roll-tops with high cover housings often 48-66 inches overall. Open depth may increase when cover deployed. Weight depends on cover mechanism, pedestal count, and material.",
+    },
+    cousin_form_contrasts: [
+      "Roll-top vs. tambour desk: roll-top usually refers to a larger desk with a rolling cover; tambour can be smaller or cabinet-fronted.",
+      "Cylinder desk vs. roll-top: cylinder uses a rigid curved cover; roll-top uses flexible slats.",
+      "Wooton desk vs. secretary: Wooton examples have distinctive cabinet-office interiors and often outer doors rather than a simple fall front.",
+      "Cutler roll-top vs. ordinary roll-top: Cutler identification requires patent-style locking or concealment evidence, not just a roll cover.",
+      "Tambour desk vs. fall-front desk: tambour slides or rolls; fall-front hinges down.",
+    ],
+    common_aliases: [
+      "Roll-top desk",
+      "Tambour desk (top-roll variant)",
+      "Cylinder roll-top desk",
+      "S-roll tambour desk",
+      "Flat-top roll-top desk",
+      "High-back roll-top desk",
+      "Low-back roll-top desk",
+      "Office roll-top desk",
+      "Domestic roll-top desk",
+      "Double-pedestal roll-top desk",
+      "Single-pedestal roll-top desk",
+      "Quarter-sawn oak roll-top desk",
+      "Cutler roll-top desk",
+      "Cutler patent desk",
+      "Cutler office desk",
+      "Cutler cabinet desk",
+    ],
+    regional_period_notes:
+      "Enclosed desk form in the roll-top desk family, using a rolling, sliding, cylindrical, tambour, or cabinet-like closure to protect and conceal a fitted writing interior. Large office-scale flexible tambour mechanism that retracts into a curved housing is the structurally defining feature. Date envelope: c. 1850-present broad use; strongest diagnostic range c. 1870-1930 for antique American office roll-tops, especially oak examples; later examples are usually revival, office reproduction, or nostalgia pieces. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Revival production is common. Period claims require age-consistent secondary woods, joinery, hardware, toolmarks, oxidation, and finish evidence rather than the enclosing mechanism alone.",
+  },
+  {
+    id: "form_cylinder_desk",
+    category: "form",
+    name: "cylinder desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
+    date_floor: 1760,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
+      "Interior organization for correspondence, ledgers, papers, or office tools",
+      "Track, slat, cylinder, hinge, or cabinet-door evidence supports mechanism type",
+      "Writing surface remains fixed or is revealed when the cover opens",
+      "Often contains drawers, pigeonholes, cubbies, or locking systems",
+      "Mechanism and interior layout distinguish it from ordinary pedestal desks",
+    ],
+    subtypes: [
+      {
+        id: "subtype_cylinder_desk_bureau",
+        name: "cylinder bureau",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_cylinder_desk_french",
+        name: "French cylinder desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_cylinder_desk_tambour",
+        name: "tambour cylinder desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 36,
+      height_max: 84,
+      width_min: 30,
+      width_max: 60,
+      depth_min: 20,
+      depth_max: 32,
+      weight_min: 80,
+      weight_max: 300,
+      notes:
+        "Writing height when open: 28-31 inches. Rigid quarter-cylinder cover lifts as a single piece. Open depth increases when cover deployed.",
+    },
+    cousin_form_contrasts: [
+      "Roll-top vs. tambour desk: roll-top usually refers to a larger desk with a rolling cover; tambour can be smaller or cabinet-fronted.",
+      "Cylinder desk vs. roll-top: cylinder uses a rigid curved cover; roll-top uses flexible slats.",
+      "Wooton desk vs. secretary: Wooton examples have distinctive cabinet-office interiors and often outer doors rather than a simple fall front.",
+      "Cutler roll-top vs. ordinary roll-top: Cutler identification requires patent-style locking or concealment evidence, not just a roll cover.",
+      "Tambour desk vs. fall-front desk: tambour slides or rolls; fall-front hinges down.",
+    ],
+    common_aliases: [
+      "Cylinder desk",
+      "Cylinder bureau",
+      "Cylinder-top desk",
+      "Tambour cylinder desk",
+      "Roll-cylinder desk",
+      "French cylinder desk",
+    ],
+    regional_period_notes:
+      "Enclosed desk form in the cylinder desk family, using a rolling, sliding, cylindrical, tambour, or cabinet-like closure to protect and conceal a fitted writing interior. Rigid quarter-cylinder cover that lifts as a single piece is the structurally defining feature, distinguishing this form from roll-top desks (which use flexible slat tambour). Date envelope: c. 1760-present broad use; strongest diagnostic range c. 1770-1850 for period cylinder desks and c. 1880-1930 for revival forms; later pieces are normally decorator reproductions. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Revival production is common. Period claims require age-consistent secondary woods, joinery, hardware, toolmarks, oxidation, and finish evidence rather than the enclosing mechanism alone.",
+  },
+  {
+    id: "form_tambour_desk",
+    category: "form",
+    name: "tambour desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
+    date_floor: 1760,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
+      "Interior organization for correspondence, ledgers, papers, or office tools",
+      "Track, slat, cylinder, hinge, or cabinet-door evidence supports mechanism type",
+      "Writing surface remains fixed or is revealed when the cover opens",
+      "Often contains drawers, pigeonholes, cubbies, or locking systems",
+      "Mechanism and interior layout distinguish it from ordinary pedestal desks",
+    ],
+    subtypes: [
+      {
+        id: "subtype_tambour_desk_writing",
+        name: "tambour writing desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier. Small-scale tambour writing desk variant.",
+        ],
+      },
+      {
+        id: "subtype_tambour_desk_ladies",
+        name: "tambour ladies' desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_tambour_desk_compact",
+        name: "compact tambour desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 36,
+      height_max: 60,
+      width_min: 30,
+      width_max: 42,
+      depth_min: 18,
+      depth_max: 24,
+      weight_min: 50,
+      weight_max: 180,
+      notes:
+        "Writing height when open: 28-31 inches. Smaller domestic-scale form distinguished from roll-top desks by reduced scale and vertical-tambour or front-tambour mechanism rather than top-roll.",
+    },
+    cousin_form_contrasts: [
+      "Roll-top vs. tambour desk: roll-top usually refers to a larger desk with a rolling cover; tambour can be smaller or cabinet-fronted.",
+      "Cylinder desk vs. roll-top: cylinder uses a rigid curved cover; roll-top uses flexible slats.",
+      "Wooton desk vs. secretary: Wooton examples have distinctive cabinet-office interiors and often outer doors rather than a simple fall front.",
+      "Cutler roll-top vs. ordinary roll-top: Cutler identification requires patent-style locking or concealment evidence, not just a roll cover.",
+      "Tambour desk vs. fall-front desk: tambour slides or rolls; fall-front hinges down.",
+    ],
+    common_aliases: [
+      "Tambour desk",
+      "Tambour-front desk",
+      "Tambour writing desk",
+      "Tambour ladies' desk",
+      "Small tambour desk",
+    ],
+    regional_period_notes:
+      "Enclosed desk form in the tambour desk family, using a rolling, sliding, cylindrical, tambour, or cabinet-like closure to protect and conceal a fitted writing interior. Smaller domestic-scale variant of the tambour mechanism family, distinguished from roll-top desks by reduced scale and vertical-tambour or front-tambour mechanism rather than office-scale top-roll. Date envelope: c. 1760-present broad use; strongest diagnostic range c. 1780-1930, with small tambour writing desks and larger roll-top relatives separated by scale, mechanism, and pedestal structure. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Revival production is common. Period claims require age-consistent secondary woods, joinery, hardware, toolmarks, oxidation, and finish evidence rather than the enclosing mechanism alone.",
+  },
+  {
+    id: "form_wooton_desk",
+    category: "form",
+    name: "Wooton desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
+    date_floor: 1874,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
+      "Interior organization for correspondence, ledgers, papers, or office tools",
+      "Track, slat, cylinder, hinge, or cabinet-door evidence supports mechanism type",
+      "Writing surface remains fixed or is revealed when the cover opens",
+      "Often contains drawers, pigeonholes, cubbies, or locking systems",
+      "Mechanism and interior layout distinguish it from ordinary pedestal desks",
+    ],
+    subtypes: [
+      {
+        id: "subtype_wooton_desk_standard_grade",
+        name: "standard-grade Wooton desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_wooton_desk_extra_grade",
+        name: "extra-grade Wooton desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_wooton_desk_superior_grade",
+        name: "superior-grade Wooton desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier.",
+        ],
+      },
+      {
+        id: "subtype_wooton_desk_rotary",
+        name: "rotary Wooton desk",
+        distinguishing_attributes: [
+          "Closure mechanism, track evidence, fitted office interior, or patent-style hardware is the main identifier. Rotary mechanism distinguishes this subtype.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 60,
+      height_max: 78,
+      width_min: 42,
+      width_max: 54,
+      depth_min: 30,
+      depth_max: 36,
+      weight_min: 200,
+      weight_max: 500,
+      notes:
+        "Writing height when open: 28-31 inches. Substantial cabinet form with patent rotating central section. Production at three grades (Standard, Extra, Superior) plus Rotary variants.",
+    },
+    cousin_form_contrasts: [
+      "Roll-top vs. tambour desk: roll-top usually refers to a larger desk with a rolling cover; tambour can be smaller or cabinet-fronted.",
+      "Cylinder desk vs. roll-top: cylinder uses a rigid curved cover; roll-top uses flexible slats.",
+      "Wooton desk vs. secretary: Wooton examples have distinctive cabinet-office interiors and often outer doors rather than a simple fall front.",
+      "Cutler roll-top vs. ordinary roll-top: Cutler identification requires patent-style locking or concealment evidence, not just a roll cover.",
+      "Tambour desk vs. fall-front desk: tambour slides or rolls; fall-front hinges down.",
+    ],
+    common_aliases: [
+      "Wooton desk",
+      "Standard-grade Wooton desk",
+      "Extra-grade Wooton desk",
+      "Superior-grade Wooton desk",
+      "Rotary Wooton desk",
+      "Cabinet office secretary",
+    ],
+    regional_period_notes:
+      "Enclosed desk form in the Wooton desk family, using a rolling, sliding, cylindrical, tambour, or cabinet-like closure to protect and conceal a fitted writing interior. Patented late-19th century American secretary cabinet with rotating central section developed by William S. Wooton at the Wooton Manufacturing Company in Indianapolis, Indiana. Original production window: c. 1874-1898 (firm operated 1874-1898 before bankruptcy). Date envelope captures original production window and revival/reproduction examples through to present. Production graded into Standard, Extra, Superior, and Rotary models. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Original Wooton classification requires cabinet-office structure and period-appropriate maker/patent evidence; later Wooton-inspired desks should be identified as reproductions or revival forms unless firm label and construction evidence supports original production.",
+    anti_classification_guidance: {
+      boundary_date: 1874,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "form_wooton_desk represents the patented Wooton Manufacturing Company desk first patented and produced in 1874 by William S. Wooton in Indianapolis, Indiana. The form did not exist as a structurally distinct furniture type before 1874. Pieces predating 1874 cannot be original Wooton desks; they may be other roll-top, cylinder, or cabinet-secretary forms. Wooton-inspired or Wooton-style desks produced after 1898 (when Wooton Manufacturing Company ceased operations) should be classified as reproductions or revival forms rather than original Wooton production unless firm label, patent stamp, and period-appropriate construction evidence support original attribution. Wooton Manufacturing Company original production window: c. 1874-1898. Three production grades (Standard, Extra, Superior) plus Rotary variants. Original pieces typically carry firm label, patent date stamp, and characteristic construction evidence. Reproductions and Wooton-inspired desks continued through the 20th century and are produced today; classify these as revival forms with specific attribution to reproduction maker where determinable.",
+      prominence: "standard",
+    },
+  },
+  {
     id: "form_rocking_chair",
     category: "form",
     name: "rocking chair",

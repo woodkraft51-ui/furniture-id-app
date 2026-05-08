@@ -671,4 +671,24 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 7 — forms.ts — Desks family canonical authoring Batch 5: Roll-Top/Tambour Enclosed Desks sub-cluster (4 forms with first Desks family anti_classification_guidance population)
+
+**Authoring scope.** Fifth batch of Desks family canonical authoring covering the Roll-Top/Tambour Enclosed Desks sub-cluster (spatial_roll_top_tambour_enclosed_desks spatial behavior). 4 new canonical forms authored: form_roll_top_desk, form_cylinder_desk, form_tambour_desk, form_wooton_desk. Source content: Andy's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory:** 10 subtypes on form_roll_top_desk, 3 subtypes on form_cylinder_desk, 3 subtypes on form_tambour_desk, 4 subtypes on form_wooton_desk. Total Batch 5 subtypes: 20.
+
+**form_wooton_desk anti_classification_guidance population — first Desks family use of the AntiClassificationGuidance schema field shipped at commit a5a047d (Session 5 Block 2 Step 1).** Per Session 6 D4 architectural decision: form_wooton_desk has a structurally crisp date_floor at 1874 (original Wooton Manufacturing Company patent and production start by William S. Wooton in Indianapolis, Indiana). Schema field populated as single-object form with boundary_date: 1874, boundary_type: "form_emergence", guidance_text combining reason prose and production-window context (capturing 1874-1898 original production window and reproduction/revival distinction), and prominence: "standard". Pieces predating 1874 cannot be original Wooton desks; later Wooton-inspired desks should be classified as reproductions or revival forms unless firm label, patent stamp, and period-appropriate construction evidence support original attribution.
+
+**Path A schema reconciliation for anti_classification_guidance field-name mapping:** Source content used field names (do_not_classify_before, do_not_classify_before_reason, notes) that do not match the AntiClassificationGuidance interface shipped in commit a5a047d (which defines boundary_date, boundary_type, guidance_text, pre_boundary_classifications, post_boundary_classifications, prominence). Per Path A precedent from prior schema-mismatch batches, source field names mapped to schema-correct fields: do_not_classify_before: 1874 → boundary_date: 1874 + boundary_type: "form_emergence"; do_not_classify_before_reason and notes content combined into single guidance_text string; prominence: "standard" added per schema requirement. All content preserved verbatim through field-name remapping; zero content loss.
+
+**form_cutler subtype consolidation:** form_roll_top_desk includes subtype_roll_top_desk_cutler covering the Cutler patent variants (Cutler patent desk, Cutler office desk, Cutler cabinet desk). Per Session 6 Block 1 architectural decision, the Cutler patent mechanism is captured as a subtype rather than a separate canonical form, distinguished by patent-style locking and concealment features.
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-4):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for cover-mechanism dimensional distinctions (cylinder cover, tambour scale, Wooton patent rotating section). Form names lowercased per existing canonical convention; "Wooton" preserved as proper noun (William S. Wooton, founder of Wooton Manufacturing Company); "Cutler" preserved in Cutler patent subtype name.
+
+**No legacy stub retrofits in Batch 5.** Zero remaining canonical-pending Desks stubs after Block 6 retrofits (form_secretary_desk and form_slant_front_desk). All future Desks batches (Batches 6-12) are pure new-form insertions.
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** Insertion point immediately before form_rocking_chair stub. Cumulative file order in Desks region after Block 7: form_secretary_desk and form_slant_front_desk retrofits (lines 4400, 4532) → Seating Batch 1 cluster → Desks Batch 1 cluster → Desks Batch 2 cluster → Desks Batch 3 cluster → Desks Batch 4 cluster (4 new forms from Block 6) → Desks Batch 5 cluster (4 new forms from Block 7) → Seating stubs → other stubs.
+
+---
+
 
