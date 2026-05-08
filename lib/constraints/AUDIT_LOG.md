@@ -612,4 +612,20 @@ Zero canonical content meaningfully lost; all adaptations preserve information f
 
 ---
 
+### 2026-05-08 — Session 6 Block 4 — forms.ts — Desks family canonical authoring Batch 2: Open Writing Stations sub-cluster (4 forms)
+
+**Authoring scope.** Second batch of Desks family canonical authoring covering the Open Writing Stations sub-cluster (spatial_open_writing_stations spatial behavior). 4 new canonical forms authored: form_bureau_plat, form_bonheur_du_jour, form_kidney_desk, form_carlton_house_desk. Pattern parallels Desks Batch 1 (commit 9747d02) in scope and structure. Source content: Andy's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory:** 4 subtypes on form_bureau_plat, 4 subtypes on form_bonheur_du_jour, 6 subtypes on form_kidney_desk, 6 subtypes on form_carlton_house_desk. Total Batch 2 subtypes: 20.
+
+**Path A schema reconciliation applied (parallel to Desks Batch 1 and Seating Batch 1):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for superstructure/gallery dimensional patterns. Form names lowercased per existing canonical convention; proper noun "Carlton House" preserved in form_carlton_house_desk name and subtype names.
+
+**No anti_classification_guidance population in Batch 2.** None of the 4 Open Writing Stations forms have crisp date boundaries warranting structured schema field population.
+
+**No legacy stub retrofits in Batch 2.** form_secretary_desk and form_slant_front_desk stubs (lines 4399-4420) belong to the Fall-Front/Drop-Front Enclosed grouping and will retrofit in place during Batch 4 (which is Session 6 Block 6 by the Block-numbering pattern). Batch 2 does not touch them.
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** Insertion point immediately before form_rocking_chair stub. Cumulative file order in Desks region after Block 4: Seating Batch 1 cluster → Desks Batch 1 cluster (3 forms from Block 3) → Desks Batch 2 cluster (4 forms from Block 4) → Seating stubs (form_rocking_chair, form_milking_stool) → other stubs.
+
+---
+
 

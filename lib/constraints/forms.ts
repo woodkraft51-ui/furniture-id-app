@@ -5448,6 +5448,356 @@ export const FORMS: FormEntry[] = [
       "Portable or collapsible work furniture designed for writing, record keeping, surveying, command, mission, expedition, or military use away from a fixed office, often emphasizing durability, compactness, and transportability. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1945 for military, naval, survey, campaign, and expedition contexts; later examples tend to be camping, field-office, reproduction, or portable laptop variants. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
   },
   {
+    id: "form_bureau_plat",
+    category: "form",
+    name: "bureau plat",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_open_writing_stations",
+    date_floor: 1700,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Open writing surface visible when not in use",
+      "Furniture-grade finished exterior intended for domestic or formal rooms",
+      "Storage is integrated but not hidden by a full roll-top closure",
+      "Usually supported by legs, shaped case sides, or light cabinet sections",
+      "Writing behavior is seated and fixed-location",
+      "Shape, gallery, cabinet, or superstructure helps distinguish the specific subform",
+    ],
+    subtypes: [
+      {
+        id: "subtype_bureau_plat_french_writing_table",
+        name: "French writing table",
+        distinguishing_attributes: [
+          "Distinguished as a French writing table variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bureau plat form.",
+        ],
+      },
+      {
+        id: "subtype_bureau_plat_flat_top",
+        name: "flat-top writing desk",
+        distinguishing_attributes: [
+          "Distinguished as a flat-top writing desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bureau plat form.",
+        ],
+      },
+      {
+        id: "subtype_bureau_plat_formal",
+        name: "formal writing table",
+        distinguishing_attributes: [
+          "Distinguished as a formal writing table variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bureau plat form.",
+        ],
+      },
+      {
+        id: "subtype_bureau_plat_executive",
+        name: "executive bureau plat",
+        distinguishing_attributes: [
+          "Occupational scale, public-facing layout, office storage, or institutional context supports the subtype.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 28,
+      height_max: 31,
+      width_min: 30,
+      width_max: 72,
+      depth_min: 18,
+      depth_max: 36,
+      weight_min: 35,
+      weight_max: 200,
+      notes:
+        "Writing surface height. Superstructure or gallery forms may rise to 36-48 inches overall.",
+    },
+    cousin_form_contrasts: [
+      "Convertible desk vs. original form: classify both the source object and the later desk conversion when evidence supports both.",
+      "Drop-leaf vs. gateleg desk: drop-leaf describes the leaf behavior; gateleg requires swinging leg supports.",
+      "Telephone desk vs. hall table: telephone desks usually show phone shelf, seat, directory storage, or communications-specific layout.",
+      "Piano or organ desk vs. instrument: current desk function does not erase the original instrument date.",
+      "Converted industrial desk vs. workbench: conversion requires added writing or office function, not merely a work surface.",
+    ],
+    common_aliases: [
+      "Bureau plat",
+      "French writing table",
+      "Flat-top writing desk",
+      "Formal writing table",
+      "Executive bureau plat",
+    ],
+    regional_period_notes:
+      "Open fixed-location writing furniture in the bureau plat tradition, defined by an exposed work surface, refined domestic or formal use, and visible organization rather than a fully enclosed roll-top or fall-front mechanism. Date envelope: c. 1700-present broad use; strongest American diagnostic range c. 1800-1930 for French-inspired formal writing tables and revival examples; modern examples continue as formal executive or decorator pieces. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_bonheur_du_jour",
+    category: "form",
+    name: "bonheur du jour",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_open_writing_stations",
+    date_floor: 1760,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Open writing surface visible when not in use",
+      "Furniture-grade finished exterior intended for domestic or formal rooms",
+      "Storage is integrated but not hidden by a full roll-top closure",
+      "Usually supported by legs, shaped case sides, or light cabinet sections",
+      "Writing behavior is seated and fixed-location",
+      "Shape, gallery, cabinet, or superstructure helps distinguish the specific subform",
+    ],
+    subtypes: [
+      {
+        id: "subtype_bonheur_du_jour_ladies",
+        name: "ladies' desk",
+        distinguishing_attributes: [
+          "Distinguished as a ladies' desk variant (also ladies' writing desk) by its proportions, storage arrangement, work-surface behavior, and context within the parent bonheur du jour form.",
+        ],
+      },
+      {
+        id: "subtype_bonheur_du_jour_small_secretary",
+        name: "small secretary table",
+        distinguishing_attributes: [
+          "Enclosed fitted interior, fall/slant/cabinet front, or period-style case architecture separates this subtype.",
+        ],
+      },
+      {
+        id: "subtype_bonheur_du_jour_writing_table_cabinet",
+        name: "writing table with cabinet",
+        distinguishing_attributes: [
+          "Integration with cabinetry, wall attachment, vertical storage, or concealment distinguishes the subtype.",
+        ],
+      },
+      {
+        id: "subtype_bonheur_du_jour_french_ladies",
+        name: "French ladies' desk",
+        distinguishing_attributes: [
+          "Distinguished as a French ladies' desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent bonheur du jour form.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 28,
+      height_max: 31,
+      width_min: 30,
+      width_max: 72,
+      depth_min: 18,
+      depth_max: 36,
+      weight_min: 35,
+      weight_max: 200,
+      notes:
+        "Writing surface height. Superstructure or gallery forms may rise to 36-48 inches overall.",
+    },
+    cousin_form_contrasts: [
+      "Convertible desk vs. original form: classify both the source object and the later desk conversion when evidence supports both.",
+      "Drop-leaf vs. gateleg desk: drop-leaf describes the leaf behavior; gateleg requires swinging leg supports.",
+      "Telephone desk vs. hall table: telephone desks usually show phone shelf, seat, directory storage, or communications-specific layout.",
+      "Piano or organ desk vs. instrument: current desk function does not erase the original instrument date.",
+      "Converted industrial desk vs. workbench: conversion requires added writing or office function, not merely a work surface.",
+    ],
+    common_aliases: [
+      "Bonheur du jour",
+      "Ladies' desk",
+      "Ladies' writing desk",
+      "Small secretary table",
+      "Writing table with cabinet",
+      "Cabinet writing table",
+      "French ladies' desk",
+    ],
+    regional_period_notes:
+      "Open fixed-location writing furniture in the bonheur du jour tradition, defined by an exposed work surface, refined domestic or formal use, and visible organization rather than a fully enclosed roll-top or fall-front mechanism. Date envelope: c. 1760-present broad use; strongest diagnostic range c. 1770-1900 with major 19th-century and late-19th/early-20th-century revival production; later examples are usually decorator or revival forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_kidney_desk",
+    category: "form",
+    name: "kidney desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_open_writing_stations",
+    date_floor: 1820,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Open writing surface visible when not in use",
+      "Furniture-grade finished exterior intended for domestic or formal rooms",
+      "Storage is integrated but not hidden by a full roll-top closure",
+      "Usually supported by legs, shaped case sides, or light cabinet sections",
+      "Writing behavior is seated and fixed-location",
+      "Shape, gallery, cabinet, or superstructure helps distinguish the specific subform",
+    ],
+    subtypes: [
+      {
+        id: "subtype_kidney_desk_kidney_shaped",
+        name: "kidney-shaped writing desk",
+        distinguishing_attributes: [
+          "Distinguished as a kidney-shaped writing desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent kidney desk form.",
+        ],
+      },
+      {
+        id: "subtype_kidney_desk_ladies",
+        name: "ladies' kidney desk",
+        distinguishing_attributes: [
+          "Distinguished as a ladies' kidney desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent kidney desk form.",
+        ],
+      },
+      {
+        id: "subtype_kidney_desk_leather_top",
+        name: "leather-top kidney desk",
+        distinguishing_attributes: [
+          "Distinguished as a leather-top kidney desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent kidney desk form.",
+        ],
+      },
+      {
+        id: "subtype_kidney_desk_victorian",
+        name: "Victorian kidney desk",
+        distinguishing_attributes: [
+          "Distinguished as a Victorian kidney desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent kidney desk form.",
+        ],
+      },
+      {
+        id: "subtype_kidney_desk_edwardian",
+        name: "Edwardian kidney desk",
+        distinguishing_attributes: [
+          "Distinguished as an Edwardian kidney desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent kidney desk form.",
+        ],
+      },
+      {
+        id: "subtype_kidney_desk_revival",
+        name: "revival kidney desk",
+        distinguishing_attributes: [
+          "Distinguished as a revival kidney desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent kidney desk form.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 28,
+      height_max: 31,
+      width_min: 30,
+      width_max: 72,
+      depth_min: 18,
+      depth_max: 36,
+      weight_min: 35,
+      weight_max: 200,
+      notes:
+        "Writing surface height. Superstructure or gallery forms may rise to 36-48 inches overall.",
+    },
+    cousin_form_contrasts: [
+      "Convertible desk vs. original form: classify both the source object and the later desk conversion when evidence supports both.",
+      "Drop-leaf vs. gateleg desk: drop-leaf describes the leaf behavior; gateleg requires swinging leg supports.",
+      "Telephone desk vs. hall table: telephone desks usually show phone shelf, seat, directory storage, or communications-specific layout.",
+      "Piano or organ desk vs. instrument: current desk function does not erase the original instrument date.",
+      "Converted industrial desk vs. workbench: conversion requires added writing or office function, not merely a work surface.",
+    ],
+    common_aliases: [
+      "Kidney desk",
+      "Kidney-shaped writing desk",
+      "Ladies' kidney desk",
+      "Leather-top kidney desk",
+      "Victorian kidney desk",
+      "Edwardian kidney desk",
+      "Revival kidney desk",
+    ],
+    regional_period_notes:
+      "Open fixed-location writing furniture in the kidney desk tradition, defined by an exposed work surface, refined domestic or formal use, and visible organization rather than a fully enclosed roll-top or fall-front mechanism. Date envelope: c. 1820-present broad use; strongest diagnostic range c. 1850-1930, especially Victorian, Edwardian, and revival forms; modern examples are generally decorator reproductions. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
+    id: "form_carlton_house_desk",
+    category: "form",
+    name: "Carlton House desk",
+    parent_category: "desk",
+    family_id: "family_desks",
+    spatial_behavior_id: "spatial_open_writing_stations",
+    date_floor: 1780,
+    date_ceiling: 2030,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+    distinguishing_features: [
+      "Open writing surface visible when not in use",
+      "Furniture-grade finished exterior intended for domestic or formal rooms",
+      "Storage is integrated but not hidden by a full roll-top closure",
+      "Usually supported by legs, shaped case sides, or light cabinet sections",
+      "Writing behavior is seated and fixed-location",
+      "Shape, gallery, cabinet, or superstructure helps distinguish the specific subform",
+    ],
+    subtypes: [
+      {
+        id: "subtype_carlton_house_desk_curved_back",
+        name: "curved-back writing desk",
+        distinguishing_attributes: [
+          "Distinguished as a curved-back writing desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent Carlton House desk form.",
+        ],
+      },
+      {
+        id: "subtype_carlton_house_desk_u_shaped",
+        name: "U-shaped writing desk",
+        distinguishing_attributes: [
+          "Distinguished as a U-shaped writing desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent Carlton House desk form.",
+        ],
+      },
+      {
+        id: "subtype_carlton_house_desk_ladies",
+        name: "ladies' Carlton House desk",
+        distinguishing_attributes: [
+          "Distinguished as a ladies' Carlton House desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent Carlton House desk form.",
+        ],
+      },
+      {
+        id: "subtype_carlton_house_desk_georgian",
+        name: "Georgian Carlton House desk",
+        distinguishing_attributes: [
+          "Distinguished as a Georgian Carlton House desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent Carlton House desk form.",
+        ],
+      },
+      {
+        id: "subtype_carlton_house_desk_regency",
+        name: "Regency Carlton House desk",
+        distinguishing_attributes: [
+          "Distinguished as a Regency Carlton House desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent Carlton House desk form.",
+        ],
+      },
+      {
+        id: "subtype_carlton_house_desk_revival",
+        name: "revival Carlton House desk",
+        distinguishing_attributes: [
+          "Distinguished as a revival Carlton House desk variant by its proportions, storage arrangement, work-surface behavior, and context within the parent Carlton House desk form.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 28,
+      height_max: 31,
+      width_min: 30,
+      width_max: 72,
+      depth_min: 18,
+      depth_max: 36,
+      weight_min: 35,
+      weight_max: 200,
+      notes:
+        "Writing surface height. Superstructure or gallery forms may rise to 36-48 inches overall.",
+    },
+    cousin_form_contrasts: [
+      "Convertible desk vs. original form: classify both the source object and the later desk conversion when evidence supports both.",
+      "Drop-leaf vs. gateleg desk: drop-leaf describes the leaf behavior; gateleg requires swinging leg supports.",
+      "Telephone desk vs. hall table: telephone desks usually show phone shelf, seat, directory storage, or communications-specific layout.",
+      "Piano or organ desk vs. instrument: current desk function does not erase the original instrument date.",
+      "Converted industrial desk vs. workbench: conversion requires added writing or office function, not merely a work surface.",
+    ],
+    common_aliases: [
+      "Carlton House desk",
+      "Curved-back writing desk",
+      "U-shaped writing desk",
+      "Ladies' Carlton House desk",
+      "Georgian Carlton House desk",
+      "Regency Carlton House desk",
+      "Revival Carlton House desk",
+    ],
+    regional_period_notes:
+      "Open fixed-location writing furniture in the Carlton House desk tradition, defined by an exposed work surface, refined domestic or formal use, and visible organization rather than a fully enclosed roll-top or fall-front mechanism. Date envelope: c. 1780-present broad use; strongest diagnostic range c. 1790-1830 for original English/Regency influence and c. 1880-1930 for American revival examples; modern examples are usually high-style reproductions. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
+  },
+  {
     id: "form_rocking_chair",
     category: "form",
     name: "rocking chair",
