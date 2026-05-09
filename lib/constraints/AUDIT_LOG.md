@@ -783,4 +783,39 @@ Source content: Mike's authored Desks Forms reference document (Desk_Forms_-_Ful
 
 ---
 
+### 2026-05-09 — Session 7 Block 9 — forms.ts — Desks family canonical authoring Bundle 2 covering Batches 10-12 (18 forms across three spatial groupings) — final Desks family content batch
+
+**Bundle architectural decisions (all locked from prior sessions):** Bundle 2 = Batches 10-12 (18 forms) per Mike's Session 6 evening 2026-05-08 D2 decision. Shipped via PR-based workflow per Session 7 Blocks 5-8 pattern establishment. Path A schema reconciliation uniform with all prior Desks batches. AntiClassificationGuidance schema field-name mapping (boundary_date / boundary_type / guidance_text / prominence) anchored on form_wooton_desk's now-shipped Session 6 Block 7 implementation.
+
+**Authoring scope.** Bundle 2 covers 18 new canonical forms across three spatial behaviors:
+- Batch 10 (spatial_computer_systems_modular_workstations, 5 forms): form_typewriter_desk, form_computer_desk, form_modular_workstation_desk, form_l_shaped_desk, form_u_shaped_desk
+- Batch 11 (spatial_built_in_architectural_desks, 3 forms): form_built_in_desk, form_wall_desk, form_wall_unit_desk
+- Batch 12 (spatial_convertible_repurposed_desk_forms, 10 forms): form_drop_leaf_desk, form_gateleg_desk, form_telephone_desk, form_piano_desk, form_organ_desk, form_sewing_machine_desk, form_converted_cabinet_desk, form_converted_industrial_desk, form_converted_dressing_table_desk, form_converted_treadle_machine_desk
+
+Source content: Mike's authored Desks Forms reference document (Desk_Forms_-_Full_and_complete.docx, 2026-05-08).
+
+**Subtype inventory by batch:**
+- Batch 10: 5+7+5+5+4 = 26 subtypes
+- Batch 11: 5+4+4 = 13 subtypes
+- Batch 12: 3+3+4+3+3+3+3+4+3+3 = 32 subtypes
+- Bundle 2 total: 71 subtypes across 18 forms
+
+**Two anti_classification_guidance populations in Bundle 2** (per Mike's Session 6 D4 architectural decision):
+- form_computer_desk: boundary_date 1975, boundary_type "form_emergence", standard prominence. Captures personal computer era emergence with microcomputer adoption (1975); pieces predating 1975 cannot be original computer desks.
+- form_modular_workstation_desk: boundary_date 1960, boundary_type "form_emergence", standard prominence. Captures systems furniture emergence with Herman Miller's Action Office (1964 introduction, 1968 redesign by Robert Propst); pieces predating 1960 cannot be original modular workstation desks.
+
+Both populations use schema-correct AntiClassificationGuidance field structure anchored on form_wooton_desk's now-shipped implementation (Session 6 Block 7), avoiding the field-name reconciliation issue that occurred when drafting from architectural memory in Block 7.
+
+**Two architectural distinctions captured prose-side in regional_period_notes per Session 6 Blocks 8 and 9 architectural decisions:**
+- form_converted_cabinet_desk vs form_armoire_desk: form_converted_cabinet_desk regional_period_notes explicitly distinguishes post-original-construction cabinet conversions (this canonical form) from form_armoire_desk's factory-built/original-construction armoire-form desks (Block 8 of Session 6).
+- form_converted_industrial_desk vs form_workbench_desk: form_converted_industrial_desk regional_period_notes explicitly distinguishes post-original-construction industrial conversions (this canonical form) from form_workbench_desk's factory-built/original-construction workbench desks (Bundle 1 / Block 9 of Session 6).
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-9):** Source document's Description and Date Range prose folded into regional_period_notes. Each subtype's prose description converted to single-element distinguishing_attributes array. dimensional_thresholds uses width/height/depth/weight numeric ranges with notes prose for use-specific dimensional patterns. Form names lowercased per existing canonical convention; "L-shaped" and "U-shaped" preserved as proper-noun-style descriptors per established Block 9 (Session 6) Bundle 1 pattern (which had subtype names like "executive L-desk" and "executive U-desk" already shipped); "Singer", "William and Mary", "Herman Miller", "Steelcase" preserved as proper nouns in subtype names and regional_period_notes prose.
+
+**Insertion anchor: chronological-authoring-adjacency (Option A locked across all 12 Desks batches).** Insertion point immediately before form_rocking_chair stub. All 18 Bundle 2 forms inserted contiguously in single Edit operation in batch order: Batch 10 forms (5), then Batch 11 forms (3), then Batch 12 forms (10).
+
+**Final Desks family content batch.** With Bundle 2 merged, all 55 Desks family canonical forms are on main. Desks family canonical authoring complete.
+
+---
+
 
