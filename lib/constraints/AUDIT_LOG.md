@@ -742,4 +742,45 @@ Source content: Mike's authored Desks Forms reference document (Desk_Forms_-_Ful
 
 ---
 
+### 2026-05-09 — Session 7 Blocks 1-7 — workflow architecture — Diagnostic investigation of main-specific 403 and switch to PR-based shipping workflow
+
+**Workflow change context.** During Session 6 Block 9 on 2026-05-08, Mike's first attempted bundled commit (Bundle 1: 12 forms across Batches 7-9, 1272 lines insertion) was rejected by origin/main with HTTP 403 + send-pack: unexpected disconnect signature. The commit landed on origin/claude/update-app-metadata-DwVU8 (dev branch) instead. Three additional push attempts to origin/main during Session 7 returned identical 403 signature regardless of conditions tested.
+
+**Diagnostic investigation summary.** Session 7 Blocks 1-4 systematically ruled out the most likely 403 causes via paired diagnostic operations:
+- Block 1: Captured full 403 error context. Confirmed git push --dry-run origin main succeeds (auth handshake works) but actual push fails (server-side receive-pack policy rejects content). Auth path intact; rejection at content-acceptance step.
+- Block 2: Workaround re-attempt of Batch 7 alone (2 forms, 232 lines, smallest possible test). Same 403 signature. Size hypothesis invalidated.
+- Block 3: Re-attempt push of unchanged commit 12d852e after disabling GitHub Push Protection. Same 403 signature. Push Protection ruled out as cause.
+- Block 4: Diagnostic test push to fresh branch off origin/main with trivial throwaway content. Push succeeded with exit 0, GitHub returned PR-creation hint. 403 confirmed main-specific (refs/heads/main only). Repo-wide and identity-wide auth issues ruled out.
+
+**GitHub UI inspection (out-of-band by Mike during Block 4 follow-up):**
+- Classic branch protection: not configured (verified empty)
+- Repository rulesets: not configured (verified empty)
+- Personal account: confirmed (no organization context, no org-level policies possible)
+- Installed GitHub Apps: Claude (Anthropic, installed last week) and Vercel (installed 3 weeks ago)
+- Vercel project Deployment Protection settings: Vercel Authentication enabled (gates deployment URL access, not git pushes)
+- GitHub-level webhooks: none installed
+- CODEOWNERS: not present (no enforcement mechanism without webhook)
+
+**Diagnostic candidates remaining unconfirmed:** Path C (suspending Vercel GitHub App temporarily) deferred as too invasive given Vercel handles deployment automation. Investigation of Claude Code's local proxy at 127.0.0.1:41071 deferred as outside scope of standard user investigation. Mike chose to stop diagnosing and switch to PR-based workflow at 2026-05-09 evening.
+
+**Workflow architecture decision (2026-05-09).** All future commits ship via feature branch + pull request to main, NOT direct push to main. The PR-based pattern matches GitHub's recommended workflow for protected branches (which main effectively is, despite the absence of visible protection in standard UI surfaces) and matches the "Create a pull request" hint GitHub explicitly returned in Block 4's successful diagnostic push output.
+
+**Pattern established for all future Blocks:**
+1. Claude Code creates a new feature branch off main
+2. Claude Code commits batch content on the feature branch
+3. Claude Code pushes the feature branch to origin
+4. Mike opens PR from feature branch → main via GitHub UI
+5. Mike squash-merges the PR via GitHub UI (preserves single-commit-per-batch architecture)
+6. Subsequent Block syncs local main to the new origin/main via fast-forward
+
+**Bundle 1 recovery via PR-based workflow (Session 7 Blocks 5-6).** Bundle 1's content (commit 6aa68ff on origin/claude/update-app-metadata-DwVU8) was landed on origin/main via PR squash-merge as commit ba05bb5. Block 5 reset local main to discard the now-redundant Block 2 commit (12d852e); Block 6 fast-forwarded local main to ba05bb5 after Mike's PR merge. All Bundle 1 content (12 forms across Batches 7-9, 78 subtypes, +1272 lines forms.ts +31 lines AUDIT_LOG.md) verified intact on main.
+
+**Operational implications going forward:**
+- Direct push to main investigation deferred indefinitely. PR-based workflow works reliably; reclaiming direct push is quality-of-life improvement, not project-blocking.
+- Bundle 2 (Batches 10-12, 18 forms) ships via PR-based pattern as Session 7 Block 8.
+- All post-Desks family work (DACUM Phase 1-4, diagnostic evidence reference work, future canonical authoring) ships via same PR-based pattern.
+- Branch cleanup deferred (claude/update-app-metadata-DwVU8 and diagnostic/push-test-2026-05-09 can be deleted via GitHub UI when Mike chooses).
+
+---
+
 
