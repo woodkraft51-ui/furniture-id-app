@@ -1156,4 +1156,27 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+  {
+    id: "spatial_baskets",
+    category: "spatial_behavior",
+    name: "Baskets",
+    family_id: "family_baskets",
+    description:
+      "Portable woven container behavior characterized by interwoven flexible materials forming walls and floor, rather than rigid joinery. Baskets serve carrying, gathering, storage, sorting, protection, and display functions across agricultural, domestic, commercial, textile, decorative, and maritime contexts. Construction emphasizes weaving technique (reed, cane, willow, splint, wicker, rattan, ash, oak, fiber) and produces lightweight, often ventilated, hand-portable forms. Distinct from box forms by woven rather than joined construction; distinct from crates by lighter, more flexible structure; distinct from hampers by typically smaller scale and broader use range.",
+    structural_attributes: [
+      "Woven wall construction through interlaced flexible materials",
+      "Flexible or semi-rigid material systems (reed, cane, willow, splint, wicker, rattan, fiber)",
+      "Open or lidded forms; carry handles common",
+      "Rounded, oval, rectangular, or tapered profiles",
+      "Hand-portable scale and weight",
+      "Often ventilated through gaps in weave structure",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Highly variable by subtype. Sewing baskets compact at 8-14 inches wide × 6-10 inches deep × 4-8 inches tall. Market baskets 14-20 inches across. Laundry baskets large at 24-30 inches across × 14-20 inches tall. Nantucket baskets 6-14 inches diameter for typical examples. Heights generally proportional to function: shallow for gathering, taller for storage, deep for waste or laundry.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];

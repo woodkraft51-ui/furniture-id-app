@@ -882,4 +882,48 @@ The annotation uses schema-correct AntiClassificationGuidance field structure (b
 
 ---
 
+### 2026-05-10 — Session 8 Block 3 — Baskets canonical authoring (1 form, 12 subtypes, 1 new spatial behavior, 1 new family) — second non-Desks family canonical authoring batch
+
+**Bundle architectural decisions (locked from prior sessions):** Baskets is the second non-Desks family canonical authoring batch (Entry/Support Forms was first, shipped as PR #5 / commit 8a40b26). Shipped via PR-based workflow per Session 7/8 establishment. Mike's authored content (Basket_Forms_Expanded.docx, 2026-05-10) drives canonical content. Path A schema reconciliation pattern uniform with all prior batches.
+
+**Authoring scope.** 1 canonical form (form_basket) across 1 form grouping ("Baskets"), supported by 1 new spatial behavior (spatial_baskets) and 1 new family entry (family_baskets):
+- form_basket with 12 subtypes: sewing basket, market basket, picnic basket, gathering basket, storage basket, laundry basket, waste basket, egg basket, fishing creel, split oak basket, wicker basket, nantucket basket
+
+**Subtype inventory:** 12 subtypes total.
+
+**D-B1-C architectural decision (locked):**
+
+family_baskets added as standalone new family. The DACUM Phase 3 analysis flagged a deferred architectural question: whether Baskets and Box Form (currently form_box in family_entry_support_forms / Container and Box Forms grouping) should both belong to a broader "Container Forms" or "Portable Container Forms" family. D-B1-C ships Baskets as a standalone family for now and preserves the consolidation question for future architectural review.
+
+**Construction logic assignment decision:**
+
+family_baskets is assigned construction_logic_id: construction_mechanical_integrated as a semantic catch-all, matching the Block 1 Entry/Support Forms precedent. This is a semantic stretch — baskets are not literally mechanical or integrated systems — but the four-logic taxonomy (case, frame, surface, mechanical_integrated) is closed-by-design via an ordinal literal union schema (`"I" | "II" | "III" | "IV"`), making extension a dedicated architectural decision rather than a side-effect of content authoring. Option to extend the taxonomy with construction_woven was considered and deferred as architecturally heavy: it would require schema modification (extending the ordinal literal union), composition of rich authored content matching the four existing entries (shared_construction_characteristics, identifying_elements, functional_behavior, historical_evolution_narrative, disambiguation_from_other_logics), and warrants its own dedicated PR with architectural justification visible in commit history. Future architectural review may revisit when the Container Forms consolidation question (D-B1-C deferred) or Industrial/Professional family canonical authoring proceeds.
+
+**Spatial behavior architecture:**
+
+spatial_baskets added as a new entry. Single spatial behavior for the single form, matching the family-name pattern. Future architectural review may revise the behavior name if Container Forms consolidation proceeds.
+
+**No anti_classification_guidance populations in this Block.** Baskets predate the schema's diagnostic boundaries; the form is broadly continuous from pre-colonial and colonial-era American production through present artisan production. Modern variants (mid-century plastic-coated wire laundry baskets, contemporary office plastic waste baskets, etc.) are noted prose-side in regional_period_notes and subtype distinguishing_attributes rather than via standalone classification-boundary annotations.
+
+**Cross-family overlap documented (Phase 1 footnote follow-through):**
+- form_basket vs form_box (Entry/Support Forms / Container and Box Forms grouping): both are portable container forms; the construction-tradition distinction (woven vs rigid joinery) drives the form-vs-form classification. Documented in form_basket cousin_form_contrasts. The Container Forms consolidation question is deferred per D-B1-C.
+
+**Path A schema reconciliation applied (parallel to all prior batches):** Source document's Unique Characteristics, Identifying Elements, Regional Attributes, Emergence and Conclusion Dates, and Cousin Forms + Identifying Contrasts prose folded into canonical schema fields (distinguishing_features, dimensional_thresholds with width/height/depth/weight, cousin_form_contrasts, common_aliases, regional_period_notes). Each subtype's authored prose converted to single-element distinguishing_attributes array. Form name lowercased per existing canonical convention; proper nouns preserved (Nantucket, Appalachian, Pennsylvania German, Native American, Ozark, New England in regional_period_notes prose). The schema-correct shape was verified before drafting against the SpatialBehaviorEntry interface and pre-existing entry conventions (lesson learned from Block 1's six-error recovery: schema-verify before drafting, not after errors surface).
+
+**Known issue from Block 1 — referential integrity mismatch:**
+
+Block 1 (PR #5, commit 8a40b26) shipped 22 forms with family_id: "family_entry_support_forms" but the corresponding family entry in families.ts uses id: "family_entry_support" (without _forms suffix). The mismatch passed tsc because family_id is typed as string rather than strict enum, and Block 1's grep gates verified internal consistency without cross-checking forms.ts ↔ families.ts referential integrity. This bug is out of scope for Block 3 and will be addressed in a dedicated follow-up Block. Resolution direction TBD: either rename the 22 forms' family_id references to "family_entry_support" (matching families.ts) or rename the family entry's id to "family_entry_support_forms" (matching forms.ts). The Block 3 Baskets entries use family_baskets consistently in both files, so no Block 3 internal mismatch exists.
+
+**Second non-Desks family canonical authoring milestone.** Baskets is the second family added to the canonical taxonomy outside Desks (after Entry/Support Forms in Block 1). Demonstrates that the schema, Path A reconciliation pattern, and PR-based workflow continue to generalize across families. Validates the multi-family-extension pattern for the remaining DACUM-assigned families (Lighting, Clock Cases, Musical and Mechanical Furniture, Industrial/Professional).
+
+**Final architectural state after this PR merges:**
+- 119 canonical forms total (118 + 1 from Baskets)
+- ~607 canonical subtypes (595 + 12 from Baskets)
+- 50 spatial behaviors (49 + 1 new from Baskets)
+- 11 family entries (10 + 1 new from Baskets)
+- 13 anti_classification_guidance populations (unchanged from Block 1 — no new populations in this Block)
+- 8 families with canonical content on main: Desks (complete, 55 forms), Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms, Baskets (newly added)
+
+---
+
 

@@ -233,4 +233,16 @@ export const FAMILIES: FamilyEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+
+  {
+    id: "family_baskets",
+    category: "family",
+    name: "Baskets",
+    construction_logic_id: "construction_mechanical_integrated",
+    description:
+      "Portable woven container furniture forms — baskets — constructed primarily through interwoven flexible materials rather than rigid joinery. The family encompasses agricultural, domestic, commercial, textile, decorative, and maritime basket forms across colonial-era through modern American production. Distinguished from rigid container forms (boxes, chests, cabinets) by woven construction, flexibility, and typical hand-portability. Note on construction logic assignment: construction_mechanical_integrated is used as a semantic catch-all for Baskets pending future architectural review; baskets are not literally mechanical/integrated, but the four-logic ordinal taxonomy (case, frame, surface, mechanical_integrated) is closed-by-design and doesn't contain a woven-construction logic. Future architectural review may consolidate Baskets with Box Form into a 'Container Forms' family or extend the construction logic taxonomy to include construction_woven. The semantic stretch is acknowledged here rather than hidden.",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];
