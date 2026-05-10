@@ -926,4 +926,30 @@ Block 1 (PR #5, commit 8a40b26) shipped 22 forms with family_id: "family_entry_s
 
 ---
 
+### 2026-05-10 — Session 8 Block 5 — Block 1 referential integrity bug fix (Direction A)
+
+Resolves the Block 1 known-issue documented in the Block 3 audit log entry: the 22 Entry/Support Forms shipped in PR #5 (commit 8a40b26) referenced family_id: "family_entry_support_forms" but the corresponding family entry in families.ts used id: "family_entry_support" (without _forms suffix). The mismatch passed tsc because family_id is typed as string rather than strict enum.
+
+**Resolution: Direction A.** The family entry's id is renamed from "family_entry_support" to "family_entry_support_forms" to match the 22 forms' references and the audit log narrative convention used throughout Blocks 1-4.
+
+**Rationale for Direction A over Direction B:**
+- Minimal change surface (1 line in families.ts vs 22 lines in forms.ts)
+- Family canonical id matches the family's actual name ("Entry/Support Forms" → family_entry_support_forms), parallel to family_baskets matching "Baskets"
+- Preserves the existing convention used throughout shipped forms.ts entries
+- Matches the audit log narrative convention used in Blocks 1, 2, 3, 4
+
+**Scope.** Single 1-line change in lib/constraints/families.ts. No other files modified. No new content authored. No spatial behaviors, forms, or subtypes added or modified.
+
+**Diagnostic note for future drafting workflows.** This bug surfaced during Block 3's pre-emptive schema discovery (the same schema-verify-before-drafting workflow that prevented Block 1-style six-error recovery in Block 3). The bug was caught not by tsc (which accepted the string mismatch) and not by Block 1's grep gates (which verified internal consistency without cross-checking forms.ts ↔ families.ts referential integrity). Going forward, family-introduction PRs should include a referential integrity gate: confirm that forms.ts family_id references resolve to actual ids in families.ts. Block 6 onward will include this gate as standard.
+
+**Final architectural state after this PR merges:**
+- 119 canonical forms total (unchanged)
+- ~607 canonical subtypes (unchanged)
+- 50 spatial behaviors (unchanged)
+- 11 family entries (unchanged — just one renamed)
+- 13 anti_classification_guidance populations (unchanged)
+- 8 families with canonical content on main: Desks, Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms (now with correct referential integrity), Baskets
+
+---
+
 
