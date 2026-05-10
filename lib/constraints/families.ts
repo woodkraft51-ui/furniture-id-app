@@ -218,7 +218,7 @@ export const FAMILIES: FamilyEntry[] = [
   },
 
   {
-    id: "family_entry_support",
+    id: "family_entry_support_forms",
     category: "family",
     name: "Entry and Support Forms",
     construction_logic_id: "construction_mechanical_integrated",
