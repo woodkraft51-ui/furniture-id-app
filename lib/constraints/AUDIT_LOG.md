@@ -818,4 +818,68 @@ Both populations use schema-correct AntiClassificationGuidance field structure a
 
 ---
 
+### 2026-05-10 — Session 8 Block 1 — Entry/Support Forms canonical authoring (22 forms across 8 groupings, 8 new spatial behaviors) — first non-Desks family canonical authoring batch
+
+**Bundle architectural decisions (locked from prior sessions, with D-E1-D correction):** Entry/Support Forms is the first non-Desks family canonical authoring batch, shipped via PR-based workflow per Session 7 pattern establishment. Mike's authored content (Entry_Support_Forms_Corrected.docx, 2026-05-10) drives canonical content; DACUM Phase 3 assignments (Spatial Function and Form Grouping placeholders) determine architectural placement. Path A schema reconciliation pattern uniform with all Desks family batches.
+
+**Authoring scope.** 22 canonical forms across 8 form groupings, supported by 8 new spatial behaviors:
+- Garment and Personal Item Stands (6 forms): form_hall_tree, form_coat_rack, form_hat_rack, form_umbrella_stand, form_valet_stand, form_smoking_stand
+- Display and Plant Support Stands (3 forms): form_pedestal, form_plant_stand, form_aquarium_stand
+- Mirror and Screen Forms (2 forms): form_screen, form_mirror
+- Communication and Tech Support Stands (3 forms): form_telephone_stand, form_charging_station, form_package_station
+- Personal Hygiene Stands (1 form): form_washstand
+- Container and Box Forms (1 form): form_box
+- Specialty Body Support Frames (2 forms): form_hammock_stand, form_funeral_bier
+- Domestic Specialty Storage and Organization (4 forms): form_toy_storage, form_bench_utility, form_entry_organizer, form_pet_utility
+
+**Subtype inventory by grouping:** 16 + 12 + 12 + 6 + 5 + 17 + 4 + 12 = 84 subtypes total.
+
+**Spatial behavior architecture (D-E1-D supersedes D-E1-B):**
+
+All 8 spatial behaviors added as new entries to spatialBehaviors.ts. No in-place rename of any existing behavior.
+
+The earlier D-E1-B decision (made 2026-05-09 evening based on the 2026-05-07 Spatial Function Definitions Revised document) had assumed `spatial_transitional_access_support` already existed as a shipped entry to be repurposed in-place. The Op A pre-state verification at the start of this Block discovered that assumption was incorrect — the 2026-05-07 reference document had drifted from the actual shipped state of spatialBehaviors.ts; `spatial_transitional_access_support` had been planned in earlier session work but was never actually shipped. The 41 pre-edit spatial behaviors did not include it. D-E1-D supersedes D-E1-B: all 8 Entry/Support Forms spatial behaviors are net new additions.
+
+The 8 new spatial behavior entries:
+- spatial_transitional_access_support (Garment and Personal Item Stands)
+- spatial_display_and_plant_support_stands
+- spatial_mirror_and_screen_forms
+- spatial_communication_and_tech_support_stands
+- spatial_personal_hygiene_stands
+- spatial_container_and_box_forms
+- spatial_specialty_body_support_frames
+- spatial_domestic_specialty_storage_and_organization
+
+This is the first PR to add multiple spatial behaviors in a single shipment (Desks family added behaviors incrementally over multiple sessions). The DACUM-first methodology — determining the spatial taxonomy shape upfront via Phase 3 assignment before authoring — enabled this consolidated architectural addition.
+
+**One classification-boundary annotation in Entry/Support Forms** (per modern-emergence handling decision):
+- form_charging_station: boundary_date 1995, boundary_type "form_emergence", standard prominence. Captures digital-era device-charging furniture emergence with personal digital device proliferation in the mid-1990s; pieces predating 1995 cannot be original charging stations.
+
+The annotation uses schema-correct AntiClassificationGuidance field structure (boundary_date / boundary_type / guidance_text / prominence) anchored on form_wooton_desk's now-shipped Session 6 Block 7 implementation, parallel to Bundle 2's form_computer_desk and form_modular_workstation_desk annotations.
+
+**Modern-emergence forms handled prose-side rather than via standalone classification-boundary annotation:**
+- form_package_station (post-2010 emergence): broader form already postdates 2010, captured in regional_period_notes prose
+- subtype smart parcel station (post-2015 emergence): captured in subtype distinguishing_attributes and parent regional_period_notes
+- subtype smart mirror under form_mirror (post-2015 emergence): captured in subtype distinguishing_attributes
+- subtype charging valet under form_valet_stand (post-2010 emergence): captured in subtype distinguishing_attributes
+
+**Cross-family overlaps documented (Phase 1 footnote follow-through):**
+- form_box subtypes "writing slope" and "lap desk" overlap with form_portable_writing_box subtypes from Desks family Batch 1. The cross-family overlap is captured in form_box cousin_form_contrasts and regional_period_notes prose. Both classification traditions (box-form vs. desk-form) are preserved; future architectural review may reconcile if desired.
+- form_telephone_stand vs form_telephone_desk (Desks family Bundle 2 Batch 12). Distinguished by scale and seating: form_telephone_stand is compact passive-support form; form_telephone_desk is workstation-scale form with integrated seating and writing surface. Subtype "gossip bench" belongs to form_telephone_desk per its Bundle 2 shipment; "telephone cabinet" belongs to form_telephone_stand.
+- form_torchere not yet drafted: appears in DACUM assignments under Lighting spatial function, not Entry/Support Forms. The Torchère vs. "Torchiere Lamp" subform overlap (Phase 1 footnote) will be resolved when Lighting family canonical authoring proceeds.
+- form_candelabrum subtype "candle stand" not yet drafted: appears in DACUM assignments under Lighting spatial function. Cross-form duplicate with Church Furnishing's "Candle Stand" subform will be resolved when Lighting and Industrial/Professional families' canonical authoring proceeds.
+
+**Path A schema reconciliation applied (parallel to Desks Batches 1-12):** Source document's Unique Characteristics, Identifying Elements, Regional Identifiers, Emergence and Conclusion Dates, and Cousin Forms + Identifying Contrasts prose folded into canonical schema fields (distinguishing_features, dimensional_thresholds with width/height/depth/weight, cousin_form_contrasts, common_aliases, regional_period_notes). Each subtype's authored prose converted to single-element distinguishing_attributes array. Form names lowercased per existing canonical convention; proper nouns preserved (Singer, William and Mary, Herman Miller, Steelcase from Desks; Coromandel, Shoji, William and Mary preserved here in subtype names and regional_period_notes prose).
+
+**First non-Desks family canonical authoring milestone.** Entry/Support Forms is the first family added to the canonical taxonomy outside Desks. Demonstrates that the schema, Path A reconciliation pattern, and PR-based workflow generalize cleanly to families outside the Desks family. Architectural patterns established in Desks family canonical authoring (subtype distinguishing_attributes structure, dimensional_thresholds with use-specific notes, cousin_form_contrasts cross-form distinctions, regional_period_notes period and material specificity, AntiClassificationGuidance schema-correct field structure) hold without modification across the family transition.
+
+**Final architectural state after this PR merges:**
+- 118 canonical forms total (96 + 22 from Entry/Support Forms)
+- ~595 canonical subtypes (511 + 84 from Entry/Support Forms)
+- 49 spatial behaviors (41 + 8 new from Entry/Support Forms; all 8 are net additions per D-E1-D, no existing behavior renamed or modified)
+- 13 classification-boundary annotations (12 + 1 from form_charging_station)
+- 7 families with canonical content on main: Desks (complete, 55 forms), Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms (newly added)
+
+---
+
 

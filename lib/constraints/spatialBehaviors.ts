@@ -974,4 +974,186 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+  {
+    id: "spatial_transitional_access_support",
+    category: "spatial_behavior",
+    name: "Transitional Access Support",
+    family_id: "family_entry_support_forms",
+    description:
+      "Organizes space near entry points to support short-duration, transitional interactions, such as arriving, departing, staging personal items, or preparing garments and accessories before leaving the home. Forms in this behavior are vertical, compact, and provide hooks, hangers, compartments, or platforms for hats, coats, umbrellas, canes, suits, ties, or smoking-related personal items. Construction emphasizes durability against frequent contact, often with mirrors or seating integrated.",
+    structural_attributes: [
+      "Vertical or near-vertical orientation as the dominant spatial axis",
+      "Hook, peg, hanger, or compartment provision for garments and accessories",
+      "Compact horizontal footprint relative to height",
+      "Often integrated mirror, bench, or storage compartment",
+      "Frequent contact wear surfaces designed for durability",
+      "Located in entry zones or transitional spaces between rooms",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights typically 60-84 inches for freestanding forms; widths 18-36 inches; depths 12-24 inches. Wall-mounted variants 18-48 inches wide with shallower depths 4-12 inches. Hook heights typically 60-72 inches above floor.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_display_and_plant_support_stands",
+    category: "spatial_behavior",
+    name: "Display and Plant Support Stands",
+    family_id: "family_entry_support_forms",
+    description:
+      "Vertical pedestals, columns, plinths, and stands designed to elevate, support, and display sculptural objects, plants, urns, aquariums, or other static display contents. Forms emphasize stability under top-loading weight, vertical proportional emphasis to elevate the displayed object above adjacent furniture height, and finished surfaces on all sides since the form is typically viewed from multiple angles. Distinct from Garment and Personal Item Stands by their object-display purpose rather than transitional human use.",
+    structural_attributes: [
+      "Vertical or columnar primary axis with display surface at top",
+      "Top-load stability engineering (broad base, low center of gravity, weight reinforcement)",
+      "All-sides finish (no clearly defined back) since viewable from any angle",
+      "Single-purpose elevation rather than multi-function support",
+      "Top surface dimensions matched to typical display object proportions",
+      "Often classical column or pedestal styling cues",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights 24-60 inches typical, with display pedestals frequently 30-42 inches and tall plant pedestals reaching 48-60 inches. Top dimensions 10-18 inches square or round; bases broader 14-24 inches for stability. Plant stands often have multi-tier configurations adding 12-24 inches per tier.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_mirror_and_screen_forms",
+    category: "spatial_behavior",
+    name: "Mirror and Screen Forms",
+    family_id: "family_entry_support_forms",
+    description:
+      "Vertical reflective or visual-barrier furniture forms that create spatial divisions, reflect light, or define privacy zones without enclosing space. Mirrors provide reflective surface; screens provide opaque or semi-opaque vertical barrier. Both share the structural behavior of vertical surfaces that articulate space without containing it. Forms range from floor-standing to wall-mounted; from rigid frames to articulated folding panels.",
+    structural_attributes: [
+      "Vertical surface as the primary spatial element",
+      "Either reflective glass (mirrors) or opaque/semi-opaque panels (screens)",
+      "Frame or support structure that holds the surface in stable vertical position",
+      "Often articulated with hinges (folding screens), pivots (cheval mirrors), or fixed mounts (wall mirrors)",
+      "Surface dimensions calibrated for human height and viewing distance",
+      "Typically two-sided or back-finished for free-standing examples",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Floor-standing examples 60-84 inches tall, 24-72 inches wide. Folding screens 60-78 inches tall, 12-24 inches per panel × 3-6 panels. Wall mirrors 24-96 inches in their dominant dimension. Cheval mirrors typically 60-72 inches tall on tilting frames. Pier mirrors often very tall (84-120 inches) for stair-hall placement.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_communication_and_tech_support_stands",
+    category: "spatial_behavior",
+    name: "Communication and Tech Support Stands",
+    family_id: "family_entry_support_forms",
+    description:
+      "Compact stands and small cabinets designed to support communication devices, charging hardware, and small-scale technology equipment in transitional or near-entry positions. Forms emphasize device accommodation through dedicated shelves, ports, recesses, or compartments. Distinct from full Computer/Systems/Modular Workstations (Desks family) by their compact passive-support scale rather than active workstation use; the user interacts with the housed device, not with a writing or work surface integrated into the form.",
+    structural_attributes: [
+      "Compact horizontal footprint with vertical or compact-stand proportions",
+      "Device-specific accommodation: phone shelf, charging dock, parcel compartment, cable management",
+      "Surface scale matched to the supported device rather than to writing or working tasks",
+      "Often integrated with adjacent seating, drawer, or directory storage",
+      "Modern variants include integrated USB ports, charging circuitry, smart-package compartments",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights 28-44 inches for stand types; widths 18-36 inches; depths 12-20 inches. Wall-mounted variants 12-24 inches wide. Charging towers/columns 36-72 inches tall. Package stations significantly larger when designed for full parcel reception (up to 60 inches tall, 18-24 inches deep).",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_personal_hygiene_stands",
+    category: "spatial_behavior",
+    name: "Personal Hygiene Stands",
+    family_id: "family_entry_support_forms",
+    description:
+      "Vertical or compact-stand furniture forms supporting personal hygiene activities through basin support, water containment, towel hanging, or shaving accommodation. Forms predate plumbed bathrooms and reflect domestic hygiene patterns of the 18th-19th centuries; later forms persist as auxiliary or stylistic furniture. Distinct from Display and Plant Support Stands by their human-use orientation (basins held water for active use, not display) and from Communication and Tech Support Stands by their water-handling and personal-care function.",
+    structural_attributes: [
+      "Top surface designed to support a water basin or pitcher",
+      "Often integrated lower shelf, towel rail, or splash board",
+      "Water-resistant finishes or surface treatments",
+      "Compact horizontal footprint with body-scale proportions",
+      "Towel rails or drying racks frequent at top or sides",
+      "Splash backs or marble tops common in 19th-century examples",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights 30-36 inches typical (basin top at convenient working height); widths 18-30 inches; depths 16-22 inches. Towel rails extend 8-14 inches above. Lower shelves typically 8-12 inches above floor.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_container_and_box_forms",
+    category: "spatial_behavior",
+    name: "Container and Box Forms",
+    family_id: "family_entry_support_forms",
+    description:
+      "Small to medium portable container furniture forms — boxes, caskets, caddies, slopes — that hold and protect specific contents through enclosed volume rather than open shelving or vertical hanging. Forms range from miniature jewelry boxes to lap-sized writing slopes to medium-scale candle boxes and Bible boxes. Distinct from full case furniture (chests, cabinets, armoires) by their portable scale, single-volume interior, and frequent specialized content fit; distinct from baskets by their rigid, lidded, joinery-based construction.",
+    structural_attributes: [
+      "Enclosed volume with hinged, lifting, or sliding lid",
+      "Rigid construction (joined wood, dovetailed corners, mitered frames)",
+      "Specialized interior often fitted to specific content (jewelry compartments, ink wells, candle holders, writing surfaces)",
+      "Portable scale — typically liftable by one or two hands",
+      "Surface decoration frequent (inlay, marquetry, painted decoration, engraved metalwork)",
+      "Locks, hasps, or latches common to secure contents",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Footprints range from 4×4 inches (ring boxes) to 24×18 inches (large document boxes). Heights 2-12 inches typical. Writing slopes when open present an angled surface 14-22 inches deep at 8-12 degrees. Lap desks 16-22 inches wide × 12-16 inches deep × 4-8 inches tall closed.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_specialty_body_support_frames",
+    category: "spatial_behavior",
+    name: "Specialty Body Support Frames",
+    family_id: "family_entry_support_forms",
+    description:
+      "Large free-standing frame furniture forms that support a body or body-vessel without being seating, beds, or workstations themselves. Forms include hammock stands (supporting hammocks for human rest) and funeral biers (supporting coffins or caskets during ceremonial display). Despite very different cultural contexts (recreation vs. ritual), these share the structural behavior of large open frames designed to support a horizontal body-scale element from below or between vertical posts. Frame dimensions are scaled to typical body or vessel length.",
+    structural_attributes: [
+      "Large open frame structure with vertical posts or end supports",
+      "Horizontal span between supports calibrated to body or vessel length (60-84 inches typical)",
+      "Lateral stability through broad base or floor-anchoring",
+      "Hooks, brackets, hangers, or platforms to receive the supported element",
+      "Often portable through disassembly or wheels (more common in funeral biers than hammock stands)",
+      "Materials emphasize tension strength (hammock stands) or static load capacity (biers)",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Length 72-96 inches typical (matching adult human or coffin length). Heights 36-72 inches for hammock stands, 18-36 inches for biers (lower for ceremonial viewing). Width/footprint 24-48 inches for stability.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_domestic_specialty_storage_and_organization",
+    category: "spatial_behavior",
+    name: "Domestic Specialty Storage and Organization",
+    family_id: "family_entry_support_forms",
+    description:
+      "Specialized domestic furniture forms organized around a specific household activity, occupant, or zone — children's toy storage, mudroom utility benches, entry-zone organizers, pet utility forms. Forms emphasize content-specific accommodation (child-accessible heights, footwear cubbies, leash hooks, food bowl recesses) rather than generic storage capacity. Distinct from general storage furniture by their function-specific design and from institutional fixtures by their domestic context and scale.",
+    structural_attributes: [
+      "Function-specific accommodation features (child-scale heights, animal-scale openings, shoe-shaped cubbies)",
+      "Domestic-context construction (residential materials and finishes, not institutional grade)",
+      "Compact horizontal footprint suited to entry zones, mudrooms, nursery rooms, or pet feeding areas",
+      "Frequently combines storage with bench seating, hooks, or organizational compartments",
+      "Modern materials (plywood, MDF, painted finishes, plastic bins) common in 20th-century-and-later examples",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights vary by function: child-accessible toy storage 18-30 inches; mudroom benches 16-20 inches seat height with cubbies above to 60 inches; pet feeding stations 6-18 inches; entry organizers 60-84 inches when wall-spanning. Widths 24-60 inches typical; depths 12-24 inches.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];
