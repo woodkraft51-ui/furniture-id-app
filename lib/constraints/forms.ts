@@ -11915,6 +11915,156 @@ export const FORMS: FormEntry[] = [
     migration_status: "partial",
   },
   {
+    id: "form_basket",
+    category: "form",
+    name: "basket",
+    parent_category: "basket_form",
+    family_id: "family_baskets",
+    spatial_behavior_id: "spatial_baskets",
+    date_floor: 1600,
+    date_ceiling: 2030,
+    distinguishing_features: [
+      "Portable woven container constructed through interwoven flexible materials rather than rigid joinery",
+      "Lightweight, often ventilated, hand-portable forms suited to carrying, gathering, storage, sorting, protecting, or displaying goods and domestic materials",
+      "Materials emphasize weaving: reed, cane, willow, splint, wicker, rattan, ash, oak, or fiber",
+      "Rounded, oval, rectangular, and tapered profiles frequent",
+      "Open or lidded forms; carry handles common",
+      "Functions span agricultural, domestic, commercial, textile, decorative, and maritime contexts",
+    ],
+    subtypes: [
+      {
+        id: "subtype_basket_sewing_basket",
+        name: "sewing basket",
+        distinguishing_attributes: [
+          "Basket variant in portable textile-work container form intended specifically for sewing tools, thread, needles, and domestic needlework organization. Hinged lids common; interior sewing compartments or trays; textile-lined interiors occasionally present. Compact decorative domestic character distinguishes from work-utility baskets.",
+        ],
+      },
+      {
+        id: "subtype_basket_market_basket",
+        name: "market basket",
+        distinguishing_attributes: [
+          "Basket variant in carrying form intended specifically for transporting goods, produce, or shopping purchases between market and home. Often broad, shallow form with sturdy arched handle. Strong rim for repeated lifting. Common in rural and small-town markets.",
+        ],
+      },
+      {
+        id: "subtype_basket_picnic_basket",
+        name: "picnic basket",
+        distinguishing_attributes: [
+          "Basket variant in lidded carrying form specifically for transporting picnic food, utensils, and accessories. Hinged or folding lid; often fitted interior with plate, glass, and utensil compartments. Frequently leather-strapped or with hinged metal hardware in Victorian and Edwardian examples.",
+        ],
+      },
+      {
+        id: "subtype_basket_gathering_basket",
+        name: "gathering basket",
+        distinguishing_attributes: [
+          "Basket variant in shallow open form intended specifically for gathering produce, herbs, eggs, or foraged materials directly from gardens or fields. Wide opening for easy deposit; often lower rim than market baskets. Strong handle for carrying laden weight.",
+        ],
+      },
+      {
+        id: "subtype_basket_storage_basket",
+        name: "storage basket",
+        distinguishing_attributes: [
+          "Basket variant in domestic-storage form intended for household contents kept in place rather than carried frequently. Lidded or open; often larger and deeper than carrying baskets. Decorative or utilitarian depending on regional and material tradition.",
+        ],
+      },
+      {
+        id: "subtype_basket_laundry_basket",
+        name: "laundry basket",
+        distinguishing_attributes: [
+          "Basket variant in large ventilated form intended specifically for transporting or storing clothing and linens before washing. Open-top, broad handles; lightweight high-volume construction prioritizing airflow and bulk textile capacity. Mid-century plastic-coated wire and synthetic variants common alongside traditional wicker and oak splint examples.",
+        ],
+      },
+      {
+        id: "subtype_basket_waste_basket",
+        name: "waste basket",
+        distinguishing_attributes: [
+          "Basket variant in open container form intended specifically for temporary refuse collection in domestic or office settings. Cylindrical or tapered profile; lightweight portable construction. Victorian wicker, mid-century office metal, and modern plastic examples all common.",
+        ],
+      },
+      {
+        id: "subtype_basket_egg_basket",
+        name: "egg basket",
+        distinguishing_attributes: [
+          "Basket variant in agricultural carrying form specifically for collecting and transporting eggs safely. Emphasizes shock reduction through woven structure; often rounded form with strong arched handle. Strongly associated with rural and farm production.",
+        ],
+      },
+      {
+        id: "subtype_basket_fishing_creel",
+        name: "fishing creel",
+        distinguishing_attributes: [
+          "Basket variant in narrow shoulder-carried form intended specifically for holding caught fish during sport fishing. Hinged top lid with drop-through slot for fish deposit; leather shoulder strap; often willow or wicker construction. Sport-fishing context distinguishes from agricultural and domestic baskets.",
+        ],
+      },
+      {
+        id: "subtype_basket_split_oak_basket",
+        name: "split oak basket",
+        distinguishing_attributes: [
+          "Basket variant constructed from hand-split hardwood splints, particularly white oak. Flat hardwood splint weaving with reinforced rims; visible hand-split texture; heavier structural rigidity than wicker. Strongly associated with Appalachian, southern mountain, and Ozark traditions. Material-and-construction tradition rather than form-specific.",
+        ],
+      },
+      {
+        id: "subtype_basket_wicker_basket",
+        name: "wicker basket",
+        distinguishing_attributes: [
+          "Basket variant constructed primarily from flexible wicker, reed, willow, cane, or rattan materials. Rounded woven texture; flexible lightweight body; fine repetitive weave patterns; curved forms common. Often lighter and more decorative than splint baskets. Victorian American wicker production especially influential in northeastern coastal manufacturing.",
+        ],
+      },
+      {
+        id: "subtype_basket_nantucket_basket",
+        name: "nantucket basket",
+        distinguishing_attributes: [
+          "Basket variant in fine American lightship-inspired form emphasizing precision weaving, refined craftsmanship, and decorative presentation. Hardwood base and rim construction; cane weaving; swing handles common; tight symmetrical weave patterns; compact elegant proportions. Specifically associated with Nantucket and New England maritime traditions rooted in 19th-century lightship basket-making culture. Frequently considered a luxury or artisan basket tradition.",
+        ],
+      },
+    ],
+    dimensional_thresholds: {
+      height_min: 4,
+      height_max: 30,
+      width_min: 6,
+      width_max: 30,
+      depth_min: 4,
+      depth_max: 24,
+      weight_min: 0.5,
+      weight_max: 15,
+      notes:
+        "Portable woven container form with dimensions highly variable by subtype. Sewing baskets compact at 8-14 inches wide × 6-10 inches deep × 4-8 inches tall. Market baskets 14-20 inches across × 10-14 inches tall with arched handle adding 6-10 inches. Laundry baskets large at 24-30 inches across × 14-20 inches tall. Nantucket baskets 6-14 inches diameter typical. Weights low (0.5-15 lbs) reflecting hand-portable scale.",
+    },
+    cousin_form_contrasts: [
+      "Basket vs. form_box (Entry/Support Forms): basket has woven flexible construction; box has rigid joinery construction. Both serve portable container functions; the construction-tradition distinction drives the form-vs-form classification.",
+      "Basket vs. crate: basket has woven flexible walls; crate has slatted rigid construction and is generally heavier and structural for cargo.",
+      "Basket vs. hamper: basket spans broad use range; hamper typically larger and laundry-oriented (though there is naming overlap — laundry baskets and laundry hampers are sometimes interchangeable terms).",
+      "Basket vs. bin: basket is portable and woven; bin is generally stationary and rigid.",
+      "Sewing basket vs. work box (form_box subtype): sewing basket is woven rather than rigidly constructed; sewing basket organized around textile-tool workflow.",
+      "Split oak basket vs. wicker basket: split oak uses rigid hardwood splints; wicker uses flexible reed/cane/willow/rattan materials.",
+      "Nantucket basket vs. wicker basket: Nantucket is more refined, regionally specialized (Nantucket/New England maritime), and lightship-tradition rooted; general wicker is broader category.",
+      "Fishing creel vs. gathering basket: creel is sport-fishing-specific with hinged top lid and shoulder strap; gathering basket is open-form for produce/herb/foraged-materials gathering.",
+    ],
+    common_aliases: [
+      "Basket",
+      "Sewing basket",
+      "Market basket",
+      "Picnic basket",
+      "Gathering basket",
+      "Storage basket",
+      "Laundry basket",
+      "Waste basket",
+      "Egg basket",
+      "Fishing creel",
+      "Creel",
+      "Split oak basket",
+      "Oak splint basket",
+      "Wicker basket",
+      "Nantucket basket",
+      "Nantucket lightship basket",
+      "Lightship basket",
+    ],
+    regional_period_notes:
+      "Portable woven container form in the basket family, encompassing American basket-making traditions from pre-colonial and colonial-era precedents through present artisan production. Date envelope: c. 1600-present American production; pre-colonial Native American basketry traditions heavily influenced regional American basket forms. Strongest diagnostic ranges vary by subtype: c. 1840-1860 emergence for Nantucket lightship tradition; c. 1850-1930 peak Victorian wicker; colonial-era through present for split oak Appalachian and southern mountain traditions; c. 1800-1830 emergence for dedicated sewing baskets; c. late 19th century emergence for waste baskets. Regional production patterns: Appalachian production frequently split white oak; New England coastal production strongly associated with Nantucket forms; southern production often cane or reed woven; Pennsylvania German examples frequently tightly woven splint work; Native American basketry traditions form a deep regional foundation across many areas. American basket-making spans agricultural (egg, gathering, market), domestic (sewing, storage, laundry, waste), commercial (market, picnic), sport (fishing creel), and decorative-and-artisan (Nantucket, fine wicker) contexts.",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
     id: "form_rocking_chair",
     category: "form",
     name: "rocking chair",
