@@ -1842,8 +1842,59 @@ export const FORMS: FormEntry[] = [
     parent_category: "case_piece",
     family_id: "family_general_storage_specialty",
     spatial_behavior_id: "spatial_utility_storage",
-    date_floor: 1820,
-    date_ceiling: 1880,
+    date_floor: 1750,
+    date_ceiling: 1900,
+    distinguishing_features: [
+      "Ventilated door and side panels constructed from pierced tin, punched tin with decorative patterns, fabric screen, or pierced wood — defining functional characteristic enabling air circulation while excluding insects and rodents",
+      "Vertical case-piece form with elevated cabinet body on tall legs or a low base, raising the storage compartment off the floor; typical heights 48-72 inches with the cabinet portion accessible at standing height",
+      "Functional storage interior with one or two shelves accessed by one or two ventilated doors; minimal decorative elaboration in the case interior",
+      "Plain utilitarian country construction in pine, poplar, yellow pine, or other local softwoods and secondary hardwoods; painted finishes (especially blue, red, mustard, or grain-painted surfaces) common; original tinwork or screen panels critical to authentic identification",
+      "Panel-material variation reflects regional and period preference: pierced tin (most common, often with star, geometric, or heart patterns), punched tin (decorative), wire screen (later examples), wooden lattice or pierced wood (earlier/Southern examples)",
+      "Pre-refrigeration domestic kitchen storage furniture for cooked foods, pies, baked goods, dairy, and other perishables requiring ventilated protected storage — distinct from industrial or commercial food storage",
+    ],
+    subtypes: [
+      {
+        id: "subtype_pie_safe_pennsylvania_german",
+        name: "Pennsylvania German pie safe",
+        distinguishing_attributes: [
+          "Pennsylvania German tradition pie safe with elaborate punched-tin patterns (stars, tulips, hearts, geometric motifs) reflecting Pennsylvania German decorative vocabulary; often painted in traditional Pennsylvania German colors (blue, red, mustard) or grain-painted; primary production c. 1820-1880 in Pennsylvania German settlement regions (Pennsylvania, Maryland, Virginia, Ohio).",
+        ],
+      },
+      {
+        id: "subtype_pie_safe_southern_appalachian",
+        name: "Southern Appalachian pie safe",
+        distinguishing_attributes: [
+          "Southern Appalachian and Upland South pie safe in yellow pine, poplar, or other regional softwoods; pierced-tin or wooden-slat ventilated panels with simpler geometric patterns or plain perforations; often plain or paint-decorated; primary production c. 1820-1900 across Southern Appalachian and Upland South regions, with yellow pine being a strong Southern indicator.",
+        ],
+      },
+      {
+        id: "subtype_pie_safe_midwest",
+        name: "Midwest pie safe",
+        distinguishing_attributes: [
+          "Midwest pie safe in pine or poplar with pierced-tin, punched-tin, or wire-screen ventilated panels; reflects mid-19th century westward migration of pie safe form into Ohio, Indiana, Illinois, Kentucky, Missouri, and Iowa; production c. 1840-1900 with later examples transitioning to wire screen as the form approached extinction.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Pie safe vs. jelly cupboard: both are pre-refrigeration domestic kitchen storage forms in plain country construction, but pie safe has ventilated tin or screen panels (defining functional characteristic for protected ventilated storage), while jelly cupboard has solid wooden door panels enclosing preserved-food storage that did not require ventilation. The two forms are commonly confused but the ventilated-panel feature is diagnostic for pie safe.",
+    ],
+    common_aliases: [
+      "Pie safe",
+      "Pie cupboard",
+      "Pie chest",
+      "Tin safe",
+      "Punched-tin safe",
+      "Meat safe (regional, especially Southern)",
+    ],
+    regional_period_notes:
+      "Pie safe is a pre-refrigeration domestic kitchen storage form for protecting cooked foods, baked goods, dairy, and perishables from insects and rodents while permitting air circulation. Date envelope: c. 1750-1900 American use, with primary diagnostic production c. 1820-1880. The form effectively went extinct c. 1900-1920 as indoor refrigeration (ice boxes, then mechanical refrigerators) made ventilated protected food storage unnecessary in domestic kitchens. Regional traditions: Pennsylvania German tradition produced elaborate punched-tin patterned pie safes c. 1820-1880 in Pennsylvania, Maryland, Virginia, and Ohio German settlement regions. Southern Appalachian and Upland South tradition produced yellow-pine pie safes with simpler patterns c. 1820-1900; yellow pine secondary or primary wood is a strong Southern indicator. Midwest tradition reflects c. 1840-1900 westward migration of the form. Architectural note: pie safe is canonically authored at General Storage / spatial_utility_storage (this family/spatial home is correct per domestic kitchen storage classification); the form is not an industrial or commercial form despite its kitchen-context use. Post-1920 examples warrant caution — once domestic refrigeration was widespread the pie safe form went out of production; post-1920 examples are likely revivals, reproductions, or country/folk-art productions rather than period working pie safes.",
+    anti_classification_guidance: {
+      boundary_date: 1920,
+      boundary_type: "form_extinction",
+      prominence: "standard",
+      guidance_text:
+        "Pie safe is a pre-refrigeration domestic kitchen storage form that effectively went extinct c. 1900-1920 as indoor refrigeration (ice boxes, then mechanical refrigerators) eliminated the functional need for ventilated protected food storage. Examples confidently dated to post-1920 production are not period working pie safes — they are likely revival/reproduction examples (especially common in mid-20th century country-furniture revival traditions), folk-art productions, or repurposed cabinets retrofitted with tin panels. Construction evidence (machine-cut joinery, modern screws, plywood or composite secondary materials, modern paint, modern tinwork) on a piece otherwise styled as a pie safe is strong evidence of post-1920 revival production rather than period authentication.",
+    },
     positive_authority: 7,
     hard_negative_authority: 7,
     migration_status: "partial",
@@ -13116,13 +13167,6 @@ export const FORMS: FormEntry[] = [
         ],
       },
       {
-        id: "subtype_kitchen_utility_unit_pie_safe",
-        name: "pie safe",
-        distinguishing_attributes: [
-          "Kitchen utility unit variant in storage form with pierced tin or screen door panels for ventilated food storage (pies, baked goods, cooked items) protected from insects and rodents. Decorative tin punching patterns characteristic; hardwood or painted construction; 18th-19th century rural American kitchens predominantly.",
-        ],
-      },
-      {
         id: "subtype_kitchen_utility_unit_kitchen_island",
         name: "kitchen island",
         distinguishing_attributes: [
@@ -13145,20 +13189,18 @@ export const FORMS: FormEntry[] = [
       "Kitchen utility unit vs. dry sink: utility unit emphasizes food prep, baking, and storage; dry sink emphasizes water management with well and drainboard.",
       "Kitchen utility unit vs. modern built-in kitchen cabinetry: utility unit is freestanding integrated piece; modern built-in is architectural casework integrated into walls.",
       "Hoosier cabinet vs. baker's cabinet: Hoosier is specific manufacturer's named product line widespread c. 1900-1930; baker's cabinet is broader category with baking-workflow emphasis.",
-      "Pie safe vs. Hoosier cabinet: pie safe is older rural ventilated-storage form with pierced-tin doors; Hoosier is later industrial-product integrated workstation.",
       "Kitchen island vs. wall-anchored utility unit: island is freestanding center-room placement; wall-anchored utility unit is fixed against wall.",
     ],
     common_aliases: [
       "Kitchen utility unit",
       "Hoosier cabinet",
       "Baker's cabinet",
-      "Pie safe",
       "Kitchen island",
       "Kitchen workstation",
       "Free-standing kitchen cabinet",
     ],
     regional_period_notes:
-      "Kitchen workstation form integrating food prep, baking, and storage. Date envelope: c. 1850-present American use. Strongest diagnostic ranges: c. 1850-1920 for pie safes and early baker's cabinets; c. 1900-1930 for Hoosier-style integrated kitchen cabinets; c. 1950-present for kitchen islands. American examples reflect regional and period kitchen-workflow conventions: pine and oak country pie safes in 18th-19th century rural kitchens; white-painted Hoosier cabinets in early 20th century kitchens; enameled steel mid-century examples; modern hardwood, butcher-block, or stone-topped kitchen islands.",
+      "Kitchen workstation form integrating food prep, baking, and storage. Date envelope: c. 1850-present American use. Strongest diagnostic ranges: c. 1850-1920 for early baker's cabinets; c. 1900-1930 for Hoosier-style integrated kitchen cabinets; c. 1950-present for kitchen islands. American examples reflect regional and period kitchen-workflow conventions: white-painted Hoosier cabinets in early 20th century kitchens; enameled steel mid-century examples; modern hardwood, butcher-block, or stone-topped kitchen islands.",
     positive_authority: 8,
     hard_negative_authority: 8,
     migration_status: "partial",
