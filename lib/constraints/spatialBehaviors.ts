@@ -1271,4 +1271,234 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+
+  {
+    id: "spatial_vertical_reading_and_speaking_stands",
+    category: "spatial_behavior",
+    name: "Vertical Reading and Speaking Stands",
+    family_id: "family_industrial_professional",
+    description:
+      "Stand-based behavior where forms present material at an angled or vertical reading or display plane for a standing reader, speaker, performer, or audience. Forms support reading papers (lecterns, pulpits), musical scores (music stands), visual material (easels), or speaker presence behind a fixed station (podiums). Construction emphasizes a tall vertical support shaft or pedestal, an inclined or vertical work surface or ledge, and stability against forward-leaning use. Distinct from other workplace-fixture behaviors by speaker-oriented or display-oriented vertical-plane work surface rather than horizontal storage or transaction-counter use.",
+    structural_attributes: [
+      "Tall vertical support shaft or pedestal with weighted base",
+      "Inclined or vertical work surface or ledge for reading material, score, canvas, or speaker support",
+      "Standing-user ergonomics: ledge or work surface height matched to standing reading or speaking position",
+      "Often featuring book ledge, pen rest, page-stop, clamp, tripod prop, or similar material-retention feature",
+      "Stability against forward-leaning use (broad base, weighted construction, floor anchoring in fixed examples)",
+      "Public, institutional, religious, educational, or performance use contexts predominant",
+    ],
+    dimensional_patterns: {
+      notes: "Reading/speaking surface heights typically 42-48 inches matching standing-user ergonomics. Base footprints 14-24 inches across for stability. Easel mast heights extend higher (60-84 inches) when supporting full-canvas display.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_personal_service_stations",
+    category: "spatial_behavior",
+    name: "Personal Service Stations",
+    family_id: "family_industrial_professional",
+    description:
+      "Service-counter behavior where forms provide a fixed station for a service provider to deliver personal-care services to a seated or standing client. Forms include barber stations and salon stations with specialized client-facing layouts: mirror, drawer storage for tools, counter ledge for product placement, electrical outlets for clippers/dryers, and accommodation for an adjacent client chair (typically a separate fixture but spatially integrated). Construction emphasizes client-and-provider ergonomic alignment, mirror integration, and service-workflow storage.",
+    structural_attributes: [
+      "Vertical mirror integrated into back or upper portion of station",
+      "Counter ledge or work surface at standing-service height (typically 30-36 inches)",
+      "Drawer or compartment storage for combs, brushes, scissors, clippers, dryers, product bottles",
+      "Often with electrical outlets for service tools",
+      "Wall-mounted or counter-anchored fixed installation",
+      "Client-seat-adjacent placement (typically a separate barber/salon chair fixture)",
+    ],
+    dimensional_patterns: {
+      notes: "Counter heights 30-36 inches. Widths 24-48 inches per station. Mirror dimensions vary; typical 24-36 inches wide × 30-48 inches tall. Drawer storage configurations vary by service type.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_kitchen_and_utility_workstations",
+    category: "spatial_behavior",
+    name: "Kitchen and Utility Workstations",
+    family_id: "family_industrial_professional",
+    description:
+      "Utility-counter behavior where forms provide a fixed workstation for kitchen, scullery, pantry, or domestic-utility tasks. Includes dry sinks (water-management without plumbing), and kitchen utility units (compartmentalized food-prep stations, often with built-in flour bins, sifters, baking surfaces, or storage). Construction emphasizes water-and-food-safe surfaces, integrated functional features (zinc-lined wells, marble pastry slabs, bread drawers), and durable utilitarian materials. Distinct from domestic dining furniture (Dining family) by utility-workstation rather than meal-service orientation.",
+    structural_attributes: [
+      "Counter or work surface at standing-task height (typically 32-36 inches)",
+      "Often integrated functional features: zinc-lined well, marble slab, bread drawer, flour bin with sifter, knife or utensil storage",
+      "Durable surfaces suited to water, flour, oil, and food contact",
+      "Storage below work surface (drawers, cabinets, bin)",
+      "Wall-anchored or freestanding kitchen placement",
+      "Pre-plumbing era examples emphasize water-management features (drainboards, splashguards) without integrated pipes",
+    ],
+    dimensional_patterns: {
+      notes: "Work surface heights 32-36 inches. Widths 36-60 inches typical for single units; larger compound units up to 84 inches. Depths 20-28 inches matching kitchen counter conventions.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_retail_and_commercial_fixtures",
+    category: "spatial_behavior",
+    name: "Retail and Commercial Fixtures",
+    family_id: "family_industrial_professional",
+    description:
+      "Commercial-display behavior where forms support customer-facing retail, hospitality, or service operations. Includes kiosks (small enclosed sales/information stations), showcases (glazed display fixtures for merchandise), retail fixtures (counters, gondolas, display racks integrated into store layout), hospitality fixtures (bar fronts, check-in counters, service stations), and beverage service forms (soda fountains, coffee bars, tap fronts). Construction emphasizes customer-facing visual presentation, transaction-surface ergonomics, durable public-use materials, and often integrated lighting and display infrastructure. Distinct from domestic furniture by commercial-context construction, scale, and customer-facing display orientation.",
+    structural_attributes: [
+      "Customer-facing display or transaction surface as primary spatial axis",
+      "Glazed display panels (showcases) or open shelving (gondolas) for merchandise visibility",
+      "Counter heights matched to standing customer-and-staff transaction ergonomics (typically 36-42 inches)",
+      "Durable public-use materials and finishes (laminate, metal, hardwood, glass)",
+      "Often integrated lighting, signage, branding, or display infrastructure",
+      "Commercial-context placement: retail floor, hotel lobby, restaurant, bar, foodservice operation",
+    ],
+    dimensional_patterns: {
+      notes: "Counter heights 36-42 inches (taller than residential to accommodate standing customer-staff transactions). Widths and configurations vary widely by use: kiosks 24-48 inches; showcases 36-96 inches; gondolas and retail fixtures up to room-spanning lengths; hospitality bar fronts often 60-120 inches.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_specialized_storage_and_organization",
+    category: "spatial_behavior",
+    name: "Specialized Storage and Organization",
+    family_id: "family_industrial_professional",
+    description:
+      "Institutional-storage behavior where forms organize equipment, supplies, materials, or personal items within workplace, educational, or operational settings. Includes racks (open multi-shelf storage for tools, supplies, or equipment), lockers (secure compartmentalized personal storage), educational fixtures (school cabinets, library cases, classroom storage), built-in storage (architectural casework integrated into walls or rooms), and shelving systems (modular or fixed multi-tier shelving). Construction emphasizes utility-oriented durability, often-modular or repeated layouts, and storage capacity calibrated to institutional use. Distinct from domestic storage (Bedroom/General Storage families) by institutional scale, public/workplace context, and utilitarian construction.",
+    structural_attributes: [
+      "Multi-compartment or multi-shelf layout optimized for storage capacity",
+      "Durable utilitarian materials: steel, heavy hardwood, laminate, industrial-grade construction",
+      "Often modular or repeated configurations (locker rows, shelving units, gondola sections)",
+      "Institutional-context placement: schools, factories, offices, gyms, libraries, warehouses, public buildings",
+      "Secure-access features where applicable (locks, hasps, key cylinders)",
+      "Identification or labeling provisions (number plates, slot labels, badge holders)",
+    ],
+    dimensional_patterns: {
+      notes: "Heights vary widely: shelving systems 60-96 inches floor-to-ceiling; lockers 60-84 inches typical; built-in storage from wall-height base cabinets (36 inches) to full-height casework (96+ inches). Widths and configurations vary by application.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_religious_and_ceremonial_fixtures",
+    category: "spatial_behavior",
+    name: "Religious and Ceremonial Fixtures",
+    family_id: "family_industrial_professional",
+    description:
+      "Sanctuary-furnishing behavior where forms support worship, ritual, prayer, music, or ceremonial functions in religious institutional contexts. Includes altars (sacred tables for communion and offerings), communion rails (sanctuary-boundary kneeling supports), church pews (congregational row seating), choir stalls (chancel-area choir/clergy seating), confessionals (sacramental confession enclosures), deacons' benches (church/meetinghouse seating), prayer kneelers (devotional supports), candle stands (liturgical candle support), and processional stands (ceremonial-staff holders). Construction emphasizes liturgical placement, religious symbolism, denominational specificity, sanctuary-woodwork coordination, and durable public-worship use. Distinct from domestic seating and storage by sacred-use context, sanctuary placement, and ritual function.",
+    structural_attributes: [
+      "Liturgical placement: sanctuary, chancel, altar zone, congregational seating area, sacristy",
+      "Religious symbolism: crosses, religious carving, denominational iconography, sanctuary-coordinated woodwork",
+      "Durable public-worship materials and construction (heavy hardwood, carved oak, painted pine depending on denomination and period)",
+      "Often denomination-specific: Catholic altar vs. Protestant communion table; pew rows vs. open meetinghouse seating; confessional vs. open Protestant practice",
+      "Repeated congregational seating (pews, choir stalls) in row-based layouts",
+      "Ritual-function support: altar mensa, communion rail kneeling cushion, prayer kneeler padding, candle stand sockets",
+    ],
+    dimensional_patterns: {
+      notes: "Pew seat heights 16-18 inches matching general seating; pew lengths 96-144 inches accommodating multiple congregants. Altar heights 36-42 inches for celebrant access. Lectern/pulpit heights 42-48 inches (overlap with vertical reading/speaking stands behavior but liturgical context places them here when they're part of sanctuary furnishings). Candle stand heights vary from altar-set 12-24 inches to floor-standing 48-72 inches for vigil or processional stands.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_scientific_equipment_stands",
+    category: "spatial_behavior",
+    name: "Scientific Equipment Stands",
+    family_id: "family_industrial_professional",
+    description:
+      "Specialized-mount behavior where forms support scientific instruments, laboratory equipment, observational devices, or research apparatus. Construction emphasizes precision mounting, stability against vibration, instrument-specific accommodation (microscope stages, telescope mounts, balance platforms, retort stands), and often adjustability for instrument calibration or operator ergonomics. Distinct from general utility cabinets or workstations by instrument-specific mounting requirements and research-context construction.",
+    structural_attributes: [
+      "Precision mounting surface or platform calibrated to specific instrument",
+      "Stability emphasis: heavy base, vibration damping, often stone or hardwood top surfaces",
+      "Adjustability for instrument calibration (height, tilt, leveling) or operator ergonomics",
+      "Instrument-specific accommodation: microscope stage, balance platform, telescope mount, retort rack, optical-bench rail",
+      "Often features storage or organization for instrument accessories (slides, weights, lenses, glassware)",
+      "Laboratory, observatory, classroom, or research-institution placement",
+    ],
+    dimensional_patterns: {
+      notes: "Working surface heights typically 30-36 inches for benchtop use; observation-platform heights may be lower (24-30 inches) for seated instrument use. Base footprints emphasize stability (often broader than working surfaces). Heights and configurations vary widely by instrument type.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_institutional_and_workplace_fixtures",
+    category: "spatial_behavior",
+    name: "Institutional and Workplace Fixtures",
+    family_id: "family_industrial_professional",
+    description:
+      "Institutional-fixture behavior where forms support workplace, public-service, or operational functions through specialized fixed installations. Includes cabinets of curiosities (specimen-and-artifact display cases), time clock stations (attendance-recording fixtures), safety fixtures (emergency-equipment housings), industrial stations (factory or workshop fixed workstations), and bank fixtures (teller cages, vault fronts, safe door assemblies). Construction emphasizes institutional-context durability, workflow-specific feature integration (locks, mechanisms, security features, specimen displays), and public-or-employee-facing visibility. Distinct from broader specialized storage by purpose-built operational role rather than general storage; distinct from retail fixtures by employee/institutional rather than customer-facing orientation.",
+    structural_attributes: [
+      "Purpose-built operational role: timekeeping, safety equipment access, specimen display, industrial workflow, financial-service handling, security",
+      "Often integrated mechanical or electronic features (punch clocks, locks, vault mechanisms, alarm systems, electronic access controls)",
+      "Institutional placement: factories, offices, banks, museums, public buildings, courthouses, schools, hospitals",
+      "Durable construction calibrated to public/employee use intensity (heavy steel, hardwood, marble, security glazing depending on application)",
+      "Identification, labeling, or branding (employee names, instrument labels, vault maker plates, safety signage)",
+      "Wall, floor, or ceiling anchoring common (fixed installation rather than portable)",
+    ],
+    dimensional_patterns: {
+      notes: "Highly variable by fixture type. Time clock stations 36-48 inches wall mount; safety fixtures range 12-36 inches; bank teller cages 60-96 inches per bay with multi-bay row configurations; cabinet of curiosities 60-96 inches tall display case; industrial stations 36-72 inches per workstation.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_workstation_accessories_and_mobile_fixtures",
+    category: "spatial_behavior",
+    name: "Workstation Accessories and Mobile Fixtures",
+    family_id: "family_industrial_professional",
+    description:
+      "Mobile or accessory behavior where forms supplement primary workstations through portability, modular accessories, or rolling utility carts. Includes workstation accessories (return desks, side units, modular extensions), and utility carts (rolling industrial, medical, library, or service carts). Construction emphasizes portability (casters, lightweight construction) or modular integration with primary workstations. Distinct from primary workstation fixtures by accessory-or-mobile rather than primary role; distinct from domestic carts by industrial-or-institutional context and durability.",
+    structural_attributes: [
+      "Mobility provision: casters, wheels, handles, lightweight construction",
+      "Accessory or modular integration with primary workstations",
+      "Compact or moderate scale for mobility or modular fit",
+      "Durable utilitarian materials and finishes",
+      "Often feature locking-caster brakes for fixed-position use",
+      "Industrial, institutional, medical, library, or service-context placement",
+    ],
+    dimensional_patterns: {
+      notes: "Cart heights typically 30-42 inches. Cart footprints 18-36 inches × 24-48 inches. Workstation accessory dimensions vary by primary workstation system; typical secondary surfaces 24-48 inches wide × 18-24 inches deep.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+
+  {
+    id: "spatial_environmental_control_cabinets",
+    category: "spatial_behavior",
+    name: "Environmental Control Cabinets",
+    family_id: "family_industrial_professional",
+    description:
+      "Climate-and-storage-control behavior where forms maintain specific environmental conditions (temperature, humidity, ventilation, lighting) for stored contents. Includes humidors (humidity-controlled tobacco/cigar storage), wine storage cabinets (temperature-and-humidity-controlled wine racking), curing cabinets (food or material curing under controlled conditions), and other specialized environmental cabinets. Construction emphasizes sealed enclosure, internal climate-control mechanisms (humidification, refrigeration, temperature regulation), and contents-specific internal organization (cigar trays, wine racks, curing hooks). Distinct from general storage by active environmental-control function.",
+    structural_attributes: [
+      "Sealed or semi-sealed enclosure with insulated walls and gasketed doors",
+      "Internal climate-control mechanism: humidification system, refrigeration, temperature regulation, ventilation",
+      "Contents-specific internal organization: cigar trays, wine bottle racks, curing hooks, specimen shelving",
+      "Often features external climate displays or monitoring (hygrometer, thermometer)",
+      "Premium or specialized materials: hardwood (cigar humidors), refrigerated metal (wine cabinets), often glazed doors",
+      "Commercial or premium-residential placement: tobacconist shops, wine cellars, food production, premium home contexts",
+    ],
+    dimensional_patterns: {
+      notes: "Heights typically 24-72 inches for premium cabinets. Widths 18-48 inches. Depths 16-28 inches accommodating internal racking and climate-control equipment. Walk-in commercial variants extend to room-scale dimensions.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];

@@ -997,4 +997,90 @@ This Block's 4-spatial-behavior architectural addition is the largest multi-spat
 
 ---
 
+### 2026-05-10 — Session 8 Block 9 — Industrial/Professional canonical authoring (29 forms, 122 subtypes, 10 new spatial behaviors, in-place stub update of family_industrial_professional) — fourth non-Desks family canonical authoring batch and largest single-PR canonical authoring in project to date
+
+**Bundle architectural decisions (locked from prior sessions):** Industrial/Professional is the fourth non-Desks family canonical authoring batch (Entry/Support Forms = PR #5 commit 8a40b26, Baskets = PR #6 commit 28582aa, Lighting = PR #8 commit 44c0629, Industrial/Professional = this Block). Shipped via PR-based workflow per Session 7/8 establishment. Mike's authored content (industrial_professional_forms_revised.docx, 2026-05-10) drives canonical content after a delegated-editing damage detection caught the first uploaded version's templated-prose issue and Mike re-authored substantive content per form/subform. Path A schema reconciliation pattern uniform with all prior batches.
+
+**Authoring scope.** 29 canonical forms across 10 form groupings, supported by 10 new spatial behaviors (one per form grouping) and 1 in-place update of an existing family stub entry (family_industrial_professional):
+- Vertical Reading and Speaking Stands (5 forms): form_easel (3 subtypes), form_music_stand (3 subtypes), form_lectern (4 subtypes), form_podium (3 subtypes), form_pulpit (3 subtypes)
+- Personal Service Stations (2 forms): form_barber_station (2 subtypes), form_salon_station (2 subtypes)
+- Kitchen and Utility Workstations (2 forms): form_dry_sink (3 subtypes), form_kitchen_utility_unit (4 subtypes)
+- Retail and Commercial Fixtures (5 forms): form_kiosk (5 subtypes), form_showcase (4 subtypes), form_retail_fixture (4 subtypes), form_hospitality_fixture (4 subtypes), form_beverage_service_form (4 subtypes)
+- Specialized Storage and Organization (5 forms): form_rack (8 subtypes), form_locker (8 subtypes), form_educational_fixture (5 subtypes), form_built_in_storage (4 subtypes), form_shelving_system (4 subtypes)
+- Religious and Ceremonial Fixtures (1 form): form_church_furnishing (9 subtypes)
+- Scientific Equipment Stands (1 form): form_scientific_stand (4 subtypes)
+- Institutional and Workplace Fixtures (5 forms): form_cabinet_of_curiosities (3 subtypes), form_time_clock_station (2 subtypes), form_safety_fixture (5 subtypes), form_industrial_station (4 subtypes), form_bank_fixture (3 subtypes)
+- Workstation Accessories and Mobile Fixtures (2 forms): form_workstation_accessory (4 subtypes), form_utility_cart (5 subtypes)
+- Environmental Control Cabinets (1 form): form_environmental_utility_form (4 subtypes)
+
+**Subtype inventory by form:** 3+3+4+3+3+2+2+3+4+5+4+4+4+4+8+8+5+4+4+9+4+3+2+5+4+3+4+5+4 = 122 subtypes total.
+
+**Architectural decisions:**
+
+D-IP1 (locked): family_industrial_professional uses construction_logic_id "construction_mechanical_integrated" per Block 1/3/7 precedent. Industrial/Professional represents the smallest semantic stretch among the four families using this catch-all assignment — most forms genuinely embody mechanical/integrated systems (lockers with locking mechanisms, time clocks with punch mechanisms, bank vault doors with combination locks, charging lockers with electronics, environmental cabinets with active climate-control systems). The four-logic ordinal taxonomy (case, frame, surface, mechanical_integrated) remains closed-by-design (Block 3 decision); no taxonomy extension proposed in this Block.
+
+D-IP2 (locked): 10 spatial behaviors named per form grouping. Each behavior describes the distinct workflow-context structural relationship of its associated forms:
+- spatial_vertical_reading_and_speaking_stands: stand-based behavior for vertical-plane reading/display/speaking
+- spatial_personal_service_stations: service-counter behavior for personal-care services
+- spatial_kitchen_and_utility_workstations: utility-counter behavior for kitchen/scullery/pantry tasks
+- spatial_retail_and_commercial_fixtures: commercial-display behavior for customer-facing retail
+- spatial_specialized_storage_and_organization: institutional-storage behavior for workplace/educational/operational settings
+- spatial_religious_and_ceremonial_fixtures: sanctuary-furnishing behavior for worship/ritual/ceremony
+- spatial_scientific_equipment_stands: precision-mount behavior for scientific instruments
+- spatial_institutional_and_workplace_fixtures: institutional-fixture behavior for purpose-built operational fixtures
+- spatial_workstation_accessories_and_mobile_fixtures: mobile-or-accessory behavior supplementing primary workstations
+- spatial_environmental_control_cabinets: climate-and-storage-control behavior for environment-managed storage
+
+D-IP3 (locked): Single PR scope. All 29 forms, 10 spatial behaviors, 1 family entry in-place update, single audit log entry in one commit. Single squash-merge keeps commit history clean. Largest single-PR canonical authoring in the project to date (~2400-2800 forms.ts insertions plus ~200 spatialBehaviors.ts plus ~10-12 families.ts insertions/deletions plus ~150 AUDIT_LOG.md).
+
+**No standalone anti_classification_guidance populations in this Block.** Modern-emergence subtypes (Smart Locker, Parcel Locker, Charging Locker, Self-Service Kiosk, modern wine cabinets, contemporary coffee bars, etc.) are handled prose-side in subtype distinguishing_attributes and parent regional_period_notes rather than via standalone classification-boundary annotations. This follows Block 1/7 precedent where modern-emergence forms within continuously-existing form categories are documented prose-side. Future architectural review may add standalone populations if subtype-level diagnostic boundary annotation becomes warranted (e.g., for Smart Locker which strictly cannot exist before electronic-access technology widespread post-2000).
+
+**Cross-form overlaps documented in canonical content (Phase 1 footnote follow-through):**
+
+1. form_church_furnishing's candle_stand subtype ↔ form_candelabrum's candle_stand subtype (Block 7 Lighting): Block 7's audit log predicted this exact overlap. Block 9 delivers resolution: church candle_stand has multiple sockets, drip trays, liturgical placement, and wax-heavy use (altar, vigil, processional, devotional contexts); domestic candle_stand from Lighting family has single or limited candle placements and surface-set decorative use. Same name, different parent contexts. Documented in both forms' cousin_form_contrasts and regional_period_notes. Architectural overlap from Block 7 now resolved with two distinct subtype contents in shipped state.
+
+2. form_pulpit ↔ form_church_furnishing: both are religious-context sanctuary forms but maintained as separate forms due to different spatial behaviors. Pulpit is in spatial_vertical_reading_and_speaking_stands (preaching-station vertical-plane work surface). Church Furnishing is in spatial_religious_and_ceremonial_fixtures (altars, pews, communion rails, etc.). The shared sanctuary context links the two forms architecturally; cross-form note in form_pulpit regional_period_notes addresses this explicitly.
+
+3. form_rack's hat_rack subtype ↔ form_hat_rack (Entry/Support Forms family, Block 1): same form-name "hat rack" in different family contexts. Industrial/Professional hat_rack subtype is commercial/institutional context (haberdashery, theatrical wardrobe, hotel checking, museum installation); Entry/Support form_hat_rack is domestic entry-zone use. Both classification traditions preserved.
+
+4. form_workstation_accessory's credenza_low subtype ↔ Dining family credenza (future canonical authoring): same form-name "credenza" in different family contexts. Workstation accessory credenza is office-context low-storage form; Dining family credenza will be meal-service buffet-style form when Dining family canonical authoring proceeds.
+
+5. form_industrial_station ↔ form_scientific_stand (laboratory_bench subtype): both have benchtop workshop forms but differ in workflow emphasis. Industrial Station emphasizes manufacturing/fabrication with heavy-duty construction; Scientific Stand's laboratory bench emphasizes instrument/glassware-handling with chemical-resistant surfaces. Documented in both forms' cousin_form_contrasts.
+
+6. form_rack's wine_rack subtype ↔ form_environmental_utility_form's wine_cabinet subtype: both store wine but differ in environmental-control function. Wine Rack is open unrefrigerated storage; Wine Cabinet has active climate control. Documented in both forms' cousin_form_contrasts.
+
+**Path A schema reconciliation applied (parallel to all prior batches):** Source document's Unique Characteristics, Identifying Elements, Regional Identifiers, Emergence and Conclusion Dates, and Cousin Forms + Identifying Contrasts prose folded into canonical schema fields (distinguishing_features, dimensional_thresholds with width/height/depth/weight, cousin_form_contrasts, common_aliases, regional_period_notes). Each subtype's authored prose converted to single-element distinguishing_attributes array. Form names lowercased per existing canonical convention; proper nouns preserved (Pennsylvania German, Colonial Revival, Gothic Revival, Federal, Empire, Hoosier, Diebold, Mosler, York Safe & Lock, etc. in regional_period_notes prose). Schema-correct shape verified before drafting against SpatialBehaviorEntry, FamilyEntry, and FormEntry interfaces (Block 3 pattern; Block 7 validated zero-recovery; Block 9 maintains the standard).
+
+**Workflow refinement — family-stub-check standard.** Block 9's Op A pre-state verification surfaced that the original 10-family baseline included stub entries for families that hadn't yet had canonical content shipped (Industrial/Professional, Musical/Mechanical, Clock Cases). The Block 9 drafting initially assumed family_industrial_professional was a new addition, but the entry already existed as a stub at families.ts lines 187-201. Op A absence check returned 1, not 0, triggering STOP per failure handling. Resolution: in-place update of the existing stub rather than append (Option 2). Family count remains 12 (unchanged); description expanded to Block 1/3/7 family entry richness; name updated from "Industrial and Professional" to slash form "Industrial/Professional"; family_characteristics array preserved verbatim; construction_logic_id and authority/migration_status fields preserved.
+
+**Workflow standard established for subsequent family Blocks:**
+- Op A absence check for a target family id is replaced by an Op A2 family-stub-check: query for existing stub presence and, if found, capture verbatim content for in-place update.
+- Applies prospectively to Clock Cases (family_clock_cases, likely present as stub) and Musical and Mechanical Furniture (family_musical_mechanical, likely present as stub) — both pre-existing in the original 10-family baseline and slated for future canonical-authoring Blocks. Each Block's Op A will confirm via its own verification.
+- Future family Blocks will document Op C as either "append" (net-new family) or "in-place stub update" (pre-existing baseline stub) explicitly in the plan, never assumed.
+- Rationale: the original 10-family baseline pre-dated the canonical-authoring program. Blocks 1, 3, 7 also touched pre-existing stubs but the discovery was not formalized as a standard until Block 9.
+
+**Fourth non-Desks family canonical authoring milestone.** Industrial/Professional is the fourth family added to the canonical taxonomy outside Desks. Demonstrates that the schema, Path A reconciliation pattern, and PR-based workflow scale to substantial scope (29 forms vs. prior largest Block 1's 22 forms). All three prior workflow standards continue:
+- Pre-emptive schema discovery (Block 3 onwards)
+- Referential integrity gate (Block 5 onwards)
+- Forbidden field check (Block 4 onwards)
+
+This Block now adds:
+- Family-stub-check (Block 9 onwards)
+
+This Block's 10-spatial-behavior single-family addition is the largest multi-spatial-behavior single-family canonical authoring in the project to date (prior largest: Block 1's 8 spatial behaviors with substantial drafting recovery; Block 7's 4 spatial behaviors with schema-verified drafting). Block 9 attempts 10 spatial behaviors with schema-verified drafting from the start.
+
+**Document quality detection note.** The first uploaded version of industrial_professional_forms_revised.docx (industial-Professional_Forms_-_Expanded.docx) used templated prose damaging the document's diagnostic value — same pattern observed in the first version of Entry/Support Forms back in Block 1. Mike's re-authored document (industrial_professional_forms_revised.docx) replaced templated content with substantive form-specific content. This is the second instance of the templated-prose damage pattern; future family-authoring workflows should include explicit document-quality validation pass before architectural decisions or drafting proceeds. Going forward, the document-quality validation step is established as a standard part of family-authoring workflow.
+
+**Final architectural state after this PR merges:**
+- 154 canonical forms total (125 + 29 from Industrial/Professional)
+- ~749 canonical subtypes (627 + 122 from Industrial/Professional)
+- 64 spatial behaviors (54 + 10 new from Industrial/Professional)
+- 12 family entries (unchanged — in-place stub update rather than addition; family was already in baseline)
+- 13 anti_classification_guidance populations (unchanged — no new populations in this Block)
+- 10 families with canonical content on main: Desks (complete, 55 forms), Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms, Baskets, Lighting, Industrial/Professional (newly added)
+
+This completes 4 of 7 DACUM families with canonical content (counting Industrial/Professional). 2 DACUM families remain for future sessions: Clock Cases (3 forms / 3 form groupings; family_clock_cases likely exists as stub, to be verified) and Musical and Mechanical Furniture (12 forms / 6 form groupings; family_musical_mechanical likely exists as stub, to be verified).
+
+---
+
 
