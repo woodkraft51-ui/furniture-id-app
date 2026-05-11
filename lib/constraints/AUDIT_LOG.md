@@ -1212,4 +1212,81 @@ This completes 5 of 7 DACUM non-Desks families with canonical content. 1 DACUM f
 
 ---
 
+### 2026-05-11 — Session 8 Block 15 — Musical and Mechanical Furniture canonical authoring (12 forms, ~40 subtypes, 9 new spatial behaviors, in-place family stub update, completion of partial form_pump_organ_cabinet migration) — sixth and final non-Desks family, completing DACUM Phase 3 milestone
+
+**Bundle architectural decisions (locked from prior sessions):** Musical and Mechanical Furniture is the sixth and final non-Desks family canonical authoring batch and the final DACUM Phase 3 family (Entry/Support Forms = PR #5 8a40b26, Baskets = PR #6 28582aa, Lighting = PR #8 44c0629, Industrial/Professional = PR #9 10ea34a, Pie Safe Reconciliation = PR #10 e0411d5, Clock Cases = PR #11 bd6e9d7, Musical/Mechanical = this Block). Shipped via PR-based workflow per Session 7/8 establishment. Mike's authored content (Musical_and_Mechanical_Forms_Expanded.docx, 2026-05-11) drives canonical content with substantive form-specific content per form/subform from initial upload. Path A schema reconciliation pattern uniform with all prior batches.
+
+**DACUM Phase 3 completion milestone.** With this Block, all 7 DACUM non-Desks families have canonical content (Entry/Support Forms, Baskets, Lighting, Industrial/Professional, Clock Cases, Musical/Mechanical Furniture) plus Desks (complete from Session 6) plus 5 Sessions-2-5 families with canonical content (Bedroom, Dining, General Storage, Seating, Tables). The constraint library now spans 11 of 12 families with canonical content. The DACUM-scoped canonical authoring milestone is achieved with this commit.
+
+**Authoring scope.** 12 canonical forms across 9 form groupings, supported by 9 new spatial behaviors (one per form grouping) and 1 in-place update of an existing family stub entry (family_musical_mechanical). 1 in-place completion of a partial migration of pre-existing canonical form_pump_organ_cabinet (Op A-5 discovery: family_id already correct from a prior session, but spatial_behavior_id field absent — Op E-1 inserts it). 2 new anti_classification_guidance field populations (D-MM3).
+
+**Forms in scope (12 forms, ~40 subtypes):**
+- Audio/Video Equipment Housings (1 form, 5 subtypes): form_media_console (radio, television, stereo, record_player, hi_fi consoles)
+- Coin-Operated Entertainment (3 forms, 7 subtypes): form_jukebox (wall, floor), form_arcade_cabinet (upright, cocktail, driving), form_pinball_machine (electro_mechanical, solid_state)
+- Mechanical Craft Tools (2 forms, 5 subtypes): form_loom (floor, table), form_spinning_wheel (saxony, castle, great)
+- Musical Instrument Cabinets (1 form, 7 subtypes): form_musical_instrument_furniture (reed_organ, pipe_organ, upright_piano, grand_piano, square_piano, pianola, player_piano) — EXCLUDES pump_organ per D-MM4
+- Media Storage (1 form, 4 subtypes): form_media_storage_unit (media_tower, cd_tower, dvd_tower, game_tower)
+- Integrated Entertainment Systems (1 form, 2 subtypes): form_media_wall (home_theater_unit, entertainment_wall)
+- Equipment Support Systems (1 form, 3 subtypes): form_equipment_rack (audio_rack, server_rack, speaker_cabinet)
+- Interactive Systems (1 form, 3 subtypes): form_interactive_console (vr_station, gaming_tower, digital_interface_console)
+- Automated Dispensing Systems (1 form, 3 subtypes): form_vending_machine (snack, beverage, cigarette)
+
+**Architectural decisions:**
+
+D-MM1 (locked): family_musical_mechanical uses construction_logic_id "construction_mechanical_integrated". All 12 new forms in family use this construction logic. Mechanism is the unifying axis. Where Clock Cases (Block 13) anchors CL IV at its center for horological forms specifically, Musical and Mechanical Furniture anchors CL IV broadly across all non-horological mechanical-integrated furniture forms.
+
+D-MM2 (locked): 9 spatial behaviors per form grouping (one per grouping, parallel to Block 7/9/13 patterns). Total spatial behavior count post-Block-15: 76 (67 baseline + 9 new).
+
+D-MM3 (locked): 3 form-level anti_classification_guidance applications:
+- form_arcade_cabinet: form_emergence at 1970, prominence "standard"
+- form_interactive_console: form_emergence at 1970, prominence "standard"
+- form_vending_machine: no form-level boundary; subtype_vending_machine_cigarette_machine carries form_extinction prose c. 1990s-2000s (Synar Amendment 1992) handled prose-side per Block 9/13 precedent
+
+Net anti_classification_guidance field populations: 12 baseline + 2 new = 14 (counted at the 4-space-indent field-declaration line). Note on counting conventions: loose `grep -c 'anti_classification_guidance' forms.ts` returns 17 post-Block-15 — 14 field populations + 1 JSDoc comment + 1 type signature in interface + 1 prose mention in form_musical_instrument_furniture's cousin_form_contrasts (which references pump organ's existing anti_classification_guidance as documentation). Block 11 audit and Block 13 audit reported anti_classification_guidance count using loose grep (which historically returned 14 = 12 fields + 1 comment + 1 type def). Block 15 introduces one new prose-reference mention. Architectural truth: 2 new field populations added per D-MM3.
+
+D-MM4 (locked): Preserve form_pump_organ_cabinet standalone. Exclude pump_organ from form_musical_instrument_furniture's subtypes list. Sibling-form relationship documented in form_musical_instrument_furniture's cousin_form_contrasts.
+
+D-MM4a (amended per Op A-5 discovery): Complete the partial migration of form_pump_organ_cabinet by adding spatial_behavior_id field (insertion-only). Op A-5 surfaced that form_pump_organ_cabinet's family_id was already "family_musical_mechanical" (presumably migrated in a prior session that did not complete the spatial_behavior_id population); only the spatial_behavior_id needed to be added. Op E-1 was reduced from a 2-line swap (as originally drafted) to a single-line insertion adding `spatial_behavior_id: "spatial_musical_instrument_cabinets"` after the existing family_id line. All other fields preserved unchanged: distinguishing_features (7 elements), subtypes (absent), cousin_form_contrasts (2 entries vs upright piano and pipe organ), dimensional_thresholds, regional_period_notes (Estey/Mason & Hamlin/Story & Clark/Kimball regional traditions), anti_classification_guidance (form_emergence at 1870, prominence standard — already counted in pre-Block-15 baseline), common_conversion_targets, common_aliases (absent), positive_authority=7, hard_negative_authority=7, migration_status="partial". This is parallel to the Block 11 Pie Safe Reconciliation pattern but applied to a partially-migrated state rather than a stub-vs-subtype conflict.
+
+**Cross-form overlaps documented in canonical content:**
+
+1. form_pump_organ_cabinet (re-homed completion at family_musical_mechanical / spatial_musical_instrument_cabinets) ↔ form_musical_instrument_furniture (sibling form, subtype pump_organ explicitly excluded per D-MM4).
+2. form_arcade_cabinet ↔ form_pinball_machine ↔ form_jukebox (three coin-operated entertainment forms in same spatial_coin_operated_entertainment).
+3. form_media_console ↔ form_media_wall (entertainment furnishings distinguished by scale).
+4. form_media_storage_unit ↔ form_equipment_rack (storage vs equipment).
+5. form_interactive_console ↔ form_arcade_cabinet (personal/institutional vs commercial coin-operated).
+6. form_vending_machine ↔ form_kiosk (automated dispensing vs attended interaction).
+7. Cigarette vending regulatory-decline narrative at subtype level (not form-level anti_classification_guidance per D-MM3).
+
+**Path A schema reconciliation applied (parallel to all prior batches):** Mike's Musical_and_Mechanical_Forms_Expanded.docx prose folded into canonical schema fields (distinguishing_features, dimensional_thresholds, cousin_form_contrasts, common_aliases, regional_period_notes). Each subform's authored prose converted to single-element distinguishing_attributes array. Form names lowercased per existing canonical convention; proper nouns preserved (Federal, Empire, Pennsylvania German, Victorian, Art Deco, plus extensive manufacturer attributions: Philco, Zenith, RCA, Crosley, Wurlitzer, Seeburg, Rock-Ola, AMI, Bally, Williams, Gottlieb, Chicago Coin, Stern, Atari, Steinway, Knabe, Chickering, Mason & Hamlin, Baldwin, Aeolian, Welte-Mignon, Duo-Art, Ampico, Acoustic Research, Bose, JBL, Klipsch, Advent, KEF, Marantz, McIntosh, Pioneer, Sansui, Kenwood, Vendo, Cavalier, Westinghouse, Rowe International, Estey, Story & Clark, Kimball). Schema-correct shape verified before drafting against SpatialBehaviorEntry, FamilyEntry, and FormEntry interfaces.
+
+**Family-stub-check applied (Block 9 standard, B9):** Op A-3 verified family_musical_mechanical exists as pre-existing stub at families.ts:169-184. Op C in-place update preserved family_characteristics array (3 elements verbatim) and authority/migration_status fields, expanded description to Block 1/3/7/9/11/13 family entry richness, preserving construction_logic_id at "construction_mechanical_integrated" (already correct in stub). Family count remains 12.
+
+**Form-stub-check applied (Block 11 standard, B11):** Op A-4 verified no pre-existing form stubs or conceptual identity collisions for the 12 new forms or ~40 new subforms across all four placement axes. Sole pre-existing canonical surfaced: form_pump_organ_cabinet (Sessions 2-5 authored content) — and surfaced an unexpected partial-migration state (family_id already correct, spatial_behavior_id absent). Per D-MM4 + D-MM4a, form_pump_organ_cabinet preserved standalone with all canonical content intact, and the missing spatial_behavior_id added via Op E-1 single-line insertion. form_kiosk presence (Block 9) confirmed for safe form_vending_machine cousin_form_contrasts reference.
+
+**Second Pie-Safe-pattern reconciliation in the project.** Block 11 surfaced the original Pie-Safe pattern (form_pie_safe stub in General Storage + subtype_kitchen_utility_unit_pie_safe in Industrial/Professional → resolved via standalone form_pie_safe canonical authoring at General Storage with Block 9 subtype removal). Block 15 surfaces a parallel but more nuanced pattern: form_pump_organ_cabinet pre-existing fully-canonical at family_musical_mechanical (partially migrated in a prior session) + form_musical_instrument_furniture authoring at Musical/Mechanical with pump_organ initially planned as a subtype → resolved via in-place spatial_behavior_id completion of form_pump_organ_cabinet AND exclusion of pump_organ from form_musical_instrument_furniture subtypes. The form-stub-check workflow standard (Block 11 onwards) surfaced both patterns pre-emptively during Op A rather than allowing them to ship and require post-merge reconciliation.
+
+**Sixth and final non-Desks family canonical authoring milestone.** Musical/Mechanical is the largest non-Desks family in scope by form count (12 forms vs Industrial/Professional's 29, Entry/Support's 22, Lighting's 6, Baskets' 1, Clock Cases' 3 — wait, Industrial/Professional's 29 is larger; Musical/Mechanical is second-largest by form count). All five prior workflow standards continue:
+1. Pre-emptive schema discovery (Block 3 onwards)
+2. Forbidden field check (Block 4 onwards)
+3. Referential integrity gate (Block 5 onwards)
+4. Family-stub-check (Block 9 onwards)
+5. Form-stub-check (Block 11 onwards)
+
+Zero recovery rounds during drafting; schema-verified drafting from the start; form-stub-check surfaced form_pump_organ_cabinet preservation requirement and partial-migration state pre-emptively.
+
+**Counting-convention note (from Block 13).** Raw `grep -c 'id: "form_'` on forms.ts returns higher counts than canonical forms due to pre-existing non-canonical stubs. Audit log baselines track canonical forms only. Post-Block-15 canonical count is 169 (157 baseline + 12 new). form_pump_organ_cabinet's spatial_behavior_id completion does not change the canonical count (already counted in 157 baseline; in-place field addition only).
+
+**Final architectural state after this PR merges:**
+- 169 canonical forms total (157 + 12 from Musical/Mechanical)
+- ~802 canonical subtypes (~762 + ~40 from Musical/Mechanical)
+- 76 spatial behaviors (67 + 9 new from Musical/Mechanical)
+- 12 family entries (unchanged — in-place stub update rather than addition)
+- 14 anti_classification_guidance field populations (12 + 2 new: form_arcade_cabinet, form_interactive_console) — note: loose grep returns 17 (= 14 fields + 1 JSDoc + 1 type def + 1 prose mention)
+- 11 families with canonical content on main: Desks (complete, 55 forms), Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms, Baskets, Lighting, Industrial/Professional, Clock Cases, Musical and Mechanical Furniture (newly added)
+
+**DACUM Phase 3 milestone complete.** All 7 non-Desks DACUM families have canonical content. Desks family complete from Session 6 (55 forms). Bedroom, Dining, General Storage, Seating, Tables families have canonical content from Sessions 2-5. The constraint library's DACUM-scoped canonical authoring milestone is achieved with this commit.
+
+---
+
 
