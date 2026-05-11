@@ -186,10 +186,10 @@ export const FAMILIES: FamilyEntry[] = [
   {
     id: "family_industrial_professional",
     category: "family",
-    name: "Industrial and Professional",
+    name: "Industrial/Professional",
     construction_logic_id: "construction_mechanical_integrated",
     description:
-      "This family represents furniture designed for specialized work environments such as schools, workshops, and stores.",
+      "Industrial, institutional, commercial, and professional furniture forms designed for workplace, public-service, religious, retail, educational, scientific, and operational contexts. The family encompasses workstations, fixtures, lockers, racks, shelving systems, ceremonial furnishings, scientific equipment stands, commercial display cases, and environmental control cabinets across colonial-era through present American production. Distinguished from domestic furniture families by workflow-oriented configuration, durable utilitarian construction, and specialized operational roles rather than residential use. Construction logic assignment: construction_mechanical_integrated reflects the housed-functional nature of most Industrial/Professional forms — lockers with locking mechanisms, time clocks with punch mechanisms, bank vault doors with combination locks, charging lockers with electronics, scientific stands with instrument mounts. The catch-all assignment per Block 1 Entry/Support Forms / Block 3 Baskets / Block 7 Lighting precedent represents the smallest semantic stretch in this case since most Industrial/Professional forms genuinely embody mechanical/integrated systems.",
     family_characteristics: [
       "Designed for task efficiency and durability",
       "Often utilitarian in form",
