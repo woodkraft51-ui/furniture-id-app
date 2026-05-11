@@ -206,7 +206,7 @@ export const FAMILIES: FamilyEntry[] = [
     name: "Clock Cases",
     construction_logic_id: "construction_mechanical_integrated",
     description:
-      "This family represents furniture designed to house timekeeping mechanisms, often in domestic or formal settings.",
+      "Horological clock case forms designed to house, present, and protect weight-driven, spring-driven, or pendulum-regulated clock movements across floor-standing, wall-mounted, and surface-set configurations. The family encompasses tall case clocks (longcase grandfather/grandmother/granddaughter forms), wall clocks (banjo, gallery, regulator, schoolhouse, calendar variants), and shelf clocks (mantel, tambour, novelty variants) across colonial-era through present American production. Distinguished from other furniture families by the clock movement as form-defining purpose — without the mechanism, the piece is not what it is. Construction logic assignment: construction_mechanical_integrated reflects the cleanest fit of any family to CL IV's intended scope. Where Industrial/Professional, Lighting, Baskets, and Entry/Support Forms used construction_mechanical_integrated as the catch-all assignment (smallest semantic stretch when no other logic fit cleanly), Clock Cases represents the canonical case for which the construction logic was originally designed. The four-logic ordinal taxonomy (case, frame, surface, mechanical_integrated) remains closed-by-design; Clock Cases anchors CL IV at its center rather than its periphery.",
     family_characteristics: [
       "Structure designed around internal clock movement",
       "Combines functional housing and decorative presentation",

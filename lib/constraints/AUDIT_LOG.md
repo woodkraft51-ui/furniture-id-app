@@ -1149,4 +1149,67 @@ Workflow standards as of Block 11 (5 total):
 
 ---
 
+### 2026-05-11 — Session 8 Block 13 — Clock Cases canonical authoring (3 forms, 11 subtypes, 3 new spatial behaviors, in-place stub update of family_clock_cases) — fifth non-Desks family canonical authoring batch
+
+**Bundle architectural decisions (locked from prior sessions):** Clock Cases is the fifth non-Desks family canonical authoring batch (Entry/Support Forms = PR #5 8a40b26, Baskets = PR #6 28582aa, Lighting = PR #8 44c0629, Industrial/Professional = PR #9 10ea34a, Pie Safe Reconciliation = PR #10 e0411d5, Clock Cases = this Block). Shipped via PR-based workflow per Session 7/8 establishment. Mike's authored content (Clock_Case_Forms_Expanded.docx, 2026-05-11) drives canonical content with substantive form-specific content per form/subform from initial upload; no templated-prose damage detection required. Path A schema reconciliation pattern uniform with all prior batches.
+
+**Authoring scope.** 3 canonical forms across 3 form groupings, supported by 3 new spatial behaviors (one per form grouping) and 1 in-place update of an existing family stub entry (family_clock_cases):
+- Floor-Standing Clocks (1 form, 3 subtypes): form_tall_case_clock (grandfather, grandmother, granddaughter)
+- Wall-Mounted Clocks (1 form, 5 subtypes): form_wall_clock (banjo, gallery, regulator, schoolhouse, calendar)
+- Surface-Set Clocks (1 form, 3 subtypes): form_shelf_clock (mantel, tambour, novelty)
+
+**Subtype inventory by form:** 3+5+3 = 11 subtypes total.
+
+**Architectural decisions:**
+
+D-CC1 (locked): family_clock_cases uses construction_logic_id "construction_mechanical_integrated" per CL IV definition fit. Clock cases genuinely embody the construction logic IV principle — the mechanism (clock movement) is the form's defining purpose; without the movement, a tall case clock is not a tall case clock. This is the cleanest fit of any family to CL IV's intended scope. Where Industrial/Professional (Block 9), Lighting (Block 7), Baskets (Block 3), and Entry/Support Forms (Block 1) used construction_mechanical_integrated as the catch-all assignment (smallest semantic stretch when no other logic fit cleanly), Clock Cases represents the canonical case for which the construction logic was originally designed. The four-logic ordinal taxonomy (case, frame, surface, mechanical_integrated) remains closed-by-design (Block 3 decision); Clock Cases anchors CL IV at its center rather than its periphery.
+
+D-CC2 (locked): 3 spatial behaviors named per form grouping (one per grouping, parallel to Block 7's D-L2 and Block 9's D-IP2 patterns):
+- spatial_floor_standing_clocks: floor-standing horological behavior for tall case clocks with full-height freestanding cabinet construction
+- spatial_wall_mounted_clocks: wall-mounted horological behavior with rear hanging systems and compact body construction
+- spatial_surface_set_clocks: surface-set horological behavior for mantel, shelf, table, or case-furniture-top placement
+
+D-CC3 (locked): Cross-form distinction between form_tall_case_clock (horological clock case, family_clock_cases) and form_time_clock_station (workplace timekeeping fixture, family_industrial_professional from Block 9) left implicit. Different families and different spatial behaviors carry the architectural distinction; no cousin_form_contrasts entry needed. Future engine reasoning will distinguish horological clock cases from workplace timekeeping fixtures via family and spatial behavior membership rather than explicit cross-family cousin contrast.
+
+D-CC4 (locked): No standalone anti_classification_guidance populations. All forms have continuous production from emergence through present. Subform date ranges (banjo clock c. 1790-1810 Federal-era emergence, tambour clock c. 1900-1940 peak, grandfather clock c. 1880-1930 peak, regulator clock c. 1870-1930 peak, etc.) handled prose-side in distinguishing_attributes and regional_period_notes per Block 1/7/9 precedent. anti_classification_guidance count remains 14 (unchanged from Block 11 endpoint).
+
+**Cross-form overlaps documented in canonical content:**
+
+1. form_tall_case_clock ↔ form_wall_clock ↔ form_shelf_clock (three-way cousin contrast within family_clock_cases): floor-standing vs. wall-mounted vs. surface-set placement. All three forms in same family with distinct spatial behaviors. Documented in cousin_form_contrasts on each form.
+
+2. form_tall_case_clock ↔ form_time_clock_station (Block 9 Industrial/Professional): per D-CC3 locked, left implicit via different families and spatial behaviors. No explicit cousin_form_contrasts entry. Horological clock case vs. workplace punch-clock fixture are conceptually distinct enough that the family-context distinction suffices.
+
+3. Subform-level cross-references documented in subform prose:
+- banjo clock ↔ regulator clock: both wall-mounted, banjo decorative Federal-era styling vs. regulator precision-oriented elongated case
+- gallery clock ↔ schoolhouse clock: both institutional wall clocks, gallery circular vs. schoolhouse rounded-with-drop
+- mantel clock ↔ tambour clock: mantel broader category, tambour specifically curved silhouette
+- grandfather ↔ grandmother ↔ granddaughter clocks: tall case clock subforms in descending size order
+
+**Path A schema reconciliation applied (parallel to all prior batches):** Mike's Clock_Case_Forms_Expanded.docx Unique Characteristics, Identifying Elements, Regional Attributes, Emergence and Conclusion Dates, and Cousin Forms + Identifying Contrasts prose folded into canonical schema fields (distinguishing_features, dimensional_thresholds with width/height/depth/weight, cousin_form_contrasts, common_aliases, regional_period_notes). Each subform's authored prose converted to single-element distinguishing_attributes array. Form names lowercased per existing canonical convention; proper nouns preserved (Federal, Colonial Revival, Pennsylvania German, Victorian, Art Deco, Connecticut, New England, Boston, Lancaster County, Eli Terry, Simon Willard, Seth Thomas, Ansonia, Waterbury, New Haven, Gilbert, Ingraham, Ithaca Calendar Clock Co., Welch in regional_period_notes prose). Schema-correct shape verified before drafting against SpatialBehaviorEntry, FamilyEntry, and FormEntry interfaces (Block 3 pattern; Blocks 7/9/11 validated zero-recovery; Block 13 maintains the standard).
+
+**Family-stub-check applied (Block 9 standard, B9):** Op A-3 verified family_clock_cases exists as pre-existing stub from original 10-family baseline at families.ts:204-218. Op C revised from append to in-place update preserving family_characteristics array and authority/migration_status fields, expanding description to Block 1/3/7/9/11 family entry richness, preserving construction_logic_id at "construction_mechanical_integrated" (already correct in stub). Family count remains 12 (unchanged — in-place update, not addition).
+
+**Form-stub-check applied (Block 11 standard, B11):** Op A-4 verified no pre-existing form stubs or conceptual identity collisions for form_tall_case_clock, form_wall_clock, form_shelf_clock, or their 11 subforms across all four placement axes (subtypes/cousin_form_contrasts/regional_period_notes/common_aliases). 19 grep checks across the three new form identities plus subform conceptual identities (grandfather, grandmother, granddaughter, longcase, banjo, regulator, schoolhouse, gallery, calendar, mantel, tambour, novelty, bracket, cottage, parlor clock) all returned 0. No reconciliation needed; all three forms and 11 subtypes are net-new additions.
+
+**Fifth non-Desks family canonical authoring milestone.** Clock Cases is the fifth family added to the canonical taxonomy outside Desks. Smallest of the five non-Desks families in scope (3 forms vs. Industrial/Professional's 29, Entry/Support's 22, Lighting's 6, Baskets' 1). All five prior workflow standards continue:
+1. Pre-emptive schema discovery (Block 3 onwards)
+2. Forbidden field check (Block 4 onwards)
+3. Referential integrity gate (Block 5 onwards)
+4. Family-stub-check (Block 9 onwards)
+5. Form-stub-check (Block 11 onwards)
+
+Zero recovery rounds during drafting; document quality validation pass; schema-verified drafting from the start — the workflow has reached steady state.
+
+**Final architectural state after this PR merges:**
+- 157 canonical forms total (154 + 3 from Clock Cases)
+- ~762 canonical subtypes (751 + 11 from Clock Cases)
+- 67 spatial behaviors (64 + 3 new from Clock Cases)
+- 12 family entries (unchanged — in-place stub update rather than addition; family was already in baseline)
+- 14 anti_classification_guidance populations (unchanged — no new populations in this Block)
+- 11 families with canonical content on main: Desks (complete, 55 forms), Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms, Baskets, Lighting, Industrial/Professional, Clock Cases (newly added)
+
+This completes 5 of 7 DACUM non-Desks families with canonical content. 1 DACUM family remains for future sessions: Musical and Mechanical Furniture (12 forms / 6 form groupings; family_musical_mechanical likely exists as stub, to be verified via family-stub-check; form_pump_organ_cabinet expected to be pre-existing canonical from Sessions 2-5 work, expected to be preserved in-place during Musical/Mechanical's Block per Block 11 Pie Safe Reconciliation precedent).
+
+---
+
 

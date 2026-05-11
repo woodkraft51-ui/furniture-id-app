@@ -1501,4 +1501,71 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+  {
+    id: "spatial_floor_standing_clocks",
+    category: "spatial_behavior",
+    name: "Floor-Standing Clocks",
+    family_id: "family_clock_cases",
+    description:
+      "Floor-standing horological behavior where the clock case occupies full vertical height from floor to upper hood, providing space for long pendulum chambers, weight drops, and prominent dial presentation at upper architectural focal height. Forms support weight-driven or spring-driven longcase clock movements with pendulum lengths requiring substantial vertical accommodation. Construction emphasizes full-height freestanding cabinet form combining horology with cabinetmaking, featuring a hood or bonnet section containing the dial, a long central trunk housing the pendulum and weights, and a base plinth or bracket-foot lower section. Distinct from wall-mounted and surface-set clock behaviors by floor placement, full-height proportions, and ability to accommodate long-pendulum movements.",
+    structural_attributes: [
+      "Full-height freestanding cabinet construction extending from floor to upper hood",
+      "Hood or bonnet section containing dial at upper architectural focal height",
+      "Long central trunk section housing pendulum and weights",
+      "Base plinth or bracket-foot lower section providing floor contact and visual anchor",
+      "Access doors frequently present for movement maintenance and weight rewinding",
+      "Pendulum window common in later examples allowing visible pendulum motion",
+      "Architectural cabinet construction combining horological function with formal furniture presentation",
+    ],
+    dimensional_patterns: {
+      notes: "Total height typically 72-96 inches for grandfather variants; 60-72 inches for grandmother; 48-60 inches for granddaughter. Width 14-22 inches at trunk widening to 18-28 inches at hood. Depth 8-14 inches accommodating pendulum swing. Substantial weight (60-200 lbs) reflecting hardwood case construction and weight-driven movement components.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_wall_mounted_clocks",
+    category: "spatial_behavior",
+    name: "Wall-Mounted Clocks",
+    family_id: "family_clock_cases",
+    description:
+      "Wall-mounted horological behavior where the clock case is suspended or affixed to vertical wall surface rather than floor-standing or surface-set. Forms emphasize visual accessibility and reduced floor-space occupation, supporting spring-driven or pendulum-regulated movements within compact vertical or circular case profiles. Construction emphasizes rear hanging systems, wall-anchored mounting, and dial presentation at viewer eye height. Variants range from decorative Federal-era banjo clocks to precision regulator clocks, institutional schoolhouse and gallery clocks, and complication-integrated calendar clocks. Distinct from floor-standing clock behavior by wall placement and reduced pendulum-chamber requirements; distinct from surface-set clock behavior by vertical suspension rather than horizontal-surface support.",
+    structural_attributes: [
+      "Rear hanging system: keyhole slots, mounting brackets, or screw-eye attachment",
+      "Compact vertical or circular body construction matched to wall-display function",
+      "Dial presentation at viewer eye-height when wall-mounted",
+      "Exposed or enclosed dial systems depending on form variant",
+      "Pendulum windows common in regulator and precision-oriented variants",
+      "Reduced or absent floor-contact base — wall provides primary structural support",
+    ],
+    dimensional_patterns: {
+      notes: "Heights vary widely by form: banjo clock 30-42 inches; gallery clock 12-30 inches circular; regulator clock 36-48 inches; schoolhouse clock 18-30 inches; calendar clock 24-36 inches. Widths typically 10-18 inches at dial section. Depths 3-6 inches accommodating movement housing. Lighter weights (5-25 lbs) suited to wall mounting.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_surface_set_clocks",
+    category: "spatial_behavior",
+    name: "Surface-Set Clocks",
+    family_id: "family_clock_cases",
+    description:
+      "Surface-set horological behavior where the clock case is designed to rest upon mantels, shelves, tables, case furniture tops, or other horizontal surfaces. Forms balance portability with decorative domestic presentation, supporting spring-driven movements within compact freestanding bodies. Construction emphasizes flat stable base, decorative case fronts often featuring architectural or sculptural styling, and rear-access panels for movement maintenance. Variants range from formal mantel clocks (Victorian black mantel, Art Deco, mid-century) to tambour clocks (curved arched silhouette c. 1900-1940) to novelty clocks (thematic decorative shapes). Distinct from floor-standing clock behavior by surface-rest placement rather than floor-anchoring; distinct from wall-mounted behavior by horizontal-surface support rather than vertical suspension.",
+    structural_attributes: [
+      "Flat stable base construction for resting on horizontal surfaces",
+      "Compact freestanding body suited to mantel, shelf, table, or case-furniture-top placement",
+      "Decorative case fronts: architectural, sculptural, veneered, marble, metal, or figural ornament depending on variant",
+      "Rear access panels common for movement maintenance and key-winding access",
+      "Compact horizontal or vertical proportions matched to domestic surface display",
+      "Decorative moldings, applied ornament, or figural elements frequent in formal variants",
+    ],
+    dimensional_patterns: {
+      notes: "Heights typically 8-24 inches for compact decorative variants; widths 8-24 inches; depths 4-10 inches. Tambour clocks emphasize horizontal proportions (12-20 inches wide × 6-10 inches tall). Mantel clocks vary widely from compact (8-12 inches) to substantial Victorian architectural cases (18-24 inches tall × 16-22 inches wide). Novelty clocks vary by thematic shape. Weights moderate (3-15 lbs) reflecting compact construction.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];
