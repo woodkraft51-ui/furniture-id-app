@@ -1083,4 +1083,70 @@ This completes 4 of 7 DACUM families with canonical content (counting Industrial
 
 ---
 
+## Phase 2 Session 8 Block 11: Pie Safe Reconciliation
+
+**Architectural correction summary.** Post-Block-9 investigation surfaced a taxonomic conflict between two parallel `pie_safe` representations in `lib/constraints/forms.ts`: (1) `form_pie_safe` existed as a Session-3 retrofit stub assigned to `family_general_storage_specialty` / `spatial_utility_storage` with no substantive content beyond identity + dates + authority — the Session 2 substantive content for this form was discussed during authoring but never landed in the file; (2) Block 9 (yesterday) added `subtype_kitchen_utility_unit_pie_safe` under `form_kitchen_utility_unit` assigned to `family_industrial_professional` / `spatial_kitchen_and_utility_workstations`. Same conceptual identity, different families, different spatial behaviors — a taxonomic conflict that needed reconciliation before further work proceeded.
+
+**Investigation result.** The Block 9 subtype was a misclassification. Industrial/Professional family was scoped Block 9 to workplace, commercial, and institutional contexts (manufactory benches, professional kitchen units, retail kiosks, library carrels, etc.). Pie safe is fundamentally a domestic kitchen storage form — a pre-refrigeration household furniture type for storing cooked foods, baked goods, and perishables in the home. Domestic kitchen storage belongs in General Storage, not Industrial/Professional. The Session 2 intent (substantive `form_pie_safe` at General Storage / utility_storage) was the architecturally correct decision; the Block 9 retrofit subtype was added without the form-stub-check that would have surfaced the existing `form_pie_safe` identity.
+
+**Resolution (Option B).** Author standalone `form_pie_safe` canonically at General Storage / utility_storage with substantive content; remove the Block 9 subtype from `form_kitchen_utility_unit`; update `form_kitchen_utility_unit`'s cross-references (cousin_form_contrasts, common_aliases, regional_period_notes) to remove pie-safe references.
+
+**Locked decisions D-PS1 through D-PS7:**
+- **D-PS1.** Standalone `form_pie_safe` at General Storage / spatial_utility_storage is the correct architectural home. Pie safe is domestic, not industrial. Block 9 subtype is removed.
+- **D-PS2.** Date envelope widened from 1820-1880 (stub baseline) to **1750-1900** per appraiser knowledge. Primary diagnostic production c. 1820-1880 documented in `regional_period_notes`. Production effectively ceased c. 1900-1920 with indoor refrigeration adoption — this is the `anti_classification_guidance` boundary.
+- **D-PS3.** Three regional subtypes authored: `subtype_pie_safe_pennsylvania_german`, `subtype_pie_safe_southern_appalachian`, `subtype_pie_safe_midwest`. Panel-material variation (pierced tin, punched tin, wire screen, wooden lattice) stays prose-side in `distinguishing_features` and `regional_period_notes` rather than as separate subtypes, since multiple panel materials appear within each regional tradition.
+- **D-PS4.** `anti_classification_guidance` populated with `boundary_date: 1920`, `boundary_type: "form_extinction"`, `prominence: "standard"`. Post-1920 examples warrant strong caution as revival/reproduction rather than period working pie safes — refrigeration eliminated the functional need for the form.
+- **D-PS5.** Single `cousin_form_contrasts` entry vs. `form_jelly_cupboard` — these two pre-refrigeration domestic kitchen storage forms are commonly confused, but the ventilated-panel feature is the diagnostic. Other potential confusions (vs. cupboard, vs. case piece) are not strong enough to warrant cousin entries.
+- **D-PS6.** Single PR scope — all operations in one feature branch, one commit, one audit entry. No multi-PR fragmentation.
+- **D-PS7.** Append-only audit log discipline. Block 9's entry is **not** retroactively edited. Block 9's reported counts (~749 subtypes total, 122 in Industrial/Professional) reflect Block 9's state at that point; Block 11 explicitly documents the corrected post-reconciliation counts (~751 subtypes total, 121 in Industrial/Professional) and the workflow gap that allowed the misclassification.
+
+**Final architectural state after this PR merges:**
+- 154 canonical forms total (unchanged — `form_pie_safe` was already counted as a stub in baseline)
+- ~751 canonical subtypes (Block 9's ~749 + 3 new pie safe regionals − 1 removed `subtype_kitchen_utility_unit_pie_safe` = 751 net; this corrects Block 9's reported count)
+- 64 spatial behaviors (unchanged)
+- 12 family entries (unchanged)
+- **14** anti_classification_guidance populations (13 baseline + 1 new from `form_pie_safe` form_extinction boundary)
+- 10 families with canonical content (unchanged)
+- Industrial/Professional family: 121 subtypes (Block 9's 122 minus the removed pie safe subtype)
+
+**Block 9 count correction note.** Block 9's audit entry reports ~749 subtypes total / 122 in Industrial/Professional. Per D-PS7 append-only discipline, Block 9's entry is not retroactively edited. The corrected post-Block-11 counts are documented here in this Block 11 entry: ~751 subtypes total / 121 in Industrial/Professional. Future audit entries should reference Block 11's counts as the architectural state of record.
+
+**`form_pie_safe` canonical content authored (Op C in-place stub update):**
+- `id`, `category`, `name`, `parent_category: "case_piece"`, `family_id: "family_general_storage_specialty"`, `spatial_behavior_id: "spatial_utility_storage"` preserved from stub
+- `date_floor: 1750`, `date_ceiling: 1900` (widened from 1820-1880 per D-PS2)
+- `distinguishing_features` (6 elements): ventilated panels (pierced tin / punched tin / fabric screen / pierced wood); vertical case-piece form on elevated base; functional storage interior with one-or-two shelves and one-or-two ventilated doors; plain utilitarian country construction in pine/poplar/yellow pine with painted finishes; panel-material variation documented prose-side; pre-refrigeration domestic kitchen storage context
+- `subtypes` (3 regional per D-PS3): Pennsylvania German (elaborate punched-tin patterns, Pennsylvania/Maryland/Virginia/Ohio German settlement regions); Southern Appalachian (yellow pine, simpler patterns, Upland South); Midwest (mid-19th century westward migration, transitioning to wire screen by end of envelope)
+- `cousin_form_contrasts` (1 per D-PS5): vs. `form_jelly_cupboard` (both pre-refrigeration domestic kitchen storage forms in plain country construction, ventilated panels diagnostic for pie safe)
+- `common_aliases` (6 entries): Pie safe, Pie cupboard, Pie chest, Tin safe, Punched-tin safe, Meat safe (regional, especially Southern)
+- `regional_period_notes`: full prose covering date envelope, refrigeration boundary, Pennsylvania German / Southern Appalachian / Midwest regional traditions, yellow-pine Southern indicator, plus explicit architectural note documenting Block 11 reconciliation (form is correctly authored at General Storage / spatial_utility_storage, not industrial despite kitchen-context use)
+- `anti_classification_guidance` (per D-PS4): `boundary_date: 1920`, `boundary_type: "form_extinction"`, `prominence: "standard"`, guidance_text covering refrigeration-era extinction and post-1920 revival caution
+- `positive_authority: 7`, `hard_negative_authority: 7`, `migration_status: "partial"` preserved from stub
+
+**`form_kitchen_utility_unit` changes (Op D 4 sub-edits):**
+- `subtypes`: 4 → 3. Removed `subtype_kitchen_utility_unit_pie_safe`. Preserved: Hoosier cabinet, baker's cabinet, kitchen island.
+- `cousin_form_contrasts`: 5 → 4. Removed "Pie safe vs. Hoosier cabinet" entry. Preserved: utility unit vs. dry sink; utility unit vs. modern built-in cabinetry; Hoosier vs. baker; kitchen island vs. wall-anchored utility unit.
+- `common_aliases`: 7 → 6. Removed "Pie safe" alias entry. Preserved: Kitchen utility unit, Hoosier cabinet, Baker's cabinet, Kitchen island, Kitchen workstation, Free-standing kitchen cabinet. (Rationale per D-PS1 follow-on: pie safe is domestic, so it should not be a discoverable alias for the industrial `form_kitchen_utility_unit`.)
+- `regional_period_notes`: phrase `c. 1850-1920 for pie safes and early baker's cabinets` updated to `c. 1850-1920 for early baker's cabinets`; phrase `pine and oak country pie safes in 18th-19th century rural kitchens` removed from the prose. Surrounding regional-period content otherwise preserved verbatim.
+
+**Workflow refinement — form-stub-check standard (NEW, established Block 11).** The Block 9 misclassification was directly caused by absence of a form-level stub-check during Block 9's subtype authoring. The family-stub-check standard established in Block 9 covers family-level identity collisions, but does not cover form-level or subtype-level conceptual-identity collisions. Block 11 establishes the form-stub-check standard:
+
+> **Form-stub-check (Block 11 onwards).** Before authoring any new form or subtype, grep `lib/constraints/forms.ts` for matching conceptual identity using both `form_<name>` and `"<name>"` (the human-readable name in quotes). If any orphan stub or pre-existing form is found with the same conceptual identity, surface to the user for an architectural-correctness decision before any authoring proceeds. This prevents both (a) duplicate-identity authoring (Block 11's case) and (b) silent-overwriting of pre-existing canonical content.
+
+Workflow standards as of Block 11 (5 total):
+1. Pre-emptive schema discovery (Block 3 onwards)
+2. Forbidden field check (Block 4 onwards)
+3. Referential integrity gate (Block 5 onwards)
+4. Family-stub-check (Block 9 onwards)
+5. **Form-stub-check (Block 11 onwards, NEW)**
+
+**Path A schema reconciliation note.** Session 2's substantive `form_pie_safe` content was discussed during authoring but never landed in the file — only the stub was retrofitted in Session 3. Block 11's Op C in-place authoring effectively folds the Session 2 intent into the canonical record. No Session 2 source document needed to be re-imported; the substantive content was re-authored from current appraiser knowledge (which is more accurate than the 2024 Session 2 discussion in any case) per locked decisions D-PS1 through D-PS5.
+
+**Cross-form overlaps after Block 11:**
+- `form_pie_safe` ↔ `form_jelly_cupboard`: preserved as `cousin_form_contrasts` entry on `form_pie_safe` (per D-PS5).
+- `form_pie_safe` ↔ Block 9 subtype: **RESOLVED.** Block 9 subtype removed entirely; no remaining cross-reference between `form_pie_safe` and `form_kitchen_utility_unit`.
+
+**Pre-flight check for remaining DACUM families.** Both family-stub-check (Block 9 standard) and form-stub-check (Block 11 standard) apply prospectively to the remaining DACUM families slated for canonical authoring: Clock Cases (3 forms / 3 form groupings) and Musical and Mechanical Furniture (12 forms / 6 form groupings). For each form and subtype to be authored, grep both `family_<name>` and `form_<name>` (plus `"<human-readable-name>"`) across families.ts, forms.ts, and spatialBehaviors.ts before authoring, and surface any pre-existing stubs or canonical entries for architectural-correctness decision before drafting proceeds.
+
+---
+
 
