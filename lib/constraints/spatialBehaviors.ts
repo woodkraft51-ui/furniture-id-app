@@ -1179,4 +1179,96 @@ export const SPATIAL_BEHAVIORS: SpatialBehaviorEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+  {
+    id: "spatial_floor_standing_lighting",
+    category: "spatial_behavior",
+    name: "Floor-Standing Lighting",
+    family_id: "family_lighting",
+    description:
+      "Vertical floor-set lighting behavior where light sources are elevated on tall shafts with weighted bases. Forms stand independently on the floor without requiring tables, walls, or ceilings for support. Light direction varies: upward illumination (torchères for indirect ceiling wash), downward task lighting (reading lamps with adjustable shades), or lateral throw over seating (bridge lamps with projecting arms). Distinct from surface-set lighting by floor-anchored vertical proportions; distinct from suspended lighting by ground-up rather than ceiling-down placement.",
+    structural_attributes: [
+      "Tall vertical shaft as dominant spatial axis",
+      "Weighted base for floor-set stability",
+      "Light source elevated above ordinary table height",
+      "Light-source accommodation: candle cup (early), gas burner (mid-19th century), electric socket (late 19th century onward)",
+      "Often features adjustable shade or arm for task light direction",
+      "Independent ground-up placement without architectural support",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights typically 48-72 inches matching standing-eye and seated-reading-position illumination. Bases broader 10-18 inches diameter for stability against accidental contact. Bridge lamps add 12-18 inches of horizontal arm projection beyond vertical shaft footprint.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_surface_set_lighting",
+    category: "spatial_behavior",
+    name: "Surface-Set Lighting",
+    family_id: "family_lighting",
+    description:
+      "Portable or semi-portable lighting behavior where the form rests on a table, mantel, dresser, or other horizontal furniture surface. Forms emphasize compact footprint suited to surface placement, base stability against accidental contact, and proportions matched to the human-scale surface they occupy. Includes single-light forms (table lamps, banker's lamps) and multi-light forms (candelabra). Distinct from floor-standing lighting by surface-set rather than ground-anchored placement; distinct from wall-mounted lighting by portability and surface-set rather than architectural-attachment configuration.",
+    structural_attributes: [
+      "Compact base proportions suited to surface placement",
+      "Weight distribution favoring base stability against accidental contact",
+      "Light source at human-scale reading or ambient height when placed on tables/desks/mantels",
+      "Single-light or multi-light configuration with light-source accommodation matched to fuel system (candle, oil, kerosene, gas, electric)",
+      "Often features decorative shade, globe, or chimney",
+      "Portable scale liftable for surface relocation",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Heights typically 12-30 inches matched to table-set or mantel-set placement. Base diameters 4-10 inches for stable surface footprint. Candelabra heights similar (12-24 inches) with multi-arm spread 8-18 inches across.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_wall_mounted_lighting",
+    category: "spatial_behavior",
+    name: "Wall-Mounted Lighting",
+    family_id: "family_lighting",
+    description:
+      "Architecturally-attached lighting behavior where the form is mounted directly to a wall or vertical architectural surface via backplate and bracket structure. Light projects from the wall plane via candle cup, gas burner, or electric socket on a projecting arm or bracket. Forms are fixed in place rather than portable; integration with building structure and architectural style is characteristic. Distinct from surface-set lighting by architectural rather than furniture-surface placement; distinct from suspended lighting by wall-plane rather than ceiling-plane attachment.",
+    structural_attributes: [
+      "Backplate mounted to wall surface as primary attachment point",
+      "Bracket or projecting arm extending light source outward from wall plane",
+      "Fixed wall orientation rather than portable",
+      "Light-source accommodation: candle cup, gas burner with valve, or electric socket — often with associated wiring or gas piping integrated through wall",
+      "Symmetrical or directional projection determined by wall placement context",
+      "Often paired or grouped for symmetric architectural composition",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Backplate dimensions 4-10 inches in dominant axis. Projection from wall 4-12 inches for typical sconces; longer 12-18 inches for gas brackets with adjustable swivel arms. Mounting heights typically 60-72 inches above floor for face-height illumination.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
+  {
+    id: "spatial_suspended_lighting",
+    category: "spatial_behavior",
+    name: "Suspended Lighting",
+    family_id: "family_lighting",
+    description:
+      "Ceiling-suspended lighting behavior where the form hangs from a ceiling attachment via chain, rod, cord, or cable. Light projects downward and outward from the suspended fixture into the room volume below. Forms include multi-arm chandeliers, single-bulb pendants, enclosed lanterns, and hall lanterns. Suspension allows fixture to be positioned at optimal room-illumination height (typically 30-40 inches above table surfaces or 80-90 inches above floor in open rooms). Distinct from wall-mounted lighting by ceiling rather than wall attachment; distinct from floor-standing and surface-set lighting by overhead rather than ground-or-surface placement.",
+    structural_attributes: [
+      "Ceiling attachment point as primary structural anchor",
+      "Suspension element (chain, rod, cord, cable) supporting fixture weight",
+      "Light source(s) positioned in room interior space below ceiling",
+      "Downward and outward light projection into room volume",
+      "Light-source accommodation: multiple candle cups (chandeliers, historical), gas burners (gaslight era), or electric sockets (late 19th century onward)",
+      "Often features decorative elements (crystals, shades, lantern glazing) visible from below",
+    ],
+    dimensional_patterns: {
+      notes:
+        "Drop length from ceiling 12-36 inches for typical pendants; longer 36-60 inches for multi-tier chandeliers. Fixture diameters 12-36 inches for typical chandeliers; smaller 6-12 inches for single-bulb pendants. Hall lanterns intermediate 10-18 inches across.",
+    },
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];
