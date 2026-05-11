@@ -245,4 +245,16 @@ export const FAMILIES: FamilyEntry[] = [
     hard_negative_authority: 8,
     migration_status: "partial",
   },
+
+  {
+    id: "family_lighting",
+    category: "family",
+    name: "Lighting",
+    construction_logic_id: "construction_mechanical_integrated",
+    description:
+      "Lighting furniture forms providing artificial illumination through flame, gas, or electric light sources. The family encompasses freestanding floor-set lighting (torchères, floor lamps), surface-set lighting (table lamps, candelabra), wall-mounted lighting (sconces, gas brackets), and suspended lighting (chandeliers, lanterns, pendants) across colonial-era through present American production. Distinguished from other furniture families by primary illumination function and integrated light-source accommodation (candle cups, gas burners, electric sockets). Construction logic assignment: construction_mechanical_integrated reflects the housed-functional nature of lighting forms (burner mechanisms, gas piping, electric components integrated into structural form) per Block 1 Entry/Support Forms and Block 3 Baskets precedent.",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    migration_status: "partial",
+  },
 ];

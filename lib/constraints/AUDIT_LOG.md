@@ -952,4 +952,49 @@ Resolves the Block 1 known-issue documented in the Block 3 audit log entry: the 
 
 ---
 
+### 2026-05-10 — Session 8 Block 7 — Lighting canonical authoring (6 forms, 20 subtypes, 4 new spatial behaviors, 1 new family) — third non-Desks family canonical authoring batch
+
+**Bundle architectural decisions (locked from prior sessions):** Lighting is the third non-Desks family canonical authoring batch (Entry/Support Forms = PR #5 commit 8a40b26, Baskets = PR #6 commit 28582aa). Shipped via PR-based workflow per Session 7/8 establishment. Mike's authored content (Lighting_Forms_Expanded.docx, 2026-05-10) drives canonical content. Path A schema reconciliation pattern uniform with all prior batches.
+
+**Authoring scope.** 6 canonical forms across 4 form groupings, supported by 4 new spatial behaviors (one per form grouping) and 1 new family entry (family_lighting):
+- Floor-Standing Lighting (2 forms): form_torchere (2 subtypes), form_floor_lamp (4 subtypes)
+- Surface-Set Lighting (2 forms): form_table_lamp (5 subtypes), form_candelabrum (2 subtypes)
+- Wall-Mounted Lighting (1 form): form_wall_lighting_form (3 subtypes)
+- Suspended Lighting (1 form): form_hanging_lighting_form (4 subtypes)
+
+**Subtype inventory by form:** 2 + 4 + 5 + 2 + 3 + 4 = 20 subtypes total.
+
+**Architectural decisions:**
+
+D-L1 (locked): family_lighting uses construction_logic_id "construction_mechanical_integrated" per Block 1 Entry/Support Forms and Block 3 Baskets precedent. Lighting forms house mechanical/functional elements (burner mechanisms, gas piping with valves, electric components with sockets and wiring) integrated into structural form, making this construction logic assignment semantically less of a stretch than baskets. The four-logic ordinal taxonomy remains closed-by-design (Block 3 decision); construction_woven and any prospective construction_lighting extensions remain deferred to dedicated future PR.
+
+D-L2 (locked): 4 spatial behaviors named per form grouping (spatial_floor_standing_lighting, spatial_surface_set_lighting, spatial_wall_mounted_lighting, spatial_suspended_lighting). Each behavior describes a distinct structural relationship to the room/architecture: floor-anchored vertical (floor-standing), surface-resting portable (surface-set), wall-attached fixed (wall-mounted), ceiling-suspended overhead (suspended). The grouping-derived naming makes the form-to-behavior linkage explicit and supports future architectural review.
+
+**No anti_classification_guidance populations in this Block.** All 6 lighting forms are broadly continuous from colonial-or-earlier era through present, spanning candle, oil, kerosene, gas, and electric fuel systems within unified form categories. Fuel-system-specific boundaries (e.g., gas brackets emerging c. 1840-1860, kerosene lamps c. 1850 onward, electric variants from c. 1880 onward, halogen torchieres in late 20th century) are captured prose-side in subtype distinguishing_attributes and regional_period_notes rather than via standalone classification-boundary annotations. The forms themselves predate any of these fuel-system boundaries in their candle-burning earliest variants.
+
+**Cross-form overlaps documented in canonical content (Phase 1 footnote follow-through):**
+
+1. form_torchere vs subtype torchiere_lamp under form_floor_lamp: same underlying lighting concept (tall floor-standing upward illumination) under different naming conventions. form_torchere captures the historical and decorative tradition with European precedents; form_floor_lamp's torchiere_lamp subtype captures the modern American retail-context naming. Cross-form linkage documented in form_torchere cousin_form_contrasts and regional_period_notes, in form_floor_lamp cousin_form_contrasts and torchiere_lamp subtype distinguishing_attributes. The duplicate-but-different-context approach preserves both classification traditions rather than forcing single classification.
+
+2. form_candelabrum subtype candle_stand vs future form_church_furnishing subtype candle_stand (Industrial/Professional family, future Block): same name but different parent contexts. The candelabrum's candle_stand is domestic decorative surface-set form. The church furnishing candle_stand will be ecclesiastical altar/processional form. Both subtypes will exist under different parent forms when Industrial/Professional family ships; diagnostic distinction is context (domestic vs ecclesiastical), scale, and placement (mantel/sideboard vs altar/aisle). Documented in form_candelabrum cousin_form_contrasts and regional_period_notes, and in the candle_stand subtype distinguishing_attributes which explicitly references the future Church Furnishing context.
+
+**Path A schema reconciliation applied (parallel to all prior batches):** Source document's Unique Characteristics, Identifying Elements, Regional Identifiers, Emergence and Conclusion Dates, and Cousin Forms + Identifying Contrasts prose folded into canonical schema fields (distinguishing_features, dimensional_thresholds with width/height/depth/weight, cousin_form_contrasts, common_aliases, regional_period_notes). Each subtype's authored prose converted to single-element distinguishing_attributes array. Form names lowercased per existing canonical convention; proper nouns preserved (Neoclassical, Victorian, Art Deco, Hollywood Regency, Federal, Empire, Arts and Crafts, Colonial Revival in regional_period_notes prose). Schema-correct shape verified before drafting against SpatialBehaviorEntry, FamilyEntry, and FormEntry interfaces (Block 3 pattern: schema-verify-before-drafting prevents Block 1-style six-error recovery).
+
+**Third non-Desks family canonical authoring milestone.** Lighting is the third family added to the canonical taxonomy outside Desks (after Entry/Support Forms in Block 1 and Baskets in Block 3). Demonstrates that the schema, Path A reconciliation pattern, and PR-based workflow continue to generalize across families with distinct functional roles (entry-support transitional forms, basket woven containers, lighting illumination forms). All three workflow standards established in prior Blocks continue:
+- Pre-emptive schema discovery (Block 3 onwards)
+- Referential integrity gate (Block 5 onwards)
+- Forbidden field check (Block 4 onwards)
+
+This Block's 4-spatial-behavior architectural addition is the largest multi-spatial-behavior single-family canonical authoring in the project to date (Block 1's Entry/Support Forms added 8 spatial behaviors but had to recover from substantial drafting errors; Block 7 Lighting adds 4 spatial behaviors with schema-verified drafting from the start).
+
+**Final architectural state after this PR merges:**
+- 125 canonical forms total (119 + 6 from Lighting)
+- ~627 canonical subtypes (607 + 20 from Lighting)
+- 54 spatial behaviors (50 + 4 new from Lighting)
+- 12 family entries (11 + 1 new family_lighting; referential integrity correct for all family_id references)
+- 13 anti_classification_guidance populations (unchanged — no new populations in this Block)
+- 9 families with canonical content on main: Desks (complete, 55 forms), Bedroom, Dining, General Storage, Seating, Tables, Entry/Support Forms, Baskets, Lighting (newly added)
+
+---
+
 
