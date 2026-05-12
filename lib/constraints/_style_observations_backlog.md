@@ -92,3 +92,25 @@ Stripped from washstand regional_period_notes during 2026-05-03 architectural co
 - Marble tops can be added or replaced later — not reliable as original-construction evidence
 
 ---
+
+## Block 21 partial-population gap: composite_veneer_cores characteristic_expressions on three CUT_GRAIN_PHENOMENA
+
+Three CUT_GRAIN_PHENOMENA entries reference `engineered_substrate_composite_veneer_cores` in `applicable_substrates` arrays but lack populated `characteristic_expression` strings for that specific substrate FK:
+
+- `cut_grain_phenomenon_plain_sliced_veneer`
+- `cut_grain_phenomenon_bookmatching`
+- `cut_grain_phenomenon_slip_matching`
+
+A fourth entry (`cut_grain_phenomenon_rotary_cut_veneer`) has the slot populated: "Rotary-cut veneer faces over composite cores in postwar factory cabinetry."
+
+Block 21 gap-survey (Block 23b foundation discovery + prior-session consultation) confirmed File A and File B do not surface specific content for how plain-sliced/bookmatching/slip-matching manifest on composite cores vs other substrate contexts. Appraiser-source content unavailable as of Block 23b.
+
+Resolution: backlog. Resurvey at Block 26 (WoodEvidenceReasoningRules authoring) if Mike's appraiser practice surfaces content; otherwise leave slots empty as canonical-source-honest absence. Do NOT fill from general furniture knowledge per canonical-source-authority + appraiser-honest-calibration discipline.
+
+Cross-references:
+- Block 21 D-CG21-5 (CUT_GRAIN_PHENOMENA decomposition + applicable_substrates routing)
+- Block 23a D-WE23a-5 (skip-no-entry precedent for absence-as-information)
+- Block 23b D-WE23b-7 (this resolution) — see AUDIT_LOG.md
+- Block 26 routing for WoodEvidenceReasoningRule capture
+
+---
