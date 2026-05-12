@@ -1,9 +1,29 @@
 /**
- * Canonical entry shape for all Proof Sleuth constraint libraries.
+ * Canonical entry shape and shared field-type interfaces for all
+ * Proof Sleuth constraint libraries.
  *
- * Per Section 6.1 of the architectural synthesis. All constraint library
- * entries must conform to this interface or extend it. Library-specific
- * fields may be added by extending this interface.
+ * This file hosts two categories of declarations:
+ *
+ * (a) The canonical entry base shape (CanonicalEntry). All constraint
+ *     library entries must conform to this interface or extend it.
+ *     Library-specific fields may be added by extending this interface.
+ *     Per Section 6.1 of the architectural synthesis.
+ *
+ * (b) Shared field-type interfaces consumed across multiple libraries:
+ *     - AntiClassificationGuidance (relocated from forms.ts per Block 16
+ *       D-WI9 for shared use across forms.ts and the wood identification
+ *       domain; also consumed by woodEvidence.ts per Block 22 D-WE22-3).
+ *     - PositionOnPiece (introduced per Block 22.5 D-PA-1; cross-library
+ *       position-on-piece annotation interface consumed by evidence-
+ *       layer libraries — woodEvidence.ts at Block 23+; future
+ *       fastenerEvidence.ts, hardwareEvidence.ts, joineryEvidence.ts,
+ *       textileEvidence.ts at respective foundation-block time).
+ *
+ * Shared field-type interfaces in this file are not entry shapes
+ * themselves — they are field types that compose into entries.
+ * Migration to a dedicated shared-interfaces file (positions.ts or
+ * similar) deferred unless this file's scope grows materially beyond
+ * the current set.
  */
 export interface CanonicalEntry {
   id: string;
@@ -64,4 +84,264 @@ export interface AntiClassificationGuidance {
    * in primary form display (parallels distinguishing_features placement pattern
    * from lowboy and coffee_table). standard: surface in extended notes section. */
   prominence: "prominent" | "standard";
+}
+
+/**
+ * Physical location on the piece — WHERE on furniture an evidence observation
+ * occurs. 34-value closed enum covering case construction (7), drawer construction
+ * (5), frame and structural (4), surface and visible (3), base (3), movable
+ * components (3), upholstery (6), and specialty (3) categories.
+ *
+ * Canonical-source tracing per Block 22.5 D-PA-5: each value cites which of the
+ * five canonical evidence-layer sources surfaces that location (File A General
+ * Wood Use; Fastener Reference; Furniture Hardware Identification System;
+ * JOINERY IDENTIFICATION MASTER BREAKDOWN; American Furniture Textile Reference).
+ *
+ * D-WE22-8 / D-ES20-13 routing coverage gate satisfied: drawer_bottom, drawer_side,
+ * case_interior_framing, underside, backboard all present.
+ *
+ * Granularity calibrated to canonical-source distinctions. Canonical specificity
+ * beyond enum values (skirt-pleat-attachment, drawer-divider-mounting, etc.)
+ * captured via PositionOnPiece.physical_location_notes? free-form supplement
+ * per Block 22 D-WE22-1 precedent.
+ */
+export type PhysicalLocation =
+  // Case construction (7)
+  | "case_carcass"
+  | "case_back"
+  | "case_panel"
+  | "case_corner"
+  | "case_top"
+  | "case_bottom"
+  | "case_interior_framing"
+  // Drawer construction (5)
+  | "drawer_front"
+  | "drawer_side"
+  | "drawer_back"
+  | "drawer_bottom"
+  | "drawer_runner"
+  // Frame and structural (4)
+  | "frame_joint"
+  | "frame_rail"
+  | "frame_stile"
+  | "structural_reinforcement"
+  // Surface and visible (3)
+  | "show_surface"
+  | "trim_or_molding"
+  | "edge_or_corner_protection"
+  // Base (3)
+  | "foot_or_leg"
+  | "base_or_plinth"
+  | "underside"
+  // Movable components (3)
+  | "door_panel"
+  | "lid_or_top_movable"
+  | "movable_hardware_attachment"
+  // Upholstery (6)
+  | "upholstery_seat"
+  | "upholstery_back"
+  | "upholstery_arm"
+  | "upholstery_support_layer"
+  | "upholstery_attachment_point"
+  | "upholstery_dust_cover"
+  // Specialty (3)
+  | "veneer_face"
+  | "veneer_backing"
+  | "backboard";
+
+/**
+ * Structural/functional role of position — WHAT the position does. 10-value
+ * closed enum per Block 22.5 D-PA-6. Three-tier coverage rationale: structural
+ * integration tier (load_bearing vs assembly); visibility/access tier
+ * (hidden_interior vs exposed_surface); functional category tier (decorative
+ * vs movement vs security vs fabric_retention); plus escape hatch
+ * (specialized_function).
+ *
+ * Canonical-source support: Fastener Reference structural-vs-decorative framing;
+ * Hardware Reference Pull/Hinge/Lock/Caster functional categories; Joinery
+ * Reference category descriptions; Textile Reference support-layer vs visible-
+ * cover framing.
+ *
+ * Boundary with PhysicalLocation: physical_location names WHERE (e.g.,
+ * "drawer_bottom"); functional_role names what role (e.g., "hidden_interior"
+ * or "structural_assembly"). Never collapse into a single field per Block 22.5
+ * D-PA-1 dimension-boundary lockwork.
+ */
+export type FunctionalRole =
+  | "structural_load_bearing"
+  | "structural_assembly"
+  | "decorative_only"
+  | "functional_non_structural"
+  | "hidden_interior"
+  | "exposed_surface"
+  | "movement_assistance"
+  | "security"
+  | "fabric_retention"
+  | "specialized_function";
+
+/**
+ * Provenance/originality of position evidence — WHY this position carries its
+ * specific evidence weight. 8-value closed enum per Block 22.5 D-PA-7.
+ *
+ * Canonical-source support: Hardware Reference "Hardware is secondary
+ * evidence... originality assessment is critical"; Fastener Reference
+ * "Replacement Fastener Risk" + "Restoration Contamination"; Joinery Reference
+ * "RESTORATION FALSE SIGNALS" + "Always determine: original joinery vs repair
+ * joinery"; Textile Reference Core Rule (frame_construction vs original_upholstery
+ * vs later_reupholstery temporal layers).
+ *
+ * factory_assembly_original vs site_assembly_original distinction handles modern
+ * knock-down furniture per Fastener Reference Category 5 framing.
+ * unknown_provenance required value for appraiser-honest discipline when
+ * provenance is uncertain.
+ */
+export type PositionProvenance =
+  | "original_to_construction"
+  | "factory_assembly_original"
+  | "site_assembly_original"
+  | "upholstery_campaign_introduced"
+  | "repair_introduced"
+  | "restoration_introduced"
+  | "replacement"
+  | "unknown_provenance";
+
+/**
+ * Consistency pattern across the piece — HOW this position relates to similar
+ * positions across the piece. 5-value closed enum per Block 22.5 D-PA-8.
+ *
+ * Canonical-source support: Fastener Reference "repeated consistently throughout
+ * the piece" as strength signal; Hardware Reference "Mixed-period hardware sets"
+ * as weak indicator; Joinery Reference "DO NOT DATE FROM ONE JOINT ALONE" +
+ * multi-position joinery type cross-referencing; Textile Reference "A frame
+ * with several generations of tack holes suggests repeated reupholstery."
+ *
+ * single_observation_no_pattern_assessment required value for appraiser-honest
+ * discipline when sample is insufficient for consistency assessment.
+ */
+export type ConsistencyPattern =
+  | "repeated_consistently_across_piece"
+  | "isolated_example"
+  | "mixed_period_set"
+  | "partial_pattern"
+  | "single_observation_no_pattern_assessment";
+
+/**
+ * Temporal layer when position evidence was established within the piece's
+ * life — WHEN. 7-value closed enum per Block 22.5 D-PA-9. Anchored primarily
+ * in Textile Reference Core Rule four-layer framing (frame_construction /
+ * original_upholstery / later_reupholstery / current_visible_cover);
+ * extensions cover repair, restoration, and replacement timing from Fastener
+ * + Hardware + Joinery sources.
+ *
+ * Textile Reference Core Rule: "A chair frame may be 1880s, the springs may
+ * be 1920s replacement, the foam may be 1970s, and the visible fabric may be
+ * 2020s. The goal is to separate Frame date / Original upholstery system date
+ * / Later reupholstery date / Current visible cover date."
+ *
+ * unknown_layer required value for appraiser-honest discipline when temporal
+ * layer is uncertain.
+ */
+export type TemporalLayer =
+  | "frame_construction"
+  | "original_upholstery"
+  | "later_reupholstery"
+  | "current_visible_cover"
+  | "repair_or_restoration"
+  | "replacement_post_construction"
+  | "unknown_layer";
+
+/**
+ * Position-on-piece annotation interface for evidence-layer entries.
+ *
+ * Six-dimensional position semantics consumed by evidence libraries across
+ * wood, joinery, fasteners, hardware, and upholstery (covers + construction).
+ * Captures where on a piece an evidence observation occurs, what the position's
+ * structural role is, when in the piece's life the evidence was established,
+ * and how the position relates to similar positions across the piece.
+ * Convergent across all 5 canonical evidence-layer source documents (File A
+ * General Wood Use in Furniture; Fastener_Reference; Furniture_Hardware_Identification_System;
+ * JOINERY_IDENTIFICATION_MASTER_BREAKDOWN; American_Furniture_Textile_Reference).
+ *
+ * Consumed by evidence entries via optional `position_on_piece?: PositionOnPiece[]`
+ * field; array shape supports multiple positions per entry. Block 22.5 declares
+ * this interface; Block 23+ adds consumption to woodEvidence.ts evidence entries
+ * per Block 22 D-WE22-8 deferral. Future evidence libraries (fastenerEvidence.ts,
+ * hardwareEvidence.ts, joineryEvidence.ts, textileEvidence.ts) consume the same
+ * interface at their respective foundation-block time.
+ *
+ * Cross-source canonical foundation: every evidence-layer source document
+ * carries a "this layer alone never dates furniture" caveat in its own words
+ * (Wood File A "Wood alone should NEVER date furniture"; Fastener Reference
+ * "Fasteners must always be evaluated alongside construction methods, tool
+ * marks..."; Hardware Reference "Hardware is secondary evidence, not primary
+ * dating evidence"; Joinery Reference "DO NOT DATE FROM ONE JOINT ALONE";
+ * Textile Reference "For dating, do not let fabric style alone control the
+ * conclusion"). Five independent sources, fully convergent on the Independent
+ * Layer Evaluation Standard (Session 9 Block 21 D-CG21-2/D-CG21-17).
+ * PositionOnPiece serves the within-layer position semantics that each
+ * evidence layer carries; the Standard governs cross-layer integration where
+ * position-evaluated evidence converges.
+ *
+ * Dimension boundary semantics:
+ * - physical_location = WHERE on the piece (required dimension; every position
+ *   has a location).
+ * - functional_role = WHAT structural role the position plays (load-bearing
+ *   vs hidden_interior vs decorative_only).
+ * - provenance = WHY this position carries its specific evidence weight
+ *   (original vs replacement vs repair-introduced).
+ * - position_context_evidence = PROSE observations specifically about the
+ *   position (shadow consistency, ghost holes, finish continuity AT this
+ *   position). Distinct from diagnostic_caution_text on evidence entries
+ *   (Block 22 D-WE22-10) which captures appraiser-knowledge framing about
+ *   the entity in general unrelated to specific position.
+ * - consistency_pattern = HOW this position relates to similar positions
+ *   across the piece (repeated, isolated, mixed-period set).
+ * - temporal_layer = WHEN this position evidence was established within the
+ *   piece's life (frame construction, original upholstery, later reupholstery,
+ *   current visible cover, repair/restoration, post-construction replacement).
+ *
+ * The physical_location vs functional_role boundary is the slipperier pair:
+ * "drawer_bottom" is a physical_location value; the functional_role for
+ * evidence at that location is typically "hidden_interior" or
+ * "structural_assembly," authored as a separate field. Authoring discipline:
+ * physical_location names WHERE; functional_role names what role; never
+ * collapse into a single field.
+ */
+export interface PositionOnPiece {
+  /** Required: physical location on the piece. */
+  physical_location: PhysicalLocation;
+
+  /**
+   * Optional free-form supplement for canonical-source specificity beyond
+   * enum values (e.g., "skirt pleat attachment", "drawer divider mounting",
+   * "Federal-era inlay banding edge"). Per Block 22 D-WE22-1 precedent
+   * (regional enum + region_notes pattern).
+   */
+  physical_location_notes?: string;
+
+  /** Optional: structural/functional role of position. */
+  functional_role?: FunctionalRole;
+
+  /** Optional: provenance/originality of position evidence. */
+  provenance?: PositionProvenance;
+
+  /**
+   * Optional: prose canonical observations specifically about the position.
+   * Examples: "Hardware shadow consistency with surrounding finish";
+   * "Mounting hole ghost evidence at original location"; "Tack-line spacing
+   * irregularity consistent with hand-tack work"; "Lock mortise oxidation
+   * continuity with surrounding wood." Distinct from diagnostic_caution_text
+   * on evidence entries (Block 22 D-WE22-10) which captures entity-general
+   * appraiser knowledge.
+   */
+  position_context_evidence?: string[];
+
+  /** Optional: how this position relates to similar positions on the piece. */
+  consistency_pattern?: ConsistencyPattern;
+
+  /** Optional: temporal layer when this position evidence was established. */
+  temporal_layer?: TemporalLayer;
+
+  /** Optional free-form notes for additional context not captured by above fields. */
+  notes?: string;
 }
