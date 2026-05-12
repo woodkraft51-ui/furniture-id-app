@@ -76,6 +76,18 @@ export interface WoodCategoryEntry extends CanonicalEntry {
    * identification is the appropriate confidence level.
    */
   primary_diagnostic_indicators: string[];
+
+  /**
+   * Free-form descriptions of this category's relationship to closely-related
+   * categories that share diagnostic overlap. Each entry is a complete
+   * contrastive statement comparing this category to a cousin category. Used
+   * for engine reasoning when differentiating between cousin categories (e.g.,
+   * ring-porous vs diffuse-porous hardwoods at the most-confused boundary).
+   * Mirrors cousin_form_contrasts on FormEntry and cousin_phenomenon_contrasts
+   * on CutGrainPhenomenonEntry. Added in Block 17 to close the Block 16
+   * design gap.
+   */
+  cousin_category_contrasts?: string[];
 }
 
 /**
@@ -379,7 +391,148 @@ export interface CutGrainPhenomenonEntry extends CanonicalEntry {
   cousin_phenomenon_contrasts?: string[];
 }
 
-export const WOOD_CATEGORIES: WoodCategoryEntry[] = [];
+export const WOOD_CATEGORIES: WoodCategoryEntry[] = [
+  {
+    id: "wood_category_ring_porous_hardwoods",
+    category: "wood_category",
+    ordinal: "I",
+    name: "Ring-Porous Hardwoods",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Hardwood species whose annual growth rings contain large earlywood pores followed by denser latewood, creating highly visible grain structure, strong ring contrast, and pronounced texture. Among the most diagnostically useful woods because pore structure remains visible even beneath finish and oxidation. Dominate early American, Victorian, Golden Oak (1875-1915), and Arts & Crafts (1895-1925) production. Frequently used structurally rather than merely decoratively.",
+    shared_identifying_traits: [
+      "Large visible pores",
+      "Strong annual ring contrast",
+      "Prominent grain texture",
+      "High structural strength",
+      "Excellent durability",
+      "Strong ray structure in some species",
+      "Coarse texture commonly",
+      "Frequent dramatic darkening with age",
+      "Commonly used structurally, not merely decoratively",
+    ],
+    primary_diagnostic_indicators: [
+      "Large open grain",
+      "Distinct earlywood/latewood transition",
+      "Visible cathedral grain in flat-sawn cuts",
+      "Pronounced ray fleck in quarter-sawn cuts",
+      "Heavy tactile texture",
+      "Deep pore absorption of stain",
+      "Visible end-grain pore bands",
+    ],
+    cousin_category_contrasts: [
+      "Diffuse-Porous Hardwoods: ring-porous shows large earlywood pore bands creating dramatic ring contrast; diffuse-porous shows uniform pore distribution with subtle ring transitions. Cathedral grain remains stronger in ring-porous; chatoyance and figure-by-light-reflection dominate diffuse-porous identification.",
+    ],
+  },
+  {
+    id: "wood_category_diffuse_porous_hardwoods",
+    category: "wood_category",
+    ordinal: "II",
+    name: "Diffuse-Porous Hardwoods",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Hardwood species whose pores remain relatively uniform in size throughout the annual growth ring rather than forming dramatic earlywood pore bands. Typically exhibit smoother texture, more subtle grain transitions, less pronounced annual ring contrast, and greater suitability for fine carving, veneering, turning, and polished finishes. Dominate fashion-driven eras of American furniture production including Federal, Empire, Victorian walnut production, Colonial Revival, Mid-Century Modern, and fine cabinetmaking traditions. More difficult for beginners to identify because grain structure is subtler.",
+    shared_identifying_traits: [
+      "Fine to medium texture",
+      "Uniform pore distribution",
+      "Reduced visible annual-ring contrast",
+      "Smooth planed surfaces",
+      "Excellent carving and turning properties",
+      "Frequent use for veneers",
+      "Greater polish potential",
+      "Often darker oxidation behavior",
+      "Frequently associated with high-style furniture",
+    ],
+    primary_diagnostic_indicators: [
+      "Smooth visual texture",
+      "Absence of dramatic pore bands",
+      "Subtle end-grain structure",
+      "Softer cathedral grain",
+      "Fine polish capability",
+      "Often tighter, denser visual appearance",
+      "Figure revealed more through light reflection than pore structure",
+      "Identification requires observation of color, chatoyance, ray structure, figure, pore density, oxidation behavior, weight, and finish interaction",
+    ],
+    cousin_category_contrasts: [
+      "Ring-Porous Hardwoods: diffuse-porous lacks the dramatic earlywood pore bands and strong cathedral grain of ring-porous woods. Identification relies more on light reflection, chatoyance, and color than on grain texture.",
+      "Tropical Hardwoods: many tropical hardwoods are technically diffuse-porous but carry distinguishing density, oil content, and dramatic coloration. Distinguish by weight, oily tactile feel, and unusual color rather than by pore structure alone.",
+    ],
+  },
+  {
+    id: "wood_category_softwoods_conifers",
+    category: "wood_category",
+    ordinal: "III",
+    name: "Softwoods / Conifers",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Primarily derived from coniferous trees. Despite the name, hardness varies considerably — some softwoods are soft and lightweight, others are dense and structurally durable. Among the most important structural and secondary woods in American furniture history. Dominate early American, rural and vernacular furniture, painted furniture, secondary wood construction, blanket chests, utility furniture, architectural furniture, Western Arts & Crafts production, cedar storage furniture, and primitive/frontier furniture traditions. Frequently hidden beneath veneers or paint and therefore diagnostically critical when examining drawer bottoms, backboards, interior panels, undersides, structural framing, and secondary components. Show dramatic aging behavior, oxidation patterns, resin characteristics, and saw behavior valuable in evidence-first furniture dating.",
+    shared_identifying_traits: [
+      "Growth-ring dominance",
+      "Resinous structure",
+      "Lower pore visibility than hardwoods",
+      "Strong earlywood/latewood contrast",
+      "Frequent knotting",
+      "Aromatic oils in some species",
+      "Lower density overall",
+      "Easy machining",
+      "Frequent use in wide boards",
+      "Common secondary-wood usage",
+    ],
+    primary_diagnostic_indicators: [
+      "No visible pore structure",
+      "Resin canals or pitch pockets",
+      "Strong ring lines",
+      "Lightweight feel",
+      "Softer surface denting",
+      "Distinct aromatic scent in some species",
+      "Wide board usage in early furniture",
+      "Nail compression around fasteners",
+      "Oxidation color shifts",
+    ],
+    cousin_category_contrasts: [
+      "Ring-Porous Hardwoods and Diffuse-Porous Hardwoods: softwoods lack visible pore structure entirely, distinguishing them from both hardwood categories. Softwoods compress around nails and dent more easily than either hardwood category. Resin canals or pitch pockets are uniquely diagnostic when present.",
+    ],
+  },
+  {
+    id: "wood_category_tropical_hardwoods_imported_exotics",
+    category: "wood_category",
+    ordinal: "IV",
+    name: "Tropical Hardwoods / Imported Exotics",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Represent the luxury tier of furniture materials throughout much of Western furniture history. Often imported through maritime trade networks and associated with elite cabinetmaking, high-style urban furniture, fine veneers, decorative contrast work, inlay, musical instruments, luxury revival furniture, Art Deco, and Mid-Century Modern imports. Unlike many domestic woods, often valued as much for color, figure, rarity, exotic status, reflective qualities, and decorative contrast as for structural utility. Frequently used as veneers rather than solid lumber, in small quantities, as visual accents, for matched veneer layouts, and for decorative panels and borders. Because imported woods were expensive, they often appear in combination with secondary domestic woods, veneer cores, composite substrates, and high-style finishing systems.",
+    shared_identifying_traits: [
+      "Dramatic coloration",
+      "Dense structure",
+      "Fine polish potential",
+      "High natural oil content",
+      "Exceptional figure",
+      "Decorative chatoyance",
+      "Veneer suitability",
+      "High dimensional stability",
+      "Frequent ribbon or stripe figure",
+      "Luxury associations",
+    ],
+    primary_diagnostic_indicators: [
+      "Dense reflective surfaces",
+      "Unusual coloration",
+      "High polish response",
+      "Dramatic figure movement",
+      "Heavy weight",
+      "Oily tactile feel in some species",
+      "Fine diffuse pores",
+      "Common veneer usage",
+      "Contrasting sapwood/heartwood",
+    ],
+    cousin_category_contrasts: [
+      "Diffuse-Porous Hardwoods: many tropical hardwoods are technically diffuse-porous; distinguish by greater density, oily tactile feel, dramatic coloration, and veneer-rather-than-solid usage patterns. Tropical hardwoods frequently combine with domestic secondary woods as veneer over substrate; pure domestic diffuse-porous woods used in solid construction is more common in domestic furniture.",
+    ],
+  },
+];
 export const NATURAL_WOOD_SPECIES: WoodSpeciesEntry[] = [];
 export const ENGINEERED_SUBSTRATES: EngineeredSubstrateEntry[] = [];
 export const CUT_GRAIN_PHENOMENA: CutGrainPhenomenonEntry[] = [];

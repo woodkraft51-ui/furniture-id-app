@@ -1325,4 +1325,32 @@ Zero recovery rounds during drafting; schema-verified drafting from the start; f
 
 ---
 
+### 2026-05-12 — Session 9 Block 17 — Wood Categories + cousin_category_contrasts schema addition
+
+**Scope.** WOOD_CATEGORIES array populated with 4 canonical WoodCategoryEntry entries representing Categories I-IV from File B (Wood_identification_reference.docx). Block also closes a Block 16 design gap by adding optional cousin_category_contrasts field to WoodCategoryEntry interface. NATURAL_WOOD_SPECIES, ENGINEERED_SUBSTRATES, and CUT_GRAIN_PHENOMENA arrays remain empty per Block 16 landing state; species content lands Blocks 18-19, substrate content lands Block 20, cut/grain content lands Block 21.
+
+**Architectural decisions (locked).**
+
+D-WC0 (locked): WoodCategoryEntry interface extended with optional `cousin_category_contrasts?: string[]` field. Closes a Block 16 design gap relative to analogous fields `cousin_form_contrasts` (forms.ts FormEntry) and `cousin_phenomenon_contrasts` (woodIdentification.ts CutGrainPhenomenonEntry, D-WI6 in Block 16). The omission was surfaced during Op A-1 pre-emptive schema discovery for this Block; rather than drop the cousin-contrast content from the planned entries, the schema was patched within the same PR. Field added at category level only; analogous field at species level deferred pending File B species-content review during Blocks 18-19 when the cousin-contrast pattern at species level can be evaluated against actual data.
+
+D-WC1 (locked): Four WoodCategoryEntry entries authored matching File B's four taxonomic categories at category-level depth. Species drill-downs reserved for Blocks 18-19.
+
+D-WC2 (locked): Category-level entries omit anti_classification_guidance. Boundary semantics belong at species and substrate level where adoption curves and form-extinction dates apply; categories themselves do not carry temporal boundaries.
+
+D-WC3 (locked): Authority weights set at 8/8 for all four categories. Categories are the taxonomic root of the wood identification library and carry high diagnostic authority when correctly applied, paralleling the 8/8 authority weights on construction logic entries in the form taxonomy.
+
+D-WC4 (locked): cousin_category_contrasts populated bilaterally for Ring-Porous ↔ Diffuse-Porous (the most-confused pair). Other contrasts populated unidirectionally where natural: Softwoods cousin-contrasts both hardwood categories collectively; Tropical Hardwoods cousin-contrasts Diffuse-Porous specifically (since tropical hardwoods are technically diffuse-porous and that's where confusion occurs). Total cousin_category_contrasts populations: 5 strings across 4 entries (Ring-Porous: 1, Diffuse-Porous: 2, Softwoods: 1, Tropical: 1).
+
+D-WC5 (locked): shared_identifying_traits and primary_diagnostic_indicators arrays distinguish "what this category IS" (traits) from "what to look for in the field" (diagnostic indicators), matching File B's structural framing. Both arrays populated for all four categories from File B canonical content. Trait array sizes: 9, 9, 10, 10. Diagnostic indicator array sizes: 7, 8, 9, 9.
+
+**Workflow standards applied.** Pre-emptive schema discovery (B3): performed in Op A-1; surfaced the cousin_category_contrasts gap before content authoring, allowing in-PR schema patch via D-WC0 rather than silent content adaptation or post-merge follow-up. Forbidden field check (B4): N/A (no spatialBehaviors edits). Referential integrity gate (B5): N/A (no FK populations — category entries are the taxonomic root, no upward FK references). Family-stub-check (B9): N/A (no families touched). Form-stub-check (B11): N/A (no forms touched).
+
+**Final architectural state after this PR merges:**
+- 4 WoodCategoryEntry entries populated (was 0)
+- WoodCategoryEntry interface gains optional cousin_category_contrasts field
+- NATURAL_WOOD_SPECIES, ENGINEERED_SUBSTRATES, CUT_GRAIN_PHENOMENA arrays remain empty pending Blocks 18-21
+- File count in lib/constraints/ unchanged at 10
+
+---
+
 
