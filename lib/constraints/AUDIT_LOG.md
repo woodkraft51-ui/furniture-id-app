@@ -1813,4 +1813,52 @@ D-WE24-FINAL (locked): Block 24 ships 35 CUT_GRAIN_EVIDENCE + 8 WOOD_DIAGNOSTIC_
 
 ---
 
+### 2026-05-12 — Session 12 Block 25 — File A Section 5 Major Revival Waves coverage addendum (3 SPECIES_EVIDENCE mutations)
+
+**Scope.** Three mutation-only edits to existing SPECIES_EVIDENCE entries in `lib/constraints/woodEvidence.ts` closing File A Section 5 "Major Revival Waves and Their Woods" coverage gaps surfaced during Op A inspection of the Block 24 endpoint. Zero new entries, zero removed entries, zero schema changes. SPECIES_EVIDENCE (26), SUBSTRATE_EVIDENCE (5), CUT_GRAIN_EVIDENCE (35), WOOD_DIAGNOSTIC_SIGNALS (8), WOOD_EVIDENCE_REASONING_RULES (0) all unchanged in array length. 15-tag canonical style_wave_associations set per D-WE23a-4 remains locked. Mutations: G1 — Gothic Revival × oak (period_association addition); G4 — Eastlake Revival × walnut (style_wave_associations tag addition); G5 — Eastlake Revival × cherry (style_wave_associations tag addition). Op A inspection surfaced 5 gaps total; 3 mapped to mutations this block; 2 (G2 Gothic Revival × walnut; G3 Empire Revival × mahogany) skipped per D-WE25-6 appraiser-honest tolerance — date overlap covers the windows.
+
+**Architectural decisions (locked).**
+
+D-WE25-1 (locked): Block 25 scope locked as small-addendum mutation-only ship after Op A inspection determined File A Section 5 coverage is substantially complete via Block 23a authoring with 5 specific gaps surfaced. 3 of 5 gaps land as mutations this block (G1, G4, G5); 2 gaps (G2 Gothic Revival × walnut labeling; G3 Empire Revival × mahogany labeling) SKIPPED per appraiser-honest tolerance — date overlap from existing period_associations covers the revival windows; adding redundant labeled period_associations introduces noise more than signal per Independent Layer Evaluation Standard.
+
+D-WE25-2 (locked): G1 mutation — Gothic Revival × oak. Added PeriodAssociation `{ period_label: "Gothic Revival recurring use", date_floor: 1880, date_ceiling: 1910 }` to `wood_species_evidence_oak_group.period_associations` per File A Section 5 Major Revival Waves table anchor. Original Gothic Revival 1840-1865 covered by existing Victorian-era oak period_associations via date overlap; this entry encodes the explicit revival-wave anchor. Insertion position chronological-order-preserving: between existing "Eastlake/Aesthetic/Golden Oak dominance" 1875-1910 entry and "Mission/Arts & Crafts peak" 1895-1925 entry. Post-mutation `oak_group.period_associations.length === 7` (was 6).
+
+D-WE25-3 (locked): G4 mutation — Eastlake Revival × walnut. Added `"eastlake_aesthetic"` tag to `wood_species_evidence_walnut_group.style_wave_associations` per File A Section 5 Eastlake Revival × Walnut mapping coverage gap surfaced in Op A inspection. Insertion position chronological-order-preserving: between `"renaissance_revival"` (1860-1885 original) and `"colonial_revival"` (1890-1940 main wave). Post-mutation `walnut_group.style_wave_associations.length === 8` (was 7).
+
+D-WE25-4 (locked): G5 mutation — Eastlake Revival × cherry. Added `"eastlake_aesthetic"` tag to `wood_species_evidence_cherry_group.style_wave_associations` per File A Section 5 Eastlake Revival × Cherry mapping coverage gap surfaced in Op A inspection. Insertion position chronological-order-preserving: between `"federal_hepplewhite_sheraton"` (1780-1820 original era) and `"mission_arts_and_crafts"` (1895-1925). Post-mutation `cherry_group.style_wave_associations.length === 6` (was 5).
+
+D-WE25-5 (locked): 15-tag canonical style_wave_associations set per D-WE23a-4 remains LOCKED. Revival-wave granularity for Tudor/Jacobean Revival, Gothic Revival, Empire Revival, Federal Revival, and Eastlake Revival beyond existing tag approximations DEFERRED to Phase 2 Session 9 styleFamilies.ts authoring. Continuing D-WE24-6 fallback discipline: revival-wave content lives in period_associations period_label prose; closest 15-tag approximation used for style_wave_associations (colonial_revival or original-era tag depending on revival wave). Rationale: 15-tag set expansion at this stage would trigger retroactive re-evaluation of all 26 SPECIES_EVIDENCE + 35 CUT_GRAIN_EVIDENCE + 8 WOOD_DIAGNOSTIC_SIGNALS entries; styleFamilies.ts authoring is the appropriate venue for canonical style-family granularity decisions given its broader scope (Empire, Eastlake, Mission, Colonial Revival, etc. as ~17-20 style families per Stage 2 synthesis 10.5).
+
+D-WE25-6 (locked): G2 (Gothic Revival × walnut labeling refinement) and G3 (Empire Revival × mahogany labeling refinement) SKIPPED. Date overlap from existing period_associations (Victorian walnut dominance 1840-1885 covering Gothic Revival original 1840-1865; Revival furniture 1880-1940 covering Empire Revival 1880-1910 window) already encodes the period coverage. Adding labeled period_associations for revival waves where date overlap already covers introduces redundant labeling that does not improve diagnostic narrowing per Independent Layer Evaluation Standard. Revival-wave semantic specificity routes to engine-reasoning layer rather than species-evidence period_association prose.
+
+D-WE25-7 (locked): D-WE23a-2 inverse-index reconciliation. Op A inspection of Block 24 confirmed that `wood_species_evidence_birch_group` entry EXISTS in woodEvidence.ts with 7 period_associations, including the explicit "Colonial Revival stained substitute" 1900-1950 entry. D-WE23a-2 plan-time inverse-index prediction of birch=0 (zero reciprocal Section 6 Hidden Secondary Woods pairings) was overridden during Block 23a authoring per appraiser-honest discipline: File A Section 3 Chronological Breakdown 1850-1940 birch entry + Section 5 Major Revival Waves Colonial Revival × Birch mapping surfaced birch as a primary wood warranting full SPECIES_EVIDENCE entry regardless of Section 6 silence. Block 23a audit log captured authoring decisions; this entry clarifies the inverse-index-prediction-vs-shipped-state fidelity for future audit reference. No mutation required to birch_group; entry as shipped is appraiser-honest.
+
+D-WE25-8 (locked): SKIP-pattern inventory documented. File A Section 5 produces ZERO mappings against the D-WE23a-5 14-species skip list (douglas_fir, cypress, spruce, hemlock, juniper_cedar_like_softwoods, tulipwood, kingwood, padauk, purpleheart, olivewood, lauan_philippine_mahogany, sycamore_group, aspen, cottonwood). Section 5 revival-wave mappings reference only mainstream show-wood species, all of which have SPECIES_EVIDENCE entries. Skip-list discipline remains canonical.
+
+D-WE25-FINAL (locked): Block 25 ship — 3 SPECIES_EVIDENCE entry mutations on 3 entries (oak_group, walnut_group, cherry_group). Zero new entries; zero removed entries; zero schema changes. File A Section 5 coverage closure: 16/16 mappings resolved (10 PRESENT pre-Block-25 + 3 mapped via Block 25 mutations + 2 covered via date-overlap per D-WE25-6 + 1 N/A special-case routing ebonized to ebony_group). Skip-list silence per D-WE25-8. Block 25 closes File A Section 5 wood-evidence-layer coverage; remaining wood-evidence-layer work scoped to Block 26 (WOOD_EVIDENCE_REASONING_RULES authoring per Block 22 D-WE22-12).
+
+**Workflow standards applied.** Plan-mode Op A inspection (READ-ONLY) preceded all mutations; insertion points surfaced for Mike approval; zero mutations executed during plan mode. Pre-mutation 15-tag set adherence verified on walnut_group (7 tags) and cherry_group (5 tags) — 100% canonical compliance pre-mutation; post-mutation arrays add one canonical tag each (`eastlake_aesthetic`). Insertion-position discipline: chronological-order preservation applied for both period_associations (oak_group entry inserted between 1875-1910 Eastlake and 1895-1925 Mission entries) and style_wave_associations (eastlake_aesthetic inserted between renaissance_revival and colonial_revival on walnut_group; between federal_hepplewhite_sheraton and mission_arts_and_crafts on cherry_group). Source citation: G1 period_association usage_notes cites File A Section 5 anchor. Independent Layer Evaluation Standard discipline: G2 and G3 skipped per D-WE25-6 (date overlap covers the windows; redundant labeling avoided). 15-tag canonical set lock per D-WE25-5 (no new tags this block; styleFamilies.ts deferred).
+
+**Final architectural state after this PR merges:**
+- `lib/constraints/woodEvidence.ts` modified: 2178 lines (was 2176 at Block 24 endpoint; +2 net lines from G1 single-PeriodAssociation insertion; G4 and G5 are in-place array additions on existing lines).
+- `lib/constraints/AUDIT_LOG.md` modified: +~52 lines (D-WE25-1 through D-WE25-FINAL).
+- `SPECIES_EVIDENCE.length === 26` unchanged.
+- `SUBSTRATE_EVIDENCE.length === 5` unchanged.
+- `CUT_GRAIN_EVIDENCE.length === 35` unchanged (Block 24 ship).
+- `WOOD_DIAGNOSTIC_SIGNALS.length === 8` unchanged (Block 24 ship).
+- `WOOD_EVIDENCE_REASONING_RULES.length === 0` unchanged (Block 26 scope).
+- `wood_species_evidence_oak_group.period_associations.length === 7` (was 6); new entry period_label "Gothic Revival recurring use" 1880-1910.
+- `wood_species_evidence_walnut_group.style_wave_associations.length === 8` (was 7); added `"eastlake_aesthetic"`.
+- `wood_species_evidence_cherry_group.style_wave_associations.length === 6` (was 5); added `"eastlake_aesthetic"`.
+- `lib/constraints/entryShape.ts` and `lib/constraints/woodIdentification.ts` byte-for-byte unchanged.
+- Identification arrays unchanged (NATURAL_WOOD_SPECIES 35, WOOD_CATEGORIES 4, ENGINEERED_SUBSTRATES 5, CUT_GRAIN_PHENOMENA 25).
+- File count `lib/constraints/` unchanged at 11.
+- 9 audit decisions captured under D-WE25-N block-scoped prefix (D-WE25-1 through D-WE25-8 + D-WE25-FINAL).
+- 15-tag canonical style_wave set per D-WE23a-4 remains LOCKED (per D-WE25-5).
+- D-WE23a-2 inverse-index prediction reconciled to shipped birch_group entry state per D-WE25-7.
+- Block 22 D-WE22-12 sequencing: Blocks 23a, 23b, 24, 25 complete; Block 26 (WOOD_EVIDENCE_REASONING_RULES) remains.
+- Per-entry authoring conventions further established for Block 26 wood-evidence-layer continuation: mutation-only addendum-ship pattern for coverage-gap closure (D-WE25-1); chronological-order-preservation insertion discipline for both period_associations and style_wave_associations (D-WE25-2/3/4); appraiser-honest-tolerance SKIP discipline for redundant-labeling gaps where date overlap covers (D-WE25-6).
+
+---
+
 

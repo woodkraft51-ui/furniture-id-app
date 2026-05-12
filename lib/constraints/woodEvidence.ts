@@ -546,6 +546,8 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
         usage_notes: "Maple/oak combinations in New England." },
       { period_label: "Eastlake/Aesthetic/Golden Oak dominance", date_floor: 1875, date_ceiling: 1910,
         usage_notes: "Oak overtakes walnut as dominant fashion wood. Machine carving suited oak grain. Golden Oak wave strongest 1880-1915." },
+      { period_label: "Gothic Revival recurring use", date_floor: 1880, date_ceiling: 1910,
+        usage_notes: "Per File A Section 5 Major Revival Waves table: Gothic Revival → Oak. Revival-wave use of oak structural and case furniture; Gothic Revival as late-19th-century recurring style wave. Original Gothic Revival 1840-1865 covered by Victorian-era oak period_associations via date overlap (Independent Layer Evaluation Standard); this entry encodes the explicit revival-wave anchor per Section 5." },
       { period_label: "Mission/Arts & Crafts peak", date_floor: 1895, date_ceiling: 1925,
         usage_notes: "Quarter-sawn white oak became almost synonymous with Mission production. Stickley/Roycroft sphere." },
       { period_label: "Tudor/Jacobean Revival recurring use", date_floor: 1920, date_ceiling: 1940,
@@ -693,7 +695,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     usage_role: ["primary_show_wood", "veneer"],
     usage_role_notes: "High-end case furniture as primary show wood; veneer work in Art Deco and MCM.",
     typical_secondary_pairings: ["wood_species_poplar_group"],
-    style_wave_associations: ["queen_anne", "chippendale", "rococo_revival", "renaissance_revival", "colonial_revival", "art_deco", "mid_century_modern"],
+    style_wave_associations: ["queen_anne", "chippendale", "rococo_revival", "renaissance_revival", "eastlake_aesthetic", "colonial_revival", "art_deco", "mid_century_modern"],
     position_on_piece: [
       {
         physical_location: "drawer_side",
@@ -757,7 +759,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     ],
     usage_role: "primary_show_wood",
     usage_role_notes: "Fine casework; strongest in Mid-Atlantic (Pennsylvania) and New England Shaker contexts.",
-    style_wave_associations: ["queen_anne", "chippendale", "federal_hepplewhite_sheraton", "mission_arts_and_crafts", "colonial_revival"],
+    style_wave_associations: ["queen_anne", "chippendale", "federal_hepplewhite_sheraton", "eastlake_aesthetic", "mission_arts_and_crafts", "colonial_revival"],
     diagnostic_caution_text: "Strongest in Pennsylvania, New England Shaker work, and Mid-Atlantic regional furniture; oxidation and gum streaks are useful identification clues. Note: File A treats cherry and 'fruitwoods' (apple/pear) somewhat overlappingly; fruitwoods are not a separate species in NATURAL_WOOD_SPECIES inventory and cherry coverage captures the bulk of fruitwood evidence.",
   },
   {
