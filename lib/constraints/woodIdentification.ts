@@ -1223,6 +1223,836 @@ export const NATURAL_WOOD_SPECIES: WoodSpeciesEntry[] = [
       { period_label: "Art Deco", date_floor: 1925, date_ceiling: 1945 },
     ],
   },
+  {
+    id: "wood_species_pine_group",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "pine",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Pine is one of the single most important woods in American furniture history. Used in colonial furniture, primitive furniture, painted furniture, secondary structures, rural furniture, blanket chests, case furniture interiors, and architectural furniture. Pine was often used because it was abundant, easy to mill, available in very wide boards, lightweight, and easy to hand tool.",
+    unique_traits: [
+      "Resinous structure",
+      "Strong growth-ring contrast",
+      "Soft earlywood",
+      "Frequent knotting",
+      "Yellowing oxidation",
+      "Distinct aroma when cut",
+    ],
+    identifying_elements: [
+      "Flat-sawn: strong ring contrast",
+      "Flat-sawn: wide cathedral grain",
+      "Flat-sawn: resin pockets",
+      "Flat-sawn: soft texture",
+      "Aged: amber oxidation",
+      "Aged: dry resin crystallization",
+      "Aged: surface checking",
+    ],
+    typical_structural_role: "either",
+    period_associations: [
+      { period_label: "Primary colonial construction", date_floor: 1600, date_ceiling: 1850 },
+      { period_label: "Secondary wood dominance", date_floor: 1800, date_ceiling: 1900 },
+      { period_label: "Utility and painted furniture", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "New England", notes: "Eastern white pine dominance." },
+      { region: "Southern States", notes: "Yellow pine dominance." },
+      { region: "Appalachian regions", notes: "Rural pine construction." },
+    ],
+    cousin_species_contrasts: [
+      "Hemlock: pine carries higher resin content, amber oxidation, and more consistent ring structure. Hemlock is often confused with pine but shows brittle splintering behavior, coarser grain, and gray-brown oxidation.",
+      "Cedar: pine and cedar overlap as light softwoods used in similar furniture roles (case interiors, blanket chests, secondary structures). Cedar's aromatic oils and purple-red coloration distinguish it from pine's resinous structure and amber oxidation.",
+    ],
+    subspecies: [
+      {
+        id: "wood_subspecies_eastern_white_pine",
+        name: "eastern white pine",
+        description:
+          "The dominant early American furniture softwood. Common in colonial case furniture, painted furniture, primitive furniture, and New England production.",
+        unique_traits: [
+          "Lightweight",
+          "Cream to amber coloration",
+          "Fine even texture",
+          "Low resin content",
+          "Extremely wide boards historically",
+        ],
+        identifying_elements: [
+          "Subtle grain",
+          "Soft tactile surface",
+          "Small tight knots",
+          "Warm amber aging",
+          "Fine annual rings",
+        ],
+        period_associations: [
+          { period_label: "Major colonial usage", date_floor: 1650, date_ceiling: 1850 },
+          { period_label: "Secondary wood", date_floor: 1800, date_ceiling: 1900 },
+          { period_label: "Rustic reproductions", date_floor: 1900 },
+        ],
+        regional_patterns: [
+          { region: "New England", notes: "Dominant furniture softwood." },
+          { region: "New York", notes: "Cabinet interiors." },
+        ],
+      },
+      {
+        id: "wood_subspecies_southern_yellow_pine",
+        name: "southern yellow pine",
+        description:
+          "A denser structural pine heavily associated with Southern furniture, utility furniture, industrial furniture, and late factory production.",
+        unique_traits: [
+          "Heavy density",
+          "Strong resin content",
+          "Dramatic ring contrast",
+          "High structural strength",
+        ],
+        identifying_elements: [
+          "Dark latewood bands",
+          "Heavy resin pockets",
+          "Orange-brown coloration",
+          "Dense weight",
+        ],
+        period_associations: [
+          { period_label: "Southern furniture", date_floor: 1800, date_ceiling: 1900 },
+          { period_label: "Structural secondary wood", date_floor: 1880, date_ceiling: 1940 },
+          { period_label: "Utility furniture", date_floor: 1900 },
+        ],
+        regional_patterns: [
+          { region: "Southern United States", notes: "Structural dominance." },
+          { region: "Midwestern factories", notes: "Secondary wood usage." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "wood_species_cedar_group",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "cedar",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Strongly associated with blanket chests, hope chests, storage furniture, and aromatic insect-resistant furniture.",
+    unique_traits: [
+      "Aromatic oils",
+      "Insect resistance",
+      "Red/purple coloration",
+      "Lightweight structure",
+      "Straight grain",
+    ],
+    identifying_elements: [
+      "Distinct cedar aroma",
+      "Purple-red streaking",
+      "Fine straight grain",
+      "Lightweight feel",
+    ],
+    typical_structural_role: "either",
+    period_associations: [
+      { period_label: "Blanket chest peak", date_floor: 1880, date_ceiling: 1960 },
+      { period_label: "Hope chest production", date_floor: 1900, date_ceiling: 1950 },
+      { period_label: "Closet/storage use", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "Midwest", notes: "Cedar chest factory production." },
+      { region: "Southern States", notes: "Aromatic cedar availability." },
+    ],
+    cousin_species_contrasts: [
+      "Pine: cedar shows aromatic oils, purple-red coloration, and insect resistance distinct from pine's resinous structure and frequent knotting. Both serve in similar light-softwood roles.",
+      "Juniper: cedar and juniper share aromatic oils and red-purple coloration. Cedar shows straighter grain and broader case-furniture usage; juniper shows knot-heavy structure and predominantly rustic Southwestern usage.",
+      "Cypress: cedar and cypress overlap as moisture-resistant aromatic softwoods. Cedar shows distinct cedar aroma and purple-red streaking; cypress shows oily greasy feel and pale olive-yellow tone.",
+    ],
+    subspecies: [
+      {
+        id: "wood_subspecies_eastern_red_cedar",
+        name: "eastern red cedar",
+        description:
+          "The primary American cedar species used in furniture production, carrying the canonical traits of the Cedar Group.",
+        unique_traits: [
+          "Strong aroma",
+          "Purple-red heartwood",
+          "Excellent insect resistance",
+        ],
+        identifying_elements: [
+          "Red-violet streaking",
+          "Sharp aromatic scent",
+          "Pale sapwood contrast",
+        ],
+      },
+    ],
+  },
+  {
+    id: "wood_species_douglas_fir",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "douglas fir",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Douglas fir became highly important in Western furniture, Mission furniture, architectural furniture, and utility production. Especially common in western American production.",
+    unique_traits: [
+      "Exceptional structural strength",
+      "Straight grain",
+      "Orange-brown coloration",
+      "High dimensional stability",
+    ],
+    identifying_elements: [
+      "Strong linear grain",
+      "Orange cast",
+      "Heavy latewood bands",
+      "Dense structural feel",
+    ],
+    typical_structural_role: "either",
+    period_associations: [
+      { period_label: "Western furniture production", date_floor: 1880, date_ceiling: 1940 },
+      { period_label: "Mission and utility furniture", date_floor: 1900, date_ceiling: 1950 },
+      { period_label: "Architectural furniture", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "Pacific Northwest", notes: "Massive dominance." },
+      { region: "California", notes: "Arts & Crafts influence." },
+    ],
+    cousin_species_contrasts: [
+      "Southern yellow pine: Douglas fir and Southern yellow pine overlap as heavy, dense structural softwoods with strong latewood contrast. Douglas fir shows orange-brown coloration with straight linear grain and Pacific Northwest regional dominance; Southern yellow pine shows dramatic ring contrast with heavy resin and Southern regional dominance.",
+    ],
+  },
+  {
+    id: "wood_species_redwood",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "redwood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Redwood became associated primarily with California Arts & Crafts, outdoor furniture, and Western production traditions.",
+    unique_traits: [
+      "Decay resistance",
+      "Lightweight structure",
+      "Red coloration",
+      "Soft texture",
+    ],
+    identifying_elements: [
+      "Pink-red coloration",
+      "Straight grain",
+      "Soft denting surface",
+      "Lightweight feel",
+    ],
+    typical_structural_role: "either",
+    period_associations: [
+      { period_label: "California Arts & Crafts", date_floor: 1890, date_ceiling: 1930 },
+      { period_label: "Outdoor furniture", date_floor: 1900, date_ceiling: 1950 },
+      { period_label: "Rustic furniture", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "California", notes: "Strong regional identity." },
+      { region: "Pacific Coast", notes: "Outdoor usage." },
+    ],
+  },
+  {
+    id: "wood_species_cypress",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "cypress",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Cypress was valued for moisture resistance, Southern furniture production, and porch and outdoor furniture.",
+    unique_traits: [
+      "Rot resistance",
+      "Oily texture",
+      "Stable structure",
+      "Light yellow-brown coloration",
+    ],
+    identifying_elements: [
+      "Slightly greasy feel",
+      "Subtle grain",
+      "Pale olive-yellow tone",
+    ],
+    typical_structural_role: "either",
+    period_associations: [
+      { period_label: "Southern utility furniture", date_floor: 1800, date_ceiling: 1940 },
+      { period_label: "Outdoor furniture", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "Gulf South", notes: "Strong regional use." },
+    ],
+    cousin_species_contrasts: [
+      "Cedar: cypress and cedar overlap as moisture-resistant aromatic softwoods. Cypress shows oily greasy feel and pale olive-yellow tone; cedar shows distinct cedar aroma and purple-red streaking.",
+    ],
+  },
+  {
+    id: "wood_species_spruce",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "spruce",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Spruce appears more frequently in secondary structures, musical instruments, utility furniture, and Northern production.",
+    unique_traits: [
+      "Lightweight",
+      "Elastic structure",
+      "Pale coloration",
+      "Fine straight grain",
+    ],
+    identifying_elements: [
+      "Cream-white coloration",
+      "Uniform grain",
+      "Soft denting",
+      "Minimal resin pockets",
+    ],
+    typical_structural_role: "primary_secondary",
+    period_associations: [
+      { period_label: "Utility construction", date_floor: 1800, date_ceiling: 1900 },
+      { period_label: "Interior structural use", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "Northern United States", notes: "Structural secondary wood." },
+    ],
+    cousin_species_contrasts: [
+      "Hemlock: spruce and hemlock overlap as light structural secondary softwoods. Spruce shows lightweight elastic structure, cream-white coloration, and minimal resin pockets; hemlock shows brittle splintering behavior, coarse grain, and gray-brown oxidation.",
+    ],
+  },
+  {
+    id: "wood_species_hemlock",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "hemlock",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Hemlock was frequently used as secondary structural wood, utility framing, and rural furniture wood. Often confused with pine.",
+    unique_traits: [
+      "Brittle structure",
+      "Splintering behavior",
+      "Coarse grain",
+      "Lower resin content than pine",
+    ],
+    identifying_elements: [
+      "Gray-brown oxidation",
+      "Coarse splintering",
+      "Uneven grain contrast",
+      "Lightweight structure",
+    ],
+    typical_structural_role: "primary_secondary",
+    period_associations: [
+      { period_label: "Rural construction", date_floor: 1800, date_ceiling: 1900 },
+      { period_label: "Utility furniture", date_floor: 1880, date_ceiling: 1940 },
+    ],
+    regional_patterns: [
+      { region: "Northeast", notes: "Common structural usage." },
+    ],
+    cousin_species_contrasts: [
+      "Pine: hemlock is often confused with pine but shows brittle splintering behavior, coarser grain, and lower resin content than pine. Hemlock oxidizes to gray-brown rather than pine's amber tone.",
+      "Spruce: hemlock and spruce overlap as light structural secondary softwoods. Hemlock shows coarse splintering, gray-brown oxidation, and uneven grain contrast; spruce shows fine straight grain, cream-white coloration, and elastic structure.",
+    ],
+  },
+  {
+    id: "wood_species_juniper_cedar_like_softwoods",
+    category: "wood_species",
+    wood_category_id: "wood_category_softwoods_conifers",
+    name: "juniper",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Juniper species occasionally appear in Southwestern furniture, rustic furniture, and cedar-like storage furniture.",
+    unique_traits: [
+      "Aromatic oils",
+      "Knot-heavy structure",
+      "Color variation",
+    ],
+    identifying_elements: [
+      "Strong scent",
+      "Purple-red streaking",
+      "Tight knot clusters",
+    ],
+    typical_structural_role: "either",
+    period_associations: [],
+    regional_patterns: [
+      { region: "Southwest", notes: "Rustic furniture traditions." },
+    ],
+    cousin_species_contrasts: [
+      "Cedar: juniper and cedar share aromatic oils and red-purple coloration. Juniper shows knot-heavy structure and predominantly rustic Southwestern usage; cedar shows straighter grain and broader case-furniture usage.",
+    ],
+  },
+  {
+    id: "wood_species_rosewood_group",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "rosewood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Rosewood became one of the defining luxury woods of Rococo Revival, Victorian furniture, piano production, fine veneers, Art Deco, and Mid-Century imports. Rosewood was prized for deep coloration, dramatic figure, rich polish, and fragrance when cut.",
+    unique_traits: [
+      "Dark streaking",
+      "Purple-red-brown coloration",
+      "Dense oily structure",
+      "Exceptional polish response",
+      "Strong contrast grain",
+    ],
+    identifying_elements: [
+      "Black streaking",
+      "Dramatic ribbon figure",
+      "Dense reflective finish",
+      "Heavy weight",
+      "Oily texture",
+    ],
+    typical_structural_role: "primary_show",
+    period_associations: [
+      { period_label: "Victorian luxury dominance", date_floor: 1840, date_ceiling: 1885 },
+      { period_label: "Art Deco veneers", date_floor: 1925, date_ceiling: 1945 },
+      { period_label: "Scandinavian and MCM imports", date_floor: 1950, date_ceiling: 1970 },
+    ],
+    regional_patterns: [
+      { region: "New York", notes: "Luxury cabinetmaking." },
+      { region: "Grand Rapids", notes: "Victorian veneer work." },
+      { region: "European imports", notes: "Piano and luxury cabinetry." },
+    ],
+    cousin_species_contrasts: [
+      "Palisander: rosewood and palisander are often used interchangeably commercially. Rosewood shows purple-red-brown coloration with deep streaking and dramatic ribbon figure; palisander shows brown-black striping with fine oily texture.",
+      "Kingwood: rosewood and kingwood overlap as luxury veneer banding woods with dark streaking. Rosewood shows purple-red-brown coloration with dramatic ribbon figure; kingwood shows purple-brown coloration with fine black streaking and violet undertones.",
+    ],
+    subspecies: [
+      {
+        id: "wood_subspecies_brazilian_rosewood",
+        name: "brazilian rosewood",
+        description:
+          "The premier rosewood species used in luxury furniture production, carrying the canonical traits of the Rosewood Group.",
+        unique_traits: [
+          "Extremely dense",
+          "Purple-black streaking",
+          "High luxury status",
+        ],
+        identifying_elements: [
+          "Spider-web grain",
+          "Dark dramatic contrast",
+          "Rich reflective finish",
+        ],
+      },
+    ],
+  },
+  {
+    id: "wood_species_ebony_group",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "ebony",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Ebony historically represented one of the most elite decorative woods in furniture production. Often used for inlay, trim, piano keys, stringing, decorative contrast, and fine cabinet details. Solid ebony furniture is relatively rare because of cost and density.",
+    unique_traits: [
+      "Extremely dense",
+      "Near-black coloration",
+      "Glass-like polish",
+      "Minimal visible grain",
+    ],
+    identifying_elements: [
+      "Heavy weight",
+      "Smooth reflective surface",
+      "Black coloration",
+      "Extremely fine texture",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Federal inlay", date_floor: 1700, date_ceiling: 1820 },
+      { period_label: "Victorian decorative accents", date_floor: 1840, date_ceiling: 1900 },
+      { period_label: "Art Deco contrast work", date_floor: 1925, date_ceiling: 1945 },
+    ],
+    regional_patterns: [
+      { region: "Urban luxury cabinetmaking centers", notes: "Philadelphia, New York, Boston." },
+    ],
+    cousin_species_contrasts: [
+      "Purpleheart: ebony and purpleheart overlap as decorative inlay accent woods of extreme density. Ebony shows near-black coloration with glass-like polish and minimal visible grain; purpleheart shows violet-purple oxidation and fine smooth surface.",
+    ],
+  },
+  {
+    id: "wood_species_satinwood_group",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "satinwood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Satinwood became strongly associated with Federal furniture, Sheraton, Hepplewhite, and fine inlay traditions.",
+    unique_traits: [
+      "Golden coloration",
+      "Reflective shimmer",
+      "Fine texture",
+      "Decorative brilliance",
+    ],
+    identifying_elements: [
+      "Bright golden tone",
+      "Silky reflection",
+      "Fine diffuse grain",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Federal peak", date_floor: 1780, date_ceiling: 1820 },
+      { period_label: "Revival furniture", date_floor: 1880, date_ceiling: 1910 },
+    ],
+    regional_patterns: [
+      { region: "Federal urban centers", notes: "Philadelphia, Baltimore, Salem." },
+    ],
+    cousin_species_contrasts: [
+      "Tulipwood: satinwood and tulipwood overlap as Federal inlay woods with light decorative tone. Satinwood shows bright golden coloration with silky reflection; tulipwood shows pink-yellow coloration with fine pink striping and satin sheen.",
+    ],
+  },
+  {
+    id: "wood_species_zebrawood",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "zebrawood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Zebrawood became associated primarily with Art Deco, modernist luxury furniture, and high-contrast veneers.",
+    unique_traits: [
+      "Dramatic stripe pattern",
+      "High visual contrast",
+      "Coarse texture",
+    ],
+    identifying_elements: [
+      "Dark stripe bands",
+      "Pale gold background",
+      "Strong linear contrast",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Art Deco", date_floor: 1925, date_ceiling: 1945 },
+      { period_label: "Contemporary luxury", date_floor: 1970 },
+    ],
+    regional_patterns: [
+      { region: "Urban luxury production", notes: "Art Deco furniture centers." },
+    ],
+  },
+  {
+    id: "wood_species_teak",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "teak",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Teak became one of the defining woods of Scandinavian Modern, Danish Modern, MCM imports, and high-end outdoor furniture.",
+    unique_traits: [
+      "High oil content",
+      "Exceptional stability",
+      "Golden-brown coloration",
+      "Weather resistance",
+    ],
+    identifying_elements: [
+      "Oily feel",
+      "Straight grain",
+      "Golden oxidation",
+      "Dense smooth texture",
+    ],
+    typical_structural_role: "primary_show",
+    period_associations: [
+      { period_label: "Danish/MCM peak", date_floor: 1950, date_ceiling: 1975 },
+      { period_label: "Outdoor luxury furniture", date_floor: 1960 },
+    ],
+    regional_patterns: [
+      { region: "Scandinavian imports", notes: "Danish Modern dominance." },
+      { region: "West Coast modernism", notes: "Teak popularity." },
+    ],
+    cousin_species_contrasts: [
+      "Mahogany: teak and mahogany overlap as luxury diffuse-porous hardwoods used in fine furniture. Teak shows higher oil content, golden-brown coloration, exceptional weather resistance, and Scandinavian/Danish Modern association; mahogany shows red-brown coloration with characteristic ribbon stripe figure and high-style cabinetmaking tradition.",
+    ],
+  },
+  {
+    id: "wood_species_tulipwood",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "tulipwood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Tulipwood appears primarily in Federal inlay, luxury veneer work, and decorative banding.",
+    unique_traits: [
+      "Pink-yellow coloration",
+      "Fine grain",
+      "Decorative contrast",
+    ],
+    identifying_elements: [
+      "Pink striping",
+      "Satin sheen",
+      "Fine texture",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Federal inlay", date_floor: 1780, date_ceiling: 1820 },
+      { period_label: "Revival inlay work", date_floor: 1880, date_ceiling: 1910 },
+    ],
+    cousin_species_contrasts: [
+      "Satinwood: tulipwood and satinwood overlap as Federal inlay woods. Tulipwood shows pink-yellow coloration with fine pink striping; satinwood shows bright golden tone with silky reflection.",
+    ],
+  },
+  {
+    id: "wood_species_kingwood",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "kingwood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Kingwood became associated with French influence, luxury veneer work, and decorative banding.",
+    unique_traits: [
+      "Purple-brown coloration",
+      "Fine black streaking",
+      "Dense polish",
+    ],
+    identifying_elements: [
+      "Violet undertones",
+      "Fine striping",
+      "High reflectivity",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Luxury cabinetry", date_floor: 1750, date_ceiling: 1820 },
+      { period_label: "Revival work", date_floor: 1880, date_ceiling: 1910 },
+    ],
+    cousin_species_contrasts: [
+      "Rosewood: kingwood and rosewood overlap as luxury veneer banding woods with dark streaking. Kingwood shows purple-brown coloration with fine black streaking and violet undertones; rosewood shows purple-red-brown coloration with dramatic ribbon figure.",
+    ],
+  },
+  {
+    id: "wood_species_padauk",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "padauk",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Padauk appears primarily in decorative accents, modernist furniture, and exotic veneer work.",
+    unique_traits: [
+      "Bright red-orange coloration",
+      "Open grain",
+      "Dramatic oxidation shift",
+    ],
+    identifying_elements: [
+      "Intense orange-red tone",
+      "Coarse pores",
+      "Rapid browning with age",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Decorative exotic usage", date_floor: 1900 },
+      { period_label: "MCM accent work", date_floor: 1950, date_ceiling: 1975 },
+    ],
+  },
+  {
+    id: "wood_species_palisander",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "palisander",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Palisander is strongly associated with Scandinavian Modern, Danish Modern, and luxury MCM imports. Often used interchangeably with certain rosewoods commercially.",
+    unique_traits: [
+      "Dark streaking",
+      "Ribbon figure",
+      "Dense reflective surface",
+    ],
+    identifying_elements: [
+      "Brown-black striping",
+      "Fine oily texture",
+      "Dramatic veneer movement",
+    ],
+    typical_structural_role: "primary_show",
+    period_associations: [
+      { period_label: "Scandinavian Modern peak", date_floor: 1950, date_ceiling: 1975 },
+    ],
+    cousin_species_contrasts: [
+      "Rosewood: palisander is often used interchangeably with certain rosewoods commercially. Palisander shows brown-black striping and fine oily texture; rosewood shows purple-red-brown coloration with deep streaking and dramatic ribbon figure.",
+    ],
+  },
+  {
+    id: "wood_species_purpleheart",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "purpleheart",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Purpleheart was used primarily for decorative contrast, exotic accent work, and contemporary studio furniture.",
+    unique_traits: [
+      "Purple coloration",
+      "Extreme density",
+      "Fine grain",
+    ],
+    identifying_elements: [
+      "Violet-purple oxidation",
+      "Dense structure",
+      "Fine smooth surface",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Decorative exotic usage", date_floor: 1900 },
+      { period_label: "Studio furniture", date_floor: 1970 },
+    ],
+    cousin_species_contrasts: [
+      "Ebony: purpleheart and ebony overlap as decorative inlay accent woods of extreme density. Purpleheart shows violet-purple oxidation and fine smooth surface; ebony shows near-black coloration with glass-like polish and minimal visible grain.",
+    ],
+  },
+  {
+    id: "wood_species_olivewood",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "olivewood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Olivewood appears primarily in decorative veneer work, Mediterranean-inspired furniture, and luxury accessories.",
+    unique_traits: [
+      "Dramatic swirling figure",
+      "Yellow-brown coloration",
+      "Dense oily structure",
+    ],
+    identifying_elements: [
+      "Chaotic brown veining",
+      "Golden coloration",
+      "Marble-like appearance",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Decorative luxury work", date_floor: 1800 },
+    ],
+  },
+  {
+    id: "wood_species_basswood",
+    category: "wood_species",
+    wood_category_id: "wood_category_diffuse_porous_hardwoods",
+    name: "basswood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Basswood was heavily used for carving substrates, secondary structural components, drawer parts, painted furniture, and low-cost furniture production. Especially valued because of its softness and carving ease.",
+    unique_traits: [
+      "Extremely soft texture",
+      "Fine grain",
+      "Lightweight structure",
+      "Minimal figure",
+      "Excellent carving response",
+    ],
+    identifying_elements: [
+      "Pale cream coloration",
+      "Almost featureless grain",
+      "Very soft denting",
+      "Lightweight feel",
+    ],
+    typical_structural_role: "primary_secondary",
+    period_associations: [
+      { period_label: "Carved furniture support", date_floor: 1800, date_ceiling: 1900 },
+      { period_label: "Utility furniture", date_floor: 1850, date_ceiling: 1940 },
+      { period_label: "Painted furniture", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "Midwest", notes: "Factory carving support." },
+      { region: "New England", notes: "Painted furniture usage." },
+    ],
+    cousin_species_contrasts: [
+      "Aspen: basswood and aspen overlap as pale secondary woods. Basswood shows extremely soft texture with carving suitability and almost featureless grain; aspen shows pale white-gray tone with diffuse subtle grain and soft machining behavior.",
+      "Cottonwood: basswood and cottonwood overlap as pale low-cost secondary woods. Basswood shows fine grain and excellent carving response with cream coloration; cottonwood shows woolly/fuzzy cut surface, broad diffuse grain, and lower durability.",
+    ],
+  },
+  {
+    id: "wood_species_aspen",
+    category: "wood_species",
+    wood_category_id: "wood_category_diffuse_porous_hardwoods",
+    name: "aspen",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Aspen appears primarily in utility furniture, secondary components, drawer parts, and modern factory production.",
+    unique_traits: [
+      "Lightweight",
+      "Stable",
+      "Soft texture",
+      "Minimal grain prominence",
+    ],
+    identifying_elements: [
+      "Pale white-gray tone",
+      "Diffuse subtle grain",
+      "Soft machining behavior",
+    ],
+    typical_structural_role: "primary_secondary",
+    period_associations: [
+      { period_label: "Factory utility usage", date_floor: 1900 },
+    ],
+    regional_patterns: [
+      { region: "Northern United States", notes: "Factory furniture production." },
+    ],
+    cousin_species_contrasts: [
+      "Basswood: aspen and basswood overlap as pale secondary woods. Aspen shows pale white-gray tone with diffuse subtle grain; basswood shows extremely soft texture with carving suitability and almost featureless grain.",
+      "Cottonwood: aspen and cottonwood overlap as pale utility woods used in secondary components. Aspen shows stable lightweight structure with diffuse subtle grain; cottonwood shows woolly/fuzzy cut surface with broad diffuse grain and lower durability.",
+    ],
+  },
+  {
+    id: "wood_species_cottonwood",
+    category: "wood_species",
+    wood_category_id: "wood_category_diffuse_porous_hardwoods",
+    name: "cottonwood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Cottonwood was commonly used in rural furniture, utility furniture, and hidden secondary construction. Especially where local availability mattered more than durability.",
+    unique_traits: [
+      "Lightweight",
+      "Soft structure",
+      "Fuzzy grain response",
+      "Low durability",
+    ],
+    identifying_elements: [
+      "Woolly/fuzzy cut surface",
+      "Pale coloration",
+      "Broad diffuse grain",
+    ],
+    typical_structural_role: "primary_secondary",
+    period_associations: [
+      { period_label: "Rural utility production", date_floor: 1800, date_ceiling: 1930 },
+    ],
+    regional_patterns: [
+      { region: "Great Plains", notes: "Local utility wood." },
+      { region: "Western regions", notes: "Vernacular usage." },
+    ],
+    cousin_species_contrasts: [
+      "Basswood: cottonwood and basswood overlap as pale low-cost secondary woods. Cottonwood shows woolly/fuzzy cut surface and broad diffuse grain; basswood shows fine grain and excellent carving response.",
+      "Aspen: cottonwood and aspen overlap as pale utility woods used in secondary components. Cottonwood shows woolly/fuzzy cut surface with lower durability; aspen shows stable lightweight structure with soft machining behavior.",
+    ],
+  },
+  {
+    id: "wood_species_lauan_philippine_mahogany",
+    category: "wood_species",
+    wood_category_id: "wood_category_tropical_hardwoods_imported_exotics",
+    name: "lauan",
+    common_aliases: ["philippine mahogany"],
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    description:
+      "Lauan became heavily associated with mid-century production, cheap veneer furniture, imported case goods, and postwar furniture. Frequently marketed misleadingly as \"mahogany.\"",
+    unique_traits: [
+      "Lightweight",
+      "Soft tropical structure",
+      "Broad grain",
+      "Thin veneer compatibility",
+    ],
+    identifying_elements: [
+      "Pink-brown coloration",
+      "Bland figure",
+      "Open pores",
+      "Soft denting",
+    ],
+    typical_structural_role: "veneer_only",
+    period_associations: [
+      { period_label: "Budget furniture dominance", date_floor: 1945, date_ceiling: 1980 },
+    ],
+    regional_patterns: [
+      { region: "Imported furniture markets", notes: "Massive postwar usage." },
+    ],
+    cousin_species_contrasts: [
+      "Mahogany: lauan was frequently marketed misleadingly as \"mahogany\" especially in postwar budget furniture. Lauan shows lightweight soft tropical structure, pink-brown coloration, bland figure, and open pores; mahogany shows dense red-brown coloration with characteristic ribbon stripe figure and high-style cabinetmaking tradition.",
+    ],
+  },
 ];
 export const ENGINEERED_SUBSTRATES: EngineeredSubstrateEntry[] = [];
 export const CUT_GRAIN_PHENOMENA: CutGrainPhenomenonEntry[] = [];
