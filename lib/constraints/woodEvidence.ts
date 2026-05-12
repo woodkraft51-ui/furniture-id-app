@@ -842,6 +842,20 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     usage_role_notes: "Elite furniture as primary show wood; veneer-dependent Federal and Empire periods.",
     typical_secondary_pairings: ["wood_species_pine_group"],
     style_wave_associations: ["queen_anne", "chippendale", "federal_hepplewhite_sheraton", "american_empire", "rococo_revival", "colonial_revival"],
+    anti_classification_guidance: [
+      {
+        boundary_date: 1992,
+        boundary_type: "form_extinction",
+        guidance_text: "Swietenia mahagoni (Cuban/American Mahogany) listed on CITES Appendix II effective 1992 (CoP8 Kyoto), regulating commercial international trade. Combined with the Cuban mahogany resource depletion that effectively ended bulk commercial production decades earlier (per the entry's own diagnostic_caution_text: Cuban dominance window 1720's-1810's), new Swietenia mahagoni in post-1992 manufacture is highly improbable. Cuban mahogany identification in post-1992 furniture more typically indicates pre-Convention reuse, reclaimed wood, or misattribution from Honduran mahogany. Per CITES treaty record; regulatory record source, not File A/B sourced.",
+        prominence: "standard",
+      },
+      {
+        boundary_date: 2003,
+        boundary_type: "form_extinction",
+        guidance_text: "Swietenia macrophylla (Honduran/big-leaf mahogany) listed on CITES Appendix III by Costa Rica in 1995; elevated to CITES Appendix II in 2003 (CoP12 Santiago), regulating commercial international trade. Pre-2003 Honduran mahogany furniture predates Appendix II regulation; post-2003 production requires CITES documentation but remains tradeable unlike Appendix I species. Per CITES treaty record; regulatory record source, not File A/B sourced.",
+        prominence: "standard",
+      },
+    ],
     position_on_piece: [
       {
         physical_location: "case_back",
@@ -869,7 +883,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
         position_context_evidence: ["Federal sideboard pine secondary (File A Section 6)"],
       },
     ],
-    diagnostic_caution_text: "Mahogany is strongest as a diagnostic clue in elite coastal cabinetmaking, Empire veneer work, and later revival furniture; it should not be treated as a simple date marker by itself. Subspecies-level CITES content for Cuban Mahogany (Swietenia mahagoni) routes to Block 23b per D-WS19-11/D-WE23a-10.",
+    diagnostic_caution_text: "Mahogany is strongest as a diagnostic clue in elite coastal cabinetmaking, Empire veneer work, and later revival furniture; it should not be treated as a simple date marker by itself. Cuban Mahogany had a dominant use period from 1720's-1810's. Production later shifted to Honduran Mahogany whose dominant production period existed from the 1700's-c.1900. CITES content for both Swietenia mahagoni (Cuban) and Swietenia macrophylla (Honduran) populates this entry's anti_classification_guidance field. Subspecies-level evidence entries deferred from Block 23a D-WE23a-10 resolved via fold-up per Block 23b Q2 ratification: subspecies-distinguishing source content insufficient in File A and File B to warrant standalone subspecies entries; subspecies-level content lives on this parent group entry.",
   },
   {
     id: "wood_species_evidence_birch_group",
@@ -1193,7 +1207,13 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     usage_role: ["veneer", "decorative_accent"],
     usage_role_notes: "Luxury veneers and accents; usually a veneer or accent rather than structural wood.",
     style_wave_associations: ["american_empire", "rococo_revival", "art_deco", "mid_century_modern"],
-    diagnostic_caution_text: "Usually a veneer or accent rather than structural wood; commercial 'rosewood' names can cover several species, including palisander-type trade usage per File A Section 2 Rosewood. Palisander (Dalbergia spp. trade overlap with rosewood) is conceptually identification-only — its evidence content folds into the rosewood_group framing per D-WE23a-9; no standalone palisander SPECIES_EVIDENCE entry exists. Subspecies-level CITES content for Brazilian Rosewood (Dalbergia nigra; CITES Appendix I 1992) routes to Block 23b per D-WS19-11/D-WE23a-10.",
+    anti_classification_guidance: {
+      boundary_date: 1992,
+      boundary_type: "form_extinction",
+      guidance_text: "Dalbergia nigra (Brazilian Rosewood) listed on CITES Appendix I effective 1992 (CoP8 Kyoto), prohibiting commercial international trade in wild-sourced specimens. Pre-1992 Brazilian rosewood furniture and pre-1992 stockpiled Brazilian rosewood veneer remain plausible in production through the immediate post-1992 period (depleting through the late 20th century); new Brazilian rosewood appearing in post-1992 manufacture is highly improbable absent pre-Convention documentation. The remaining Dalbergia genus (~250 species) was subsequently listed on Appendix II effective 2017 (CoP17 Johannesburg), regulating commercial trade in other rosewoods but not generally prohibiting it. Per CITES treaty record; regulatory record source, not File A/B sourced.",
+      prominence: "standard",
+    },
+    diagnostic_caution_text: "Usually a veneer or accent rather than structural wood; commercial 'rosewood' names can cover several species, including palisander-type trade usage per File A Section 2 Rosewood. Palisander (Dalbergia spp. trade overlap with rosewood) is conceptually identification-only — its evidence content folds into the rosewood_group framing per D-WE23a-9; no standalone palisander SPECIES_EVIDENCE entry exists. CITES content for Dalbergia nigra (Brazilian Rosewood) and related rosewood-genus trade restrictions populates this entry's anti_classification_guidance field. Subspecies-level Brazilian Rosewood evidence entry deferred from Block 23a D-WE23a-10 resolved via fold-up per Block 23b Q2 ratification: subspecies-distinguishing source content insufficient in File A and File B to warrant a standalone subspecies entry; subspecies-level content lives on this parent group entry.",
   },
   {
     id: "wood_species_evidence_ebony_group",
@@ -1215,7 +1235,13 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     usage_role: "decorative_accent",
     usage_role_notes: "Decorative contrast, trim, inlay, turned accents.",
     style_wave_associations: ["eastlake_aesthetic", "art_deco"],
-    diagnostic_caution_text: "True ebony is rare and costly; many 'ebony' appearances are ebonized domestic woods or stained finishes. Diagnostic authentication critical; CITES-related anti-classification content for ebony species routes to Block 23b per D-WS19-11/D-WE23a-10.",
+    anti_classification_guidance: {
+      boundary_date: 2013,
+      boundary_type: "form_extinction",
+      guidance_text: "Madagascar Diospyros species (approximately 85 species, including most commercially-significant Madagascar ebony) listed on CITES Appendix II effective 2013 (CoP16 Bangkok), regulating commercial international trade. Other Diospyros species globally (Indian, African mainland, Macassar) have varying CITES status; no Diospyros species on Appendix I as of 2026. The 2013 boundary post-dates the canonical ebony furniture window (1700-1945 per this entry's period_associations) by approximately 70 years; ebony in pre-2013 furniture predates all CITES restrictions on Diospyros and the boundary is diagnostically weak for furniture-identification purposes. Per CITES treaty record; regulatory record source, not File A/B sourced.",
+      prominence: "standard",
+    },
+    diagnostic_caution_text: "True ebony is rare and costly; many 'ebony' appearances are ebonized domestic woods or stained finishes. Diagnostic authentication critical; CITES content for Diospyros (ebony) species — primarily the 2013 Madagascar Diospyros listing on CITES Appendix II — populates this entry's anti_classification_guidance field. Ebony has no subspecies entries in this codebase per Block 19 D-WS19 decisions; CITES content lives at the group level.",
   },
   {
     id: "wood_species_evidence_satinwood_group",
@@ -1289,7 +1315,119 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
  * Per-substrate evidence entries. Canonical source: File A primary substrate
  * rows + File B residual substrate content. Authored in Block 23.
  */
-export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [];
+export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
+  {
+    id: "substrate_evidence_plywood",
+    category: "substrate_evidence",
+    substrate_id: "engineered_substrate_plywood",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    adoption_curve: {
+      earliest_plausible_year: 1905,
+      widespread_adoption_year: 1930,
+      dominance_year: 1950,
+      confidence_notes: "Per File A Section 2 Plywood row adoption windows.",
+    },
+    period_associations: [
+      { period_label: "Early plywood adoption", date_floor: 1905, date_ceiling: 1930,
+        usage_notes: "Per File A Section 2 Plywood row: '1905–1930 early adoption'. Limited plywood in this window typical of pioneer factory production." },
+      { period_label: "Growing factory plywood use", date_floor: 1930, date_ceiling: 1950,
+        usage_notes: "Per File A Section 2 Plywood row: '1930–1950 growing factory use'." },
+      { period_label: "Plywood substrate dominance", date_floor: 1950, date_ceiling: 2026,
+        usage_notes: "Per File A Section 2 Plywood row: '1950–present dominant substrate'. Extensive plywood carcass is a postwar production signal." },
+    ],
+    usage_role: ["carcass_panel", "veneer_substrate", "drawer_bottoms", "case_back"],
+    usage_role_notes: "Per File A Section 2 Plywood row usage column: 'Panels, carcasses, veneer substrate, drawer bottoms, backs'. Block 23b D-WE23b-N closest-fallback enum mapping: Panels + Carcasses → carcass_panel; Veneer substrate → veneer_substrate; Drawer bottoms → drawer_bottoms; Backs → case_back.",
+    diagnostic_caution_text: "Limited plywood suggests early 20th century or later; extensive plywood carcass usually postwar. Per File A Section 2 Plywood row diagnostic notes.",
+  },
+  {
+    id: "substrate_evidence_hardboard_masonite",
+    category: "substrate_evidence",
+    substrate_id: "engineered_substrate_hardboard_masonite",
+    positive_authority: 6,
+    hard_negative_authority: 6,
+    adoption_curve: {
+      earliest_plausible_year: 1930,
+      widespread_adoption_year: 1945,
+      confidence_notes: "Per File A Section 2 Hardboard/Masonite row adoption window 1930-present. Widespread_adoption_year 1945 estimated as the mid-century onset point implied by File A 'common in mid-century and later production'.",
+    },
+    period_associations: [
+      { period_label: "Hardboard/Masonite emergence", date_floor: 1930, date_ceiling: 1945,
+        usage_notes: "Per File A Section 2 Hardboard/Masonite row: '1930–present' adoption window onset." },
+      { period_label: "Mid-century and later hardboard production", date_floor: 1945, date_ceiling: 2026,
+        usage_notes: "Per File A Section 2 Hardboard/Masonite row: 'common in mid-century and later production'." },
+    ],
+    usage_role: ["case_back", "drawer_bottoms", "carcass_panel"],
+    usage_role_notes: "Per File A Section 2 Hardboard/Masonite row usage column: 'Backs, drawer bottoms, utility panels'. Block 23b D-WE23b-N closest-fallback enum mapping: Backs → case_back; Drawer bottoms → drawer_bottoms; Utility panels → carcass_panel.",
+    diagnostic_caution_text: "Thin compressed fiber sheet; common on backs and bottoms. Per File A Section 2 Hardboard/Masonite row diagnostic notes.",
+  },
+  {
+    id: "substrate_evidence_particleboard",
+    category: "substrate_evidence",
+    substrate_id: "engineered_substrate_particleboard",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    adoption_curve: {
+      earliest_plausible_year: 1950,
+      widespread_adoption_year: 1965,
+      dominance_year: 1980,
+      confidence_notes: "Per File A Section 2 Particleboard row. Earliest_plausible_year 1950 verbatim from File A; widespread_adoption_year 1965 and dominance_year 1980 estimated from File A's 'dominant in late 20th-century' framing without precise dates.",
+    },
+    period_associations: [
+      { period_label: "Particleboard emergence", date_floor: 1950, date_ceiling: 1965,
+        usage_notes: "Per File A Section 2 Particleboard row: '1950–present' adoption window onset." },
+      { period_label: "Late 20th-century mass-market dominance", date_floor: 1965, date_ceiling: 2026,
+        usage_notes: "Per File A Section 2 Particleboard row: 'Dominant in late 20th-century mass-market furniture'." },
+    ],
+    usage_role: ["veneer_substrate", "specialized_use"],
+    usage_role_notes: "Per File A Section 2 Particleboard row usage column: 'Veneered case goods, mass-market furniture'. Block 23b D-WE23b-N closest-fallback enum mapping: Veneered case goods → veneer_substrate; Mass-market furniture → specialized_use.",
+    // diagnostic_caution_text OMITTED per Block 23b D-WE23b-8: File A Section 2 Particleboard row "Notes / Diagnostic Caution" column reads "Thin compressed fiber sheet; common on backs and bottoms" — identical to adjacent Hardboard/Masonite row and semantically inconsistent with Particleboard usage column + material reality (particleboard is not fiber-based). Source-document copy-paste artifact not propagated.
+  },
+  {
+    id: "substrate_evidence_mdf",
+    category: "substrate_evidence",
+    substrate_id: "engineered_substrate_mdf",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    adoption_curve: {
+      earliest_plausible_year: 1970,
+      widespread_adoption_year: 1985,
+      confidence_notes: "Per File A Section 2 MDF row. Earliest_plausible_year 1970 verbatim; widespread_adoption_year 1985 estimated from File A's 'common in modern and contemporary production' framing.",
+    },
+    period_associations: [
+      { period_label: "MDF adoption", date_floor: 1970, date_ceiling: 1985,
+        usage_notes: "Per File A Section 2 MDF row: '1970–present' adoption window onset." },
+      { period_label: "Modern and contemporary MDF production", date_floor: 1985, date_ceiling: 2026,
+        usage_notes: "Per File A Section 2 MDF row: 'Common in modern and contemporary production'." },
+    ],
+    usage_role: "specialized_use",
+    usage_role_notes: "Per File A Section 2 MDF row usage column: 'Painted furniture, contemporary cabinetry, routed profiles'. MDF's homogeneous structure enables routed-profile work distinct from grain-bearing substrates. Block 23b D-WE23b-N closest-fallback enum mapping: all three File A usage prose terms (Painted furniture, Contemporary cabinetry, Routed profiles) → specialized_use (single value; no closer enum hit).",
+    diagnostic_caution_text: "Homogeneous tan/brown core, powdery routed edges, no grain. Per File A Section 2 MDF row diagnostic notes. Late-20th-century signal per File A 'Key Chronological Wood Signals' table: 'MDF core | Late 20th century+'.",
+  },
+  {
+    id: "substrate_evidence_composite_veneer_cores",
+    category: "substrate_evidence",
+    substrate_id: "engineered_substrate_composite_veneer_cores",
+    positive_authority: 6,
+    hard_negative_authority: 6,
+    adoption_curve: {
+      earliest_plausible_year: 1925,
+      widespread_adoption_year: 1945,
+      confidence_notes: "Per File A 1925-1945 Art Deco section ('Construction shifts: Plywood adoption increases; Veneer over composite substrates') + 1945-1975 Mid-Century Modern section ('Manufacturing shift: Engineered cores dominate; Thin veneers become normal; Solid hardwood less common structurally'). File A has no primary-table row for composite_veneer_cores; this entry encodes the substrate-in-veneer-carrier-role adoption from era-narrative passages. Veneer thickness remains an independent observation per Block 21 D-CG21-5 architectural lock.",
+    },
+    period_associations: [
+      { period_label: "Deco-era composite-core veneering emergence", date_floor: 1925, date_ceiling: 1945,
+        usage_notes: "Per File A 1925-1945 Art Deco section construction shifts: 'Veneer over composite substrates'." },
+      { period_label: "Mid-Century Modern engineered-core dominance", date_floor: 1945, date_ceiling: 1975,
+        usage_notes: "Per File A 1945-1975 MCM manufacturing shift: 'Engineered cores dominate; Thin veneers become normal; Solid hardwood less common structurally'." },
+      { period_label: "Contemporary composite veneer cores", date_floor: 1975, date_ceiling: 2026,
+        usage_notes: "Per File A 1970-Present Contemporary section primary materials list ('MDF, Particleboard, Plywood, Laminates') + 'Key shift: Structural hardwood increasingly replaced by engineered substrates'." },
+    ],
+    usage_role: "veneer_substrate",
+    usage_role_notes: "Composite veneer cores function as substrate-in-veneer-carrier-role: engineered-core base (typically particleboard or MDF beneath; sometimes plywood) carrying a thin veneer face. Per File A 1925-1945 Art Deco and 1945-1975 MCM era narratives. The role-level framing is the structurally distinct evidence encoded here; the four veneer-slicing CUT_GRAIN_PHENOMENA entries (rotary_cut, plain_sliced, bookmatching, slip_matching at woodIdentification.ts:3074, 3120, ~3220, ~3250) carry their own period_associations and reference this substrate via applicable_substrates. Block 23b D-WE23b-N closest-fallback enum mapping: substrate-in-veneer-carrier-role → veneer_substrate.",
+    diagnostic_caution_text: "Veneer thickness on this substrate-in-veneer-carrier-role is an INDEPENDENT OBSERVATION per Block 21 D-CG21-5 architectural lock. The substrate-role evidence encoded here (adoption of engineered cores as veneer carriers, 1925-2026) and veneer thickness evidence (separately observed in field appraisal: hand-sawn-thick, machine-cut-medium, rotary-thin) are independent axes that converge at Phase 3 engine integration time, not at this stored entry's level. Per File A 'Key Chronological Wood Signals' table: 'Thin walnut veneer over plywood | MCM'.",
+  },
+];
 
 /**
  * Cut/grain composed evidence entries. Canonical source: File A Key
