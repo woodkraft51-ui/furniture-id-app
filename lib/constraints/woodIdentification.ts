@@ -416,6 +416,39 @@ export interface EngineeredSubstrateEntry extends CanonicalEntry {
    * engine-filter logic; this field carries the narrative guidance.
    */
   anti_classification_guidance?: AntiClassificationGuidance | AntiClassificationGuidance[];
+
+  /**
+   * Optional period associations sourced from File B "Common Time Periods"
+   * tables for substrates. Reuses the PeriodAssociation interface from
+   * Block 18 D-WS0b. Substrate period_associations are diagnostically
+   * distinct from introduction_anchor: introduction_anchor captures the
+   * substrate's chronological floor; period_associations capture the
+   * substrate's per-era usage curve (early adoption, growing factory use,
+   * dominance) when File B authors multiple period rows. Added in Block 20
+   * D-ES20-10.
+   */
+  period_associations?: PeriodAssociation[];
+
+  /**
+   * Optional regional patterns sourced from File B "Regional Patterns"
+   * sections for substrates. Reuses the RegionalPattern interface from
+   * Block 18 D-WS0c. Substrate regional content is typically minimal
+   * (industrial production rather than regional craft traditions); most
+   * substrate entries carry exactly one RegionalPattern reflecting File B's
+   * "National factory production" / "Industrialized furniture production"
+   * framing. Added in Block 20 D-ES20-10.
+   */
+  regional_patterns?: RegionalPattern[];
+
+  /**
+   * Free-form descriptions of this substrate's relationship to closely
+   * related substrates that share diagnostic overlap. Mirrors
+   * cousin_species_contrasts on WoodSpeciesEntry (Block 18 D-WS0a) and
+   * cousin_form_contrasts on FormEntry. Display-name prose convention:
+   * identifies cousin substrates by display name rather than id reference.
+   * Added in Block 20 D-ES20-9.
+   */
+  cousin_substrate_contrasts?: string[];
 }
 
 /**
@@ -2054,5 +2087,239 @@ export const NATURAL_WOOD_SPECIES: WoodSpeciesEntry[] = [
     ],
   },
 ];
-export const ENGINEERED_SUBSTRATES: EngineeredSubstrateEntry[] = [];
+export const ENGINEERED_SUBSTRATES: EngineeredSubstrateEntry[] = [
+  {
+    id: "engineered_substrate_plywood",
+    category: "engineered_substrate",
+    name: "plywood",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Plywood revolutionized furniture production by allowing stable panels, large surfaces, reduced solid wood movement, and thin veneer application. Plywood becomes one of the strongest dating indicators in furniture analysis.",
+    unique_traits: [
+      "Cross-laminated construction",
+      "Layered structure",
+      "Dimensional stability",
+      "Veneer-faced panels",
+    ],
+    identifying_elements: [
+      "Visible layered edge",
+      "Alternating grain direction",
+      "Uniform panel thickness",
+      "Machine-manufactured appearance",
+    ],
+    composition_type: "laminated_plies",
+    typical_structural_role: "either",
+    introduction_anchor: {
+      earliest_plausible_year: 1905,
+      widespread_adoption_year: 1945,
+      dominance_year: 1950,
+      confidence_notes:
+        "High confidence on 1905 earliest plausible (commercial plywood manufacturing established early 20th century). High confidence on 1945 widespread adoption (post-WWII factory production transformation). dominance_year 1950 reflects File B 'Dominant substrate' common-period entry.",
+    },
+    anti_classification_guidance: [
+      {
+        boundary_date: 1905,
+        boundary_type: "form_emergence",
+        guidance_text:
+          "Plywood adoption in furniture begins ~1905. Pre-1905 pieces do not contain plywood. Absence of plywood typically indicates pre-1905 construction, though absence is necessary but not sufficient for pre-1900 dating; verify against other diagnostic markers (fasteners, joinery, oxidation patterns).",
+        prominence: "standard",
+      },
+      {
+        boundary_date: 1945,
+        boundary_type: "form_emergence",
+        guidance_text:
+          "Extensive plywood carcass construction (case furniture built primarily of plywood panels rather than solid wood) indicates post-1945 production. Limited plywood panel use 1905-1935 reflects early adoption; extensive carcass use is a strong post-WWII factory production signal.",
+        prominence: "standard",
+      },
+    ],
+    period_associations: [
+      { period_label: "Early adoption", date_floor: 1905, date_ceiling: 1930 },
+      { period_label: "Growing factory use", date_floor: 1930, date_ceiling: 1950 },
+      { period_label: "Dominant substrate", date_floor: 1950 },
+    ],
+    regional_patterns: [
+      { region: "National factory production", notes: "Universal adoption post-WWII." },
+    ],
+    cousin_substrate_contrasts: [
+      "Composite veneer cores: both are layered laminated substrates. Plywood typically uses thicker plies and full lumber-quality laminations across the entire panel; composite veneer cores typically use a thin veneer surface over particleboard or MDF cores rather than full plywood beneath.",
+    ],
+  },
+  {
+    id: "engineered_substrate_particleboard",
+    category: "engineered_substrate",
+    name: "particleboard",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Particleboard became one of the defining substrate materials of late 20th-century furniture, mass-market furniture, and veneered case goods.",
+    unique_traits: [
+      "Compressed wood particles",
+      "Heavy weight",
+      "Weak fastener retention",
+      "Extremely flat surfaces",
+    ],
+    identifying_elements: [
+      "Visible wood-chip interior",
+      "Crumbly edges",
+      "Uniform density",
+      "Veneer over artificial core",
+    ],
+    composition_type: "composite_particle",
+    typical_structural_role: "substrate_only",
+    introduction_anchor: {
+      earliest_plausible_year: 1947,
+      widespread_adoption_year: 1950,
+      confidence_notes:
+        "High confidence. Commercial particleboard manufacturing emerged 1947; mass-market furniture adoption from 1950 forward per File B Common Time Periods.",
+    },
+    anti_classification_guidance: {
+      boundary_date: 1950,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "Particleboard mass-market furniture adoption from 1950 forward (commercial introduction 1947; widespread adoption 1950). Particleboard in any role indicates mass-market production context, typically late 20th-century or later. Pre-1947 pieces do not contain particleboard.",
+      prominence: "standard",
+    },
+    period_associations: [
+      { period_label: "Mass-market furniture", date_floor: 1950 },
+    ],
+    regional_patterns: [
+      { region: "Industrialized furniture production", notes: "Universal usage." },
+    ],
+    cousin_substrate_contrasts: [
+      "MDF: both are pressed-fiber engineered substrates. Particleboard shows visible wood chips and crumbly edges; MDF is homogeneous with no visible particles and powdery machined edges.",
+    ],
+  },
+  {
+    id: "engineered_substrate_mdf",
+    category: "engineered_substrate",
+    name: "mdf",
+    common_aliases: ["medium-density fiberboard"],
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "MDF became heavily associated with modern furniture, contemporary cabinetry, painted furniture, and machined decorative profiles.",
+    unique_traits: [
+      "Extremely smooth surface",
+      "Homogeneous structure",
+      "No visible grain",
+      "Excellent machining consistency",
+    ],
+    identifying_elements: [
+      "Powdery machined edges",
+      "No natural grain",
+      "Uniform brown/tan core",
+      "Extremely flat panels",
+    ],
+    composition_type: "compressed_fiber",
+    typical_structural_role: "substrate_only",
+    introduction_anchor: {
+      earliest_plausible_year: 1970,
+      widespread_adoption_year: 1985,
+      confidence_notes:
+        "High confidence on 1970 earliest plausible (commercial MDF manufacturing emerged late 1960s, furniture adoption from 1970). Widespread cabinetry adoption from 1985 when MDF became default substrate for painted and machined-profile cabinetry.",
+    },
+    anti_classification_guidance: {
+      boundary_date: 1970,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "MDF commercial introduction ~1970. MDF presence is one of the strongest single dating signals in furniture analysis — if catalog or seller claims pre-1970, catalog is wrong. Widespread cabinetry adoption from 1985.",
+      prominence: "standard",
+    },
+    period_associations: [
+      { period_label: "Contemporary production", date_floor: 1970 },
+    ],
+    regional_patterns: [
+      { region: "Modern industrial furniture production", notes: "Universal usage." },
+    ],
+    cousin_substrate_contrasts: [
+      "Particleboard: both are pressed-fiber engineered substrates. MDF is homogeneous with no visible particles and powdery machined edges; particleboard shows visible wood chips and crumbly edges.",
+    ],
+  },
+  {
+    id: "engineered_substrate_hardboard_masonite",
+    category: "engineered_substrate",
+    name: "hardboard",
+    common_aliases: ["masonite"],
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Hardboard became common in furniture backs, drawer bottoms, utility panels, and mid-century production.",
+    unique_traits: [
+      "Thin compressed fiber sheet",
+      "Smooth one-sided surface",
+      "Flexible structure",
+    ],
+    identifying_elements: [
+      "Dark brown compressed sheet",
+      "Uniform thinness",
+      "Smooth pressed face",
+      "Fibrous reverse side",
+    ],
+    composition_type: "compressed_fiber",
+    typical_structural_role: "substrate_only",
+    introduction_anchor: {
+      earliest_plausible_year: 1930,
+      widespread_adoption_year: 1945,
+      confidence_notes:
+        "High confidence. Masonite brand patented 1924; commercial furniture adoption from ~1930 per File B Common Time Periods. Widespread post-WWII factory adoption from 1945.",
+    },
+    anti_classification_guidance: {
+      boundary_date: 1930,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "Hardboard (Masonite brand patented 1924, commercial furniture adoption from 1930) appears in furniture backs and drawer bottoms post-1930. Mid-century factory furniture signal. Pre-1930 pieces do not contain hardboard.",
+      prominence: "standard",
+    },
+    period_associations: [
+      { period_label: "Furniture backs and panels", date_floor: 1930 },
+    ],
+    regional_patterns: [
+      { region: "National factory production", notes: "Universal use." },
+    ],
+  },
+  {
+    id: "engineered_substrate_composite_veneer_cores",
+    category: "engineered_substrate",
+    name: "composite veneer cores",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    description:
+      "Composite veneer cores combine thin hardwood veneers, engineered substrates, and stability-oriented construction. Common in MCM, contemporary furniture, and factory cabinetry.",
+    unique_traits: [
+      "Thin veneer surfaces",
+      "Engineered stability",
+      "Lightweight panel construction",
+    ],
+    identifying_elements: [
+      "Thin veneer thickness",
+      "Uniform substrate beneath veneer",
+      "Sharp veneer edge transitions",
+    ],
+    composition_type: "composite_other",
+    typical_structural_role: "veneer_substrate",
+    introduction_anchor: {
+      earliest_plausible_year: 1945,
+      widespread_adoption_year: 1960,
+      confidence_notes:
+        "Medium confidence — composite veneer core construction is a composite category rather than a single material with sharp introduction date. earliest_plausible_year reflects the postwar era when this construction approach becomes characteristic of MCM and later contemporary factory cabinetry.",
+    },
+    anti_classification_guidance: {
+      boundary_date: 1945,
+      boundary_type: "form_emergence",
+      guidance_text:
+        "Composite veneer cores (engineered substrate base with thin veneer surface) emerge in postwar furniture production ~1945. Characteristic of MCM and later contemporary factory cabinetry. Confidence medium: composite-core construction is a composite category rather than a single material with sharp introduction date.",
+      prominence: "standard",
+    },
+    period_associations: [
+      { period_label: "Modern furniture production", date_floor: 1945 },
+    ],
+    regional_patterns: [
+      { region: "Factory production worldwide", notes: "Universal usage." },
+    ],
+    cousin_substrate_contrasts: [
+      "Plywood: both are layered laminated substrates. Composite veneer cores typically have a thin veneer surface over particleboard or MDF cores; plywood uses thicker plies with full lumber-quality laminations across the entire panel.",
+    ],
+  },
+];
 export const CUT_GRAIN_PHENOMENA: CutGrainPhenomenonEntry[] = [];
