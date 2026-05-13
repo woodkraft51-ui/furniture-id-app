@@ -84,8 +84,13 @@
  *   exist.
  */
 
-import type { CanonicalEntry, AntiClassificationGuidance, PositionOnPiece } from "./entryShape";
-import type { PeriodAssociation } from "./woodIdentification";
+import type {
+  CanonicalEntry,
+  AntiClassificationGuidance,
+  PositionOnPiece,
+  PeriodAssociation,
+  ReasoningRuleMigrationTarget,
+} from "./entryShape";
 
 /**
  * Closed enum of regional values per Block 16 D-WE3 lockwork. Six top-level
@@ -145,20 +150,6 @@ export type CutGrainUsageRole =
   | "premium_solid"
   | "decorative_accent"
   | "specialized_use";
-
-/**
- * Migration target enum per Block 16 D-WE8 + Block 22 D-WE22-4. Reasoning
- * rules carry this metadata flagging eventual integration point per the
- * top-down revamp pattern: weighting_file (rules become weight adjustments
- * in the eventual weighting table); engine_reasoning (rules surface in
- * engine reasoning logic); report_layer (rules surface in report composition).
- * Enum-only per D-WE22-4; specific target file paths tracked separately
- * when target files exist (file paths drift, semantic categories don't).
- */
-export type ReasoningRuleMigrationTarget =
-  | "weighting_file"
-  | "engine_reasoning"
-  | "report_layer";
 
 /**
  * Usage intensity captures dominance level of wood/substrate/phenomenon in

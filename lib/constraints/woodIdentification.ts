@@ -34,7 +34,7 @@
  *   provides identification anchors that evidence entries reference via FK.
  */
 
-import { CanonicalEntry, AntiClassificationGuidance } from "./entryShape";
+import { CanonicalEntry, AntiClassificationGuidance, PeriodAssociation } from "./entryShape";
 
 /**
  * Top-level wood taxonomy entry. Ordinal-numbered (I-IV) parallel to
@@ -88,40 +88,6 @@ export interface WoodCategoryEntry extends CanonicalEntry {
    * design gap.
    */
   cousin_category_contrasts?: string[];
-}
-
-/**
- * Period association captured at species or subspecies level. Implements the
- * dual-encoding pattern from Block 16 D-WE2: structured numerics
- * (date_floor, optional date_ceiling) for engine filter logic paired with a
- * human-authored period_label string for authoring and report rendering.
- *
- * date_ceiling is optional per D-WS0f; an omitted date_ceiling means the
- * period extends to present. This durable convention avoids the year drift
- * that a fixed sentinel (e.g., 2026) would introduce across audit-log
- * generations.
- *
- * Distinct from the woodEvidence.ts WoodRegionalAssociation pattern: this
- * interface lives in identification because File B's per-species period
- * tables are diagnostic context for identification, not evidence-layer
- * weighting. Evidence-layer period content lands in Block 22.
- */
-export interface PeriodAssociation {
-  /** Human-authored period label, e.g. "Golden Oak dominance",
-   * "Mission/Arts & Crafts peak". Sourced verbatim from File B "Common Time
-   * Periods" Usage column. */
-  period_label: string;
-
-  /** Earliest year the period applies. Required. */
-  date_floor: number;
-
-  /** Latest year the period applies. Optional; omitted means the period
-   * extends to present. */
-  date_ceiling?: number;
-
-  /** Optional appraiser-voice notes. Omit unless adding value beyond
-   * period_label. */
-  usage_notes?: string;
 }
 
 /**

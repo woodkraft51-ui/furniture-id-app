@@ -87,6 +87,64 @@ export interface AntiClassificationGuidance {
 }
 
 /**
+ * Period-association evidence — pairs a human-authored period label with a
+ * chronological window (date_floor required; date_ceiling optional, omitted
+ * when the period extends to present). Sourced verbatim from canonical "Common
+ * Time Periods" / chronological-breakdown content across reference documents.
+ *
+ * Shared cross-library artifact. Originally declared in woodIdentification.ts
+ * (Block 18 wood species authoring); relocated to entryShape.ts per Block 27
+ * D-MM27-2 as a shared canonical home. Parallel rationale to Block 16
+ * AntiClassificationGuidance relocation: PeriodAssociation use across the wood
+ * library (WoodSpeciesEntry, WoodSubspeciesEntry, EngineeredSubstrateEntry,
+ * CutGrainPhenomenonEntry, and 4 woodEvidence.ts evidence interfaces) + maker
+ * marks library (MakerMarkEntry per Block 27 D-MM27-4) + planned future
+ * evidence libraries (joinery, fasteners, hardware, upholstery) satisfies the
+ * schema-occurrence rule 3+ threshold for promotion to the shared canonical
+ * home.
+ *
+ * The date_ceiling? omitted-means-present convention is durable across audit-log
+ * generations and avoids the year drift that a fixed sentinel (e.g., 2026)
+ * would introduce.
+ */
+export interface PeriodAssociation {
+  /** Human-authored period label, e.g. "Golden Oak dominance",
+   * "Mission/Arts & Crafts peak". Sourced verbatim from canonical "Common Time
+   * Periods" or chronological-breakdown column content. */
+  period_label: string;
+
+  /** Earliest year the period applies. Required. */
+  date_floor: number;
+
+  /** Latest year the period applies. Optional; omitted means the period
+   * extends to present. */
+  date_ceiling?: number;
+
+  /** Optional appraiser-voice notes. Omit unless adding value beyond
+   * period_label. */
+  usage_notes?: string;
+}
+
+/**
+ * Migration-target enum for reasoning-rule entries — flags eventual integration
+ * point per the top-down revamp pattern: weighting_file (rules become weight
+ * adjustments in the eventual weighting table); engine_reasoning (rules surface
+ * in engine reasoning logic); report_layer (rules surface in report composition).
+ * Enum-only per Block 22 D-WE22-4; specific target file paths tracked separately
+ * when target files exist (file paths drift, semantic categories don't).
+ *
+ * Shared cross-library artifact. Originally declared in woodEvidence.ts (Block
+ * 22 scaffold); relocated to entryShape.ts per Block 27 D-MM27-3 as shared
+ * canonical home alongside PeriodAssociation. Used by WoodEvidenceReasoningRule
+ * and MakerAttributionReasoningRule (Block 27) and any future reasoning-rule
+ * library.
+ */
+export type ReasoningRuleMigrationTarget =
+  | "weighting_file"
+  | "engine_reasoning"
+  | "report_layer";
+
+/**
  * Physical location on the piece — WHERE on furniture an evidence observation
  * occurs. 34-value closed enum covering case construction (7), drawer construction
  * (5), frame and structural (4), surface and visible (3), base (3), movable
