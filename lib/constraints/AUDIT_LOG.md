@@ -2085,4 +2085,240 @@ D-MM28b-FINAL (locked): Block 28b ship — 38 MAKER_ENTRIES entries authored acr
 
 ---
 
+### 2026-05-13 — Session 14 Block 29 — Phase 2 Session 8a Authority Reconciliation Audit (composite analysis across 6 canonical libraries; 441 entries; audit-and-defer per Mike's end-of-Phase-2 reconciliation pass call)
+
+**Scope.** Composite authority-calibration audit across the 6 canonical libraries currently in lib/constraints/: wood library (5 arrays; 81 entries: SPECIES_EVIDENCE 26 + SUBSTRATE_EVIDENCE 5 + CUT_GRAIN_EVIDENCE 35 + WOOD_DIAGNOSTIC_SIGNALS 8 + WOOD_EVIDENCE_REASONING_RULES 7); maker marks library (2 arrays; 85 entries: MAKER_ENTRIES 77 + MAKER_ATTRIBUTION_REASONING_RULES 8); forms library (FORMS 183); families library (FAMILIES 12); spatial behaviors library (SPATIAL_BEHAVIORS 76); construction logic library (CONSTRUCTION_LOGIC 4). Total 441 canonical entries audited (excluding 25-entry legacy MAKER_MARKS retained for engine.ts compat per D-MM27-9). styleFamilies.ts + historicalClueLibrary.ts + four-file evidence libraries (joinery / fasteners / hardware / upholstery covers / upholstery construction) excluded per non-existence + Phase 2 Session 9+ scheduling. Output: audit-and-defer per Q2 Option H — NO entry mutations this block. Reconciliation corrections deferred to end-of-Phase-2 reconciliation pass per Mike's architectural call (Block 29 Op C revision). engine.ts UNCHANGED per Phase 2 / Phase 3 separation.
+
+**Methodology.** Q1 Option E composite audit covering three dimensions: (a) cross-library scale comparability via anchor-entry identification + cross-library matrix construction; (b) within-library distribution sanity via per-library authority histograms compared to baseline-lock or canonical-source rationale; (c) sampled per-entry calibration audit (~10-15% per library = 52 entries total). Q3 Option I+J anchor + rationale comparison. Q4 Option L single-block audit-and-defer. Tsx runtime introspection for distributions + sampling; cleanup of ephemeral scratch file before commit per established workflow standard.
+
+---
+
+#### Section 1 — Composite Library Inventory
+
+| Library | Array | Entries | Baseline framing |
+|---|---|---|---|
+| Wood | SPECIES_EVIDENCE | 26 | 6/6 per D-WE22-11 (supporting-evidence-only discipline) |
+| Wood | SUBSTRATE_EVIDENCE | 5 | 8/8 per D-WE22-11 declaration; actual 6-7 per D-WE23b-1 per-entry calibration |
+| Wood | CUT_GRAIN_EVIDENCE | 35 | 7/7 per D-WE22-11 |
+| Wood | WOOD_DIAGNOSTIC_SIGNALS | 8 | 7/7 per D-WE22-11 |
+| Wood | WOOD_EVIDENCE_REASONING_RULES | 7 | 9/9 meta-rule supremacy per D-WE22-11 |
+| Maker | MAKER_ENTRIES | 77 | per-maker per seed Confidence Rule (D-MM28a-2 / D-MM28b-7) |
+| Maker | MAKER_ATTRIBUTION_REASONING_RULES | 8 | 9/9 meta-rule supremacy |
+| Maker | MAKER_MARKS (legacy; EXCLUDED) | 25 | legacy 0-1 confidence_weight; engine compat only per D-MM27-9 |
+| Forms | FORMS | 183 | per-form Session 2-5 authoring; observed 7-8 range |
+| Forms | FAMILIES | 12 | per-family Session 3 authoring; observed 8/8 uniform |
+| Forms | SPATIAL_BEHAVIORS | 76 | per-spatial Session 3/5 authoring; observed 8/8 uniform |
+| Forms | CONSTRUCTION_LOGIC | 4 | per-CL Session 3 authoring; observed 8/8 uniform |
+| **TOTAL canonical** | | **441** | |
+
+---
+
+#### Section 2 — Per-Library Authority Distribution Histograms
+
+| Library | n | positive (range; mean; dist) | hard_neg (range; mean; dist) |
+|---|---|---|---|
+| SPECIES_EVIDENCE | 26 | 6-6 (6.00; {6:26}) | 6-6 (6.00; {6:26}) |
+| SUBSTRATE_EVIDENCE | 5 | 6-7 (6.60; {6:2, 7:3}) | 6-7 (6.60; {6:2, 7:3}) |
+| CUT_GRAIN_EVIDENCE | 35 | 7-7 (7.00; {7:35}) | 7-7 (7.00; {7:35}) |
+| WOOD_DIAGNOSTIC_SIGNALS | 8 | 7-7 (7.00; {7:8}) | 7-7 (7.00; {7:8}) |
+| WOOD_EVIDENCE_REASONING_RULES | 7 | 9-9 (9.00; {9:7}) | 9-9 (9.00; {9:7}) |
+| MAKER_ENTRIES | 77 | 4-8 (7.05; {4:1, 5:2, 6:6, 7:51, 8:17}) | 6-9 (7.19; {6:6, 7:54, 8:13, 9:4}) |
+| MAKER_ATTRIBUTION_REASONING_RULES | 8 | 9-9 (9.00; {9:8}) | 9-9 (9.00; {9:8}) |
+| FORMS | 183 | 7-8 (7.73; {7:49, 8:134}) | 7-8 (7.73; {7:49, 8:134}) |
+| FAMILIES | 12 | 8-8 (8.00; {8:12}) | 8-8 (8.00; {8:12}) |
+| SPATIAL_BEHAVIORS | 76 | 8-8 (8.00; {8:76}) | 8-8 (8.00; {8:76}) |
+| CONSTRUCTION_LOGIC | 4 | 8-8 (8.00; {8:4}) | 8-8 (8.00; {8:4}) |
+
+**Composite distribution across all 441 canonical entries:**
+- `positive_authority`: {4:1, 5:2, 6:34, 7:146, 8:243, 9:15}
+- `hard_negative_authority`: {6:34, 7:149, 8:239, 9:19}
+
+**Distribution observations:** 243 of 441 entries (55%) populate `positive_authority = 8` — the largest single cluster across the canonical inventory. This cluster spans 5 of the 6 audited libraries (only WOOD_EVIDENCE_REASONING_RULES + MAKER_ATTRIBUTION_REASONING_RULES at 9/9 baseline omit the 8-population; SPECIES_EVIDENCE at 6/6 baseline omits; CUT_GRAIN_EVIDENCE / WOOD_DIAGNOSTIC_SIGNALS at 7/7 baseline omit). MAKER_ENTRIES alone exercises full 4-8 / 6-9 spread per per-maker-via-seed-Confidence-Rule discipline (D-MM28a-2).
+
+---
+
+#### Section 3 — Cross-Library Scale Comparability Matrix
+
+| Authority | Representative entries (sampled across libraries) | Rationale strength |
+|---|---|---|
+| **9** | WOOD_EVIDENCE_REASONING_RULES: wood_alone_never_dates_furniture, secondary_woods_often_more_diagnostic_than_show_wood, visible_wood_not_structural_wood, etc. (7 entries) — MAKER_ATTRIBUTION_REASONING_RULES: core_attribution_rule, universal_initials_not_enough, confidence_ladder, globe_wernicke_correction, etc. (8 entries) | Uniformly dense canonical-source rationale via rule_name + rule_statement + rationale + notes prose. Meta-rule supremacy semantically clean. ✓ |
+| **8** | MAKER_ENTRIES: maker_mark_duncan_phyfe (strict-attribution; 'Duncan Phyfe style' false-positive risk), maker_mark_herter_brothers (Vanderbilt commissions), maker_mark_wooton_desk_company (patented configuration), maker_mark_globe_wernicke_co (resolves D-MM27-12 forward-reference); FORMS: form_secretary_desk, form_slant_front_desk, form_side_chair, form_easel, form_music_stand, form_lectern, etc.; FAMILIES: family_bedroom_clothing_storage, family_dining_service_storage, etc. (all 12 at 8/8); SPATIAL_BEHAVIORS: spatial_horizontal_storage, spatial_vertical_storage, etc. (all 76 at 8/8); CONSTRUCTION_LOGIC: construction_case, construction_frame, construction_surface, construction_mechanical_integrated (all 4 at 8/8) | **HIGHLY ASYMMETRIC.** Phyfe-class strict-attribution at 8/8 carries dense per-maker rationale citing seed Confidence Rule + false-positive prevalence; routine forms/families/spatial/CL entries at 8/8 carry dense `description` field prose but no per-entry authority-justification distinguishing 8 from 7 or 9. **Issue 2 deferred to end-of-Phase-2 reconciliation pass per D-AR29-7.** |
+| **7** | SUBSTRATE_EVIDENCE: substrate_evidence_plywood, substrate_evidence_particleboard, substrate_evidence_mdf (3 entries at 7/7); CUT_GRAIN_EVIDENCE: cut_grain_evidence_flat_sawn, cut_grain_evidence_quarter_sawn, cut_grain_evidence_rift_sawn, etc. (35 entries at 7/7 uniformly); WOOD_DIAGNOSTIC_SIGNALS: wood_diagnostic_signal_massive_solid_oak, wood_diagnostic_signal_thick_walnut_veneer, etc. (8 entries at 7/7 uniformly); MAKER_ENTRIES: 51 entries at 7/7 majority cluster (most factory makers); FORMS: 49 entries at 7/7 minority | Mostly clean per per-library D-WE22-11 baseline lockwork. Wood evidence layer + diagnostic signals carry dense rationale via diagnostic_caution_text / confidence_notes fields. Forms 7/7 cluster lacks per-entry rationale prose (Issue 3). |
+| **6** | SPECIES_EVIDENCE: all 26 entries at 6/6 uniformly per D-WE22-11 supporting-evidence-only lockwork; SUBSTRATE_EVIDENCE: substrate_evidence_hardboard_masonite, substrate_evidence_composite_veneer_cores (2 entries at 6/6); MAKER_ENTRIES: 6 entries at 6 (marginal-attribution clusters like Heritage / Drexel Heritage; Colonial Manufacturing Co.) | Intentional supporting-evidence calibration per "wood alone never dates furniture" structural encoding (rule #1 of WOOD_EVIDENCE_REASONING_RULES). Dense canonical-source rationale via diagnostic_caution_text. ✓ |
+| **5** | MAKER_ENTRIES: maker_mark_grand_rapids_furniture_association_triangle (5/9; association mark not single-maker; very high hard_negative); maker_mark_cabinetmaker_paper_labels_and_inscriptions (5/6; generic-discipline entry) | Intentional appraiser-honest calibration; maker-marks-only at this value. Asymmetric pos/neg pair (5/9 on triangle) reflects very high false-attribution risk vs moderate positive evidence. ✓ |
+| **4** | MAKER_ENTRIES: maker_mark_shaker_communities (4/7; most pieces unmarked; provenance-required) | Intentional low-confidence anchor with elevated hard_negative complement; maker-marks-only at this value. ✓ |
+
+**Rationale-strength annotation summary:** authority values 9, 6, 5, 4 carry semantically uniform meaning across the libraries that populate them. Authority values 8 and 7 carry library-dependent semantics — particularly value 8 (the largest population at 243 entries) where Phyfe-class strict-attribution sits at same numeric value as routine taxonomy primitives.
+
+---
+
+#### Section 4 — Per-Library Rationale Comparison Findings
+
+| Library | Rationale field(s) | Density observed | Notes |
+|---|---|---|---|
+| SPECIES_EVIDENCE | `diagnostic_caution_text` | Dense | Per-entry canonical-source rationale via dedicated field; notes field unused by convention |
+| SUBSTRATE_EVIDENCE | `diagnostic_caution_text` + per-substrate adoption_curve narrative | Dense | 4 of 5 entries populate diagnostic_caution_text; particleboard omits per D-WE23b-8 source-artifact non-propagation |
+| CUT_GRAIN_EVIDENCE | `diagnostic_caution_text` | Dense | All 35 entries populate; canonical anchor per File B Cat VI Type/Variant content |
+| WOOD_DIAGNOSTIC_SIGNALS | `confidence_notes` | Dense | All 8 entries populate; signal-specific epistemic-uncertainty prose |
+| WOOD_EVIDENCE_REASONING_RULES | `rule_statement` + `rationale` + `notes` | Dense (highest in inventory) | Three-field rationale stack per meta-rule canonical authoring; first canonical Independent Layer Evaluation Standard encoding |
+| MAKER_ENTRIES | `notes` + `attribution_confidence_rule` + `dating_clues` + per-entry per-maker rationale across multiple fields | Dense (highest in inventory) | Per-maker seed-Confidence-Rule-driven; notes prose explicitly cites Maker_Mark_Replacement_Seed.docx section + Universal Rule cross-references in false_positive_warnings |
+| MAKER_ATTRIBUTION_REASONING_RULES | `rule_statement` + `rationale` + `notes` | Dense | Parallel to wood reasoning rules; meta-rule supremacy authoring discipline |
+| FORMS | `notes` field | **Sparse (1 of 183 entries populates notes)** | Only form_jelly_cupboard has notes prose. Rationale lives in distinguishing_features + regional_period_notes + cousin_form_contrasts but not in per-entry authority-justification prose. Issue 3 deferred. |
+| FAMILIES | `description` field | Dense | All 12 entries populate description with canonical taxonomy rationale; no notes field |
+| SPATIAL_BEHAVIORS | `description` field | Dense | All 76 entries populate description; no notes field |
+| CONSTRUCTION_LOGIC | `description` + `historical_evolution_narrative` + `disambiguation_from_other_logics` fields | Dense | Three-field rationale stack per CL canonical authoring; Session 3 Block 3 authoring discipline |
+
+**Cross-library rationale-field pattern:** Two architectural conventions coexist — (1) `notes` field as primary rationale carrier (wood/maker libraries; multi-field stack including diagnostic_caution_text / confidence_notes / rule_statement / attribution_confidence_rule); (2) `description` field as primary rationale carrier (families / spatial / CL libraries; supplemented by historical_evolution_narrative on CL only). FORMS uses neither convention consistently — `notes` field essentially unpopulated; rationale lives diffusely across distinguishing_features, regional_period_notes, and cousin_form_contrasts without a single canonical authority-justification field.
+
+---
+
+#### Section 5 — Sampled Per-Entry Calibration Audit (52 entries; 11.8% of canonical inventory)
+
+| Library | Sample n | Sample % | Selected entries | Notes |
+|---|---|---|---|---|
+| SPECIES_EVIDENCE | 3 | 11.5% | oak_group, hard_maple_sugar_maple, southern_yellow_pine | Authority 6/6 uniform; rationale in diagnostic_caution_text confirmed canonically anchored |
+| SUBSTRATE_EVIDENCE | 1 | 20.0% | plywood | Authority 7/7; adoption_curve + diagnostic_caution_text canonically anchored |
+| CUT_GRAIN_EVIDENCE | 4 | 11.4% | flat_sawn, flame_figure, chatoyance, ribbon_stripe_mahogany | Authority 7/7 uniform; diagnostic_caution_text canonically anchored per File B Cat VI |
+| WOOD_DIAGNOSTIC_SIGNALS | 1 | 12.5% | massive_solid_oak | Authority 7/7; confidence_notes per File A Section 7 canonical |
+| WOOD_EVIDENCE_REASONING_RULES | 1 | 14.3% | wood_alone_never_dates_furniture | Authority 9/9; rule_statement + rationale dense per File A Section 8 Important Caveat |
+| MAKER_ENTRIES | 8 | 10.4% | cabinetmaker_paper_labels (5/6), mitchell_and_rammelsberg (7/7), globe_wernicke_co (8/9), limbert (7/7), caswell_runyan (7/7), drexel (7/7), thomasville (7/6), nelson_for_herman_miller (7/8) | Authority spread 5-8 / 6-9; per-maker rationale dense; full Confidence Rule prose citation per entry |
+| MAKER_ATTRIBUTION_REASONING_RULES | 1 | 12.5% | core_attribution_rule | Authority 9/9; cross_layer_scope: true; foundational meta-rule rationale dense |
+| FORMS | 20 | 10.9% | form_pump_organ_cabinet, form_blanket_chest, form_jelly_cupboard (only entry with notes), form_sofa_table, form_coffee_table, form_secretary_desk, form_tabletop_desk, form_credenza_desk, form_armoire_desk, form_reception_desk, form_l_shaped_desk, form_organ_desk, form_umbrella_stand, form_charging_station, form_basket, form_lectern, form_retail_fixture, form_shelving_system, form_tall_case_clock, form_musical_instrument_furniture | 19 of 20 sampled entries have empty `notes` field; rationale lives diffusely; Issue 3 deferred. |
+| FAMILIES | 2 | 16.7% | family_bedroom_clothing_storage, family_musical_mechanical | Authority 8/8 uniform; description prose canonically dense |
+| SPATIAL_BEHAVIORS | 9 | 11.8% | spatial_horizontal_storage, spatial_auxiliary_service, spatial_motion_seating, spatial_clothing_enclosure, spatial_technical_drafting_professional_workstations, spatial_computer_systems_modular_workstations, spatial_built_in_architectural_desks, spatial_automated_dispensing_systems, spatial_interactive_systems | Authority 8/8 uniform; description prose canonically dense |
+| CONSTRUCTION_LOGIC | 1 | 25.0% | construction_case | Authority 8/8; description + historical_evolution_narrative + disambiguation_from_other_logics canonically dense |
+| **TOTAL** | **51** | **11.6%** | | |
+
+(Note: 52-entry plan estimate adjusts to 51 actual sample post-deterministic-step rounding; within tolerance.)
+
+**Sampled audit conclusions:**
+- Wood libraries (5 of 5): all sampled entries have rationale canonically anchored via diagnostic_caution_text / confidence_notes / rule_statement / rationale fields per per-library discipline. ✓
+- Maker libraries (2 of 2): all sampled entries have rationale densely populated via notes + attribution_confidence_rule + dating_clues + per-Universal-Rule cross-references. ✓
+- Families / spatial / CL (3 of 3): all sampled entries have rationale densely populated via description field. ✓
+- Forms (1 of 1): 19 of 20 sampled entries lack rationale prose; consistent with Section 4 finding (Issue 3 deferred).
+
+---
+
+#### Section 6 — Semantic Anchor Lock (D-AR29-5)
+
+| Authority | Semantic anchor | Population | Status |
+|---|---|---|---|
+| **9** | Meta-rule supremacy; reasoning rules governing evidence-axis interpretation across all libraries | 15 | Clean |
+| **8** | Categorical-strong evidence — **SEMANTIC VARIES PER LIBRARY**: in wood/maker contexts indicates strict-attribution or technology-adoption-curve; in forms/families/spatial/CL contexts indicates canonical taxonomy primitive. Phase 3 weighting integration MUST resolve cross-library scaling before consuming "8" values as semantically uniform. | 243 | Phase 3 readiness dependency (deferred until end of Phase 2) |
+| **7** | Medium-strong evidence with canonical-source rationale | 146 | Mostly clean |
+| **6** | Supporting-evidence-only discipline (wood species lock per D-WE22-11; mirrored elsewhere) | 34 | Intentional |
+| **5** | Appraiser-honest discipline + acknowledged uncertainty (Grand Rapids Triangle; cabinetmaker generic) | 2 | Intentional |
+| **4** | Low-confidence anchor with elevated hard_negative complement (Shaker most-pieces-unmarked) | 1 | Intentional |
+
+**Lock scope:** locked at current 6-library state. Re-evaluation required when new canonical libraries land (historicalClueLibrary.ts + styleFamilies.ts + joinery + fasteners + hardware + upholstery covers + upholstery construction). Per D-AR29-11, subsequent canonical-library authoring calibrates per-entry authority against this table and flags new semantics for end-of-Phase-2 reconciliation pass.
+
+---
+
+#### Section 7 — Surfaced Calibration Issues
+
+**Issue 1 (HIGH priority): SUBSTRATE_EVIDENCE D-WE22-11 baseline vs actual divergence.** D-WE22-11 audit-log baseline declared SUBSTRATE_EVIDENCE at 8/8; actual entries calibrated 6-7 per D-WE23b-1 per-entry discipline. Disposition: Option (a) audit-log clarification only per D-AR29-6. NO entry mutations. Rolls in Issue 5 (D-WE22-11 audit-log clarity).
+
+**Issue 2 (HIGH priority): "8" semantic asymmetry across libraries.** 243 entries at "8" across 5 libraries with semantically heterogeneous calibration meaning (strict-attribution in wood/maker context vs taxonomy primitive in forms/families/spatial/CL context). Disposition: Option C with end-of-Phase-2 escalation per D-AR29-7. NO Phase 2 mutations. Phase 3 weighting integration MUST resolve cross-library scaling.
+
+**Issue 3 (MEDIUM priority): FORMS rationale gap.** 182 of 183 FORMS entries lack per-entry `notes` field rationale. Disposition: defer to end-of-Phase-2 reconciliation pass per D-AR29-8. Retroactive rationale population requires styleFamilies.ts + HCL + four-file evidence libraries to exist for cross-reference content. NO Phase 2 Session 8a mutations.
+
+**Issue 4 (LOW priority): FAMILIES / SPATIAL_BEHAVIORS / CONSTRUCTION_LOGIC zero authority spread.** All 92 entries across these 3 libraries calibrated at 8/8 uniform. Description-field rationale is dense (mitigates concern); per-entry authority-justification absent. Disposition: combined with Issue 3 end-of-Phase-2 reconciliation pass scope per D-AR29-9.
+
+**Issue 5 (LOW priority): D-WE22-11 audit-log clarity.** Rolls into Issue 1 clarification per D-AR29-6.
+
+---
+
+#### Section 8 — End-of-Phase-2 Reconciliation Pass Scope
+
+The end-of-Phase-2 reconciliation pass is the explicit Phase 2 → Phase 3 gate for all corrections surfaced in Block 29 + any corrections surfaced during subsequent Phase 2 canonical library authoring. NOT a single block — a gate work item that may produce one or multiple correction blocks depending on findings.
+
+**Required canonical-library inputs before reconciliation pass proceeds:**
+1. Wood library (complete; Block 26 endpoint)
+2. Maker marks library (complete; Block 28b endpoint)
+3. historicalClueLibrary.ts (Phase 2 Session 9 scope; not yet authored)
+4. styleFamilies.ts (Phase 2 Session 9 scope; not yet authored)
+5. Joinery evidence library (Phase 2 four-file scope; not yet authored)
+6. Fasteners evidence library (Phase 2 four-file scope; not yet authored)
+7. Hardware evidence library (Phase 2 four-file scope; not yet authored)
+8. Upholstery covers evidence library (Phase 2 four-file scope; not yet authored)
+9. Upholstery construction evidence library (Phase 2 four-file scope; not yet authored)
+
+**Per-issue library-dependency cross-references:**
+
+- **Issue 1**: No new-library dependency. Audit-log clarification can execute at any time; deferred for batching with other end-of-Phase-2 work.
+- **Issue 2**: Cross-library scaling resolution requires all 9 canonical libraries authored before Phase 3 weighting integration approach can be decided (per-library scaling factors vs per-entry-uniform-scale). Decision: Phase 3 architectural scope per D-AR29-7.
+- **Issue 3**: Forms entries cross-reference styleFamilies.ts (style attribution evidence) + HCL (datable features per Session 2 form-vs-style separation) + four-file evidence libraries (construction/joinery/fasteners/hardware/upholstery). Retroactive rationale population done NOW would author rationale referencing libraries-not-yet-existing. Wait for cross-reference libraries to exist.
+- **Issue 4**: Combined with Issue 3 scope; same dependency profile.
+- **Issue 5**: Rolls into Issue 1.
+
+**Estimated reconciliation-pass scope (at completion of all Phase 2 canonical-library authoring):**
+- Issue 1: ~5-10 line audit-log clarification entry.
+- Issue 2: Either Phase 3 architectural scope (no Phase 2 mutations) OR full cross-library recalibration block (~215 entries affected across forms/families/spatial/CL).
+- Issue 3: ~182 entries (FORMS) per-entry rationale population. Major scope.
+- Issue 4: Optional ~92 entries (FAMILIES/SPATIAL/CL) per-entry authority-justification review. Lower priority.
+
+---
+
+#### Section 9 — Recommendations for Subsequent Canonical Library Authoring
+
+**Calibration guidance for HCL + styleFamilies.ts + four-file evidence libraries:**
+
+1. **Calibrate per-entry authority against the locked semantic anchor table (D-AR29-5).** New entries land at 4-9 range. Default per-library baseline can be declared at authoring-block scope (analogous to D-WE22-11 per-library baseline lockwork), but per-entry calibration MAY override baseline when canonical-source rigor warrants. Per-entry override is the appraiser-honest discipline per D-WE23b-1 precedent.
+
+2. **Flag any new authority value semantics that don't fit the locked table.** Surface for end-of-Phase-2 reconciliation pass. The locked table is current-state at 6 libraries; new libraries may surface semantic anchors at values not yet populated (e.g., "3" appraiser-disclaimed-evidence; "10" reserved-for-future-supremacy).
+
+3. **Per-entry rationale documentation discipline:** use `notes` field (wood + maker pattern) OR `description` field (families/spatial/CL pattern). FORMS-style sparse-rationale pattern is the anti-pattern flagged in Issue 3. Ensure SOME canonical-source rationale is documented per entry for future audit traceability — Phase 3 weighting integration consumes rationale prose at report-layer rendering and engine-reasoning input phases.
+
+4. **Cross-library FK consistency:** new evidence-library entries cross-referencing wood / maker / forms entries must use exact canonical entry ids (no forward-reference placeholders unless tracked via D-AR29-N-style audit entry).
+
+5. **Reasoning-rule entries:** if a new library includes reasoning rules (analogous to WOOD_EVIDENCE_REASONING_RULES + MAKER_ATTRIBUTION_REASONING_RULES), calibrate at 9/9 meta-rule supremacy per D-AR29-5 unless library-specific rationale warrants otherwise.
+
+---
+
+**Architectural decisions (locked).**
+
+D-AR29-1 (locked): Phase 2 Session 8a scope per Q1-Q5 lockings. Composite audit across 6 canonical libraries totaling 441 entries (wood library 81 + maker marks library 85 + forms library 183 + families library 12 + spatial behaviors library 76 + construction logic library 4). styleFamilies.ts + HCL + four-file evidence libraries out of scope per non-existence + Phase 2 Session 9+ scheduling. engine.ts UNCHANGED per Phase 2 / Phase 3 separation.
+
+D-AR29-2 (locked): Composite audit methodology per Q1 Option E. Three dimensions covered: cross-library scale comparability (anchor entries + matrix); within-library distribution sanity (per-library histograms vs baseline-lock-or-canonical-source rationale); sampled per-entry calibration audit (~10-15% per library; 51 entries sampled, 11.6% of canonical inventory).
+
+D-AR29-3 (locked): Cross-library scale comparability methodology per Q3 Option I + J combined. Anchor entries (strong + marginal + median per library) and rationale comparison (notes field + indicator_text + diagnostic_caution_text + description field strength vs authority value).
+
+D-AR29-4 (locked): Output shape per Q2 Option H. Audit-and-defer-corrections. NO entry mutations this block or in any Phase 2 block prior to end-of-Phase-2 reconciliation pass per Mike's architectural call. Findings documented in AUDIT_LOG.md; deferred-correction work routes to end-of-Phase-2 reconciliation pass per D-AR29-10.
+
+D-AR29-5 (locked): Semantic anchor table per Section 6 above. The "8" row explicitly captures cross-library asymmetry as Phase 3 readiness dependency rather than pretending uniform semantics. Anchor table locked at current 6-library state; re-evaluation required when new canonical libraries land (HCL + styleFamilies.ts + four-file evidence libraries).
+
+D-AR29-6 (locked): Issue 1 disposition — Option (a) audit-log clarification. Block 29 audit captures: "D-WE22-11 SUBSTRATE_EVIDENCE 8/8 baseline framing was aspirational; Block 23b D-WE23b-1 authored substrate entries at per-entry calibration (6-7 range) reflecting actual evidence rigor per canonical source. The per-entry discipline is the canonical authoring approach; baseline framings serve as starting-point guidance subject to per-entry override." NO entry mutations this block or future blocks; clarification only. Issue 5 rolls into this clarification.
+
+D-AR29-7 (locked): Issue 2 disposition — Option C with end-of-Phase-2 escalation. "8" semantic asymmetry across libraries flagged as Phase 3 readiness dependency. NO Phase 2 mutations. Reconciliation work proceeds at end-of-Phase-2 after all canonical libraries exist. Phase 3 weighting integration MUST resolve cross-library scaling (per-library scaling factors OR per-entry-uniform-scale) before consuming "8" values as semantically uniform. The choice between approaches is Phase 3 architectural scope.
+
+D-AR29-8 (locked): Issue 3 disposition — FORMS rationale gap deferred to end-of-Phase-2 reconciliation pass. Retroactive per-entry rationale population requires styleFamilies.ts + HCL + four-file evidence libraries to exist for cross-reference content. Estimated mutation scope at that point: ~182 entries (FORMS) + optional FAMILIES/SPATIAL/CL per-entry rationale review per Issue 4.
+
+D-AR29-9 (locked): Issue 4 disposition — FAMILIES/SPATIAL/CL zero spread combined with Issue 3 end-of-Phase-2 reconciliation pass scope. Lower priority than Issue 3; description field rationale provides canonical-source context.
+
+D-AR29-10 (locked): End-of-Phase-2 reconciliation pass scheduling. The pass becomes the explicit Phase 2 → Phase 3 gate, requiring: (a) all Phase 2 canonical libraries authored (wood complete; maker marks complete; HCL + styleFamilies.ts + four-file evidence libraries authored in subsequent Phase 2 sessions); (b) Issue 1, Issue 2, Issue 3, Issue 4 dispositions executed per the disposition options locked above OR refined per new findings from subsequent library authoring; (c) Semantic anchor table re-evaluated against the complete canonical-library set; (d) Phase 3 weighting integration approach decided (per-library scaling factors vs per-entry-uniform-scale). The pass is NOT a single block; it's a gate work item that may produce one or multiple correction blocks depending on findings.
+
+D-AR29-11 (locked): Calibration guidance for subsequent Phase 2 canonical library authoring per Section 9 above: calibrate per-entry authority against the locked semantic anchor table; flag new semantics for end-of-Phase-2 reconciliation pass; use notes field OR description field for per-entry rationale documentation discipline; FORMS-style sparse-rationale pattern is the anti-pattern flagged in Issue 3.
+
+D-AR29-FINAL (locked): Phase 2 Session 8a ship — composite audit of 441 entries across 6 canonical libraries. Methodology: Q1 Option E composite + Q3 Option I+J + Q4 Option L single-block + Q2 Option H audit-and-defer (with end-of-Phase-2 escalation per Mike's revision). Output: audit report integrated into AUDIT_LOG.md as Block 29 entry; semantic anchor table locked at current 6-library state per D-AR29-5; 4 surfaced issues + 1 clarification disposition documented; end-of-Phase-2 reconciliation pass scheduled as gate work item per D-AR29-10. All 12 canonical array lengths unchanged (audit-only block). engine.ts UNCHANGED. Phase 2 Session 8a status: COMPLETE. Phase 2 Session 8b (end-of-Phase-2 reconciliation pass): pending all Phase 2 canonical library authoring; no block scheduling commitment.
+
+**Workflow standards applied.** Plan-mode Op A inspection (READ-ONLY) preceded all audit-report drafting; tsx ephemeral scratch file used for per-library distribution + sampled-entry runtime introspection, created and removed within single audit pass per established workflow standard; full Section 1-9 audit-report content composed against actual runtime-verified data; 12 D-AR29-N decisions captured (D-AR29-1 through D-AR29-11 + D-AR29-FINAL); zero entry mutations to any canonical library this block per Q2 Option H + Mike's audit-and-defer architectural call; engine.ts zero-diff verified; AUDIT_LOG.md is the only modified file. Independent Layer Evaluation Standard preserved — authority reconciliation surfaces calibration semantics WITHOUT introducing cross-layer evidence dependencies. Phase 2 / Phase 3 separation lockwork honored.
+
+**Final architectural state after this PR merges:**
+- `lib/constraints/AUDIT_LOG.md` modified: +~280 lines (Block 29 audit report Sections 1-9 + D-AR29-1 through D-AR29-FINAL).
+- ALL canonical library array lengths UNCHANGED:
+  - SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7
+  - MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25
+  - FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4
+- ALL canonical library files byte-for-byte UNCHANGED: entryShape.ts, woodIdentification.ts, woodEvidence.ts, makerMarks.ts, forms.ts, families.ts, spatialBehaviors.ts, constructionLogic.ts.
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation.
+- 12 audit decisions captured under D-AR29-N block-scoped prefix (D-AR29-1 through D-AR29-11 + D-AR29-FINAL).
+- Semantic anchor table locked at 6-library state per D-AR29-5; re-evaluation required at end-of-Phase-2 reconciliation pass.
+- 4 surfaced calibration issues documented with disposition routing to end-of-Phase-2 reconciliation pass.
+- 5 calibration-guidance items locked for subsequent Phase 2 canonical-library authoring per D-AR29-11.
+- Phase 2 Session 8a status: COMPLETE.
+- Phase 2 Session 8b (end-of-Phase-2 reconciliation pass) status: pending all Phase 2 canonical-library authoring; no block scheduling commitment.
+- Convention precedents established this block: composite-audit methodology covering scale comparability + distribution sanity + sampled per-entry calibration (D-AR29-2); audit-and-defer-with-end-of-Phase-2-escalation output shape (D-AR29-4); semantic anchor table as cross-library calibration reference subject to re-evaluation as canonical libraries grow (D-AR29-5); calibration guidance discipline for subsequent canonical-library authoring (D-AR29-11).
+
+---
+
 
