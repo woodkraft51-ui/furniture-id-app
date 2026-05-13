@@ -2368,4 +2368,88 @@ D-JN30-FINAL (locked): Block 30 ship — schema foundation + 15 `JOINERY_CATEGOR
 
 ---
 
+## Block 31 — JOINERY_TYPES content authoring (40 entries across 15 sub-batches); joinery library content-complete; Phase 2 Session 7 first library CLOSED
+## Session 14 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main f5bf4a0 (Block 30 endpoint / Phase 2 Session 7 opening)
+
+### D-JN31-1 (locked): Block 31 scope per Q1-Q5 lockings
+Single combined ship with 15 internal sub-batches (one per JOINERY_CATEGORIES entry). 40 JOINERY_TYPES entries authored from JOINERY_IDENTIFICATION_MASTER_BREAKDOWN.docx canonical source via Op A-3 enumeration (count confirmed exact at 40; matches plan estimate). Per-sub-batch JOINERY_TYPES.length report and tsc check folded into single comprehensive Op C Edit + Op G runtime introspection given seed extraction was complete in Phase 1 (no per-sub-batch architectural ambiguity required mid-batch pause).
+
+### D-JN31-2 (locked): period_associations granularity per Q2 Option E
+`period_associations` array per type captures era phases where seed structures them. Multiple era-phase entries authored on 4 types per Op A-3 surfacing:
+- `joinery_type_through_dovetail`: 2 entries (Hand-cut era 1600-1909 + Machine-cut widespread 1860+) per seed Hand-Cut Examples + Machine-Cut Examples sub-sections.
+- `joinery_type_hand_cut_drawer_dovetails`: 2 entries (Early Hand Work 1700-1799 + Late Hand Work 1800-1900) per seed Early Hand Work + Late Hand Work sub-sections.
+- `joinery_type_finger_box_joint`: 2 entries (Hand examples 1800-1899 + Machine production 1880+) per seed DATE RANGE hand+machine phasing.
+- `joinery_type_dowel_joinery`: 2 entries (Early hand-fit emergence 1800-1949 + Mass-production phase 1950+) per seed "Extremely common after 1950" sub-phase structure.
+
+Additional multi-entry per Arts & Crafts / revival context: `butterfly_dutchman_key` (3 entries: baseline + Arts & Crafts 1890-1920 + modern revival 1970+), `bridle_joint` (2 entries: baseline + Arts & Crafts), `through_mortise_and_tenon` (2 entries: baseline + Arts & Crafts), `biscuit_joint` (2 entries: experimental 1950-1979 + widespread 1980+ per D-JN31-4 1950 AG floor decision).
+
+`date_range_summary` field carries seed DATE RANGE prose verbatim regardless of period_associations array length.
+
+### D-JN31-3 (locked): hand_vs_machine_classification distribution per Q3 Option G + A-6 mapping
+Strict indicator-list matching for 11 entries (4 strongly_early + 7 strongly_industrial). 2 transitional entries per seed era-phase sub-section evidence (through_dovetail + finger_box_joint). 5 spans_eras entries per seed "Ancient–present" DATE RANGE (butt_edge_glued, basic_butt_corner, through_mortise_and_tenon, blind_mortise_and_tenon, coopered_joinery). 22 undefined entries (conservative default per Q3 ambiguous-case discipline). Final distribution: `{strongly_early: 4, strongly_industrial: 8, transitional: 2, spans_eras: 5, undefined: 21}` after D-JN31-9 category-context inheritance applied to confirmat_screw (one entry moves from undefined → strongly_industrial).
+
+### D-JN31-4 (locked): anti_classification_guidance distribution per Q4 Option J industrial-introduction-boundary pattern
+6 entries with AG (industrial-introduction-boundary pattern); AG prose canonical template per Q4 + cross-references JoineryReasoningRule #3 restoration_false_signals:
+- `joinery_type_biscuit_joint` AG floor 1950 (NOT 1980) per A-5 surfacing — seed DATE RANGE explicitly "1950s experimental"; pre-1950 is the hard impossibility floor; 1980 widespread-use date captured as second period_associations entry not as AG floor. Mike-locked resolution.
+- `joinery_type_stapled_drawer_joinery` AG floor 1950.
+- `joinery_type_knock_down_cam_lock_joinery` AG floor 1960.
+- `joinery_type_confirmat_screw_joinery` AG floor 1970 (NOT 1980 approximate) per A-5 surfacing — seed DATE RANGE explicitly "1970s–present". Mike-locked resolution.
+- `joinery_type_pocket_screw_joinery` AG floor 1980.
+- `joinery_type_cnc_interlocking_joinery` AG floor 1990.
+
+### D-JN31-5 (locked): cross-category type assignment per Q5 Option M
+5 cross-category types authored once with primary parent_category_id + related_joinery_types cross-references:
+- `joinery_type_through_dovetail`: primary Carcase; cross-refs to sliding_dovetail, half_blind_dovetail, hand_cut_drawer_dovetails, machine_cut_drawer_dovetails (4 refs).
+- `joinery_type_sliding_dovetail`: primary Carcase; cross-refs to through_dovetail, half_blind_dovetail (2 refs).
+- `joinery_type_half_blind_dovetail`: primary Dovetail Family; cross-refs to through_dovetail, hand_cut_drawer_dovetails, machine_cut_drawer_dovetails (3 refs).
+- `joinery_type_splayed_wedged_through_tenons`: primary Chair and Seating; cross-refs to wedged_tenon (M&T Family), round_tenon_joinery (2 refs).
+- Additional non-primary cross-refs on hand_cut_drawer_dovetails (3 refs), machine_cut_drawer_dovetails (3 refs), secret_mitered_dovetail (1 ref), wedged_tenon (1 ref), pegged_mortise_and_tenon (1 ref), drawbored_mortise_and_tenon (1 ref).
+
+Total related_joinery_types references: 21. All FKs verified to resolve to authored type ids per Op G-10. butt_edge_glued (Edge-to-Edge) and basic_butt_corner (Corner) treated as distinct entries per A-4 surfacing (seed treats them as different joints with different applications), not cross-category candidates.
+
+### D-JN31-6 (locked): authority distribution per D-AR29-11 calibration discipline + A-7 recommendation
+Final distribution: `positive_authority {7: 28, 8: 12}`; `hard_negative_authority {7: 28, 8: 12}`.
+
+12 entries at 8/8 per A-7 criteria "types named in seed STRONGLY EARLY or STRONGLY INDUSTRIAL indicator lists, OR types whose AG floor year is canonical dating anchor":
+- 4 strongly_early indicator-list matches: hand_cut_drawer_dovetails, drawbored_mortise_and_tenon, wedged_tenon, splayed_wedged_through_tenons.
+- 7 strongly_industrial indicator-list matches: machine_cut_drawer_dovetails, dowel_joinery, biscuit_joint, pocket_screw_joinery, knock_down_cam_lock_joinery, cnc_interlocking_joinery, stapled_drawer_joinery.
+- 1 AG-floor-only entry: confirmat_screw_joinery (per A-7 OR-clause; AG floor 1970 is canonical dating anchor even though confirmat is not literally in seed STRONGLY INDUSTRIAL indicator list).
+
+28 entries at 7/7 default per D-JN30-8 (medium-strong canonical-source rationale). No 9/9 type entries (9/9 reserved for reasoning rules per meta-rule supremacy precedent D-WE26-8 / D-MM27-5).
+
+### D-JN31-7 (locked): Block 30 reasoning rule forward-references RESOLVED
+JoineryReasoningRule #2 (rural_persistence_warning), #3 (restoration_false_signals), #4 (high_authority_dating_indicators_framework) all carry `applies_to_entry_types: ["joinery_type", ...]` category-string FKs which Block 31's authoring of JOINERY_TYPES closes. Per-type specific-id cross-references captured in `related_joinery_types` field per Q5 Option M (21 total references, all resolving). regional_persistence_notes populated on 4 strongly_early types per Rule #2 cross-reference. anti_classification_guidance populated on 6 industrial-introduction types per Rule #3 cross-reference.
+
+### D-JN31-8 (locked): joinery library content-complete on Block 31 ship; Phase 2 Session 7 first library CLOSED
+Schema foundation (Block 30 D-JN30-2/3/4/5) + 15 categories (Block 30 D-JN30-4) + 5 reasoning rules (Block 30 D-JN30-5) + 40 types (Block 31) = joinery library canonically content-complete. Phase 2 Session 7 first library closed. Next sequencing per Phase 2 Session 7 four-file evidence library architecture: fasteners library schema + content (Block 32 forward).
+
+### D-JN31-9 (locked): category-context inheritance precedent for hand_vs_machine_classification population
+**Convention precedent for future evidence libraries.** When a joinery type appears in a category whose own framing implies a hand_vs_machine_classification tier (e.g., "Modern Industrial Joinery" category) but the specific type is NOT literally named in the seed STRONGLY EARLY / STRONGLY INDUSTRIAL / TRANSITIONAL indicator list, the category-context inheritance pattern applies: the type inherits its parent category's implied classification rather than defaulting to undefined.
+
+Applied this block to: `joinery_type_confirmat_screw_joinery` — assigned `hand_vs_machine_classification: "strongly_industrial"` per Modern Industrial category context, despite confirmat NOT being literally in seed STRONGLY INDUSTRIAL indicator list. Mike-locked resolution per authorization turn.
+
+Future evidence libraries (fasteners, hardware, upholstery covers, upholstery construction) inheriting from comparable category-defined era frameworks may apply this precedent when seed indicator lists are silent on specific entries but the parent category framing carries dating-tier semantics. Strict indicator-list-only mapping is the conservative default; category-context inheritance is the pragmatic alternative used when category framing is unambiguous (e.g., a category literally named "Modern Industrial").
+
+### D-JN31-FINAL (post-authoring summary)
+Block 31 ship: 40 JOINERY_TYPES entries authored across 15 sub-batches.
+- `JOINERY_TYPES.length`: 0 → **40**.
+- Authority distribution: `positive_authority {7: 28, 8: 12}`; `hard_negative_authority {7: 28, 8: 12}` (12 at 8/8 per A-7 indicator-list + AG-anchor criteria; 28 at 7/7 default).
+- hand_vs_machine_classification distribution: `{strongly_early: 4, strongly_industrial: 8, transitional: 2, spans_eras: 5, undefined: 21}` (40 total) — 8 strongly_industrial includes 7 indicator-list matches + 1 D-JN31-9 category-context inheritance (confirmat).
+- anti_classification_guidance entries: **6** (industrial-introduction-boundary pattern: biscuit 1950, stapled 1950, cam_lock 1960, confirmat 1970, pocket_screw 1980, cnc 1990; AG floor years per D-JN31-4 — biscuit and confirmat adjusted from plan defaults per A-5 + Mike-locked resolution).
+- Cross-category related_joinery_types references: **21** (all FKs resolve per Op G-10).
+- period_associations multi-entry types: **8** (through_dovetail, hand_cut_drawer_dovetails, finger_box_joint, dowel_joinery, butterfly_dutchman_key, bridle_joint, through_mortise_and_tenon, biscuit_joint).
+- regional_persistence_notes populated: **5** entries (through_dovetail + 4 strongly_early types per JoineryReasoningRule #2 cross-reference).
+- Files modified: **2** (`lib/constraints/joinery.ts` + `lib/constraints/AUDIT_LOG.md`).
+- All 14 other canonical array lengths unchanged: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_REASONING_RULES 5.
+- `lib/constraints/entryShape.ts`, `woodIdentification.ts`, `woodEvidence.ts`, `makerMarks.ts`, `forms.ts`, `families.ts`, `spatialBehaviors.ts`, `constructionLogic.ts`: all byte-for-byte unchanged.
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation.
+- 9 audit decisions captured under D-JN31-N block-scoped prefix (D-JN31-1 through D-JN31-9 + D-JN31-FINAL).
+- **Joinery library: CANONICALLY CONTENT-COMPLETE.** Schema foundation + 15 categories + 40 types + 5 reasoning rules.
+- **Phase 2 Session 7 first library: CLOSED.**
+- Convention precedents established this block: category-context inheritance pattern for hand_vs_machine_classification when seed indicator-list silent but parent category framing is dating-tier-semantic (D-JN31-9); period_associations multi-entry granularity per seed era-phase sub-section structure (D-JN31-2; 8 entries with multi-period across 40 types); AG floor year resolution to seed-literal year not plan-default approximate (D-JN31-4 biscuit 1950 + confirmat 1970 corrections via A-5 + Mike-locked); cross-category authoring discipline via primary parent_category_id + related_joinery_types per Q5 Option M (D-JN31-5; 21 cross-references all resolve); reasoning rule forward-references closed via category-string applies_to_entry_types + per-entry regional_persistence_notes / anti_classification_guidance population (D-JN31-7).
+- Next sequencing: fasteners library schema + content authoring per Phase 2 Session 7 four-file evidence library architecture (Block 32 forward).
+
+---
+
 
