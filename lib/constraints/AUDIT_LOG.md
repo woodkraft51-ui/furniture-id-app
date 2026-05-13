@@ -2501,4 +2501,101 @@ Framework summary:
 
 ---
 
+## Block 33 — Fasteners library schema foundation + 6 categories + 9 subcategories + 5 reasoning rules + dual-assessment architecture convention
+## Phase 2 Session 7 second library OPENS
+## Session 14 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main d01fbc1 (Block 32 endpoint / Appraiser-Practice Framework captured)
+
+Opens Phase 2 Session 7 second library (fasteners) per D-AP32-5 sequencing. Authors `lib/constraints/fasteners.ts` with 4 interfaces (`FastenerCategoryEntry`, `FastenerSubcategoryEntry`, `FastenerTypeEntry`, `FastenerReasoningRule`) + 4 arrays (FASTENER_CATEGORIES 6 entries + FASTENER_SUBCATEGORIES 9 entries + FASTENER_TYPES empty scaffold + FASTENER_REASONING_RULES 5 entries). Three-tier hierarchy (Category → Subcategory → Type) matches canonical source structure where subcategories are different evidence classes (Hand-Forged vs Cut vs Wire nails; Handmade vs Machine-Cut vs Phillips vs Modern Drive screws; Upholstery Tacks vs Machine Staples). Block 34 will populate 25 FASTENER_TYPES content entries from canonical source per Op A-6 enumeration.
+
+### D-FA33-1 (locked): Block 33 scope per Q1-Q4 lockings
+Single fasteners.ts file with 4 interfaces + 4 arrays. FASTENER_CATEGORIES 6 entries; FASTENER_SUBCATEGORIES **9 entries** (refined from plan estimate "~10-13" to seed-actual 9 per D-FA33-12); FASTENER_TYPES empty scaffold for Block 34; FASTENER_REASONING_RULES 5 entries at 9/9. Two-block split per Q3: Block 33 = schema + categories + subcategories + rules; Block 34 = 25 FASTENER_TYPES content authoring.
+
+### D-FA33-2 (locked): Library architecture per Q1
+Single-file with 4 interfaces parallel to maker marks + joinery single-file-multi-interface pattern. Three-tier hierarchy (Category → Subcategory → Type) per Q2; subcategory tier matches canonical source structure (Hand-Forged vs Cut vs Wire nails are different evidence classes with own canonical content). Per-subcategory authority calibration + assessment_layer routing enabled.
+
+### D-FA33-3 (locked): Two-block split per Q3
+Block 33 = schema + 6 categories + 9 subcategories + 5 rules. Block 34 = 25 specific fastener types content authoring. Two-block scope decision locked.
+
+### D-FA33-4 (locked): Hardware Reference upload deferred per Q4
+Hardware library follows fasteners-established patterns at later session. No hardware schema authored Block 33.
+
+### D-FA33-5 (locked): DUAL-ASSESSMENT ARCHITECTURE CONVENTION — forward-applicable to all subsequent canonical evidence library authoring
+Each canonical evidence library declares assessment_layer at the LIBRARY/STRUCTURAL level (not per-entry):
+- **Default = "frame"** for all evidence libraries.
+- **Exception = "upholstery"** (only upholstery covers + upholstery construction libraries when authored).
+- **Fasteners library:** assessment_layer = "frame" DEFAULT with per-SUBCATEGORY override for upholstery-class subcategories (Subcategory 3A Upholstery Tacks + Subcategory 3B Machine Staples → "upholstery"). Per-fastener-type assessment routing inherits from declared subcategory; types under Cat 3 STAPLES inherit "upholstery"; all other types inherit "frame".
+- **Hardware library:** assessment_layer = "frame" (frame-adjacent; to be authored at later session per D-FA33-4).
+- **Maker marks library:** assessment_layer = "frame" (frame-only; upholstery shop labels date upholstery campaign which is already covered by upholstery construction evidence at later session).
+- **Wood / joinery / forms / families / spatial / construction / styles / HCL:** all assessment_layer = "frame".
+
+Schema encoding per Op A-11 Option II: `assessment_layer` field on BOTH `FastenerCategoryEntry` AND `FastenerSubcategoryEntry` (with subcategory override of category default). All 6 FASTENER_CATEGORIES at "frame"; all subcategories inherit except Category 3 STAPLES subcategories (3A + 3B) which override to "upholstery". Verified Op G-11 distribution: 6 categories "frame" + 0 "upholstery"; 7 subcategories "frame" + 2 subcategories "upholstery".
+
+Report layer surfaces TWO independent dated assessments: frame + upholstery. Evidence from each library accumulates to its declared assessment_layer per the canonical convention. Cross-references appraiser-practice framework (D-AP32-1 hybrid validation; D-AP32-4 Phase 3 reshape).
+
+Per Mike architectural clarification (Block 33 plan turn): dual-assessment exists because antique reupholstery is the typical case rather than the exception. Frame is the canonical piece; upholstery is a separate canonical artifact attached to the frame. Separating the two assessments enables the frame to be independently evaluated without reupholstery contaminating the frame attribution decision.
+
+### D-FA33-6 (locked): Physical location is identification HELPER, not assessment routing field
+Per Mike clarification (Block 33 plan turn): location can determine the fastener type but once correctly identified, the fastener is aged according to that identification. `PositionOnPiece` appears on `FastenerTypeEntry` as `common_observed_locations?: PhysicalLocation[]` (optional; helps user identify what they're looking at). NOT used for assessment routing — assessment routing is determined by canonical category/subcategory `assessment_layer` at library structural level per D-FA33-5.
+
+### D-FA33-7 (locked): D-AP32-3 replacement-likelihood calibration applied per fastener subcategory
+`replacement_likelihood` field on `FastenerTypeEntry` (Block 34 authoring) carries "low" | "medium" | "high" per A-10 calibration:
+- **LOW**: Hand-Forged Nails, Handmade Screws, Cut Nails (mostly), Bolts/Rods/Machine Fasteners, Knock-Down Connectors.
+- **MEDIUM**: Wire Nails, Machine-Cut Screws, Upholstery Tacks, Glue-Assisted Fasteners.
+- **HIGH**: Phillips-Head Screws, Modern Drive Types, Machine Staples.
+
+Per-type override permitted Block 34 authoring per canonical source warrant. Fasteners are the CANONICAL TEST CASE for D-AP32-3 (high-replacement-likelihood evidence class); per-entry authority downweighted vs harder-to-replace evidence (wood, joinery character, form).
+
+### D-FA33-8 (locked): Cross-library overlap resolution
+Fastener entries and joinery entries describe DIFFERENT evidence-axis phenomena (joinery = joint type / construction pattern; fastener = fastener object in canonical fastener-class terms). Cross-references via `related_joinery_types` field on `FastenerTypeEntry` (Block 34 authoring); no duplicate canonical content. Op A-7 identified 5 cross-reference candidates for Block 34 authoring: biscuit_compression_plate ↔ joinery_type_biscuit_joint; cam_lock_connector ↔ joinery_type_knock_down_cam_lock_joinery; confirmat_screw ↔ joinery_type_confirmat_screw_joinery; corrugated_fastener ↔ joinery_type_corrugated_fastener_reinforcement; upholstery_staple ↔ joinery_type_stapled_drawer_joinery.
+
+### D-FA33-9 (locked): 5 FastenerReasoningRule entries authored per Block 33 + canonical source coverage
+- **Rule #1 fasteners_alone_never_dates_furniture**: cross_layer_scope: true; meta-rule; pre-category introductory framework + STRONGEST/WEAKEST WHEN canonical framing cited in rationale per Surfacing 3 resolution.
+- **Rule #2 replacement_fastener_risk**: D-AP32-3 operationalization; STRONGER than joinery's restoration_false_signals rule because fasteners ARE the most-replaced canonical evidence class. Pre-category WEAKEST WHEN framework cited per Surfacing 3 resolution.
+- **Rule #3 rural_persistence**: parallel to joinery rural_persistence_warning rule (Block 30 D-JN30 rule #2); cut nails + slotted screws + hand-forged nails regional persistence canonical examples.
+- **Rule #4 restoration_contamination**: operationalizes dual-assessment architecture per D-FA33-5; reupholstery-era staples and Phillips screws are 'restoration contamination' for frame assessment but 'campaign evidence' for upholstery assessment. 11-row Quick-Reference Grid cited as cross-validation anchor per Surfacing 4 resolution.
+- **Rule #5 fastener_evidence_layer_independence**: cross_layer_scope: true; fourth canonical-library encoding of Independent Layer Evaluation Standard (after wood rule #7, maker rule #1 cross_layer_scope, joinery rule #5).
+
+All 5 at authority 9/9; migration_status "complete"; migration_target "engine_reasoning". cross_layer_scope: true on rules #1 + #5.
+
+### D-FA33-10 (locked): Authority calibration distribution per A-9 + D-AR29-11 semantic anchor table
+- **FASTENER_CATEGORIES**: 2 at 8/8 (NAILS, SCREWS); 4 at 7/7 (STAPLES, BOLTS/RODS/MACHINE, KNOCK-DOWN, GLUE-ASSISTED). Verified Op G runtime distribution: `{7: 4, 8: 2}`.
+- **FASTENER_SUBCATEGORIES**: 6 at 8/8 (1A Hand-Forged, 1B Cut Nails, 1C Wire Nails, 2A Handmade Screws, 2B Machine-Cut, 2C Phillips-Head); 3 at 7/7 (2D Modern Drive Types, 3A Upholstery Tacks, 3B Machine Staples). Verified Op G runtime distribution: `{7: 3, 8: 6}`.
+- **FASTENER_REASONING_RULES**: all 5 at 9/9 per meta-rule supremacy precedent (D-WE26-8 / D-MM27-5).
+
+### D-FA33-11 (locked): Fourth canonical-library encoding of Independent Layer Evaluation Standard
+After wood rule #7 (wood_evidence_layer_independence), maker rule #1 (core_maker_attribution_rule cross_layer_scope: true), joinery rule #5 (joinery_evidence_layer_independence), fastener rule #5 (fastener_evidence_layer_independence). Cross-library convention reinforced: each evidence-library reasoning-rule set includes one layer-independence canonical artifact per ILE precedent. Operationally integrates with dual-assessment architecture (D-FA33-5) — fastener layer outputs are independent inputs to both frame and upholstery assessment confidence calculations.
+
+### D-FA33-12 (locked): Subcategory count refinement — seed-actual 9 (not plan estimate "10-13")
+Op A-5 enumeration confirmed canonical source structure has exactly 9 subcategories: 3 NAILS subcategories (1A Hand-Forged + 1B Cut Nails + 1C Wire Nails) + 4 SCREWS subcategories (2A Handmade + 2B Machine-Cut + 2C Phillips-Head + 2D Modern Drive Types) + 2 STAPLES subcategories (3A Upholstery Tacks + 3B Machine Staples) + 0 subcategories for Categories 4/5/6 (no subcategory tier per seed). Total 3+4+2+0+0+0 = **9 subcategories**. Plan estimate "~10-13" was approximate; canonical-source fidelity supersedes plan estimate per Op A-12 verification gate refinement. G-4 gate refined to `FASTENER_SUBCATEGORIES.length === 9` (exact). Block 33 D-FA33-1 + D-FA33-FINAL language reflects exact count.
+
+Convention precedent for future evidence libraries: plan-estimate counts are placeholder pending Op A canonical source extraction; seed-actual counts supersede plan estimates with audit-decision capture of the refinement (parallel to D-JN31-9 category-context inheritance precedent — seed authority over plan-estimate authority where canonical-source fidelity is the discipline).
+
+### D-FA33-Surfacing-2 (locked): FastenerCategoryEntry.core_identifying_elements is OPTIONAL
+Seed Category 6 GLUE-ASSISTED has UNIQUE TRAITS section but no separate CORE IDENTIFYING ELEMENTS section (other 5 categories have both sections). Per Mike authorization: `core_identifying_elements?: string[]` made OPTIONAL on `FastenerCategoryEntry` interface; Cat 6 GLUE-ASSISTED authoring omits the field with notes-field marker per defensible-defaults DESCRIPTION fill discipline (Block 31 standard). Per-category field-naming variance precedent: D-JN30-9 (joinery library categories with COMMON IN instead of IDENTIFYING ELEMENTS).
+
+### D-FA33-Surfacing-3 (locked): Pre-category introductory framework cited in reasoning rule rationale
+Seed opening prose ("Fasteners are among the most powerful dating tools in furniture analysis because they often carry hard technological boundaries...") + FASTENERS ARE STRONGEST WHEN canonical framework (original + structurally integrated + repeated consistently + supported by surrounding evidence) + FASTENERS ARE WEAKEST WHEN canonical framework (isolated + clearly replaced + decorative only + attached during upholstery or restoration + inconsistent with surrounding construction) cited in Rule #1 (fasteners_alone_never_dates_furniture) and Rule #2 (replacement_fastener_risk) rationale fields. No separate canonical entry for introductory section.
+
+### D-FA33-Surfacing-4 (locked): 11-row FASTENER DATING QUICK-REFERENCE GRID cited as cross-validation anchor
+Grid cited in Rule #4 (restoration_contamination) rationale field as cross-validation anchor for industrial-introduction era boundaries (Stapled upholstery post-1950 + Phillips screws post-1935 + KD connectors post-1960 + Torx fasteners post-1967 + Confirmat screws post-1970). No separate canonical entry for Grid (similar to joinery's GENERAL DATE ASSOCIATION SUMMARY treatment).
+
+### D-FA33-FINAL (post-authoring summary)
+Block 33 ship: schema foundation + 6 FASTENER_CATEGORIES + 9 FASTENER_SUBCATEGORIES + 5 FASTENER_REASONING_RULES + empty FASTENER_TYPES scaffold + dual-assessment architecture convention captured.
+- Files modified: **2** (`lib/constraints/fasteners.ts` NEW; `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation.
+- NEW arrays: **FASTENER_CATEGORIES (6) + FASTENER_SUBCATEGORIES (9) + FASTENER_TYPES (0) + FASTENER_REASONING_RULES (5)**.
+- All 15 prior canonical array lengths unchanged: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5.
+- `lib/constraints/entryShape.ts`, `woodIdentification.ts`, `woodEvidence.ts`, `makerMarks.ts`, `forms.ts`, `families.ts`, `spatialBehaviors.ts`, `constructionLogic.ts`, `joinery.ts`: all byte-for-byte unchanged.
+- Authority distribution: FASTENER_CATEGORIES `{7: 4, 8: 2}`; FASTENER_SUBCATEGORIES `{7: 3, 8: 6}`; FASTENER_REASONING_RULES all 9/9.
+- assessment_layer distribution: 6 categories "frame" + 0 "upholstery"; 7 subcategories "frame" + 2 subcategories "upholstery" (3A Upholstery Tacks + 3B Machine Staples per D-FA33-5 override).
+- cross_layer_scope distribution: 2 reasoning rules at true (#1 fasteners_alone_never_dates_furniture + #5 fastener_evidence_layer_independence); 3 at false (#2 replacement_fastener_risk + #3 rural_persistence + #4 restoration_contamination).
+- Dual-assessment architecture convention: **CAPTURED**. Forward-applicable to hardware + upholstery covers + upholstery construction libraries.
+- **Phase 2 Session 7 second library schema foundation: OPENED.**
+- 13 audit decisions captured under D-FA33-N block-scoped prefix (D-FA33-1 through D-FA33-12 + D-FA33-FINAL; Surfacing-2/3/4 captured as decision-block extensions documenting plan-locked resolutions).
+- Convention precedents established/reinforced this block: dual-assessment architecture convention forward-applicable to subsequent evidence libraries (D-FA33-5); physical location is identification helper not routing field (D-FA33-6); replacement-likelihood calibration discipline canonical test case (D-FA33-7); cross-library overlap resolution via related_*_types FK fields with semantic-axis separation (D-FA33-8); fourth canonical-library encoding of ILE Standard reinforces per-library layer-independence rule convention (D-FA33-11); seed-actual count supersedes plan-estimate count with audit-decision capture (D-FA33-12); per-category field-naming variance permitted via optional-field schema (D-FA33-Surfacing-2 per D-JN30-9 precedent).
+- **Block 34 queued: 25 FASTENER_TYPES content authoring** from Fastener_Reference.docx canonical source with D-FA33-7 replacement_likelihood calibration applied per type + D-FA33-8 cross-library related_joinery_types FK cross-references per Op A-7 candidates.
+
+---
+
 
