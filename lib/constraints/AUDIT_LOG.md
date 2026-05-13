@@ -2598,4 +2598,167 @@ Block 33 ship: schema foundation + 6 FASTENER_CATEGORIES + 9 FASTENER_SUBCATEGOR
 
 ---
 
+## Block 34 — FASTENER_TYPES content authoring (25 entries across 12 sub-batches); fasteners library content-complete; Phase 2 Session 7 second library CLOSED
+## Session 15 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main cb232a6 (Block 33 endpoint / Fasteners library schema foundation opening)
+
+Closes Phase 2 Session 7 second library (fasteners) per D-AP32-5 sequencing + D-FA33-3 two-block split. Authors 25 FastenerTypeEntry entries across 12 internal sub-batches per Fastener_Reference.docx canonical source. Sub-batch distribution: 2 (1A Hand-Forged) + 3 (1B Cut Nails) + 3 (1C Wire Nails) + 1 (2A Handmade Screws) + 3 (2B Machine-Cut) + 1 (2C Phillips) + 3 (2D Modern Drive) + 1 (3A Upholstery Tacks) + 1 (3B Machine Staples) + 3 (Cat 4 Bolts) + 2 (Cat 5 KD) + 2 (Cat 6 Glue-Assisted) = 25 total. Closes Block 33 reasoning rule forward-references on Rule #2 replacement_fastener_risk + Rule #3 rural_persistence + Rule #4 restoration_contamination per D-FA34-9.
+
+Schema augmentation per Block 34 D-FA34-Surfacing-8 (Block 33 schema-gap correction): added `regional_persistence_notes?: string` optional field to `FastenerTypeEntry` interface paralleling `JoineryTypeEntry` precedent. Block 33 schema was content-only-locked but plan A-9 + D-FA34-7 referenced the field; minimal correction permits plan-locked rural-persistence content authoring without architectural deviation.
+
+### D-FA34-1 (locked): Block 34 scope per Q1-Q4 lockings
+Single combined ship with 12 internal sub-batches (one per subcategory + one per sub-categoryless category per Op A-3 enumeration). 25 FASTENER_TYPES entries authored. Per-sub-batch tsc check + intermediate length report through Op C-1 through Op C-12. Mid-batch pause protocol active throughout.
+
+### D-FA34-2 (locked): period_associations granularity per Q2 Option E precedent (Block 31)
+Multi-entry array where seed provides explicit era phases; single-entry otherwise. `date_range_summary` field carries seed DATE RANGE prose verbatim regardless of array length.
+
+**5 multi-period types** (era-phase sub-sections in seed):
+- `fastener_type_slotted_wood_screw`: 2 entries (1840-1940 dominant + 1940+ post-Phillips persistence)
+- `fastener_type_robertson`: 2 entries (1908-1949 introduction + 1950+ mid-20th-century dominance)
+- `fastener_type_allen_hex_socket_screw`: 2 entries (1910-1949 technology introduction + 1950+ furniture commonality)
+- `fastener_type_upholstery_staple`: 2 entries (1930-1949 introduction + 1950+ widespread upholstery use)
+- `fastener_type_corrugated_fastener`: 2 entries (1880-1929 industrial introduction + 1930-1950 widespread dominance; end-ceiling 1950 per canonical seed unique among fastener types)
+
+**20 single-period types** otherwise.
+
+### D-FA34-3 (locked): replacement_likelihood per-type per Q2 Option D defensible-defaults
+Default per category per D-FA33-7; per-type override permitted with notes-field marker. One override applied: `fastener_type_threaded_rod` resolved LOW (plan A-5 "LOW-MEDIUM" → LOW per "structural; not commonly replaced" rationale per D-FA34-Surfacing-6).
+
+**Final distribution: {low: 10, medium: 10, high: 5}** (verified Op G G-13).
+- LOW (10): rosehead_nail, l_head_t_head_nail, early_hand_headed_cut_nail, machine_headed_cut_nail, handmade_wood_screw, carriage_bolt, threaded_rod, barrel_nut_cross_dowel, cam_lock_connector, confirmat_screw
+- MEDIUM (10): brad_finish_cut_nail, common_wire_nail, finish_nail, box_nail, slotted_wood_screw, brass_wood_screw, steel_wood_screw, decorative_brass_tack, corrugated_fastener, biscuit_compression_plate
+- HIGH (5): phillips_wood_screw, robertson, torx, allen_hex_socket_screw, upholstery_staple
+
+### D-FA34-4 (locked): AG entries on 8 types per Q3 Option F industrial-introduction-boundary pattern
+**Final AG count: 8** (plan Q3 estimate "7-8" resolved to 8 per A-4 Biscuit/Compression Plate inclusion). AG prose canonical pattern: "Pre-[year] presence of this fastener type indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-[year] original construction."
+
+| Type | AG floor |
+|---|---|
+| phillips_wood_screw | 1935 |
+| robertson | 1908 |
+| torx | 1967 |
+| allen_hex_socket_screw | 1910 (D-FA34-Surfacing-1; decade-start convention; "furniture commonality later" qualifier captured in usage_notes on 1910+ period_associations) |
+| upholstery_staple | 1930 (D-FA34-Surfacing-2; D-JN31-4 introduction-year-is-AG-floor convention; diverges from joinery library stapled_drawer_joinery AG 1950 per D-FA34-11) |
+| cam_lock_connector | 1960 (matches joinery D-JN31 precedent ✓) |
+| confirmat_screw | 1970 (matches joinery D-JN31-9 precedent ✓) |
+| biscuit_compression_plate | 1950 (D-FA34-Surfacing-3; matches joinery D-JN31-4 biscuit precedent ✓) |
+
+`fastener_type_corrugated_fastener` does NOT carry AG per D-FA34-Surfacing-4 (soft-boundary phrasing "Common in inexpensive case furniture" does not meet hard boundary-classification threshold; period_associations array [1880-1929 + 1930-1950] captures range adequately).
+
+### D-FA34-5 (locked): Cross-category FK assignment per Q4 mapping
+**5 types with `related_joinery_types` FK** to corresponding joinery library entries per Op A-7 + D-FA33-8:
+- `fastener_type_biscuit_compression_plate` → `["joinery_type_biscuit_joint"]`
+- `fastener_type_cam_lock_connector` → `["joinery_type_knock_down_cam_lock_joinery"]`
+- `fastener_type_confirmat_screw` → `["joinery_type_confirmat_screw_joinery"]`
+- `fastener_type_corrugated_fastener` → `["joinery_type_corrugated_fastener_reinforcement"]`
+- `fastener_type_upholstery_staple` → `["joinery_type_stapled_drawer_joinery"]`
+
+All 5 FKs verified to resolve via Op G G-10. One-directional fastener → joinery cross-reference per D-FA33-8; joinery library NOT augmented with reverse `related_fastener_types` field per Op A-8 default lean.
+
+### D-FA34-6 (locked): Authority calibration distribution per D-AR29-11 + D-AP32-3
+**Final distribution (verified Op G G-12): positive_authority {7: 11, 8: 14}; hard_negative_authority {7: 11, 8: 14}.**
+
+**14 entries at 8/8** (canonical anchor positions per A-6):
+- 6 STRONGLY EARLY anchors: rosehead_nail (1600-1820), l_head_t_head_nail (1700-1840), early_hand_headed_cut_nail (1790-1835), machine_headed_cut_nail (1825-1895), handmade_wood_screw (1750-1840), slotted_wood_screw (1840-1940 dominant + rural-persistence-bounded)
+- 1 post-industrial floor anchor: common_wire_nail (1890+)
+- 7 AG anchors: phillips_wood_screw (1935), robertson (1908), torx (1967), cam_lock_connector (1960), confirmat_screw (1970), upholstery_staple (1930), biscuit_compression_plate (1950)
+
+**11 entries at 7/7** (secondary canonical-source rationale per A-6): brad_finish_cut_nail, finish_nail, box_nail, brass_wood_screw, steel_wood_screw, allen_hex_socket_screw, decorative_brass_tack, carriage_bolt, threaded_rod, barrel_nut_cross_dowel, corrugated_fastener.
+
+Note: `allen_hex_socket_screw` stays at 7/7 despite AG presence per D-FA34-Surfacing-5 — canonical "Furniture commonality later" qualifier weakens anchor strength below 8/8 threshold. AG still applied per Q3 industrial-introduction-boundary discipline.
+
+### D-FA34-7 (locked): regional_persistence_notes populated on 6 rural-persistence-bounded types per A-9 + Rule #3
+**6 types populated** (verified Op G):
+- fastener_type_rosehead_nail (hand-forged frontier/rural)
+- fastener_type_l_head_t_head_nail (hand-forged frontier/rural)
+- fastener_type_early_hand_headed_cut_nail (cut nails rural production)
+- fastener_type_machine_headed_cut_nail (cut nails rural production)
+- fastener_type_brad_finish_cut_nail (cut nails specialty persistence)
+- fastener_type_slotted_wood_screw (slotted screws remained common after Phillips)
+
+Field added to `FastenerTypeEntry` schema per D-FA34-Surfacing-8 Block 33 schema-gap correction (parallels JoineryTypeEntry precedent). Per-entry prose cross-references FastenerReasoningRule #3 rural_persistence canonical-source warnings; appraiser-honest framing per Block 30 D-JN30-5 Rule #2 precedent.
+
+### D-FA34-8 (locked): common_observed_locations field populated sparsely per D-FA33-6
+Identification-helper discipline per D-FA33-6 (location HELPS identification; once identified the type's age determined by canonical period_associations; NOT used for assessment routing). Populated where seed gives clear physical-location mapping (sparse population per defensible-defaults convention).
+
+**12 types populated** with PhysicalLocation enum values: l_head_t_head_nail (case_carcass/back/panel), brad_finish_cut_nail (trim_or_molding), finish_nail (trim_or_molding), phillips_wood_screw (movable_hardware_attachment), robertson (movable_hardware_attachment), torx (movable_hardware_attachment), allen_hex_socket_screw (movable_hardware_attachment), decorative_brass_tack (upholstery_attachment_point/arm/back), upholstery_staple (upholstery_attachment_point/support_layer), carriage_bolt (frame_joint/structural_reinforcement), threaded_rod (structural_reinforcement), cam_lock_connector (case_carcass/frame_joint), confirmat_screw (case_carcass), corrugated_fastener (frame_joint/case_corner), biscuit_compression_plate (frame_joint). 13 types omit field per sparse-population defensible default.
+
+### D-FA34-9 (locked): Block 33 reasoning rule forward-references RESOLVED
+- **Rule #2 replacement_fastener_risk**: per-type `replacement_likelihood` field populated on all 25 entries operationalizes the rule (D-FA34-3 distribution). 8 AG entries provide concrete temporal anchors per D-FA34-4.
+- **Rule #3 rural_persistence**: 6 entries with `regional_persistence_notes` populated per D-FA34-7 cross-reference Rule #3 canonical-source warnings.
+- **Rule #4 restoration_contamination**: 8 AG entries per D-FA34-4 cross-reference Rule #4 + dual-assessment architecture (D-FA33-5); reupholstery-era staples and Phillips screws are "campaign evidence" for upholstery assessment but "restoration contamination" if interpreted against frame dating.
+
+`applies_to_entry_types: ["fastener_type", ...]` category-string FKs on all 3 forward-referencing rules now close per Block 34 type-array population.
+
+### D-FA34-10 (locked): Fasteners library content-complete on Block 34 ship; Phase 2 Session 7 second library CLOSED
+Schema foundation (Block 33) + 6 categories (Block 33) + 9 subcategories (Block 33) + 5 reasoning rules (Block 33) + 25 types (Block 34) = fasteners library canonically content-complete. Phase 2 Session 7 second library CLOSED. Next sequencing per D-AP32-5: hardware library schema + content authoring per Phase 2 Session 7 four-file evidence library architecture (Mike uploads `Hardware Reference.docx` for that block's Op A).
+
+### D-FA34-11 (locked per Mike-authorization addition): Cross-library AG floor divergence — explicit audit decision
+**`fastener_type_upholstery_staple` AG floor 1930 vs `joinery_type_stapled_drawer_joinery` AG floor 1950.**
+
+Two canonical sources (`Fastener_Reference.docx` for fasteners library + `JOINERY_IDENTIFICATION_MASTER_BREAKDOWN.docx` for joinery library) provide different AG floor anchors for the staple/stapled-joinery phenomenon. Per the per-canonical-source fidelity convention:
+- **Fastener library AG floor 1930**: per `Fastener_Reference.docx` seed DATE RANGE "c. 1930-present. Very common after 1950" — 1930 is explicit canonical introduction year; 1950 captured as second `period_associations` entry per D-JN31-4 introduction-year-is-AG-floor convention.
+- **Joinery library AG floor 1950**: per `JOINERY_IDENTIFICATION_MASTER_BREAKDOWN.docx` seed DATE RANGE "1950s-present" — 1950 IS the canonical introduction year for the joinery-pattern phenomenon (no earlier introduction phase surfaced in joinery canonical source).
+
+The divergence is canonical-source-driven, not arbitrary. The two phenomena are distinct: a fastener type (physical hardware) vs a joinery pattern (construction technique using staples). Each library's AG anchor reflects its own canonical source's introduction date for its specific phenomenon.
+
+**Convention precedent established for future cross-library overlap resolution:** when two canonical evidence libraries describe related-but-distinct phenomena with different canonical-source introduction dates, each library's AG anchor follows its own canonical source. Divergence is captured as an explicit audit decision; cross-references via `related_*_types` FK fields document the relationship without forcing identity.
+
+Forward-applicable to:
+- Hardware library entries that may cross-reference joinery construction patterns
+- Upholstery covers + construction libraries that may cross-reference joinery upholstery-related patterns + fastener upholstery-staple entries
+- Subsequent libraries with related-but-distinct phenomena across canonical sources
+
+### D-FA34-Surfacing-1 (locked): Allen/Hex Socket AG floor 1910
+Seed "c. 1910s–present. Furniture commonality later". Decade-start convention; AG covers technology-introduction boundary. "Furniture commonality later" qualifier captured in `usage_notes` on 1910+ `period_associations` entry. Note in entry notes field flags the technology-vs-furniture-context distinction. Authority stays at 7/7 despite AG per D-FA34-Surfacing-5.
+
+### D-FA34-Surfacing-2 (locked): Upholstery Staple AG floor 1930 per D-JN31-4 convention
+Canonical seed "c. 1930–present. Very common after 1950" = 1930 introduction year is AG floor; 1950 widespread-use date captured as second `period_associations` entry. Divergence from joinery library `stapled_drawer_joinery` AG 1950 captured as D-FA34-11 cross-library AG floor divergence decision.
+
+### D-FA34-Surfacing-3 (locked): Biscuit/Compression Plate AG floor 1950 matches joinery library precedent
+Matches joinery library D-JN31-4 biscuit_joint precedent. Adds 8th AG to plan Q3 estimate of 7 (resolved AG count to 8).
+
+### D-FA34-Surfacing-4 (locked): Corrugated Fastener NO AG
+Canonical seed "c. 1880–1950" date range; "Common in inexpensive case furniture" soft-boundary phrasing does not meet hard boundary-classification threshold for AG. `period_associations` array captures range adequately. AG count stays at 8 (not 9).
+
+### D-FA34-Surfacing-5 (locked): Authority calibration adjustments
+- allen_hex_socket_screw at 7/7 (NOT 8/8) despite AG presence — "Furniture commonality later" canonical qualifier weakens anchor strength below 8/8 threshold.
+- biscuit_compression_plate at 8/8 per joinery library biscuit_joint precedent + AG anchor (matches D-FA34-Surfacing-3 resolution).
+- Final authority distribution: {7: 11, 8: 14}.
+
+### D-FA34-Surfacing-6 (locked): replacement_likelihood Threaded Rod LOW
+Plan A-5 "LOW-MEDIUM" → LOW per "structural; not commonly replaced" rationale. No other per-type category-default overrides applied. Distribution {low: 10, medium: 10, high: 5}.
+
+### D-FA34-Surfacing-7 (locked): common_observed_locations sparse population
+Per D-FA33-6 identification-helper discipline. 12 of 25 types populated; 13 omit field per defensible-defaults sparse-population convention. PhysicalLocation enum values selected from 34-value entryShape.ts enum (Block 22 D-PA-1 closed enum) per seed Common Locations mapping.
+
+### D-FA34-Surfacing-8 (locked): FastenerTypeEntry schema augmentation — regional_persistence_notes field added
+**Block 33 schema-gap correction.** Block 33 plan template + schema authoring omitted `regional_persistence_notes` field from `FastenerTypeEntry` interface despite plan A-9 + D-FA34-7 referencing the field on Block 34 type authoring. Joinery library `JoineryTypeEntry` has the field per Block 30 D-JN30-3 + Block 31 D-JN31 authoring; parallel encoding warranted for fasteners library Rule #3 rural_persistence operationalization.
+
+**Resolution**: minimal schema augmentation — added `regional_persistence_notes?: string` (OPTIONAL field) to `FastenerTypeEntry` interface in `fasteners.ts` Block 34 ship. Field is optional; backwards-compatible with Block 33-era code (none authored type entries; no existing entries to migrate). Parallels `JoineryTypeEntry.regional_persistence_notes` precedent exactly.
+
+**Convention precedent**: discovery of schema gap during content authoring permits minimal schema augmentation in content-only block when: (a) plan explicitly references the field; (b) augmentation parallels established precedent from prior library; (c) field is optional and backwards-compatible. Schema augmentation captured as Surfacing-N decision in audit log; not as Op B re-opening. This precedent permits future canonical evidence libraries (hardware + upholstery × 2) to apply analogous mid-content-block schema corrections without architectural deviation.
+
+### D-FA34-FINAL (post-authoring summary)
+Block 34 ship: 25 FASTENER_TYPES entries authored across 12 internal sub-batches; fasteners library canonically content-complete; Phase 2 Session 7 second library CLOSED.
+- **`FASTENER_TYPES.length`: 0 → 25** (verified Op G G-2).
+- **Authority distribution**: `positive_authority {7: 11, 8: 14}`; `hard_negative_authority {7: 11, 8: 14}` per D-FA34-6.
+- **replacement_likelihood distribution**: `{low: 10, medium: 10, high: 5}` per D-FA34-3.
+- **AG count: 8** (phillips, robertson, torx, allen_hex_socket, upholstery_staple, cam_lock, confirmat, biscuit_compression_plate) per D-FA34-4.
+- **Cross-library `related_joinery_types` FK count: 5** (biscuit, cam_lock, confirmat, corrugated, upholstery_staple) per D-FA34-5 — all FKs resolve to authored joinery_type ids.
+- **`regional_persistence_notes` populated count: 6** (hand-forged × 2 + cut nails × 3 + slotted_wood_screw) per D-FA34-7.
+- **`common_observed_locations` populated count: 12 of 25** per D-FA34-8 + D-FA34-Surfacing-7 sparse-population discipline.
+- **period_associations multi-entry types: 5** (slotted_wood_screw, robertson, allen_hex_socket_screw, upholstery_staple, corrugated_fastener) per D-FA34-2.
+- Files modified: **2** (`lib/constraints/fasteners.ts` schema augmentation + content; `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation.
+- **All 18 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_REASONING_RULES 5.
+- `lib/constraints/entryShape.ts`, `woodIdentification.ts`, `woodEvidence.ts`, `makerMarks.ts`, `forms.ts`, `families.ts`, `spatialBehaviors.ts`, `constructionLogic.ts`, `joinery.ts`: all byte-for-byte unchanged.
+- 11 numbered audit decisions captured under D-FA34-N block-scoped prefix (D-FA34-1 through D-FA34-11 + D-FA34-FINAL) + 8 Surfacing-N decision-block extensions documenting plan-locked + Mike-authorized resolutions.
+- **Fasteners library: CANONICALLY CONTENT-COMPLETE.** Schema foundation + 6 categories + 9 subcategories + 25 types + 5 reasoning rules.
+- **Phase 2 Session 7 second library: CLOSED.**
+- Convention precedents established this block: cross-library AG floor divergence as explicit audit decision (D-FA34-11; canonical-source-driven per-library anchor with cross-references via related_*_types FK documenting relationship without forcing identity); mid-content-block schema augmentation permitted for plan-referenced field discovered to be missing from prior block's schema (D-FA34-Surfacing-8; minimal, parallels established precedent, optional/backwards-compatible); identification-helper sparse-population discipline (D-FA34-Surfacing-7); per-canonical-source fidelity over joinery-library cross-reference identity (D-FA34-Surfacing-2 + D-FA34-11).
+- Next sequencing per D-AP32-5: hardware library schema + content authoring per Phase 2 Session 7 four-file evidence library architecture (Block N+1 forward; Mike uploads `Hardware Reference.docx` for that block's Op A).
+
+---
+
 

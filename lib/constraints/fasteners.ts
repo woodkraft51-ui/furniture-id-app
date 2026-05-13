@@ -171,6 +171,16 @@ export interface FastenerTypeEntry extends CanonicalEntry {
   replacement_likelihood: "low" | "medium" | "high";
   related_fastener_types?: string[];
   related_joinery_types?: string[];
+  /**
+   * Per Rule #3 rural_persistence: rural-persistence-bounded prose
+   * captured per-entry where canonical source surfaces regional
+   * persistence context (Appalachian + Mennonite + Shaker + frontier
+   * + rural Southern). Block 33 schema-gap correction per Block 34
+   * D-FA34-Surfacing-8: field added to parallel JoineryTypeEntry
+   * precedent and operationalize plan A-9 + D-FA34-7. Optional;
+   * populated on rural-persistence-bounded types only.
+   */
+  regional_persistence_notes?: string;
 }
 
 /**
@@ -672,7 +682,844 @@ export const FASTENER_SUBCATEGORIES: FastenerSubcategoryEntry[] = [
  * Fastener_Reference.docx canonical source (2+3+3+1+3+1+3+1+1
  * +3+2+2 distribution per Op A-6 enumeration).
  */
-export const FASTENER_TYPES: FastenerTypeEntry[] = [];
+export const FASTENER_TYPES: FastenerTypeEntry[] = [
+  // ─── Sub-batch C-1: 1A HAND-FORGED NAILS (2 types) ───
+  {
+    id: "fastener_type_rosehead_nail",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Multi-faceted hand-forged hammered head with decorative radial appearance and four-sided shaft taper; STRONGLY EARLY indicator per Fastener_Reference.docx (c. 1600–1820 anchor).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1A HAND-FORGED NAILS > Rosehead Nail. 8/8 STRONGLY EARLY canonical anchor per A-6. replacement_likelihood LOW per A-5 (rarely replaced; hand-forged in hidden locations is appraiser-honest evidence). regional_persistence_notes populated per A-9 (frontier/rural persistence per Critical Evidence Warnings).",
+    name: "Rosehead Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_hand_forged_nails",
+    description: "Multi-faceted hammered head with decorative radial appearance; hand-forged wrought iron.",
+    unique_traits: [
+      "Multi-faceted hammered head",
+      "Decorative radial appearance",
+      "Hand-forged wrought iron",
+    ],
+    identifying_characteristics: [
+      "Pyramid-like hammered head",
+      "Four-sided shaft taper",
+      "Irregular head geometry",
+      "Blacksmith hammer marks",
+      "Often clenched/bent on reverse",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary dominance",
+        date_floor: 1600,
+        date_ceiling: 1820,
+      },
+    ],
+    date_range_summary: "c. 1600–1820.",
+    replacement_likelihood: "low",
+    regional_persistence_notes: "Hand-forged Rosehead Nails persisted in frontier/rural areas per Critical Evidence Warnings Rural Persistence canonical-source section. Presence does NOT automatically establish pre-1820 dating; regional persistence patterns require corroborating evidence from form, wood, joinery, and maker context per FastenerReasoningRule #3.",
+  },
+  {
+    id: "fastener_type_l_head_t_head_nail",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Side-hammered functional forged head with minimal protrusion; flooring and casework hand-forged nail (c. 1700–1840 anchor).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1A HAND-FORGED NAILS > L-Head / T-Head Nail. 8/8 STRONGLY EARLY canonical anchor per A-6. replacement_likelihood LOW per A-5. regional_persistence_notes populated per A-9. common_observed_locations populated per seed 'flooring and casework' reference (case_carcass closest enum match; flooring not applicable to furniture).",
+    name: "L-Head / T-Head Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_hand_forged_nails",
+    description: "Functional forged head with minimal protrusion; hand-forged for flooring and casework.",
+    unique_traits: [
+      "Functional forged head",
+      "Minimal protrusion",
+    ],
+    identifying_characteristics: [
+      "Side-hammered head",
+      "Small flattened striking surface",
+      "Often used in flooring and casework",
+      "Hand-forged asymmetry",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary dominance",
+        date_floor: 1700,
+        date_ceiling: 1840,
+      },
+    ],
+    date_range_summary: "c. 1700–1840.",
+    common_observed_locations: ["case_carcass", "case_back", "case_panel"],
+    replacement_likelihood: "low",
+    regional_persistence_notes: "Hand-forged L-Head/T-Head Nails persisted in frontier/rural areas per Critical Evidence Warnings Rural Persistence canonical-source section. Presence does NOT automatically establish pre-1840 dating; regional persistence patterns require corroborating evidence per FastenerReasoningRule #3.",
+  },
+
+  // ─── Sub-batch C-2: 1B CUT NAILS (3 types) ───
+  {
+    id: "fastener_type_early_hand_headed_cut_nail",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Machine-cut shaft with hand-applied head; transitional manufacturing evidence (c. 1790–1835 anchor).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1B CUT NAILS > Early Hand-Headed Cut Nail. 8/8 transitional-manufacturing anchor per A-6. replacement_likelihood LOW per A-5. regional_persistence_notes populated per A-9 (cut nails survived in rural production well into late 19th century per canonical source).",
+    name: "Early Hand-Headed Cut Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_cut_nails",
+    description: "Machine-cut shaft with hand-applied head.",
+    unique_traits: [
+      "Machine-cut shaft with hand-applied head",
+    ],
+    identifying_characteristics: [
+      "Irregular head atop uniform shaft",
+      "Transitional manufacturing evidence",
+      "Head may appear slightly off-center",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary dominance",
+        date_floor: 1790,
+        date_ceiling: 1835,
+      },
+    ],
+    date_range_summary: "c. 1790–1835.",
+    replacement_likelihood: "low",
+    regional_persistence_notes: "Cut nails survived in rural production well into late 19th century per Critical Evidence Warnings Rural Persistence canonical-source section. Early Hand-Headed presence does NOT automatically establish pre-1835 dating; regional persistence patterns require corroborating evidence per FastenerReasoningRule #3.",
+  },
+  {
+    id: "fastener_type_machine_headed_cut_nail",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Fully mechanized cut nail production with consistent shaft dimensions and visible shearing burrs (c. 1825–1895 anchor).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1B CUT NAILS > Machine-Headed Cut Nail. 8/8 industrial-era canonical anchor per A-6. replacement_likelihood LOW per A-5. regional_persistence_notes populated per A-9.",
+    name: "Machine-Headed Cut Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_cut_nails",
+    description: "Fully mechanized cut nail production.",
+    unique_traits: [
+      "Fully mechanized production",
+    ],
+    identifying_characteristics: [
+      "More uniform head formation",
+      "Consistent shaft dimensions",
+      "Visible shearing burrs",
+      "Often magnetic steel",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary dominance",
+        date_floor: 1825,
+        date_ceiling: 1895,
+      },
+    ],
+    date_range_summary: "c. 1825–1895.",
+    replacement_likelihood: "low",
+    regional_persistence_notes: "Cut nails survived in rural production well into late 19th century per Critical Evidence Warnings Rural Persistence canonical-source section. Machine-Headed presence does NOT automatically establish pre-1895 dating; regional persistence patterns require corroborating evidence per FastenerReasoningRule #3.",
+  },
+  {
+    id: "fastener_type_brad_finish_cut_nail",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Small-head cut nail designed for concealment in moldings and trim attachment (c. 1840–1910+).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1B CUT NAILS > Brad / Finish Cut Nail. 7/7 secondary anchor per A-6 (decorative cut nail; specialty persistence). replacement_likelihood MEDIUM per A-5 (decorative; sometimes replaced). regional_persistence_notes populated per A-9 (cut nails category specialty persistence).",
+    name: "Brad / Finish Cut Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_cut_nails",
+    description: "Small-head trim nail designed for concealment.",
+    unique_traits: [
+      "Small-head trim nail",
+      "Designed for concealment",
+    ],
+    identifying_characteristics: [
+      "Minimal head exposure",
+      "Slender rectangular shaft",
+      "Used in moldings and trim attachment",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary usage",
+        date_floor: 1840,
+        usage_notes: "Seed DATE RANGE '1840–1910+'; persisted in specialty trim uses later.",
+      },
+    ],
+    date_range_summary: "c. 1840–1910+.",
+    common_observed_locations: ["trim_or_molding"],
+    replacement_likelihood: "medium",
+    regional_persistence_notes: "Cut nails (including Brad/Finish variants) survived in rural and specialty trim production per Critical Evidence Warnings Rural Persistence canonical-source section per FastenerReasoningRule #3.",
+  },
+
+  // ─── Sub-batch C-3: 1C WIRE NAILS (3 types) ───
+  {
+    id: "fastener_type_common_wire_nail",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Round-shaft general-purpose wire nail with flat circular head; STRONGLY INDUSTRIAL post-1890 anchor.",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1C WIRE NAILS > Common Wire Nail. 8/8 post-industrial floor canonical anchor per A-6. replacement_likelihood MEDIUM per A-5.",
+    name: "Common Wire Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_wire_nails",
+    description: "General-purpose construction nail with round shaft and flat circular head.",
+    unique_traits: [
+      "General-purpose construction nail",
+    ],
+    identifying_characteristics: [
+      "Round shaft",
+      "Flat circular head",
+      "Uniform industrial dimensions",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1890,
+      },
+    ],
+    date_range_summary: "c. 1890–present.",
+    replacement_likelihood: "medium",
+  },
+  {
+    id: "fastener_type_finish_nail",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Concealable-head trim-focused wire nail with smooth cylindrical shaft (c. 1890–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1C WIRE NAILS > Finish Nail. 7/7 secondary anchor per A-6. replacement_likelihood MEDIUM per A-5.",
+    name: "Finish Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_wire_nails",
+    description: "Concealable-head trim-focused wire nail.",
+    unique_traits: [
+      "Concealable head",
+      "Trim-focused use",
+    ],
+    identifying_characteristics: [
+      "Small countersink head",
+      "Smooth cylindrical shaft",
+      "Often set below surface",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1890,
+      },
+    ],
+    date_range_summary: "c. 1890–present.",
+    common_observed_locations: ["trim_or_molding"],
+    replacement_likelihood: "medium",
+  },
+  {
+    id: "fastener_type_box_nail",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Thinner-shaft wire nail used to minimize splitting (c. 1890–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 1 NAILS > SUBCATEGORY 1C WIRE NAILS > Box Nail. 7/7 secondary anchor per A-6. replacement_likelihood MEDIUM per A-5.",
+    name: "Box Nail",
+    parent_category_id: "fastener_category_nails",
+    parent_subcategory_id: "fastener_subcategory_wire_nails",
+    description: "Thinner-shaft wire nail used to minimize splitting.",
+    unique_traits: [
+      "Thinner than common nail",
+    ],
+    identifying_characteristics: [
+      "Reduced shaft diameter",
+      "Used to minimize splitting",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1890,
+      },
+    ],
+    date_range_summary: "c. 1890–present.",
+    replacement_likelihood: "medium",
+  },
+
+  // ─── Sub-batch C-4: 2A HANDMADE SCREWS (1 type) ───
+  {
+    id: "fastener_type_handmade_wood_screw",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Individually crafted screw with file marks on threads and asymmetrical hand-slotted head; STRONGLY EARLY anchor (c. 1750–1840).",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2A HANDMADE SCREWS > Handmade Wood Screw. 8/8 STRONGLY EARLY canonical anchor per A-6. replacement_likelihood LOW per A-5 (rarely replaced).",
+    name: "Handmade Wood Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_handmade_screws",
+    description: "Individually crafted screw with hand-filed threads.",
+    unique_traits: [
+      "Individually crafted",
+    ],
+    identifying_characteristics: [
+      "File marks on threads",
+      "Slightly irregular spiral",
+      "Head slot varies in depth/width",
+      "Shaft often tapered inconsistently",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary dominance",
+        date_floor: 1750,
+        date_ceiling: 1840,
+      },
+    ],
+    date_range_summary: "c. 1750–1840.",
+    replacement_likelihood: "low",
+  },
+
+  // ─── Sub-batch C-5: 2B MACHINE-CUT SCREWS (3 types) ───
+  {
+    id: "fastener_type_slotted_wood_screw",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Single-slot traditional woodworking screw with tapered shaft and countersunk flat head; 1840-1940 dominant anchor with rural persistence after Phillips.",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2B MACHINE-CUT SCREWS > Slotted Wood Screw. 8/8 primary canonical anchor per A-6 (1840-1940 dominance + rural-persistence-bounded ceiling). replacement_likelihood MEDIUM per A-5. regional_persistence_notes populated per A-9 (slotted screws remained common decades after Phillips per canonical source). period_associations multi-entry per A-7 (1840-1940 dominant + 1940+ secondary).",
+    name: "Slotted Wood Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_machine_cut_screws",
+    description: "Single-slot head traditional woodworking fastener.",
+    unique_traits: [
+      "Single-slot head",
+      "Traditional woodworking fastener",
+    ],
+    identifying_characteristics: [
+      "Straight slot only",
+      "Tapered shaft",
+      "Countersunk flat heads common",
+      "Frequently brass or steel",
+    ],
+    period_associations: [
+      {
+        period_label: "Primary dominance",
+        date_floor: 1840,
+        date_ceiling: 1940,
+        usage_notes: "Dominant until c. 1930s-1940s per seed.",
+      },
+      {
+        period_label: "Post-Phillips persistence",
+        date_floor: 1940,
+        usage_notes: "Slotted screws remained common decades after Phillips existed per Rural Persistence canonical-source warning.",
+      },
+    ],
+    date_range_summary: "c. 1840–present. Dominant until c. 1930s–1940s.",
+    replacement_likelihood: "medium",
+    regional_persistence_notes: "Slotted screws remained common decades after Phillips existed per Critical Evidence Warnings Rural Persistence canonical-source section. Presence of slotted screws does NOT automatically establish pre-1935 dating; regional and specialty persistence patterns require corroborating evidence per FastenerReasoningRule #3.",
+  },
+  {
+    id: "fastener_type_brass_wood_screw",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Yellow-gold decorative corrosion-resistant slotted screw frequently used in campaign furniture, marine furniture, and higher-end cabinetry (c. 1840–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2B MACHINE-CUT SCREWS > Brass Wood Screw. 7/7 secondary anchor per A-6 (decorative). replacement_likelihood MEDIUM per A-5 (decorative; sometimes replaced).",
+    name: "Brass Wood Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_machine_cut_screws",
+    description: "Decorative and corrosion-resistant brass screw.",
+    unique_traits: [
+      "Decorative and corrosion-resistant",
+    ],
+    identifying_characteristics: [
+      "Yellow-gold coloration",
+      "Softer metal wear",
+      "Often used in campaign furniture, marine furniture, higher-end cabinetry",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1840,
+      },
+    ],
+    date_range_summary: "c. 1840–present.",
+    replacement_likelihood: "medium",
+  },
+  {
+    id: "fastener_type_steel_wood_screw",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Stronger ferromagnetic industrial-finish slotted screw with dark oxidation (c. 1850–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2B MACHINE-CUT SCREWS > Steel Wood Screw. 7/7 secondary anchor per A-6. replacement_likelihood MEDIUM per A-5.",
+    name: "Steel Wood Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_machine_cut_screws",
+    description: "Stronger industrial steel screw.",
+    unique_traits: [
+      "Stronger than brass",
+    ],
+    identifying_characteristics: [
+      "Ferromagnetic",
+      "Dark oxidation",
+      "Industrial finish",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1850,
+      },
+    ],
+    date_range_summary: "c. 1850–present.",
+    replacement_likelihood: "medium",
+  },
+
+  // ─── Sub-batch C-6: 2C PHILLIPS-HEAD (1 type) ───
+  {
+    id: "fastener_type_phillips_wood_screw",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Cross-recess power-driver-optimized wood screw with uniform industrial threading; STRONGLY INDUSTRIAL primary indicator per seed; AG floor 1935.",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2C PHILLIPS-HEAD SCREWS > Phillips Wood Screw. 8/8 AG anchor per A-6. replacement_likelihood HIGH per A-5 (restoration-contamination primary indicator per Rule #4). AG floor 1935 per A-4 (seed 'c. 1935-present').",
+    name: "Phillips Wood Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_phillips_head_screws",
+    description: "Power-driver-optimized cross-recess wood screw.",
+    unique_traits: [
+      "Power-driver optimized",
+    ],
+    identifying_characteristics: [
+      "Cross recess",
+      "Uniform industrial threading",
+      "Strong postwar association",
+    ],
+    period_associations: [
+      {
+        period_label: "Phillips emergence",
+        date_floor: 1935,
+      },
+    ],
+    date_range_summary: "c. 1935–present.",
+    common_observed_locations: ["movable_hardware_attachment"],
+    replacement_likelihood: "high",
+    anti_classification_guidance: {
+      boundary_date: 1935,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1935 presence of Phillips Wood Screw indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1935 original construction.",
+      prominence: "prominent",
+    },
+  },
+
+  // ─── Sub-batch C-7: 2D MODERN DRIVE TYPES (3 types) ───
+  {
+    id: "fastener_type_robertson",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Square-socket drive screw with strong Canadian production association; AG floor 1908; most common after mid-20th century.",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2D MODERN DRIVE TYPES > Robertson (Square Drive). 8/8 AG anchor per A-6. replacement_likelihood HIGH per A-5. AG floor 1908 per A-4. period_associations multi-entry per A-7 (1908-1949 introduction + 1950+ widespread).",
+    name: "Robertson (Square Drive)",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_modern_drive_types",
+    description: "Square socket drive screw.",
+    unique_traits: [
+      "Square socket drive",
+    ],
+    identifying_characteristics: [
+      "Square recess",
+      "Strong Canadian production association",
+    ],
+    period_associations: [
+      {
+        period_label: "Robertson emergence",
+        date_floor: 1908,
+        date_ceiling: 1949,
+      },
+      {
+        period_label: "Mid-20th century dominance",
+        date_floor: 1950,
+        usage_notes: "Most common after mid-20th century per seed.",
+      },
+    ],
+    date_range_summary: "c. 1908–present. Most common after mid-20th century.",
+    common_observed_locations: ["movable_hardware_attachment"],
+    replacement_likelihood: "high",
+    anti_classification_guidance: {
+      boundary_date: 1908,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1908 presence of Robertson (Square Drive) screw indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1908 original construction.",
+      prominence: "prominent",
+    },
+  },
+  {
+    id: "fastener_type_torx",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Six-point star recess high-torque resistance screw; STRONGLY INDUSTRIAL modern/contemporary indicator; AG floor 1967.",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2D MODERN DRIVE TYPES > Torx Screw. 8/8 AG anchor per A-6. replacement_likelihood HIGH per A-5. AG floor 1967 per A-4.",
+    name: "Torx Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_modern_drive_types",
+    description: "Star-shaped drive screw.",
+    unique_traits: [
+      "Star-shaped drive",
+    ],
+    identifying_characteristics: [
+      "Six-point star recess",
+      "High torque resistance",
+      "Strong modern/contemporary indicator",
+    ],
+    period_associations: [
+      {
+        period_label: "Torx emergence",
+        date_floor: 1967,
+      },
+    ],
+    date_range_summary: "c. 1967–present.",
+    common_observed_locations: ["movable_hardware_attachment"],
+    replacement_likelihood: "high",
+    anti_classification_guidance: {
+      boundary_date: 1967,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1967 presence of Torx Screw indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1967 original construction.",
+      prominence: "prominent",
+    },
+  },
+  {
+    id: "fastener_type_allen_hex_socket_screw",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Internal hex recess screw frequently associated with KD furniture, contemporary imports, and modular systems; AG floor 1910 (technology introduction; furniture commonality later).",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2D MODERN DRIVE TYPES > Allen / Hex Socket Screw. 7/7 per A-6 (canonical 'Furniture commonality later' qualifier weakens anchor strength below 8/8 threshold despite AG presence). replacement_likelihood HIGH per A-5. AG floor 1910 per A-4 + Block 34 D-FA34-Surfacing-1 (seed 'c. 1910s-present'; decade-start convention). period_associations multi-entry per A-7 (1910-1949 technology introduction + 1950+ furniture commonality).",
+    name: "Allen / Hex Socket Screw",
+    parent_category_id: "fastener_category_screws",
+    parent_subcategory_id: "fastener_subcategory_modern_drive_types",
+    description: "Internal hex recess screw.",
+    unique_traits: [
+      "Internal hex recess",
+    ],
+    identifying_characteristics: [
+      "Hexagonal socket",
+      "Frequently associated with KD furniture, contemporary imports, modular systems",
+    ],
+    period_associations: [
+      {
+        period_label: "Technology introduction",
+        date_floor: 1910,
+        date_ceiling: 1949,
+        usage_notes: "Allen/Hex socket technology introduced c. 1910s per seed; furniture commonality later.",
+      },
+      {
+        period_label: "Furniture commonality",
+        date_floor: 1950,
+        usage_notes: "Furniture commonality later per seed; KD furniture and contemporary imports primary context.",
+      },
+    ],
+    date_range_summary: "c. 1910s–present. Furniture commonality later.",
+    common_observed_locations: ["movable_hardware_attachment"],
+    replacement_likelihood: "high",
+    anti_classification_guidance: {
+      boundary_date: 1910,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1910 presence of Allen / Hex Socket Screw indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1910 original construction. Note: Allen/Hex socket furniture commonality is post-1950 per canonical seed; pre-1950 presence in furniture original construction is highly atypical even within the technology-introduction era.",
+      prominence: "prominent",
+    },
+  },
+
+  // ─── Sub-batch C-8: 3A UPHOLSTERY TACKS (1 type) ───
+  {
+    id: "fastener_type_decorative_brass_tack",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Decorative brass domed-head exposed-upholstery-edge tack with visible rhythmic spacing (c. 1800–present). assessment_layer inherited 'upholstery' from parent subcategory 3A.",
+    notes: "Per Fastener_Reference.docx CATEGORY 3 STAPLES > SUBCATEGORY 3A UPHOLSTERY TACKS > Decorative Brass Tack. 7/7 per A-6 (decorative; appraiser-honest mixed-era usage). replacement_likelihood MEDIUM per A-5. assessment_layer inherited 'upholstery' from parent subcategory per D-FA33-5.",
+    name: "Decorative Brass Tack",
+    parent_category_id: "fastener_category_staples",
+    parent_subcategory_id: "fastener_subcategory_upholstery_tacks",
+    description: "Decorative exposed upholstery edge tack.",
+    unique_traits: [
+      "Decorative exposed upholstery edge",
+    ],
+    identifying_characteristics: [
+      "Brass domed head",
+      "Visible rhythmic spacing",
+    ],
+    period_associations: [
+      {
+        period_label: "Decorative upholstery period",
+        date_floor: 1800,
+      },
+    ],
+    date_range_summary: "c. 1800–present.",
+    common_observed_locations: ["upholstery_attachment_point", "upholstery_arm", "upholstery_back"],
+    replacement_likelihood: "medium",
+  },
+
+  // ─── Sub-batch C-9: 3B MACHINE STAPLES (1 type) ───
+  {
+    id: "fastener_type_upholstery_staple",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Narrow-crown steel-wire pneumatic-consistency upholstery staple; STRONGLY INDUSTRIAL upholstery indicator; AG floor 1930 (canonical introduction; widespread 1950+). assessment_layer inherited 'upholstery'.",
+    notes: "Per Fastener_Reference.docx CATEGORY 3 STAPLES > SUBCATEGORY 3B MACHINE STAPLES > Upholstery Staple. 8/8 AG anchor per A-6. replacement_likelihood HIGH per A-5 (restoration-contamination primary indicator). AG floor 1930 per A-4 + D-FA34-Surfacing-2 (D-JN31-4 introduction-year-is-AG-floor convention; canonical seed 'c. 1930-present. Very common after 1950'; widespread 1950 captured as second period_associations entry). related_joinery_types FK to joinery_type_stapled_drawer_joinery per D-FA34-5. D-FA34-11 cross-library AG floor divergence (1930 fastener vs 1950 joinery) per Mike-locked addition. assessment_layer inherited 'upholstery' from parent subcategory.",
+    name: "Upholstery Staple",
+    parent_category_id: "fastener_category_staples",
+    parent_subcategory_id: "fastener_subcategory_machine_staples",
+    description: "Rapid upholstery fastening narrow-crown steel-wire staple.",
+    unique_traits: [
+      "Rapid upholstery fastening",
+    ],
+    identifying_characteristics: [
+      "Narrow crown",
+      "Steel wire construction",
+      "Pneumatic consistency",
+    ],
+    period_associations: [
+      {
+        period_label: "Introduction",
+        date_floor: 1930,
+        date_ceiling: 1949,
+      },
+      {
+        period_label: "Widespread upholstery use",
+        date_floor: 1950,
+        usage_notes: "Very common after 1950 per seed.",
+      },
+    ],
+    date_range_summary: "c. 1930–present. Very common after 1950.",
+    common_observed_locations: ["upholstery_attachment_point", "upholstery_support_layer"],
+    replacement_likelihood: "high",
+    anti_classification_guidance: {
+      boundary_date: 1930,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1930 presence of Upholstery Staple indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1930 original construction. Note: Per dual-assessment architecture (D-FA33-5), presence on antique pieces typically reflects reupholstery campaign date for the upholstery assessment, NOT frame assessment dating. Reupholstery-era staples are 'campaign evidence' for upholstery assessment but 'restoration contamination' if interpreted against frame dating per Rule #4 restoration_contamination operationalization.",
+      prominence: "prominent",
+    },
+    related_joinery_types: ["joinery_type_stapled_drawer_joinery"],
+  },
+
+  // ─── Sub-batch C-10: Category 4 BOLTS (3 types; no subcategory) ───
+  {
+    id: "fastener_type_carriage_bolt",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Rounded exposed-head anti-rotation-neck mechanical compression bolt frequently used in beds and tables (c. 1850–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 4 BOLTS, RODS, AND MACHINE FASTENERS > Carriage Bolt. 7/7 secondary anchor per A-6. replacement_likelihood LOW per A-5 (structural; not commonly replaced). parent_subcategory_id omitted per Cat 4 no-subcategory structure.",
+    name: "Carriage Bolt",
+    parent_category_id: "fastener_category_bolts_rods_machine_fasteners",
+    description: "Rounded exposed head bolt with anti-rotation neck.",
+    unique_traits: [
+      "Rounded exposed head",
+      "Anti-rotation neck",
+    ],
+    identifying_characteristics: [
+      "Smooth domed head",
+      "Square neck beneath head",
+      "Often used in beds/tables",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1850,
+      },
+    ],
+    date_range_summary: "c. 1850–present.",
+    common_observed_locations: ["frame_joint", "structural_reinforcement"],
+    replacement_likelihood: "low",
+  },
+  {
+    id: "fastener_type_threaded_rod",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Continuous-threading long-span structural compression rod frequently hidden internally (c. 1880–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 4 BOLTS, RODS, AND MACHINE FASTENERS > Threaded Rod. 7/7 secondary anchor per A-6. replacement_likelihood LOW per A-5 (D-FA34-Surfacing-6 resolution: plan A-5 'LOW-MEDIUM' → LOW per 'structural; not commonly replaced' rationale). parent_subcategory_id omitted.",
+    name: "Threaded Rod",
+    parent_category_id: "fastener_category_bolts_rods_machine_fasteners",
+    description: "Long-span structural compression rod with continuous threading.",
+    unique_traits: [
+      "Long-span structural compression",
+    ],
+    identifying_characteristics: [
+      "Continuous threading",
+      "Frequently hidden internally",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial production",
+        date_floor: 1880,
+      },
+    ],
+    date_range_summary: "c. 1880–present.",
+    common_observed_locations: ["structural_reinforcement"],
+    replacement_likelihood: "low",
+  },
+  {
+    id: "fastener_type_barrel_nut_cross_dowel",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Cylindrical internal nut knock-down furniture connector with Allen-drive association; strong modern indicator (c. 1950–present).",
+    notes: "Per Fastener_Reference.docx CATEGORY 4 BOLTS, RODS, AND MACHINE FASTENERS > Barrel Nut / Cross Dowel. 7/7 secondary KD anchor per A-6. replacement_likelihood LOW per A-5 (era-canonical knock-down). parent_subcategory_id omitted.",
+    name: "Barrel Nut / Cross Dowel",
+    parent_category_id: "fastener_category_bolts_rods_machine_fasteners",
+    description: "Knock-down furniture cylindrical internal nut connector.",
+    unique_traits: [
+      "Knock-down furniture connector",
+    ],
+    identifying_characteristics: [
+      "Cylindrical internal nut",
+      "Allen-drive association",
+      "Strong modern indicator",
+    ],
+    period_associations: [
+      {
+        period_label: "Modern KD era",
+        date_floor: 1950,
+      },
+    ],
+    date_range_summary: "c. 1950–present.",
+    replacement_likelihood: "low",
+  },
+
+  // ─── Sub-batch C-11: Category 5 KNOCK-DOWN (2 types; no subcategory) ───
+  {
+    id: "fastener_type_cam_lock_connector",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Rotational locking disc flat-pack furniture connector with circular recessed cam hardware; STRONGLY INDUSTRIAL primary indicator; AG floor 1960.",
+    notes: "Per Fastener_Reference.docx CATEGORY 5 KNOCK-DOWN (KD) CONNECTORS > Cam Lock Connector. 8/8 AG anchor per A-6. replacement_likelihood LOW per A-5 (era-canonical; not commonly replaced because era-specific). AG floor 1960 per A-4 (matches joinery library D-JN31 precedent ✓). related_joinery_types FK to joinery_type_knock_down_cam_lock_joinery per D-FA34-5. parent_subcategory_id omitted.",
+    name: "Cam Lock Connector",
+    parent_category_id: "fastener_category_knock_down_connectors",
+    description: "Rotational locking disc cam fastener system.",
+    unique_traits: [
+      "Rotational locking disc",
+    ],
+    identifying_characteristics: [
+      "Circular recessed cam",
+      "Flat-pack furniture association",
+      "Common in MDF/particle board",
+    ],
+    period_associations: [
+      {
+        period_label: "Flat-pack era",
+        date_floor: 1960,
+      },
+    ],
+    date_range_summary: "c. 1960–present.",
+    common_observed_locations: ["case_carcass", "frame_joint"],
+    replacement_likelihood: "low",
+    anti_classification_guidance: {
+      boundary_date: 1960,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1960 presence of Cam Lock Connector indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1960 original construction.",
+      prominence: "prominent",
+    },
+    related_joinery_types: ["joinery_type_knock_down_cam_lock_joinery"],
+  },
+  {
+    id: "fastener_type_confirmat_screw",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Large-coarse-thread blunt-tip engineered panel fastener common in melamine/MDF construction; STRONGLY INDUSTRIAL primary indicator; AG floor 1970.",
+    notes: "Per Fastener_Reference.docx CATEGORY 5 KNOCK-DOWN (KD) CONNECTORS > Confirmat Screw. 8/8 AG anchor per A-6. replacement_likelihood LOW per A-5 (era-canonical). AG floor 1970 per A-4 (matches joinery library D-JN31-9 precedent ✓). related_joinery_types FK to joinery_type_confirmat_screw_joinery per D-FA34-5. parent_subcategory_id omitted.",
+    name: "Confirmat Screw",
+    parent_category_id: "fastener_category_knock_down_connectors",
+    description: "Engineered panel fastener for particleboard.",
+    unique_traits: [
+      "Engineered panel fastener",
+    ],
+    identifying_characteristics: [
+      "Large coarse threads",
+      "Blunt tip",
+      "Common in melamine/MDF construction",
+    ],
+    period_associations: [
+      {
+        period_label: "Engineered panel era",
+        date_floor: 1970,
+      },
+    ],
+    date_range_summary: "c. 1970–present.",
+    common_observed_locations: ["case_carcass"],
+    replacement_likelihood: "low",
+    anti_classification_guidance: {
+      boundary_date: 1970,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1970 presence of Confirmat Screw indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1970 original construction.",
+      prominence: "prominent",
+    },
+    related_joinery_types: ["joinery_type_confirmat_screw_joinery"],
+  },
+
+  // ─── Sub-batch C-12: Category 6 GLUE-ASSISTED (2 types; no subcategory) ───
+  {
+    id: "fastener_type_corrugated_fastener",
+    category: "fastener_type",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    indicator_text: "Wavy embedded zig-zag steel plate driven across joints; common in inexpensive case furniture (c. 1880–1950 era-bounded).",
+    notes: "Per Fastener_Reference.docx CATEGORY 6 GLUE-ASSISTED FASTENERS > Corrugated Fastener. 7/7 secondary anchor per A-6. replacement_likelihood MEDIUM per A-5. period_associations multi-entry per A-7 (1880-1929 introduction + 1930-1950 widespread; end-ceiling 1950 per canonical seed unique among fastener types). NO AG per D-FA34-Surfacing-4 (soft-boundary phrasing 'Common in inexpensive case furniture' does not meet hard boundary-classification threshold; period_associations array captures range adequately). related_joinery_types FK to joinery_type_corrugated_fastener_reinforcement per D-FA34-5. parent_subcategory_id omitted.",
+    name: "Corrugated Fastener",
+    parent_category_id: "fastener_category_glue_assisted_fasteners",
+    description: "Wavy embedded metal strip driven across joints.",
+    unique_traits: [
+      "Wavy embedded metal strip",
+    ],
+    identifying_characteristics: [
+      "Zig-zag steel plate",
+      "Embedded across joints",
+      "Common in inexpensive case furniture",
+    ],
+    period_associations: [
+      {
+        period_label: "Industrial introduction",
+        date_floor: 1880,
+        date_ceiling: 1929,
+      },
+      {
+        period_label: "Widespread dominance",
+        date_floor: 1930,
+        date_ceiling: 1950,
+        usage_notes: "Common in inexpensive case furniture per seed; end-ceiling 1950 reflects usage frequency drop per canonical phrasing.",
+      },
+    ],
+    date_range_summary: "c. 1880–1950.",
+    common_observed_locations: ["frame_joint", "case_corner"],
+    replacement_likelihood: "medium",
+    related_joinery_types: ["joinery_type_corrugated_fastener_reinforcement"],
+  },
+  {
+    id: "fastener_type_biscuit_compression_plate",
+    category: "fastener_type",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    indicator_text: "Precision alignment support biscuit/compression plate system; STRONGLY INDUSTRIAL modern woodworking association; AG floor 1950 (matches joinery library precedent).",
+    notes: "Per Fastener_Reference.docx CATEGORY 6 GLUE-ASSISTED FASTENERS > Biscuit / Compression Plate Systems. 8/8 AG anchor per A-6 (matches joinery library biscuit_joint 8/8 precedent). replacement_likelihood MEDIUM per A-5. AG floor 1950 per A-4 + D-FA34-Surfacing-3 (matches joinery D-JN31-4 biscuit experimental 1950 floor precedent ✓; resolves plan Q3 AG count to 8 from estimate 7). related_joinery_types FK to joinery_type_biscuit_joint per D-FA34-5. parent_subcategory_id omitted.",
+    name: "Biscuit / Compression Plate Systems",
+    parent_category_id: "fastener_category_glue_assisted_fasteners",
+    description: "Precision alignment support biscuit/compression plate systems.",
+    unique_traits: [
+      "Precision alignment support",
+    ],
+    identifying_characteristics: [
+      "Machine-cut insertion slots",
+      "Modern woodworking association",
+    ],
+    period_associations: [
+      {
+        period_label: "Modern woodworking era",
+        date_floor: 1950,
+      },
+    ],
+    date_range_summary: "c. 1950–present.",
+    common_observed_locations: ["frame_joint"],
+    replacement_likelihood: "medium",
+    anti_classification_guidance: {
+      boundary_date: 1950,
+      boundary_type: "form_emergence",
+      guidance_text: "Pre-1950 presence of Biscuit / Compression Plate Systems indicates either repair-introduction (Replacement Fastener Risk + Restoration Contamination per FastenerReasoningRule #2 and #4) or misidentification; this fastener did not exist in pre-1950 original construction. Matches joinery library D-JN31-4 biscuit_joint 1950 AG floor precedent.",
+      prominence: "prominent",
+    },
+    related_joinery_types: ["joinery_type_biscuit_joint"],
+  },
+];
 
 /**
  * FASTENER_REASONING_RULES — 5 meta-rule entries per Block 33
