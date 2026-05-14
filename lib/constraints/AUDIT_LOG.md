@@ -3524,3 +3524,81 @@ Block 40 ship: 31 `UPHOLSTERY_CONSTRUCTION_TYPES` entries authored across 9 sub-
 ---
 
 
+## Block 41 — styleFamilies.ts Schema Foundation + 26 STYLE_FAMILIES + 6 Reasoning Rules + EIGHTH Canonical-Library Encoding of Evidence-Layer Architecture + style_and_waves Assessment Layer OPENS
+## Phase 2 Session 9 OPENS / Session 16 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main c873bd8 (Block 40 endpoint / Phase 2 Session 7 FULLY CLOSED)
+
+Opens Phase 2 Session 9 with the EIGHTH canonical evidence library: style families. Authors new `lib/constraints/styleFamilies.ts` with 5 interfaces (`StyleFamilyEntry` + `StyleRevivalWaveEntry` + `StyleReasoningRule` + `DesignSubtlety` + `StyleFamilyMakerAssociation`) + 1 library-level routing constant (`STYLE_FAMILIES_ASSESSMENT_LAYER`) + 3 arrays (`STYLE_FAMILIES` 26 entries / `STYLE_REVIVAL_WAVES` empty Block-42 scaffold / `STYLE_REASONING_RULES` 6 entries). Plan delivered as a full retransmit after claude.ai-side truncation; executed with 4 Mike-approved corrections (see D-SW41-11). `lib/engine.ts` UNCHANGED per D-MM27-9.
+
+**EIGHTH canonical evidence library** (D-SW41-3). **NEW assessment_layer "style_and_waves"** (D-SW41-4) — third distinct assessment_layer after "frame" and "upholstery". **EIGHTH canonical-library encoding of the Independent Layer Evaluation Standard** via Rule #6 — COMPLETES ILE encoding across all 8 Phase 2 evidence libraries (D-SW41-5). **NEW interpretive-uncertainty-authority convention** (D-SW41-6). **THIRD application of D-HW36-14** this block (D-SW41-8 + D-SW41-11). **FIVE NEW reasoning-rule TYPES** established (D-SW41-13).
+
+### D-SW41-1 (locked): Block 41 scope per Q1-Q7 lockings
+Single `styleFamilies.ts` file with 5 interfaces + 1 library-level constant + 3 arrays. `STYLE_FAMILIES` 26 type-bearing entries; `STYLE_REVIVAL_WAVES` empty scaffold for Block 42 (~108 entries planned per A-5); `STYLE_REASONING_RULES` 6 entries at 9/9. Plan executed from full retransmit (original claude.ai prompt truncated at CC reception from "C-4" onward); Mike supplied B-3/B-4 DesignSubtlety placement + full retransmit + 4 corrections.
+
+### D-SW41-2 (locked): Phase 2 Session 9 OPENS
+Session 9 opens at Block 41. Session 8b reconciliation pass deferred to after Session 9 fully closes (Block 42 closes Session 9 with revival-wave content).
+
+### D-SW41-3 (locked): EIGHTH canonical evidence library
+styleFamilies.ts joins the prior 7 Phase 2 evidence libraries (wood, maker, joinery, fastener, hardware, upholstery covers, upholstery construction). Distinguished by interpretive-uncertainty discipline + low-weight authority architecture per Mike's appraiser-honest framing of style identification as qualitatively different from AG-floor + canonical-source artifact-level evidence.
+
+### D-SW41-4 (locked): NEW assessment_layer "style_and_waves" OPENS
+Library-level constant `STYLE_FAMILIES_ASSESSMENT_LAYER = "style_and_waves" as const`. Single integrated output per Q4=G + locked architectural baseline — style identification + design-subtleties date estimate produce a single integrated output via revival-wave date range. **NO `evidence_sub_layer` field anywhere** (contrast: upholstery covers + upholstery construction libraries declare evidence_sub_layer for D-UC37-3 sub-output surfacing; the style library has no sub-output split). Third distinct assessment_layer in the canonical record after "frame" and "upholstery".
+
+### D-SW41-5 (locked): EIGHTH canonical-library encoding of the Independent Layer Evaluation Standard
+Via Rule #6 `style_evidence_layer_independence` (cross_layer_scope: true). After wood rule #7, maker rule #1, joinery rule #5, fastener rule #5, hardware rule #5, upholstery covers rule #5, upholstery construction rule #5. **COMPLETES the ILE Standard encoding across all 8 Phase 2 evidence libraries** — every Phase 2 evidence library now carries one cross_layer_scope: true layer-independence canonical artifact.
+
+### D-SW41-6 (locked; NEW interpretive-uncertainty-authority convention)
+`STYLE_FAMILIES` 4/4 uniform + `STYLE_REVIVAL_WAVES` 3/3 uniform (Block 42). Authority values encode the layer's epistemological status directly — visibly lower than the prior 7 evidence libraries (which run 7/7-9/9) — reflecting style identification's interpretive character. NO style-by-style authority variance even for canonically-richer families (Federal, Chippendale): authority encodes layer epistemological status, not intra-layer canonical richness. Engine-layer reconciliation at Phase 3 reads authority directly; no separate "low-weight modifier" needed. Forward-applicable convention: future evidence layers with similar interpretive-uncertainty character may use parallel authority discipline. `STYLE_REASONING_RULES` at 9/9 per meta-rule supremacy (D-WE26-8 / D-MM27-5) — meta-rules are not subject to the interpretive-uncertainty calibration.
+
+### D-SW41-7 (locked): 5 interfaces per Q1=A
+`StyleFamilyEntry` + `StyleRevivalWaveEntry` + `StyleReasoningRule` (canonical, extend CanonicalEntry) + `DesignSubtlety` (library-local) + `StyleFamilyMakerAssociation` (library-local). DesignSubtlety + StyleFamilyMakerAssociation NOT promoted to entryShape.ts (schema-occurrence rule does not fire for style-library-only structure).
+
+**DesignSubtlety architectural placement (Mike B-3/B-4 resolution):** `DesignSubtlety` lives on `StyleRevivalWaveEntry` ONLY (`design_subtleties: DesignSubtlety[]`), NOT on `StyleFamilyEntry`. Family-level visual character lives in `StyleFamilyEntry.core_visual_identity` as canonical verbatim prose. Design-subtlety decomposition happens at wave level where it produces dating evidence (distinguishing original-period vs revival-wave instances). DesignSubtlety interface DEFINED this block; CONTENT authored Block 42.
+
+### D-SW41-8 (locked): DesignSubtlety aspect enum LOCK per D-HW36-14
+9-aspect enum locked per CC's A-6 canonical-derived typology (canonical inspection of Styles_and_Waves.docx per-wave "Traits" + "Contrast from..." prose, paragraphs 4-211): `massing_and_proportion`, `line_and_silhouette`, `carving_character`, `leg_and_foot_vocabulary`, `ornament_and_motif`, `surface_and_finish`, `material_palette`, `construction_expression`, `hardware_character`. The preliminary claude.ai-side 9-aspect scoping draft (scale / ornateness / style_influence / finish / material / proportion / carving / joinery_hint / regional_marker) was DEFERRED per **D-HW36-14 A-4-canonical-enumeration-supersedes-A-6-informal-preview discipline** — same convention applied to Block 36 hardware categories, Block 37/38 covers, Block 40 construction AGs. `DesignSubtlety.weight` is uniformly `"low"` per Mike's appraiser-practice (the style/waves layer is a low-weighted reconciliation-pool contributor). Schema augmentation per D-FA34-Surfacing-8 permitted at Block 42 if canonical inspection of wave content surfaces additional aspect patterns; default is map-to-existing-aspect.
+
+### D-SW41-9 (locked): FIFTH application of D-HW35-6 SCHEMA-PRESENT-CONTENT-DEFERRED
+`StyleFamilyEntry` carries the optional `maker_associations?: StyleFamilyMakerAssociation[]` field; all 26 entries leave it `[]`. Canonical source has ZERO style-family maker documentation. FIFTH application of D-HW35-6 discipline (after hardware Block 36, upholstery covers Block 38, upholstery construction Block 39/40 schema+content) — establishes the convention as cross-library-stable across 5 Phase 2 libraries.
+
+### D-SW41-10 (locked): Single-directional cross-library FK per Q6=L + D-FA33-8
+NO reverse-reference fields on `StyleFamilyEntry`. styleFamilies.ts is the CANONICAL TARGET for the `style_associations` populations already shipped in the hardware + upholstery covers libraries; engine-layer Phase 3 reasoning resolves the bidirectional relationship via name-matching to `StyleFamilyEntry.name` + `canonical_source_aliases`. Per Phase 2/Phase 3 separation, no resolution logic ships this block. NOTE per A-4a: alias-token overlap exists ("Jacobean" alias of #2 vs "Jacobean Revival" alias of #18; "Mission" alias of #15 vs "Mission Revival" alias of #19) — name-matching MUST use exact-full-token equality, not substring match; documented in the notes fields of styles #18 and #19.
+
+### D-SW41-11 (locked; canonical_source_aliases field convention + alias-count correction)
+Style families with slash-separated canonical names carry the alternate names as a `canonical_source_aliases` array for name-matching resolution. Forward-applicable to similar canonical-source multi-name patterns.
+
+**Alias-count correction per CC A-4 canonical inspection:** **15** of 26 style families have slash-separated canonical names (#1, #2, #6, #7, #8, #11, #13, #14, #15, #18, #19, #22, #24, #25, #26) and carry `canonical_source_aliases`; **11** single-canonical-name families omit the field (#3, #4, #5, #9, #10, #12, #16, #17, #20, #21, #23). The plan-retransmit's preliminary alias enumeration listed only 13 (omitting #2 "Jacobean / Carolean-Derived Colonial" and #11 "Rococo Revival / Naturalistic Victorian"; its explicit lists summed to only 25 of 26). Corrected per **D-HW36-14 A-4-canonical-enumeration-supersedes-A-6-informal-preview discipline** — **THIRD application of D-HW36-14 within this block sequence** (after DesignSubtlety placement-resolution and DesignSubtlety aspect-enum lock); convention now library-cluster-stable. Canonical-source revision deferred to a post-Phase-2 deliberate workstream; Block 41 ships against the current Styles_and_Waves.docx canonical source.
+
+### D-SW41-12 (locked): 6 reasoning rules per Q3=E
+5 canonical Cross-Wave Identification principles (Styles_and_Waves.docx paragraphs 213-231) + 1 ILE encoding rule. All 6 at authority 9/9, migration_status "complete", migration_target "engine_reasoning". cross_layer_scope: true on Rule #6 only.
+
+### D-SW41-13 (locked; FIVE NEW reasoning-rule TYPES established)
+Rules #1-5 are five NEW canonical reasoning-rule TYPES: `original_period_vs_revival_distinction`, `scale_and_visual_weight_as_evidence`, `surface_vs_structure_distinction`, `wave_to_wave_contrast_pattern`, `practical_appraiser_rule`. Rule #6 `style_evidence_layer_independence` is the ILE encoding TYPE (not new — eighth library application). Five NEW TYPES this block brings the canonical record to **12 total reasoning-rule TYPES** after Block 41 (7 established across Phase 2 Sessions 1-7 libraries + 5 here).
+
+### D-SW41-FINAL (post-authoring summary)
+Block 41 ship: styleFamilies.ts schema foundation + 26 `STYLE_FAMILIES` + 6 `STYLE_REASONING_RULES` + empty `STYLE_REVIVAL_WAVES` scaffold.
+- **NEW arrays**: `STYLE_FAMILIES` (26) + `STYLE_REVIVAL_WAVES` (0) + `STYLE_REASONING_RULES` (6). Total 32 new canonical entries this block.
+- **NEW library-level routing constant**: `STYLE_FAMILIES_ASSESSMENT_LAYER = "style_and_waves"` per D-SW41-4. NO `evidence_sub_layer` constant or field anywhere.
+- **STYLE_FAMILIES authority distribution**: `positive_authority {4: 26}`; `hard_negative_authority {4: 26}` — uniform 4/4 per D-SW41-6 interpretive-uncertainty-authority convention.
+- **STYLE_FAMILIES assessment_layer distribution**: 26 entries all `assessment_layer: "style_and_waves"` per D-SW41-4.
+- **STYLE_FAMILIES canonical_source_aliases distribution**: 15 entries populated / 11 omitted per D-SW41-11 (corrected from retransmit's preliminary 13 per D-HW36-14, third application).
+- **STYLE_FAMILIES maker_associations**: `[]` uniform across all 26 entries per D-SW41-9.
+- **STYLE_FAMILIES period_associations**: 10 multi-entry families (#1, #2, #4, #6, #7, #8, #9, #10, #11, #20) + 16 single-entry per A-5 canonical "overlap into / survivals into / continues later" phrasing; 3 of the single-entry families (#17, #24, #26) omit date_ceiling per the extends-to-present convention ("Still active" / "Ongoing").
+- **STYLE_REASONING_RULES**: all 6 at 9/9 with migration_status "complete" + migration_target "engine_reasoning"; cross_layer_scope: true on Rule #6 (style_evidence_layer_independence) only.
+- **EIGHTH canonical evidence library**: OPENED (D-SW41-3).
+- **EIGHTH canonical-library encoding of the Independent Layer Evaluation Standard**: COMPLETED (D-SW41-5; via Rule #6; completes ILE encoding across all 8 Phase 2 evidence libraries).
+- **NEW assessment_layer "style_and_waves"**: OPENS (D-SW41-4).
+- **NEW interpretive-uncertainty-authority convention**: ESTABLISHED (D-SW41-6).
+- **THIRD application of D-HW36-14** canonical-enumeration-supersedes-informal-preview: CONFIRMED (D-SW41-8 DesignSubtlety enum + D-SW41-11 alias count).
+- **FIVE NEW reasoning-rule TYPES**: ESTABLISHED (D-SW41-13; 12 total in canonical record after Block 41).
+- **DesignSubtlety placement**: on StyleRevivalWaveEntry only, NOT StyleFamilyEntry (Mike B-3/B-4 resolution).
+- Files modified: **2** (`lib/constraints/styleFamilies.ts` NEW; `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation (diff = 0 lines).
+- **All 28 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5 / HARDWARE_CATEGORIES 13 / HARDWARE_TYPES 43 / HARDWARE_REASONING_RULES 5 / UPHOLSTERY_COVER_CATEGORIES 10 / UPHOLSTERY_COVER_TYPES 44 / UPHOLSTERY_COVER_REASONING_RULES 7 / UPHOLSTERY_CONSTRUCTION_CATEGORIES 9 / UPHOLSTERY_CONSTRUCTION_TYPES 31 / UPHOLSTERY_CONSTRUCTION_REASONING_RULES 7.
+- Minor surfacing (pre-authorized in approved plan): `AntiClassificationGuidance` was NOT imported into styleFamilies.ts — no Block 41 interface uses it (style families are reference taxonomy, not artifact-level evidence with crisp AG date boundaries). Imports limited to `CanonicalEntry`, `PeriodAssociation`, `ReasoningRuleMigrationTarget`.
+- 13 numbered audit decisions captured under D-SW41-N block-scoped prefix (D-SW41-1 through D-SW41-13 + D-SW41-FINAL).
+- **Phase 2 Session 9: OPENED.**
+- **Block 42 queued: ~108 STYLE_REVIVAL_WAVES content authoring closes Phase 2 Session 9** + opens Phase 2 Session 8b reconciliation pass per D-AR29-10. Block 42 populates `design_subtleties` on revival-wave entries using the D-SW41-8 locked 9-aspect enum; revival-wave authority 3/3 uniform per D-SW41-6.
+- Convention precedents established this block: D-SW41-4 NEW "style_and_waves" assessment_layer; D-SW41-5 eighth + final ILE encoding completing the Phase 2 ILE cycle; D-SW41-6 NEW interpretive-uncertainty-authority convention (forward-applicable); D-SW41-8 + D-SW41-11 third application of D-HW36-14 (now library-cluster-stable); D-SW41-11 canonical_source_aliases field convention; D-SW41-13 five new reasoning-rule TYPES.
+
+---
