@@ -3316,4 +3316,99 @@ Block 38 ship: 44 UPHOLSTERY_COVER_TYPES entries authored across 10 internal sub
 
 ---
 
+## Block 39 — Upholstery Construction Library Schema Foundation + 9 Categories + 7 Reasoning Rules + Second Application of Two-Assessment-With-Sub-Output-Surfacing Convention (evidence_sub_layer = "system")
+## Phase 2 Session 7 fifth library opens; closes at Block 40
+## Session 16 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main 3024235 (Block 38 endpoint / Upholstery covers library content-complete)
+
+Opens Phase 2 Session 7 fifth and FINAL library (upholstery construction) per D-AP32-5 + Q5=J Sequence J two-block split (Block 39 schema foundation + Block 40 ~31 construction types content closes Phase 2 Session 7). Authors new `lib/constraints/upholsteryConstruction.ts` with 4 interfaces (`UpholsteryConstructionCategoryEntry` + `UpholsteryConstructionTypeEntry` + `UpholsteryConstructionReasoningRule` + `UpholsteryConstructionMakerAssociation`) + 2 library-level routing constants (`UPHOLSTERY_CONSTRUCTION_ASSESSMENT_LAYER` + `UPHOLSTERY_CONSTRUCTION_EVIDENCE_SUB_LAYER`) + 3 arrays (UPHOLSTERY_CONSTRUCTION_CATEGORIES 9 entries + UPHOLSTERY_CONSTRUCTION_TYPES empty scaffold + UPHOLSTERY_CONSTRUCTION_REASONING_RULES 7 entries).
+
+**SECOND CONCRETE APPLICATION of D-UC37-3 two-assessment-with-sub-output-surfacing convention** (D-UCN39-3; evidence_sub_layer = "system"). **SECOND library-level "upholstery" assessment_layer application** (D-UCN39-4). **SEVENTH canonical-library encoding of Independent Layer Evaluation Standard** via Rule #5 construction_evidence_layer_independence (D-UCN39-9) — completes ILE encoding across all 7 Phase 2 evidence libraries. **SECOND application of D-UC37-7 expanded reasoning rule set convention** (D-UCN39-5). NEW canonical reasoning-rule TYPE: reupholstery_campaign_warning (D-UCN39-12; seventh new TYPE). NEW convention: appraiser-honest-discipline-supersedes-FK-completion (D-UCN39-13).
+
+### D-UCN39-1 (locked): Block 39 scope per Q1-Q5 lockings
+Single upholsteryConstruction.ts file with 4 interfaces + 2 library-level constants + 3 arrays. UPHOLSTERY_CONSTRUCTION_CATEGORIES 9 type-bearing entries; UPHOLSTERY_CONSTRUCTION_TYPES empty scaffold for Block 40 (~31 entries planned per Surfacing 3); UPHOLSTERY_CONSTRUCTION_REASONING_RULES 7 entries at 9/9. Mike-locked authorization includes 13 numbered D-UCN39-N audit decisions + D-UCN39-FINAL summary.
+
+### D-UCN39-2 (locked): Library architecture per Q5=J two-block split
+Phase 2 Session 7 fifth library via two-block sequence: upholsteryConstruction.ts schema (Block 39) + ~31 construction types content (Block 40). Block 40 closes Phase 2 Session 7 entirely. Parallels joinery (Blocks 30-31) + fasteners (Blocks 33-34) + hardware (Blocks 35-36) + upholstery covers (Blocks 37-38) two-block precedents.
+
+### D-UCN39-3 (locked): SECOND CONCRETE APPLICATION of D-UC37-3 two-assessment-with-sub-output-surfacing convention
+Construction library declares `UPHOLSTERY_CONSTRUCTION_ASSESSMENT_LAYER = "upholstery"` + `UPHOLSTERY_CONSTRUCTION_EVIDENCE_SUB_LAYER = "system"` at library level (parallels upholstery covers library `UPHOLSTERY_COVERS_ASSESSMENT_LAYER = "upholstery"` + `UPHOLSTERY_COVERS_EVIDENCE_SUB_LAYER = "cover"` at Block 37 D-UC37-3). All 9 categories carry `assessment_layer: "upholstery"` + `evidence_sub_layer: "system"` literals.
+
+Engine reads both libraries' constants; aggregates by evidence_sub_layer to produce **upholstery system date** sub-output (construction-axis) + **visible cover date** sub-output (covers-axis), both surfacing within the unified upholstery assessment section on report. D-UC37-3 convention is now applied across both upholstery sub-layers — Block 37 established it (cover sub-layer); Block 39 completes it (system sub-layer).
+
+### D-UCN39-4 (locked): SECOND library-level "upholstery" assessment_layer application
+Construction library is the SECOND library where `assessment_layer = "upholstery"` applies at library level with no exceptions (after upholstery covers library at Block 37 D-UC37-4). All 9 categories uniformly routed; no per-category overrides. Prior non-covers/construction libraries used per-subcategory override (fasteners D-FA33-5) or per-category override (hardware D-HW35-7).
+
+### D-UCN39-5 (locked): SECOND application of D-UC37-7 expanded reasoning rule set convention
+7 reasoning rules per canonical-source rigor (parallels upholstery covers library 7-rule count). **Surfacing 2 resolution**: the 5 canonical Diagnostic Cross-Checks "If You Find X" patterns (horsehair / foam / coil springs / serpentine springs / down or feather; paragraphs 710-744) CONSOLIDATE into Rule #3 `layer_consistency_check` — they are operational sub-content of the layer-consistency principle, not 5 independent rules ("If you find foam, look next for..." is operationally a layer-consistency check). Plan Q2=D expected 7-9 rules; canonical-source rigor resolves to 7. Alternative (5 Cross-Checks as separate rules → 11-12 total) rejected as over-fragmentation per D-UC37-7 canonical-source-rigor convention.
+
+### D-UCN39-6 (locked): maker_associations SCHEMA-PRESENT-CONTENT-DEFERRED per D-HW35-6
+`UpholsteryConstructionMakerAssociation` interface defined in upholsteryConstruction.ts (library-local; NOT promoted to entryShape.ts; schema-occurrence rule doesn't fire). Block 40 leaves `maker_associations: []` empty arrays for ALL ~31 construction type entries. Construction canonical source has ZERO upholstery-shop or spring/foam-manufacturer documentation. Third application of D-HW35-6 SCHEMA-PRESENT-CONTENT-DEFERRED discipline (after hardware Block 36 D-HW36-6 + upholstery covers Block 38 D-UC38-6).
+
+### D-UCN39-7 (locked): Single-directional cross-library FK convention per Q3=F + D-FA33-8
+`UpholsteryConstructionTypeEntry` schema has NO `related_cover_types` field. Construction → covers reverse-references are NOT carried; the cross-library covers↔construction relationship is preserved exclusively via the covers library's forward-references (Block 38 D-UC38-7 `related_construction_types` field on `UpholsteryCoverTypeEntry`). Single-directional cross-library FK convention per D-FA33-8 established precedent. Verified Op G G-16 — `related_cover_types` absent from all construction entries.
+
+### D-UCN39-8 (locked): Cross-library FK fields on UpholsteryConstructionTypeEntry per Q4=H
+4 FK fields: `related_construction_types` (intra-library) + `related_fastener_types` + `related_hardware_types` + `related_joinery_types` (cross-library). Block 40 populates per explicit canonical-source cross-references:
+- Cat 9 Fasteners and Upholstery Attachment Clues entries → `related_fastener_types` (fasteners Cat 3 STAPLES + upholstery tacks) + `related_hardware_types` (hardware UPHOLSTERY HARDWARE: decorative_nailhead_trim)
+- App-Friendly Hierarchy "Frame evidence first: joinery, wood, tool marks, fasteners, form" → `related_joinery_types` cross-references where canonical-source warrant exists
+
+### D-UCN39-9 (locked): SEVENTH canonical-library encoding of Independent Layer Evaluation Standard
+Via Rule #5 `construction_evidence_layer_independence` (cross_layer_scope: true). After wood rule #7 + maker rule #1 + joinery rule #5 + fastener rule #5 + hardware rule #5 + upholstery covers rule #5. **Completes the ILE Standard encoding across all 7 Phase 2 evidence libraries.** Cross-library convention reinforced: each evidence-library reasoning-rule set includes one layer-independence canonical artifact per ILE precedent.
+
+### D-UCN39-10 (locked): Authority calibration distribution per D-AR29-11 + A-8
+**UPHOLSTERY_CONSTRUCTION_CATEGORIES distribution (verified Op G G-13): `positive_authority {7: 6, 8: 3}`; `hard_negative_authority {7: 6, 8: 3}`.**
+
+**3 categories at 8/8 (AG-anchor + canonical-rigor categories)**:
+- `upholstery_construction_category_coil_spring_construction` (Early Coil Spring industrial-introduction anchor; hand-tied coil spring construction rich canonical content)
+- `upholstery_construction_category_serpentine_sinuous_and_zigzag_springs` (post-1930s industrial-introduction AG anchor)
+- `upholstery_construction_category_foam_and_synthetic_cushion_materials` (densest AG distribution: Latex 1930s+, Polyurethane 1950s+, Polyester Fiberfill 1950s+, Memory Foam 1990s+)
+
+**6 categories at 7/7 (medium-strong canonical-source rationale)**: No-Spring Upholstery, Webbing Systems, Natural Stuffing and Padding Materials, Feather and Down Fill, Layering Textiles and Foundation Covers, Fasteners and Upholstery Attachment Clues.
+
+**UPHOLSTERY_CONSTRUCTION_REASONING_RULES**: all 7 at 9/9 per meta-rule supremacy precedent (D-WE26-8 / D-MM27-5).
+
+### D-UCN39-11 (locked): Cat 9 Fasteners and Upholstery Attachment Clues resolution per A-11 defensible default (a)
+Canonical source HAS "Fasteners and Upholstery Attachment Clues" as a real type-bearing category (paragraphs 691-709) with 3 explicit type entries (Hand Tacks para 692; Decorative Brass Nails/Nailhead Trim para 698; Staples para 704). Per strict canonical fidelity, cataloged as `UPHOLSTERY_CONSTRUCTION_CATEGORIES` entry #9. Cross-library FK fields (`related_fastener_types` + `related_hardware_types`) preserve relationships with fasteners + hardware libraries per D-UCN39-8. (Plan referred to this as "Cat 10"; actual canonical enumeration places it as the 9th type-bearing category — the plan's numbering counted Diagnostic Cross-Checks separately. No ambiguity; it is a real canonical category.)
+
+### D-UCN39-12 (locked): NEW reasoning-rule TYPE reupholstery_campaign_warning
+Block 39 Rule #6 `reupholstery_campaign_warning` is the **seventh NEW evidence-library reasoning-rule TYPE** authored across Phase 2 Session 7 libraries (after `restoration_false_signals` Block 30 joinery Rule #3 + `replacement_fastener_risk` Block 33 fastener Rule #2 + `restoration_contamination` Block 33 fastener Rule #4 + `reproduction_hardware_warning` Block 35 hardware Rule #4 + `cover_revival_warning` Block 37 covers Rule #6 + `cover_axis_sub_output_routing` Block 37 covers Rule #7). Captures the canonical Core Rule multi-generational-layering warning ("A chair frame may be 1880s, the springs may be 1920s replacement, the foam may be 1970s, and the visible fabric may be 2020s") + App-Friendly Identification Logic step 6 conflict-resolution discipline ("older frame plus modern foam means reupholstery, not modern frame") + canonical multiple-tack-hole-generations evidence.
+
+Construction-axis-specific reupholstery warning required because construction systems are canonically the MOST-layered evidence axis — a single piece may carry 3-4 distinct construction campaigns physically stacked. Construction-library counterpart to upholstery covers Rule #6 cover_revival_warning (same multi-campaign-layering dynamics; different evidence axis).
+
+Note: Block 39 Rule #7 `system_axis_sub_output_routing` is the SECOND application of the sub_output_routing rule TYPE (parallels upholstery covers Rule #7 cover_axis_sub_output_routing per D-UC37-13) — NOT a new TYPE; together the two sub_output_routing rules complete the operationalization of D-UC37-3 across both upholstery sub-layers.
+
+### D-UCN39-13 (locked; NEW forward-applicable convention): Appraiser-honest-discipline-supersedes-FK-completion
+**When a forward-reference FK turns out to be unwarranted by the canonical source, REMOVE the FK rather than author a content-thin entry to satisfy it.**
+
+Surfaced from Surfacing 4 resolution: Block 38 covers library authored 4 forward-reference FK values per D-UC38-7, one of which — `upholstery_cover_type_stretched_canvas → construction_layering_canvas_foundation` — has NO warranting canonical content in the construction section (canvas appears only as a contrast-point mention at paragraph 472: "differs from canvas because it is strap-based"; there is NO dedicated canvas construction type). Per appraiser-honest discipline, Block 40 will REMOVE the unwarranted covers FK to canvas_foundation rather than author a content-thin defensible-default `canvas_foundation` construction type purely to satisfy the dangling FK. Authoring a content-thin entry to complete an FK would inject non-canonical content into the corpus; removing the unwarranted FK preserves appraiser-honest fidelity to what the canonical source actually documents.
+
+**Forward-applicable**: future cross-library FK resolution (Phase 2 Session 9 styleFamilies + design-aspects; any future forward-reference pattern) applies this discipline — FK completion never justifies content-thin entry authoring; the canonical source governs whether an entry exists.
+
+This means Block 40 aligns only **3** covers forward-reference FK values (webbing, burlap, muslin/cambric) and removes the **4th** (canvas) entirely. Block 40 construction type count is **31** (not 32; no canvas_foundation entry).
+
+### D-UCN39-FINAL (post-authoring summary)
+Block 39 ship: upholstery construction library schema foundation + 9 UPHOLSTERY_CONSTRUCTION_CATEGORIES + empty UPHOLSTERY_CONSTRUCTION_TYPES scaffold (Block 40 populates 31 types) + 7 UPHOLSTERY_CONSTRUCTION_REASONING_RULES + 2 library-level routing constants + UpholsteryConstructionMakerAssociation library-local interface.
+- **NEW arrays**: `UPHOLSTERY_CONSTRUCTION_CATEGORIES` (9) + `UPHOLSTERY_CONSTRUCTION_TYPES` (0) + `UPHOLSTERY_CONSTRUCTION_REASONING_RULES` (7). Total 16 new canonical entries this block.
+- **NEW library-level routing constants**: `UPHOLSTERY_CONSTRUCTION_ASSESSMENT_LAYER = "upholstery"` + `UPHOLSTERY_CONSTRUCTION_EVIDENCE_SUB_LAYER = "system"` per D-UCN39-3.
+- **UPHOLSTERY_CONSTRUCTION_CATEGORIES authority distribution**: `positive_authority {7: 6, 8: 3}`; `hard_negative_authority {7: 6, 8: 3}` per D-UCN39-10.
+- **UPHOLSTERY_CONSTRUCTION_CATEGORIES assessment_layer + evidence_sub_layer distribution**: 9 categories all `assessment_layer: "upholstery"` + 9 categories all `evidence_sub_layer: "system"` per D-UCN39-3 + D-UCN39-4 library-level uniform routing.
+- **UPHOLSTERY_CONSTRUCTION_REASONING_RULES**: all 7 at 9/9 with migration_status "complete" + migration_target "engine_reasoning"; cross_layer_scope: true on Rule #1 (construction_alone_never_dates_frame) + Rule #5 (construction_evidence_layer_independence) per D-UCN39-5 + D-UCN39-9.
+- **Second concrete application of D-UC37-3 two-assessment-with-sub-output-surfacing convention**: CAPTURED (D-UCN39-3; evidence_sub_layer = "system").
+- **Second library-level "upholstery" assessment_layer application**: ESTABLISHED (D-UCN39-4).
+- **SEVENTH canonical-library encoding of Independent Layer Evaluation Standard**: CONFIRMED (D-UCN39-9; via Rule #5; completes ILE encoding across all 7 Phase 2 evidence libraries).
+- **Second application of D-UC37-7 expanded reasoning rule set convention**: CONFIRMED (D-UCN39-5; 7 rules; 5 Diagnostic Cross-Checks consolidated into Rule #3).
+- **NEW reasoning-rule TYPE reupholstery_campaign_warning**: CAPTURED (D-UCN39-12; seventh new TYPE).
+- **NEW convention appraiser-honest-discipline-supersedes-FK-completion**: CAPTURED (D-UCN39-13; forward-applicable).
+- Files modified: **2** (`lib/constraints/upholsteryConstruction.ts` NEW; `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation (diff = 0 lines).
+- **All 25 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5 / HARDWARE_CATEGORIES 13 / HARDWARE_TYPES 43 / HARDWARE_REASONING_RULES 5 / UPHOLSTERY_COVER_CATEGORIES 10 / UPHOLSTERY_COVER_TYPES 44 / UPHOLSTERY_COVER_REASONING_RULES 7.
+- 13 numbered audit decisions captured under D-UCN39-N block-scoped prefix (D-UCN39-1 through D-UCN39-13 + D-UCN39-FINAL).
+- **Phase 2 Session 7 fifth (final) library schema foundation: OPENED.**
+- **Block 40 queued: ~31 UPHOLSTERY_CONSTRUCTION_TYPES content authoring closes Phase 2 Session 7.** Block 40 is a 2-content-file change per Surfacing 5: authors `upholsteryConstruction.ts` type entries with natural `upholstery_construction_type_*` ids AND updates 3 Block 38 covers forward-reference FK values in `upholsteryCovers.ts` (webbing → linen/hemp/jute webbing type; burlap → burlap/hessian-over-springs type; muslin/cambric → muslin/cambric type) to align with the natural ids; the 4th covers FK (stretched_canvas → canvas_foundation) is REMOVED entirely per D-UCN39-13 appraiser-honest discipline. Block 40 authoring will apply: per-type replacement_likelihood per D-AP32-3 with nuanced intra-system semantics; AG entries on industrial-introduction-boundary types (Latex Foam 1930+, Polyurethane Foam 1950+, Polyester Fiberfill 1950+, Elastic Webbing 1940+, Sinuous/Serpentine Spring 1930+, Memory Foam 1990+) applying D-HW36-15 decade-range discipline; style_associations sparse (~0-5 entries; construction is style-silent); maker_associations: [] empty arrays per D-UCN39-6; cross-library FK populations per D-UCN39-8.
+- Convention precedents established this block: D-UCN39-3 second concrete application of D-UC37-3 (evidence_sub_layer = "system"); D-UCN39-4 second library-level "upholstery" assessment_layer application; D-UCN39-9 seventh + final ILE encoding across Phase 2 evidence libraries; D-UCN39-12 reupholstery_campaign_warning NEW reasoning-rule TYPE; D-UCN39-13 appraiser-honest-discipline-supersedes-FK-completion convention (NEW; forward-applicable to all future cross-library FK resolution); D-UCN39-5 second application of D-UC37-7 expanded reasoning rule set with Diagnostic-Cross-Checks-consolidation precedent. All forward-applicable to Block 40 + Phase 2 Session 9 (styleFamilies + design-aspects).
+- Next sequencing per D-AP32-5 + Q5=J Sequence J: Block 40 construction content authoring (~31 types + 3 covers FK alignments + 1 covers FK removal) closes Phase 2 Session 7 entirely.
+
+---
+
 
