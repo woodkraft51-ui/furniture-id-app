@@ -613,7 +613,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
         usage_notes: "General utility production." },
       { period_label: "Scandinavian-influenced seating", date_floor: 1950, date_ceiling: 1970,
         usage_notes: "MCM Scandinavian-influenced seating per File A Section 3 Mid-Century Modern." },
-      { period_label: "Continued present-day seating, utility, rustic", date_floor: 1970, date_ceiling: 2026,
+      { period_label: "Continued present-day seating, utility, rustic", date_floor: 1970,
         usage_notes: "Ongoing seating and rustic use." },
     ],
     regional_associations: [
@@ -737,7 +737,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
         usage_notes: "Per File A Section 3 Colonial Revival primary woods list." },
       { period_label: "Mission/Arts & Crafts use", date_floor: 1895, date_ceiling: 1925,
         usage_notes: "Cherry in Mission/Arts & Crafts per File A Section 3 Mission primary woods." },
-      { period_label: "Contemporary traditional and reproduction", date_floor: 1950, date_ceiling: 2026,
+      { period_label: "Contemporary traditional and reproduction", date_floor: 1950,
         usage_notes: "Continued traditional and reproduction use." },
     ],
     regional_associations: [
@@ -768,7 +768,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
         usage_notes: "Per File A Section 3 Colonial Revival." },
       { period_label: "Scandinavian-influenced and American MCM", date_floor: 1945, date_ceiling: 1970,
         usage_notes: "American MCM primary wood (Walnut/Birch/Maple identity)." },
-      { period_label: "Contemporary cabinetry and reproduction", date_floor: 1970, date_ceiling: 2026,
+      { period_label: "Contemporary cabinetry and reproduction", date_floor: 1970,
         usage_notes: "Contemporary use per File A Section 3." },
     ],
     regional_associations: [
@@ -897,7 +897,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
         usage_notes: "Birch in Art Deco primary woods list." },
       { period_label: "MCM American identity (with walnut + maple)", date_floor: 1945, date_ceiling: 1975,
         usage_notes: "American MCM Birch/Maple/Walnut." },
-      { period_label: "Postwar utility and veneer substrates", date_floor: 1945, date_ceiling: 2026,
+      { period_label: "Postwar utility and veneer substrates", date_floor: 1945,
         usage_notes: "Veneer substrates, plywood, painted/stained production." },
     ],
     regional_associations: [
@@ -918,7 +918,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     positive_authority: 6,
     hard_negative_authority: 6,
     period_associations: [
-      { period_label: "Bentwood and chair production", date_floor: 1850, date_ceiling: 2026,
+      { period_label: "Bentwood and chair production", date_floor: 1850,
         usage_notes: "Critical to Thonet-style bentwood production; also common in general chair-part manufacturing." },
     ],
     regional_associations: [
@@ -937,7 +937,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     positive_authority: 6,
     hard_negative_authority: 6,
     period_associations: [
-      { period_label: "Secondary wood, painted furniture (broad)", date_floor: 1800, date_ceiling: 2026,
+      { period_label: "Secondary wood, painted furniture (broad)", date_floor: 1800,
         usage_notes: "Widespread secondary and painted-furniture use." },
     ],
     regional_associations: [
@@ -1000,7 +1000,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     positive_authority: 6,
     hard_negative_authority: 6,
     period_associations: [
-      { period_label: "Secondary wood, drawer parts, carving (broad)", date_floor: 1800, date_ceiling: 2026,
+      { period_label: "Secondary wood, drawer parts, carving (broad)", date_floor: 1800,
         usage_notes: "Drawer parts, carving, secondary wood, painted furniture, light utility parts." },
     ],
     regional_associations: [
@@ -1023,7 +1023,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     positive_authority: 6,
     hard_negative_authority: 6,
     period_associations: [
-      { period_label: "All periods as secondary wood (broad)", date_floor: 1620, date_ceiling: 2026,
+      { period_label: "All periods as secondary wood (broad)", date_floor: 1620,
         usage_notes: "Secondary wood, painted furniture, rural furniture, backs, bottoms, drawer parts, and case interiors. Eastern white pine especially important in New England and early American casework." },
     ],
     regional_associations: [
@@ -1093,7 +1093,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     positive_authority: 6,
     hard_negative_authority: 6,
     period_associations: [
-      { period_label: "Southern utility and case furniture", date_floor: 1700, date_ceiling: 2026,
+      { period_label: "Southern utility and case furniture", date_floor: 1700,
         usage_notes: "Yellow pine primary in Southern States per File A Section 4 Southern States." },
     ],
     regional_associations: [
@@ -1114,7 +1114,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     period_associations: [
       { period_label: "Cedar chest and moth-resistant storage peak", date_floor: 1880, date_ceiling: 1960,
         usage_notes: "Cedar chests, blanket chests, closet linings, storage interiors, wardrobe and trunk linings." },
-      { period_label: "Continued storage and lining use", date_floor: 1960, date_ceiling: 2026,
+      { period_label: "Continued storage and lining use", date_floor: 1960,
         usage_notes: "Present storage, closet, and lining use." },
     ],
     regional_associations: [
@@ -1159,7 +1159,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     period_associations: [
       { period_label: "Arts & Crafts California", date_floor: 1895, date_ceiling: 1925,
         usage_notes: "Redwood occasionally appears in California Arts & Crafts per File A Section 3 Mission California." },
-      { period_label: "Studio furniture and West Coast use", date_floor: 1950, date_ceiling: 2026,
+      { period_label: "Studio furniture and West Coast use", date_floor: 1950,
         usage_notes: "West Coast production per File A Section 4." },
     ],
     regional_associations: [
@@ -1287,7 +1287,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     period_associations: [
       { period_label: "MCM Scandinavian influence", date_floor: 1945, date_ceiling: 1975,
         usage_notes: "Scandinavian influence: teak + rosewood per File A Section 3 MCM Scandinavian influence." },
-      { period_label: "Outdoor luxury and premium modern", date_floor: 1960, date_ceiling: 2026,
+      { period_label: "Outdoor luxury and premium modern", date_floor: 1960,
         usage_notes: "Outdoor luxury, premium modern, contemporary design furniture." },
     ],
     regional_associations: [
@@ -1326,7 +1326,7 @@ export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
         usage_notes: "Per File A Section 2 Plywood row: '1905–1930 early adoption'. Limited plywood in this window typical of pioneer factory production." },
       { period_label: "Growing factory plywood use", date_floor: 1930, date_ceiling: 1950,
         usage_notes: "Per File A Section 2 Plywood row: '1930–1950 growing factory use'." },
-      { period_label: "Plywood substrate dominance", date_floor: 1950, date_ceiling: 2026,
+      { period_label: "Plywood substrate dominance", date_floor: 1950,
         usage_notes: "Per File A Section 2 Plywood row: '1950–present dominant substrate'. Extensive plywood carcass is a postwar production signal." },
     ],
     usage_role: ["carcass_panel", "veneer_substrate", "drawer_bottoms", "case_back"],
@@ -1347,7 +1347,7 @@ export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
     period_associations: [
       { period_label: "Hardboard/Masonite emergence", date_floor: 1930, date_ceiling: 1945,
         usage_notes: "Per File A Section 2 Hardboard/Masonite row: '1930–present' adoption window onset." },
-      { period_label: "Mid-century and later hardboard production", date_floor: 1945, date_ceiling: 2026,
+      { period_label: "Mid-century and later hardboard production", date_floor: 1945,
         usage_notes: "Per File A Section 2 Hardboard/Masonite row: 'common in mid-century and later production'." },
     ],
     usage_role: ["case_back", "drawer_bottoms", "carcass_panel"],
@@ -1369,7 +1369,7 @@ export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
     period_associations: [
       { period_label: "Particleboard emergence", date_floor: 1950, date_ceiling: 1965,
         usage_notes: "Per File A Section 2 Particleboard row: '1950–present' adoption window onset." },
-      { period_label: "Late 20th-century mass-market dominance", date_floor: 1965, date_ceiling: 2026,
+      { period_label: "Late 20th-century mass-market dominance", date_floor: 1965,
         usage_notes: "Per File A Section 2 Particleboard row: 'Dominant in late 20th-century mass-market furniture'." },
     ],
     usage_role: ["veneer_substrate", "specialized_use"],
@@ -1390,7 +1390,7 @@ export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
     period_associations: [
       { period_label: "MDF adoption", date_floor: 1970, date_ceiling: 1985,
         usage_notes: "Per File A Section 2 MDF row: '1970–present' adoption window onset." },
-      { period_label: "Modern and contemporary MDF production", date_floor: 1985, date_ceiling: 2026,
+      { period_label: "Modern and contemporary MDF production", date_floor: 1985,
         usage_notes: "Per File A Section 2 MDF row: 'Common in modern and contemporary production'." },
     ],
     usage_role: "specialized_use",
@@ -1413,7 +1413,7 @@ export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
         usage_notes: "Per File A 1925-1945 Art Deco section construction shifts: 'Veneer over composite substrates'." },
       { period_label: "Mid-Century Modern engineered-core dominance", date_floor: 1945, date_ceiling: 1975,
         usage_notes: "Per File A 1945-1975 MCM manufacturing shift: 'Engineered cores dominate; Thin veneers become normal; Solid hardwood less common structurally'." },
-      { period_label: "Contemporary composite veneer cores", date_floor: 1975, date_ceiling: 2026,
+      { period_label: "Contemporary composite veneer cores", date_floor: 1975,
         usage_notes: "Per File A 1970-Present Contemporary section primary materials list ('MDF, Particleboard, Plywood, Laminates') + 'Key shift: Structural hardwood increasingly replaced by engineered substrates'." },
     ],
     usage_role: "veneer_substrate",
