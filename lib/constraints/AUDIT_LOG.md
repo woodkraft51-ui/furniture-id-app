@@ -3055,4 +3055,119 @@ Block 36 ship: 43 HARDWARE_TYPES entries authored across 13 internal sub-batches
 
 ---
 
+## Block 37 — Upholstery covers library schema foundation + 10 categories + 7 reasoning rules + two-assessment-with-sub-output-surfacing convention capture (D-UC37-3) + first library-level "upholstery" assessment_layer application (D-UC37-4)
+## Phase 2 Session 7 fourth library OPENS
+## Session 15 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main 0aaa98a (Block 36 endpoint / Hardware library content-complete)
+
+Opens Phase 2 Session 7 fourth library (upholstery covers) per D-AP32-5 + Q1=B + Q6 Sequence J four-block sequence (Block 37 covers schema + Block 38 covers content + Block 39 construction schema + Block 40 construction content closes Phase 2 Session 7). Authors new `lib/constraints/upholsteryCovers.ts` with 4 interfaces (`UpholsteryCoverCategoryEntry` + `UpholsteryCoverTypeEntry` + `UpholsteryCoverReasoningRule` + `UpholsteryCoverMakerAssociation`) + 2 library-level routing constants (`UPHOLSTERY_COVERS_ASSESSMENT_LAYER` + `UPHOLSTERY_COVERS_EVIDENCE_SUB_LAYER`) + 3 arrays (UPHOLSTERY_COVER_CATEGORIES 10 entries + UPHOLSTERY_COVER_TYPES empty scaffold + UPHOLSTERY_COVER_REASONING_RULES 7 entries).
+
+**TWO-ASSESSMENT-WITH-SUB-OUTPUT-SURFACING CONVENTION** captured (D-UC37-3; forward-applicable extension of D-FA33-5 dual-assessment architecture). **FIRST LIBRARY-LEVEL "upholstery" ASSESSMENT_LAYER APPLICATION** established (D-UC37-4; all 10 categories uniformly routed; no per-category overrides). **SIXTH canonical-library encoding of Independent Layer Evaluation Standard** via Rule #5 cover_evidence_layer_independence (D-UC37-9). **Q5=H EXPANDED REASONING RULE SET** convention established (D-UC37-7; 7 rules per canonical-source rigor vs fixed 5-rule pattern). Two NEW canonical reasoning rule TYPES: cover_revival_warning (D-UC37-12; fifth new type) + cover_axis_sub_output_routing (D-UC37-13; sixth new type).
+
+### D-UC37-1 (locked): Block 37 scope per Q1-Q6 lockings
+Single upholsteryCovers.ts file with 4 interfaces + 2 library-level constants + 3 arrays. UPHOLSTERY_COVER_CATEGORIES 10 entries; UPHOLSTERY_COVER_TYPES empty scaffold for Block 38 (44 entries planned per D-UC37-11 Surfacing 1 resolution); UPHOLSTERY_COVER_REASONING_RULES 7 entries at 9/9. Mike-locked authorization includes 13 numbered D-UC37-N audit decisions + D-UC37-FINAL summary.
+
+### D-UC37-2 (locked): Q1=B two-library architecture
+Phase 2 Session 7 fourth + fifth libraries via two separate files: upholsteryCovers.ts (Blocks 37 + 38) + upholsteryConstruction.ts (Blocks 39 + 40). Sequence J four-block sequence closes Phase 2 Session 7. Distinct from single-library architectures (joinery / hardware / fasteners) because canonical source `American_Furniture_Textile_Reference.docx` has structural division between covers section (paragraphs 0-437) and construction section (paragraphs 438+), and Mike's appraiser-practice judgment separates covers-as-replacement-evidence from construction-as-system-foundation-evidence at the library boundary.
+
+### D-UC37-3 (locked; NEW forward-applicable convention): TWO-ASSESSMENT-WITH-SUB-OUTPUT-SURFACING CONVENTION
+Forward-applicable extension of D-FA33-5 dual-assessment architecture per Mike's appraiser-practice judgment + Q2=C + Q2-followup Option α. Convention: covers + construction libraries BOTH route to single "upholstery" assessment_layer at library level; engine surfaces upholstery system date + visible cover date as SUB-OUTPUTS within unified upholstery assessment section on report.
+
+**Sub-layer routing mechanism**: Explicit `evidence_sub_layer` field at library level + per-category-entry:
+- `upholsteryCovers.ts`: `UPHOLSTERY_COVERS_ASSESSMENT_LAYER = "upholstery"` + `UPHOLSTERY_COVERS_EVIDENCE_SUB_LAYER = "cover"`; per-category `evidence_sub_layer: "cover"` literal
+- `upholsteryConstruction.ts` (Block 39 forward-applicable): `UPHOLSTERY_CONSTRUCTION_ASSESSMENT_LAYER = "upholstery"` + `UPHOLSTERY_CONSTRUCTION_EVIDENCE_SUB_LAYER = "system"`; per-category `evidence_sub_layer: "system"` literal
+
+Engine reads both libraries; aggregates by evidence_sub_layer to produce upholstery system date + visible cover date as sub-outputs within unified upholstery assessment section.
+
+**Distinct from three-assessment architecture** (Option D rejected by Mike at Q2): three-assessment would have three independent assessments on report (frame + covers + construction); two-assessment-with-sub-output-surfacing bundles upholstery sub-outputs into single unified upholstery assessment section per appraiser-practice convention. Upholstery campaigns and re-covering campaigns are appraiser-distinct temporal phenomena, but appraiser practice bundles them.
+
+### D-UC37-4 (locked; NEW convention): FIRST LIBRARY-LEVEL "upholstery" ASSESSMENT_LAYER APPLICATION
+upholsteryCovers.ts is the first library where `assessment_layer = "upholstery"` applies at library level (no exceptions; every cover entry is upholstery evidence). Forward-applicable: upholsteryConstruction.ts at Block 39 will follow same pattern.
+
+**Prior libraries' upholstery routing patterns** (per-category or per-subcategory overrides):
+- Fasteners (D-FA33-5): per-subcategory override (Cat 3 STAPLES subcategories 3A + 3B route to "upholstery")
+- Hardware (D-HW35-7): per-category override (UPHOLSTERY HARDWARE category routes to "upholstery"; per-category-vs-per-subcategory mechanism per D-HW35-14)
+
+**Block 37 establishes library-level "upholstery" assessment** as the canonical-source-defined-upholstery-axis-evidence pattern (when canonical source IS uniformly upholstery evidence, library-level routing applies; no per-category overrides needed).
+
+### D-UC37-5 (locked): Q3=E sparse style_associations population per canonical-source rigor
+Block 38 scope decision: ~18% of cover types populate `style_associations` per A-5 style density check + canonical-source rigor. Hardware precedent at 14/43 (~33%); covers expected sparser (~8-11 of 44 types). Style-rich types: damask + brocade + jacquard + tapestry + needlework + velvet + mohair velvet + toile + bamboo wicker. Style-silent types: cotton + linen + wool broadcloth + canvas + webbing + burlap + muslin/cambric + cane + rush + splint + modern synthetics.
+
+### D-UC37-6 (locked): Q4=F SCHEMA-PRESENT-CONTENT-DEFERRED for maker_associations per D-HW35-6
+`UpholsteryCoverMakerAssociation` interface defined in upholsteryCovers.ts (library-local; NOT promoted to entryShape.ts per schema-occurrence rule). Block 38 leaves `maker_associations: []` empty arrays for ALL 44 cover type entries. Textile canonical source has ZERO textile-manufacturer documentation; validation-phase one-offs + post-launch authoring path stands.
+
+**Convention application**: Second application of D-HW35-6 SCHEMA-PRESENT-CONTENT-DEFERRED discipline (first application was hardware library Block 36 D-HW36-6). Establishes the convention as forward-applicable across multiple libraries when canonical source surfaces partial-coverage content.
+
+### D-UC37-7 (locked; NEW forward-applicable convention): Q5=H EXPANDED REASONING RULE SET
+Canonical-source rigor determines reasoning-rule count per library, NOT fixed 5-rule pattern. Block 37 ships 7 reasoning rules per `American_Furniture_Textile_Reference.docx` Period Pattern and Wear Cues canonical-source rigor + Quick Identification Hierarchy + Operational Rule passages + D-UC37-3 sub-output-routing operationalization needs.
+
+**Convention precedent**: prior 5-rule pattern across wood / maker / joinery / fastener / hardware libraries was canonical-source-actual coincidence (each prior canonical source surfaced 5 distinct rule-warranting sections), NOT architectural mandate. Forward-applicable: future libraries (upholsteryConstruction.ts at Block 39 + Phase 2 Session 9 styleFamilies + design-aspects) may ship 4 / 5 / 6 / 7 / 8+ rules per canonical-source rigor.
+
+### D-UC37-8 (locked): Cross-library overlap detection + FK field design
+Substantial cross-library overlap surface per A-6 + Op A canonical extraction. 5 FK fields on `UpholsteryCoverTypeEntry`:
+
+| FK field | Cross-library target | Block 38 application scope |
+|---|---|---|
+| `related_cover_types?` | intra-library | chintz ↔ toile printed-cotton family; jacquard ↔ damask figured-weave family |
+| `related_construction_types?` | upholsteryConstruction.ts (Block 39-40 forward-reference) | Category 7 Canvas/Webbing/Burlap/Muslin (4 cross-references; resolves at Block 40) |
+| `related_hardware_types?` | hardware.ts UPHOLSTERY HARDWARE category | decorative trim references → hardware_type_upholstery_tacks + hardware_type_decorative_nailhead_trim |
+| `related_fastener_types?` | fasteners.ts Cat 3 STAPLES | attachment evidence → fastener_subcategory_upholstery_tacks + fastener_type_upholstery_staple |
+| `related_form_types?` | forms.ts | upholstered-form appropriateness; sparse population per canonical-source warrant |
+
+Per per-canonical-source-fidelity convention (D-FA34-11 + D-HW36-16): covers entries that share physical names with construction entries (Canvas / Webbing / Burlap / Muslin) are canonically distinct evidence-axis interpretations (cover-axis = visible textile surface; construction-axis = foundation/hidden support); cross-library FK preserves the relationship without canonical duplication.
+
+### D-UC37-9 (locked): SIXTH canonical-library encoding of Independent Layer Evaluation Standard
+Via Rule #5 `cover_evidence_layer_independence` (cross_layer_scope: true). After wood rule #7 + maker rule #1 + joinery rule #5 + fastener rule #5 + hardware rule #5. Cross-library convention reinforced: each evidence-library reasoning-rule set includes one layer-independence canonical artifact per ILE precedent.
+
+**Operational note**: Block 37 ILE rule operates within D-UC37-3 two-assessment-with-sub-output-surfacing convention — cover-axis evidence layer outputs are independent inputs to the unified upholstery assessment section's cover sub-output (alongside construction-axis evidence inputs to system sub-output at Block 40).
+
+### D-UC37-10 (locked): Authority calibration distribution per D-AR29-11 + A-8
+**UPHOLSTERY_COVER_CATEGORIES distribution (verified Op G G-12)**: `positive_authority {7: 6, 8: 4}`; `hard_negative_authority {7: 6, 8: 4}`.
+
+**4 categories at 8/8 (era-anchor + AG-anchor + canonical-rigor categories)**:
+- `upholstery_cover_category_patterned_and_figured_upholstery_fabrics` (Jacquard 1800s+ industrial anchor + Turkey Work tight era anchor + style-rich)
+- `upholstery_cover_category_pile_fabrics` (Velvet/Plush/Mohair/Velour era-tight canonical anchors)
+- `upholstery_cover_category_leather_and_skin_upholstery` (Vinyl 1930s+ AG anchor + rich natural-leather diagnostics)
+- `upholstery_cover_category_modern_synthetic_and_blended_upholstery_fabrics` (densest AG distribution: 6 of 6 types are Block 38 AG candidates)
+
+**6 categories at 7/7 (medium-strong canonical-source rationale)**: Plain Woven + Haircloth/Animal-Hair + Printed + Canvas/Webbing/Support + Cane/Rush/Splint/Woven Seat + Wicker/Rattan/Reed/Willow.
+
+**UPHOLSTERY_COVER_REASONING_RULES**: all 7 at 9/9 per meta-rule supremacy precedent (D-WE26-8 / D-MM27-5).
+
+### D-UC37-11 (locked): Surfacing 1 resolution — 44 types Block 38 scope per strict canonical fidelity
+Wicker category type count: 44 actual vs plan preview 45. "Wicker, General Category" intro paragraph (298-306) absorbed into UPHOLSTERY_COVER_CATEGORIES `hardware_category_wicker_rattan_reed_willow_and_basketry_furniture_materials` entry's `category_description` + `unique_category_traits` + `core_identifying_elements` fields per A-4-canonical-enumeration-supersedes-A-6-informal-preview discipline per D-HW36-14. Block 38 authors 6 wicker types (Rattan + Reed + Willow + Paper Fiber Wicker + Bamboo + Synthetic Resin Wicker), NOT 7. **Total Block 38 scope: 44 types**.
+
+### D-UC37-12 (locked; NEW reasoning-rule TYPE): cover_revival_warning
+Block 37 Rule #6 `cover_revival_warning` is the **fifth NEW evidence-library reasoning-rule TYPE** authored across Phase 2 Session 7 libraries (after `restoration_false_signals` Block 30 joinery Rule #3 + `replacement_fastener_risk` Block 33 fastener Rule #2 + `restoration_contamination` Block 33 fastener Rule #4 + `reproduction_hardware_warning` Block 35 hardware Rule #4). Captures canonical-source revival-wave warnings throughout covers section (Colonial Revival 1880-1940 / Victorian Revival / Rococo Revival / Renaissance Revival / Gothic Revival / Jacobean Revival / Hollywood Regency) + Operational Rule canonical anchor ("A Colonial Revival chair with rush does not become 18th century").
+
+**Cover-axis-specific revival warning** required because cover-revival reproductions are canonically DESIGNED to mimic earlier-era covers (unlike replacement fasteners which are typically modernity-marked).
+
+### D-UC37-13 (locked; NEW reasoning-rule TYPE): cover_axis_sub_output_routing
+Block 37 Rule #7 `cover_axis_sub_output_routing` is the **sixth NEW evidence-library reasoning-rule TYPE** (after the five preceding types). Engine-layer routing rule operationalizing D-UC37-3 two-assessment-with-sub-output-surfacing convention at reasoning-rule level. Pairs with future upholsteryConstruction.ts Rule #N `construction_axis_sub_output_routing` at Block 39.
+
+Per D-MM27-9 Phase 2 / Phase 3 separation: rule is encoded as canonical content here; engine.ts implementation of sub-output aggregation deferred to Phase 3 engine implementation.
+
+### D-UC37-FINAL (post-authoring summary)
+Block 37 ship: upholstery covers library schema foundation + 10 UPHOLSTERY_COVER_CATEGORIES + empty UPHOLSTERY_COVER_TYPES scaffold (Block 38 populates 44 types) + 7 UPHOLSTERY_COVER_REASONING_RULES + 2 library-level routing constants + UpholsteryCoverMakerAssociation library-local interface.
+- **NEW arrays**: `UPHOLSTERY_COVER_CATEGORIES` (10) + `UPHOLSTERY_COVER_TYPES` (0) + `UPHOLSTERY_COVER_REASONING_RULES` (7). Total 17 new canonical entries this block.
+- **NEW library-level routing constants**: `UPHOLSTERY_COVERS_ASSESSMENT_LAYER = "upholstery"` + `UPHOLSTERY_COVERS_EVIDENCE_SUB_LAYER = "cover"` per D-UC37-3 sub-output-routing mechanism.
+- **UPHOLSTERY_COVER_CATEGORIES authority distribution**: `positive_authority {7: 6, 8: 4}`; `hard_negative_authority {7: 6, 8: 4}` per D-UC37-10.
+- **UPHOLSTERY_COVER_CATEGORIES assessment_layer + evidence_sub_layer distribution**: 10 categories all `assessment_layer: "upholstery"` + 10 categories all `evidence_sub_layer: "cover"` per D-UC37-3 + D-UC37-4 library-level uniform routing.
+- **UPHOLSTERY_COVER_REASONING_RULES**: all 7 at 9/9 with migration_status "complete" + migration_target "engine_reasoning"; cross_layer_scope: true on Rule #1 (covers_alone_never_dates_furniture) + Rule #5 (cover_evidence_layer_independence) per D-UC37-7 + D-UC37-9.
+- **Two-assessment-with-sub-output-surfacing convention**: CAPTURED (D-UC37-3; forward-applicable; D-FA33-5 extension).
+- **First library-level "upholstery" assessment_layer application**: ESTABLISHED (D-UC37-4; forward-applicable to upholsteryConstruction.ts at Block 39).
+- **SIXTH canonical-library encoding of Independent Layer Evaluation Standard**: CONFIRMED (D-UC37-9; via Rule #5).
+- **Q5=H expanded reasoning rule set convention**: ESTABLISHED (D-UC37-7; canonical-source rigor over fixed 5-rule pattern; forward-applicable).
+- **Two NEW canonical reasoning rule TYPES**: cover_revival_warning (D-UC37-12; fifth new type) + cover_axis_sub_output_routing (D-UC37-13; sixth new type).
+- Files modified: **2** (`lib/constraints/upholsteryCovers.ts` NEW; `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation.
+- **All 22 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5 / HARDWARE_CATEGORIES 13 / HARDWARE_TYPES 43 / HARDWARE_REASONING_RULES 5.
+- 13 numbered audit decisions captured under D-UC37-N block-scoped prefix (D-UC37-1 through D-UC37-13 + D-UC37-FINAL).
+- **Phase 2 Session 7 fourth library schema foundation: OPENED.**
+- **Block 38 queued: 44 UPHOLSTERY_COVER_TYPES content authoring** from American_Furniture_Textile_Reference.docx covers section. Block 38 authoring will apply: per-type `replacement_likelihood` per D-AP32-3 (covers as HIGH replacement class per Mike framing); 10 AG entries on industrial-introduction-boundary types per Op A-9 (Vinyl 1930+, Rayon 1900+, Nylon 1940+, Polyester 1950+, Acrylic 1950+, Olefin 1960+, Microfiber 1980+, Synthetic Resin Wicker 1980+, Paper Fiber Rush 1880+, Paper Fiber Wicker 1880+) with 9 of 10 applying D-HW36-15 decade-range AG-floor interpretation discipline; style_associations sparse (~18% est per A-5); maker_associations: [] empty arrays per D-UC37-6 SCHEMA-PRESENT-CONTENT-DEFERRED; cross-library FK populations per D-UC37-8 (related_construction + related_hardware + related_fastener + related_form fields).
+- Convention precedents established this block: D-UC37-3 two-assessment-with-sub-output-surfacing convention (NEW); D-UC37-4 first library-level "upholstery" assessment_layer application (NEW); D-UC37-7 Q5=H expanded reasoning rule set convention (NEW: canonical-source rigor over fixed 5-rule pattern); D-UC37-12 cover_revival_warning (NEW reasoning-rule TYPE); D-UC37-13 cover_axis_sub_output_routing (NEW reasoning-rule TYPE); D-UC37-11 second application of A-4-canonical-enumeration-supersedes-A-6-informal-preview discipline (D-HW36-14 reuse); D-UC37-6 second application of SCHEMA-PRESENT-CONTENT-DEFERRED discipline (D-HW35-6 reuse). All forward-applicable to subsequent Phase 2 Session 7 fifth library (upholstery construction Blocks 39-40) + Phase 2 Session 9 (styleFamilies + design-aspects).
+- Next sequencing per D-AP32-5 + Q6 Sequence J: Block 38 covers content authoring (44 types); then Block 39 upholstery construction schema + Block 40 construction content closes Phase 2 Session 7.
+
+---
+
 
