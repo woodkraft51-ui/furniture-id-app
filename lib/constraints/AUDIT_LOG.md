@@ -3411,4 +3411,116 @@ Block 39 ship: upholstery construction library schema foundation + 9 UPHOLSTERY_
 
 ---
 
+## Block 40 — UPHOLSTERY_CONSTRUCTION_TYPES Content Authoring (31 entries across 9 sub-batches) + 3 Covers FK Alignments + 1 Covers FK Removal (D-UCN39-13 first application); Upholstery construction library content-complete; PHASE 2 SESSION 7 FIFTH (FINAL) LIBRARY CLOSED; PHASE 2 SESSION 7 FULLY CLOSED
+## Session 16 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main 4f0c82e (Block 39 endpoint / Upholstery construction library schema foundation opening)
+
+Authors 31 `UpholsteryConstructionTypeEntry` entries into `UPHOLSTERY_CONSTRUCTION_TYPES` across 9 internal sub-batches (one per `UPHOLSTERY_CONSTRUCTION_CATEGORIES` entry) per `American_Furniture_Textile_Reference.docx` construction section (paragraphs 438-768). Closes the upholstery construction library begun with Block 39 schema foundation. **CLOSES PHASE 2 SESSION 7 ENTIRELY** — all 5 libraries (joinery, fasteners, hardware, upholstery covers, upholstery construction) canonically content-complete. Two-content-file change per D-UC38-7 + D-UCN39-13: `upholsteryConstruction.ts` (31 type entries) + `upholsteryCovers.ts` (3 FK alignments + 1 FK removal) + `AUDIT_LOG.md`. `lib/engine.ts` UNCHANGED per D-MM27-9.
+
+### D-UC40-1 (locked): Block 40 scope per Q1-Q6 lockings
+Single combined ship with 9 internal sub-batches + Op C-10 covers FK alignment operation. 31 `UPHOLSTERY_CONSTRUCTION_TYPES` + 3 covers FK alignments + 1 covers FK removal. Mid-batch pause protocol active; defensible-defaults execution permitted on minor surfacings. Mike-locked authorization includes D-UC40-N numbered audit decisions + D-UC40-FINAL summary. Op A surfacings resolved at defensible-default strength + 2 explicit Mike confirmations (staples AG floor + feather_and_down_over_foam AG).
+
+### D-UC40-2 (locked): period_associations granularity per canonical-source rigor per A-5
+**17 multi-period entries** (2 `period_associations` each — broad range + explicit canonical era-phase) / **14 single-period entries**. Multi-period: stuffed_slip_seat, stuffed_over_the_rail, elastic_webbing, early_coil_spring, hand_tied_coil_springs, drop_in_spring_unit, sinuous_serpentine_spring, horsehair, mixed_animal_hair, tow, straw_hay_excelsior_wood_wool, cotton_batting, latex_foam, polyurethane_foam, polyester_fiberfill_dacron, memory_foam, hand_tacks. Granularity driven by canonical "strongest X" / "experimental…practical" / "introduction…dominant" phrasing.
+
+### D-UC40-3 (locked): replacement_likelihood per-type distribution per Q4=H + A-7
+**Distribution: {low: 2, medium: 19, high: 10}.** LOW (2): horsehair, hand_tied_coil_springs (long-lived, survive multiple recovers). HIGH (10): latex_foam, polyurethane_foam, polyester_fiberfill_dacron, memory_foam, high_resilience_foam, elastic_webbing, sinuous_serpentine_spring, platform_no_sag_spring, staples, feather_and_down_over_foam (foam degrades; rubber dries; springs sag; staples are modern-repair indicators). MEDIUM (19): all remaining. Notes-field override marker per D-FA34-3 on early_coil_spring (durable but canonically reupholstery-prone — kept MEDIUM).
+
+### D-UC40-4 (locked): AG entries on 10 types per Q2=C + A-4 hard-boundary discipline
+**10 anti_classification_guidance entries**, all `boundary_type: "form_emergence"` + `prominence: "prominent"`, all applying D-HW36-15 decade-range AG-floor interpretation discipline:
+| Type | AG floor | Canonical phrasing |
+|---|---|---|
+| elastic_webbing | 1940 | "strongest post-1940s" |
+| sinuous_serpentine_spring | 1930 | "strongest post-1930s and especially postwar" |
+| platform_no_sag_spring | 1930 | dating cue "Usually post-1930s to present" |
+| latex_foam | 1930 | "1930s to present" |
+| polyurethane_foam | 1950 | "1950s to present; dominant from the 1960s onward" |
+| polyester_fiberfill_dacron | 1950 | "1950s to present; strongest 1960s onward" |
+| memory_foam | 1990 | "strongest 1990s onward in consumer furniture" |
+| high_resilience_foam | 1970 | "Late 20th century to present" (vague; conservative decade-floor; notes-field marker flags vagueness) |
+| staples | 1900 | "Mostly 20th century to present in upholstery" |
+| feather_and_down_over_foam | 1950 | "Mid-20th century to present" (foam core = hard industrial boundary) |
+
+**Surfacings vs plan Q2=C draft (defensible-default + Mike-confirmed corrections):** (a) **staples AG floor = 1900, not the plan draft's 1940** — Mike-confirmed; canonical "Mostly 20th century" → D-HW36-15 yields 1900. (b) **platform_no_sag_spring AG floor = 1930, not 1940** — canonical dating cue "Usually post-1930s". (c) **feather_and_down_over_foam AG (1950) is a NEW AG candidate** not in the plan Q2=C list — Mike-confirmed; the foam core makes it a hard industrial-introduction boundary. (d) **kapok gets NO AG** — Mike-confirmed; canonical "Late 19th century to mid-20th century strongest" is a soft strongest-range for a natural plant fiber, not a hard floor (plan pre-addressed CC-Q7 1900-floor candidate declined per appraiser-honest discipline). (e) **drop_in_spring_unit + marshall_pocket_coil get NO AG** — canonical "Late 19th century to present" gradual industrial-adoption curves, soft boundaries.
+
+### D-UC40-5 (locked): Cross-library AG floor DIVERGENCE per Q3=E + D-FA34-11 + D-HW36-16 — THIRD concrete instance
+**Construction Staples AG floor 1900 vs fasteners library `fastener_type_upholstery_staple` AG floor 1930 = genuine cross-library AG floor DIVERGENCE.** The two libraries draw from two different canonical source documents: `American_Furniture_Textile_Reference.docx` construction section (para 705 "Mostly 20th century to present" → 1900 per D-HW36-15) vs `Fastener_Reference.docx` ("c. 1930-present" → 1930). Each library encodes its own canonical-source floor; the divergence is per-source-document fidelity, not an error. **THIRD concrete instance of the D-FA34-11 / D-HW36-16 cross-library AG floor divergence convention** (after D-FA34-11 fastener-vs-joinery upholstery_staple 1930-vs-1950, and D-HW36-16 hardware-library divergence). The plan's pre-addressed CC-Q3 predicted ALIGN at 1940; actual canonical inspection shows DIVERGE at 1900/1930 — neither source says 1940. Divergence documented in the `staples` entry's notes field + `anti_classification_guidance.guidance_text`.
+
+### D-UC40-6 (locked): style_associations sparse per D-UC37-5 + A-11 — ZERO populated
+**0 `style_associations` entries across all 31 types.** The construction section is style-silent: it lists "Furniture forms" (Federal chairs, Empire, Victorian, Danish Modern, mid-century) but never attributes decorative styles. The form-name mentions are not style attributions. Per D-UC37-5 sparse-population convention + strict canonical fidelity, `style_associations` is omitted entirely (construction = foundation/springs/padding/attachment, functional not decorative). Sparser than the plan's "~0-3" estimate — canonical-source rigor resolves to 0.
+
+### D-UC40-7 (locked): maker_associations: [] uniform across ALL 31 entries per D-UCN39-6 + D-HW35-6
+All 31 `UpholsteryConstructionTypeEntry` entries carry `maker_associations: []` (empty array). Construction canonical source has ZERO upholstery-shop or spring/foam-manufacturer documentation. Fourth application of D-HW35-6 SCHEMA-PRESENT-CONTENT-DEFERRED discipline (after hardware Block 36, upholstery covers Block 38, and Block 39 schema declaration). Per-entry `notes` field documents the deferred-content marker.
+
+### D-UC40-8 (locked): Cross-library FK populations per Q5=I + A-8 canonical-source warrant
+Cat 9 Fasteners and Upholstery Attachment Clues cross-library FK populations (all targets verified to exist in Op A-8):
+- `hand_tacks` → `related_fastener_types: ["fastener_type_decorative_brass_tack"]` + `related_hardware_types: ["hardware_type_upholstery_tacks"]`
+- `decorative_brass_nails_nailhead_trim` → `related_hardware_types: ["hardware_type_decorative_nailhead_trim"]`
+- `staples` → `related_fastener_types: ["fastener_type_upholstery_staple"]` + `related_joinery_types: ["joinery_type_stapled_drawer_joinery"]`
+
+Total cross-library FK references: **5** (2 related_fastener_types + 2 related_hardware_types + 1 related_joinery_types), across 3 Cat 9 entries.
+
+### D-UC40-9 (locked): Intra-library related_construction_types FK count per D-UC38-14 canonical-source-driven density
+**87 intra-library `related_construction_types` FK references** across the 31 entries (every entry populated; family clusters per canonical "cousin contrasts" lines): foam family (latex ↔ polyurethane ↔ memory ↔ high-resilience ↔ polyester fiberfill ↔ feather-and-down-over-foam), spring family (early coil ↔ hand-tied ↔ drop-in ↔ marshall/pocket ↔ sinuous/serpentine ↔ platform/no-sag), stuffing family (horsehair ↔ mixed animal hair ↔ tow ↔ straw/excelsior ↔ spanish moss ↔ cotton batting ↔ kapok), layering family (burlap ↔ linen scrim ↔ muslin/cambric), no-spring ↔ webbing ↔ attachment clusters. Density is canonical-source-driven per D-UC38-14.
+
+### D-UC40-10 (locked): regional_persistence_notes per A-10 strict canonical fidelity per D-HW36-9
+**3 `regional_persistence_notes` entries**: `spanish_moss` (canonical paras 575+580 "especially Southern contexts" / "More likely in Southern furniture"), `tow` (canonical paras 562+564 "rural furniture" / "rural traditional upholstery"), `stuffed_over_the_rail` (canonical para 464 "conservative, rural, or reproduction contexts"). Plan-draft Pennsylvania-German/Southern horsehair guess EXCLUDED — canonical gives horsehair no explicit region (strict canonical fidelity per D-HW36-9).
+
+### D-UC40-11 (locked): common_observed_locations per D-FA33-6 identification helper convention
+All 31 entries carry `common_observed_locations` populated with `PhysicalLocation` values from the upholstery set: `upholstery_seat` / `upholstery_back` / `upholstery_arm` / `upholstery_support_layer` / `upholstery_attachment_point` / `upholstery_dust_cover`. Foundation/spring/stuffing types populate seat/back/support-layer; attachment types (Cat 9) populate attachment_point; layering types populate support_layer/dust_cover.
+
+### D-UC40-12 (locked): Authority calibration distribution per D-AR29-11 + A-6
+**Distribution: positive_authority {8: 12, 7: 19}; hard_negative_authority {8: 12, 7: 19}.** 8/8 (12): the 10 AG-anchor types + hand_tied_coil_springs (rich canonical anchor; eight-way-tied quality marker) + horsehair (tight era anchor, rich canonical content). 7/7 (19): all remaining medium-strong-canonical-rationale types.
+
+### D-UC40-13 (locked): Block 39 reasoning rule forward-references RESOLVED
+The 7 `UPHOLSTERY_CONSTRUCTION_REASONING_RULES` (Block 39) operationalize at per-type field populations this block: Rule #1 construction_alone_never_dates_frame + Rule #2 construction_dates_campaign_not_frame (period_associations + date_range_summary + replacement_likelihood semantics); Rule #3 layer_consistency_check + Rule #6 reupholstery_campaign_warning (AG guidance_text references reupholstery_campaign_warning on all 10 AG types); Rule #4 frame_evidence_first_hierarchy (cross-library FK to joinery/fasteners/hardware); Rule #5 construction_evidence_layer_independence (independent per-type evidence); Rule #7 system_axis_sub_output_routing (library-level assessment_layer "upholstery" + evidence_sub_layer "system" inherited by all 31 types, no per-type override).
+
+### D-UC40-14 (locked): FIRST APPLICATION of D-UCN39-13 appraiser-honest-discipline-supersedes-FK-completion convention
+Block 38 covers entry `upholstery_cover_type_stretched_canvas` carried a forward-reference FK `related_construction_types: ["construction_layering_canvas_foundation"]`. Op A confirmed the construction section of `American_Furniture_Textile_Reference.docx` has **NO dedicated canvas construction type** — canvas appears only as a contrast-point mention (construction para 472: "differs from canvas because it is strap-based"). Per D-UCN39-13, rather than author a content-thin `canvas_foundation` construction entry purely to satisfy the dangling FK, **the unwarranted FK is REMOVED entirely** from the covers entry (the `related_construction_types` field is deleted from `upholstery_cover_type_stretched_canvas`; its notes field documents the removal). First concrete application of the forward-applicable convention in the canonical record.
+
+### D-UC40-15 (locked): Block 38 covers forward-reference FK ids resolved per Op C-10 — TWO-CONTENT-FILE CHANGE
+`upholsteryCovers.ts` modified for **3 FK alignments + 1 FK removal**:
+- `upholstery_cover_type_upholstery_webbing`: `["construction_webbing_systems"]` → `["upholstery_construction_type_linen_hemp_jute_webbing"]`
+- `upholstery_cover_type_burlap_hessian`: `["construction_layering_burlap"]` → `["upholstery_construction_type_burlap_hessian_over_springs"]`
+- `upholstery_cover_type_muslin_cambric_dust_cover`: `["construction_layering_muslin_cambric_dust_cover"]` → `["upholstery_construction_type_muslin_cambric"]`
+- `upholstery_cover_type_stretched_canvas`: `related_construction_types` field REMOVED entirely per D-UC40-14.
+
+All 4 covers entries' `notes` fields updated to document resolution/removal. `UPHOLSTERY_COVER_TYPES.length` unchanged at 44 (only FK field values modified + 1 field removed; no entry added/removed). `upholsteryCovers.ts` line count 2119 → 2118 (one removed FK line).
+
+### D-UC40-16 (locked): Upholstery construction library content-complete
+Schema foundation (Block 39: 4 interfaces + 2 library-level constants) + 9 categories (Block 39) + 7 reasoning rules (Block 39) + 31 types (Block 40) = upholstery construction library CANONICALLY CONTENT-COMPLETE. `American_Furniture_Textile_Reference.docx` construction section (paragraphs 438-768) is fully encoded.
+
+### D-UC40-17 (locked): PHASE 2 SESSION 7 FIFTH (FINAL) LIBRARY CLOSED — PHASE 2 SESSION 7 FULLY CLOSED
+All FIVE Phase 2 Session 7 libraries are now content-complete: joinery (Blocks 30-31), fasteners (Blocks 33-34), hardware (Blocks 35-36), upholstery covers (Blocks 37-38), upholstery construction (Blocks 39-40). **PHASE 2 SESSION 7 FULLY CLOSED.**
+
+### D-UC40-18 (locked): SECOND application of D-UC37-3 sub-output-surfacing convention now CONTENT-COMPLETE
+Both upholstery sub-layers now have populated type-entry surfaces: the cover sub-layer (`UPHOLSTERY_COVER_TYPES` 44 entries, `evidence_sub_layer "cover"`) and the system sub-layer (`UPHOLSTERY_CONSTRUCTION_TYPES` 31 entries, `evidence_sub_layer "system"`). Engine-layer aggregation by `evidence_sub_layer` into the unified "upholstery" assessment section (upholstery system date sub-output + visible cover date sub-output) is now fully canonical-source-supported. Engine implementation deferred to Phase 3 per D-MM27-9.
+
+### D-UC40-FINAL (post-authoring summary)
+Block 40 ship: 31 `UPHOLSTERY_CONSTRUCTION_TYPES` entries authored across 9 sub-batches + 3 covers FK alignments + 1 covers FK removal.
+- **UPHOLSTERY_CONSTRUCTION_TYPES.length: 0 → 31.** Per-sub-batch: No-Spring Upholstery 2 / Webbing Systems 2 / Coil Spring Construction 4 / Serpentine-Sinuous-Zigzag Springs 2 / Natural Stuffing and Padding 7 / Feather and Down Fill 3 / Foam and Synthetic Cushion Materials 5 / Layering Textiles and Foundation Covers 3 / Fasteners and Upholstery Attachment Clues 3.
+- **UPHOLSTERY_COVER_TYPES.length: 44 → 44** (unchanged; 3 FK values modified + 1 FK field removed; no entry added/removed).
+- **Authority distribution**: positive_authority {8: 12, 7: 19}; hard_negative_authority {8: 12, 7: 19} per D-UC40-12.
+- **replacement_likelihood distribution**: {low: 2, medium: 19, high: 10} per D-UC40-3.
+- **AG count: 10** per D-UC40-4 (all boundary_type "form_emergence", prominence "prominent", D-HW36-15 decade-range discipline).
+- **Cross-library AG floor divergence**: CONFIRMED + CAPTURED (D-UC40-5; construction Staples 1900 vs fasteners Upholstery Staple 1930; third D-FA34-11/D-HW36-16 instance).
+- **Cross-library FK count: 5** (2 related_fastener_types + 2 related_hardware_types + 1 related_joinery_types) per D-UC40-8.
+- **Intra-library related_construction_types FK count: 87** per D-UC40-9 + D-UC38-14.
+- **style_associations populated count: 0** per D-UC40-6 (construction style-silent).
+- **maker_associations: []** uniform across all 31 entries per D-UC40-7.
+- **regional_persistence_notes populated count: 3** (spanish_moss, tow, stuffed_over_the_rail) per D-UC40-10.
+- **period_associations multi-period count: 17** / single-period 14 per D-UC40-2.
+- **common_observed_locations**: populated on all 31 entries per D-UC40-11.
+- Files modified: **3** (`lib/constraints/upholsteryConstruction.ts` MODIFIED — UPHOLSTERY_CONSTRUCTION_TYPES populated; `lib/constraints/upholsteryCovers.ts` MODIFIED — 3 FK alignments + 1 FK removal + 4 notes updates; `lib/constraints/AUDIT_LOG.md` APPEND).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation (diff = 0 lines).
+- **All 27 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5 / HARDWARE_CATEGORIES 13 / HARDWARE_TYPES 43 / HARDWARE_REASONING_RULES 5 / UPHOLSTERY_COVER_CATEGORIES 10 / UPHOLSTERY_COVER_TYPES 44 / UPHOLSTERY_COVER_REASONING_RULES 7 / UPHOLSTERY_CONSTRUCTION_CATEGORIES 9 / UPHOLSTERY_CONSTRUCTION_REASONING_RULES 7.
+- 18 numbered audit decisions captured under D-UC40-N block-scoped prefix (D-UC40-1 through D-UC40-18 + D-UC40-FINAL).
+- **Upholstery construction library: CANONICALLY CONTENT-COMPLETE** (D-UC40-16).
+- **PHASE 2 SESSION 7 FIFTH (FINAL) LIBRARY: CLOSED.**
+- **PHASE 2 SESSION 7: FULLY CLOSED** (all 5 libraries canonically content-complete; D-UC40-17).
+- Convention applications this block: D-UC40-5 third concrete instance of D-FA34-11/D-HW36-16 cross-library AG floor divergence; D-UC40-14 first concrete application of D-UCN39-13 appraiser-honest-discipline-supersedes-FK-completion convention; D-UC40-7 fourth application of D-HW35-6 SCHEMA-PRESENT-CONTENT-DEFERRED discipline; D-UC40-18 D-UC37-3 two-assessment-with-sub-output-surfacing convention now content-complete across both upholstery sub-layers.
+- Phase 2 remaining per D-AR29-10 + D-AP32-2: Session 8b reconciliation pass + Session 9 (HCL + styleFamilies.ts + design-aspects evidence layer).
+
+---
+
 
