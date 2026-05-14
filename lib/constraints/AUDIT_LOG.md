@@ -3170,4 +3170,150 @@ Block 37 ship: upholstery covers library schema foundation + 10 UPHOLSTERY_COVER
 
 ---
 
+## Block 38 — UPHOLSTERY_COVER_TYPES Content Authoring (44 entries across 10 sub-batches); Upholstery covers library content-complete; Phase 2 Session 7 fourth library CLOSES
+## Session 15 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main b3081f8 (Block 37 endpoint / Upholstery covers library schema foundation opening)
+
+Closes Phase 2 Session 7 fourth library (upholstery covers) per D-AP32-5 + Q6 Sequence J. Populates UPHOLSTERY_COVER_TYPES (empty scaffold per Block 37 D-UC37-1) with 44 UpholsteryCoverTypeEntry entries from `American_Furniture_Textile_Reference.docx` covers section per D-UC37-11 strict canonical fidelity. Schema foundation (Block 37) + 10 categories (Block 37) + 7 reasoning rules (Block 37) + 44 types (Block 38) = upholstery covers library canonically content-complete.
+
+10 internal authoring sub-batches per Q1 Option A — one per UPHOLSTERY_COVER_CATEGORIES entry. Per Q2 Option D + D-HW36-15 decade-range AG-floor interpretation discipline: 10 AGs authored on industrial-introduction-boundary cover types; ALL 10 apply D-HW36-15 (Surfacing 4 resolution). Per Q3 Option F: 4 cross-library FK forward-references to upholsteryConstruction.ts (Block 40 resolution) on Cat 7 Canvas/Webbing/Burlap/Muslin entries; NO per-type related_hardware_types or related_fastener_types populations (Rule #4 attachment_and_backing_evidence_framework handles cross-library reasoning at engine layer per per-canonical-source-fidelity convention).
+
+### D-UC38-1 (locked): Block 38 scope per Q1-Q5 lockings
+Single combined ship with 10 internal sub-batches. 44 UPHOLSTERY_COVER_TYPES entries authored per D-UC37-11 strict canonical fidelity. Per-sub-batch tsc check + intermediate length report. Upholstery covers library content-complete on Block 38 ship.
+
+### D-UC38-2 (locked): period_associations granularity per Q5 Option J + Block 31 D-JN31-2 precedent
+Multi-entry where seed provides explicit era phases per A-5 canonical-source verification; single-entry otherwise. **11 multi-period entries** (verified Op G G-14): damask, brocade, tapestry, turkey_work, needlework, velvet, plush, mohair_velvet, chintz, toile, bamboo. **33 single-period entries** capturing single broad-range or one-era-emphasis canonical phrasing.
+
+date_range_summary carries seed Broad date range prose verbatim regardless of period_associations array length.
+
+### D-UC38-3 (locked): replacement_likelihood per-type defensible-defaults per Q4 Option I
+**Distribution (verified Op G G-16): {low: 5, medium: 10, high: 29}**.
+- **LOW (5)**: turkey_work (canonical "Original turkey work on American furniture is rare" override), rattan, reed, willow, bamboo (Wicker structural)
+- **MEDIUM (10)**: haircloth_horsehair, camel_goat_hair_blends, full_grain_top_grain_leather, embossed_tooled_gilt_leather, stretched_canvas, upholstery_webbing, burlap_hessian, muslin_cambric_dust_cover, paper_fiber_wicker (repair-prone), synthetic_resin_wicker (modern repair)
+- **HIGH (29)**: all remaining 29 cover types (decorative + visible-cover-prone types + cane/rush seat surfaces + all 6 modern synthetics)
+
+Notes-field override marker per D-FA34-3 + D-HW36-3 precedent applied on turkey_work LOW override.
+
+### D-UC38-4 (locked): AG entries on 10 cover types per Q2 Option D hard-boundary discipline + Surfacing 4
+**All 10 AGs apply D-HW36-15 decade-range AG-floor interpretation discipline** (Surfacing 4 resolution; correction from plan Q2 "9 of 10" — strict reading: vinyl's "1930s" is also decade-range; all 10 carry notes-field markers per D-FA34-3 + decade-range marker per D-HW36-15):
+
+| Type | AG floor | Seed verbatim phrasing |
+|---|---|---|
+| `vinyl_naugahyde_faux_leather` | **1930** | "1930s to present" |
+| `paper_fiber_rush` | **1880** | "Late 1800s to present" |
+| `paper_fiber_wicker` | **1880** | "Late 1800s to mid-1900s strongest" |
+| `synthetic_resin_wicker` | **1980** | "Late 20th century to present" |
+| `rayon` | **1900** | "Early 1900s to present" |
+| `nylon` | **1940** | "1940s to present" |
+| `polyester` | **1950** | "1950s to present" |
+| `acrylic` | **1950** | "1950s to present" |
+| `olefin_polypropylene` | **1960** | "1960s to present" |
+| `microfiber_microsuede` | **1980** | "1980s to present" |
+
+AG prose cross-references Rule #2 replacement_likelihood_cover_specific + Rule #6 cover_revival_warning canonical-source anchors.
+
+### D-UC38-5 (locked): style_associations population per Q3 + Surfacing 1
+**14 entries populated** (verified Op G G-9; strict canonical fidelity per Surfacing 1):
+
+**9 style-rich types** (3+ canonical style waves per canonical-source rigor): damask, brocade, velvet, mohair_velvet, jacquard, tapestry, toile, embossed_tooled_gilt_leather, bamboo.
+
+**5 style-medium-with-explicit-style-waves**: plush, needlework, chintz, full_grain_top_grain_leather, rayon.
+
+**Excluded per strict canonical fidelity** (temporal-only context, no explicit canonical style wave): nylon, polyester, acrylic, olefin_polypropylene, microfiber_microsuede, synthetic_resin_wicker, vinyl_naugahyde_faux_leather.
+
+Style wave references encoded include: Empire, Rococo Revival, Renaissance Revival, Victorian, Eastlake, Art Deco, Hollywood Regency, Mission, Arts and Crafts, Colonial Revival, Victorian Revival, Gothic Revival, Jacobean Revival, Medieval Revival, Cottage, French Provincial Revival, Spanish Colonial, California Mission, Aesthetic Movement, Victorian Exotic, Mid-Century Tropical/Tiki, Contemporary.
+
+### D-UC38-6 (locked): maker_associations: [] uniform across ALL 44 entries per D-UC37-6 + D-HW35-6
+SCHEMA-PRESENT-CONTENT-DEFERRED discipline (verified Op G G-10 — zero non-empty maker_associations). Per-entry notes field documents deferred-content marker per defensible-defaults discipline. Textile canonical source has ZERO textile-manufacturer documentation; validation-phase one-offs + post-launch authoring path stands.
+
+### D-UC38-7 (locked): Cross-library FK populations per Q3 Option F + D-UC37-8
+**4 related_construction_types forward-references** on Cat 7 entries (verified Op G G-11):
+- `stretched_canvas` → `construction_layering_canvas_foundation`
+- `upholstery_webbing` → `construction_webbing_systems`
+- `burlap_hessian` → `construction_layering_burlap`
+- `muslin_cambric_dust_cover` → `construction_layering_muslin_cambric_dust_cover`
+
+Forward-reference notes-field marker per defensible-defaults discipline; specific target ids will resolve at Block 40 canonical id alignment.
+
+**NO per-type related_hardware_types or related_fastener_types populations** per Q3 Option F + per-canonical-source-fidelity convention. Rule #4 attachment_and_backing_evidence_framework handles covers ↔ hardware/fasteners cross-library reasoning at engine layer.
+
+**NO per-type related_form_types populations** — canonical source silent on forms cross-references (verified Op A).
+
+### D-UC38-8 (locked): related_cover_types intra-library populations per canonical-source warrant
+**21 entries populated with 36 total intra-library FK references** (verified Op G G-12; exceeded plan A-9 estimate of 10-15). Family clusters:
+- **Figured-weave family** (damask ↔ jacquard ↔ brocade): 3 entries × bidirectional refs
+- **Pile family** (velvet ↔ plush ↔ mohair_velvet ↔ velour): 4 entries × clustered refs
+- **Printed-cotton family** (chintz ↔ toile): 2 entries
+- **Hand-vs-pressed cane family** (hand_cane ↔ pressed_cane): 2 entries
+- **Rush-family material substitution** (natural_rush ↔ paper_fiber_rush): 2 entries
+- **Wicker-family material substitution** (rattan ↔ reed ↔ willow ↔ paper_fiber_wicker ↔ synthetic_resin_wicker): 5 entries × material-substitution refs
+- **Leather family** (full_grain ↔ embossed ↔ vinyl_naugahyde): 3 entries
+
+### D-UC38-9 (locked): regional_persistence_notes populated on 5 entries per Surfacing 3 strict canonical fidelity
+**5 entries populated** (verified Op G G-13; per Surfacing 3 + D-HW36-9 strict canonical fidelity discipline):
+- `cotton` — "Strong in Southern, rural, and later mass-market American furniture"
+- `natural_rush` — "Strong in rural New England, Pennsylvania, Appalachian, Midwestern, and Shaker-related furniture traditions"
+- `splint_seat` — "Strong in rural, Appalachian, New England, Shaker, and Midwestern vernacular furniture"
+- `shaker_tape` — "Strongly associated with Shaker furniture and Shaker-style reproductions"
+- `rawhide_leather_lacing` — "Southwest, Spanish Colonial, California Mission, ranch and lodge furniture"
+
+**Linen excluded** per Surfacing 3 strict canonical fidelity (era-bounded "early colonial/rural domestic" context vs persistence-bounded explicit-persistence-language pattern; per Block 36 D-HW36-9 precedent narrowing to explicit-persistence-language entries).
+
+### D-UC38-10 (locked): Authority calibration distribution per D-AR29-11 + A-7 + Surfacing 2
+**Final distribution (verified Op G G-15): `positive_authority {7: 28, 8: 16}`; `hard_negative_authority {7: 28, 8: 16}`**.
+
+**16 entries at 8/8** (10 AG-anchor + 6 era-anchor types per Surfacing 2):
+- 10 AG-anchor types: vinyl_naugahyde, paper_fiber_rush, paper_fiber_wicker, synthetic_resin_wicker, rayon, nylon, polyester, acrylic, olefin_polypropylene, microfiber_microsuede
+- 6 era-anchor types: damask, brocade, jacquard, turkey_work, velvet, mohair_velvet
+
+**28 entries at 7/7** (medium-strong canonical-source rationale): all other 28 cover types.
+
+**Mid-authoring correction**: embossed_tooled_gilt_leather initially authored at 8/8 (style-rich classification); corrected to 7/7 per A-7 plan-locked list (style-rich does not by itself confer 8/8 — requires AG-anchor or industrial-introduction era-anchor classification). Notes field documents the correction.
+
+### D-UC38-11 (locked): common_observed_locations field populated per D-FA33-6 identification-helper convention
+All 44 entries carry `common_observed_locations: PhysicalLocation[]` populated from canonical-source observed-locations context per D-FA33-6 (location HELPS identification but NOT routing). Distribution skews to `upholstery_seat` + `upholstery_back` + `upholstery_arm` (decorative covers); `upholstery_support_layer` + `upholstery_attachment_point` (Cat 7 support textiles); `upholstery_dust_cover` (muslin/cambric); `frame_rail` + `frame_stile` + `case_carcass` (wicker structural materials).
+
+### D-UC38-12 (locked): Block 37 reasoning rule forward-references RESOLVED
+Block 37 reasoning rules with `applies_to_entry_types: ["upholstery_cover_type"]` category-string FK now have 44 type entries to reference:
+- Rule #1 (covers_alone_never_dates_furniture; cross_layer_scope: true): applies to all 44 cover types
+- Rule #2 (replacement_likelihood_cover_specific): applies to all 44 cover types per-type replacement_likelihood field
+- Rule #3 (pattern_color_wear_dating_framework): applies to all 44 cover types
+- Rule #4 (attachment_and_backing_evidence_framework): applies to all 44 cover types; engine-layer cross-references hardware + fasteners libraries
+- Rule #5 (cover_evidence_layer_independence; cross_layer_scope: true): applies to all 44 cover types
+- Rule #6 (cover_revival_warning): applies to revival-prone types — damask, brocade, jacquard, tapestry, velvet, plush, chintz, toile, needlework, full_grain_leather, embossed_leather, vinyl_naugahyde, paper_fiber_rush, paper_fiber_wicker, synthetic_resin_wicker, modern synthetics
+- Rule #7 (cover_axis_sub_output_routing): applies to all 44 cover types via UPHOLSTERY_COVERS_ASSESSMENT_LAYER + UPHOLSTERY_COVERS_EVIDENCE_SUB_LAYER library-level routing
+
+### D-UC38-13 (locked): Upholstery covers library content-complete on Block 38 ship
+Schema foundation (Block 37) + 10 categories (Block 37) + 7 reasoning rules (Block 37) + 44 types (Block 38) = upholstery covers library canonically content-complete. Phase 2 Session 7 fourth library CLOSED.
+
+### D-UC38-14 (locked; NEW convention): related_cover_types intra-library FK density exceeded plan estimate
+Op A-9 estimated 10-15 intra-library related_cover_types FK entries; Op G G-12 verified **21 entries populated with 36 total refs**. Family clusters (figured-weave + pile + printed-cotton + cane + rush + wicker + leather) generated denser intra-library cross-reference networks than initial estimate per per-canonical-source rigor.
+
+**Forward-applicable convention**: intra-library related_*_types FK density is canonical-source-driven; plan estimates for intra-library FK count are looser than plan estimates for cross-library FK count (which are bounded by per-canonical-source warrant). Block N-1 schema-foundation block A-9 FK estimates may exceed actual at Block N content-authoring when canonical material-substitution + material-family clusters surface dense cross-references.
+
+### D-UC38-FINAL (post-authoring summary)
+Block 38 ship: 44 UPHOLSTERY_COVER_TYPES entries authored across 10 internal sub-batches; upholstery covers library canonically content-complete; Phase 2 Session 7 fourth library CLOSED.
+
+- **UPHOLSTERY_COVER_TYPES.length: 0 → 44** (verified Op G G-2).
+- **Authority distribution**: positive_authority {7: 28, 8: 16}; hard_negative_authority {7: 28, 8: 16} per D-UC38-10.
+- **replacement_likelihood distribution**: low 5, medium 10, high 29 per D-UC38-3.
+- **AG count: 10** (all D-HW36-15 decade-range AG-floor interpretation per Surfacing 4) per D-UC38-4.
+- **Cross-library FK count: 4 refs on 4 entries** (cover ↔ construction forward-references) per D-UC38-7.
+- **Intra-library related_cover_types FK count: 36 refs on 21 entries** per D-UC38-8 + D-UC38-14.
+- **regional_persistence_notes populated count: 5** per D-UC38-9 + Surfacing 3.
+- **style_associations populated count: 14** per D-UC38-5 + Surfacing 1 (9 style-rich + 5 style-medium-with-explicit-style-waves).
+- **period_associations multi-period count: 11** per D-UC38-2.
+- **maker_associations: [] on ALL 44 entries** per D-UC37-6 + D-UC38-6 verified Op G G-10.
+- **Per-sub-batch breakdown** (verified Op G): PLAIN WOVEN 3 / PATTERNED/FIGURED 6 / PILE 4 / HAIRCLOTH 2 / PRINTED 3 / LEATHER 3 / CANVAS/WEBBING 4 / CANE/RUSH/SPLINT 7 / WICKER 6 / MODERN SYNTHETIC 6 = 44 total.
+- Files modified: **2** (`lib/constraints/upholsteryCovers.ts` 653 → 2119 lines + `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation (diff = 0 lines).
+- **All 22 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5 / HARDWARE_CATEGORIES 13 / HARDWARE_TYPES 43 / HARDWARE_REASONING_RULES 5 / UPHOLSTERY_COVER_CATEGORIES 10 / UPHOLSTERY_COVER_REASONING_RULES 7 (24 unchanged + UPHOLSTERY_COVER_TYPES 0 → 44).
+- 14 numbered audit decisions captured under D-UC38-N block-scoped prefix (D-UC38-1 through D-UC38-14 + D-UC38-FINAL).
+- **Upholstery covers library: CANONICALLY CONTENT-COMPLETE.**
+- **Phase 2 Session 7 fourth library: CLOSED.**
+- Convention precedents established this block: D-UC38-14 intra-library FK density canonical-source-driven (NEW convention; forward-applicable to Block 40 + Phase 2 Session 9 libraries); D-UC38-9 second application of D-HW36-9 strict-canonical-fidelity regional_persistence_notes discipline; D-UC38-2 second application of D-HW36-2 multi-period granularity; D-UC38-4 third application of D-HW36-15 decade-range AG-floor interpretation discipline (ALL 10 AGs apply this block — densest application yet); D-UC38-7 cross-library forward-reference FK pattern (NEW: cross-library FK to upholsteryConstruction.ts before construction library exists, resolves at Block 40); D-UC38-3 sixth application of D-AP32-3 replacement-likelihood discipline with notes-field override marker per D-FA34-3. All forward-applicable to subsequent Phase 2 Session 7 fifth library (upholstery construction Blocks 39-40) and Phase 2 Session 9 (styleFamilies + design-aspects).
+- Next sequencing per D-AP32-5 + Q6 Sequence J: Block 39 upholstery construction library schema foundation; then Block 40 construction content closes Phase 2 Session 7. Mike's `American_Furniture_Textile_Reference.docx` covers section is canonically exhausted by this block; construction section (paragraphs 438+) is content surface for Blocks 39-40.
+
+---
+
 
