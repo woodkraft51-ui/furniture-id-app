@@ -3602,3 +3602,66 @@ Block 41 ship: styleFamilies.ts schema foundation + 26 `STYLE_FAMILIES` + 6 `STY
 - Convention precedents established this block: D-SW41-4 NEW "style_and_waves" assessment_layer; D-SW41-5 eighth + final ILE encoding completing the Phase 2 ILE cycle; D-SW41-6 NEW interpretive-uncertainty-authority convention (forward-applicable); D-SW41-8 + D-SW41-11 third application of D-HW36-14 (now library-cluster-stable); D-SW41-11 canonical_source_aliases field convention; D-SW41-13 five new reasoning-rule TYPES.
 
 ---
+## Block 42 — STYLE_REVIVAL_WAVES Content Authoring (108 entries across 26 sub-batches) + one-line Block 41 schema correction; styleFamilies.ts content-complete; PHASE 2 SESSION 9 CLOSES
+## Session 16+ / claude.ai-and-Claude-Code paired execution
+## Base SHA: main efa2130 (Block 41 endpoint / Phase 2 Session 9 OPENED)
+
+Authors 108 `StyleRevivalWaveEntry` entries into `lib/constraints/styleFamilies.ts` across 26 internal sub-batches (one per parent style family) from the `Styles_and_Waves.docx` per-style "Revival waves" subsections. Closes the styleFamilies library begun with Block 41 (schema foundation + 26 STYLE_FAMILIES + 6 STYLE_REASONING_RULES). Includes a one-line Block 41 schema correction (`date_ceiling` → optional). **CLOSES PHASE 2 SESSION 9 ENTIRELY.** `lib/engine.ts` UNCHANGED per D-MM27-9. 2 files modified (styleFamilies.ts; AUDIT_LOG.md).
+
+### D-SW42-1 (locked): Block 42 scope per Q1-Q6
+Single combined ship with 26 internal sub-batches (one per parent style family); per-sub-batch tsc + intermediate length checks; mid-batch pause protocol active. **108 STYLE_REVIVAL_WAVES** authored — the Block 41 A-5 preliminary estimate of ~108 confirmed exactly by Op A-3 canonical enumeration. Per-style wave counts: #1:4 #2:4 #3:3 #4:4 #5:4 #6:4 #7:5 #8:4 #9:4 #10:4 #11:5 #12:4 #13:3 #14:4 #15:5 #16:4 #17:6 #18:5 #19:5 #20:5 #21:3 #22:5 #23:3 #24:5 #25:3 #26:3.
+
+### D-SW42-2 (locked): design_subtleties density per canonical-source warrant (Q2=D)
+Per-wave `design_subtleties` count varies by the depth of the canonical per-wave Traits + Contrast prose (2-7 signals per wave; 399 signals total across 108 waves). Strict canonical fidelity per D-HW36-9 — sparse canonical prose yields sparse design_subtleties; no padding.
+
+### D-SW42-3 (locked): multiple signals per aspect (Q3=H)
+Distinct canonical phrases mapping to the same DesignSubtlety aspect are authored as separate `signal` entries within a wave (e.g. wave 1.1 carries three `surface_and_finish` signals — "darker", "more polished", "often cleaner in finish than original work"). Preserves canonical granularity.
+
+### D-SW42-4 (locked): authority calibration 3/3 uniform (D-SW41-6 + Q6=O)
+All 108 wave entries at `positive_authority: 3` / `hard_negative_authority: 3`. No intra-layer variance. Confirms the D-SW41-6 interpretive-uncertainty-authority convention at the revival-wave tier (Block 41 set STYLE_FAMILIES at 4/4; revival waves one step lower at 3/3 per the convention's locked calibration).
+
+### D-SW42-5 (locked): 9-aspect enum strict adherence (D-SW41-8)
+All 399 `design_subtleties` signals use the locked 9-token `DesignSubtlety.aspect` enum (massing_and_proportion, line_and_silhouette, carving_character, leg_and_foot_vocabulary, ornament_and_motif, surface_and_finish, material_palette, construction_expression, hardware_character); `weight: "low"` uniform. Op A-6 canonical inspection confirmed 9-aspect coverage sufficient — **D-FA34-Surfacing-8 schema augmentation NOT triggered**. Aspect distribution across 108 waves: construction_expression 68, material_palette 61, surface_and_finish 60, ornament_and_motif 57, massing_and_proportion 51, line_and_silhouette 39, leg_and_foot_vocabulary 30, carving_character 27, hardware_character 6.
+
+### D-SW42-6 (locked): cross-library name-matching per Q5=L + Op A-8 finding
+No wave-level cross-library FK or `wave_aliases` field. Op A-8 canonical inspection found that the existing `style_associations.style_label` populations in the hardware library (23 entries) and upholstery covers library (43 entries) reference style **family** names/aliases (e.g. "Federal", "Eastlake", "Mission", "Hollywood Regency") — these resolve at engine-layer Phase 3 against Block 41 `StyleFamilyEntry.name` + `canonical_source_aliases`, NOT against revival-wave names. The wave-name-matching surface has effectively zero current referents; all 108 wave names are globally unique. No wave-name-matching infrastructure was built in Block 42.
+
+### D-SW42-7 (locked): strict canonical fidelity (D-HW36-9 + Q2=D)
+`traits_summary` carries the canonical "Traits:" prose verbatim; `contrast_summary` carries the canonical "Contrast from X:" prose verbatim including its label (24 distinct canonical contrast-label variants preserved). No cross-canonical inference; sparse waves carry sparse design_subtleties per canonical-source warrant.
+
+### D-SW42-8 (locked): "to present" date_ceiling Pattern 3 application
+22 of 108 wave entries whose canonical "Dates:" phrasing ends in "present" **OMIT** the `date_ceiling` field entirely. The canonical "to present" phrasing is preserved verbatim in each entry's `notes` field (Canonical Dates note) per D-FA34-3 marker discipline. This matches the immediate-precedent cluster convention — the Blocks 30-40 Phase 2 evidence libraries (fasteners, joinery, hardware, upholstery covers, upholstery construction) all omit `date_ceiling` for open-ended ranges and carry "to present" in free-text. The other 86 wave entries carry a numeric `date_ceiling` from the canonical "Dates: c. XXXX–YYYY" pair.
+
+### D-SW42-9 (locked): Block 41 schema correction — date_ceiling optional
+`StyleRevivalWaveEntry.date_ceiling: number` → `date_ceiling?: number`. One-line change applied on this commit (same file) to enable D-SW42-8 Pattern 3. Block 41 locked this field as required; Op A precedent-exploration found the immediate-precedent cluster omits `date_ceiling` for "present" ranges, so the field is corrected to optional for alignment. Forward-applicable to any future evidence library with "to present" canonical content. B-4 interface doc-comment updated to document the optional field + Pattern 3 rationale.
+
+### D-SW42-10 (Session 8b reconciliation FLAG — NOT Block 42 scope)
+Op A precedent-exploration surfaced cross-library inconsistency in canonical "to present" handling: `forms.ts` uses `date_ceiling: 2030` (134 instances); `woodEvidence.ts` uses `date_ceiling: 2026` (17 instances, in `period_associations`); the Blocks 30-40 evidence-library cluster omits `date_ceiling` entirely (Pattern 3, adopted by Block 42 per D-SW42-8). These divergences are FLAGGED for the Phase 2 Session 8b reconciliation pass per D-AR29-10 reconciliation discipline. **Block 42 does NOT touch `forms.ts` or `woodEvidence.ts`** — flag only.
+
+### D-SW42-11 (locked): Memphis Wave 1 dual-range resolution
+Style #25 (Postmodern / Memphis / Radical Design Influence) Wave 1 "Original Memphis / Radical Postmodern" has a dual-range canonical "Dates:" string — "c. 1981–1987 for Memphis proper; broader postmodern c. 1980–1995". Resolved per D-HW36-9 strict canonical fidelity + parent-style canonical positioning: `date_floor: 1980` / `date_ceiling: 1995` (the broader postmodern range). The Memphis-proper sub-range c. 1981–1987 is documented in the entry's `notes` field per D-FA34-3 for Phase 3 engine-layer awareness. NO schema augmentation (D-FA34-Surfacing-8 not triggered).
+
+### D-SW42-12 (locked): styleFamilies.ts canonically content-complete
+With Block 42's 108 STYLE_REVIVAL_WAVES, the styleFamilies library is canonically content-complete: schema foundation (Block 41) + 26 STYLE_FAMILIES (Block 41) + 6 STYLE_REASONING_RULES (Block 41) + 108 STYLE_REVIVAL_WAVES (Block 42). All three arrays populated to full canonical extent of `Styles_and_Waves.docx`.
+
+### D-SW42-13 (locked): Phase 2 Session 9 CLOSES
+The style + waves library was the SOLE Phase 2 Session 9 deliverable; closing it closes the session. Phase 2 Session 8b reconciliation pass becomes the next + final Phase 2 work before Phase 3 engine architecture (per D-AR29-10): forms.ts retroactive rationale population (~182 entries) + 5 audit issues from Block 29 + the D-SW42-10 "to present" cross-library reconciliation flag.
+
+### D-SW42-FINAL (post-authoring summary)
+- Block 42 ship: 108 `StyleRevivalWaveEntry` entries authored across 26 sub-batches + one-line `date_ceiling` schema correction.
+- `STYLE_REVIVAL_WAVES.length`: 0 → **108** (per Op A-3 canonical enumeration; Block 41 ~108 estimate confirmed exactly).
+- **Authority**: 108 entries at 3/3 uniform per D-SW42-4.
+- **assessment_layer**: 108 entries all "style_and_waves" per D-SW41-4.
+- **parent_style_id**: all 108 resolve to STYLE_FAMILIES ids; single-directional FK per D-SW41-10.
+- **date_ceiling split**: 22 omitted (Pattern 3, D-SW42-8) / 86 numeric.
+- **design_subtleties**: 399 signals total; per-wave count 2-7 per canonical warrant (D-SW42-2); all aspects within the 9-token locked enum (D-SW42-5); weight "low" uniform.
+- **Schema correction**: `StyleRevivalWaveEntry.date_ceiling` now optional (D-SW42-9).
+- Files modified: **2** (`lib/constraints/styleFamilies.ts` 871 → 3221 lines; `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 (diff = 0 lines).
+- **All 30 other canonical array lengths unchanged**: 28 prior (SPECIES_EVIDENCE 26 … UPHOLSTERY_CONSTRUCTION_REASONING_RULES 7) + STYLE_FAMILIES 26 + STYLE_REASONING_RULES 6.
+- 13 numbered audit decisions captured under D-SW42-N prefix (D-SW42-1 through D-SW42-13 + D-SW42-FINAL).
+- **styleFamilies.ts: CANONICALLY CONTENT-COMPLETE** (D-SW42-12).
+- **PHASE 2 SESSION 9: CLOSED** (D-SW42-13).
+- **Phase 2 Session 8b reconciliation pass**: next + final Phase 2 work before Phase 3 (D-AR29-10) — forms.ts retroactive rationale population (~182 entries) + 5 Block 29 audit issues + D-SW42-10 "to present" cross-library reconciliation flag.
+
+---
