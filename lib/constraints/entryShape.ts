@@ -126,6 +126,47 @@ export interface PeriodAssociation {
 }
 
 /**
+ * Style-association evidence — pairs a human-authored style label with an
+ * optional chronological window (style emergence and extinction). Sourced
+ * verbatim from canonical hardware/style reference documents.
+ *
+ * Shared cross-library artifact. Originally introduced Block 35 (hardware
+ * library) per D-HW35-4 schema promotion. Used by HardwareTypeEntry NOW and
+ * planned future libraries: Phase 2 Session 9 styleFamilies/design-aspects
+ * layer (D-AP32-2 deferred-architectural commitment) + possibly upholstery
+ * covers library (style-tied textile patterns). The schema-occurrence rule
+ * fires at promotion: 1 use today + 2+ planned future uses across separate
+ * libraries satisfies the 3+ occurrence threshold for shared entryShape.ts
+ * canonical home.
+ *
+ * Parallel shape to PeriodAssociation: human-authored label + optional
+ * date_floor + optional date_ceiling + optional usage_notes. date_floor
+ * is OPTIONAL on StyleAssociation (unlike PeriodAssociation where date_floor
+ * is required) because some style labels lack precise emergence years
+ * (e.g., "Colonial Revival" emerges as a broad movement around 1880s but
+ * no single canonical year). Hardware reference frequently surfaces style
+ * labels without precise date boundaries.
+ */
+export interface StyleAssociation {
+  /** Human-authored style label, e.g. "Federal", "Hepplewhite", "Eastlake",
+   * "Mid-Century Modern". Sourced verbatim from canonical style reference
+   * content. */
+  style_label: string;
+
+  /** Earliest year the style applies. Optional; omitted when canonical
+   * source lacks a precise emergence year. */
+  date_floor?: number;
+
+  /** Latest year the style applies. Optional; omitted when the style
+   * extends to present or canonical source lacks ceiling. */
+  date_ceiling?: number;
+
+  /** Optional appraiser-voice notes. Omit unless adding value beyond
+   * style_label. */
+  usage_notes?: string;
+}
+
+/**
  * Migration-target enum for reasoning-rule entries — flags eventual integration
  * point per the top-down revamp pattern: weighting_file (rules become weight
  * adjustments in the eventual weighting table); engine_reasoning (rules surface

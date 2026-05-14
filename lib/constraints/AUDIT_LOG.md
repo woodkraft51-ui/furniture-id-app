@@ -2761,4 +2761,129 @@ Block 34 ship: 25 FASTENER_TYPES entries authored across 12 internal sub-batches
 
 ---
 
+## Block 35 — Hardware library schema foundation + 13 categories + 5 reasoning rules + StyleAssociation entryShape.ts promotion + HardwareMakerAssociation hardware-local interface
+## Phase 2 Session 7 third library OPENS
+## Session 16 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main efa7a88 (Block 34 endpoint / Fasteners library content-complete)
+
+Opens Phase 2 Session 7 third library (hardware) per D-AP32-5 sequencing. Authors new `lib/constraints/hardware.ts` with 4 interfaces (`HardwareCategoryEntry` + `HardwareTypeEntry` + `HardwareReasoningRule` + `HardwareMakerAssociation`) + 3 arrays (HARDWARE_CATEGORIES 13 entries + HARDWARE_TYPES empty scaffold + HARDWARE_REASONING_RULES 5 entries). Promotes `StyleAssociation` interface to `entryShape.ts` per D-HW35-4 schema-occurrence rule (used by hardware NOW + Phase 2 Session 9 design-aspects layer + possibly upholstery covers library; 1 use today + 2+ planned future uses across separate libraries satisfies 3+ occurrence threshold).
+
+2-tier hierarchy per D-HW35-3 (Category → Type with flattened subtype variants); no subcategory tier. Per-category assessment_layer override mechanism per D-HW35-14 (paralleling fasteners' per-subcategory override pattern but operating at category tier since hardware library has no subcategory tier). UPHOLSTERY HARDWARE category overrides default "frame" → "upholstery" per D-HW35-7. NEW canonical reasoning rule `reproduction_hardware_warning` per D-HW35-13 (4th new evidence-library reasoning-rule TYPE after restoration_false_signals + replacement_fastener_risk + restoration_contamination). FIFTH canonical-library encoding of Independent Layer Evaluation Standard per D-HW35-12 via Rule #5 `hardware_evidence_layer_independence` (after wood/maker/joinery/fastener).
+
+### D-HW35-1 (locked): Block 35 scope per Q1-Q3 lockings
+Single hardware.ts file with 4 interfaces + 3 arrays. HARDWARE_CATEGORIES 13 entries; HARDWARE_TYPES empty scaffold for Block 36 (~42 entries TBD per Block 36 Op A); HARDWARE_REASONING_RULES 5 entries at 9/9. NO HARDWARE_SUBCATEGORIES array per D-HW35-3 (2-tier hierarchy). Two-block split per Block 33 fasteners precedent: Block 35 = schema + categories + rules; Block 36 = type content. StyleAssociation interface promoted to entryShape.ts per D-HW35-4. Mike-locked authorization includes 14 numbered D-HW35-N audit decisions + D-HW35-FINAL summary.
+
+### D-HW35-2 (locked): Library architecture per Q1-Q3
+Single-file architecture with 4 interfaces in `hardware.ts` (paralleling maker marks + joinery + fasteners single-file-multi-interface pattern). 2-tier hierarchy (Category → Type) per Q3 + canonical source structure per D-HW35-3; no HardwareSubcategoryEntry interface. Schema is 1 interface smaller than fasteners (4 vs 5 interfaces).
+
+### D-HW35-3 (locked): 2-tier hierarchy with subtype-as-flattened-type pattern
+Hardware canonical source (Furniture_Hardware_Identification_System.docx) uses Category → Type with optional subtype variants under some parent types (e.g., Drop Pull / Bail Pull → Batwing Bail Pull / Chippendale Bail Pull / Sheraton Oval Bail Pull; Butt Hinge → Hand-Forged Butt Hinge / Machine-Made Butt Hinge). NO discrete subcategory tier (unlike fasteners which had 3-tier for NAILS/SCREWS/STAPLES). **Resolution**: subtypes flattened as separate HARDWARE_TYPES entries with `related_hardware_types` FK linking subtype → parent type. Block 36 authoring populates both parent types and subtypes as separate entries. Mirrors joinery library precedent (no subcategory tier; all types directly under categories).
+
+Convention precedent: subtype-as-flattened-type pattern is the defensible default for 2-tier canonical sources with intra-type variants. Alternative patterns (3-tier subcategory; sub-structure within type) reserved for canonical sources with discrete variant-class semantics.
+
+### D-HW35-4 (locked): StyleAssociation interface PROMOTED to entryShape.ts per Q1 schema-occurrence rule
+Per Q1 Mike-locked authorization: HardwareTypeEntry includes optional `style_associations: StyleAssociation[]` field; **StyleAssociation interface PROMOTED to entryShape.ts** per schema-occurrence rule. Shape parallels PeriodAssociation with one key difference: `date_floor` is OPTIONAL on StyleAssociation (vs required on PeriodAssociation) because some style labels lack precise emergence years (e.g., "Colonial Revival" emerges as a broad movement around 1880s but no single canonical year).
+
+**Schema-occurrence rule fires at promotion**: 1 use today (hardware) + 2+ planned future uses across separate libraries (Phase 2 Session 9 design-aspects layer per D-AP32-2 + possibly upholstery covers library for style-tied textile patterns) satisfies 3+ occurrence threshold for shared `entryShape.ts` canonical home. Parallels prior promotions: PeriodAssociation (Block 27 D-MM27-2; wood + maker + 4 woodEvidence + joinery + fastener + hardware libraries) and ReasoningRuleMigrationTarget (Block 27 D-MM27-3).
+
+`entryShape.ts` line count: 405 → 446 (+41 lines for StyleAssociation interface with JSDoc).
+
+### D-HW35-5 (locked): HardwareMakerAssociation interface hardware-local (NOT promoted)
+Per Q2 Mike-locked authorization: HardwareTypeEntry includes optional `maker_associations: HardwareMakerAssociation[]` field; **HardwareMakerAssociation interface IN hardware.ts** (NOT promoted to entryShape.ts). Schema-occurrence rule does NOT fire — only hardware library needs to encode hardware-specific maker-mark structure on canonical hardware pieces; other libraries cross-reference makers via different mechanisms (e.g., joinery `notes` field for maker context; wood library handles maker association at MakerMarkEntry level directly). Interface shape: `maker_id` (FK to MAKER_ENTRIES.id) + `mark_form?` + `mark_location?` (both free-text per per-canonical-source flexibility, NOT PhysicalLocation enum since hardware-piece locations don't map cleanly to furniture-position enum) + `date_floor?` + `date_ceiling?` + `usage_notes?`.
+
+### D-HW35-6 (locked): SCHEMA-PRESENT-CONTENT-DEFERRED discipline (NEW convention precedent)
+Per Q2 Mike-locked authorization + A-10 + A-11 (no canonical maker coverage in hardware reference). `maker_associations` field is SCHEMA-PRESENT (interface declared, field included on HardwareTypeEntry) but Block 36 authoring leaves `maker_associations: []` empty arrays for ALL hardware type entries. Hardware reference canonical source has ZERO maker documentation (verified Op A — NO Stanley, Wilcox, Eagle Lock, Sargent, Yale references in canonical source).
+
+**SCHEMA-PRESENT-CONTENT-DEFERRED discipline** distinct from empty-scaffold-with-planned-authoring pattern (FASTENER_TYPES had planned authoring at Block 34). Schema-present-content-deferred = field exists in schema; per-entry content explicitly deferred to **validation-phase one-offs + post-launch systematic authoring** with NO scheduled Block-N authoring plan.
+
+**Forward-applicable convention precedent**: future libraries with canonical sources that surface partial-coverage content may apply this precedent for fields requiring future canonical-source augmentation (e.g., hardware reference v2 with maker coverage; or external maker mark database integration). Field availability today preserves schema stability when future content is authored.
+
+### D-HW35-7 (locked): UPHOLSTERY HARDWARE category assessment_layer "upholstery" override
+Per Surfacing 2 + A-11 + fasteners Cat 3 STAPLES override precedent. HARDWARE_CATEGORIES entry `hardware_category_upholstery_hardware` carries `assessment_layer: "upholstery"` override (NOT "frame" default). The category covers Upholstery Tacks + Decorative Nailhead Trim + Coil Spring Hardware — all functionally upholstery-attached, NOT frame-attached. Override pattern paralleling fasteners D-FA33-5 dual-assessment architecture (fasteners Cat 3 STAPLES subcategories 3A + 3B → "upholstery").
+
+**Distribution (verified Op G G-10)**: 12 categories at "frame" + 1 category at "upholstery" (UPHOLSTERY HARDWARE).
+
+### D-HW35-8 (locked): Strong/Weak Dating Indicators tier classification in Rule rationale
+Per Surfacing 3 + A-12. Canonical Strong Dating Indicators (8 verbatim items: hand-forged irregular hinges, surface-mounted iron locks, porcelain casters, Bakelite pulls, Euro hinges, machine-stamped decorative plates, Phillips screw integration, Lucite pulls) and Weak Dating Indicators (5 verbatim items: generic wooden knobs, reproduction brass pulls, modern replacement hinges, recently polished hardware, mixed-period hardware sets) captured verbatim in Rule #1 `hardware_alone_never_dates_furniture` + Rule #2 `replacement_hardware_risk` + Rule #4 `reproduction_hardware_warning` rationale fields.
+
+NO new schema field for tier classification — per-type authority calibration (D-AR29-11) operationalizes the tier framework at the entry level. Block 36 type authoring will calibrate per-type positive_authority + replacement_likelihood per the Strong/Weak Dating Indicators classification.
+
+### D-HW35-9 (locked): Cross-library overlap resolution per per-canonical-source fidelity
+Per Surfacing 4 + A-9 + D-FA34-11 cross-library AG floor divergence precedent. Three verified cross-library collisions:
+
+| Hardware type (Block 36 authoring) | Cross-library FK |
+|---|---|
+| `hardware_type_cam_lock` (LOCK HARDWARE category) | `related_fastener_types: ["fastener_type_cam_lock_connector"]` + `related_joinery_types: ["joinery_type_knock_down_cam_lock_joinery"]` |
+| `hardware_type_upholstery_tacks` (UPHOLSTERY HARDWARE category) | `related_fastener_types: ["fastener_type_decorative_brass_tack"]` (cross-reference to fastener subcategory 3A type entry) |
+| Hardware Strong Dating Indicator "Phillips screw integration" | Block 36 authoring may add `related_fastener_types: ["fastener_type_phillips_wood_screw"]` on hardware types that integrate Phillips screws as identification anchor |
+
+**Convention reinforced**: per-canonical-source fidelity over forced canonical identity. Each library authors its own canonical content per its own source; cross-references via FK fields document the relationship without forcing identity. Hardware library reference describes phenomena from hardware-identification perspective; fastener library from fastener-type perspective; joinery from joinery-pattern perspective.
+
+### D-HW35-10 (locked): 5 HardwareReasoningRule enumeration
+Per A-7 canonical content + parallel to wood/maker/joinery/fastener reasoning rule sets:
+- **Rule #1 `hardware_alone_never_dates_furniture`** (9/9; cross_layer_scope: true; meta-rule; FIFTH canonical-library encoding of "X alone never dates furniture" pattern)
+- **Rule #2 `replacement_hardware_risk`** (9/9; D-AP32-3 operationalization; STRONGER than fasteners' replacement_fastener_risk because hardware is even MORE-replaced canonical evidence class per replacement-likelihood ranking: hardware > fasteners > joinery > wood)
+- **Rule #3 `rural_persistence`** (9/9; parallel to joinery rural_persistence_warning + fastener rural_persistence; canonical anchor on Surface-Mount Lock "Rural persistence later" + Strap Hinge "Medieval origins. Furniture use: 1650-1900" + Wooden Caster persistence patterns)
+- **Rule #4 `reproduction_hardware_warning`** (9/9; NEW canonical reasoning rule per D-HW35-13; canonical anchor on Hardware Conflict Rules canonical-source section: "Colonial revival batwing pulls on 1920s furniture", "Reproduction Eastlake hardware", etc.)
+- **Rule #5 `hardware_evidence_layer_independence`** (9/9; cross_layer_scope: true; FIFTH canonical-library encoding of ILE Standard per D-HW35-12)
+
+All 5 at authority 9/9 (verified Op G G-7); migration_status "complete"; migration_target "engine_reasoning". cross_layer_scope: true on rules #1 + #5 (verified Op G G-9).
+
+### D-HW35-11 (locked): Authority calibration distribution per D-AR29-11
+**HARDWARE_CATEGORIES distribution (verified Op G G-11): positive_authority {7: 11, 8: 2}; hard_negative_authority {7: 11, 8: 2}.**
+
+**2 categories at 8/8 (primary dating-evidence)**:
+- `hardware_category_hinge_hardware`: hand-forged 1750-1830 vs machine-made 1840+ canonical era boundary + mortised installation harder-to-replace than pulls
+- `hardware_category_specialty_and_era_diagnostic_hardware`: era-defining hardware (Eastlake 1870-1895, Art Deco 1925-1945, MCM 1945-1975, Machine-Age 1900-1950) tightly date-bounded canonical anchors
+
+**11 categories at 7/7 (medium-strong; replacement-likelihood-aware per D-AP32-3)**: Pull Hardware, Knob Pull, Bin Pull, Ring Pull, Lock Hardware, Escutcheons, Casters and Mobility Hardware, Corner and Edge Hardware, Desk and Mechanical Hardware, Upholstery Hardware, Modern Synthetic Hardware.
+
+**HARDWARE_REASONING_RULES**: all 5 at 9/9 per meta-rule supremacy precedent (D-WE26-8 / D-MM27-5).
+
+Hardware is the MOST-REPLACED canonical evidence class per Mike's replacement-likelihood framework (hardware > fasteners > joinery > wood); whole-piece-dating authority weights downward accordingly. Even primary dating-evidence categories (HINGE + SPECIALTY) stay at 8/8 rather than ascending to 9/9 because the underlying physical evidence remains replaceable (just less commonly).
+
+### D-HW35-12 (locked): FIFTH canonical-library encoding of Independent Layer Evaluation Standard
+After wood rule #7 (`wood_evidence_layer_independence`), maker rule #1 (`core_maker_attribution_rule` cross_layer_scope: true), joinery rule #5 (`joinery_evidence_layer_independence`), fastener rule #5 (`fastener_evidence_layer_independence`), hardware rule #5 (`hardware_evidence_layer_independence`). Cross-library convention reinforced: each evidence-library reasoning-rule set includes one layer-independence canonical artifact per ILE precedent. Operationally integrates with dual-assessment architecture (D-FA33-5 + D-HW35-7 + D-HW35-14) — hardware layer outputs are independent inputs to both frame and upholstery assessment confidence calculations per D-AP32-1 hybrid validation refinement model.
+
+### D-HW35-13 (locked): NEW canonical reasoning rule reproduction_hardware_warning
+Hardware library Rule #4 `reproduction_hardware_warning` is the **fourth NEW evidence-library reasoning-rule TYPE** authored across Phase 2 Session 7 libraries (after `restoration_false_signals` Block 30 joinery Rule #3 + `replacement_fastener_risk` Block 33 fastener Rule #2 + `restoration_contamination` Block 33 fastener Rule #4). Captures Hardware Conflict Rules canonical-source warnings specifically about hardware reproduction markets (Colonial Revival batwing reproductions, Reproduction Eastlake hardware, Victorian + Art Deco mixed-period sets, Euro hinge retrofits on antique pieces).
+
+**Distinct from replacement-risk patterns**: reproduction hardware is canonically DESIGNED to mimic original-period hardware (unlike replacement fasteners which are typically modernity-marked). Reproduction hardware requires dedicated rule because identification anchors are different (style fidelity + manufacturing-era marks + cross-reference to documented reproduction-market production windows).
+
+### D-HW35-14 (locked per Mike-authorization addition): Per-category-vs-per-subcategory override mechanism documentation
+**Dual-assessment architecture routing override mechanism** (D-FA33-5) is operationalized at different tier levels depending on canonical source hierarchy:
+- **3-tier libraries (fasteners)**: PER-SUBCATEGORY override pattern. Categories declare default `assessment_layer`; subcategories override where canonical structure warrants. Example: fasteners Cat 3 STAPLES = "frame" category default; subcategories 3A Upholstery Tacks + 3B Machine Staples both override to "upholstery".
+- **2-tier libraries (hardware)**: PER-CATEGORY override pattern. Categories ARE the routing tier (no subcategory tier to override). Hardware Cat 11 UPHOLSTERY HARDWARE overrides directly to "upholstery" at category level.
+
+**Convention precedent**: dual-assessment override mechanism operates at the LOWEST-AVAILABLE-TIER below category-default level. For 3-tier libraries, that's subcategory tier. For 2-tier libraries, override happens at category tier itself (the category IS the lowest available routing tier).
+
+**Forward-applicable to future canonical evidence libraries**:
+- Upholstery covers library (likely 2-tier; per-category override if needed; ALL categories assessment_layer "upholstery" likely)
+- Upholstery construction library (likely 2-tier; ALL categories assessment_layer "upholstery" likely)
+- Phase 2 Session 9 styleFamilies (likely 2-tier or HCL structure; per-category override at category tier if needed)
+
+This decision documents the routing mechanism's tier-level variance as canonical convention rather than implicit pattern.
+
+### D-HW35-FINAL (post-authoring summary)
+Block 35 ship: hardware library schema foundation + 13 HARDWARE_CATEGORIES + empty HARDWARE_TYPES scaffold (Block 36 populates) + 5 HARDWARE_REASONING_RULES + StyleAssociation entryShape.ts promotion + HardwareMakerAssociation hardware-local interface.
+- **NEW arrays**: `HARDWARE_CATEGORIES` (13) + `HARDWARE_TYPES` (0) + `HARDWARE_REASONING_RULES` (5). Total 18 new canonical entries this block.
+- **HARDWARE_CATEGORIES authority distribution**: `positive_authority {7: 11, 8: 2}`; `hard_negative_authority {7: 11, 8: 2}` per D-HW35-11.
+- **HARDWARE_CATEGORIES assessment_layer distribution**: 12 "frame" + 1 "upholstery" (UPHOLSTERY HARDWARE override per D-HW35-7) per D-HW35-14 per-category override mechanism.
+- **HARDWARE_REASONING_RULES**: all 5 at 9/9 with migration_status "complete" + migration_target "engine_reasoning"; cross_layer_scope: true on Rule #1 + Rule #5 per D-HW35-10.
+- **StyleAssociation promoted to entryShape.ts** per D-HW35-4 schema-occurrence rule; field type used by HardwareTypeEntry NOW + Phase 2 Session 9 design-aspects + possibly upholstery covers libraries.
+- **HardwareMakerAssociation hardware-local interface** per D-HW35-5 (NOT promoted; schema-occurrence rule doesn't fire).
+- **Schema-present-content-deferred discipline** per D-HW35-6 (NEW convention precedent) — `maker_associations` field schema-present, Block 36 leaves arrays empty.
+- **Per-category override mechanism documentation** per D-HW35-14 (NEW convention precedent) — 2-tier libraries override at category tier; 3-tier libraries override at subcategory tier; routing happens at lowest-available-tier.
+- Files modified: **3** (`lib/constraints/hardware.ts` NEW; `lib/constraints/entryShape.ts` modified (+41 lines StyleAssociation); `lib/constraints/AUDIT_LOG.md` append).
+- `lib/engine.ts`: UNCHANGED per D-MM27-9 Phase 2 / Phase 3 separation.
+- **All 19 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5.
+- `lib/constraints/woodIdentification.ts`, `woodEvidence.ts`, `makerMarks.ts`, `forms.ts`, `families.ts`, `spatialBehaviors.ts`, `constructionLogic.ts`, `joinery.ts`, `fasteners.ts`: all byte-for-byte unchanged.
+- 14 numbered audit decisions captured under D-HW35-N block-scoped prefix (D-HW35-1 through D-HW35-14 + D-HW35-FINAL).
+- **Phase 2 Session 7 third library schema foundation: OPENED.**
+- **Block 36 queued: ~42 HARDWARE_TYPES content authoring** from Furniture_Hardware_Identification_System.docx canonical source. Block 36 authoring will apply: per-type replacement_likelihood per D-AP32-3 + D-FA33-7 category defaults; AG entries on industrial-introduction-boundary types (Cam Lock 1920+, Euro Hinge 1960s+, Bakelite 1920-1955, Lucite 1945-1975, Rubber Caster 1920+, Porcelain Caster 1840-1910); style_associations populated from canonical Style references; maker_associations: [] empty arrays per D-HW35-6; regional_persistence_notes on rural-persistence-bounded types (Surface-Mount Lock, Strap Hinge, Wooden Caster, Hand-Forged Butt Hinge); related_hardware_types FK linking subtypes → parent types per D-HW35-3 flattening pattern; related_fastener_types + related_joinery_types cross-library FKs per D-HW35-9 (Cam Lock × 2, Upholstery Tacks × 1).
+- Convention precedents established this block: 2-tier subtype-as-flattened-type pattern (D-HW35-3); StyleAssociation entryShape.ts promotion (D-HW35-4 + schema-occurrence rule precedent); HardwareMakerAssociation library-local pattern (D-HW35-5); SCHEMA-PRESENT-CONTENT-DEFERRED discipline (D-HW35-6); NEW reproduction_hardware_warning reasoning-rule TYPE (D-HW35-13); FIFTH ILE encoding (D-HW35-12); per-category-vs-per-subcategory override mechanism documentation (D-HW35-14); all forward-applicable to subsequent Phase 2 Session 7 libraries (upholstery covers + upholstery construction) and Phase 2 Session 9 (styleFamilies + design-aspects).
+- Next sequencing per D-AP32-5: Block 36 hardware types content; then Phase 2 Session 7 fourth library (upholstery covers).
+
+---
+
 
