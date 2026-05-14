@@ -3665,3 +3665,62 @@ The style + waves library was the SOLE Phase 2 Session 9 deliverable; closing it
 - **Phase 2 Session 8b reconciliation pass**: next + final Phase 2 work before Phase 3 (D-AR29-10) — forms.ts retroactive rationale population (~182 entries) + 5 Block 29 audit issues + D-SW42-10 "to present" cross-library reconciliation flag.
 
 ---
+## Phase 2 Session 8b — forms.ts Retroactive Rationale Population + D-SW42-10 Cross-Library "to present" Reconciliation; Block 29 Audit Issue 3 Fulfilled; PHASE 2 SESSION 8b CLOSES → PHASE 2 FULLY CLOSED
+## Session 17 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main 4a2814c (Block 42 merge endpoint / Phase 2 Session 9 CLOSED)
+
+The FINAL Phase 2 work before Phase 3 engine architecture reshape (D-AP32-4). Populates the `notes` rationale field on 182 previously-unrationaled `forms.ts` FORMS entries (Block 29 Issue 3 per D-AR29-8) and reconciles the D-SW42-10 cross-library "to present" precedent divergence by applying Pattern 3 (omit `date_ceiling`) to 134 `forms.ts` entries + 17 `woodEvidence.ts` `period_associations` entries. NO schema corrections required — Op A-4 confirmed both target shapes already permit `date_ceiling` omission. `lib/engine.ts` UNCHANGED per D-MM27-9. `styleFamilies.ts` + `entryShape.ts` UNCHANGED. 3 files modified (forms.ts; woodEvidence.ts; AUDIT_LOG.md).
+
+### D-AR8B-1 (locked): Session 8b scope per Q1-Q6
+Scope is Block 29 Issue 3 (forms.ts rationale gap) + D-SW42-10 cross-library "to present" reconciliation ONLY. Q-set locked: Q1=A (rationale synthesized from existing entry fields), Q2=C (HCL descoped/absorbed), Q3=G (Issue 4 deferred/dropped), Q4 (Issues 1/2/5 no Session 8b action), Q5 (stray scratch files deferred), Q6 (12 forms.ts sub-batches by parent_category interleaved with reconciliation → woodEvidence.ts sub-batch). NO entry mutations beyond `notes` population + `date_ceiling` omission. Block 29 Op C audit-and-defer (D-AR29-4) discipline fulfilled: the deferred corrections route here.
+
+### D-AR8B-2 (locked): Rationale-population basis — appraiser-call synthesis from existing entry fields (Q1=A)
+The 182 `notes` rationales were synthesized from each entry's own existing canonical fields (date_floor/date_ceiling, distinguishing_features, subtypes, anti_classification_guidance, cousin_form_contrasts, regional_period_notes, dimensional_thresholds, common_conversion_targets) per the `form_jelly_cupboard` extant pattern + D-UCN39-13 appraiser-honest-discipline-supersedes-FK-completion. NO canonical source-document re-reading required (Op A-7 surfacing 1 resolved: the original forms seed documents were not needed; the entries' own structured content carries sufficient rationale basis). Each rationale states the canonical date basis, the form group, the diagnostic-identity basis (distinguishing_features + subtype counts), anti-classification boundary if present, and supporting diagnostic content. Op A-1 found exactly 1 of 183 entries (`form_jelly_cupboard`) already carried a `notes` field — left unchanged per pattern-consistency verification. Op B confirmed ZERO "thin" entries (every one of the 182 carried sufficient existing fields to synthesize a defensible rationale; no mid-batch pause triggered).
+
+### D-AR8B-3 (locked): Pattern 3 application to forms.ts — 134 entries omit date_ceiling
+134 `forms.ts` FORMS entries carried `date_ceiling: 2030` — a fixed forward-sentinel inconsistent with the Phase 2 Session 7 immediate-precedent cluster convention. Op A-3 confirmed all 134 are genuinely "to present" open-ended ranges (forms still in production: secretary desk, side chair, Windsor chair, etc.); zero are legitimate explicit ceilings. All 134 `date_ceiling: 2030` fields were stripped entirely; the canonical "to present" / open-ended-range marker is folded into each entry's new `notes` field per D-FA34-3 notes-field-marker convention. forms.ts now aligns with the Blocks 30-40 evidence-library cluster (Pattern 3) and with Block 42's D-SW42-8. The remaining 48 rationaled entries had legitimate explicit ceilings or already-omitted ceilings — `notes` populated, no date_ceiling change.
+
+### D-AR8B-4 (locked): Pattern 3 application to woodEvidence.ts — 17 period_associations omit date_ceiling
+17 `woodEvidence.ts` `date_ceiling: 2026` instances — all inside `period_associations` sub-objects — were stripped entirely. Op A-3 confirmed all 17 are genuinely "to present" (period_labels read "Continued present-day…", "Contemporary…", "Modern and contemporary…", "…(broad)"). The "to present" marker is already carried verbatim in each entry's `period_label` and `usage_notes`, so no `notes` field addition was needed (Op C verified markers present in all 17). 2026 was a current-year-at-authoring value that drifts; omission is the durable convention.
+
+### D-AR8B-5 (locked): NO schema corrections required
+Op A-4 confirmed both target shapes already permit `date_ceiling` omission: `CanonicalEntry.date_ceiling?` is optional (entryShape.ts:34), inherited by `FormEntry`; `PeriodAssociation.date_ceiling?` is optional (entryShape.ts:121). The `PeriodAssociation` interface doc-comment EXPLICITLY documents the omitted-means-present convention and even names "2026" as the bad sentinel to avoid ("avoids the year drift that a fixed sentinel (e.g., 2026) would introduce") — the 17 woodEvidence.ts instances directly violated their own interface contract's documented convention. Unlike Block 42's D-SW42-9 (which required a one-line schema correction because `StyleRevivalWaveEntry.date_ceiling` had been locked as required), Session 8b required ZERO schema edits. `entryShape.ts` UNCHANGED.
+
+### D-AR8B-6 (locked): HCL descoped/absorbed (Q2=C)
+`historicalClueLibrary.ts` was never authored. Phase 2 Session 9 was originally scoped as "HCL + styleFamilies + design-aspects" (D-AP32-2/D-AR29-10), but Blocks 41-42 authored only `styleFamilies.ts`, with the design-aspects evidence layer absorbed as the `DesignSubtlety` sub-structure on `StyleRevivalWaveEntry` (D-SW41-8). HCL is hereby recorded as descoped/absorbed; D-SW42-13 Session 9 closure stands. D-AR29-8 had named HCL as a prerequisite for Issue 3 rationale population — that prerequisite is dissolved: Q1=A synthesis-from-existing-fields needs no HCL cross-reference content. Op A-7 surfacing 2 resolved.
+
+### D-AR8B-7 (locked): Block 29 Issue 4 deferred/dropped (Q3=G)
+Block 29 Issue 4 (FAMILIES/SPATIAL_BEHAVIORS/CONSTRUCTION_LOGIC zero authority spread — 92 entries uniform at 8/8) is deferred/dropped from Session 8b scope. Rationale: LOW priority per D-AR29-9; the disposition's own note ("description field rationale provides canonical-source context") indicates the dense per-entry `description` field already satisfies appraiser-honest rationale-documentation discipline; per-entry authority-justification is a Phase 3 weighting-integration concern, not a Phase 2 content concern. NO mutations to families.ts / spatialBehaviors.ts / constructionLogic.ts. Captured in audit log only per Q3=G.
+
+### D-AR8B-8 (locked): Block 29 Issues 1, 2, 5 — confirmed no Session 8b action (Q4)
+Issue 1 (SUBSTRATE_EVIDENCE D-WE22-11 baseline divergence) and Issue 5 (D-WE22-11 audit-log clarity) were closed at Block 29 itself by D-AR29-6 audit-log clarification — no entry mutations, then or now. Issue 2 ("8" semantic asymmetry across libraries) was resolved architecturally by D-AP32-4: the Phase 3 per-entry-uniform-scale approach with overlap-driven confidence calculation absorbs cross-library scaling without per-library scaling factors (Mike-locked). Issue 2 is Phase 3 architectural scope, not a Session 8b content mutation. Of the "Block 29 audit — 5 issues," only Issue 3 required Session 8b mutations; Issue 4 was dropped per D-AR8B-7.
+
+### D-AR8B-9 (locked): Stray scratch files deferred (Q5)
+`lib/constraints/_session_3_forms_inventory.md` and `lib/constraints/_style_observations_backlog.md` (pre-existing scratch artifacts) are out of Session 8b scope and were left untouched. Flagged for possible future cleanup; not a Phase 2 closure blocker.
+
+### D-AR8B-10 (locked): Sub-batch sequencing (Q6)
+forms.ts rationale population + 2030 reconciliation executed as a single mechanical field-synthesis transform organized by the 12 `parent_category` groups (desk 55, industrial_professional_form 29, table 24, entry_support_form 22, case_piece 20, musical_mechanical_form 12, chair 6, lighting_form 6, specialized 3, clock_case_form 3, seating 2, basket_form 1 = 183 total; 182 rationaled + form_jelly_cupboard pre-existing). Rationale population and `date_ceiling: 2030` strip interleaved per entry (same `notes` field carries the Pattern 3 marker). woodEvidence.ts reconciliation executed as a separate 17-edit sub-batch. tsc clean after each phase; no mid-batch pause triggered.
+
+### D-AR8B-11 (locked): forms.ts content-complete for rationale population (Issue 3 fulfilled)
+All 183 FORMS entries now carry a populated `notes` field. Block 29 Issue 3 disposition (D-AR29-8) is fulfilled; the FORMS-style sparse-rationale anti-pattern flagged at D-AR29-11 is eliminated. forms.ts is rationale-content-complete.
+
+### D-AR8B-12 (locked): D-SW42-10 cross-library "to present" reconciliation fulfilled
+All 151 divergent instances (134 forms.ts `date_ceiling: 2030` + 17 woodEvidence.ts `date_ceiling: 2026`) are reconciled to Pattern 3 (omit date_ceiling). 151/151 were genuine "to present" content per Op A-3; zero false positives. The canonical record now applies the omitted-means-present convention uniformly across forms.ts, woodEvidence.ts, the Blocks 30-40 evidence-library cluster, and styleFamilies.ts (D-SW42-8). The D-SW42-10 reconciliation flag is closed.
+
+### D-AR8B-13 (locked): PHASE 2 SESSION 8b CLOSES → PHASE 2 FULLY CLOSED
+Session 8b was the end-of-Phase-2 reconciliation pass gate work item per D-AR29-10. With Block 29 Issue 3 fulfilled (D-AR8B-11), the D-SW42-10 reconciliation closed (D-AR8B-12), and Issues 1/2/4/5 dispositioned (D-AR8B-7/D-AR8B-8), the gate is satisfied. **PHASE 2 SESSION 8b CLOSES.** **PHASE 2 IS FULLY CLOSED.** The next work is the Phase 3 engine architecture reshape per D-AP32-4 (per-layer structured outputs + overlap-timeline visualization + reconciliation-proposal logic + per-entry authority consumption replacing the hardcoded AUTHORITY_RANK).
+
+### D-AR8B-FINAL (post-execution summary)
+- Session 8b ship: 182 forms.ts `notes` rationales populated + 134 forms.ts `date_ceiling: 2030` stripped + 17 woodEvidence.ts `date_ceiling: 2026` stripped.
+- **forms.ts**: 183/183 FORMS entries now carry `notes` (was 1/183); 0 entries carry `date_ceiling: 2030` (was 134). 16008 → 16056 lines (+182 notes lines − 134 date_ceiling lines = +48 net).
+- **woodEvidence.ts**: 0 `period_associations` carry `date_ceiling: 2026` (was 17). 2288 → 2288 lines (date_ceiling was inline on the date_floor line; no line-count change).
+- NO schema corrections (D-AR8B-5); `entryShape.ts` UNCHANGED.
+- `lib/engine.ts` UNCHANGED per D-MM27-9 (diff = 0 lines; Op A-5 confirmed engine.ts does not read date_ceiling from either library — pure-content reconciliation).
+- `styleFamilies.ts` UNCHANGED (Phase 2 Session 9 closure preserved).
+- **All 31 canonical array lengths unchanged**: FORMS 183, SPECIES_EVIDENCE 26 … STYLE_REVIVAL_WAVES 108 / STYLE_FAMILIES 26 / STYLE_REASONING_RULES 6 — Session 8b is a field-population + field-omission pass with zero entry additions or removals.
+- Files modified: **3** (`lib/constraints/forms.ts`; `lib/constraints/woodEvidence.ts`; `lib/constraints/AUDIT_LOG.md`).
+- 13 numbered audit decisions captured under D-AR8B-N prefix (D-AR8B-1 through D-AR8B-13 + D-AR8B-FINAL).
+- Block 29 Issue 3: FULFILLED (D-AR8B-11). D-SW42-10 reconciliation flag: CLOSED (D-AR8B-12). Block 29 Issues 1/2/5: confirmed dispositioned (D-AR8B-8). Block 29 Issue 4: deferred/dropped (D-AR8B-7).
+- **PHASE 2 SESSION 8b: CLOSED.** **PHASE 2: FULLY CLOSED.** Next: Phase 3 engine architecture reshape per D-AP32-4.
+
+---

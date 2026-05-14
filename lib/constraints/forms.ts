@@ -149,6 +149,7 @@ export const FORMS: FormEntry[] = [
     common_conversion_targets: ["desk", "cabinet", "bar"],
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pump organ cabinet’ sits in the specialized form group. Canonical production span c. 1870–1900. Diagnostic identity rests on 7 canonical distinguishing features. Anti-classification guidance fixes a form_emergence boundary at c. 1870. Supporting diagnostic content: cousin-form contrasts against 2 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds, documented conversion targets.",
     migration_status: "partial",
     distinguishing_features: [
       "Foot-powered bellows system — two treadle pedals, internal bellows or air reserve chambers, and linkage system converting foot pressure into air pressure",
@@ -192,6 +193,7 @@ export const FORMS: FormEntry[] = [
     common_conversion_targets: ["bathroom_vanity"],
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘washstand’ sits in the case-piece form group. Canonical production span c. 1820–1900. Diagnostic identity rests on 9 canonical distinguishing features. Anti-classification guidance fixes a form_emergence boundary at c. 1820. Supporting diagnostic content: regional/period context in regional_period_notes, documented conversion targets.",
     migration_status: "partial",
     distinguishing_features: [
       "Water-resistant top surface — marble, slate, tile, zinc, or similar; ordinary small dressers and side cabinets use plain wood tops meant for storage rather than repeated wet use",
@@ -224,6 +226,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1900,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘sideboard’ sits in the case-piece form group. Canonical production span c. 1780–1900. Diagnostic identity rests on 7 canonical distinguishing features. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Defined by span and distributed storage across width — storage zones (drawers, doors, cellarettes, bottle drawers) are arranged side by side rather than consolidated into a unified cabinet mass; the piece reads horizontally even when substantial",
@@ -267,6 +270,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1930,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘buffet’ sits in the case-piece form group. Canonical production span c. 1870–1930. Diagnostic identity rests on 8 canonical distinguishing features. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Defined by integration and consolidation into a unified cabinet mass — storage is organized as a cohesive cabinet system, drawers and doors stacked and grouped within a unified structure that reads as one cohesive block of storage",
@@ -311,6 +315,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1930,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘server’ sits in the case-piece form group. Canonical production span c. 1870–1930. Diagnostic identity rests on 8 canonical distinguishing features. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Defined by reduction, simplicity, and auxiliary function — designed to support serving activity rather than function as the primary storage case for the dining room",
@@ -353,6 +358,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_horizontal_storage",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘dresser’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Width-dominant case proportions — typically wider than tall, designed to spread storage across width rather than stack vertically",
@@ -513,6 +519,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_horizontal_storage",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘low chest’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Short case height — typically 24-36 inches, falling below standard chest of drawers range",
@@ -600,6 +607,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_vertical_storage",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘chest of drawers’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Height-dominant proportions — typically taller than wide, designed to maximize vertical storage capacity within a smaller floor footprint",
@@ -778,6 +786,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1900,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘highboy’ sits in the case-piece form group. Canonical production span c. 1700–1900. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Multi-boundary anti-classification guidance documents 2 form-emergence/extinction boundaries. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Tall vertical storage form with two-part construction — upper drawer chest stacked on a separate elevated base",
@@ -898,6 +907,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1900,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘blanket chest’ sits in the case-piece form group. Canonical production span c. 1700–1900. Diagnostic identity rests on 8 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Rectangular box-based case construction — solid carcass forming an enclosed cavity",
@@ -1009,6 +1019,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1940,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘trunk’ sits in the case-piece form group. Canonical production span c. 1700–1940. Diagnostic identity rests on 8 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Enclosed box-like storage body — rectangular case with hinged lid access",
@@ -1141,6 +1152,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_bedside_furniture",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘nightstand’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Small footprint sized for bedside placement",
@@ -1237,6 +1249,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_personal_hygiene",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘dressing table’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated-use proportions — height calibrated for seated user (typically 28-32 inches at the working surface)",
@@ -1353,6 +1366,7 @@ export const FORMS: FormEntry[] = [
     date_floor: 1900,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘chifforobe’ sits in the case-piece form group. Canonical production opens c. 1900 with no fixed terminal date in the canonical source (date_ceiling already omitted). Diagnostic identity rests on 8 canonical distinguishing features and 5 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1900. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Tall bedroom storage case combining hanging compartment and drawer bank in a single unified case",
@@ -1458,6 +1472,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_clothing_enclosure",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘wardrobe’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Tall enclosed clothing-storage cabinet with door-based access — primary access method is doors, not drawers",
@@ -1557,6 +1572,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_clothing_enclosure",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘armoire’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Tall enclosed cabinet form with substantial scale and decorative character",
@@ -1655,6 +1671,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_sleep_furniture",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bedstead’ sits in the case-piece form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 9 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 6 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Rectangular sleeping support frame designed for horizontal body support during sleep",
@@ -1857,6 +1874,7 @@ export const FORMS: FormEntry[] = [
     },
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pie safe’ sits in the case-piece form group. Canonical production span c. 1750–1900. Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Anti-classification guidance fixes a form_extinction boundary at c. 1920. Supporting diagnostic content: cousin-form contrasts against 1 closely-related form, regional/period context in regional_period_notes.",
     migration_status: "partial",
   },
   {
@@ -1879,6 +1897,7 @@ export const FORMS: FormEntry[] = [
     date_floor: 1880,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘china cabinet’ sits in the case-piece form group. Canonical production opens c. 1880 with no fixed terminal date in the canonical source (date_ceiling already omitted).",
     migration_status: "partial",
   },
   {
@@ -1889,6 +1908,7 @@ export const FORMS: FormEntry[] = [
     date_floor: 1700,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bookcase’ sits in the case-piece form group. Canonical production opens c. 1700 with no fixed terminal date in the canonical source (date_ceiling already omitted).",
     migration_status: "partial",
   },
   {
@@ -1900,6 +1920,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_dining_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘dining table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Large horizontal eating surface designed for seated meal use by multiple people",
@@ -2025,6 +2046,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_expandable_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘extension table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Expandable top — surface area increases through leaves, slides, draw mechanisms, or hinged sections",
@@ -2110,6 +2132,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_expandable_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘drop-leaf table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged leaves attached to fixed center section — leaves drop vertically or near-vertically when closed",
@@ -2226,6 +2249,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_central_support_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pedestal table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Top supported by central pedestal structure rather than four corner legs",
@@ -2363,6 +2387,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_central_support_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘tea table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Small to medium service table designed for serving tea, refreshments, or light hospitality",
@@ -2458,6 +2483,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘side table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Small auxiliary surface placed beside seating, beds, or room edges",
@@ -2556,6 +2582,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘sofa table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Long narrow surface designed to stand behind or near a sofa",
@@ -2643,6 +2670,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘console table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 9 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Narrow wall-oriented table designed for display, entry, hall, or sofa-back placement",
@@ -2750,6 +2778,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1940,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘lowboy’ sits in the table form group. Canonical production span c. 1720–1940. Diagnostic identity rests on 9 canonical distinguishing features and 5 documented subtypes. Multi-boundary anti-classification guidance documents 4 form-emergence/extinction boundaries. Supporting diagnostic content: cousin-form contrasts against 6 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Low table-height case-and-table hybrid form with drawers raised on legs",
@@ -2894,6 +2923,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘candle stand’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Small elevated support form designed to hold a single object or limited display",
@@ -2995,6 +3025,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘nesting tables’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Set of small tables designed to slide or stack beneath one another",
@@ -3080,6 +3111,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘tray table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Lightweight auxiliary table designed around a tray-like top, removable tray, folding stand, or portable service function",
@@ -3170,6 +3202,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘center table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Room-centered table used for display, social setting, reading, lamp support, or decorative presence",
@@ -3284,6 +3317,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1930,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pier table’ sits in the table form group. Canonical production span c. 1780–1930. Diagnostic identity rests on 7 canonical distinguishing features and 3 documented subtypes. Multi-boundary anti-classification guidance documents 2 form-emergence/extinction boundaries. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Wall-oriented table traditionally placed between windows, often beneath a pier mirror",
@@ -3378,6 +3412,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘etagere table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Display-oriented table with multiple shelves, tiers, or open levels",
@@ -3468,6 +3503,7 @@ export const FORMS: FormEntry[] = [
     date_floor: 1920,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘coffee table’ sits in the table form group. Canonical production opens c. 1920 with no fixed terminal date in the canonical source (date_ceiling already omitted). Diagnostic identity rests on 9 canonical distinguishing features and 6 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1920. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Low table placed in front of seating to support drinks, books, display objects, and living-room use",
@@ -3582,6 +3618,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘ottoman table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hybrid seating-zone form combining footrest or upholstered seating behavior with table-like surface use",
@@ -3669,6 +3706,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_auxiliary_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pub table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Tall table designed for use while standing or while seated on stools",
@@ -3800,6 +3838,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_specialty_surface_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘game table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Table designed for playing cards, board games, chess, checkers, poker, or parlor games",
@@ -3912,6 +3951,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_specialty_surface_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘drafting table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Specialized work table designed for drawing, drafting, design, architectural work, or technical illustration",
@@ -4009,6 +4049,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_specialty_surface_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘sewing table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 7 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Specialized work table designed for sewing, needlework, textile repair, or sewing machine support",
@@ -4114,6 +4155,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_specialty_surface_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘work table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Task-oriented table designed for domestic, craft, shop, kitchen, or professional work",
@@ -4213,6 +4255,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_specialty_surface_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘library table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Substantial table designed for reading, writing, study, and central-room work",
@@ -4315,6 +4358,7 @@ export const FORMS: FormEntry[] = [
     spatial_behavior_id: "spatial_specialty_surface_tables",
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘writing table’ sits in the table form group. The canonical source fixes no form-level date boundaries; dating rests on construction-, material-, joinery-, and hardware-layer evidence per the Independent Layer Evaluation Standard. Diagnostic identity rests on 8 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated-use table designed for writing, correspondence, or light work",
@@ -4415,9 +4459,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘secretary desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 9 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged, falling, sloping, or cabinet-front writing access",
@@ -4547,9 +4591,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1690,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘slant-front desk’ sits in the desk form group. Canonical production span opens c. 1690 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged, falling, sloping, or cabinet-front writing access",
@@ -4622,9 +4666,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_seating",
     spatial_behavior_id: "spatial_single_user_seating",
     date_floor: 1650,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘side chair’ sits in the chair form group. Canonical production span opens c. 1650 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 8 canonical distinguishing features and 14 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 7 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "One-person seating with seat and meaningful back support",
@@ -4780,9 +4824,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_seating",
     spatial_behavior_id: "spatial_single_user_seating",
     date_floor: 1650,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘armchair’ sits in the chair form group. Canonical production span opens c. 1650 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 11 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 8 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "One-person seating with seat, back support, and arms",
@@ -4918,9 +4962,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_seating",
     spatial_behavior_id: "spatial_single_user_seating",
     date_floor: 1880,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bar chair’ sits in the chair form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 8 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 6 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Elevated seat height (counter-height 24-26 inches or bar-height 28-32 inches)",
@@ -5018,9 +5062,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_seating",
     spatial_behavior_id: "spatial_single_user_seating",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘folding chair’ sits in the chair form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 6 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Single-user seating with hinged, pivoting, scissor, or collapsible frame",
@@ -5124,9 +5168,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_seating",
     spatial_behavior_id: "spatial_single_user_seating",
     date_floor: 1650,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘ladderback chair’ sits in the chair form group. Canonical production span opens c. 1650 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 7 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Horizontal slats between rear posts — structurally defining",
@@ -5221,9 +5265,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_seating",
     spatial_behavior_id: "spatial_single_user_seating",
     date_floor: 1720,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘Windsor chair’ sits in the chair form group. Canonical production span opens c. 1720 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 8 canonical distinguishing features and 8 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 6 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Solid plank seat — structurally defining",
@@ -5332,9 +5376,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_portable_writing_forms",
     date_floor: 1650,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘writing box’ sits in the desk form group. Canonical production span opens c. 1650 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 8 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Portable box or case body with hinged opening",
@@ -5439,9 +5483,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_portable_writing_forms",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘tabletop desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Designed to rest on another surface rather than stand independently",
@@ -5519,9 +5563,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_portable_writing_forms",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘field desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 9 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Portable, folding, knockdown, or compact field-use structure",
@@ -5651,9 +5695,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_open_writing_stations",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bureau plat’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Open writing surface visible when not in use",
@@ -5730,9 +5774,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_open_writing_stations",
     date_floor: 1760,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bonheur du jour’ sits in the desk form group. Canonical production span opens c. 1760 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Open writing surface visible when not in use",
@@ -5811,9 +5855,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_open_writing_stations",
     date_floor: 1820,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘kidney desk’ sits in the desk form group. Canonical production span opens c. 1820 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Open writing surface visible when not in use",
@@ -5906,9 +5950,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_open_writing_stations",
     date_floor: 1780,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘Carlton House desk’ sits in the desk form group. Canonical production span opens c. 1780 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Open writing surface visible when not in use",
@@ -6001,9 +6045,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_kneehole_workstations",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘kneehole desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 9 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated work height with usable writing or office surface",
@@ -6120,9 +6164,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_kneehole_workstations",
     date_floor: 1850,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pedestal desk’ sits in the desk form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated work height with usable writing or office surface",
@@ -6254,9 +6298,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_kneehole_workstations",
     date_floor: 1790,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘Davenport desk’ sits in the desk form group. Canonical production span opens c. 1790 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated work height with usable writing or office surface",
@@ -6342,9 +6386,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_kneehole_workstations",
     date_floor: 1900,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘executive desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated work height with usable writing or office surface",
@@ -6441,9 +6485,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_kneehole_workstations",
     date_floor: 1920,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘credenza desk’ sits in the desk form group. Canonical production span opens c. 1920 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Seated work height with usable writing or office surface",
@@ -6529,9 +6573,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘fall-front desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged, falling, sloping, or cabinet-front writing access",
@@ -6624,9 +6668,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1700,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘escritoire’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged, falling, sloping, or cabinet-front writing access",
@@ -6711,9 +6755,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1750,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘secrétaire à abattant’ sits in the desk form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged, falling, sloping, or cabinet-front writing access",
@@ -6782,9 +6826,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_fall_front_drop_front_enclosed_desks",
     date_floor: 1750,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bureau à gradins’ sits in the desk form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Hinged, falling, sloping, or cabinet-front writing access",
@@ -6853,9 +6897,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
     date_floor: 1850,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘roll-top desk’ sits in the desk form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 10 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
@@ -6985,9 +7029,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
     date_floor: 1760,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘cylinder desk’ sits in the desk form group. Canonical production span opens c. 1760 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
@@ -7058,9 +7102,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
     date_floor: 1760,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘tambour desk’ sits in the desk form group. Canonical production span opens c. 1760 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
@@ -7130,9 +7174,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_roll_top_tambour_enclosed_desks",
     date_floor: 1874,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘Wooton desk’ sits in the desk form group. Canonical production span opens c. 1874 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1874. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Retracting or enclosing cover mechanism, such as roll-top, tambour, cylinder, or fitted cabinet doors",
@@ -7217,9 +7261,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_cabinet_armoire_hideaway_workstations",
     date_floor: 1850,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘armoire desk’ sits in the desk form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Desk function integrated with vertical cabinet, hutch, wall, or fold-down storage",
@@ -7326,9 +7370,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_cabinet_armoire_hideaway_workstations",
     date_floor: 1900,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘hutch desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Desk function integrated with vertical cabinet, hutch, wall, or fold-down storage",
@@ -7406,9 +7450,9 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_cabinet_armoire_hideaway_workstations",
     date_floor: 1910,
-    date_ceiling: 2030,
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘Murphy desk’ sits in the desk form group. Canonical production span opens c. 1910 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
     distinguishing_features: [
       "Desk function integrated with vertical cabinet, hutch, wall, or fold-down storage",
@@ -7471,7 +7515,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_shared_double_sided_workstations",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed for two or more users or multi-sided work access",
       "Large shared surface or paired workstations",
@@ -7587,6 +7630,7 @@ export const FORMS: FormEntry[] = [
       "Double-sided or shared desk form intended for two users or bilateral access, normally with finished working faces and storage arranged to serve more than one seated position. Date envelope: c. 1800-present broad use; strongest diagnostic range c. 1850-present for double-sided professional, legal, banking, library, and executive desks. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘partner's desk’ sits in the desk form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 9 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -7597,7 +7641,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_shared_double_sided_workstations",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed for two or more users or multi-sided work access",
       "Large shared surface or paired workstations",
@@ -7693,6 +7736,7 @@ export const FORMS: FormEntry[] = [
       "Multi-user desk system arranged as a shared linear or side-by-side work surface, usually associated with institutional, school, open-plan office, or hot-desk environments. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1990-present for modern open-plan benching systems; earlier shared school or industrial benches should be classified by their specific institutional form. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘benching desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -7703,7 +7747,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -7790,6 +7833,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the clerk's desk family, designed around a specific public, educational, administrative, ceremonial, or service work behavior rather than purely domestic writing. High desk with sloped writing surface for ledger work is the structurally defining feature. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1800-1930 for counting-house, ledger, postal, and store-clerk furniture; later forms merge into reception, service, and administrative counters. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘clerk's desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -7800,7 +7844,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -7923,6 +7966,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the standing desk family, designed around a specific public, educational, administrative, ceremonial, or service work behavior rather than purely domestic writing. Full-height desks for standing use covering modern adjustable-height and sit-stand configurations. Date envelope: c. 1700-present broad use; strongest diagnostic ranges include c. 1800-1930 for standing clerk/ledger desks and c. 1990-present for ergonomic sit-stand and electric adjustable desks. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Technology-driven components such as cable ports, keyboard trays, laminate panels, electric lifts, monitor arms, and systems furniture hardware provide strong modern dating evidence and should override antique stylistic decoration.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘standing desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 10 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -7933,7 +7977,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -8069,6 +8112,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the school desk family. Student desk with attached or attached-seat configuration is the structurally defining feature for many period variants. Date envelope: c. 1800-present broad use; strongest diagnostic range c. 1840-1970 for attached-seat, lift-lid, sled-base, and cast-iron school desks; modern student desks continue in classroom and home-study contexts. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘school desk’ sits in the desk form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 11 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8079,7 +8123,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -8155,6 +8198,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the teacher's desk family. Teacher/instructor pedestal desk with classroom-specific configurations is the structurally defining feature. Date envelope: c. 1850-present broad use; strongest diagnostic range c. 1890-1970 for wood and steel classroom teacher desks, with later examples aligning with institutional office furniture. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘teacher's desk’ sits in the desk form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8165,7 +8209,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -8252,6 +8295,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the reception desk family. Counter-style desk for greeting/checking-in visitors is the structurally defining feature. Use-context variants (hotel, salon, medical, security, etc.) consolidate to this canonical form per the Session 6 Block 1 architectural decision; structural distinctness (counter-style configuration with customer-facing public side and reception work side) controls canonical classification. Date envelope: c. 1880-present broad use; strongest diagnostic range c. 1920-present for commercial, medical, salon, hotel, and office reception forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘reception desk’ sits in the desk form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8262,7 +8306,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1600,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -8356,6 +8399,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the lectern desk family. Sloped writing surface on standing-height pedestal/column base is the structurally defining feature. Strong ecclesiastical, academic, and ceremonial associations. Date envelope: c. 1600-present broad use; strongest diagnostic range c. 1700-present for ecclesiastical, institutional, and ceremonial sloped writing/reading stands; modern examples continue in education and public speaking contexts. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘lectern desk’ sits in the desk form group. Canonical production span opens c. 1600 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8366,7 +8410,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_commercial_institutional_workstations",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Form follows a specific institutional or public-facing task",
       "Work surface may be sloped, raised, counter-height, attached to seating, or service-oriented",
@@ -8467,6 +8510,7 @@ export const FORMS: FormEntry[] = [
       "Institutional or commercial desk form in the transaction counter desk family. High counter desk for transactions is the structurally defining feature. Use-context variants (cashier, teller, sales, customer service, etc.) consolidate to this canonical form per the Session 6 Block 1 architectural decision; structural distinctness (high counter configuration prioritizing exchange, payment, or service rather than greeting) controls canonical classification. Date envelope: c. 1850-present broad use; strongest diagnostic range c. 1900-present for retail, teller, cashier, service, and customer-facing counter desks. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘transaction counter desk’ sits in the desk form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8477,7 +8521,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_technical_drafting_professional_workstations",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Task-specific work surface suited to tools, drawing, testing, or technical work",
       "May include adjustable angle, durable top material, specialized storage, or equipment support",
@@ -8569,6 +8612,7 @@ export const FORMS: FormEntry[] = [
       "Technical or task-specific workstation in the workbench desk family. Heavy-duty work surface with tool storage and reinforced construction is the structurally defining feature. Distinguished from form_converted_industrial_desk (Convertible/Repurposed grouping) which covers workbenches, factory carts, machine bases, or tool chests converted to desk use post-original-construction. Date envelope: c. 1800-present broad use; strongest diagnostic range c. 1900-present for shop, mechanic, tool-storage, and industrial desk-workbench hybrids; earlier benches should not be back-classified as desks without writing or record-work evidence. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘workbench desk’ sits in the desk form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8579,7 +8623,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_technical_drafting_professional_workstations",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Task-specific work surface suited to tools, drawing, testing, or technical work",
       "May include adjustable angle, durable top material, specialized storage, or equipment support",
@@ -8655,6 +8698,7 @@ export const FORMS: FormEntry[] = [
       "Technical or task-specific workstation in the artist's desk family. Tilting/adjustable writing or drawing surface for artistic work is the structurally defining feature. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1850-present for adjustable drawing, studio, illustrator, and art-table desk forms. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘artist's desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8665,7 +8709,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_technical_drafting_professional_workstations",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Task-specific work surface suited to tools, drawing, testing, or technical work",
       "May include adjustable angle, durable top material, specialized storage, or equipment support",
@@ -8733,6 +8776,7 @@ export const FORMS: FormEntry[] = [
       "Technical or task-specific workstation in the laboratory desk family. Science/technical work surface with chemical-resistant materials and equipment integration is the structurally defining feature. Date envelope: c. 1850-present broad use; strongest diagnostic range c. 1900-present for science, research, technician, and laboratory workstations. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Do not back-classify a later revival, reproduction, or conversion solely because the form name has older historical associations; use construction, fasteners, materials, hardware, finish, and wear to anchor the actual object date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘laboratory desk’ sits in the desk form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8743,7 +8787,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_computer_systems_modular_workstations",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed to support a typewriter, computer, or related office equipment",
       "May include drop wells, machine platforms, keyboard trays, monitor surfaces, or cable management features",
@@ -8820,6 +8863,7 @@ export const FORMS: FormEntry[] = [
       "Equipment-supporting workstation in the typewriter desk family, designed around a typewriter platform with drop wells, lift tops, or dedicated machine surfaces. Date envelope: c. 1880-present broad use; strongest diagnostic range c. 1900-1970 for typewriter-specific desks; later examples decline as typewriters were displaced by computers, though some forms remain in office reuse contexts. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Technology-driven components such as drop wells, machine platforms, and equipment-specific dimensions provide strong dating evidence and should override antique stylistic decoration.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘typewriter desk’ sits in the desk form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8830,7 +8874,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_computer_systems_modular_workstations",
     date_floor: 1975,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed to support a typewriter, computer, or related office equipment",
       "May include drop wells, machine platforms, keyboard trays, monitor surfaces, or cable management features",
@@ -8936,6 +8979,7 @@ export const FORMS: FormEntry[] = [
     },
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘computer desk’ sits in the desk form group. Canonical production span opens c. 1975 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 7 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1975. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -8946,7 +8990,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_computer_systems_modular_workstations",
     date_floor: 1960,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed to support a typewriter, computer, or related office equipment",
       "May include drop wells, machine platforms, keyboard trays, monitor surfaces, or cable management features",
@@ -9034,6 +9077,7 @@ export const FORMS: FormEntry[] = [
     },
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘modular workstation desk’ sits in the desk form group. Canonical production span opens c. 1960 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1960. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9044,7 +9088,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_computer_systems_modular_workstations",
     date_floor: 1950,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed to support a typewriter, computer, or related office equipment",
       "May include drop wells, machine platforms, keyboard trays, monitor surfaces, or cable management features",
@@ -9122,6 +9165,7 @@ export const FORMS: FormEntry[] = [
       "Equipment-supporting workstation in the L-shaped desk family, configured with a primary work surface and a perpendicular return forming an L geometry. Date envelope: c. 1950-present broad use; strongest diagnostic range c. 1980-present for executive office and home office L-configurations. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Technology-driven components such as cable ports, keyboard trays, and modern materials provide strong dating evidence.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘L-shaped desk’ sits in the desk form group. Canonical production span opens c. 1950 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9132,7 +9176,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_computer_systems_modular_workstations",
     date_floor: 1960,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Designed to support a typewriter, computer, or related office equipment",
       "May include drop wells, machine platforms, keyboard trays, monitor surfaces, or cable management features",
@@ -9202,6 +9245,7 @@ export const FORMS: FormEntry[] = [
       "Equipment-supporting workstation in the U-shaped desk family, configured with primary desk, perpendicular return, and bridge connecting to a credenza positioned behind, forming a U geometry that wraps the user on three sides. Date envelope: c. 1960-present broad use; strongest diagnostic range c. 1980-present for executive office U-configurations. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Technology-driven components such as cable ports, keyboard trays, and modern materials provide strong dating evidence.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘U-shaped desk’ sits in the desk form group. Canonical production span opens c. 1960 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9212,7 +9256,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_built_in_architectural_desks",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Permanently installed as part of architectural cabinetry or wall structure",
       "Custom-fit to specific room dimensions and architectural context",
@@ -9291,6 +9334,7 @@ export const FORMS: FormEntry[] = [
       "Architectural workstation in the built-in desk family, permanently installed as part of room cabinetry, millwork, or wall structure. Distinguished from freestanding desks by architectural attachment that cannot be relocated without disassembly. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1900-present for custom architectural built-ins, with modern home office and kitchen office built-ins gaining particular prominence c. 1990-present. American examples vary widely by regional architectural practice, custom cabinetmaking traditions, and kitchen/home office design conventions. Architectural attachment evidence (continuous millwork, fitted construction matching surrounding cabinetry, removal would damage architectural envelope) is the structurally defining feature.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘built-in desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9301,7 +9345,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_built_in_architectural_desks",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Permanently installed as part of architectural cabinetry or wall structure",
       "Custom-fit to specific room dimensions and architectural context",
@@ -9372,6 +9415,7 @@ export const FORMS: FormEntry[] = [
       "Architectural workstation in the wall desk family, mounted to wall structure via brackets or hardware. Distinguished from built-in desks by removability without architectural alteration; distinguished from Murphy desks by static (non-folding) mounting. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1990-present for compact apartment and home office wall desks. American examples vary by interior design conventions and small-space optimization. Floating and mounted variants common in contemporary minimalist designs.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘wall desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9382,7 +9426,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_built_in_architectural_desks",
     date_floor: 1950,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Permanently installed as part of architectural cabinetry or wall structure",
       "Custom-fit to specific room dimensions and architectural context",
@@ -9452,6 +9495,7 @@ export const FORMS: FormEntry[] = [
       "Architectural workstation in the wall unit desk family, combining desk function with substantial wall-spanning cabinet and shelf storage. Distinguished from wall desk by larger scale, integrated storage, and wall-spanning configuration. Date envelope: c. 1950-present broad use; strongest diagnostic range c. 1970-present for home library and entertainment center wall units that integrate desk function. American examples vary by interior design conventions and home office integration patterns.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘wall unit desk’ sits in the desk form group. Canonical production span opens c. 1950 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9462,7 +9506,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9524,6 +9567,7 @@ export const FORMS: FormEntry[] = [
       "Convertible workstation in the drop-leaf desk family, with hinged leaves that fold down when not in use to compact the footprint. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1780-1900 for period drop-leaf desks and c. 1880-present for revival and modern compact variants. American examples vary by urban cabinetmaking, regional shop practice, institutional supply, factory production, and later mail-order or office-furniture distribution. Drop-leaf hardware (hinges, brackets, support legs) provides dating evidence alongside primary construction.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘drop-leaf desk’ sits in the desk form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9534,7 +9578,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9596,6 +9639,7 @@ export const FORMS: FormEntry[] = [
       "Convertible workstation in the gateleg desk family, with swinging gateleg supports that pivot to support hinged leaves. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1700-1850 for period gateleg desks and c. 1880-1930 for revival forms. American examples vary by urban cabinetmaking and revival period production.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘gateleg desk’ sits in the desk form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9606,7 +9650,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9678,6 +9721,7 @@ export const FORMS: FormEntry[] = [
       "Convertible workstation in the telephone desk family, designed around telephone use with phone shelves, directory storage, and often integrated seating. Form emerged with widespread residential telephone adoption in the early 20th century. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1920-1960 for residential telephone desks and gossip benches; later examples decline as telephones became wireless and cordless. American examples vary by interior design conventions and telephone-era furniture trends.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘telephone desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9688,7 +9732,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9750,6 +9793,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the piano desk family, converted from piano cases (typically upright, occasionally grand) by removing piano action and adapting the cabinet structure for desk use. Conversion is typically post-original-construction work performed on instruments that have lost playable function. Date envelope: c. 1900-present for conversions, but the original instrument case may date from c. 1850 onward. Date the conversion separately from the original instrument; current desk function does not erase the original instrument date.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘piano desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9760,7 +9804,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9822,6 +9865,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the organ desk family, converted from pump organs, reed organs, or parlor organs by removing the action and bellows mechanism while adapting the cabinet structure for desk use. Conversion is typically post-original-construction work. Date envelope: c. 1900-present for conversions, but the original instrument case may date from c. 1860 onward. Date the conversion separately from the original instrument.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘organ desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9832,7 +9876,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9895,6 +9938,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the sewing machine desk family, converted from treadle sewing machines or sewing cabinets by removing or covering the machine well and adapting the cabinet for desk use. Treadle base often retained as decorative element. Conversion is post-original-construction work. Date envelope: c. 1880-present for conversions, but the original treadle machine cabinet may date from c. 1860 onward.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘sewing machine desk’ sits in the desk form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9905,7 +9949,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -9967,6 +10010,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the converted cabinet desk family, made from armoires, wardrobes, cupboards, or other cabinet forms via post-original-construction conversion. Distinguished from form_armoire_desk (factory-built or original-construction armoire-form desks) by post-original-construction conversion evidence. Date the conversion separately from the original cabinet. Conversion typically involves adding work surfaces, keyboard trays, or storage adaptations while preserving the original cabinet structure.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘converted cabinet desk’ sits in the desk form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -9977,7 +10021,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1990,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -10047,6 +10090,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the converted industrial desk family, made from workbenches, factory carts, machine bases, tool chests, or other industrial objects via post-original-construction conversion. Distinguished from form_workbench_desk (factory-built or original-construction workbench desks) by post-original-construction conversion evidence with added writing or office function. Date envelope: c. 1990-present for conversions reflects the rise of industrial-style interior design; the original industrial object may date from c. 1850 onward. Date the conversion separately from the original industrial object.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘converted industrial desk’ sits in the desk form group. Canonical production span opens c. 1990 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10057,7 +10101,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1920,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -10119,6 +10162,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the converted dressing table desk family, made from vanities, dressing tables, or makeup tables via post-original-construction conversion. Conversion typically removes the mirror and adapts the surface for desk use. Date envelope: c. 1920-present for conversions; the original dressing table may date from c. 1880 onward. Date the conversion separately from the original furniture.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘converted dressing table desk’ sits in the desk form group. Canonical production span opens c. 1920 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10129,7 +10173,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_desks",
     spatial_behavior_id: "spatial_convertible_repurposed_desk_forms",
     date_floor: 1990,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Convertible or repurposed structure that serves desk function through transformation, deployment, or original-use repurposing",
       "Original form may be a non-desk piece (table, instrument, machine, cabinet) or a deployable variant",
@@ -10191,6 +10234,7 @@ export const FORMS: FormEntry[] = [
       "Repurposed workstation in the converted treadle machine desk family, made from treadle sewing machine bases via post-original-construction conversion that removes the original machine and installs a new wood top. Distinguished from form_sewing_machine_desk (which preserves cabinet form) by complete removal of original machine and standalone treadle base aesthetic. Date envelope: c. 1990-present for conversions reflects the rise of industrial-style interior design; the original treadle machine base may date from c. 1860 onward.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘converted treadle machine desk’ sits in the desk form group. Canonical production span opens c. 1990 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10201,7 +10245,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_transitional_access_support",
     date_floor: 1840,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical multi-function entry furnishing consolidating garment, hat, and accessory storage in one architectural form",
       "Multiple garment hooks or pegs distributed at coat-and-hat heights",
@@ -10270,6 +10313,7 @@ export const FORMS: FormEntry[] = [
       "Multi-function entry furnishing in the hall tree family, consolidating garment hanging, hat storage, umbrella/cane storage, and transitional entry support into a single vertical architectural form. Date envelope: c. 1840-present broad use; emergence c. 1840-1860; peak popularity c. 1870-1925; continued production through present. Victorian East Coast examples commonly carved walnut or oak; Midwestern Arts & Crafts examples often quarter sawn oak; vernacular rural examples frequently simplified pine or poplar. The form integrates multiple distinct functions within a single piece, distinguishing it from simpler coat racks or hat racks of similar period.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘hall tree’ sits in the entry / support form group. Canonical production span opens c. 1840 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10280,7 +10324,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_transitional_access_support",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Single-function coat-and-garment hanging form without integrated multi-function entry features",
       "Hooks or pegs distributed at coat-hanging height across a horizontal or vertical mounting structure",
@@ -10334,6 +10377,7 @@ export const FORMS: FormEntry[] = [
       "Single-function garment-hanging form in the coat rack family. Date envelope: c. 1700-present broad use; the form predates hall trees and continues alongside them as a simpler entry furnishing. Wall-mounted variants common in compact entries, hallways, and back-door zones; freestanding variants common in larger foyers and offices. American vernacular examples frequently incorporate locally-available wood (pine in northeast, oak in midwest, poplar in southern regions). Modern examples extend to metal, plastic, and composite materials. Distinguished from hall tree by absence of multi-function integration.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘coat rack’ sits in the entry / support form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10344,7 +10388,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_transitional_access_support",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Hat-storage-emphasis entry furnishing with hooks, pegs, or shelving sized for hat retention",
       "Hook spacing or shelf depth calibrated to hat shape rather than coat hanging",
@@ -10397,6 +10440,7 @@ export const FORMS: FormEntry[] = [
       "Hat-storage-emphasis entry furnishing in the hat rack family. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1850-1950 reflecting peak hat-wearing conventions in American culture. Wall-mounted variants common throughout the period; standing hat racks more characteristic of formal entries and clubs. Vernacular examples adapt locally to available materials and reflect period hat styles. Modern persistence as auxiliary entry furniture or stylistic reference.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘hat rack’ sits in the entry / support form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10407,7 +10451,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_transitional_access_support",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical containment form for umbrellas, canes, walking sticks, or similar long handled items",
       "Open-top cylindrical, square, or rectangular form holding items vertically",
@@ -10460,6 +10503,7 @@ export const FORMS: FormEntry[] = [
       "Vertical containment form in the umbrella stand family, holding umbrellas, canes, and walking sticks during indoor periods. Date envelope: c. 1750-present broad use; peak Victorian-era examples in ceramic, brass, and ornate cast iron c. 1850-1900. American examples include ornate Victorian ceramic, simpler Arts & Crafts metal and wood, and modern minimalist forms. Drainage features distinguish wet-context examples from purely decorative dry-storage variants.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘umbrella stand’ sits in the entry / support form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10470,7 +10514,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_transitional_access_support",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Individual-user garment-preparation stand designed for organizing daily attire",
       "Coat hanger bar or jacket hook at upper level",
@@ -10531,6 +10574,7 @@ export const FORMS: FormEntry[] = [
       "Individual-user garment-preparation stand in the valet stand family. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1920-present in residential gentlemen's rooms and dressing rooms. American examples reflect period menswear conventions and dressing-room layouts. Modern charging-valet variants emerged c. 2010-present with smartphone integration. The form occupies an individual-use niche distinct from multi-user entry furniture (hall trees, coat racks) by its dressing-room context and personal-organization scale.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘valet stand’ sits in the entry / support form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10541,7 +10585,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_transitional_access_support",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Compact stand supporting smoking-related personal items: ash tray, tobacco humidor, pipe rest, match holder",
       "Top surface integrating ashtray well or removable ashtray",
@@ -10602,6 +10645,7 @@ export const FORMS: FormEntry[] = [
       "Compact recreational accommodation stand in the smoking stand family, supporting smoking-related personal items beside seating. Date envelope: c. 1850-present broad use; strongest diagnostic range c. 1880-1960 reflecting peak smoking conventions in American homes and clubs. Victorian and Edwardian examples often ornate with brass, marble, and exotic woods; Arts & Crafts and mid-century examples simpler. Decline of smoking conventions has reduced production but the form persists as collectible furniture and stylistic reference.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘smoking stand’ sits in the entry / support form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10612,7 +10656,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_display_and_plant_support_stands",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical column or tapered support designed to elevate sculptural objects, busts, or display contents above adjacent furniture height",
       "Top surface dimensions calibrated to typical display object proportions (10-18 inches square or round)",
@@ -10689,6 +10732,7 @@ export const FORMS: FormEntry[] = [
       "Vertical display elevation form in the pedestal family, supporting sculptural objects and decorative display contents. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1900 in formal residential interiors and Victorian-era display conventions. American examples vary by formal-interior conventions, museum and gallery practice, and architectural display contexts. Classical column styling cues persist across the period; modern minimalist examples reduce ornament while preserving the elevation function.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pedestal’ sits in the entry / support form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10699,7 +10743,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_display_and_plant_support_stands",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical or multi-tier stand designed to elevate plants, jardinières, or botanical containers",
       "Top surface or shelving sized for plant container diameter (12-18 inches typical)",
@@ -10783,6 +10826,7 @@ export const FORMS: FormEntry[] = [
       "Botanical display elevation form in the plant stand family. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1850-1920 reflecting peak Victorian-era conservatory and parlor plant culture. American examples include cast iron Victorian fern stands, Arts & Crafts wood plant pedestals, mid-century brass and ceramic stands, and modern minimalist examples. Drainage features distinguish active-plant-use examples from purely decorative variants.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘plant stand’ sits in the entry / support form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 6 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10793,7 +10837,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_display_and_plant_support_stands",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Heavy-duty stand supporting aquarium tanks with substantial water-and-glass weight loading",
       "Reinforced top platform calibrated to tank base dimensions (typically 24-72 inches wide depending on tank size)",
@@ -10838,6 +10881,7 @@ export const FORMS: FormEntry[] = [
       "Heavy-duty containment-support stand in the aquarium stand family. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1960-present reflecting widespread residential aquarium-keeping. Earlier examples reflect Victorian and Edwardian aquarium culture. Modern examples emphasize engineered weight capacity and integrated equipment storage. Distinguished from general plant stands and pedestals by tank-specific weight loading and top dimensions.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘aquarium stand’ sits in the entry / support form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 1 documented subtype. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10848,7 +10892,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_mirror_and_screen_forms",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical visual-barrier furniture form creating spatial division or privacy zones without enclosing space",
       "Articulated panels (folding screens) or rigid frames (fire, draft, dressing screens)",
@@ -10927,6 +10970,7 @@ export const FORMS: FormEntry[] = [
       "Vertical visual-barrier form in the screen family. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1920 for ornate folding screens (Asian export, English japanned, French painted, embroidered Victorian). Fire screens span the same period reflecting fireplace-heating conventions. Modern room dividers c. 1960-present reflect open-plan residential and commercial design conventions. American examples include period imports, vernacular embroidered fire screens, Arts & Crafts wood-panel screens, and modern minimalist room dividers.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘screen’ sits in the entry / support form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -10937,7 +10981,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_mirror_and_screen_forms",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical reflective-surface furniture form that articulates space and reflects light",
       "Reflective glass surface mounted in frame or stand structure",
@@ -11032,6 +11075,7 @@ export const FORMS: FormEntry[] = [
       "Reflective-surface furniture form in the mirror family, articulating space and reflecting light through vertical glass surfaces. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1900 for ornate framed mirrors (looking glasses, pier mirrors, overmantel mirrors), c. 1850-present for floor-standing cheval and psyche mirrors, c. 2015-present for smart mirrors. American examples include period imports and domestic production reflecting evolving frame styles (Federal, Victorian, Arts & Crafts, Art Deco, mid-century, contemporary). Glass-making technology improvements through the 19th century enabled larger panels and reduced cost. Smart mirror integration with display electronics represents a recent functional expansion.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘mirror’ sits in the entry / support form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11042,7 +11086,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_communication_and_tech_support_stands",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Compact stand or small cabinet supporting a telephone device with associated directory and accessory storage",
       "Top surface scaled to telephone footprint (typically 8-14 inches wide)",
@@ -11087,6 +11130,7 @@ export const FORMS: FormEntry[] = [
       "Compact telephone-support furnishing in the telephone stand family. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1920-1970 reflecting peak residential wired-telephone conventions. The form provides telephone accommodation distinct from form_telephone_desk (Desks family) which represents the workstation-style telephone furniture with integrated seating and writing surface. American examples reflect period telephone equipment proportions and residential entry-zone furniture conventions. Decline of wired residential telephone use has reduced production but the form persists as collectible furniture.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘telephone stand’ sits in the entry / support form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 1 documented subtype. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11097,7 +11141,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_communication_and_tech_support_stands",
     date_floor: 1995,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Compact stand or tower designed to support multiple electronic devices during charging",
       "Integrated charging hardware: USB ports, wireless charging pads, multi-device cables, or charging shelves",
@@ -11166,6 +11209,7 @@ export const FORMS: FormEntry[] = [
     },
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘charging station’ sits in the entry / support form group. Canonical production span opens c. 1995 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1995. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11176,7 +11220,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_communication_and_tech_support_stands",
     date_floor: 2010,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Stand or compartmented unit designed to receive and hold delivered packages near entry zones",
       "Lockable compartments (smart parcel station variants) or open receiving surface (basic package station)",
@@ -11230,6 +11273,7 @@ export const FORMS: FormEntry[] = [
       "Package-receiving accommodation form in the package station family. Form emerged with the rise of e-commerce home delivery, c. 2010 for basic mechanical-lock variants and c. 2015 for smart-parcel electronically-authenticated variants. Date envelope: c. 2010-present. American examples reflect package-delivery automation and residential security conventions. Earlier delivery-receiving furniture (milk boxes, mail slots, bread boxes) addressed different historical delivery patterns and are not classified as package stations. Smart parcel stations are technologically distinct subtypes within the form rather than separate forms; their post-2015 emergence is captured in regional_period_notes prose without standalone classification-boundary annotation, since the broader package station form already postdates 2010.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘package station’ sits in the entry / support form group. Canonical production span opens c. 2010 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11240,7 +11284,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_personal_hygiene_stands",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Top surface designed to support a water basin and pitcher for personal washing",
       "Often integrated lower shelf, towel rail, or splash board",
@@ -11318,6 +11361,7 @@ export const FORMS: FormEntry[] = [
       "Personal hygiene support form in the washstand family. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1800-1920 reflecting peak pre-plumbing residential personal-hygiene conventions. American examples vary by regional cabinetmaking traditions: Federal-period mahogany examples in formal Eastern bedrooms; Victorian marble-top oak examples in middle-class bedrooms; vernacular pine and poplar examples in rural homes. Decline began with widespread indoor plumbing adoption c. 1900-1940 in American homes. Modern persistence as guest-room or stylistic auxiliary furniture rather than primary hygiene accommodation.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘washstand’ sits in the entry / support form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11328,7 +11372,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_container_and_box_forms",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Small to medium portable container with enclosed volume holding specific contents",
       "Hinged, lifting, or sliding lid as primary access mechanism",
@@ -11504,6 +11547,7 @@ export const FORMS: FormEntry[] = [
       "Portable container form in the box family, holding and protecting specific contents through enclosed volume rather than open shelving or vertical hanging. Date envelope: c. 1700-present broad use across all subtypes; strongest diagnostic ranges vary by subtype: c. 1750-1900 for elaborate decorative boxes (jewelry, vanity, work, tea caddies, knife boxes), c. 1700-1850 for domestic utility boxes (Bible, candle, salt, deed boxes), c. 1800-1900 for writing slopes and lap desks, c. 1850-present for general jewelry and trinket boxes. American examples vary widely by regional cabinetmaking, period, and content specialization. Cross-family overlap: writing slope and lap desk subtypes may also be classified under form_portable_writing_box (Desks family) reflecting different taxonomic traditions; the canonical architecture documents this overlap rather than forcing single-family resolution.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘box’ sits in the entry / support form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 17 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 7 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11514,7 +11558,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_specialty_body_support_frames",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Large open frame structure supporting a hammock for human rest",
       "Vertical posts or arched supports at each end with horizontal span between",
@@ -11567,6 +11610,7 @@ export const FORMS: FormEntry[] = [
       "Body-support frame form in the hammock stand family, supporting a hammock for human rest. Date envelope: c. 1850-present broad use; strongest diagnostic range c. 1900-present in residential and outdoor recreation contexts. Form became widely available with industrial frame production. American examples include cast-iron Victorian garden examples, mid-20th-century steel frames, and modern aluminum and hardwood variants. The form requires a hammock element (not always present in the stand alone) to fulfill its function; canonical authoring treats the stand as the furniture form regardless of hammock presence in any specific example.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘hammock stand’ sits in the entry / support form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11577,7 +11621,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_specialty_body_support_frames",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Free-standing platform or frame supporting a coffin or casket during ceremonial display",
       "Length and width calibrated to typical coffin/casket dimensions (72-96 inches × 24-30 inches)",
@@ -11630,6 +11673,7 @@ export const FORMS: FormEntry[] = [
       "Ceremonial body-vessel support form in the funeral bier family, used in churches, funeral homes, and historically in domestic parlors during funeral ceremonies. Date envelope: c. 1700-present broad use; strongest diagnostic range c. 1750-1920 for domestic-parlor use during the period when funerals commonly occurred in homes. American examples include period hardwood biers, Victorian ornate examples, and modern wheeled casket biers used in funeral home and church settings. Distinct from hammock stand by ceremonial body-vessel support function rather than active human rest. The form is not typically permanent furniture in homes; modern persistence is largely in funeral home and ecclesiastical contexts rather than residential settings.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘funeral bier’ sits in the entry / support form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11640,7 +11684,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_domestic_specialty_storage_and_organization",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Domestic storage form for children's toys, play objects, and nursery belongings",
       "Distinguished by child access, safety, and play-oriented organization",
@@ -11703,6 +11746,7 @@ export const FORMS: FormEntry[] = [
       "Domestic child-storage form in the toy storage family. Date envelope: c. 1800-present broad use, with early-period examples often adapted from blanket chests or boxes. Strongest diagnostic range c. 1900-present reflecting industrial production of dedicated children's furniture. Postwar American examples use plywood, paint, decals, laminates, and later plastic or modular systems. Earlier toy storage often adapts blanket chest or box forms; dedicated toy-storage furniture became widespread with mid-20th-century children's-furniture market expansion.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘toy storage’ sits in the entry / support form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11713,7 +11757,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_domestic_specialty_storage_and_organization",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Bench-derived utility category where seating element serves transitional, institutional, athletic, or organizational use",
       "Linear seat construction with durable materials suited to high-use contexts",
@@ -11783,6 +11826,7 @@ export const FORMS: FormEntry[] = [
       "Bench-derived utility form in the bench utility family, encompassing institutional, athletic, and domestic-utility bench applications. Date envelope: c. 1850-present broad use; expanded institutional and domestic use c. 1900-present. American examples reflect athletic-culture and institutional-furniture conventions: oak, pine, steel, aluminum, and plastic laminate by period and context. Distinct from ordinary domestic bench seating (Seating Furniture family) by its utility-context orientation.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bench utility form’ sits in the entry / support form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11793,7 +11837,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_domestic_specialty_storage_and_organization",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Domestic entry-zone furnishing organizing personal items, mail, keys, and outdoor gear",
       "Compartmentalized organization for category-specific item storage",
@@ -11856,6 +11899,7 @@ export const FORMS: FormEntry[] = [
       "Domestic entry-zone organization form in the entry organizer family. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1990-present reflecting modern entry-zone organization furniture market expansion. American examples reflect contemporary residential entry-zone conventions including wall-mounted, freestanding, and built-in configurations. Modern examples often integrate multiple organizational categories (footwear, mail, keys, charging, hooks) into single furnishing units.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘entry organizer’ sits in the entry / support form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11866,7 +11910,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_entry_support_forms",
     spatial_behavior_id: "spatial_domestic_specialty_storage_and_organization",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Domestic furnishing category adapted to feeding, containing, organizing, or supporting household pets",
       "Animal-scale openings or bowl recesses calibrated to pet dimensions",
@@ -11923,6 +11966,7 @@ export const FORMS: FormEntry[] = [
       "Domestic pet-accommodation furnishing in the pet utility form family. Date envelope: c. 1900-present broad use; strongest diagnostic range c. 1990-present reflecting modern dedicated pet-furniture market expansion. Earlier 20th-century examples often repurposed crates, boxes, or utility cabinets; dedicated commercial production became widespread late 20th century. Contemporary suburban and urban examples use farmhouse, mission, shaker, or modern cabinet styling. Pet utility form encompasses both feeding-context furniture (bowls, food storage) and containment-context furniture (crate-disguising cabinets).",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pet utility form’ sits in the entry / support form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -11933,7 +11977,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_baskets",
     spatial_behavior_id: "spatial_baskets",
     date_floor: 1600,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Portable woven container constructed through interwoven flexible materials rather than rigid joinery",
       "Lightweight, often ventilated, hand-portable forms suited to carrying, gathering, storage, sorting, protecting, or displaying goods and domestic materials",
@@ -12073,6 +12116,7 @@ export const FORMS: FormEntry[] = [
       "Portable woven container form in the basket family, encompassing American basket-making traditions from pre-colonial and colonial-era precedents through present artisan production. Date envelope: c. 1600-present American production; pre-colonial Native American basketry traditions heavily influenced regional American basket forms. Strongest diagnostic ranges vary by subtype: c. 1840-1860 emergence for Nantucket lightship tradition; c. 1850-1930 peak Victorian wicker; colonial-era through present for split oak Appalachian and southern mountain traditions; c. 1800-1830 emergence for dedicated sewing baskets; c. late 19th century emergence for waste baskets. Regional production patterns: Appalachian production frequently split white oak; New England coastal production strongly associated with Nantucket forms; southern production often cane or reed woven; Pennsylvania German examples frequently tightly woven splint work; Native American basketry traditions form a deep regional foundation across many areas. American basket-making spans agricultural (egg, gathering, market), domestic (sewing, storage, laundry, waste), commercial (market, picnic), sport (fishing creel), and decorative-and-artisan (Nantucket, fine wicker) contexts.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘basket’ sits in the basket form group. Canonical production span opens c. 1600 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 12 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 8 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12083,7 +12127,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_lighting",
     spatial_behavior_id: "spatial_floor_standing_lighting",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Tall floor-standing light support derived from torch and candle-bearing stands",
       "Elevates illumination above ordinary table height",
@@ -12138,6 +12181,7 @@ export const FORMS: FormEntry[] = [
       "Tall floor-standing illumination form in the torchère family, derived from torch and candle-bearing stands. Date envelope: American decorative and lighting production c. 1800-present, with broad European and earlier precedents before 1800. Strongest diagnostic ranges: c. 1800-1860 for Neoclassical and early American examples; c. 1880-1910 for Victorian elaboration; c. 1920-1940 for Art Deco; c. 1930-1960 for Hollywood Regency. American examples vary by interior style and period. Electrified variants became common from the early 20th century onward. Cross-form overlap: 'Torchiere Lamp' subform of form_floor_lamp describes the same lighting concept under a different naming convention; the form_torchere canonical content emphasizes the historical and decorative tradition while form_floor_lamp's Torchiere Lamp subtype captures the modern retail-context naming.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘torchère’ sits in the lighting form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12148,7 +12192,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_lighting",
     spatial_behavior_id: "spatial_floor_standing_lighting",
     date_floor: 1890,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Freestanding floor-set lighting form providing ambient or task lighting without table, wall, or ceiling support",
       "Weighted base with vertical shaft and shade or fixture head",
@@ -12219,6 +12262,7 @@ export const FORMS: FormEntry[] = [
       "Freestanding floor-set lighting form in the floor lamp family, emerging with electrification c. 1890-1910 and continuing through present production. Pre-electric predecessors (oil and gas floor lamps) exist but electrified floor lamps are the broad American form. Date envelope: c. 1890-present, strongest diagnostic range c. 1920-1970 reflecting peak residential and decorative production. American examples vary by interior style: Arts and Crafts, Art Deco, mid-century, and contemporary variants reflect period material and design conventions. Cross-form overlap with form_torchere documented in cousin_form_contrasts and in torchiere_lamp subtype distinguishing_attributes.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘floor lamp’ sits in the lighting form group. Canonical production span opens c. 1890 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12229,7 +12273,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_lighting",
     spatial_behavior_id: "spatial_surface_set_lighting",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Portable surface-set lighting form designed to rest on tables, desks, mantels, or dressers",
       "Compact base with vertical shaft and shade or globe",
@@ -12308,6 +12351,7 @@ export const FORMS: FormEntry[] = [
       "Portable surface-set lighting form in the table lamp family. Date envelope: c. 1750-present spanning candle, oil, kerosene, gas, and electric fuel systems. Strongest diagnostic ranges vary by subtype: 18th-19th century for oil lamps and hurricane lamps; mid-19th-early 20th century for kerosene lamps (especially rural American); late 19th century onward for electric variants. American examples reflect regional and period material conventions: brass and tin in colonial/Federal; pressed glass and decorated glass in Victorian; brass with green glass shades for banker's lamps; modern ceramic, metal, and composite materials.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘table lamp’ sits in the lighting form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12318,7 +12362,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_lighting",
     spatial_behavior_id: "spatial_surface_set_lighting",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Multi-candle lighting support used for surface-set, ceremonial, decorative, or formal illumination",
       "Multiple candle arms or sockets branching from central stem",
@@ -12374,6 +12417,7 @@ export const FORMS: FormEntry[] = [
       "Multi-candle lighting support form in the candelabrum family, used for surface-set ceremonial, decorative, or formal illumination. Date envelope: c. 1700-present, with primary practical use declining after gas and electric lighting in the late 19th and early 20th centuries. Strongest diagnostic ranges: Federal (c. 1790-1820), Empire (c. 1815-1840), Victorian (c. 1840-1900), ecclesiastical (continuous). American examples in brass, silverplate, bronze, and gilt reflect period decorative conventions. Cross-form overlap: the Candle Stand subtype here represents domestic decorative candle support; a different Candle Stand will appear under form_church_furnishing (Industrial/Professional family, future canonical authoring) representing ecclesiastical context. The canonical architecture documents both rather than forcing single-classification.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘candelabrum’ sits in the lighting form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12384,7 +12428,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_lighting",
     spatial_behavior_id: "spatial_wall_mounted_lighting",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Lighting form mounted directly to a wall or vertical architectural surface",
       "Backplate provides wall attachment; bracket or projecting arm extends light source outward",
@@ -12448,6 +12491,7 @@ export const FORMS: FormEntry[] = [
       "Architecturally-attached lighting form in the wall lighting family. Date envelope: c. 1700-present spanning candle, gas, and electric fuel systems. Strongest diagnostic ranges: colonial-Federal (c. 1700-1820) for candle sconces; c. 1840-1900 for gas brackets and early gas-electric transition; c. 1880-present for electric sconces. American examples vary by fuel system technology and architectural style: Colonial brass/tin, Federal gilt and brass, Victorian gas and early electric, Arts and Crafts copper/iron, mid-century minimalist, and contemporary variants.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘wall lighting form’ sits in the lighting form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12458,7 +12502,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_lighting",
     spatial_behavior_id: "spatial_suspended_lighting",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Ceiling-suspended lighting form hanging via chain, rod, cord, or cable",
       "Light source(s) positioned in room interior below ceiling for overhead illumination",
@@ -12531,6 +12574,7 @@ export const FORMS: FormEntry[] = [
       "Ceiling-suspended lighting form in the hanging lighting family. Date envelope: c. 1700-present spanning candle, oil, gas, and electric fuel systems. Strongest diagnostic ranges: colonial through Federal (c. 1700-1820) for early candle chandeliers and lanterns; c. 1840-1900 for gas chandeliers and Victorian elaboration; c. 1880-present for electric variants including pendant lamps. American examples vary widely by interior style and period: Federal brass and crystal chandeliers, Victorian gas and electric chandeliers, Arts and Crafts and mid-century pendants, contemporary minimalist suspended fixtures.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘hanging lighting form’ sits in the lighting form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 6 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12541,7 +12585,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_vertical_reading_and_speaking_stands",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Freestanding or semi-portable support form holding a canvas, board, sign, or display panel at a readable working angle",
       "Inclined support face, rear prop or tripod frame, adjustable ledge or clamp",
@@ -12602,6 +12645,7 @@ export const FORMS: FormEntry[] = [
       "Vertical reading and speaking stand form supporting visual material at an angled plane. Date envelope: c. 1700-present American use, with mass-produced studio, school, and retail easels especially common from the late 19th century onward. Artist examples cluster around studios, urban art schools, WPA-era art programs, and college studios. Commercial display examples common in retail, hotel, church, museum, and presentation environments. American examples include 19th century hardwood artist easels, early 20th century factory-made adjustable easels, mid-century steel and aluminum portable easels, and modern composite-material studio easels.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘easel’ sits in the industrial / professional form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12612,7 +12656,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_vertical_reading_and_speaking_stands",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical or near-vertical support form holding sheet music or musical scores at a readable angle for performing musicians",
       "Inclined music tray or ledge with lip or shelf retaining sheet music",
@@ -12673,6 +12716,7 @@ export const FORMS: FormEntry[] = [
       "Vertical reading stand form supporting sheet music at a performer-readable angle. Date envelope: c. 1700-present American use. Domestic-music-room examples in 18th and 19th century homes used turned hardwood construction; orchestral and school-band production expanded through late 19th and 20th centuries; folding portable steel stands became widespread mid-20th century. American examples reflect period material conventions: mahogany and walnut in formal late 18th/early 19th century; oak in Victorian and Mission styles; black painted steel in modern band and orchestra contexts.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘music stand’ sits in the industrial / professional form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12683,7 +12727,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_vertical_reading_and_speaking_stands",
     date_floor: 1600,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Vertical reading stand supporting papers, books, or speaker notes at an inclined reading plane for a standing speaker",
       "Inclined top reading surface with ledge or lip retaining papers",
@@ -12752,6 +12795,7 @@ export const FORMS: FormEntry[] = [
       "Vertical reading and speaking stand form supporting papers, books, or notes at an inclined reading plane for standing speakers. Date envelope: c. 1600-present American use. Earlier examples in libraries, lecture halls, and academic contexts. Public-address use expanded substantially from mid-20th century with classroom, conference, and ceremonial speaking contexts. American examples in hardwood (oak, walnut, mahogany), painted pine, modern laminate, and composite materials reflecting institutional context and period conventions.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘lectern’ sits in the industrial / professional form group. Canonical production span opens c. 1600 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12762,7 +12806,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_vertical_reading_and_speaking_stands",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Raised speaker platform on which speaker stands, often with adjacent or integrated reading surface",
       "Distinguished from lectern by speaker-platform emphasis rather than inclined-reading-surface emphasis",
@@ -12824,6 +12867,7 @@ export const FORMS: FormEntry[] = [
       "Speaker platform form supporting raised speaker stance, often with integrated reading surface. Date envelope: c. 1800-present American use. Conductor podium use in concert and orchestral contexts continuous from early American symphonic music. Speaker podium use expanded substantially with modern public-address, conference, and ceremonial contexts. Award podium use widespread from late 19th century onward with formalized athletic and competition ceremonies. American examples in hardwood (formal venues), painted wood (institutional), and modern laminate or composite materials (contemporary).",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘podium’ sits in the industrial / professional form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12834,7 +12878,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_vertical_reading_and_speaking_stands",
     date_floor: 1620,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Religious-context preaching station for clergy delivering sermons or scripture readings",
       "Often elevated platform with surrounding rail or enclosed structure for clergy enclosure during preaching",
@@ -12895,6 +12938,7 @@ export const FORMS: FormEntry[] = [
       "Religious preaching station form in sanctuary placement. Date envelope: c. 1620-present American use, spanning colonial Puritan meetinghouse pulpits through contemporary church examples. Strongest diagnostic ranges: c. 1620-1820 for colonial wineglass and box pulpits in New England meetinghouses; c. 1840-1900 for Gothic Revival and Victorian elaboration; c. 1900-1960 for Arts and Crafts and Colonial Revival; c. 1965-present for post-Vatican-II Catholic and contemporary Protestant freestanding pulpits. American examples reflect denominational traditions: plain pine and oak in colonial Protestant; carved hardwood in Gothic Revival; simplified hardwood in modern. Cross-form note: pulpit is closely related to form_church_furnishing (which includes pews, altars, communion rails, etc.) but maintained as separate form due to vertical-reading-and-speaking-stand spatial behavior. The shared sanctuary context links the two forms architecturally.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pulpit’ sits in the industrial / professional form group. Canonical production span opens c. 1620 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12905,7 +12949,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_personal_service_stations",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Fixed service-counter station for barber to deliver haircutting, shaving, and grooming services to seated client",
       "Counter ledge with drawer or compartment storage for combs, scissors, clippers, razors, brushes",
@@ -12957,6 +13000,7 @@ export const FORMS: FormEntry[] = [
       "Personal service station form for barbering services. Date envelope: c. 1850-present American use, with strongest diagnostic range c. 1880-1960 for traditional Victorian/Edwardian/early 20th century barber shop fixtures. Modern variants continue with simplified construction. American examples reflect commercial-service-establishment conventions: oak, walnut, mahogany in traditional period (often with marble counter inserts); laminate and composite construction in modern era.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘barber station’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -12967,7 +13011,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_personal_service_stations",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Fixed service-counter station for hair stylist or beauty professional to deliver hair styling, coloring, and beauty services",
       "Counter ledge with drawer or compartment storage for styling products, brushes, irons, dryers",
@@ -13020,6 +13063,7 @@ export const FORMS: FormEntry[] = [
       "Personal service station form for hair styling and beauty services. Date envelope: c. 1900-present American use, expanding substantially with the rise of American beauty salons in the early-to-mid 20th century. Strongest diagnostic ranges: c. 1920-1960 for Art Deco and mid-century traditional salon stations; c. 1970-present for modern chain-salon and independent-salon configurations. American examples reflect commercial-beauty-service conventions of their period.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘salon station’ sits in the industrial / professional form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13030,7 +13074,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_kitchen_and_utility_workstations",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Kitchen utility workstation form for pre-plumbing water management with recessed well lined for water containment",
       "Zinc-lined or tin-lined well typical, with drainboard sloping toward well",
@@ -13092,6 +13135,7 @@ export const FORMS: FormEntry[] = [
       "Kitchen utility workstation form for pre-plumbing water management. Date envelope: c. 1750-present American use, with primary functional use c. 1750-1900 before residential plumbing became widespread. Strongest diagnostic ranges: c. 1750-1840 for colonial and Federal-era examples; c. 1840-1900 for Victorian and country variants; revival production from late 19th century onward. American examples reflect strong regional traditions: Pennsylvania German painted forms in southeastern Pennsylvania; plain pine country forms in New England and rural areas; walnut and oak forms in mid-Atlantic and southern kitchens.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘dry sink’ sits in the industrial / professional form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13102,7 +13146,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_kitchen_and_utility_workstations",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Compartmentalized kitchen workstation integrating food preparation, baking, and storage functions",
       "Often features built-in flour bin with sifter, marble pastry slab, bread drawer, or knife storage",
@@ -13163,6 +13206,7 @@ export const FORMS: FormEntry[] = [
       "Kitchen workstation form integrating food prep, baking, and storage. Date envelope: c. 1850-present American use. Strongest diagnostic ranges: c. 1850-1920 for early baker's cabinets; c. 1900-1930 for Hoosier-style integrated kitchen cabinets; c. 1950-present for kitchen islands. American examples reflect regional and period kitchen-workflow conventions: white-painted Hoosier cabinets in early 20th century kitchens; enameled steel mid-century examples; modern hardwood, butcher-block, or stone-topped kitchen islands.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘kitchen utility unit’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13173,7 +13217,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_retail_and_commercial_fixtures",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Small enclosed retail, information, ticketing, or service station occupied by single attendant or staff member",
       "Three or four sided enclosed structure with customer-facing transaction window or counter",
@@ -13251,6 +13294,7 @@ export const FORMS: FormEntry[] = [
       "Small enclosed standalone retail/service/information station form. Date envelope: c. 1850-present American use, with strongest diagnostic range expanding from c. 1900 onward with rise of public-transit ticket kiosks, theater concessions, and information stations. Self-service kiosk proliferation primarily late 20th century-present. American examples reflect commercial and public-service-establishment conventions: ornate Victorian/Edwardian theater and transit kiosks; mid-century enameled steel and laminate kiosks; modern composite and digital-interface self-service kiosks.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘kiosk’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13261,7 +13305,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_retail_and_commercial_fixtures",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Glazed retail display fixture for showing merchandise to customers while preventing direct handling",
       "Glass panels on top and front (sometimes sides) revealing displayed merchandise",
@@ -13331,6 +13374,7 @@ export const FORMS: FormEntry[] = [
       "Glazed retail display fixture form. Date envelope: c. 1850-present American use, with strongest diagnostic range c. 1880-1960 for traditional hardwood-frame jewelry, tobacco, drug-store, and dry-goods showcases. Modern variants continue in jewelry stores and specialty retail; many vintage showcases survive in revival or repurposed use. American examples reflect retail-establishment conventions of their period: oak and walnut in country stores; mahogany and ornate hardwood in upscale jewelry stores; modern composite and aluminum-frame in contemporary retail.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘showcase’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13341,7 +13385,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_retail_and_commercial_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "General retail-store fixture for merchandise display, customer transaction, or store organization",
       "Encompasses counters, gondolas, display racks, sales floors, end caps, and integrated store-layout pieces",
@@ -13411,6 +13454,7 @@ export const FORMS: FormEntry[] = [
       "Broad retail-store fixture category. Date envelope: c. 1880-present American use. Strongest diagnostic ranges: c. 1880-1950 for country store counters in rural American general stores; c. 1950-present for modern modular fixturing (gondolas, display racks, end caps) in supermarkets, big-box, and specialty retail. American examples reflect retail-format evolution from 19th century country-store full-service to modern self-service big-box conventions.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘retail fixture’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13421,7 +13465,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_retail_and_commercial_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Commercial fixture supporting hospitality industry: hotel front desks, restaurant host stations, bar fronts, reservation desks",
       "Customer-facing transaction or service surface designed for guest greeting, check-in, ordering, or service",
@@ -13491,6 +13534,7 @@ export const FORMS: FormEntry[] = [
       "Hospitality-industry commercial fixture category. Date envelope: c. 1880-present American use, with continuous evolution through hotel and restaurant development from late 19th century luxury hotels and ornate bar fronts through mid-century modern hospitality and contemporary chain-hospitality formats. American examples reflect hospitality-establishment conventions: ornate mahogany and oak in traditional luxury hotels; mid-century modern materials in 1950s-1970s establishments; contemporary composite, stone, and metal in modern hospitality.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘hospitality fixture’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13501,7 +13545,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_retail_and_commercial_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Specialized commercial fixture for beverage preparation and customer service",
       "Encompasses soda fountains, coffee bars, tap fronts, beverage dispensing stations",
@@ -13570,6 +13613,7 @@ export const FORMS: FormEntry[] = [
       "Beverage-service commercial fixture category. Date envelope: c. 1880-present American use. Strongest diagnostic ranges: c. 1880-1960 for traditional American soda fountains in drugstores and ice-cream parlors; c. 1990-present for modern coffee bars in cafes and chain coffee establishments; tap fronts and juice bars continuous through their respective establishment types. American examples reflect period beverage-service conventions: marble-and-mahogany soda fountains in Victorian/Edwardian drugstores; chrome and porcelain in mid-century soda counters; stainless steel and reclaimed-wood in modern coffee bars.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘beverage service form’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13580,7 +13624,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_scientific_equipment_stands",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Specialized mount or stand for scientific instruments, observational devices, or research apparatus",
       "Precision mounting surface calibrated to specific instrument requirements",
@@ -13650,6 +13693,7 @@ export const FORMS: FormEntry[] = [
       "Scientific instrument stand form. Date envelope: c. 1700-present American use, with telescope and astronomical-observation stands tracing back to early American observatories. Strongest diagnostic ranges: c. 1850-1950 for precision-balance and microscope stands in American laboratory and apothecary contexts; modern laboratory benches continuous through American scientific research evolution. American examples reflect scientific-establishment conventions: hardwood (oak, walnut, mahogany) in 19th-early 20th century laboratory furniture; mid-century steel and laminate; modern stainless steel, epoxy resin, and chemical-resistant composite construction.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘scientific stand’ sits in the industrial / professional form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13660,7 +13704,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_religious_and_ceremonial_fixtures",
     date_floor: 1620,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Purpose-built sanctuary, chapel, or religious-institution furniture used for worship, seating, ritual, music, prayer, or ceremonial display",
       "Liturgical placement, religious symbols, matching sanctuary woodwork, durable public use",
@@ -13774,6 +13817,7 @@ export const FORMS: FormEntry[] = [
       "Purpose-built religious institutional furniture form. Date envelope: c. 1620-present American use, spanning colonial Puritan meetinghouse furnishings through contemporary church furniture. Strongest diagnostic ranges by subtype: c. 1620-1820 for colonial New England meetinghouse forms (box pews, plain altars/communion tables, deacons' benches); c. 1840-1900 for Gothic Revival and Romanesque Revival elaboration (carved altars, Gothic pews, ornate choir stalls); c. 1900-1960 for Arts and Crafts and Colonial Revival; c. 1965-present for post-Vatican-II Catholic and contemporary Protestant simplification. American examples reflect denominational and regional traditions: plain pine and oak in colonial Protestant meetinghouses; carved hardwood (oak, walnut) in Gothic Revival; Catholic liturgical fittings often imported or modeled on European originals; simplified hardwood in modern post-Vatican-II and contemporary Protestant churches. Block 7 cross-form overlap with form_candelabrum's candle_stand subtype now resolved with this Block 9 introduction of church_furnishing's candle_stand subtype — different parent contexts (church_furnishing vs. candelabrum, religious_and_ceremonial vs. surface_set_lighting) capture the architectural distinction.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘church furnishing’ sits in the industrial / professional form group. Canonical production span opens c. 1620 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 9 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 8 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13784,7 +13828,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_specialized_storage_and_organization",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Open multi-shelf or multi-slot storage form for organizing tools, supplies, equipment, garments, or specific-category items",
       "Open construction (without doors or enclosed compartments) emphasizing visibility and accessibility",
@@ -13884,6 +13927,7 @@ export const FORMS: FormEntry[] = [
       "Open multi-shelf or multi-slot storage form category. Date envelope: c. 1700-present American use across content-specialized variants. Each subtype has its own strongest diagnostic range: tool/gun racks rural and workshop continuous; magazine racks emerged with 19th-century periodical publishing; pipe racks strongest c. 1880-1940; plate racks colonial through Victorian; wine racks expanded substantially in late 20th century with domestic wine consumption growth. American examples reflect content-specific traditions and craft contexts.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘rack’ sits in the industrial / professional form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 8 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -13894,7 +13938,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_specialized_storage_and_organization",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Compartmentalized storage unit designed to secure personal belongings, equipment, parcels, evidence, or controlled materials for individual or assigned users",
       "Repeated doors, vents or labels, locks, number plates, durable sheet metal or heavy wood",
@@ -13997,6 +14040,7 @@ export const FORMS: FormEntry[] = [
       "Compartmentalized assigned-storage form. Date envelope: c. 1880-present American use, with steel institutional lockers becoming especially common in the 20th century. Strongest diagnostic ranges by subtype: c. 1900-present for school and industrial lockers in their respective institutional contexts; c. 2000-present for smart, charging, and parcel locker proliferation driven by portable electronics and e-commerce; evidence/ammunition/firearm lockers continuous through 20th century institutional security expansion. Modern smart and charging locker subtypes postdate ~2000 — pieces predating cannot be smart or charging lockers despite identifying as broader locker form. American examples reflect institutional-context conventions: factory wood early industrial; standardized steel mid-20th century institutional; modern composite, electronic-access, and integrated-power configurations.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘locker’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 8 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 7 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14007,7 +14051,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_specialized_storage_and_organization",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Specialized fixture for educational settings: classroom storage, library casework, school resource organization, laboratory cabinets",
       "Construction emphasizes child or student durability under repeated public use",
@@ -14084,6 +14127,7 @@ export const FORMS: FormEntry[] = [
       "Educational-context specialized fixture form. Date envelope: c. 1850-present American use, expanding substantially with the establishment and proliferation of American public schools, libraries, and educational institutions. Strongest diagnostic ranges by subtype: c. 1880-1990 for library card catalogs (since replaced by digital systems); c. 1880-present continuous for classroom and lab cabinets; c. 1880-1990 for chalkboard stands (since replaced by whiteboards and digital displays). American examples reflect educational-institutional conventions: oak and maple in 19th-early 20th century formal educational furniture; mid-century steel and laminate; modern composite construction.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘educational fixture’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14094,7 +14138,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_specialized_storage_and_organization",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Architectural casework integrated into walls or rooms rather than freestanding",
       "Built into building structure: closet systems, wall cabinetry, archive storage, mailroom installations",
@@ -14164,6 +14207,7 @@ export const FORMS: FormEntry[] = [
       "Architectural casework storage form. Date envelope: c. 1850-present American use, with substantial expansion in late 19th and 20th century workplace and institutional construction. Strongest diagnostic ranges: c. 1880-present continuous for office, archive, mailroom, and institutional wall-cabinetry installations. American examples reflect architectural-period conventions: hardwood in 19th-early 20th century formal institutions; mid-century steel and laminate; modern composite construction; contemporary modular and movable systems.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘built-in storage’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14174,7 +14218,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_specialized_storage_and_organization",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Modular or fixed multi-tier shelving for storage of supplies, files, books, equipment, or general inventory",
       "Open-shelf construction without enclosed doors emphasizing capacity and accessibility",
@@ -14244,6 +14287,7 @@ export const FORMS: FormEntry[] = [
       "Modular multi-tier shelving form. Date envelope: c. 1880-present American use, with substantial expansion through industrial, library, and institutional construction in the late 19th and 20th centuries. Strongest diagnostic ranges by subtype: c. 1880-present continuous for library stacks; c. 1900-present for industrial shelving; c. 1970-present for wire shelving widespread proliferation; c. 1980-present for modular office shelving systems. American examples reflect period construction conventions: hardwood in 19th-early 20th century formal libraries; mid-century steel; modern composite, wire, and modular systems.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘shelving system’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14254,7 +14298,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_institutional_and_workplace_fixtures",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Specimen-and-artifact display fixture historically used for collections of natural-history specimens, curios, decorative arts, or scientific objects",
       "Glazed display panels (often multiple sides) revealing collection contents",
@@ -14316,6 +14359,7 @@ export const FORMS: FormEntry[] = [
       "Specimen-and-artifact display fixture form. Date envelope: c. 1700-present American use, with strong roots in Enlightenment-era scientific collecting and Victorian natural-history collecting tradition. Strongest diagnostic ranges by subtype: c. 1700-1900 for natural-history/specimen cabinets in scientific-institutional and gentleman-collector contexts; c. 1880-present for domestic curio cabinets. American examples reflect collecting-tradition conventions: ornate hardwood (mahogany, walnut, oak) in 19th-early 20th century formal cabinets; mid-century modern examples; contemporary glass-and-metal museum-style cabinets.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘cabinet of curiosities’ sits in the industrial / professional form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14326,7 +14370,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_institutional_and_workplace_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Workplace fixture organized around recording employee attendance, hours, or punch-card activity",
       "Time clock mount, card rack, punch-card slots, wall or pedestal placement near entrances",
@@ -14380,6 +14423,7 @@ export const FORMS: FormEntry[] = [
       "Workplace attendance-recording fixture form. Date envelope: c. 1880-present American use, with mechanical punch clocks common from the early 20th century and digital systems replacing mechanical forms in late 20th century. Strongest diagnostic ranges: c. 1900-1980 for mechanical punch clocks in American factories and industrial workplaces; c. 1980-present for electronic and digital attendance systems. American examples reflect industrial and workplace-management conventions of their period.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘time clock station’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14390,7 +14434,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_institutional_and_workplace_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Workplace or institutional fixture designed to store, display, protect, or provide access to emergency, first-aid, alarm, or security equipment",
       "Warning labels, glass or breakaway panels, lockable emergency storage, high-visibility placement",
@@ -14467,6 +14510,7 @@ export const FORMS: FormEntry[] = [
       "Emergency and safety equipment fixture form. Date envelope: c. 1880-present American use, with substantial expansion driven by safety regulation throughout the 20th century. Strongest diagnostic ranges: c. 1900-present continuous for fire extinguisher and first-aid cabinets driven by building safety codes; c. 1920-present for alarm stations driven by fire-safety code expansion; c. 1970-present for emergency eyewash stations driven by OSHA regulation; c. 1970-present for safety helmet cabinets driven by PPE workplace requirements. American examples reflect regulatory-driven safety-equipment housing conventions of their period.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘safety fixture’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14477,7 +14521,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_institutional_and_workplace_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Factory or workshop fixed workstation for specific industrial-workflow execution",
       "Workbench, tool storage, integrated equipment mounts as primary components",
@@ -14547,6 +14590,7 @@ export const FORMS: FormEntry[] = [
       "Fixed industrial workstation form. Date envelope: c. 1880-present American use. Strongest diagnostic ranges: c. 1880-present continuous for general workbenches and machinist benches; c. 1910-present for assembly-line stations following Ford-era mass production expansion; c. 1880-present continuous for welding stations adapted across acetylene/electric/gas welding technology evolution. American examples reflect industrial workshop and factory conventions: maple-top workbenches with hardwood frames in 19th-early 20th century; mid-century steel-frame industrial; modern composite, modular, and ergonomic-adjustable stations.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘industrial station’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14557,7 +14601,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_institutional_and_workplace_fixtures",
     date_floor: 1830,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Specialized financial-service form used to separate, secure, process, or protect money, records, customers, and staff",
       "Security grilles, teller ledges, vault hardware, heavy metal components, marble or hardwood counters, restricted-access layouts",
@@ -14619,6 +14662,7 @@ export const FORMS: FormEntry[] = [
       "Specialized financial-service fixture form. Date envelope: c. 1830-present American use, with strongest diagnostic range c. 1870-1940 for ornate teller cages and vault fronts characteristic of American bank architecture's golden era. Major manufacturers (Diebold, Mosler, York Safe & Lock) supplied nationally; ornate brass and bronze teller cages predominant in luxury and urban banks; simpler oak and walnut cages in smaller regional banks. Later 20th century saw open teller lines, security glass, and reduced ornate cage installation, with many surviving examples in historic buildings or repurposed adaptive-reuse contexts.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘bank fixture’ sits in the industrial / professional form group. Canonical production span opens c. 1830 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14629,7 +14673,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_workstation_accessories_and_mobile_fixtures",
     date_floor: 1900,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Supplementary workstation form supporting primary desk or workbench through return desks, side units, or modular accessories",
       "Accessory or modular integration with primary workstations",
@@ -14698,6 +14741,7 @@ export const FORMS: FormEntry[] = [
       "Office workstation accessory form. Date envelope: c. 1900-present American use, with substantial expansion through 20th century office furniture evolution. Strongest diagnostic ranges: c. 1950-present for modular office furniture systems with returns/side units/credenzas; c. 1980-present for keyboard trays with computer proliferation. American examples reflect office-furniture conventions of their period: mid-century steel and laminate; modern systems-furniture configurations; contemporary ergonomic and modular accessories.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘workstation accessory’ sits in the industrial / professional form group. Canonical production span opens c. 1900 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14708,7 +14752,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_workstation_accessories_and_mobile_fixtures",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Rolling workflow-support cart for transporting tools, supplies, equipment, food, or specialized materials",
       "Casters or wheels (often locking) for mobility within workplace, medical, library, or service contexts",
@@ -14786,6 +14829,7 @@ export const FORMS: FormEntry[] = [
       "Mobile workflow-support cart form. Date envelope: c. 1880-present American use across institutional contexts. Strongest diagnostic ranges by subtype: c. 1880-present continuous for library and industrial carts; c. 1900-present for medical carts with modern computerized examples becoming common late 20th century; c. 1950-present for food service carts in restaurant/hospital/hotel contexts; c. 1980-present for modern janitorial carts. American examples reflect institutional-context conventions: wood/steel-frame early 20th century; mid-century steel and laminate; modern stainless steel, composite, and integrated-electronics carts.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘utility cart’ sits in the industrial / professional form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14796,7 +14840,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_industrial_professional",
     spatial_behavior_id: "spatial_environmental_control_cabinets",
     date_floor: 1850,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Climate-controlled storage cabinet maintaining specific environmental conditions for stored contents",
       "Sealed or semi-sealed enclosure with insulated walls and gasketed doors",
@@ -14865,6 +14908,7 @@ export const FORMS: FormEntry[] = [
       "Climate-controlled storage cabinet form. Date envelope: c. 1850-present American use. Strongest diagnostic ranges by subtype: c. 1880-present for humidors in American tobacco-consumption tradition; c. 1980-present for wine cabinets with American wine-consumption growth; c. 1990-present for curing cabinets with American charcuterie/dry-aging culinary expansion; c. 1900-present for specimen storage in museum and scientific contexts. American examples reflect specialty-storage conventions of their period: hardwood (Spanish cedar humidors); modern refrigerated stainless-and-glass wine cabinets; specialized commercial curing cabinets; museum-grade specimen storage with active environmental management.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘environmental utility form’ sits in the industrial / professional form group. Canonical production span opens c. 1850 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14875,7 +14919,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_clock_cases",
     spatial_behavior_id: "spatial_floor_standing_clocks",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Tall vertically oriented clock case designed to house weight-driven or spring-driven longcase clock movements",
       "Architectural furniture form combining horology with cabinetmaking",
@@ -14938,6 +14981,7 @@ export const FORMS: FormEntry[] = [
       "Floor-standing horological clock case form. Date envelope: c. 1700-present American use, with late 1600s European precedents. American production from c. 1700 onward; Federal-era and Colonial Revival examples especially significant. Strong regional traditions: New England examples frequently Federal or Colonial Revival influenced; Mid-Atlantic production strongly associated with Pennsylvania German clockmaking traditions (Lancaster County, Reading area); Southern examples often simpler and more vernacular reflecting rural cabinetmaking conventions; Midwestern revival production widespread during the late 19th and early 20th centuries (Chicago, Cincinnati, Indianapolis manufacturers). Subform emergence ranges: grandfather clock terminology popularized later from 18th century forms with peak American popularity c. 1880-1930; grandmother clock c. late 19th to early 20th century with reduced-scale longcase proportions; granddaughter clock c. early-to-mid 20th century for smaller interiors. Movement attribution often relies on dial inscriptions, movement maker plates, or paper labels rather than case construction alone — case and movement are sometimes by different makers, particularly in 19th century production.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘tall case clock’ sits in the clock-case form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -14948,7 +14992,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_clock_cases",
     spatial_behavior_id: "spatial_wall_mounted_clocks",
     date_floor: 1700,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Wall-mounted clock case designed for suspended or fixed vertical display",
       "Emphasizes visual accessibility and reduced floor-space occupation",
@@ -15027,6 +15070,7 @@ export const FORMS: FormEntry[] = [
       "Wall-mounted horological clock case form. Date envelope: c. 1700-present American use, with colonial-era precedents. New England clockmaking traditions especially influential in wall clock production — Simon Willard's banjo clock patent (1802) anchors Federal-era American wall clock tradition; Seth Thomas, Ithaca, Welch and other 19th century New England makers shaped subsequent wall clock evolution. Subform emergence and peak ranges: banjo clock c. 1790-1810 emergence with Federal-era peak; gallery, regulator, schoolhouse, and calendar variants emerged c. mid-19th century; regulator clock peak popularity c. 1870-1930 with railway and institutional adoption. Schoolhouse and regulator forms widespread throughout American institutional interiors (schools, offices, railway stations, courthouses) where wall-mounted accessibility and visibility outweighed floor-standing presence. Construction evidence (case wood, dial material, movement type, hand-painted vs printed dials, wooden vs brass movements) distinguishes period production from revival reproductions.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘wall clock’ sits in the clock-case form group. Canonical production span opens c. 1700 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 7 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15037,7 +15081,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_clock_cases",
     spatial_behavior_id: "spatial_surface_set_clocks",
     date_floor: 1800,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Surface-set clock case designed to rest upon mantels, shelves, tables, or case furniture",
       "Balances portability with decorative domestic presentation",
@@ -15100,6 +15143,7 @@ export const FORMS: FormEntry[] = [
       "Surface-set horological clock case form. Date envelope: c. 1800-present American use. Connecticut and New England production especially influential during the 19th century — Eli Terry's mass-production innovations (Plymouth, Connecticut, c. 1810-1830) anchor American shelf clock tradition; Seth Thomas, Ansonia, Waterbury, New Haven, Gilbert, Ingraham and other Connecticut River Valley makers shaped subsequent shelf clock production through the 19th and early 20th centuries. Victorian American parlor examples widespread c. 1860-1900; black-painted iron and slate mantel clocks especially common c. 1880-1920. Subform emergence and peak ranges: mantel clock c. early-to-mid 19th century emergence with Victorian peak; tambour clock c. late 19th century emergence with c. 1900-1940 peak; novelty clock c. late 19th century emergence with 20th century mass-market expansion. Spring-driven movements predominate in shelf clock production, distinguishing them from weight-driven floor-standing clocks. Construction evidence (case material, dial type, movement maker plate, label, hands style) distinguishes period production from later revival reproductions.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘shelf clock’ sits in the clock-case form group. Canonical production span opens c. 1800 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15110,7 +15154,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_audio_video_housings",
     date_floor: 1920,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Entertainment-oriented cabinet form designed specifically to house, support, organize, conceal, or display electronic media equipment and playback systems",
       "Evolves directly from radio, phonograph, and television cabinetry traditions of early-to-mid 20th century",
@@ -15188,6 +15231,7 @@ export const FORMS: FormEntry[] = [
       "Audio/video equipment housing furniture form. Date envelope: c. 1920-present American use, beginning with early radio cabinet production and continuing through television, stereo, hi-fi, and contemporary modular media console evolution. Strong regional traditions during peak production periods: Midwestern American radio manufacturers especially influential during c. 1925-1950 radio console era (Philco in Philadelphia, Zenith in Chicago, RCA in Camden NJ, Crosley in Cincinnati produced extensive radio console lines). Mid-century American walnut and teak examples especially associated with Midwestern and California modernist production during c. 1950-1975 stereo and hi-fi console era. Art Deco examples often streamlined and urban influenced during Depression-era radio console production. Contemporary examples commonly modular laminate or engineered wood reflecting late-20th-century mass-market production shifts. Construction evidence (case wood, equipment vintage, speaker cloth pattern, control style, dial type, knob style) distinguishes period production from later revival reproductions.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘media console’ sits in the musical / mechanical form group. Canonical production span opens c. 1920 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15198,7 +15242,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_coin_operated_entertainment",
     date_floor: 1890,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Music-playing entertainment cabinet integrating automated or coin-operated playback systems with strong visual presentation",
       "Integrated speakers, illuminated decorative fronts, music selection systems",
@@ -15244,6 +15287,7 @@ export const FORMS: FormEntry[] = [
       "Coin-operated music playback entertainment form. Date envelope: c. 1890-present American use, with 1890s mechanical predecessors (nickel-in-the-slot phonographs, coin-operated cylinder players) preceding the electrical jukebox era of the 1930s onward. Peak popularity c. 1930-1960 corresponds to American diner culture, dance hall era, and pre-television commercial entertainment landscape. Major manufacturers: Wurlitzer (North Tonawanda NY), Seeburg (Chicago IL), Rock-Ola (Chicago IL), AMI (Grand Rapids MI) — Midwestern American manufacturing dominance throughout peak production. The Wurlitzer 1015 'bubbler' (1946) is among the most iconic American floor jukebox forms and exemplifies the visual presentation style of the era. Wall jukebox subtype emergence c. 1940s-1950s tied specifically to diner-booth seating configurations. Post-1960 production continues but at reduced commercial scale; vinyl-era jukeboxes give way to CD jukeboxes c. 1985-2000, and digital/streaming jukeboxes from c. 2000 forward. Construction evidence (case material, lighting system, mechanical mechanism, model number stamps, manufacturer plates) reliably dates production within manufacturer model histories.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘jukebox’ sits in the musical / mechanical form group. Canonical production span opens c. 1890 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15254,7 +15298,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_coin_operated_entertainment",
     date_floor: 1970,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Interactive entertainment cabinet integrating electronic or electromechanical gaming systems",
       "Integrated monitor for visual game display",
@@ -15324,6 +15367,7 @@ export const FORMS: FormEntry[] = [
     },
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘arcade cabinet’ sits in the musical / mechanical form group. Canonical production span opens c. 1970 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 3 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1970. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15334,7 +15378,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_coin_operated_entertainment",
     date_floor: 1930,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Mechanical or electronic amusement cabinet centered around inclined playfields and steel-ball interaction",
       "Glass-covered playfield (inclined working surface where steel ball travels)",
@@ -15389,6 +15432,7 @@ export const FORMS: FormEntry[] = [
       "Coin-operated mechanical/electronic ball-and-flipper amusement form. Date envelope: c. 1930-present American use. Form_emergence at 1930 reflects the introduction of inclined-playfield commercial pinball production; earlier coin-operated mechanical amusements (bagatelle variants, marble games) lacked the modern pinball form. Peak popularity c. 1940-1990 reflects continuous American commercial arcade siting. Major manufacturers concentrated in Chicago (Bally, Williams, Gottlieb, Chicago Coin) plus later additions Stern, Data East, Capcom Pinball. Electro-mechanical era c. 1930s-1970s gave way to solid state production from c. 1977 (Bally Freedom, Williams Hot Tip among first commercial solid-state machines). Post-1990 home market expansion continues alongside commercial decline; barcade revival from c. 2005 has restored commercial pinball siting in bar/lounge contexts. Construction evidence (playfield artwork, backbox graphics, score reel mechanism vs. digital display, cabinet style, manufacturer plates, ROM generation in solid state machines) reliably dates within manufacturer model histories.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘pinball machine’ sits in the musical / mechanical form group. Canonical production span opens c. 1930 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15399,7 +15443,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_mechanical_craft_tools",
     date_floor: 1620,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Textile-production framework intended to tension and organize fibers for weaving operations",
       "Warp systems (tensioned longitudinal fiber array)",
@@ -15444,6 +15487,7 @@ export const FORMS: FormEntry[] = [
       "Textile-production framework form. Date envelope: c. 1620-present American use, with colonial-era and earlier European precedents. American domestic loom production continuous from colonial settlement through Industrial Revolution textile mechanization (which shifted commercial weaving to industrial factory production by mid-19th century) and into rural and craft contexts. Appalachian and Shaker weaving traditions especially significant in maintaining domestic loom production through 19th and into 20th centuries — Shaker communities produced refined functional looms with characteristic clean construction; Appalachian craft traditions maintained floor loom production through periods when urban domestic weaving had declined. Contemporary craft revival from c. 1960 onward (driven by handweaving guilds, fiber arts movement, and educational programs) has restored substantial domestic loom production. Construction evidence (wood species, joinery type, mechanical hardware, manufacturer plates if present) helps distinguish period production from contemporary craft and reproduction looms.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘loom’ sits in the musical / mechanical form group. Canonical production span opens c. 1620 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 2 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15454,7 +15498,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_mechanical_craft_tools",
     date_floor: 1620,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Fiber-processing furnishing intended to spin raw fibers into yarn or thread",
       "Large rotating wheel (drive wheel transferring rotational motion to flyer or spindle mechanism)",
@@ -15508,6 +15551,7 @@ export const FORMS: FormEntry[] = [
       "Fiber-processing furnishing form. Date envelope: c. 1620-present American use, with colonial-era and earlier European precedents. Pennsylvania German spinning wheels especially notable for refined cabinetmaking quality (cherry, walnut, decorative turnings); Appalachian examples notable for rural craft tradition continuity through periods when urban domestic spinning had declined. Great wheel especially associated with colonial and frontier wool production; Saxony wheel especially associated with flax and finer fiber production using flyer mechanism; castle wheel a 19th century compact innovation suited to space-constrained domestic settings. Contemporary handspinning revival from c. 1960 onward (driven by fiber arts movement, handweaving guilds, and educational programs) has restored substantial domestic spinning wheel production. Construction evidence (wood species, turning quality, mechanical hardware, drive ratio configuration, manufacturer plates if present) helps distinguish period production from contemporary craft and reproduction wheels.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘spinning wheel’ sits in the musical / mechanical form group. Canonical production span opens c. 1620 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15518,7 +15562,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_musical_instrument_cabinets",
     date_floor: 1750,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Furniture category integrating cabinetry with acoustic or musical performance systems",
       "Keyboard systems (in keyboard instrument variants)",
@@ -15606,6 +15649,7 @@ export const FORMS: FormEntry[] = [
       "Musical instrument furniture form encompassing keyboard, reed, pipe, and self-playing variants. Date envelope: c. 1750-present American use, with colonial-era pipe organ and early keyboard instrument precedents. Victorian American walnut production especially widespread c. 1860-1900 for upright pianos and reed organs. Square piano peak c. 1780-1860 with declining production as upright piano emerged for compact domestic context. Upright piano emergence c. 1820-1840 with peak American production c. 1880-1930 — Steinway (founded 1853, New York), Knabe (founded 1837, Baltimore), Chickering (founded 1823, Boston), Mason & Hamlin (founded 1854, Boston), Baldwin (founded 1862, Cincinnati) anchor American piano production. Player piano and pianola emergence c. 1890-1910 with peak production c. 1900-1925 before phonograph and radio entertainment competition reduced demand. Reed organ peak c. 1860-1920 (overlapping pump organ production; the two forms coexisted in American parlor-organ market). Pipe organ continues in ecclesiastical and civic production through present. Construction evidence (case wood, action mechanism, serial number stamps, manufacturer plates, soundboard construction) reliably dates within manufacturer histories. Architectural note per Block 15 D-MM4: form_pump_organ_cabinet preserves standalone canonical content from Sessions 2-5 and is excluded from this form's subtypes; pump organ is a sibling form rather than a subtype.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘musical instrument furniture’ sits in the musical / mechanical form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 7 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 7 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15616,7 +15660,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_media_storage",
     date_floor: 1970,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Storage furnishing specifically organized around physical media formats and entertainment accessories",
       "Narrow vertical divisions and shallow shelving dimensioned for media case storage",
@@ -15687,6 +15730,7 @@ export const FORMS: FormEntry[] = [
       "Media-format-specific storage furniture form. Date envelope: c. 1970-present American use, with form_emergence tied to consumer audio/video media proliferation. Initial emergence c. 1970s with vinyl record storage (LP-format shelving was a distinct retail product category by the 1970s); CD tower subtype emergence c. 1985 with compact disc retail introduction; DVD tower subtype emergence c. 1997 with DVD format introduction; game tower subtype emergence c. 1985 with Nintendo Entertainment System cartridge format mainstreaming home video game collections. Strongly associated with late 20th century American suburban entertainment furniture from c. 1980 forward. Construction typically late-20th-century mass-market production: laminate, engineered wood, particleboard, or pressed-wood with veneer finish; metal or wire frame variants in some retail product lines. Period production identification relies on media-format shelf depth, manufacturer marks, and overall construction style consistent with mass-market home-furnishing retail of the era. Note: contemporary streaming-media transition has reduced physical media storage need; post-2010 production volumes are reduced relative to 1990s-2000s peak.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘media storage unit’ sits in the musical / mechanical form group. Canonical production span opens c. 1970 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 4 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15697,7 +15741,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_integrated_entertainment_systems",
     date_floor: 1980,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Large entertainment furnishing integrating storage, display, and audiovisual organization into an architectural-scale composition",
       "Large central display zone dimensioned for television placement",
@@ -15752,6 +15795,7 @@ export const FORMS: FormEntry[] = [
       "Architectural-scale entertainment furniture form. Date envelope: c. 1980-present American use, with form_emergence tied to large-format television adoption (CRT large-screen TVs of the 1980s-1990s, then plasma and LCD flat-panel TVs from c. 1998 onward) and dedicated home media room interior planning. Strongly associated with American suburban interiors from c. 1980 forward, reflecting integration of large-format television display with home audio systems within designated family-room or media-room environments. Entertainment wall subtype emerged c. 1980s with first wave of designated family-room interior design; home theater unit subtype emerged c. 1990s with home theater audio/video format development. Construction typically mass-market home-furnishing retail production: laminate, engineered wood, MDF with veneer finish; some higher-end production uses solid wood or premium veneers. Period production identification relies on television-format accommodation (CRT-era cabinets are deeper at central display zone; flat-panel-era cabinets are shallower with mounting provisions), manufacturer marks, and construction style consistent with mass-market or designer home-furnishing of the era. Post-2010 streaming-content shift has reduced demand for integrated DVD/Blu-ray storage; contemporary media walls emphasize flat-panel mounting with reduced equipment-bay needs.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘media wall’ sits in the musical / mechanical form group. Canonical production span opens c. 1980 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15762,7 +15806,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_equipment_support_systems",
     date_floor: 1920,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Utility furnishing designed to support, organize, cool, and protect technical equipment systems",
       "Open-frame or enclosed rack systems with adjustable mounting rails",
@@ -15817,6 +15860,7 @@ export const FORMS: FormEntry[] = [
       "Equipment-support utility furnishing form. Date envelope: c. 1920-present American use, with early-20th-century industrial precedents (radio broadcasting equipment racks, early telephone-system equipment racks). Audio rack subtype emergence c. 1960s-1970s tied to separates-based stereo system culture (Marantz, McIntosh, Pioneer, Sansui, Kenwood, and later Threshold, Conrad-Johnson, and audiophile boutique production drove demand for component-rack organization). Server rack subtype tied to commercial computing infrastructure: EIA 19-inch rack standardization (1950s-1960s), widespread commercial adoption (1970s-1980s), data center era (1990s onward). Speaker cabinet subtype tied to postwar American hi-fi culture (Acoustic Research, Bose, JBL, Klipsch, Advent, KEF and many others produced extensive speaker cabinet lines from c. 1950 forward). Construction varies dramatically across subtypes: audio racks range from utilitarian metal frames to wood/glass audiophile premium furniture; server racks are industrial-grade steel; speaker cabinets are wood/veneer with internal acoustic treatment. Period production identification relies on manufacturer marks, construction style, mounting hardware (rack rail standard), and acoustic component type (for speaker cabinets) consistent with era of production.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘equipment rack’ sits in the musical / mechanical form group. Canonical production span opens c. 1920 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15827,7 +15871,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_interactive_systems",
     date_floor: 1970,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Technology furnishing integrating direct user interaction through gaming, simulation, or digital interfaces",
       "Displays (integrated monitors, screen mounts, projection systems)",
@@ -15891,6 +15934,7 @@ export const FORMS: FormEntry[] = [
     },
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘interactive console’ sits in the musical / mechanical form group. Canonical production span opens c. 1970 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 3 documented subtypes. Anti-classification guidance fixes a form_emergence boundary at c. 1970. Supporting diagnostic content: cousin-form contrasts against 5 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15901,7 +15945,6 @@ export const FORMS: FormEntry[] = [
     family_id: "family_musical_mechanical",
     spatial_behavior_id: "spatial_automated_dispensing_systems",
     date_floor: 1880,
-    date_ceiling: 2030,
     distinguishing_features: [
       "Automated dispensing cabinet designed to distribute products through mechanical or electronic transaction systems",
       "Coin or payment systems (early mechanical coin acceptors through modern digital payment integration)",
@@ -15958,6 +16001,7 @@ export const FORMS: FormEntry[] = [
       "Automated dispensing cabinet form. Date envelope: c. 1880-present American use, with late-19th-century mechanical vending precedents (chewing-gum dispensing machines on New York City elevated train platforms c. 1888 commonly cited as earliest American vending). Strong American commercial culture associations developed through 20th century: Coca-Cola bottle vending coolers from c. 1937 (Vendo, Cavalier, Westinghouse), workplace snack and beverage vending from c. 1950 onward, cigarette vending in bars/diners/lounges through mid-20th century. Major manufacturers across the 20th century: Vendo (Kansas City MO), Cavalier (Chattanooga TN), Westinghouse (Pittsburgh PA, early entrant), Rowe International (multiple categories), National Vendors, and contemporary international production. Cigarette subtype historic decline: late 20th century regulatory changes effectively ended new cigarette machine deployment c. 1990s-2000s; this is a clear pattern of regulatory-driven form decline rather than market replacement. Snack and beverage subtypes continue with substantial production volume. Modern smart vending and contactless variants from c. 2010 onward incorporate electronic payment, network connectivity, inventory tracking, and product display innovation. Construction varies by era and subtype: vintage Coca-Cola coolers are heavy steel with red enamel finish (collectible market significant); mid-century snack and beverage machines emphasize utility commercial-grade construction; contemporary smart vending uses modular component design with digital display surfaces.",
     positive_authority: 8,
     hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘vending machine’ sits in the musical / mechanical form group. Canonical production span opens c. 1880 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 7 canonical distinguishing features and 3 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
@@ -15968,6 +16012,7 @@ export const FORMS: FormEntry[] = [
     date_floor: 1800,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘rocking chair’ sits in the seating form group. Canonical production opens c. 1800 with no fixed terminal date in the canonical source (date_ceiling already omitted).",
     migration_status: "partial",
   },
   {
@@ -15979,6 +16024,7 @@ export const FORMS: FormEntry[] = [
     date_ceiling: 1920,
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘milking stool’ sits in the seating form group. Canonical production span c. 1800–1920.",
     migration_status: "partial",
   },
   {
@@ -15991,6 +16037,7 @@ export const FORMS: FormEntry[] = [
     common_conversion_targets: ["nightstand", "side_table"],
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘sewing machine cabinet’ sits in the specialized form group. Canonical production span c. 1870–1910. Supporting diagnostic content: documented conversion targets.",
     migration_status: "partial",
   },
   {
@@ -16003,6 +16050,7 @@ export const FORMS: FormEntry[] = [
     common_conversion_targets: ["bar", "beverage_cabinet"],
     positive_authority: 7,
     hard_negative_authority: 7,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘icebox’ sits in the specialized form group. Canonical production span c. 1880–1920. Supporting diagnostic content: documented conversion targets.",
     migration_status: "partial",
   },
 ];
