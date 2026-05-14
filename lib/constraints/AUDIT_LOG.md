@@ -2886,4 +2886,173 @@ Block 35 ship: hardware library schema foundation + 13 HARDWARE_CATEGORIES + emp
 
 ---
 
+## Block 36 — HARDWARE_TYPES content authoring (43 entries across 13 sub-batches); hardware library content-complete; Phase 2 Session 7 third library CLOSES
+## Session 16 / claude.ai-and-Claude-Code paired execution
+## Base SHA: main 28a8cf1 (Block 35 endpoint / Hardware library schema foundation opening)
+
+Closes Phase 2 Session 7 third library (hardware) per D-AP32-5 sequencing. Populates HARDWARE_TYPES (empty scaffold per Block 35 D-HW35-1) with 43 HardwareTypeEntry entries from `Furniture_Hardware_Identification_System.docx` canonical source. Schema foundation (Block 35) + 13 categories (Block 35) + 5 reasoning rules (Block 35) + 43 types (Block 36) = hardware library canonically content-complete.
+
+13 internal authoring sub-batches per Q1 Option A — one per HARDWARE_CATEGORIES entry; per-sub-batch authoring in single ship. Per Block 35 Op A-6 preview (~42 types) revised to 43 per Block 36 Op A-3 enumeration (HINGE category resolved to 8 types vs preview 7 per D-HW36-14). Per Q2 Option D replacement_likelihood per-type defensible-defaults with notes-field-marker discipline per D-FA34-3 precedent. Per Q3 Option E AG entries reserved for hard-boundary types (3 total: cam_lock + concealed_euro_hinge + rubber_caster); era-bounded soft-boundary types (Bakelite 1920-1955, Lucite 1945-1975 peak, Porcelain Caster 1840-1910) captured as multi-period period_associations WITHOUT AG. Per Q4 cross-library FK populated on 2 hardware type entries (cam_lock × 2 FK fields, upholstery_tacks × 1 FK field; 3 cross-library refs total).
+
+### D-HW36-1 (locked): Block 36 scope per Q1-Q4 lockings
+Single combined ship with 13 internal sub-batches (per Q1 Option A). 43 HARDWARE_TYPES entries authored (per A-3 revised count; +1 vs Block 35 A-6 preview of ~42 due to HINGE category resolving to 8 types per D-HW36-14). All entries conform to HardwareTypeEntry interface per Block 35 D-HW35-2. Hardware library content-complete on Block 36 ship.
+
+### D-HW36-2 (locked): period_associations granularity per Block 31 D-JN31-2 precedent
+Multi-entry where seed provides explicit era phases; single-entry otherwise. Multi-period entries (12 total):
+- drop_pull_bail_pull: 5 periods (Early examples / Federal-Hepplewhite wave / Empire-Classical wave / Victorian revival / Colonial Revival reuse)
+- batwing_bail_pull: 2 periods (Original period inspiration / Major revival production)
+- chippendale_bail_pull: 2 periods (Original Chippendale wave / Revival wave)
+- sheraton_oval_bail_pull: 2 periods (Original Sheraton wave / Revival wave)
+- turned_wooden_knob: 2 periods (Continuous use / Especially common)
+- pressed_glass_knob: 2 periods (Primary / Revival)
+- bin_pull: 2 periods (Continuous use / Peak early use)
+- ring_pull: 2 periods (Continuous use / Major Victorian/Gothic wave)
+- pierced_escutcheon: 2 periods (Primary / Revival)
+- h_l_hinge: 2 periods (Primary / Revival)
+- campaign_corner_bracket: 2 periods (Primary / Revival)
+- acrylic_lucite_hardware: 2 periods (Peak / Continued)
+
+Single-period entries (31 total): structural-category types + era-tight specialty types + functional-category types where seed provides single date range without phase breakdown.
+
+Era-bounded soft-boundary types (Bakelite, Lucite, Porcelain Caster) use single-entry period_associations with explicit date_ceiling per D-HW36-4 Q3 Option E discipline (multi-period for Lucite to capture peak + continued).
+
+### D-HW36-3 (locked): replacement_likelihood per-type defensible-defaults per Q2 Option D
+Distribution: low 13, medium 21, high 9 (verified Op G). Per-type override marker per D-FA34-3 notes-field-marker precedent applied on:
+- turned_wooden_knob: LOW override (rural persistence + structural simplicity) vs A-6 category default MEDIUM
+- surface_mount_lock: LOW override (period locks remain in situ per rural persistence) vs A-6 category default MEDIUM
+- batwing_bail_pull, chippendale_bail_pull, sheraton_oval_bail_pull: HIGH override (Colonial Revival reproduction-market dominance per Rule #4 canonical anchor) vs A-6 PULL HARDWARE parent MEDIUM
+- concealed_euro_hinge: HIGH override (modern Euro retrofit on antique furniture commonly indicates restoration upgrade per Rule #2 + Rule #4) vs A-6 HINGE category default LOW
+
+### D-HW36-4 (locked): AG entries on 3 hardware types per Q3 Option E hard-boundary discipline
+- `hardware_type_cam_lock`: AG floor 1920 (HARDWARE-axis emergence per canonical seed "1920-present" verbatim). **DIVERGES from joinery 1960 + fasteners 1960 cam-lock-connector AG floors per D-FA34-11 cross-library AG floor divergence convention** — same physical phenomenon documented from hardware-identification + fastener-type + joinery-pattern perspectives; per-canonical-source fidelity per D-HW35-9. This is the **second concrete instance of D-FA34-11 cross-library AG floor divergence convention application** (first instance was Block 34 establishing the convention).
+- `hardware_type_concealed_euro_hinge`: AG floor 1960 (canonical seed phrasing "1960s-present" — 1960 selected as conservative decade-floor anchor per D-HW36-N decade-range interpretation discipline + D-FA34-3 notes-field-marker precedent; per-entry notes + period_associations.usage_notes + AG.guidance_text all document the decade-range interpretation).
+- `hardware_type_rubber_caster`: AG floor 1920 (vulcanization industrial-introduction era; canonical seed "1920-present" verbatim).
+
+AG prose pattern: each guidance_text cross-references Rule #2 (replacement_hardware_risk) + Rule #4 (reproduction_hardware_warning) canonical-source anchors. cam_lock AG explicitly documents D-FA34-11 cross-library divergence; concealed_euro_hinge AG documents decade-range interpretation rationale.
+
+Era-bounded soft-boundary types (bakelite 1920-1955, lucite 1945-1975 peak, porcelain_caster 1840-1910) captured as period_associations with explicit date_ceiling and seed-quoted usage_notes; NO AG per Q3 Option E (polymer-industry / ceramic-manufacturing production-window decline, NOT industrial-introduction-boundary).
+
+### D-HW36-5 (locked): style_associations populated per D-HW35-4 + StyleAssociation interface
+14 entries populated (vs A-5 estimate ~22-26). Lower than estimate reflects strict canonical fidelity per D-FA33-Surfacing-2 + D-JN30-9 optional-field discipline — populated only where canonical source clearly anchors hardware type to style wave; omitted where seed is silent on style. Populated entries:
+1. drop_pull_bail_pull (4 styles: Federal/Hepplewhite, Empire/Classical, Victorian, Colonial Revival)
+2. batwing_bail_pull (1: Colonial Revival)
+3. chippendale_bail_pull (2: Rococo/Chippendale, Colonial Revival)
+4. sheraton_oval_bail_pull (2: Neoclassical/Sheraton, Colonial Revival)
+5. porcelain_knob (1: Victorian)
+6. pressed_glass_knob (1: Victorian)
+7. ring_pull (3: Victorian, Gothic, Campaign)
+8. pierced_escutcheon (3: Rococo, Federal, Colonial Revival)
+9. porcelain_caster (1: Victorian)
+10. campaign_corner_bracket (1: Campaign)
+11. eastlake_hardware (1: Eastlake)
+12. art_deco_hardware (1: Art Deco)
+13. mid_century_modern_hardware (1: Mid-Century Modern)
+14. machine_age_industrial_hardware (1: Machine-Age Industrial)
+
+Structural categories (HINGE, LOCK, DESK_MECHANICAL, CORNER_EDGE, UPHOLSTERY, MODERN_SYNTHETIC) and most KNOB PULL variants lack explicit canonical style references in seed; style_associations omitted per strict canonical fidelity. style_associations.usage_notes captures hardware-design-aspect context where applicable (e.g., "Refined neoclassical proportions on oval backplates" on drop_pull_bail_pull Federal/Hepplewhite entry).
+
+### D-HW36-6 (locked): maker_associations: [] empty arrays for ALL 43 entries per D-HW35-6
+Verified Op G G-10 — zero non-empty maker_associations across all 43 entries. SCHEMA-PRESENT-CONTENT-DEFERRED discipline applied uniformly; per-entry notes field documents the deferred-content marker per defensible-defaults discipline. Validation-phase one-offs + post-launch authoring path stands (no scheduled Block-N maker authoring plan).
+
+### D-HW36-7 (locked): Cross-library FK assignment per Q4 + D-HW35-9 convention
+3 cross-library refs on 2 entries (verified Op G G-11):
+- `hardware_type_cam_lock`:
+  - `related_fastener_types: ["fastener_type_cam_lock_connector"]`
+  - `related_joinery_types: ["joinery_type_knock_down_cam_lock_joinery"]`
+- `hardware_type_upholstery_tacks`:
+  - `related_fastener_types: ["fastener_subcategory_upholstery_tacks"]`
+
+Single-directional cross-references per D-FA33-8 + D-HW35-9 convention. Note: upholstery_tacks references the fastener SUBCATEGORY id (not a specific type id) because fasteners library Cat 3 STAPLES subcategory 3A IS the cross-library entry; type-level entries within that subcategory (e.g., fastener_type_decorative_brass_tack) are more granular fastener-axis distinctions. Cross-canonical-source phenomenon-identity captured at appropriate canonical tier per per-canonical-source fidelity.
+
+### D-HW36-8 (locked): related_hardware_types FK populated per D-HW35-3 subtype-flattening pattern
+6 subtype entries with related_hardware_types FK linking subtype → parent type (verified Op G G-12). NOTE: Block 36 plan A-9 stated "5 subtype entries" — that was a counting error in A-9. Correct count is 6:
+- 3 subtypes of drop_pull_bail_pull: batwing_bail_pull, chippendale_bail_pull, sheraton_oval_bail_pull
+- 2 subtypes of butt_hinge: hand_forged_butt_hinge, machine_made_butt_hinge
+- 1 subtype of bin_pull: cardholder_bin_pull
+
+KNOB PULL category 4 types (turned_wooden_knob, porcelain_knob, pressed_glass_knob, depression_glass_knob) are independent material variants per seed structure — NO parent-subtype hierarchy; NO related_hardware_types FK.
+
+### D-HW36-9 (locked): regional_persistence_notes populated on 1 entry per strict canonical fidelity
+Per A-8 strict canonical fidelity (Surfacing 3 resolution). Only `hardware_type_surface_mount_lock` carries regional_persistence_notes — the sole explicit verbatim "Rural persistence" canonical-source reference in entire hardware reference seed. Other rural-persistence-implicit types (Strap Hinge, Hand-Forged Butt Hinge, Wooden Caster) governed by Rule #3 (`rural_persistence`) at reasoning-rule level via `applies_to_entry_types: ["hardware_type"]` engine-level cross-reference; no per-type field population required.
+
+### D-HW36-10 (locked): Authority calibration distribution per D-AR29-11 + A-7
+**HARDWARE_TYPES distribution (verified Op G G-14): positive_authority {7: 28, 8: 15}; hard_negative_authority {7: 28, 8: 15}.**
+
+**15 entries at 8/8 (era-canonical anchors + AG anchor types)**:
+- drop_pull_bail_pull (multi-era canonical anchor)
+- hand_forged_butt_hinge (1750-1830 hand-forge era ceiling)
+- machine_made_butt_hinge (1840+ machine-precision era floor)
+- h_l_hinge (1650-1820 early vernacular)
+- strap_hinge (medieval origins, 1650-1900 furniture use)
+- concealed_euro_hinge (1960 AG anchor)
+- cam_lock (1920 AG anchor)
+- porcelain_caster (1840-1910 Victorian era)
+- rubber_caster (1920 AG anchor)
+- eastlake_hardware (1870-1895 tight era)
+- art_deco_hardware (1925-1945 tight era)
+- mid_century_modern_hardware (1945-1975 era)
+- machine_age_industrial_hardware (1900-1950 era)
+- bakelite_hardware (1920-1955 polymer-industry window)
+- acrylic_lucite_hardware (1945-1975 peak polymer-industry)
+
+**28 entries at 7/7 (medium-strong; replacement-likelihood-aware per D-AP32-3)**: all 3 drop_pull subtypes; all 4 KNOB PULL types; both BIN PULL types; ring_pull; half_mortise_lock; full_mortise_lock; surface_mount_lock; all 3 ESCUTCHEONS; butt_hinge parent; piano_hinge; butterfly_hinge; wooden_caster; both CORNER/EDGE types; all 3 DESK/MECHANICAL types; all 3 UPHOLSTERY HARDWARE types.
+
+### D-HW36-11 (locked): common_observed_locations field populated per D-FA33-6 identification-helper convention
+All 43 entries carry `common_observed_locations: PhysicalLocation[]` populated from canonical-source observed-locations context per D-FA33-6 (location HELPS identification but NOT routing). Distribution skews to drawer_front (most pulls/escutcheons/locks/synthetic hardware) and door_panel (locks/hinges/pulls); upholstery_attachment_point on the 3 UPHOLSTERY HARDWARE types; foot_or_leg + base_or_plinth on casters; case_corner + edge_or_corner_protection on corner/edge hardware.
+
+### D-HW36-12 (locked): Block 35 reasoning rule forward-references RESOLVED
+Block 35 reasoning rules with `applies_to_entry_types: ["hardware_type"]` category-string FK now have 43 type entries to reference:
+- Rule #1 (hardware_alone_never_dates_furniture): applies to all 43 hardware types (cross_layer_scope: true)
+- Rule #2 (replacement_hardware_risk): applies to all 43 hardware types per-type replacement_likelihood field (Op G distribution: 13 low + 21 medium + 9 high)
+- Rule #3 (rural_persistence): applies to hardware_type_surface_mount_lock via regional_persistence_notes field (per D-HW36-9 strict canonical fidelity); plus implicit application to rural-persistence-bounded types governed at reasoning-rule level
+- Rule #4 (reproduction_hardware_warning): applies to all stylistically-defined hardware types per-type reproduction-context flagging (especially 3 PULL subtypes + ESCUTCHEONS + eastlake_hardware per Hardware Conflict Rules canonical anchors)
+- Rule #5 (hardware_evidence_layer_independence): applies to all 43 hardware types (cross_layer_scope: true)
+
+### D-HW36-13 (locked): Hardware library content-complete on Block 36 ship
+Schema foundation (Block 35) + 13 categories (Block 35) + 5 reasoning rules (Block 35) + 43 types (Block 36) = hardware library canonically content-complete. Phase 2 Session 7 third library CLOSED.
+
+### D-HW36-14 (locked): HINGE category +1 type vs Block 35 A-6 preview (D-HW36-N count refinement decision)
+Block 35 A-6 preview estimated HINGE HARDWARE at 7 types; Block 35 A-4 enumeration listed 8 types (Butt + Hand-Forged Butt + Machine-Made Butt + H-L + Strap + Piano/Continuous + Butterfly + Concealed Euro). Block 36 Op A-3 enumeration confirms 8 types per canonical seed. A-6 preview was inconsistent with A-4 enumeration; A-4 was the correct count. Block 36 ships 8 HINGE entries → 43 total HARDWARE_TYPES (vs ~42 plan estimate). Convention precedent: Block N-1 schema-foundation block's PER-CATEGORY type count estimates may need Block N content-authoring revision; A-4 canonical enumeration takes precedence over A-6 informal preview.
+
+### D-HW36-15 (locked): Concealed Euro Hinge AG decade-range interpretation discipline (D-HW36-N)
+Canonical seed phrasing "1960s-present" does NOT pin specific decade-floor year (e.g., 1960 vs 1965 vs 1968). Block 36 selects **1960 as conservative decade-floor anchor** per defensible-defaults + D-FA34-3 notes-field-marker precedent. Documentation captured in 3 locations on hardware_type_concealed_euro_hinge entry:
+- notes field documenting D-HW36-N decade-range interpretation rationale
+- period_associations[0].usage_notes documenting "1960s-present" canonical phrasing + 1960 selection
+- anti_classification_guidance.guidance_text documenting decade-range interpretation discipline
+
+**Convention precedent**: when canonical sources surface decade-range phrasing ("1960s", "1920s", "1830s", etc.) without pinned-year emergence boundaries, select conservative decade-floor (year 0 of decade, e.g., 1960 / 1920 / 1830) as AG anchor + populate notes-field marker documenting decade-range interpretation. Forward-applicable to future libraries with decade-range canonical phrasing.
+
+### D-HW36-16 (locked): D-FA34-11 cross-library AG floor divergence convention — second concrete instance
+Block 36 application of D-FA34-11 represents the **second concrete instance** of the cross-library AG floor divergence convention (first instance was Block 34 establishing the convention via Phillips wood screw 1935 hardware-axis vs unspecified fastener-axis). Block 36 cam_lock AG 1920 hardware-axis vs joinery + fasteners 1960 cam-lock-connector represents the canonical example of the convention application: same physical phenomenon (KD-furniture cam-lock mechanism) documented from different evidence-axis perspectives with different canonical sources surfacing different temporal phases.
+
+**Hardware-axis 1920**: canonical seed phrasing "1920-present" reflects mechanical-cam-lock-mechanism emergence as hardware form (early 20th century cabinetry locks evolving toward modern KD-furniture cam locks).
+
+**Joinery + fasteners-axis 1960**: canonical KD-furniture-era emergence reflects post-WWII ready-to-assemble furniture manufacturing innovation (Ikea founded 1943; KD-cam-lock-connector standardized 1960s in flat-pack production).
+
+Per-canonical-source fidelity reigns; cross-library FK links the same-physical-phenomenon entries without forcing canonical identity across libraries.
+
+### D-HW36-FINAL (post-authoring summary)
+Block 36 ship: 43 HARDWARE_TYPES entries authored across 13 internal sub-batches; hardware library canonically content-complete; Phase 2 Session 7 third library CLOSED.
+
+- **HARDWARE_TYPES.length: 0 → 43** (verified Op G G-2).
+- **Authority distribution**: positive_authority {7: 28, 8: 15}; hard_negative_authority {7: 28, 8: 15} per D-HW36-10.
+- **replacement_likelihood distribution**: low 13, medium 21, high 9 per D-HW36-3.
+- **AG count: 3** (cam_lock 1920 ★ D-FA34-11 second concrete instance; concealed_euro_hinge 1960 ★ decade-range interpretation; rubber_caster 1920) per D-HW36-4.
+- **Cross-library FK count: 3 refs on 2 entries** (cam_lock × 2 + upholstery_tacks × 1) per D-HW36-7.
+- **related_hardware_types FK count: 6 subtypes** (3 drop_pull + 2 butt_hinge + 1 bin_pull) per D-HW36-8.
+- **regional_persistence_notes populated count: 1** (surface_mount_lock only) per D-HW36-9.
+- **style_associations populated count: 14** per D-HW36-5 strict canonical fidelity.
+- **maker_associations: [] on ALL 43 entries** per D-HW35-6 + D-HW36-6 verified Op G G-10.
+- **Per-sub-batch breakdown** (verified Op G): PULL 4 / KNOB PULL 4 / BIN PULL 2 / RING PULL 1 / LOCK 4 / ESCUTCHEONS 3 / HINGE 8 / CASTERS 3 / CORNER+EDGE 2 / DESK+MECHANICAL 3 / UPHOLSTERY 3 / SPECIALTY 4 / MODERN SYNTHETIC 2 = 43 total.
+- **Files modified: 2** (`lib/constraints/hardware.ts` 606 → 1934 lines + `lib/constraints/AUDIT_LOG.md` append).
+- **engine.ts UNCHANGED** per Phase 2 / Phase 3 separation (diff = 0 lines).
+- **All 21 prior canonical array lengths unchanged**: SPECIES_EVIDENCE 26 / SUBSTRATE_EVIDENCE 5 / CUT_GRAIN_EVIDENCE 35 / WOOD_DIAGNOSTIC_SIGNALS 8 / WOOD_EVIDENCE_REASONING_RULES 7 / MAKER_ENTRIES 77 / MAKER_ATTRIBUTION_REASONING_RULES 8 / MAKER_MARKS (legacy) 25 / FORMS 183 / FAMILIES 12 / SPATIAL_BEHAVIORS 76 / CONSTRUCTION_LOGIC 4 / JOINERY_CATEGORIES 15 / JOINERY_TYPES 40 / JOINERY_REASONING_RULES 5 / FASTENER_CATEGORIES 6 / FASTENER_SUBCATEGORIES 9 / FASTENER_TYPES 25 / FASTENER_REASONING_RULES 5 / HARDWARE_CATEGORIES 13 / HARDWARE_REASONING_RULES 5.
+- 16 numbered audit decisions captured under D-HW36-N block-scoped prefix (D-HW36-1 through D-HW36-16 + D-HW36-FINAL).
+- **Hardware library: CANONICALLY CONTENT-COMPLETE.**
+- **Phase 2 Session 7 third library: CLOSED.**
+- Convention precedents established this block: D-HW36-14 A-4-vs-A-6 enumeration precedence (block N-1 schema A-4 canonical enumeration takes precedence over A-6 informal preview); D-HW36-15 decade-range AG-floor interpretation discipline (conservative decade-floor selection with notes-field-marker documentation); D-HW36-16 second concrete D-FA34-11 cross-library AG floor divergence convention application; all forward-applicable to subsequent Phase 2 Session 7 libraries (upholstery covers + upholstery construction) and Phase 2 Session 9 (styleFamilies + design-aspects).
+- Next sequencing per D-AP32-5: upholstery covers library (4th of 5 Phase 2 Session 7 libraries). Mike's `American_Furniture_Textile_Reference.docx` upload from Block 33 discussion available; covers half is first content surface.
+
+---
+
 
