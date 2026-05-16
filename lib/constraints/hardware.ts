@@ -46,6 +46,7 @@ import type {
   AntiClassificationGuidance,
   ReasoningRuleMigrationTarget,
   PhysicalLocation,
+  PositionOnPiece,
 } from "./entryShape";
 
 /**
@@ -142,6 +143,16 @@ export interface HardwareTypeEntry extends CanonicalEntry {
   style_associations?: StyleAssociation[];
   maker_associations?: HardwareMakerAssociation[];
   common_observed_locations?: PhysicalLocation[];
+  /** Block 0.5a addition per Path A schema foundation (D-PH3HCL-S1-N).
+   * Structured location array per Decision 1 = L2 / Shape-R2 (third
+   * FK validation pass A-4). Each location object pairs a canonical
+   * PhysicalLocation enum value with optional appraiser-specific
+   * descriptive supplement (physical_location_notes). Coexists with
+   * common_observed_locations bare-string array (which remains for
+   * existing 61 hardware type entries that use it). New hardware type
+   * entries authored with finer-grained appraiser-knowledge nuance use
+   * position_on_piece. */
+  position_on_piece?: PositionOnPiece[];
   anti_classification_guidance?:
     | AntiClassificationGuidance
     | AntiClassificationGuidance[];
