@@ -1,7 +1,7 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric } from "./engineClueResolver";
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
@@ -3754,7 +3754,28 @@ if (missing.label_photo) {
     const ranked = scoreForms(digest);
     const best = ranked[0];
     const form = best?.form || "Unclassified furniture";
-    return dateFromEvidence(digest, form);
+    const raw = dateFromEvidence(digest, form);
+
+    // Block 1 step 7: populate numeric date envelope from range string parse (D-PH3-13 #4).
+    const { date_floor, date_ceiling } = parseRangeToNumeric(raw.range);
+
+    // Block 1 step 7: surface canonical diagnostic_caution_text in support array
+    // for any digest clue whose canonical entry carries one (D-PH3-13 #3).
+    // Replaces hardcoded engine-internal messages for plywood, phillips, staples, etc.
+    const support: string[] = Array.isArray(raw.support) ? [...raw.support] : [];
+    const seenTexts = new Set(support);
+    for (const clueKey of digest.clue_keys || []) {
+      const text = getCanonicalCautionText(clueKey);
+      if (text && !seenTexts.has(text)) {
+        support.push(`Canonical guidance (${clueKey}): ${text}`);
+        seenTexts.add(text);
+      }
+    }
+
+    const result: Phase2Result = { ...raw, support };
+    if (date_floor !== null) result.date_floor = date_floor;
+    if (date_ceiling !== null) result.date_ceiling = date_ceiling;
+    return result;
   },
 
   p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any): Phase3Result {
@@ -4009,6 +4030,25 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
 
   const conflicts: string[] = [];
   const resolutions: string[] = [];
+
+  // Block 1 step 7: B4 anti-back-classification check via canonical
+  // FormEntry.anti_classification_guidance. Surfaces guidance_text in conflicts
+  // + recommended reroute targets in resolutions when form's boundary_date
+  // is violated by the dating envelope.
+  const antiBack = evaluateAntiBackClassification(
+    form.form_id ?? null,
+    dating.date_floor ?? null,
+    dating.date_ceiling ?? null
+  );
+  if (antiBack) {
+    conflicts.push(`Anti-back-classification: ${antiBack.guidance_text}`);
+    const reroute = antiBack.reroute_form_ids.length
+      ? ` Suggested reroute: ${antiBack.reroute_form_ids.join(", ")}.`
+      : "";
+    resolutions.push(
+      `Form ${form.form_id} ${antiBack.boundary_type} boundary (${antiBack.boundary_date}) violated; pre-boundary identification preferred.${reroute}`
+    );
+  }
   const clues = new Set(digest.clue_keys || []);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
