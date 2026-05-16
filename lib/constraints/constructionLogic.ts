@@ -60,7 +60,8 @@ export interface ConstructionLogicEntry extends CanonicalEntry {
    * logic itself evolved over time, including major shifts in materials,
    * joinery, and production methods. Specific datable construction features
    * (e.g., machine-cut dovetails appearing c. 1860, plywood adoption
-   * c. 1900) belong in HISTORICAL_CLUE_LIBRARY for engine clue-level
+   * c. 1900) belong in toolmarks.ts, finish.ts, joinery.ts, fasteners.ts,
+   * and woodEvidence.ts for engine clue-level
    * reasoning; this field carries the narrative-level synthesis as an
    * array of period-keyed bullet entries.
    */
@@ -108,7 +109,7 @@ export const CONSTRUCTION_LOGIC: ConstructionLogicEntry[] = [
       "1860–1900 (Victorian Industrial Expansion): Widespread use of machine-cut dovetails. Standardization of drawer sizes and carcass dimensions. Increased complexity — multiple compartments, mirrored backs. Mass-produced hardware introduced. Oak becomes dominant in many regions.",
       "1900–1945 (Early Modern and Factory Production): Simplification of ornamentation in some styles. Plywood panels and early composite materials introduced. Joinery shifts toward dowels and mechanical fasteners. Increased reliance on factory assembly systems.",
       "1945–present (Modern to Contemporary): Particle board, MDF, and laminates introduced. Joinery often minimized or concealed (staples, cam locks). Emphasis on efficiency and cost reduction. Shift from craftsmanship to modular manufacturing.",
-      "Note: Specific datable construction features within this evolution (dovetail evolution, drawer bottom evolution, machine-cut transitions, plywood and composite material adoption, mechanical fastener emergence) belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning. This narrative carries the synthesis-level evolution; HCL carries the dating clues.",
+      "Note: Specific datable construction features within this evolution (dovetail evolution, drawer bottom evolution, machine-cut transitions, plywood and composite material adoption, mechanical fastener emergence) belong in toolmarks.ts, finish.ts, joinery.ts, fasteners.ts, and woodEvidence.ts for clue-level engine reasoning. This narrative carries the synthesis-level evolution; the canonical clue libraries carry the dating clues.",
     ],
     disambiguation_from_other_logics: [
       "Not open skeletal structure — distinguishes case construction from frame construction (Construction Logic II), where the structure is a post-and-rail skeleton supporting the human body rather than an enclosed box containing storage",
@@ -150,7 +151,7 @@ export const CONSTRUCTION_LOGIC: ConstructionLogicEntry[] = [
       "1860–1900: Industrialization allows turned components and repeated parts. Introduction of bentwood techniques (notably in chairs). More standardized frame construction.",
       "1900–1945: Machine precision increases. Use of dowel joinery and early metal fasteners. Upholstery becomes more integrated with frame design.",
       "1945–present: Introduction of tubular steel, molded plywood, and plastics. Frame may be partially or fully concealed. Shift toward engineered materials.",
-      "Note: Specific datable construction features within this evolution (mortise-and-tenon joinery patterns, peg-pinning practices, bentwood adoption, dowel-joinery emergence, tubular steel introduction) belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+      "Note: Specific datable construction features within this evolution (mortise-and-tenon joinery patterns, peg-pinning practices, bentwood adoption, dowel-joinery emergence, tubular steel introduction) belong in toolmarks.ts, finish.ts, joinery.ts, fasteners.ts, and woodEvidence.ts for clue-level engine reasoning.",
     ],
     disambiguation_from_other_logics: [
       "Not enclosed storage — distinguishes frame construction from case construction (Construction Logic I), where a rigid carcass with continuous outer shell defines and contains storage volume; frame construction has open negative space and no enclosing structure",
@@ -192,7 +193,7 @@ export const CONSTRUCTION_LOGIC: ConstructionLogicEntry[] = [
       "1860–1900: Mechanical expansion systems improve. Turned and carved bases become common. Increased ornamentation in base structures.",
       "1900–1945: Simplification in some styles, particularly Arts and Crafts. Introduction of plywood cores. Functional design gains importance over ornamental expression.",
       "1945–present: Laminates and synthetics dominate. Mass production introduces metal brackets and fasteners. Lightweight construction increases.",
-      "Note: Specific datable construction features within this evolution (breadboard end emergence, expansion-table mechanisms, plywood core adoption, metal-bracket fastening) belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+      "Note: Specific datable construction features within this evolution (breadboard end emergence, expansion-table mechanisms, plywood core adoption, metal-bracket fastening) belong in toolmarks.ts, finish.ts, joinery.ts, fasteners.ts, and woodEvidence.ts for clue-level engine reasoning.",
     ],
     disambiguation_from_other_logics: [
       "Not enclosed storage — distinguishes surface forms from case construction (Construction Logic I), where a rigid carcass with continuous outer shell defines and contains storage volume; surface forms have negative space beneath and no enclosing structure",
@@ -234,7 +235,7 @@ export const CONSTRUCTION_LOGIC: ConstructionLogicEntry[] = [
       "1860–1900 (Mechanical Innovation Peak): Pump organs (foot-bellows reed instruments) reach peak production. Tall case clock movement refinement continues. Early phonograph mechanisms emerge by late 1880s and mature post-1890. Precision woodworking supports the complexity these systems require.",
       "1900–1945: Integration with industrial components accelerates. Springs and metal tracks introduced into mechanical systems. Increased reliability through standardized industrial parts. Phonograph cabinets and radio cabinets emerge as mature CL IV forms.",
       "1945–present: Decline in complex mechanical furniture as electronics replace mechanical sound production and clock movements shift to quartz mechanisms. Shift to simplified mechanisms and mass-produced hardware. Some resurgence in specialized modern designs.",
-      "Note: Specific datable mechanical features within this evolution (foot-bellows construction details, tambour mechanism patterns, clock movement evolution, early phonograph mechanism types) belong in HISTORICAL_CLUE_LIBRARY for clue-level engine reasoning.",
+      "Note: Specific datable mechanical features within this evolution (foot-bellows construction details, tambour mechanism patterns, clock movement evolution, early phonograph mechanism types) belong in toolmarks.ts, finish.ts, joinery.ts, fasteners.ts, and woodEvidence.ts for clue-level engine reasoning.",
     ],
     disambiguation_from_other_logics: [
       "Mechanism as form-defining purpose vs. mechanism as feature on a structural form: CL IV requires that the mechanism is the form's defining purpose — without it, the piece would not be what it is. Roll-top desks, cylinder desks, expansion tables, and drop-leaf tables incorporate mechanical features, but their underlying forms (desks, tables) exist independently of the mechanism. These belong in their structural construction logic (CL III for surface forms) with mechanism captured as a distinguishing feature, not in CL IV.",
