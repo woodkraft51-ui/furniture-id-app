@@ -1,7 +1,14 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric } from "./engineClueResolver";
+import {
+  evaluateSubtype,
+  evaluateAntiBackClassification,
+  evaluateDimensional,
+  type SubtypeAssignment,
+  type AntiBackViolation,
+} from "./engineFormEvaluators";
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -102,6 +109,10 @@ type Phase3Result = {
   // Block 1 additive fields:
   form_id?: string | null;          // canonical form_id or null if NO_MATCH
   alternative_form_ids?: string[];  // canonical IDs for alternatives where they resolve
+  // Block 1 step 6 evaluator outputs:
+  subtype?: SubtypeAssignment | null;
+  anti_back_violation?: AntiBackViolation | null;
+  dimensional_check?: { ok: boolean; note: string } | null;
 };
 
 type Phase4Result = {
@@ -3743,7 +3754,28 @@ if (missing.label_photo) {
     const ranked = scoreForms(digest);
     const best = ranked[0];
     const form = best?.form || "Unclassified furniture";
-    return dateFromEvidence(digest, form);
+    const raw = dateFromEvidence(digest, form);
+
+    // Block 1 step 7: populate numeric date envelope from range string parse (D-PH3-13 #4).
+    const { date_floor, date_ceiling } = parseRangeToNumeric(raw.range);
+
+    // Block 1 step 7: surface canonical diagnostic_caution_text in support array
+    // for any digest clue whose canonical entry carries one (D-PH3-13 #3).
+    // Replaces hardcoded engine-internal messages for plywood, phillips, staples, etc.
+    const support: string[] = Array.isArray(raw.support) ? [...raw.support] : [];
+    const seenTexts = new Set(support);
+    for (const clueKey of digest.clue_keys || []) {
+      const text = getCanonicalCautionText(clueKey);
+      if (text && !seenTexts.has(text)) {
+        support.push(`Canonical guidance (${clueKey}): ${text}`);
+        seenTexts.add(text);
+      }
+    }
+
+    const result: Phase2Result = { ...raw, support };
+    if (date_floor !== null) result.date_floor = date_floor;
+    if (date_ceiling !== null) result.date_ceiling = date_ceiling;
+    return result;
   },
 
   p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any): Phase3Result {
@@ -3794,6 +3826,12 @@ if (missing.label_photo) {
 
     const style = styleFromForm || deriveStyleContext(digest) || styleFromObservation;
 
+    // Block 1 step 6: subtype + dimensional evaluators consume canonical FormEntry data.
+    // Anti-back wired in step 7 (needs dateFromEvidence numeric envelope).
+    const observationDescriptions = (digest.observations || []).map((o) => o.description || "");
+    const subtype = evaluateSubtype(form_id, observationDescriptions);
+    const dimensional_check = evaluateDimensional(form_id, intake);
+
     return {
       form,
       form_id,
@@ -3803,6 +3841,8 @@ if (missing.label_photo) {
       support: buildReportEvidenceSupport(digest, bestForm?.support || []),
       alternatives,
       alternative_form_ids,
+      subtype,
+      dimensional_check,
     };
   },
 
@@ -3990,6 +4030,25 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
 
   const conflicts: string[] = [];
   const resolutions: string[] = [];
+
+  // Block 1 step 7: B4 anti-back-classification check via canonical
+  // FormEntry.anti_classification_guidance. Surfaces guidance_text in conflicts
+  // + recommended reroute targets in resolutions when form's boundary_date
+  // is violated by the dating envelope.
+  const antiBack = evaluateAntiBackClassification(
+    form.form_id ?? null,
+    dating.date_floor ?? null,
+    dating.date_ceiling ?? null
+  );
+  if (antiBack) {
+    conflicts.push(`Anti-back-classification: ${antiBack.guidance_text}`);
+    const reroute = antiBack.reroute_form_ids.length
+      ? ` Suggested reroute: ${antiBack.reroute_form_ids.join(", ")}.`
+      : "";
+    resolutions.push(
+      `Form ${form.form_id} ${antiBack.boundary_type} boundary (${antiBack.boundary_date}) violated; pre-boundary identification preferred.${reroute}`
+    );
+  }
   const clues = new Set(digest.clue_keys || []);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 

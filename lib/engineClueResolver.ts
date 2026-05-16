@@ -113,3 +113,51 @@ export function getClueMetaFromCanonical(engineKey: string): ClueMeta | null {
 
   return metaFromCanonical(entry);
 }
+
+/**
+ * Block 1 step 7: return the canonical entry's diagnostic_caution_text (if any)
+ * for a given engine clue key. Used by dateFromEvidence post-process to surface
+ * canonical guidance in support arrays (e.g., substrate_evidence_plywood text
+ * replacing engine-hardcoded "post-1920" message per D-PH3-13 #3).
+ */
+export function getCanonicalCautionText(engineKey: string): string | null {
+  const canonicalId = CLUE_TO_CANONICAL[engineKey];
+  if (!canonicalId || canonicalId === NO_MATCH) return null;
+  if (!canonicalIndex) canonicalIndex = buildIndex();
+  const entry = canonicalIndex.get(canonicalId);
+  const text = entry?.diagnostic_caution_text;
+  return typeof text === "string" && text.length > 0 ? text : null;
+}
+
+/**
+ * Block 1 step 7: parse engine free-text date range strings into numeric
+ * { date_floor, date_ceiling } per D-PH3-13 #4. Handles common engine formats:
+ *   "c. 1830-1870" / "c. 1830–1870" → { 1830, 1870 }
+ *   "1700–1860"                     → { 1700, 1860 }
+ *   "post-1934"                     → { 1934, null }
+ *   "pre-1860"                      → { null, 1860 }
+ *   "late 19th to early 20th century" → null (no parse)
+ */
+export function parseRangeToNumeric(range: string | null | undefined): {
+  date_floor: number | null;
+  date_ceiling: number | null;
+} {
+  if (!range) return { date_floor: null, date_ceiling: null };
+  const r = String(range);
+  // Range form: "c. 1830-1870" / "c. 1830–1870" / "1700–1860"
+  const rangeMatch = r.match(/(\d{4})\s*[-–]\s*(\d{4})/);
+  if (rangeMatch) {
+    return { date_floor: parseInt(rangeMatch[1], 10), date_ceiling: parseInt(rangeMatch[2], 10) };
+  }
+  // Open-ended: "post-YYYY"
+  const postMatch = r.match(/post[-\s]+(\d{4})/i);
+  if (postMatch) {
+    return { date_floor: parseInt(postMatch[1], 10), date_ceiling: null };
+  }
+  // Open-ended: "pre-YYYY"
+  const preMatch = r.match(/pre[-\s]+(\d{4})/i);
+  if (preMatch) {
+    return { date_floor: null, date_ceiling: parseInt(preMatch[1], 10) };
+  }
+  return { date_floor: null, date_ceiling: null };
+}
