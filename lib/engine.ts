@@ -2,6 +2,13 @@ import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
 import { getClueMetaFromCanonical, ClueMeta } from "./engineClueResolver";
+import {
+  evaluateSubtype,
+  evaluateAntiBackClassification,
+  evaluateDimensional,
+  type SubtypeAssignment,
+  type AntiBackViolation,
+} from "./engineFormEvaluators";
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -102,6 +109,10 @@ type Phase3Result = {
   // Block 1 additive fields:
   form_id?: string | null;          // canonical form_id or null if NO_MATCH
   alternative_form_ids?: string[];  // canonical IDs for alternatives where they resolve
+  // Block 1 step 6 evaluator outputs:
+  subtype?: SubtypeAssignment | null;
+  anti_back_violation?: AntiBackViolation | null;
+  dimensional_check?: { ok: boolean; note: string } | null;
 };
 
 type Phase4Result = {
@@ -3794,6 +3805,12 @@ if (missing.label_photo) {
 
     const style = styleFromForm || deriveStyleContext(digest) || styleFromObservation;
 
+    // Block 1 step 6: subtype + dimensional evaluators consume canonical FormEntry data.
+    // Anti-back wired in step 7 (needs dateFromEvidence numeric envelope).
+    const observationDescriptions = (digest.observations || []).map((o) => o.description || "");
+    const subtype = evaluateSubtype(form_id, observationDescriptions);
+    const dimensional_check = evaluateDimensional(form_id, intake);
+
     return {
       form,
       form_id,
@@ -3803,6 +3820,8 @@ if (missing.label_photo) {
       support: buildReportEvidenceSupport(digest, bestForm?.support || []),
       alternatives,
       alternative_form_ids,
+      subtype,
+      dimensional_check,
     };
   },
 
