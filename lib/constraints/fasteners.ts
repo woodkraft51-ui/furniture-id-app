@@ -111,6 +111,14 @@ export interface FastenerSubcategoryEntry extends CanonicalEntry {
   period_associations: PeriodAssociation[];
   date_range_summary: string;
   assessment_layer: "frame" | "upholstery";
+  /** Frame-R3 dual-field optional addition per Block 0.5d D-PH3HCL-S4-3.
+   * Subcategory-tier restoration-contamination signal; parallels
+   * FastenerTypeEntry.replacement_likelihood. Optional on
+   * subcategory tier (unlike required on FastenerTypeEntry) — only
+   * populated where the subcategory itself carries restoration-
+   * contamination semantics independent of per-type variation
+   * (e.g., machine_staples per Mike Q2 staple-target confirmation). */
+  replacement_likelihood?: "low" | "medium" | "high";
 }
 
 /**
@@ -646,7 +654,7 @@ export const FASTENER_SUBCATEGORIES: FastenerSubcategoryEntry[] = [
     positive_authority: 7,
     hard_negative_authority: 7,
     indicator_text: "Mechanically-driven dual-leg upholstery staples; STRONGLY INDUSTRIAL upholstery indicator; restoration-contamination primary class per Rule #4. assessment_layer 'upholstery' per D-FA33-5 override.",
-    notes: "Per Fastener_Reference.docx SUBCATEGORY 3B: MACHINE STAPLES section. 7/7 per D-FA33-10 — restoration-contamination class; lower whole-piece-dating authority per D-AP32-3. assessment_layer 'upholstery' OVERRIDES parent category 'frame' default per D-FA33-5 dual-assessment architecture. Reupholstery-era staples are 'campaign evidence' for upholstery assessment but 'restoration contamination' if interpreted against frame dating per Rule #4 restoration_contamination operationalization.",
+    notes: "Per Fastener_Reference.docx SUBCATEGORY 3B: MACHINE STAPLES section. 7/7 per D-FA33-10 — restoration-contamination class; lower whole-piece-dating authority per D-AP32-3. assessment_layer 'upholstery' OVERRIDES parent category 'frame' default per D-FA33-5 dual-assessment architecture. Reupholstery-era staples are 'campaign evidence' for upholstery assessment but 'restoration contamination' if interpreted against frame dating per Rule #4 restoration_contamination operationalization. Frame-R3 dual-field population (D-PH3HCL-S4-3): replacement_likelihood \"high\" + original_persistence \"low\" per Block 0.5d Q4 lock + Mike Q2 staple-target confirmation; staples are easily added during later repair (high replacement_likelihood) AND don't persist as original construction (low original_persistence — categorical post-1945 industrial fastener).",
     name: "Machine Staples",
     parent_category_id: "fastener_category_staples",
     subcategory_description: "Mechanically-driven multi-prong upholstery staples.",
@@ -673,6 +681,8 @@ export const FASTENER_SUBCATEGORIES: FastenerSubcategoryEntry[] = [
     ],
     date_range_summary: "c. 1890–present. Dominant after c. 1950.",
     assessment_layer: "upholstery",
+    replacement_likelihood: "high",
+    original_persistence: "low",
   },
 ];
 
@@ -1069,7 +1079,7 @@ export const FASTENER_TYPES: FastenerTypeEntry[] = [
     positive_authority: 8,
     hard_negative_authority: 8,
     indicator_text: "Cross-recess power-driver-optimized wood screw with uniform industrial threading; STRONGLY INDUSTRIAL primary indicator per seed; AG floor 1935.",
-    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2C PHILLIPS-HEAD SCREWS > Phillips Wood Screw. 8/8 AG anchor per A-6. replacement_likelihood HIGH per A-5 (restoration-contamination primary indicator per Rule #4). AG floor 1935 per A-4 (seed 'c. 1935-present').",
+    notes: "Per Fastener_Reference.docx CATEGORY 2 SCREWS > SUBCATEGORY 2C PHILLIPS-HEAD SCREWS > Phillips Wood Screw. 8/8 AG anchor per A-6. replacement_likelihood HIGH per A-5 (restoration-contamination primary indicator per Rule #4). AG floor 1935 per A-4 (seed 'c. 1935-present'). Frame-R3 dual-field population (D-PH3HCL-S4-3): replacement_likelihood \"high\" + original_persistence \"high\" per Block 0.5d Q4 lock; both fields populated to capture restoration-contamination risk and rarely-replaced-when-original behavior.",
     name: "Phillips Wood Screw",
     parent_category_id: "fastener_category_screws",
     parent_subcategory_id: "fastener_subcategory_phillips_head_screws",
@@ -1091,6 +1101,7 @@ export const FASTENER_TYPES: FastenerTypeEntry[] = [
     date_range_summary: "c. 1935–present.",
     common_observed_locations: ["movable_hardware_attachment"],
     replacement_likelihood: "high",
+    original_persistence: "high",
     anti_classification_guidance: {
       boundary_date: 1935,
       boundary_type: "form_emergence",

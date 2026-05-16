@@ -982,6 +982,7 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
       },
     ],
     diagnostic_caution_text: "Hidden structural wood. Per File A Section 6 Hidden Secondary Woods by Era: secondary woods are often more diagnostically useful than show wood. Poplar appears consistently as secondary in Mid-Atlantic and Appalachian furniture. Inventory note: poplar pairs explicitly with walnut (Victorian dressers) and oak (Mission cabinets) per File A Section 6; broader pairing inventory (poplar as secondary for multiple primary woods) deferred to Block 26 WoodEvidenceReasoningRule capture per D-WE23a-2 5+ primary exception framework — Block 23a authors explicit Section 6 pairings only.",
+    notes: "HCL migration (D-PH3HCL-S4-2): per HCL `poplar_secondary` typical_date_range \"1820–1920\" + indicator_text \"Poplar as a secondary wood is particularly characteristic of nineteenth-century American furniture production, widely used from approximately 1820 through 1920.\"; content migrated from `lib/evidence.ts` HISTORICAL_CLUE_LIBRARY during Block 0.5d. Authoritative for this canonical entry; HCL prototype origin captured for cross-reference.",
   },
   {
     id: "wood_species_evidence_gumwood_group",
@@ -1343,6 +1344,8 @@ export const SUBSTRATE_EVIDENCE: SubstrateEvidenceEntry[] = [
     usage_role: ["carcass_panel", "veneer_substrate", "drawer_bottoms", "case_back"],
     usage_role_notes: "Per File A Section 2 Plywood row usage column: 'Panels, carcasses, veneer substrate, drawer bottoms, backs'. Block 23b D-WE23b-N closest-fallback enum mapping: Panels + Carcasses → carcass_panel; Veneer substrate → veneer_substrate; Drawer bottoms → drawer_bottoms; Backs → case_back.",
     diagnostic_caution_text: "Limited plywood suggests early 20th century or later; extensive plywood carcass usually postwar. Per File A Section 2 Plywood row diagnostic notes.",
+    original_persistence: "high",
+    notes: "Frame-R3 partial-field population (D-PH3HCL-S4-3): original_persistence \"high\" added per Block 0.5d Q4 lock; replacement_likelihood field intentionally NOT added per Q4 HARD-NEGATIVE — plywood is a categorical date disqualifier, not restoration-contamination evidence.",
   },
   {
     id: "substrate_evidence_hardboard_masonite",
@@ -2073,6 +2076,7 @@ export const CUT_GRAIN_EVIDENCE: CutGrainEvidenceEntry[] = [
       "style_family_mid_century_modern",
     ],
     diagnostic_caution_text: "Thick veneer is a useful but cautious dating signal. Look for veneer that is visibly thicker than modern paper-thin veneer, often around or above 1/16 inch, especially at chips, losses, lifted corners, worn edges, drawer fronts, case tops, panel edges, and exposed cross-sections. Thick veneer can support an earlier or higher-quality construction reading when it appears original, aged, hand-fitted, and bonded to an older solid-wood or traditional secondary substrate. It is especially helpful when paired with hand-cut joinery, early tool marks, old glue behavior, original finish, oxidation, and consistent wear. Do not classify a thick surface layer as early veneer without confirming that it is a separate applied face and not solid wood, edge banding, laminated plywood, a repair patch, or a later reveneering campaign. Also do not assume all thin veneer is modern or all thick veneer is antique. Thin veneer exists historically, and thick veneer can still appear in premium modern work, restoration, and custom furniture. The app should treat veneer thickness as a supporting clue and should date it through cut method, substrate, adhesive, edge evidence, grain continuity, finish history, and whether the veneer is original to the furniture.",
+    notes: "HCL migration (D-PH3HCL-S4-2): per HCL `thick_veneer` typical_date_range \"pre-1910\" + indicator_text \"Thicker veneer construction is associated with earlier veneer-cutting techniques prior to the adoption of modern rotary veneer methods, generally indicating pre-1910 production.\"; content migrated from `lib/evidence.ts` HISTORICAL_CLUE_LIBRARY during Block 0.5d. Authoritative for this canonical entry; HCL prototype origin captured for cross-reference.",
   },
 ];
 

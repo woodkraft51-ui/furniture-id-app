@@ -1,12 +1,12 @@
 # Style Observations Backlog
 
-This file captures form-specific style observations that were stripped from form entries during architectural correction (form-vs-style separation). Each entry below documents observable, datable style features that should be migrated to `HISTORICAL_CLUE_LIBRARY` in a future session, with appropriate date ranges and confidence weights.
+This file captures form-specific style observations that were stripped from form entries during architectural correction (form-vs-style separation). Each entry below documents observable, datable style features that should be migrated to the canonical clue libraries (toolmarks.ts, finish.ts, joinery.ts, fasteners.ts, woodEvidence.ts) in a future session, with appropriate date ranges and confidence weights.
 
-The architectural rationale: forms.ts stays period-agnostic. Style attribution emerges from feature observation at the style-family-detection layer. Form-specific style features therefore belong in the historical clue library where they can be tied to dating logic, not on form entries where they would couple form data to style data inappropriately.
+The architectural rationale: forms.ts stays period-agnostic. Style attribution emerges from feature observation at the style-family-detection layer. Form-specific style features therefore belong in the canonical clue libraries where they can be tied to dating logic, not on form entries where they would couple form data to style data inappropriately.
 
 ## Migration target
 
-`lib/constraints/historicalClueLibrary.ts` (or successor canonical clue library file once that work is scheduled).
+The canonical clue libraries: `lib/constraints/toolmarks.ts`, `lib/constraints/finish.ts`, `lib/constraints/joinery.ts`, `lib/constraints/fasteners.ts`, `lib/constraints/woodEvidence.ts` (forward-applicable per Block 0.5d forward-reference scrub; the historical clue library prototype was deleted with `lib/evidence.ts` during Block 0.5d).
 
 ---
 

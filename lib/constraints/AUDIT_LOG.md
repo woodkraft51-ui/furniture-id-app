@@ -3894,3 +3894,35 @@ The `refinished_surface` entry intentionally omits `original_persistence?` per M
 - Next: Block 0.5d (M2 migration + M4 Frame-R3 dual-field + forward-ref scrub + `evidence.ts` deletion + D-AR8B-6 correction) on Mike's authorization. With 0.5a + 0.5c + 0.5b shipped, evidence.ts orphan can now be deleted cleanly because all HCL content has been migrated to canonical libraries.
 
 ---
+
+# PHASE 3 BLOCK 0.5d — M2 + M4 + scrub + evidence.ts deletion (D-PH3HCL-S4-N range)
+
+## D-PH3HCL-S4-1 — Block scope
+Final Path A sub-block: 17 M2 notes-extensions (16 A-2 keys + 1 CWT frame_and_panel) + M4 Frame-R3 dual-field on 3 fastener/substrate entries + 31 forward-reference scrub + evidence.ts deletion + D-AR8B-6 correction. CWT extension #18 solid_board_drawer_bottom DROPPED per Mike's mid-batch resolution (no clean canonical target; not authored inline this block).
+
+## D-PH3HCL-S4-2 — M2 migration per A-2-locked mapping
+Used the original Block 0 Op A A-2 M2 mapping (16 keys) per Mike's Q1 lock. The prompt's alternative M2 list was discarded — it contained 5 M1-classified fasteners (direct match, no migration needed) plus non-HCL keys. 17 notes-extensions applied total: 16 HCL keys + 1 CWT extension (frame_and_panel). Each extension preserves existing notes content verbatim and appends an attribution clause naming HCL key, typical_date_range, and indicator_text (or CWT base + replacement_risk + reason for the CWT extension).
+
+## D-PH3HCL-S4-3 — M4 Frame-R3 dual-field
+Three target entries received Frame-R3 fields per Q4 lock:
+- fastener_type_phillips_wood_screw: replacement_likelihood "high" + original_persistence "high"
+- fastener_subcategory_machine_staples: replacement_likelihood "high" + original_persistence "low" (Mike's Q2 staple-target confirmation)
+- substrate_evidence_plywood: original_persistence "high" ONLY; replacement_likelihood field intentionally NOT added per Q4 HARD-NEGATIVE — plywood is a categorical date disqualifier rather than restoration-contamination evidence.
+
+## D-PH3HCL-S4-4 — Forward-reference scrub
+31 forward-references to HISTORICAL_CLUE_LIBRARY scrubbed across forms.ts (24), constructionLogic.ts (5), and _style_observations_backlog.md (2). Replacement text names the actual canonical libraries that now host the clue content: toolmarks.ts, finish.ts, joinery.ts, fasteners.ts, woodEvidence.ts. AUDIT_LOG.md HCL references preserved unchanged as historical-decision-marker records.
+
+## D-PH3HCL-S4-5 — evidence.ts deletion
+lib/evidence.ts (554-line orphan) DELETED. HISTORICAL_CLUE_LIBRARY content (35 keys) fully migrated across Path A series (0.5a schema + 0.5c new entries + 0.5b authoritative content + 0.5d M2/M4 + drop). CLUE_WEIGHT_TABLE (45 keys) abandoned per Block 0 held-back default (no production consumers; weighting will be re-derived in Block 1 Foundation). 9 utility functions abandoned. Zero production consumers existed at deletion time (verified at Block 0 Op A inspection).
+
+## D-AR8B-6 CORRECTION
+Audit correction: the original D-AR8B-6 entry (recorded under the Phase 3 audit-recovery series) characterized HCL/CWT as "Phase 2 closed — orphan held back per safety default." That framing was incomplete. Corrected framing: HCL/CWT were 35+45 prototype orphans whose 35 HCL content keys carried real appraiser-knowledge value worth migrating to canonical libraries (executed across Block 0.5 Path A series); CWT weighting content is deferred to Block 1 Foundation re-derivation rather than literal migration. Phase 2's "actually closed" status was therefore conditional on Path A completion. With Block 0.5d shipped, Phase 2 is now ACTUALLY FULLY CLOSED.
+
+## D-PH3HCL-S4-6 — Phase 2 fully-closed framing
+With Block 0.5d shipped, all 4 Path A sub-blocks (0.5a / 0.5c / 0.5b / 0.5d) are complete. 21 new canonical entries authored across the Path A series; HCL content fully migrated; evidence.ts orphan deleted. Phase 2 is now ACTUALLY FULLY CLOSED (correcting the D-AR8B-6 conditional close).
+
+## D-PH3HCL-S4-7 — Forward-applicable conventions
+Patterns 5/8/9/10 (recursive gap discovery / prefix-mismatch / vocabulary granularity drift / shape mismatch) + AG1 (anti-classification guidance) + Frame-R3 (dual-field restoration-contamination + persistence) + Sub-A (substrate-FK NO_MATCH preserved-in-prose) + S2-10 alteration-evidence pattern (e.g., refinished_surface intentionally omits original_persistence) all confirmed as forward-applicable conventions for Block 1 Foundation and beyond.
+
+## D-PH3HCL-FINAL — Path A series CLOSED
+Closes the Path A series. 4 sub-blocks shipped; 21 new canonical entries authored; 17 M2 notes-extensions applied; 3 M4 Frame-R3 entries populated; 31 forward-refs scrubbed; evidence.ts deleted (554 lines removed); D-AR8B-6 corrected. PHASE 2: NOW ACTUALLY FULLY CLOSED. Next: Block 1 Foundation on Mike's authorization (W0a binding + W0b field-naming + W4 absorbed + tests + weighting.ts deletion).
