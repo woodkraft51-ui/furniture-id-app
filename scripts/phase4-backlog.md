@@ -194,6 +194,36 @@ verification surface expands. Estimated 1-2 hours per fixture.
 
 ---
 
+## P4-10 — Required core photos UX clarity
+
+**Surfaced during**: Block 6 verification (2026-05-16) — Mike attempted
+to run Full Analysis with the Toledo chair, found Run button grayed
+out because his photos went into Additional Evidence slots rather
+than the required "Overall Front *" and "Overall Side / Profile *"
+core slots. Mike's note: asterisks ARE marked but the requirement
+isn't obvious enough; if Mike tripped on it, day-one users will too.
+
+**Problem**: Full Analysis Run button gating in app/page.tsx:899
+requires both `coreImages.overall_front` and `coreImages.overall_side`
+populated. The two slots are marked with red asterisks but:
+- No inline message explains WHY the button is disabled
+- No visual progress indicator shows how many required slots are filled
+- The asterisks are subtle; users who upload to the wrong slots get
+  silent rejection (grayed Run button) rather than guidance
+
+**Fix scope**:
+- Add a status line near the Run button that explicitly lists which
+  required slots are still empty (e.g., "Add a photo to: Overall
+  Front, Overall Side / Profile to enable analysis")
+- OR: visual indicator on each required slot showing fill state
+  (green check vs red required-X)
+- OR: tooltip on the grayed Run button explaining the gate
+- Estimated 1-2 hours
+
+**Priority**: Pre-launch UX. Hits day-one users.
+
+---
+
 ## P4-9 — Phase 3 architecture documentation update
 
 **Status**: scripts/phase3-decomposition.md was authored 2026-05-16
