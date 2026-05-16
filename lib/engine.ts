@@ -9,6 +9,7 @@ import {
   type SubtypeAssignment,
   type AntiBackViolation,
 } from "./engineFormEvaluators";
+import { attributeStyle, type StyleAttribution } from "./engineStyleEvaluator";
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -113,6 +114,9 @@ type Phase3Result = {
   subtype?: SubtypeAssignment | null;
   anti_back_violation?: AntiBackViolation | null;
   dimensional_check?: { ok: boolean; note: string } | null;
+  // Block 2a: structured style attribution from styleFamilies.ts
+  style_attribution?: StyleAttribution | null;
+  style_alternatives?: StyleAttribution[]; // up to 3 lower-confidence attributions
 };
 
 type Phase4Result = {
@@ -3824,13 +3828,23 @@ if (missing.label_photo) {
       ? styleAsFormPrimary.form.replace(/\s+furniture$/i, "").trim()
       : null;
 
-    const style = styleFromForm || deriveStyleContext(digest) || styleFromObservation;
-
     // Block 1 step 6: subtype + dimensional evaluators consume canonical FormEntry data.
     // Anti-back wired in step 7 (needs dateFromEvidence numeric envelope).
     const observationDescriptions = (digest.observations || []).map((o) => o.description || "");
     const subtype = evaluateSubtype(form_id, observationDescriptions);
     const dimensional_check = evaluateDimensional(form_id, intake);
+
+    // Block 2a: structured style attribution from styleFamilies.ts.
+    // Falls back to engine-derived style strings when no canonical match.
+    const styleRanked = attributeStyle(digest.clue_keys || [], observationDescriptions);
+    const style_attribution = styleRanked[0] ?? null;
+    const style_alternatives = styleRanked.slice(1, 4);
+
+    // style_context string: prefer canonical attribution name, then engine-derived fallback.
+    const style = style_attribution?.name
+      || styleFromForm
+      || deriveStyleContext(digest)
+      || styleFromObservation;
 
     return {
       form,
@@ -3843,6 +3857,8 @@ if (missing.label_photo) {
       alternative_form_ids,
       subtype,
       dimensional_check,
+      style_attribution,
+      style_alternatives,
     };
   },
 
