@@ -6,6 +6,7 @@ import {
   evaluateSubtype,
   evaluateAntiBackClassification,
   evaluateDimensional,
+  getCommonAliasesForDisplay,
   type SubtypeAssignment,
   type AntiBackViolation,
 } from "./engineFormEvaluators";
@@ -3848,10 +3849,19 @@ if (missing.label_photo) {
       || deriveStyleContext(digest)
       || styleFromObservation;
 
+    // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
+    // canonical form has aliases. Surfaces user-trust language without surrendering
+    // canonical identification ("Identified as buffet (also commonly called sideboard)").
+    const aliases = getCommonAliasesForDisplay(form_id, 2);
+    const styledForm = style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form;
+    const display_form = aliases.length
+      ? `${styledForm} (also commonly called: ${aliases.join(", ")})`
+      : styledForm;
+
     return {
       form,
       form_id,
-      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form,
+      display_form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
       support: buildReportEvidenceSupport(digest, bestForm?.support || []),
