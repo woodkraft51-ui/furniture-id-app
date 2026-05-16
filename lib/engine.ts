@@ -6,9 +6,11 @@ import {
   evaluateSubtype,
   evaluateAntiBackClassification,
   evaluateDimensional,
+  evaluateHybridForm,
   getCommonAliasesForDisplay,
   type SubtypeAssignment,
   type AntiBackViolation,
+  type HybridAnnotation,
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleWaveAttribution } from "./engineStyleEvaluator";
 import { buildDatingOverlap, type DatingOverlapData } from "./engineDatingOverlap";
@@ -138,6 +140,8 @@ type Phase3Result = {
   style_alternatives?: StyleAttribution[]; // up to 3 lower-confidence attributions
   // Block 2b: style-wave aggregator output (≥2-of-N rule per D-PH3-9)
   style_waves?: StyleWaveAttribution[];
+  // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
+  hybrid?: HybridAnnotation | null;
 };
 
 type Phase4Result = {
@@ -3857,6 +3861,12 @@ if (missing.label_photo) {
     const subtype = evaluateSubtype(form_id, observationDescriptions);
     const dimensional_check = evaluateDimensional(form_id, intake);
 
+    // Block 4 B5: hybrid form annotation (mule chest → chest of drawers +
+    // blanket chest hybrid). Only fires when FormEntry.secondary_form_associations
+    // is populated (currently 1 form per Path A audit; expands as canonical
+    // authoring surfaces additional hybrid identities).
+    const hybrid = evaluateHybridForm(form_id);
+
     // Block 2a: structured style attribution from styleFamilies.ts.
     // Falls back to engine-derived style strings when no canonical match.
     const styleRanked = attributeStyle(digest.clue_keys || [], observationDescriptions);
@@ -3891,6 +3901,7 @@ if (missing.label_photo) {
       dimensional_check,
       style_attribution,
       style_alternatives,
+      hybrid,
     };
   },
 
