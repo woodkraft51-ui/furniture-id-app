@@ -3839,3 +3839,58 @@ AG1 caution_text migration: 5 observation-discipline caution statements (4 joine
 - Next: Block 0.5b (toolmarks + finish content population) on Mike's authorization. Toolmark entries' NEW_IN_BLOCK FKs to the 4 new joinery types now resolve cleanly because 0.5c shipped first.
 
 ---
+## Phase 3 Block 0.5b — Toolmarks + finish library content population (Path A sub-block 3 of 4)
+## Session 18+ / claude.ai-and-Claude-Code paired execution
+## Base SHA: main f6bb190 (Block 0.5c endpoint)
+
+Block 0.5b populates the empty toolmarks.ts + finish.ts library shells created in Block 0.5a with 14 new canonical entries (6 toolmark + 8 finish). Closes the Phase 2 toolmarks + finish library gaps identified in Block 0 HCL/evidence.ts orphan inspection. All FK cross-references resolve cleanly thanks to Path A reorder (0.5c shipped first, so the 4 new joinery types referenced by toolmark entries exist canonically). `lib/engine.ts` + `lib/constraints/styleFamilies.ts` + `lib/constraints/forms.ts` + `lib/evidence.ts` + the Block 0.5a-modified files (entryShape.ts) and 0.5c-modified files (joinery.ts, hardware.ts, woodEvidence.ts, woodIdentification.ts) UNCHANGED. 3 files modified.
+
+### D-PH3HCL-S2-1 (locked): Block 0.5b scope per Path A sub-block 3 of 4
+14 new canonical entries authored across 2 library files: 6 toolmark entries (2 categories + 4 types) + 8 finish entries (3 categories + 5 types). Sub-block 3 in Path A sequence (0.5a → 0.5c → 0.5b → 0.5d). Reorder rationale: 0.5c shipped before 0.5b so toolmark entries' `related_joinery_types` FKs to factory_case_construction / glued_and_nailed_casework / dado_joint / plywood_drawer_bottom resolve cleanly (rather than as NEW_IN_BLOCK forward-references). Audit prefix `D-PH3HCL-S2-N`. Branch `feat/block-0-5b-toolmarks-finish-content`. No PR.
+
+### D-PH3HCL-S2-2 (locked): toolmarks.ts populated
+- **2 categories**: `toolmark_category_saw_marks` (7/7; category_kind "saw_marks"), `toolmark_category_plane_marks` (7/7; category_kind "plane_marks").
+- **4 types**: `toolmark_type_pit_saw_marks` (8/8; hand_vs_machine "strongly_early"; pre-1830 anchor with rural persistence to 1870), `toolmark_type_circular_saw_arcs` (8/8; "strongly_industrial"; post-1830 broad, post-1880 dominant), `toolmark_type_band_saw_lines` (8/8; "strongly_industrial"; post-1850 broad, post-1870 dominant), `toolmark_type_hand_plane_chatter` (7/7; "strongly_early"; pre-1880 strongest, persists in craft/repair/custom contexts).
+- All 4 types `assessment_layer: "frame"`. Closes Phase 2 toolmarks-library gap surfaced in Block 0 HCL inspection (HCL contained 4 toolmark keys with no canonical home).
+
+### D-PH3HCL-S2-3 (locked): finish.ts populated
+- **3 categories**: `finish_category_natural_finish` (6/6; category_kind "natural_finish"), `finish_category_synthetic_finish` (7/7; "synthetic_finish"), `finish_category_alteration_finish` (8/8; "alteration_finish").
+- **5 types**: `finish_type_shellac_crazing` (7/7; finish_chemistry "shellac"; 1800-1920 strongest), `finish_type_polyurethane` (8/8; "polyurethane"; post-1960 hard-negative for pre-1960 claims), `finish_type_shellac_intact` (6/6; "shellac"; 1800-1920 strongest as preserved finish), `finish_type_oil_finish_patina` (6/6; "oil"; broad all-era), `finish_type_refinished_surface` (8/8; "other"; alteration evidence spans all eras).
+- All 5 types `assessment_layer: "frame"`. Closes Phase 2 finish-library gap (2 HCL keys + 3 CWT-only keys with no canonical home).
+
+### D-PH3HCL-S2-4 (locked): FK substitutions applied per validation pass 1
+Across the 4 toolmark types' `related_joinery_types` + `related_fastener_types` arrays: `pinned_mortise_and_tenon → pegged_mortise_and_tenon` (canonical synonym); `mortise_and_tenon → joinery_category_mortise_and_tenon_family` (granularity downgrade — category-tier substitute when type-level overdetermined); `hand_fitted_drawer_construction → hand_cut_drawer_dovetails` (dominant hand-fitted joint); `machine_cut_dovetails → machine_cut_drawer_dovetails` (canonical "drawer" qualifier); `machine_screws → fastener_subcategory_machine_cut_screws` (canonical naming); `hand_cut_or_filed_screws → fastener_subcategory_handmade_screws` (canonical naming); Q1=D cut-nail type-tier upgrades: `early_cut_nails → fastener_type_early_hand_headed_cut_nail` + `machine_cut_nails → fastener_type_machine_headed_cut_nail`; `doweled_factory_construction → joinery_type_dowel_joinery` substitute.
+
+### D-PH3HCL-S2-5 (locked): Q2 type-tier upgrades to 0.5c-authored joinery types
+`circular_saw_arcs` + `band_saw_lines` now FK directly to `joinery_type_factory_case_construction` + `joinery_type_glued_and_nailed_casework` (and `circular_saw_arcs` also FKs to `joinery_type_factory_case_construction` + `joinery_type_glued_and_nailed_casework`; `band_saw_lines` FKs to `joinery_type_factory_case_construction` + `joinery_type_dowel_joinery`). Per Q2 lock — appraiser-fidelity preserved at canonical type-tier rather than category-tier substitutes. NEW_IN_BLOCK forward-references that drove Path A reorder are now resolved canonically because 0.5c shipped first.
+
+### D-PH3HCL-S2-6 (locked): PositionOnPiece reshape applied (Decision 1 = L2)
+46+ location strings across the 9 type entries (4 toolmark + 5 finish) mapped to canonical 34-value PhysicalLocation enum + appraiser-specific `physical_location_notes` supplements. Examples: "drawer bottom" → `drawer_bottom`; "case back" → `case_back`; "backboard" → `backboard`; "secondary structural board" → `case_interior_framing` + notes; "later replacement component" → `case_carcass` + notes; "curved cutout component" → `show_surface` + notes; "stretcher member" → `frame_rail` + notes; "protected edge" → `edge_or_corner_protection` + notes; "carved detail surface" → `trim_or_molding` + notes; "high-wear use surface" → `show_surface` + notes; "refinished show surface" → `show_surface` + notes; "hardware shadow on show surface" → `show_surface` + notes; "foot" → `foot_or_leg` + notes. All location strings preserve Mike's appraiser-specific descriptive intent via the supplement field per Section 2 mapping.
+
+### D-PH3HCL-S2-7 (locked): caution_text migration applied (AG1 lock)
+9 observation-discipline caution statements (4 toolmark types + 5 finish types) authored in `caution_text?` field (inherits from CanonicalEntry per Block 0.5a Op B-1). AntiClassificationGuidance 4-field shape preserved unused per AG1 lock (continues to serve forms.ts crisp-date back-classification only).
+
+### D-PH3HCL-S2-8 (locked): finish_chemistry closed enum populated per Q1 lock
+5 finish type entries populate the closed enum: `shellac_crazing` → "shellac"; `polyurethane` → "polyurethane"; `shellac_intact` → "shellac"; `oil_finish_patina` → "oil"; `refinished_surface` → "other" (refinishing IS the alteration; chemistry can vary across refinishing campaigns so "other" is the appraiser-honest classification).
+
+### D-PH3HCL-S2-9 (locked): is_alteration_evidence populated on 5 finish type entries
+`refinished_surface` = `true` (consistent with `finish_category_alteration_finish` boundary); the other 4 finish types = `false` (natural and synthetic finishes can be original or replacement; the field flags the alteration-as-its-own-phenomenon class only). Toolmark entries do not populate this field (not applicable — toolmarks are production-surface evidence, not alteration evidence).
+
+### D-PH3HCL-S2-10 (locked): refinished_surface omits original_persistence intentionally
+The `refinished_surface` entry intentionally omits `original_persistence?` per Mike's authoring intent — the field doesn't semantically apply to alteration-as-its-own-phenomenon evidence (refinishing IS the alteration; the "is this rarely replaced when present?" question is malformed for an alteration-identity entry). Captured as a forward-applicable design pattern: alteration-evidence entries may omit `original_persistence?` when the field doesn't semantically apply to the alteration class.
+
+### D-PH3HCL-S2-FINAL (post-execution summary)
+- 3 files modified: `toolmarks.ts` (populated from empty shells → 2 categories + 4 types + 0 rules), `finish.ts` (populated → 3 categories + 5 types + 0 rules), `AUDIT_LOG.md` (append).
+- TOOLMARK_CATEGORIES: 0 → **2**; TOOLMARK_TYPES: 0 → **4**; FINISH_CATEGORIES: 0 → **3**; FINISH_TYPES: 0 → **5**. Net **+14 new canonical entries**.
+- tsc clean after each sub-batch (B-2a, B-2b) and after Op C audit append.
+- All existing canonical libraries compile unchanged.
+- `lib/engine.ts`: UNCHANGED (must remain 4098 lines).
+- `lib/constraints/styleFamilies.ts`: UNCHANGED (must remain 3221 lines).
+- `lib/constraints/forms.ts`: UNCHANGED in 0.5b (M2 migration deferred to 0.5d).
+- `lib/evidence.ts`: UNCHANGED (deletion deferred to 0.5d).
+- All 0.5c-modified files (joinery.ts, hardware.ts, woodEvidence.ts, woodIdentification.ts) and 0.5a-modified files (entryShape.ts): UNCHANGED.
+- 11 D-PH3HCL-S2-N decisions captured (S2-1 through S2-10 + S2-FINAL).
+- **PHASE 3 BLOCK 0.5b: CLOSED.** 6 toolmark + 8 finish entries landed cleanly; Phase 2 toolmarks + finish library gaps closed.
+- Next: Block 0.5d (M2 migration + M4 Frame-R3 dual-field + forward-ref scrub + `evidence.ts` deletion + D-AR8B-6 correction) on Mike's authorization. With 0.5a + 0.5c + 0.5b shipped, evidence.ts orphan can now be deleted cleanly because all HCL content has been migrated to canonical libraries.
+
+---
