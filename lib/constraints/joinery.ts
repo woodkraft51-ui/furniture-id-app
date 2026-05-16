@@ -26,6 +26,7 @@ import type {
   PeriodAssociation,
   AntiClassificationGuidance,
   ReasoningRuleMigrationTarget,
+  PositionOnPiece,
 } from "./entryShape";
 
 /**
@@ -112,6 +113,31 @@ export interface JoineryTypeEntry extends CanonicalEntry {
     | AntiClassificationGuidance
     | AntiClassificationGuidance[];
   related_joinery_types?: string[];
+
+  /** Block 0.5a additions per Path A schema foundation (D-PH3HCL-S1-N) */
+
+  /** Engine assessment-layer routing. Per Phase 2 D-FA34-N convention,
+   * canonical entries declare which assessment layer the engine routes
+   * them to. Default "frame" for most joinery; "upholstery" possible for
+   * furniture-specific joinery edge cases. Existing 40 joinery type
+   * entries omit this field (engine defaults to "frame" routing); new
+   * joinery type entries authored in Block 0.5c may set explicitly. */
+  assessment_layer?: "frame" | "upholstery" | "style_and_waves";
+
+  /** Cross-library FK array to fasteners.ts type entries. Joinery often
+   * co-occurs with specific fastener types (e.g., dovetail joinery with
+   * cut nails); this field captures the co-occurrence relationships.
+   * Bare-string array of fastener_type_* or fastener_subcategory_* ids.
+   * Resolved at engine-layer Phase 3 by name-matching. */
+  related_fastener_types?: string[];
+
+  /** Structured location array per Decision 1 = L2 (Block 0.5 schema
+   * inspection AG1 lock). Each location object pairs a canonical
+   * PhysicalLocation enum value with optional appraiser-specific
+   * descriptive supplement (physical_location_notes). Replaces the
+   * common_observed_locations bare-string pattern for joinery types
+   * authored with finer-grained appraiser-knowledge nuance. */
+  position_on_piece?: PositionOnPiece[];
 }
 
 /**

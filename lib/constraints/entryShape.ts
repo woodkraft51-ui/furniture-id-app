@@ -37,6 +37,36 @@ export interface CanonicalEntry {
   hard_negative?: boolean;
   migration_status?: "complete" | "partial" | "needs_review";
   notes?: string;
+
+  /** Frame-R3 ORIGINAL-PIECE-PERSISTENCE frame (D-PH3HCL-S1-N). Captures
+   * "is this evidence rarely replaced when present?" — the HCL framing
+   * preserved alongside replacement_likelihood's restoration-contamination
+   * framing. Two-field design preserves both semantics:
+   * - replacement_likelihood: "is this commonly INTRODUCED via restoration?"
+   *   (high = likely later-introduced; suspect for dating)
+   * - original_persistence: "is this rarely REPLACED when originally
+   *   present?" (high = trust the date this evidence gives; persists
+   *   across the piece's life)
+   * Both fields are optional and additive; existing canonical entries
+   * are not breaking-changed by this addition. */
+  original_persistence?: "low" | "medium" | "high";
+
+  /** Forward-applicable optional field flagging that this canonical entry
+   * captures alteration evidence rather than original-condition evidence
+   * (D-PH3HCL-S1-N). When true, the entry's date_range and dating
+   * implications refer to the alteration intervention, not to the
+   * underlying piece's original manufacture. Forward-applicable across
+   * canonical libraries; promoted from finish-local field design during
+   * Block 0.5 Op A. */
+  is_alteration_evidence?: boolean;
+
+  /** Observation-discipline caution text (D-PH3HCL-S1-N AG1 lock). Used
+   * for "do not classify X as Y" interpretive rules at observation time.
+   * Structurally distinct from AntiClassificationGuidance (which captures
+   * crisp-date back-classification boundaries with required boundary_date
+   * + boundary_type). caution_text captures non-date-bounded observation
+   * cautions. Forward-applicable across canonical libraries. */
+  caution_text?: string;
 }
 
 /**

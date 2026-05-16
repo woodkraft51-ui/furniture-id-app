@@ -3724,3 +3724,57 @@ Session 8b was the end-of-Phase-2 reconciliation pass gate work item per D-AR29-
 - **PHASE 2 SESSION 8b: CLOSED.** **PHASE 2: FULLY CLOSED.** Next: Phase 3 engine architecture reshape per D-AP32-4.
 
 ---
+## Phase 3 Block 0.5a — Schema Foundation (Path A first sub-block)
+## Session 18+ / claude.ai-and-Claude-Code paired execution
+## Base SHA: main 90fa53a (Session 8b endpoint / Phase 2 FULLY CLOSED)
+
+Path A schema foundation for the Block 0.5 HCL migration. Bounded mechanical scope: 4 schema additions + 2 new library shells + audit log. No content authoring. No FK substitutions. No M2 migration. No forward-ref scrub. No `evidence.ts` deletion (all deferred to Blocks 0.5b/c/d per Path A). 7 files modified; tsc clean throughout. `lib/engine.ts` + `lib/constraints/styleFamilies.ts` + `lib/constraints/forms.ts` + `lib/evidence.ts` UNCHANGED.
+
+### D-PH3HCL-S1-1 (locked): Block 0.5a scope per Path A schema foundation
+First of 4 sub-blocks split from Block 0.5 per the gap-finding sweep A-7 divergence diagnostic (validation work was diverging, not converging — Pattern 5 recursive gap discovery surfaced 1-3 additional Phase 2 oversights per content-authoring round). Audit prefix `D-PH3HCL-S1-N`. Branch `feat/block-0-5a-schema-foundation`. No PR (claude.ai handles post-merge sync prompt). Subsequent sub-blocks: 0.5b (toolmarks + finish content), 0.5c (new joinery + hardware + woodEvidence entries), 0.5d (M2 migration + M4 Frame-R3 dual-field + forward-ref scrub + `evidence.ts` deletion + D-AR8B-6 correction).
+
+### D-PH3HCL-S1-2 (locked): entryShape.ts CanonicalEntry additions
+Three optional fields added to the `CanonicalEntry` base interface (entryShape.ts line 36 area; after `notes?`):
+- `original_persistence?: "low" | "medium" | "high"` — Frame-R3 ORIGINAL-PIECE-PERSISTENCE frame (third FK pass A-2 + Block 0.5 Op A Q3 lock). Captures "is this evidence rarely replaced when present?" — HCL framing preserved alongside `replacement_likelihood`'s restoration-contamination framing. Two-field design preserves both semantics.
+- `is_alteration_evidence?: boolean` — forward-applicable per Q1 promotion from finish-local field design. Flags entries that capture alteration intervention dating rather than original manufacture.
+- `caution_text?: string` — AG1 lock; observation-discipline caution distinct from `AntiClassificationGuidance` (which captures crisp-date back-classification with required `boundary_date` + `boundary_type`). `caution_text` captures non-date-bounded observation cautions ("do not classify X as Y" rules).
+All 3 fields optional + additive; 678+ existing canonical entries inherit them without breakage. tsc clean after edit.
+
+### D-PH3HCL-S1-3 (locked): CutGrainUsageRole enum extension (5 → 11 values)
+woodEvidence.ts line 147 area. Extended per third FK validation pass A-2 vocabulary granularity finding. Original 5 values preserved (`veneer_face`, `inlay_or_banding`, `premium_solid`, `decorative_accent`, `specialized_use`); 6 new values added per Mike's appraiser-vocabulary surfacing during HCL migration: `decorative_face`, `premium_solid_substitute`, `show_surface`, `figured_wood_economy`, `substrate_covering`, `repair_or_reveneering_evidence`. Additive; existing CutGrainEvidenceEntry usages of the original 5 values continue to compile.
+
+### D-PH3HCL-S1-4 (locked): JoineryTypeEntry interface additions
+joinery.ts line 95 area. Three optional fields added per Block 0.5 schema inspection:
+- `assessment_layer?: "frame" | "upholstery" | "style_and_waves"` — engine routing field; existing 40 joinery type entries omit it (default "frame"); Block 0.5c new joinery type entries may set explicitly.
+- `related_fastener_types?: string[]` — cross-library FK array to fasteners.ts type entries for joinery-fastener co-occurrence relationships.
+- `position_on_piece?: PositionOnPiece[]` — structured location array per Decision 1 = L2. `PositionOnPiece` added to the file's import list from `./entryShape`.
+`replacement_likelihood` is NOT added inline (inherits from CanonicalEntry per S1-2). 40 existing joinery type entries compile unchanged.
+
+### D-PH3HCL-S1-5 (locked): HardwareTypeEntry interface addition
+hardware.ts line 134 area. One optional field added per third FK pass A-4 Shape-R2:
+- `position_on_piece?: PositionOnPiece[]` — structured location array per Decision 1 = L2. Coexists with the existing bare-string `common_observed_locations?: PhysicalLocation[]` (preserved for the 61 existing hardware type entries that use it). New hardware type entries authored with finer-grained appraiser-knowledge nuance use `position_on_piece`.
+`PositionOnPiece` added to the file's import list. 61 existing hardware type entries compile unchanged.
+
+### D-PH3HCL-S1-6 (locked): NEW FILE `lib/constraints/toolmarks.ts`
+Empty library shell with 3 locked interfaces (`ToolmarkCategoryEntry` with `category_kind` enum, `ToolmarkTypeEntry` with `assessment_layer: "frame"` + `hand_vs_machine_classification` reused from joinery, `ToolmarkReasoningRule`), 3 empty arrays (`TOOLMARK_CATEGORIES`, `TOOLMARK_TYPES`, `TOOLMARK_REASONING_RULES`), 1 library-level constant (`TOOLMARK_ASSESSMENT_LAYER = "frame" as const`). 75 lines. Ready for Block 0.5b content population. Closes the Phase 2 toolmarks-library gap surfaced in Block 0 HCL inspection (HCL contained 4 toolmark keys without canonical home).
+
+### D-PH3HCL-S1-7 (locked): NEW FILE `lib/constraints/finish.ts`
+Empty library shell with 3 locked interfaces (`FinishCategoryEntry` with `category_kind` enum, `FinishTypeEntry` with `finish_chemistry` closed enum of 8 values, `FinishReasoningRule`), 3 empty arrays, 1 library-level constant (`FINISH_ASSESSMENT_LAYER = "frame" as const`). 76 lines. `is_alteration_evidence?` inherits from CanonicalEntry per S1-2 (no inline declaration needed). Closes the Phase 2 finish-library gap surfaced in Block 0 (2 HCL finish keys + 3 CWT finish keys without canonical home).
+
+### D-PH3HCL-S1-8 (locked): Path A architectural reframe captured
+Block 0.5 split into 4 sub-blocks per the comprehensive gap-finding sweep A-7 convergence diagnostic. The original Block 0.5 scope had accumulated ~14 schema modification surfaces + ~30 FK substitutions + 7 new canonical entries + 2 new libraries + `evidence.ts` deletion + 31 forward-ref scrubs — no longer a single coherent block. Path A bounds each sub-block to a coherent scope: 0.5a (schema; this block) / 0.5b (toolmarks + finish content) / 0.5c (new joinery + hardware + woodEvidence entries) / 0.5d (M2 migration + M4 + scrub + deletion). Pattern 5 (recursive canonical gap discovery) becomes block-local rather than cross-block; each sub-block can ship clean before the next begins.
+
+### D-PH3HCL-S1-FINAL (post-execution summary)
+- 7 files modified: 4 schema additions (entryShape.ts, woodEvidence.ts, joinery.ts, hardware.ts) + 2 new files (toolmarks.ts, finish.ts) + audit log.
+- tsc clean across all 6 sub-batches (B-1 through B-6) and after Op C audit append.
+- All existing canonical libraries unchanged: 678+ canonical entries inherit new optional fields without breakage; 40 joinery type entries compile unchanged; 61 hardware type entries compile unchanged; CutGrainEvidenceEntry usages of original 5 enum values continue to compile.
+- `lib/engine.ts`: UNCHANGED (must remain 4098 lines).
+- `lib/constraints/styleFamilies.ts`: UNCHANGED (must remain 3221 lines; Phase 2 Session 9 closure preserved).
+- `lib/constraints/forms.ts`: UNCHANGED in 0.5a (M2 migration deferred to 0.5d).
+- `lib/evidence.ts`: UNCHANGED (deletion deferred to 0.5d).
+- All 31 canonical array lengths unchanged. `TOOLMARK_CATEGORIES` + `TOOLMARK_TYPES` + `TOOLMARK_REASONING_RULES` + `FINISH_CATEGORIES` + `FINISH_TYPES` + `FINISH_REASONING_RULES` exist as empty arrays; not counted in canonical-array totals until Block 0.5b populates content.
+- **PHASE 3 BLOCK 0.5a: CLOSED.** Schema foundation locked. Subsequent sub-blocks (0.5b/c/d) build on this foundation.
+- 9 D-PH3HCL-S1-N decisions captured (S1-1 through S1-8 + S1-FINAL).
+- Next: Block 0.5b (toolmarks + finish content population) on Mike's authorization.
+
+---

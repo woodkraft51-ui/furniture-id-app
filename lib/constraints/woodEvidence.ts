@@ -143,13 +143,24 @@ export type SubstrateUsageRole =
  * Closed enum for cut/grain phenomenon evidence usage role per Block 22
  * D-WE22-9. Captures whether the phenomenon expresses as veneer face, inlay
  * or banding, premium solid, or decorative accent.
+ *
+ * Extended in Block 0.5a per Mike's appraiser-vocabulary surfacing during
+ * HCL migration (D-PH3HCL-S1-N). Original 5 values preserved; 6 new values
+ * added per third FK validation pass A-2 vocabulary granularity finding.
  */
 export type CutGrainUsageRole =
   | "veneer_face"
   | "inlay_or_banding"
   | "premium_solid"
   | "decorative_accent"
-  | "specialized_use";
+  | "specialized_use"
+  // Block 0.5a additions (D-PH3HCL-S1-N):
+  | "decorative_face"
+  | "premium_solid_substitute"
+  | "show_surface"
+  | "figured_wood_economy"
+  | "substrate_covering"
+  | "repair_or_reveneering_evidence";
 
 /**
  * Usage intensity captures dominance level of wood/substrate/phenomenon in
