@@ -322,7 +322,7 @@ function pickSupportingEvidence(report: ReportShape | null): string[] {
   ).slice(0, 10);
 }
 
-function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
+function SectionCard({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
     <section style={{ background: "#fffdf9", border: "1px solid #ded3bf", borderRadius: 12, padding: 16, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
       <h3 style={{ margin: "0 0 10px", fontSize: 18, color: "#3e2f1f" }}>{title}</h3>
@@ -404,7 +404,7 @@ export default function Page() {
   const totalPhotos = useMemo(() => {
     if (analysisMode === "field_scan") return fieldPhotos.length;
     const coreCount = Object.values(coreImages).filter(Boolean).length;
-    const groupCount = Object.values(groupImages).reduce((sum, arr) => sum + arr.length, 0);
+    const groupCount = (Object.values(groupImages) as ImageRecord[][]).reduce((sum, arr) => sum + arr.length, 0);
     return coreCount + groupCount;
   }, [analysisMode, coreImages, groupImages, fieldPhotos]);
 

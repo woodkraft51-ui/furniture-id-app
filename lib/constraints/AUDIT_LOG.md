@@ -3929,3 +3929,28 @@ Closes the Path A series. 4 sub-blocks shipped; 21 new canonical entries authore
 
 ## D-PH3HCL-S4-8 — weighting.ts deletion pulled forward
 lib/weighting.ts deletion pulled forward from Block 1 Foundation scope. Vercel deployment failure on PR #47 surfaced dangling HISTORICAL_CLUE_LIBRARY reference at weighting.ts:216. Original locked scope deferred deletion to Block 1; defer lifted to keep main deployable. 276-line orphan removed; CLUE_WEIGHT_TABLE abandoned per same Block 0 held-back default.
+
+---
+
+# PHASE 3 BLOCK 0.55 — Diagnostic Infrastructure Setup (D-PH3-B055-N range)
+
+## D-PH3-B055-1 — Block scope
+Block 0.55 establishes diagnostic infrastructure ahead of Block 0.6 (first end-to-end engine trace + impact/effort catalog). 4 items: scripts/trace.ts harness + engine.ts debug console.log strip + 29 page.tsx tsc fixes + 3 orphan component deletions. Output: clean baseline + trace capability ready for Block 0.6.
+
+## D-PH3-B055-2 — scripts/trace.ts harness created
+Node harness exercises PE.runAllPhases deterministically against a fabricated EvidenceDigest. Stubs PE.callClaude with fixture-returning function (no real LLM call). Outputs stage_outputs, final_report, evidence_digest, observations, field_scan as readable JSON to stdout. Supports --piece <name> CLI flag for Block 0.6 fixture loading. Block 0.6 enabler.
+
+## D-PH3-B055-3 — engine.ts debug console.logs stripped
+10 debug console.log lines removed at engine.ts:3339 (CLAUDE RAW NON-JSON RESPONSE), engine.ts:3545 (NCW LANGUAGE ALIGNMENT DEBUG), and engine.ts:4014-4022 (P0 DEBUG block — 9 lines, replaced with a single marker comment). Clean trace output for Block 0.6. No console.error / console.warn / production-output calls touched.
+
+## D-PH3-B055-4 — page.tsx tsc errors resolved (29 → 0)
+SectionCard component children prop made optional (one-line fix at app/page.tsx:325 cascades through 27 'children is missing' errors). groupImages typing resolved at page.tsx:407 via `(Object.values(groupImages) as ImageRecord[][])` cast (2 errors). Full project tsc: 0 real errors; only sandbox NOISE remains (react/next/process module-not-found from missing node_modules, which Vercel CI does not see). Vercel green on main expected.
+
+## D-PH3-B055-5 — 3 orphan components deleted
+components/ExampleModal.tsx, components/GuidanceMessages.tsx, components/PickerProfileSetup.tsx all deleted via git rm. Pre-deletion verification confirmed zero inbound imports across app/, lib/, components/. Stale references in lib/intake.tsx (itself an orphan; not in production call graph) are a comment + a duplicate function def, not imports — did not block deletion. Cleaner component tree.
+
+## D-PH3-B055-6 — Impact/effort reframe locked
+Per Mike's decision during Block 0.55 scoping: subsequent blocks (Block 0.6 onward) structure cleanup work with explicit effort estimates + impact statements + defer costs, enabling value-based decision making. Block 0.6 produces the impact/effort catalog that scopes Block 1 Foundation.
+
+## D-PH3-B055-FINAL — Block 0.55 CLOSED
+Post-execution summary: 1 new file (scripts/trace.ts); 2 files modified (lib/engine.ts, app/page.tsx); 3 files deleted (3 orphan components); 1 file modified (lib/constraints/AUDIT_LOG.md). Full project tsc: 0 real errors. Block 0.55 CLOSED. Next: Block 0.6 (first end-to-end trace + impact/effort catalog) on Mike's authorization.
