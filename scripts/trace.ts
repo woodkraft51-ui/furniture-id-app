@@ -124,11 +124,52 @@ const PLYWOOD_FEDERAL_REPRO_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 4: Pre-1860 piece — exercises hand-cut dovetails + cut nails + hand-forged hardware
+// Should fire early-construction path; date envelope should anchor pre-1860 with high confidence
+const PRE_1860_PIECE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-pre-1860-piece" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "drawer" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "cherry", user_category_guess: "chest_of_drawers", has_drawers: true,
+            known_provenance: "estate find; family history suggests early-to-mid 19th century",
+            condition_notes: "irregular hand-cut dovetails; hand-forged nails throughout; chamfered drawer bottoms" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Cherry chest of drawers; irregular hand-cut dovetails; hand-forged nails; chamfered solid-board drawer bottoms" },
+    observations: [
+      obs("hand_cut_dovetails", "Irregular hand-cut dovetails with uneven angles on drawer sides", 92),
+      obs("hand_forged_nail", "Square hand-forged nail heads visible on drawer-front attachment", 88),
+      obs("cut_nail", "Tapered rectangular cut nails on back panel", 85),
+      obs("multiple_drawer_case", "Three-drawer stacked case construction", 90),
+      obs("pit_saw_marks", "Diagonal pit-saw marks on secondary surfaces", 80),
+    ],
+  },
+};
+
+// Fixture 5: MCM molded plastic chair — exercises material-gate logic (plastic → post-1945)
+// Should fire material-primary-plastic gate; date locks to c. 1945+ regardless of other signals
+const MCM_PLASTIC_CHAIR_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-mcm-plastic-chair" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "side" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "chair",
+            condition_notes: "single-piece molded plastic seat-back; chrome tubular legs; no upholstery" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Molded plastic shell chair with chrome tubular base, mid-century modernist design" },
+    observations: [
+      obs("molded_plastic", "Single-piece molded plastic seat and backrest shell", 95),
+      obs("tubular_steel", "Chrome-plated tubular steel base", 90),
+      obs("seating_present", "Seat surface present", 95),
+      obs("backrest_present", "Backrest present", 95),
+      obs("mcm_structural_pattern", "Mid-century modernist design language", 80),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
+  pre_1860_piece: PRE_1860_PIECE_FIXTURE,
+  mcm_plastic_chair: MCM_PLASTIC_CHAIR_FIXTURE,
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {

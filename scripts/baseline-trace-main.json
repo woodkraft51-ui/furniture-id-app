@@ -2,11 +2,11 @@
   "placeholder": {
     "meta": {
       "fixture_piece": "placeholder",
-      "total_ms": 9,
+      "total_ms": 10,
       "phase_timings": [
         {
           "phase": "p0",
-          "elapsed_ms": 3,
+          "elapsed_ms": 4,
           "payload_keys": [
             "ok",
             "observations",
@@ -86,7 +86,7 @@
         },
         {
           "phase": "p7",
-          "elapsed_ms": 0,
+          "elapsed_ms": 1,
           "payload_keys": [
             "negotiation_tips",
             "selling_tips",
@@ -461,11 +461,11 @@
   "roos_cedar_chest": {
     "meta": {
       "fixture_piece": "roos_cedar_chest",
-      "total_ms": 2,
+      "total_ms": 4,
       "phase_timings": [
         {
           "phase": "p0",
-          "elapsed_ms": 1,
+          "elapsed_ms": 2,
           "payload_keys": [
             "ok",
             "observations",
@@ -480,7 +480,7 @@
         },
         {
           "phase": "p1",
-          "elapsed_ms": 0,
+          "elapsed_ms": 1,
           "payload_keys": [
             "confidence_cap",
             "confidence_cap_pct",
@@ -492,7 +492,7 @@
         },
         {
           "phase": "p2",
-          "elapsed_ms": 1,
+          "elapsed_ms": 0,
           "payload_keys": [
             "range",
             "confidence",
@@ -525,7 +525,7 @@
         },
         {
           "phase": "p5",
-          "elapsed_ms": 0,
+          "elapsed_ms": 1,
           "payload_keys": [
             "conflicts",
             "resolutions",
@@ -1208,11 +1208,11 @@
   "eastlake_dresser": {
     "meta": {
       "fixture_piece": "eastlake_dresser",
-      "total_ms": 2,
+      "total_ms": 1,
       "phase_timings": [
         {
           "phase": "p0",
-          "elapsed_ms": 1,
+          "elapsed_ms": 0,
           "payload_keys": [
             "ok",
             "observations",
@@ -1239,7 +1239,7 @@
         },
         {
           "phase": "p2",
-          "elapsed_ms": 0,
+          "elapsed_ms": 1,
           "payload_keys": [
             "range",
             "confidence",
@@ -1263,7 +1263,7 @@
         },
         {
           "phase": "p4",
-          "elapsed_ms": 1,
+          "elapsed_ms": 0,
           "payload_keys": [
             "weighted_clues",
             "confidence_drivers",
@@ -2228,7 +2228,7 @@
         },
         {
           "phase": "p6",
-          "elapsed_ms": 0,
+          "elapsed_ms": 1,
           "payload_keys": [
             "supported_findings",
             "tentative_findings",
@@ -2239,7 +2239,7 @@
         },
         {
           "phase": "p7",
-          "elapsed_ms": 1,
+          "elapsed_ms": 0,
           "payload_keys": [
             "negotiation_tips",
             "selling_tips",
@@ -3109,6 +3109,2149 @@
       "confidence": "Moderate",
       "date_range": "c. 1890–1940",
       "valueRange": "$111 – $284",
+      "recommendation": "CONSIDER",
+      "recommendation_display": "CONSIDER",
+      "recommendation_reasoning": "No asking price was entered, so this recommendation stays conservative."
+    }
+  },
+  "pre_1860_piece": {
+    "meta": {
+      "fixture_piece": "pre_1860_piece",
+      "total_ms": 2,
+      "phase_timings": [
+        {
+          "phase": "p0",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "ok",
+            "observations",
+            "perception",
+            "evidence_digest",
+            "note",
+            "raw_error",
+            "raw_result",
+            "parsed_result",
+            "debug"
+          ]
+        },
+        {
+          "phase": "p1",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "confidence_cap",
+            "confidence_cap_pct",
+            "missing_evidence",
+            "evidence_sufficiency_summary",
+            "can_run",
+            "next_best_evidence"
+          ]
+        },
+        {
+          "phase": "p2",
+          "elapsed_ms": 1,
+          "payload_keys": [
+            "range",
+            "confidence",
+            "support",
+            "limitations",
+            "upholstery_layer",
+            "date_tightening_evidence"
+          ]
+        },
+        {
+          "phase": "p3",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "form",
+            "display_form",
+            "style_context",
+            "confidence",
+            "support",
+            "alternatives"
+          ]
+        },
+        {
+          "phase": "p4",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "weighted_clues",
+            "confidence_drivers",
+            "category_scores"
+          ]
+        },
+        {
+          "phase": "p5",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "conflicts",
+            "resolutions",
+            "summary"
+          ]
+        },
+        {
+          "phase": "p6",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "supported_findings",
+            "tentative_findings",
+            "more_evidence_needed",
+            "summary",
+            "valuation"
+          ]
+        },
+        {
+          "phase": "p7",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "negotiation_tips",
+            "selling_tips",
+            "contradiction_guard"
+          ]
+        }
+      ]
+    },
+    "stage_outputs": {
+      "p0": {
+        "ok": true,
+        "observations": [
+          {
+            "type": "joinery",
+            "clue": "hand_cut_dovetails",
+            "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+            "confidence": 92,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "fasteners",
+            "clue": "hand_forged_nail",
+            "description": "Square hand-forged nail heads visible on drawer-front attachment",
+            "confidence": 88,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "fasteners",
+            "clue": "cut_nail",
+            "description": "Tapered rectangular cut nails on back panel",
+            "confidence": 85,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "construction",
+            "clue": "multiple_drawer_case",
+            "description": "Three-drawer stacked case construction",
+            "confidence": 90,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "toolmarks",
+            "clue": "pit_saw_marks",
+            "description": "Diagonal pit-saw marks on secondary surfaces",
+            "confidence": 80,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "construction",
+            "clue": "drawer_present",
+            "description": "User indicates drawers are present",
+            "confidence": 55,
+            "source_image": "intake",
+            "hard_negative": false
+          }
+        ],
+        "perception": {
+          "labels": [],
+          "maker_names": [],
+          "materials": [],
+          "forms": [],
+          "functional_features": [],
+          "style_cues": [],
+          "construction_cues": [],
+          "condition_cues": [],
+          "visible_text": [],
+          "raw_text": "Cherry chest of drawers; irregular hand-cut dovetails; hand-forged nails; chamfered solid-board drawer bottoms | hand_cut_dovetails Irregular hand-cut dovetails with uneven angles on drawer sides | hand_forged_nail Square hand-forged nail heads visible on drawer-front attachment | cut_nail Tapered rectangular cut nails on back panel | multiple_drawer_case Three-drawer stacked case construction | pit_saw_marks Diagonal pit-saw marks on secondary surfaces | drawer_present User indicates drawers are present"
+        },
+        "evidence_digest": {
+          "observations": [
+            {
+              "type": "joinery",
+              "clue": "hand_cut_dovetails",
+              "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+              "confidence": 92,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "fasteners",
+              "clue": "hand_forged_nail",
+              "description": "Square hand-forged nail heads visible on drawer-front attachment",
+              "confidence": 88,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "fasteners",
+              "clue": "cut_nail",
+              "description": "Tapered rectangular cut nails on back panel",
+              "confidence": 85,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "construction",
+              "clue": "multiple_drawer_case",
+              "description": "Three-drawer stacked case construction",
+              "confidence": 90,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "toolmarks",
+              "clue": "pit_saw_marks",
+              "description": "Diagonal pit-saw marks on secondary surfaces",
+              "confidence": 80,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "construction",
+              "clue": "drawer_present",
+              "description": "User indicates drawers are present",
+              "confidence": 55,
+              "source_image": "intake",
+              "hard_negative": false
+            }
+          ],
+          "observation_count": 6,
+          "by_type": {
+            "joinery": [
+              {
+                "type": "joinery",
+                "clue": "hand_cut_dovetails",
+                "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+                "confidence": 92,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ],
+            "fasteners": [
+              {
+                "type": "fasteners",
+                "clue": "hand_forged_nail",
+                "description": "Square hand-forged nail heads visible on drawer-front attachment",
+                "confidence": 88,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              },
+              {
+                "type": "fasteners",
+                "clue": "cut_nail",
+                "description": "Tapered rectangular cut nails on back panel",
+                "confidence": 85,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ],
+            "construction": [
+              {
+                "type": "construction",
+                "clue": "multiple_drawer_case",
+                "description": "Three-drawer stacked case construction",
+                "confidence": 90,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              },
+              {
+                "type": "construction",
+                "clue": "drawer_present",
+                "description": "User indicates drawers are present",
+                "confidence": 55,
+                "source_image": "intake",
+                "hard_negative": false
+              }
+            ],
+            "toolmarks": [
+              {
+                "type": "toolmarks",
+                "clue": "pit_saw_marks",
+                "description": "Diagonal pit-saw marks on secondary surfaces",
+                "confidence": 80,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ]
+          },
+          "clue_keys": [
+            "hand_cut_dovetails",
+            "hand_forged_nail",
+            "cut_nail",
+            "multiple_drawer_case",
+            "pit_saw_marks",
+            "drawer_present"
+          ],
+          "hard_negatives": [],
+          "strongest_observations": [
+            {
+              "type": "joinery",
+              "clue": "hand_cut_dovetails",
+              "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+              "confidence": 92,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "construction",
+              "clue": "multiple_drawer_case",
+              "description": "Three-drawer stacked case construction",
+              "confidence": 90,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "fasteners",
+              "clue": "hand_forged_nail",
+              "description": "Square hand-forged nail heads visible on drawer-front attachment",
+              "confidence": 88,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "fasteners",
+              "clue": "cut_nail",
+              "description": "Tapered rectangular cut nails on back panel",
+              "confidence": 85,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "toolmarks",
+              "clue": "pit_saw_marks",
+              "description": "Diagonal pit-saw marks on secondary surfaces",
+              "confidence": 80,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "construction",
+              "clue": "drawer_present",
+              "description": "User indicates drawers are present",
+              "confidence": 55,
+              "source_image": "intake",
+              "hard_negative": false
+            }
+          ],
+          "perception": {
+            "labels": [],
+            "maker_names": [],
+            "materials": [],
+            "forms": [],
+            "functional_features": [],
+            "style_cues": [],
+            "construction_cues": [],
+            "condition_cues": [],
+            "visible_text": [],
+            "raw_text": "Cherry chest of drawers; irregular hand-cut dovetails; hand-forged nails; chamfered solid-board drawer bottoms | hand_cut_dovetails Irregular hand-cut dovetails with uneven angles on drawer sides | hand_forged_nail Square hand-forged nail heads visible on drawer-front attachment | cut_nail Tapered rectangular cut nails on back panel | multiple_drawer_case Three-drawer stacked case construction | pit_saw_marks Diagonal pit-saw marks on secondary surfaces | drawer_present User indicates drawers are present"
+          }
+        },
+        "note": "Phase 0 scanned photos once and stored evidence.",
+        "raw_error": null,
+        "raw_result": "{\"perception\":{\"labels\":[],\"maker_names\":[],\"materials\":[],\"forms\":[],\"functional_features\":[],\"style_cues\":[],\"construction_cues\":[],\"condition_cues\":[],\"visible_text\":[],\"raw_text\":\"Cherry chest of drawers; irregular hand-cut dovetails; hand-forged nails; chamfered solid-board drawer bottoms\"},\"observations\":[{\"clue\":\"hand_cut_dovetails\",\"description\":\"Irregular hand-cut dovetails with uneven angles on drawer sides\",\"confidence\":92,\"source_image\":\"trace\"},{\"clue\":\"hand_forged_nail\",\"description\":\"Square hand-forged nail heads visible on drawer-front attachment\",\"confidence\":88,\"source_image\":\"trace\"},{\"clue\":\"cut_nail\",\"description\":\"Tapered rectangular cut nails on back panel\",\"confidence\":85,\"source_image\":\"trace\"},{\"clue\":\"multiple_drawer_case\",\"description\":\"Three-drawer stacked case construction\",\"confidence\":90,\"source_image\":\"trace\"},{\"clue\":\"pit_saw_marks\",\"description\":\"Diagonal pit-saw marks on secondary surfaces\",\"confidence\":80,\"source_image\":\"trace\"}]}",
+        "parsed_result": {
+          "perception": {
+            "labels": [],
+            "maker_names": [],
+            "materials": [],
+            "forms": [],
+            "functional_features": [],
+            "style_cues": [],
+            "construction_cues": [],
+            "condition_cues": [],
+            "visible_text": [],
+            "raw_text": "Cherry chest of drawers; irregular hand-cut dovetails; hand-forged nails; chamfered solid-board drawer bottoms"
+          },
+          "observations": [
+            {
+              "clue": "hand_cut_dovetails",
+              "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+              "confidence": 92,
+              "source_image": "trace"
+            },
+            {
+              "clue": "hand_forged_nail",
+              "description": "Square hand-forged nail heads visible on drawer-front attachment",
+              "confidence": 88,
+              "source_image": "trace"
+            },
+            {
+              "clue": "cut_nail",
+              "description": "Tapered rectangular cut nails on back panel",
+              "confidence": 85,
+              "source_image": "trace"
+            },
+            {
+              "clue": "multiple_drawer_case",
+              "description": "Three-drawer stacked case construction",
+              "confidence": 90,
+              "source_image": "trace"
+            },
+            {
+              "clue": "pit_saw_marks",
+              "description": "Diagonal pit-saw marks on secondary surfaces",
+              "confidence": 80,
+              "source_image": "trace"
+            }
+          ]
+        },
+        "debug": {
+          "phase0_result_ok": true,
+          "phase0_error": null,
+          "image_count": 1,
+          "image_types": [
+            "drawer"
+          ],
+          "language_alignment": {
+            "raw_phase0_observations": [
+              {
+                "raw_type": null,
+                "raw_clue": "hand_cut_dovetails",
+                "raw_description": "Irregular hand-cut dovetails with uneven angles on drawer sides"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "hand_forged_nail",
+                "raw_description": "Square hand-forged nail heads visible on drawer-front attachment"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "cut_nail",
+                "raw_description": "Tapered rectangular cut nails on back panel"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "multiple_drawer_case",
+                "raw_description": "Three-drawer stacked case construction"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "pit_saw_marks",
+                "raw_description": "Diagonal pit-saw marks on secondary surfaces"
+              }
+            ],
+            "normalized_observations": [
+              {
+                "type": "joinery",
+                "clue": "hand_cut_dovetails",
+                "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+                "confidence": 92,
+                "source_image": "trace"
+              },
+              {
+                "type": "fasteners",
+                "clue": "hand_forged_nail",
+                "description": "Square hand-forged nail heads visible on drawer-front attachment",
+                "confidence": 88,
+                "source_image": "trace"
+              },
+              {
+                "type": "fasteners",
+                "clue": "cut_nail",
+                "description": "Tapered rectangular cut nails on back panel",
+                "confidence": 85,
+                "source_image": "trace"
+              },
+              {
+                "type": "construction",
+                "clue": "multiple_drawer_case",
+                "description": "Three-drawer stacked case construction",
+                "confidence": 90,
+                "source_image": "trace"
+              },
+              {
+                "type": "toolmarks",
+                "clue": "pit_saw_marks",
+                "description": "Diagonal pit-saw marks on secondary surfaces",
+                "confidence": 80,
+                "source_image": "trace"
+              },
+              {
+                "type": "construction",
+                "clue": "drawer_present",
+                "description": "User indicates drawers are present",
+                "confidence": 55,
+                "source_image": "intake"
+              }
+            ],
+            "digest_clue_keys": [
+              "hand_cut_dovetails",
+              "hand_forged_nail",
+              "cut_nail",
+              "multiple_drawer_case",
+              "pit_saw_marks",
+              "drawer_present"
+            ],
+            "derived_pattern_clues": [],
+            "unmatched_observations": []
+          }
+        }
+      },
+      "p1": {
+        "confidence_cap": "Moderate",
+        "confidence_cap_pct": 70,
+        "missing_evidence": {
+          "underside_photo": true,
+          "back_photo": true,
+          "joinery_photo": true,
+          "hardware_photo": true,
+          "label_photo": true
+        },
+        "evidence_sufficiency_summary": "Evidence remains broad; more visible form or construction detail would improve the result.",
+        "can_run": {
+          "dating": true,
+          "form": true,
+          "weighting": true,
+          "conflict_check": true,
+          "valuation_ready": true
+        },
+        "next_best_evidence": [
+          "Clear drawer-corner close-up to confirm dovetail, dado, nailed, or butt construction",
+          "Underside photo for fasteners, tool marks, drawer runners, and case construction",
+          "Back photo for backboard, panel, and material evidence",
+          "Maker's mark or label, if present"
+        ]
+      },
+      "p2": {
+        "range": "c. 1830–1890",
+        "confidence": "Moderate",
+        "support": [
+          "Irregular hand-cut dovetails with uneven angles on drawer sides",
+          "Three-drawer stacked case construction",
+          "Square hand-forged nail heads visible on drawer-front attachment",
+          "Tapered rectangular cut nails on back panel",
+          "Diagonal pit-saw marks on secondary surfaces",
+          "User indicates drawers are present"
+        ],
+        "limitations": [],
+        "upholstery_layer": null,
+        "date_tightening_evidence": "A tighter date would require underside photos, joinery details, additional fastener evidence, hardware details."
+      },
+      "p3": {
+        "form": "Chest of drawers / dresser",
+        "display_form": "Chest of drawers / dresser",
+        "style_context": null,
+        "confidence": "Moderate",
+        "support": [
+          "Irregular hand-cut dovetails with uneven angles on drawer sides",
+          "Three-drawer stacked case construction",
+          "Square hand-forged nail heads visible on drawer-front attachment",
+          "Tapered rectangular cut nails on back panel",
+          "Diagonal pit-saw marks on secondary surfaces",
+          "User indicates drawers are present",
+          "Multiple stacked drawers are visible."
+        ],
+        "alternatives": [
+          "Dresser / drawer case"
+        ]
+      },
+      "p4": {
+        "weighted_clues": [
+          {
+            "clue": "multiple_drawer_case",
+            "display_label": "multiple drawer case",
+            "category": "construction",
+            "authority_rank": 10,
+            "date_hint": null,
+            "replacement_risk": 0.2,
+            "base_weight": 0.78,
+            "adjusted_weight": 0.91,
+            "confidence_reason": "Three-drawer stacked case construction (contextual evidence; authority 10/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.9,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "drawer_present",
+            "display_label": "drawer present",
+            "category": "construction",
+            "authority_rank": 10,
+            "date_hint": null,
+            "replacement_risk": 0.2,
+            "base_weight": 0.45,
+            "adjusted_weight": 0.52,
+            "confidence_reason": "User indicates drawers are present (contextual evidence; authority 10/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.55,
+            "source_images": [
+              "intake"
+            ]
+          },
+          {
+            "clue": "hand_cut_dovetails",
+            "display_label": "hand cut dovetails",
+            "category": "joinery",
+            "authority_rank": 9,
+            "date_hint": "pre-1860",
+            "replacement_risk": 0.2,
+            "base_weight": 0.88,
+            "adjusted_weight": 0.98,
+            "confidence_reason": "Irregular hand-cut dovetails with uneven angles on drawer sides (pre-1860; authority 9/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.92,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "hand_forged_nail",
+            "display_label": "hand forged nail",
+            "category": "fasteners",
+            "authority_rank": 8,
+            "date_hint": "pre-1800",
+            "replacement_risk": 0.2,
+            "base_weight": 0.88,
+            "adjusted_weight": 0.98,
+            "confidence_reason": "Square hand-forged nail heads visible on drawer-front attachment (pre-1800; authority 8/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.88,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "pit_saw_marks",
+            "display_label": "pit saw marks",
+            "category": "toolmarks",
+            "authority_rank": 8,
+            "date_hint": "pre-1830",
+            "replacement_risk": 0.2,
+            "base_weight": 0.86,
+            "adjusted_weight": 0.96,
+            "confidence_reason": "Diagonal pit-saw marks on secondary surfaces (pre-1830; authority 8/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.8,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "cut_nail",
+            "display_label": "cut nail",
+            "category": "fasteners",
+            "authority_rank": 8,
+            "date_hint": "1790–1890",
+            "replacement_risk": 0.2,
+            "base_weight": 0.82,
+            "adjusted_weight": 0.92,
+            "confidence_reason": "Tapered rectangular cut nails on back panel (1790–1890; authority 8/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.85,
+            "source_images": [
+              "trace"
+            ]
+          }
+        ],
+        "confidence_drivers": {
+          "increased": [
+            "multiple drawer case — Three-drawer stacked case construction (contextual evidence; authority 10/10)",
+            "hand cut dovetails — Irregular hand-cut dovetails with uneven angles on drawer sides (pre-1860; authority 9/10)",
+            "hand forged nail — Square hand-forged nail heads visible on drawer-front attachment (pre-1800; authority 8/10)",
+            "pit saw marks — Diagonal pit-saw marks on secondary surfaces (pre-1830; authority 8/10)",
+            "cut nail — Tapered rectangular cut nails on back panel (1790–1890; authority 8/10)"
+          ],
+          "limited": []
+        },
+        "category_scores": [
+          {
+            "category": "construction",
+            "avg_weight": 0.715,
+            "count": 2,
+            "authority_rank": 10,
+            "score": 72
+          },
+          {
+            "category": "joinery",
+            "avg_weight": 0.98,
+            "count": 1,
+            "authority_rank": 9,
+            "score": 98
+          },
+          {
+            "category": "toolmarks",
+            "avg_weight": 0.96,
+            "count": 1,
+            "authority_rank": 8,
+            "score": 96
+          },
+          {
+            "category": "fasteners",
+            "avg_weight": 0.95,
+            "count": 2,
+            "authority_rank": 8,
+            "score": 95
+          }
+        ]
+      },
+      "p5": {
+        "conflicts": [],
+        "resolutions": [],
+        "summary": "No significant conflicts detected between evidence categories."
+      },
+      "p6": {
+        "supported_findings": [
+          "The strongest supported reading is Chest of drawers / dresser.",
+          "Current dating evidence supports c. 1830–1890.",
+          "Marketplace resale lane: $151 – $344.",
+          "Full valuation breakdown: Dealer Buy $29 – $62; Quick Sale $53 – $174; Marketplace $151 – $344; As-Found Retail $306 – $439; Restored Retail $439 – $707.",
+          "Sellability score: 42/100."
+        ],
+        "tentative_findings": [],
+        "more_evidence_needed": [
+          "Clear drawer-corner close-up to confirm dovetail, dado, nailed, or butt construction",
+          "Underside photo for fasteners, tool marks, drawer runners, and case construction",
+          "Back photo for backboard, panel, and material evidence",
+          "Maker's mark or label, if present"
+        ],
+        "summary": "Evidence-first result: Chest of drawers / dresser. Dating: c. 1830–1890. No significant conflicts detected between evidence categories.",
+        "valuation": {
+          "dealer_buy": [
+            29,
+            62
+          ],
+          "quick_sale": [
+            53,
+            174
+          ],
+          "marketplace": [
+            151,
+            344
+          ],
+          "as_found_retail": [
+            306,
+            439
+          ],
+          "restored_retail": [
+            439,
+            707
+          ],
+          "sellability_score": 42,
+          "display": "$151 – $344",
+          "low": 151,
+          "high": 344,
+          "platform_breakdown": {
+            "dealer_buy": {
+              "label": "Dealer Buy / Trade-In",
+              "range": "$29 – $62",
+              "note": "Conservative acquisition range for a reseller who needs margin."
+            },
+            "quick_sale": {
+              "label": "Quick Local Sale",
+              "range": "$53 – $174",
+              "note": "Likely fast-sale range for local pickup or limited marketing."
+            },
+            "marketplace": {
+              "label": "Standard Marketplace",
+              "range": "$151 – $344",
+              "note": "Likely general resale range with average photos, description, and local exposure."
+            },
+            "as_found_retail": {
+              "label": "As-Found Retail",
+              "range": "$306 – $439",
+              "note": "Likely curated retail or antique-shop range without full restoration."
+            },
+            "restored_retail": {
+              "label": "Restored Retail",
+              "range": "$439 – $707",
+              "note": "Potential upper range after appropriate restoration, presentation, and patient selling."
+            }
+          }
+        }
+      },
+      "p7": {
+        "negotiation_tips": [
+          "Verify the areas not shown in the photos before committing, especially underside, back, drawer corners, and fasteners.",
+          "Negotiate conservatively if the seller is pricing it as a confirmed antique without enough structural proof.",
+          "Acknowledge the stronger construction evidence, but still compare the price to realistic local resale rather than theoretical antique value.",
+          "Large drawer cases can be slower to sell; use size, transport difficulty, and local demand as negotiation points.",
+          "Use the marketplace lane as the practical ceiling for negotiation; this scan points to about $151 – $344 for typical resale exposure.",
+          "Because sellability is weak, only buy if the price leaves room for a slow sale or added cleanup work."
+        ],
+        "selling_tips": [
+          "Use clear, level photos of the full form first, then add close-ups of construction, hardware, labels, and condition details.",
+          "Present the identification as evidence-supported but avoid overstating certainty beyond the visible construction clues.",
+          "Highlight the strongest construction clues in the listing because informed buyers respond to visible evidence.",
+          "Measure it clearly and show scale; for drawer cases, buyers need to know it will fit and that drawers operate properly.",
+          "Price near the realistic marketplace lane, about $151 – $344, unless better photos or stronger evidence justify the upper end.",
+          "Improve sellability before listing with better photos, light cleaning, accurate measurements, and honest condition notes."
+        ],
+        "contradiction_guard": "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths."
+      }
+    },
+    "final_report": "Evidence-first result: Chest of drawers / dresser. Dating: c. 1830–1890. No significant conflicts detected between evidence categories.",
+    "evidence_digest": {
+      "observations": [
+        {
+          "type": "joinery",
+          "clue": "hand_cut_dovetails",
+          "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+          "confidence": 92,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "fasteners",
+          "clue": "hand_forged_nail",
+          "description": "Square hand-forged nail heads visible on drawer-front attachment",
+          "confidence": 88,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "fasteners",
+          "clue": "cut_nail",
+          "description": "Tapered rectangular cut nails on back panel",
+          "confidence": 85,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "construction",
+          "clue": "multiple_drawer_case",
+          "description": "Three-drawer stacked case construction",
+          "confidence": 90,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "toolmarks",
+          "clue": "pit_saw_marks",
+          "description": "Diagonal pit-saw marks on secondary surfaces",
+          "confidence": 80,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "construction",
+          "clue": "drawer_present",
+          "description": "User indicates drawers are present",
+          "confidence": 55,
+          "source_image": "intake",
+          "hard_negative": false
+        }
+      ],
+      "observation_count": 6,
+      "by_type": {
+        "joinery": [
+          {
+            "type": "joinery",
+            "clue": "hand_cut_dovetails",
+            "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+            "confidence": 92,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ],
+        "fasteners": [
+          {
+            "type": "fasteners",
+            "clue": "hand_forged_nail",
+            "description": "Square hand-forged nail heads visible on drawer-front attachment",
+            "confidence": 88,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "fasteners",
+            "clue": "cut_nail",
+            "description": "Tapered rectangular cut nails on back panel",
+            "confidence": 85,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ],
+        "construction": [
+          {
+            "type": "construction",
+            "clue": "multiple_drawer_case",
+            "description": "Three-drawer stacked case construction",
+            "confidence": 90,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "construction",
+            "clue": "drawer_present",
+            "description": "User indicates drawers are present",
+            "confidence": 55,
+            "source_image": "intake",
+            "hard_negative": false
+          }
+        ],
+        "toolmarks": [
+          {
+            "type": "toolmarks",
+            "clue": "pit_saw_marks",
+            "description": "Diagonal pit-saw marks on secondary surfaces",
+            "confidence": 80,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ]
+      },
+      "clue_keys": [
+        "hand_cut_dovetails",
+        "hand_forged_nail",
+        "cut_nail",
+        "multiple_drawer_case",
+        "pit_saw_marks",
+        "drawer_present"
+      ],
+      "hard_negatives": [],
+      "strongest_observations": [
+        {
+          "type": "joinery",
+          "clue": "hand_cut_dovetails",
+          "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+          "confidence": 92,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "construction",
+          "clue": "multiple_drawer_case",
+          "description": "Three-drawer stacked case construction",
+          "confidence": 90,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "fasteners",
+          "clue": "hand_forged_nail",
+          "description": "Square hand-forged nail heads visible on drawer-front attachment",
+          "confidence": 88,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "fasteners",
+          "clue": "cut_nail",
+          "description": "Tapered rectangular cut nails on back panel",
+          "confidence": 85,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "toolmarks",
+          "clue": "pit_saw_marks",
+          "description": "Diagonal pit-saw marks on secondary surfaces",
+          "confidence": 80,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "construction",
+          "clue": "drawer_present",
+          "description": "User indicates drawers are present",
+          "confidence": 55,
+          "source_image": "intake",
+          "hard_negative": false
+        }
+      ],
+      "perception": {
+        "labels": [],
+        "maker_names": [],
+        "materials": [],
+        "forms": [],
+        "functional_features": [],
+        "style_cues": [],
+        "construction_cues": [],
+        "condition_cues": [],
+        "visible_text": [],
+        "raw_text": "Cherry chest of drawers; irregular hand-cut dovetails; hand-forged nails; chamfered solid-board drawer bottoms | hand_cut_dovetails Irregular hand-cut dovetails with uneven angles on drawer sides | hand_forged_nail Square hand-forged nail heads visible on drawer-front attachment | cut_nail Tapered rectangular cut nails on back panel | multiple_drawer_case Three-drawer stacked case construction | pit_saw_marks Diagonal pit-saw marks on secondary surfaces | drawer_present User indicates drawers are present"
+      }
+    },
+    "observations": [
+      {
+        "type": "joinery",
+        "clue": "hand_cut_dovetails",
+        "description": "Irregular hand-cut dovetails with uneven angles on drawer sides",
+        "confidence": 92,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "fasteners",
+        "clue": "hand_forged_nail",
+        "description": "Square hand-forged nail heads visible on drawer-front attachment",
+        "confidence": 88,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "fasteners",
+        "clue": "cut_nail",
+        "description": "Tapered rectangular cut nails on back panel",
+        "confidence": 85,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "construction",
+        "clue": "multiple_drawer_case",
+        "description": "Three-drawer stacked case construction",
+        "confidence": 90,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "toolmarks",
+        "clue": "pit_saw_marks",
+        "description": "Diagonal pit-saw marks on secondary surfaces",
+        "confidence": 80,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "construction",
+        "clue": "drawer_present",
+        "description": "User indicates drawers are present",
+        "confidence": 55,
+        "source_image": "intake",
+        "hard_negative": false
+      }
+    ],
+    "field_scan": {
+      "identification": "Chest of drawers / dresser",
+      "confidence": "Moderate",
+      "date_range": "c. 1830–1890",
+      "valueRange": "$151 – $344",
+      "recommendation": "CONSIDER",
+      "recommendation_display": "CONSIDER",
+      "recommendation_reasoning": "No asking price was entered, so this recommendation stays conservative."
+    }
+  },
+  "mcm_plastic_chair": {
+    "meta": {
+      "fixture_piece": "mcm_plastic_chair",
+      "total_ms": 0,
+      "phase_timings": [
+        {
+          "phase": "p0",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "ok",
+            "observations",
+            "perception",
+            "evidence_digest",
+            "note",
+            "raw_error",
+            "raw_result",
+            "parsed_result",
+            "debug"
+          ]
+        },
+        {
+          "phase": "p1",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "confidence_cap",
+            "confidence_cap_pct",
+            "missing_evidence",
+            "evidence_sufficiency_summary",
+            "can_run",
+            "next_best_evidence"
+          ]
+        },
+        {
+          "phase": "p2",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "range",
+            "confidence",
+            "support",
+            "limitations",
+            "upholstery_layer",
+            "date_tightening_evidence"
+          ]
+        },
+        {
+          "phase": "p3",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "form",
+            "display_form",
+            "style_context",
+            "confidence",
+            "support",
+            "alternatives"
+          ]
+        },
+        {
+          "phase": "p4",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "weighted_clues",
+            "confidence_drivers",
+            "category_scores"
+          ]
+        },
+        {
+          "phase": "p5",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "conflicts",
+            "resolutions",
+            "summary"
+          ]
+        },
+        {
+          "phase": "p6",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "supported_findings",
+            "tentative_findings",
+            "more_evidence_needed",
+            "summary",
+            "valuation"
+          ]
+        },
+        {
+          "phase": "p7",
+          "elapsed_ms": 0,
+          "payload_keys": [
+            "negotiation_tips",
+            "selling_tips",
+            "contradiction_guard"
+          ]
+        }
+      ]
+    },
+    "stage_outputs": {
+      "p0": {
+        "ok": true,
+        "observations": [
+          {
+            "type": "materials",
+            "clue": "molded_plastic",
+            "description": "Single-piece molded plastic seat and backrest shell",
+            "confidence": 84,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "materials",
+            "clue": "tubular_steel",
+            "description": "Chrome-plated tubular steel base",
+            "confidence": 84,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "form",
+            "clue": "seating_present",
+            "description": "Seat surface present",
+            "confidence": 68,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "structure",
+            "clue": "backrest_present",
+            "description": "Backrest present",
+            "confidence": 82,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "context",
+            "clue": "mcm_structural_pattern",
+            "description": "Mid-century modernist design language",
+            "confidence": 48,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "form",
+            "clue": "seating_surface",
+            "description": "A seating surface or bench-like sitting area is visible.",
+            "confidence": 82,
+            "source_image": "perception",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ],
+        "perception": {
+          "labels": [],
+          "maker_names": [],
+          "materials": [
+            "metal"
+          ],
+          "forms": [],
+          "functional_features": [
+            "seating"
+          ],
+          "style_cues": [],
+          "construction_cues": [],
+          "condition_cues": [],
+          "visible_text": [],
+          "raw_text": "Molded plastic shell chair with chrome tubular base, mid-century modernist design | molded_plastic Single-piece molded plastic seat and backrest shell | tubular_steel Chrome-plated tubular steel base | seating_present Seat surface present | backrest_present Backrest present | mcm_structural_pattern Mid-century modernist design language | seating_surface A seating surface or bench-like sitting area is visible."
+        },
+        "evidence_digest": {
+          "observations": [
+            {
+              "type": "materials",
+              "clue": "molded_plastic",
+              "description": "Single-piece molded plastic seat and backrest shell",
+              "confidence": 84,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "materials",
+              "clue": "tubular_steel",
+              "description": "Chrome-plated tubular steel base",
+              "confidence": 84,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "form",
+              "clue": "seating_present",
+              "description": "Seat surface present",
+              "confidence": 68,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "structure",
+              "clue": "backrest_present",
+              "description": "Backrest present",
+              "confidence": 82,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "context",
+              "clue": "mcm_structural_pattern",
+              "description": "Mid-century modernist design language",
+              "confidence": 48,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "form",
+              "clue": "seating_surface",
+              "description": "A seating surface or bench-like sitting area is visible.",
+              "confidence": 82,
+              "source_image": "perception",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            }
+          ],
+          "observation_count": 6,
+          "by_type": {
+            "materials": [
+              {
+                "type": "materials",
+                "clue": "molded_plastic",
+                "description": "Single-piece molded plastic seat and backrest shell",
+                "confidence": 84,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              },
+              {
+                "type": "materials",
+                "clue": "tubular_steel",
+                "description": "Chrome-plated tubular steel base",
+                "confidence": 84,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ],
+            "form": [
+              {
+                "type": "form",
+                "clue": "seating_present",
+                "description": "Seat surface present",
+                "confidence": 68,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              },
+              {
+                "type": "form",
+                "clue": "seating_surface",
+                "description": "A seating surface or bench-like sitting area is visible.",
+                "confidence": 82,
+                "source_image": "perception",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ],
+            "structure": [
+              {
+                "type": "structure",
+                "clue": "backrest_present",
+                "description": "Backrest present",
+                "confidence": 82,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ],
+            "context": [
+              {
+                "type": "context",
+                "clue": "mcm_structural_pattern",
+                "description": "Mid-century modernist design language",
+                "confidence": 48,
+                "source_image": "trace",
+                "hard_negative": false,
+                "low_confidence_flag": false
+              }
+            ]
+          },
+          "clue_keys": [
+            "molded_plastic",
+            "tubular_steel",
+            "seating_present",
+            "backrest_present",
+            "mcm_structural_pattern",
+            "seating_surface"
+          ],
+          "hard_negatives": [],
+          "strongest_observations": [
+            {
+              "type": "materials",
+              "clue": "molded_plastic",
+              "description": "Single-piece molded plastic seat and backrest shell",
+              "confidence": 84,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "materials",
+              "clue": "tubular_steel",
+              "description": "Chrome-plated tubular steel base",
+              "confidence": 84,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "structure",
+              "clue": "backrest_present",
+              "description": "Backrest present",
+              "confidence": 82,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "form",
+              "clue": "seating_surface",
+              "description": "A seating surface or bench-like sitting area is visible.",
+              "confidence": 82,
+              "source_image": "perception",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "form",
+              "clue": "seating_present",
+              "description": "Seat surface present",
+              "confidence": 68,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            },
+            {
+              "type": "context",
+              "clue": "mcm_structural_pattern",
+              "description": "Mid-century modernist design language",
+              "confidence": 48,
+              "source_image": "trace",
+              "hard_negative": false,
+              "low_confidence_flag": false
+            }
+          ],
+          "perception": {
+            "labels": [],
+            "maker_names": [],
+            "materials": [
+              "metal"
+            ],
+            "forms": [],
+            "functional_features": [
+              "seating"
+            ],
+            "style_cues": [],
+            "construction_cues": [],
+            "condition_cues": [],
+            "visible_text": [],
+            "raw_text": "Molded plastic shell chair with chrome tubular base, mid-century modernist design | molded_plastic Single-piece molded plastic seat and backrest shell | tubular_steel Chrome-plated tubular steel base | seating_present Seat surface present | backrest_present Backrest present | mcm_structural_pattern Mid-century modernist design language | seating_surface A seating surface or bench-like sitting area is visible."
+          }
+        },
+        "note": "Phase 0 scanned photos once and stored evidence.",
+        "raw_error": null,
+        "raw_result": "{\"perception\":{\"labels\":[],\"maker_names\":[],\"materials\":[],\"forms\":[],\"functional_features\":[],\"style_cues\":[],\"construction_cues\":[],\"condition_cues\":[],\"visible_text\":[],\"raw_text\":\"Molded plastic shell chair with chrome tubular base, mid-century modernist design\"},\"observations\":[{\"clue\":\"molded_plastic\",\"description\":\"Single-piece molded plastic seat and backrest shell\",\"confidence\":95,\"source_image\":\"trace\"},{\"clue\":\"tubular_steel\",\"description\":\"Chrome-plated tubular steel base\",\"confidence\":90,\"source_image\":\"trace\"},{\"clue\":\"seating_present\",\"description\":\"Seat surface present\",\"confidence\":95,\"source_image\":\"trace\"},{\"clue\":\"backrest_present\",\"description\":\"Backrest present\",\"confidence\":95,\"source_image\":\"trace\"},{\"clue\":\"mcm_structural_pattern\",\"description\":\"Mid-century modernist design language\",\"confidence\":80,\"source_image\":\"trace\"}]}",
+        "parsed_result": {
+          "perception": {
+            "labels": [],
+            "maker_names": [],
+            "materials": [],
+            "forms": [],
+            "functional_features": [],
+            "style_cues": [],
+            "construction_cues": [],
+            "condition_cues": [],
+            "visible_text": [],
+            "raw_text": "Molded plastic shell chair with chrome tubular base, mid-century modernist design"
+          },
+          "observations": [
+            {
+              "clue": "molded_plastic",
+              "description": "Single-piece molded plastic seat and backrest shell",
+              "confidence": 95,
+              "source_image": "trace"
+            },
+            {
+              "clue": "tubular_steel",
+              "description": "Chrome-plated tubular steel base",
+              "confidence": 90,
+              "source_image": "trace"
+            },
+            {
+              "clue": "seating_present",
+              "description": "Seat surface present",
+              "confidence": 95,
+              "source_image": "trace"
+            },
+            {
+              "clue": "backrest_present",
+              "description": "Backrest present",
+              "confidence": 95,
+              "source_image": "trace"
+            },
+            {
+              "clue": "mcm_structural_pattern",
+              "description": "Mid-century modernist design language",
+              "confidence": 80,
+              "source_image": "trace"
+            }
+          ]
+        },
+        "debug": {
+          "phase0_result_ok": true,
+          "phase0_error": null,
+          "image_count": 1,
+          "image_types": [
+            "side"
+          ],
+          "language_alignment": {
+            "raw_phase0_observations": [
+              {
+                "raw_type": null,
+                "raw_clue": "molded_plastic",
+                "raw_description": "Single-piece molded plastic seat and backrest shell"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "tubular_steel",
+                "raw_description": "Chrome-plated tubular steel base"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "seating_present",
+                "raw_description": "Seat surface present"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "backrest_present",
+                "raw_description": "Backrest present"
+              },
+              {
+                "raw_type": null,
+                "raw_clue": "mcm_structural_pattern",
+                "raw_description": "Mid-century modernist design language"
+              }
+            ],
+            "normalized_observations": [
+              {
+                "type": "materials",
+                "clue": "molded_plastic",
+                "description": "Single-piece molded plastic seat and backrest shell",
+                "confidence": 84,
+                "source_image": "trace"
+              },
+              {
+                "type": "materials",
+                "clue": "tubular_steel",
+                "description": "Chrome-plated tubular steel base",
+                "confidence": 84,
+                "source_image": "trace"
+              },
+              {
+                "type": "form",
+                "clue": "seating_present",
+                "description": "Seat surface present",
+                "confidence": 68,
+                "source_image": "trace"
+              },
+              {
+                "type": "structure",
+                "clue": "backrest_present",
+                "description": "Backrest present",
+                "confidence": 82,
+                "source_image": "trace"
+              },
+              {
+                "type": "context",
+                "clue": "mcm_structural_pattern",
+                "description": "Mid-century modernist design language",
+                "confidence": 48,
+                "source_image": "trace"
+              },
+              {
+                "type": "form",
+                "clue": "seating_surface",
+                "description": "A seating surface or bench-like sitting area is visible.",
+                "confidence": 82,
+                "source_image": "perception"
+              }
+            ],
+            "digest_clue_keys": [
+              "molded_plastic",
+              "tubular_steel",
+              "seating_present",
+              "backrest_present",
+              "mcm_structural_pattern",
+              "seating_surface"
+            ],
+            "derived_pattern_clues": [],
+            "unmatched_observations": []
+          }
+        }
+      },
+      "p1": {
+        "confidence_cap": "High",
+        "confidence_cap_pct": 85,
+        "missing_evidence": {
+          "underside_photo": true,
+          "back_photo": true,
+          "joinery_photo": true,
+          "hardware_photo": true,
+          "label_photo": true
+        },
+        "evidence_sufficiency_summary": "Visible form evidence supports a working identification; structural details can refine date and originality.",
+        "can_run": {
+          "dating": true,
+          "form": true,
+          "weighting": true,
+          "conflict_check": true,
+          "valuation_ready": true
+        },
+        "next_best_evidence": [
+          "Underside photo for fasteners, tool marks, drawer runners, and case construction",
+          "Hardware or fastener close-up if screws, nails, locks, hinges, or casters are visible",
+          "Back photo for backboard, panel, and material evidence",
+          "Maker's mark or label, if present"
+        ]
+      },
+      "p2": {
+        "range": "post-1945",
+        "confidence": "Moderate",
+        "support": [
+          "Single-piece molded plastic seat and backrest shell",
+          "Chrome-plated tubular steel base",
+          "Backrest present",
+          "A seating surface or bench-like sitting area is visible.",
+          "Seat surface present",
+          "Mid-century modernist design language"
+        ],
+        "limitations": [
+          "Molded plastic, acrylic, or Lucite-style material supports postwar modern or later production."
+        ],
+        "upholstery_layer": null,
+        "date_tightening_evidence": "A tighter date would require underside photos, joinery details, fastener evidence, hardware details."
+      },
+      "p3": {
+        "form": "Mid-century modern spindle-back lounge chair",
+        "display_form": "Mid-century modern spindle-back lounge chair",
+        "style_context": null,
+        "confidence": "High",
+        "support": [
+          "Single-piece molded plastic seat and backrest shell",
+          "Chrome-plated tubular steel base",
+          "Backrest present",
+          "A seating surface or bench-like sitting area is visible.",
+          "Seat surface present",
+          "Mid-century modernist design language",
+          "Combined paddle/rail arms, spindle back, barrel-back form, and splayed/tapered legs support a mid-century modern chair reading.",
+          "Pattern-to-form lock: MCM structural pattern protects this specific chair form from generic seating."
+        ],
+        "alternatives": [
+          "Modernist / chrome-frame furniture",
+          "Modern plastic / acrylic furniture",
+          "Metal furniture"
+        ]
+      },
+      "p4": {
+        "weighted_clues": [
+          {
+            "clue": "seating_surface",
+            "display_label": "seating surface",
+            "category": "form",
+            "authority_rank": 7,
+            "date_hint": null,
+            "replacement_risk": 0.2,
+            "base_weight": 0.78,
+            "adjusted_weight": 0.88,
+            "confidence_reason": "A seating surface or bench-like sitting area is visible. (contextual evidence; authority 7/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.82,
+            "source_images": [
+              "perception"
+            ]
+          },
+          {
+            "clue": "seating_present",
+            "display_label": "seating present",
+            "category": "form",
+            "authority_rank": 7,
+            "date_hint": null,
+            "replacement_risk": 0.2,
+            "base_weight": 0.78,
+            "adjusted_weight": 0.85,
+            "confidence_reason": "Seat surface present (contextual evidence; authority 7/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.68,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "backrest_present",
+            "display_label": "backrest present",
+            "category": "structure",
+            "authority_rank": 7,
+            "date_hint": null,
+            "replacement_risk": 0.2,
+            "base_weight": 0.72,
+            "adjusted_weight": 0.82,
+            "confidence_reason": "Backrest present (contextual evidence; authority 7/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.82,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "tubular_steel",
+            "display_label": "tubular steel",
+            "category": "materials",
+            "authority_rank": 6,
+            "date_hint": "tubular steel furniture became especially associated with modernist and mid-century production",
+            "replacement_risk": 0.2,
+            "base_weight": 0.78,
+            "adjusted_weight": 0.84,
+            "confidence_reason": "Chrome-plated tubular steel base (tubular steel furniture became especially associated with modernist and mid-century production; authority 6/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.84,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "molded_plastic",
+            "display_label": "molded plastic",
+            "category": "materials",
+            "authority_rank": 6,
+            "date_hint": "molded plastic furniture generally indicates postwar modern or later production",
+            "replacement_risk": 0.2,
+            "base_weight": 0.76,
+            "adjusted_weight": 0.82,
+            "confidence_reason": "Single-piece molded plastic seat and backrest shell (molded plastic furniture generally indicates postwar modern or later production; authority 6/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.84,
+            "source_images": [
+              "trace"
+            ]
+          },
+          {
+            "clue": "mcm_structural_pattern",
+            "display_label": "mcm structural pattern",
+            "category": "context",
+            "authority_rank": 2,
+            "date_hint": null,
+            "replacement_risk": 0.2,
+            "base_weight": 0.45,
+            "adjusted_weight": 0.37,
+            "confidence_reason": "Mid-century modernist design language (contextual evidence; authority 2/10)",
+            "hard_negative": false,
+            "effective_confidence": 0.48,
+            "source_images": [
+              "trace"
+            ]
+          }
+        ],
+        "confidence_drivers": {
+          "increased": [
+            "seating surface — A seating surface or bench-like sitting area is visible. (contextual evidence; authority 7/10)",
+            "seating present — Seat surface present (contextual evidence; authority 7/10)",
+            "backrest present — Backrest present (contextual evidence; authority 7/10)",
+            "tubular steel — Chrome-plated tubular steel base (tubular steel furniture became especially associated with modernist and mid-century production; authority 6/10)",
+            "molded plastic — Single-piece molded plastic seat and backrest shell (molded plastic furniture generally indicates postwar modern or later production; authority 6/10)"
+          ],
+          "limited": [
+            "mcm structural pattern — limited weight"
+          ]
+        },
+        "category_scores": [
+          {
+            "category": "form",
+            "avg_weight": 0.865,
+            "count": 2,
+            "authority_rank": 7,
+            "score": 87
+          },
+          {
+            "category": "structure",
+            "avg_weight": 0.82,
+            "count": 1,
+            "authority_rank": 7,
+            "score": 82
+          },
+          {
+            "category": "materials",
+            "avg_weight": 0.83,
+            "count": 2,
+            "authority_rank": 6,
+            "score": 83
+          },
+          {
+            "category": "context",
+            "avg_weight": 0.37,
+            "count": 1,
+            "authority_rank": 2,
+            "score": 37
+          }
+        ]
+      },
+      "p5": {
+        "conflicts": [],
+        "resolutions": [],
+        "summary": "No significant conflicts detected between evidence categories."
+      },
+      "p6": {
+        "supported_findings": [
+          "The strongest supported reading is Mid-century modern spindle-back lounge chair.",
+          "Current dating evidence supports post-1945.",
+          "Marketplace resale lane: $362 – $886.",
+          "Full valuation breakdown: Dealer Buy $46 – $98; Quick Sale $85 – $418; Marketplace $362 – $886; As-Found Retail $787 – $1132; Restored Retail $1132 – $1820.",
+          "Sellability score: 62/100."
+        ],
+        "tentative_findings": [],
+        "more_evidence_needed": [
+          "Underside photo for fasteners, tool marks, drawer runners, and case construction",
+          "Hardware or fastener close-up if screws, nails, locks, hinges, or casters are visible",
+          "Back photo for backboard, panel, and material evidence",
+          "Maker's mark or label, if present"
+        ],
+        "summary": "Evidence-first result: Mid-century modern spindle-back lounge chair. Dating: post-1945. No significant conflicts detected between evidence categories.",
+        "valuation": {
+          "dealer_buy": [
+            46,
+            98
+          ],
+          "quick_sale": [
+            85,
+            418
+          ],
+          "marketplace": [
+            362,
+            886
+          ],
+          "as_found_retail": [
+            787,
+            1132
+          ],
+          "restored_retail": [
+            1132,
+            1820
+          ],
+          "sellability_score": 62,
+          "display": "$362 – $886",
+          "low": 362,
+          "high": 886,
+          "platform_breakdown": {
+            "dealer_buy": {
+              "label": "Dealer Buy / Trade-In",
+              "range": "$46 – $98",
+              "note": "Conservative acquisition range for a reseller who needs margin."
+            },
+            "quick_sale": {
+              "label": "Quick Local Sale",
+              "range": "$85 – $418",
+              "note": "Likely fast-sale range for local pickup or limited marketing."
+            },
+            "marketplace": {
+              "label": "Standard Marketplace",
+              "range": "$362 – $886",
+              "note": "Likely general resale range with average photos, description, and local exposure."
+            },
+            "as_found_retail": {
+              "label": "As-Found Retail",
+              "range": "$787 – $1132",
+              "note": "Likely curated retail or antique-shop range without full restoration."
+            },
+            "restored_retail": {
+              "label": "Restored Retail",
+              "range": "$1132 – $1820",
+              "note": "Potential upper range after appropriate restoration, presentation, and patient selling."
+            }
+          }
+        }
+      },
+      "p7": {
+        "negotiation_tips": [
+          "Verify the areas not shown in the photos before committing, especially underside, back, drawer corners, and fasteners.",
+          "The evidence is stronger than average, so negotiate from market reality rather than trying to dismiss the identification.",
+          "For metal furniture, check welds, bends, plating wear, rust, and structural looseness before agreeing to the price.",
+          "Use the marketplace lane as the practical ceiling for negotiation; this scan points to about $362 – $886 for typical resale exposure."
+        ],
+        "selling_tips": [
+          "Use clear, level photos of the full form first, then add close-ups of construction, hardware, labels, and condition details.",
+          "Lead with the strongest confirmed evidence because it gives buyers confidence in the identification.",
+          "For metal furniture, highlight clean lines, original finish or plating, stable joints, and any distinctive design features.",
+          "Price near the realistic marketplace lane, about $362 – $886, unless better photos or stronger evidence justify the upper end."
+        ],
+        "contradiction_guard": "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths."
+      }
+    },
+    "final_report": "Evidence-first result: Mid-century modern spindle-back lounge chair. Dating: post-1945. No significant conflicts detected between evidence categories.",
+    "evidence_digest": {
+      "observations": [
+        {
+          "type": "materials",
+          "clue": "molded_plastic",
+          "description": "Single-piece molded plastic seat and backrest shell",
+          "confidence": 84,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "materials",
+          "clue": "tubular_steel",
+          "description": "Chrome-plated tubular steel base",
+          "confidence": 84,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "form",
+          "clue": "seating_present",
+          "description": "Seat surface present",
+          "confidence": 68,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "structure",
+          "clue": "backrest_present",
+          "description": "Backrest present",
+          "confidence": 82,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "context",
+          "clue": "mcm_structural_pattern",
+          "description": "Mid-century modernist design language",
+          "confidence": 48,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "form",
+          "clue": "seating_surface",
+          "description": "A seating surface or bench-like sitting area is visible.",
+          "confidence": 82,
+          "source_image": "perception",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        }
+      ],
+      "observation_count": 6,
+      "by_type": {
+        "materials": [
+          {
+            "type": "materials",
+            "clue": "molded_plastic",
+            "description": "Single-piece molded plastic seat and backrest shell",
+            "confidence": 84,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "materials",
+            "clue": "tubular_steel",
+            "description": "Chrome-plated tubular steel base",
+            "confidence": 84,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ],
+        "form": [
+          {
+            "type": "form",
+            "clue": "seating_present",
+            "description": "Seat surface present",
+            "confidence": 68,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          },
+          {
+            "type": "form",
+            "clue": "seating_surface",
+            "description": "A seating surface or bench-like sitting area is visible.",
+            "confidence": 82,
+            "source_image": "perception",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ],
+        "structure": [
+          {
+            "type": "structure",
+            "clue": "backrest_present",
+            "description": "Backrest present",
+            "confidence": 82,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ],
+        "context": [
+          {
+            "type": "context",
+            "clue": "mcm_structural_pattern",
+            "description": "Mid-century modernist design language",
+            "confidence": 48,
+            "source_image": "trace",
+            "hard_negative": false,
+            "low_confidence_flag": false
+          }
+        ]
+      },
+      "clue_keys": [
+        "molded_plastic",
+        "tubular_steel",
+        "seating_present",
+        "backrest_present",
+        "mcm_structural_pattern",
+        "seating_surface"
+      ],
+      "hard_negatives": [],
+      "strongest_observations": [
+        {
+          "type": "materials",
+          "clue": "molded_plastic",
+          "description": "Single-piece molded plastic seat and backrest shell",
+          "confidence": 84,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "materials",
+          "clue": "tubular_steel",
+          "description": "Chrome-plated tubular steel base",
+          "confidence": 84,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "structure",
+          "clue": "backrest_present",
+          "description": "Backrest present",
+          "confidence": 82,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "form",
+          "clue": "seating_surface",
+          "description": "A seating surface or bench-like sitting area is visible.",
+          "confidence": 82,
+          "source_image": "perception",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "form",
+          "clue": "seating_present",
+          "description": "Seat surface present",
+          "confidence": 68,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        },
+        {
+          "type": "context",
+          "clue": "mcm_structural_pattern",
+          "description": "Mid-century modernist design language",
+          "confidence": 48,
+          "source_image": "trace",
+          "hard_negative": false,
+          "low_confidence_flag": false
+        }
+      ],
+      "perception": {
+        "labels": [],
+        "maker_names": [],
+        "materials": [
+          "metal"
+        ],
+        "forms": [],
+        "functional_features": [
+          "seating"
+        ],
+        "style_cues": [],
+        "construction_cues": [],
+        "condition_cues": [],
+        "visible_text": [],
+        "raw_text": "Molded plastic shell chair with chrome tubular base, mid-century modernist design | molded_plastic Single-piece molded plastic seat and backrest shell | tubular_steel Chrome-plated tubular steel base | seating_present Seat surface present | backrest_present Backrest present | mcm_structural_pattern Mid-century modernist design language | seating_surface A seating surface or bench-like sitting area is visible."
+      }
+    },
+    "observations": [
+      {
+        "type": "materials",
+        "clue": "molded_plastic",
+        "description": "Single-piece molded plastic seat and backrest shell",
+        "confidence": 84,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "materials",
+        "clue": "tubular_steel",
+        "description": "Chrome-plated tubular steel base",
+        "confidence": 84,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "form",
+        "clue": "seating_present",
+        "description": "Seat surface present",
+        "confidence": 68,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "structure",
+        "clue": "backrest_present",
+        "description": "Backrest present",
+        "confidence": 82,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "context",
+        "clue": "mcm_structural_pattern",
+        "description": "Mid-century modernist design language",
+        "confidence": 48,
+        "source_image": "trace",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      },
+      {
+        "type": "form",
+        "clue": "seating_surface",
+        "description": "A seating surface or bench-like sitting area is visible.",
+        "confidence": 82,
+        "source_image": "perception",
+        "hard_negative": false,
+        "low_confidence_flag": false
+      }
+    ],
+    "field_scan": {
+      "identification": "Mid-century modern spindle-back lounge chair",
+      "confidence": "High",
+      "date_range": "post-1945",
+      "valueRange": "$362 – $886",
       "recommendation": "CONSIDER",
       "recommendation_display": "CONSIDER",
       "recommendation_reasoning": "No asking price was entered, so this recommendation stays conservative."
