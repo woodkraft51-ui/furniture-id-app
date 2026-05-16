@@ -237,6 +237,20 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   round_wood_knob: { category: "hardware", weight: 0.5 },
   shellac_crazing: { category: "finish", dateHint: "1800–1920", weight: 0.55 },
   polyurethane: { category: "finish", dateHint: "post-1960", weight: 0.62 },
+  // Block 6: high-value finish/hardware/joinery vocabulary observed in real
+  // LLM scans (Toledo industrial chair) but missing engine keys. Adding
+  // these so the expanded P0 prompt can route observations to dated entries.
+  lacquer_finish: { category: "finish", dateHint: "1920–1980", weight: 0.55 },
+  painted_metal_finish: { category: "finish", dateHint: "post-1900", weight: 0.5 },
+  shellac_intact: { category: "finish", dateHint: "1800–1920", weight: 0.55 },
+  refinished_surface: { category: "finish", dateHint: "any period; alteration evidence", weight: 0.35 },
+  welded_joint: { category: "joinery", dateHint: "post-1910", weight: 0.7 },
+  bent_molded_plywood: { category: "materials", dateHint: "post-1935", weight: 0.78 },
+  swivel_mechanism: { category: "hardware", dateHint: "post-1880", weight: 0.7 },
+  height_adjustment_mechanism: { category: "hardware", dateHint: "post-1890", weight: 0.7 },
+  modern_caster: { category: "hardware", dateHint: "post-1900", weight: 0.55 },
+  stamped_metal_bracket: { category: "hardware", dateHint: "post-1900", weight: 0.6 },
+  hand_plane_chatter: { category: "toolmarks", dateHint: "pre-1880", weight: 0.7 },
   possible_plywood_or_laminated_panel: {
   category: "construction",
   dateHint: "uncertain panel construction; does not confirm modern manufacture",
@@ -752,6 +766,59 @@ function detectClueFromText(text: string): string | null {
   // STYLE (low authority, guard heavily)
   if (!isNegated("cabriole") && t.includes("cabriole")) return "cabriole_leg";
   if (!isNegated("barley twist") && t.includes("barley twist")) return "barley_twist";
+
+  // Block 6: text-fallback patterns for evidence-library vocabulary. The
+  // expanded P0 prompt instructs the LLM to use preferred keys directly,
+  // but these fallbacks catch cases where the LLM emits descriptive text
+  // instead. Ordered most-specific first so general patterns don't shadow.
+
+  // JOINERY EVIDENCE
+  if (!isNegated("dovetails") && includesAny(t, ["hand-cut dovetail", "hand cut dovetail", "irregular dovetail"])) return "hand_cut_dovetails";
+  if (!isNegated("dovetails") && includesAny(t, ["machine-cut dovetail", "machine cut dovetail", "uniform dovetail", "machine dovetail"])) return "machine_dovetails";
+  if (!isNegated("dovetails") && t.includes("dovetail")) return "machine_dovetails"; // conservative default
+  if (!isNegated("welded") && includesAny(t, ["welded", "weld bead", "weld joint"])) return "welded_joint";
+  if (!isNegated("dowel") && includesAny(t, ["dowel joinery", "dowel construction", "dowel join", "dowel peg"])) return "dowel_joinery";
+  if (!isNegated("mortise") && includesAny(t, ["mortise and tenon", "mortise-and-tenon", "tenon joint", "pegged tenon"])) return "mortise_and_tenon";
+
+  // FASTENER EVIDENCE — order matters (specific before generic)
+  if (!isNegated("phillips") && includesAny(t, ["phillips screw", "phillips-head", "phillips head", "cross-recess"])) return "phillips_screw";
+  if (!isNegated("staple") && includesAny(t, ["staple fastener", "wire staple", "structural staple"])) return "staple_fastener";
+  if (!isNegated("nail") && includesAny(t, ["hand-forged nail", "hand forged nail", "hammered nail head", "forged nail"])) return "hand_forged_nail";
+  if (!isNegated("nail") && includesAny(t, ["cut nail", "tapered nail", "rectangular nail"])) return "cut_nail";
+  if (!isNegated("nail") && includesAny(t, ["wire nail", "round nail shank"])) return "wire_nail";
+  if (!isNegated("screw") && includesAny(t, ["slotted screw", "slotted-head screw"])) return "slotted_screw";
+
+  // TOOLMARK EVIDENCE
+  if (!isNegated("pit-saw") && includesAny(t, ["pit-saw", "pit saw", "irregular diagonal saw"])) return "pit_saw_marks";
+  if (!isNegated("circular saw") && includesAny(t, ["circular saw", "circular-saw arc", "saw arc"])) return "circular_saw_arcs";
+  if (!isNegated("band saw") && includesAny(t, ["band saw", "band-saw"])) return "band_saw_lines";
+  if (!isNegated("hand plane") && includesAny(t, ["hand-plane", "hand plane", "plane chatter", "plane scallop"])) return "hand_plane_chatter";
+
+  // FINISH EVIDENCE — specific finishes before generic
+  if (!isNegated("polyurethane") && includesAny(t, ["polyurethane", "poly finish", "plastic-like finish"])) return "polyurethane";
+  if (!isNegated("shellac") && includesAny(t, ["shellac crazing", "crazed shellac", "shellac craze"])) return "shellac_crazing";
+  if (!isNegated("shellac") && includesAny(t, ["shellac", "amber shellac"])) return "shellac_intact";
+  if (!isNegated("lacquer") && includesAny(t, ["lacquer finish", "lacquered", "lacquer"])) return "lacquer_finish";
+  if (!isNegated("painted") && includesAny(t, ["painted metal", "painted steel", "enamel finish", "sage green finish", "industrial paint"])) return "painted_metal_finish";
+  if (!isNegated("refinish") && includesAny(t, ["refinished", "later refinish", "modern refinish"])) return "refinished_surface";
+
+  // HARDWARE EVIDENCE
+  if (!isNegated("caster") && includesAny(t, ["porcelain caster", "ceramic caster"])) return "porcelain_caster";
+  if (!isNegated("caster") && includesAny(t, ["caster wheel", "rubber caster", "modern caster", "caster"])) return "modern_caster";
+  if (!isNegated("hinge") && includesAny(t, ["concealed hinge", "european cup hinge", "euro hinge", "modern concealed"])) return "modern_concealed_hinge";
+  if (!isNegated("swivel") && includesAny(t, ["swivel mechanism", "swivel plate", "swivel disc", "rotating seat"])) return "swivel_mechanism";
+  if (!isNegated("adjustment") && includesAny(t, ["height adjustment", "height-adjustment", "adjustable height", "ratchet adjuster", "pin adjuster"])) return "height_adjustment_mechanism";
+  if (!isNegated("bracket") && includesAny(t, ["stamped metal bracket", "stamped bracket", "stamped sheet metal"])) return "stamped_metal_bracket";
+  if (!isNegated("pull") && includesAny(t, ["bail pull", "swing pull", "decorative pull"])) return "decorative_bail_pull";
+  if (!isNegated("knob") && includesAny(t, ["wooden knob", "wood knob", "turned knob", "round wood knob"])) return "round_wood_knob";
+  if (!isNegated("escutcheon") && includesAny(t, ["escutcheon", "keyhole plate"])) return "lock_escutcheons";
+
+  // WOOD/SUBSTRATE EVIDENCE — preserve existing plywood detection priority
+  if (!isNegated("plywood") && includesAny(t, ["bent plywood", "molded plywood", "bent-plywood", "molded-plywood", "bent/molded plywood"])) return "bent_molded_plywood";
+  if (!isNegated("plywood") && includesAny(t, ["plywood drawer bottom", "plywood bottom"])) return "plywood_drawer_bottom";
+  if (!isNegated("plywood") && includesAny(t, ["structural plywood", "plywood carcass", "plywood case", "plywood panel"])) return "plywood_structural";
+  if (!isNegated("cedar") && includesAny(t, ["cedar lining", "cedar interior", "cedar-lined", "aromatic cedar"])) return "cedar_lining";
+  if (!isNegated("veneer") && includesAny(t, ["thick veneer", "heavy veneer"])) return "thick_veneer";
 
   // MATERIAL / CONSTRUCTION
   if (!isNegated("plywood") && includesAny(t, ["plywood", "sheet back"])) return "sheet_back_panel";
@@ -3566,6 +3633,94 @@ STRUCTURAL SIGNALS:
 - visible joinery
 - visible fasteners
 
+JOINERY EVIDENCE (look carefully at drawer corners, case corners, drawer bottoms, panel attachments):
+- hand-cut dovetails (irregular spacing, slightly uneven angles, hand-marked scribe lines visible)
+  → key: hand_cut_dovetails
+- machine dovetails (uniform spacing and angles, perfectly identical pins/tails)
+  → key: machine_dovetails
+- dowel joinery (visible dowel ends or round-peg construction at joints)
+  → key: dowel_joinery
+- mortise-and-tenon (visible rectangular tenon ends, pegged joints)
+  → key: mortise_and_tenon
+- welded joints (continuous metal-to-metal weld bead between frame members; common on industrial metal furniture)
+  → key: welded_joint
+- frame-and-panel side construction (rail-and-stile framework holding floating panel)
+  → key: frame_and_panel_sides
+- solid plank back (single solid board back rather than plywood sheet)
+  → key: solid_plank_back
+
+FASTENER EVIDENCE (look at drawer sides, drawer bottom attachment, back panel, hardware mounts):
+- hand-forged nails (irregular hammered heads, square shanks, pre-industrial)
+  → key: hand_forged_nail
+- cut nails (tapered rectangular cross-section, machine-cut from sheet, 1790s-1890s)
+  → key: cut_nail
+- wire nails (round shanks, uniform machine-made, post-1880)
+  → key: wire_nail
+- phillips-head screws (cross-recess heads; HARD NEGATIVE for any pre-1934 claim)
+  → key: phillips_screw  (set hard_negative: true)
+- staple fasteners (U-shaped wire staples used structurally; HARD NEGATIVE for any pre-1945 claim)
+  → key: staple_fastener  (set hard_negative: true)
+- slotted screws (single horizontal slot head; common across 19th-20th century)
+  → key: slotted_screw
+
+TOOLMARK EVIDENCE (look at secondary surfaces, drawer bottoms, back panels, undersides):
+- pit-saw marks (irregular diagonal saw kerfs, hand-sawn, pre-1830)
+  → key: pit_saw_marks
+- circular saw marks (curved arc patterns, post-1830 milling)
+  → key: circular_saw_arcs
+- band saw lines (straight parallel cuts, post-1870)
+  → key: band_saw_lines
+- hand-plane chatter or scallops (subtle ridges from hand planing, pre-1880)
+  → key: hand_plane_chatter
+
+FINISH EVIDENCE (look at all visible wood surfaces):
+- shellac crazing (fine network of cracks in original surface; 1800-1920)
+  → key: shellac_crazing
+- intact shellac (warm amber surface, no plastic feel)
+  → key: shellac_intact
+- polyurethane (thick plastic-like film; HARD NEGATIVE for pre-1960 surface, indicates later refinish or modern)
+  → key: polyurethane
+- lacquer finish (smooth, harder than shellac; common mid-century)
+  → key: lacquer_finish
+- painted metal finish (enamel or industrial paint on metal frame, often pastel mid-century colors)
+  → key: painted_metal_finish
+- refinished surface (uniform modern coating over what should be aged original)
+  → key: refinished_surface
+
+HARDWARE EVIDENCE (look at pulls, hinges, locks, casters, mechanisms):
+- porcelain caster (white/cream ceramic wheel; 1830-1900)
+  → key: porcelain_caster
+- modern caster (rubber, plastic, or metal wheel; post-1900)
+  → key: modern_caster
+- decorative bail pull (curved brass swing handle on a backplate)
+  → key: decorative_bail_pull
+- turned wooden knob / round wood knob
+  → key: round_wood_knob
+- modern concealed cup hinge (cylindrical European-style cup hinge; HARD NEGATIVE for pre-1950)
+  → key: modern_concealed_hinge  (set hard_negative: true)
+- swivel mechanism (rotating seat or top with circular swivel plate visible)
+  → key: swivel_mechanism
+- height adjustment mechanism (perforated bracket, ratchet, or pin-and-hole adjuster)
+  → key: height_adjustment_mechanism
+- stamped metal bracket (industrially-stamped sheet-metal support)
+  → key: stamped_metal_bracket
+- lock escutcheons (decorative keyhole plates)
+  → key: lock_escutcheons
+
+WOOD / SUBSTRATE EVIDENCE (look at drawer bottoms, case backs, secondary surfaces):
+- structural plywood (multi-ply laminated panel; HARD NEGATIVE for pre-1920 case construction)
+  → key: plywood_structural  (set hard_negative: true)
+- plywood drawer bottom (multi-ply panel as drawer bottom; HARD NEGATIVE for pre-1920)
+  → key: plywood_drawer_bottom  (set hard_negative: true)
+- bent or molded plywood (curved/shaped plywood seat shell or backrest; mid-century)
+  → key: bent_molded_plywood
+- cedar lining (aromatic red cedar interior, characteristic of hope/blanket chests)
+  → key: cedar_lining
+- thick veneer (visibly thick veneer cuts, pre-rotary-veneer era)
+  → key: thick_veneer
+- solid wood construction (single solid board, not laminated)
+  → key: solid_wood_construction
+
 Important reasoning rules:
 - Functional features outrank storage features.
 - Do not call a telephone bench or secretary combination a dresser just because drawers are present.
@@ -3573,9 +3728,15 @@ Important reasoning rules:
 - A drop-front writing surface or cubbies should be captured as secretary/desk evidence.
 - Labels and maker marks are highest-authority evidence.
 - Use low confidence if uncertain, but do not omit visible form evidence.
+- ALWAYS use the preferred keys above when the evidence is visible. The keys are how the engine routes observations to dating envelopes.
+- It is better to use a preferred key with low confidence than to use no key at all.
+- Multiple keys may apply to a single piece — emit each as a separate observation.
 
-Preferred keys when applicable:
-seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, maker_label, cedar_lining, sheet_back_panel, phillips_screw, plywood_structural.
+Preferred form-signal keys:
+seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, lane_label, maker_label.
+
+Preferred evidence-library keys (use whenever the evidence is visible):
+hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_joint, frame_and_panel_sides, solid_plank_back, hand_forged_nail, cut_nail, wire_nail, phillips_screw, staple_fastener, slotted_screw, pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter, shellac_crazing, shellac_intact, polyurethane, lacquer_finish, painted_metal_finish, refinished_surface, porcelain_caster, modern_caster, decorative_bail_pull, round_wood_knob, modern_concealed_hinge, swivel_mechanism, height_adjustment_mechanism, stamped_metal_bracket, lock_escutcheons, plywood_structural, plywood_drawer_bottom, bent_molded_plywood, cedar_lining, thick_veneer, solid_wood_construction, sheet_back_panel.
 `;
 
     const result = await this.callClaude(
