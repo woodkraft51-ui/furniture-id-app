@@ -61,6 +61,56 @@ type Phase1Gate = {
   next_best_evidence: string[];
 };
 
+type ConfidenceBand = "High" | "Moderate" | "Low" | "Inconclusive";
+
+// Phase 2 result. Block 1 preserves `range` (free-text display string) per
+// D-PH3-7 backward-compat; later steps add structured numerics alongside.
+type Phase2Result = {
+  range: string;
+  confidence: ConfidenceBand | string;
+  support?: string[];
+  limitations?: string[];
+  upholstery_layer?: any;
+  date_tightening_evidence?: any;
+  // Block 1 additive fields (populated when canonical lookups resolve):
+  date_floor?: number;
+  date_ceiling?: number;
+};
+
+// Phase 3 result. Block 1 preserves `form` + `display_form` (free-text labels)
+// per D-PH3-7 backward-compat; adds `form_id` (canonical FormEntry.id) alongside.
+type Phase3Result = {
+  form: string;
+  display_form: string;
+  style_context: string | null;
+  confidence: ConfidenceBand | string;
+  support: string[];
+  alternatives: string[];
+  // Block 1 additive fields:
+  form_id?: string | null;          // canonical form_id or null if NO_MATCH
+  alternative_form_ids?: string[];  // canonical IDs for alternatives where they resolve
+};
+
+type Phase4Result = {
+  weighted_clues: any[];
+  confidence_drivers: { increased: string[]; limited: string[] };
+  category_scores: any;
+};
+
+type Phase5Result = {
+  conflicts: any[];
+  resolutions: any[];
+  summary: string;
+};
+
+type Phase6Result = {
+  supported_findings: string[];
+  tentative_findings: string[];
+  more_evidence_needed: string[];
+  summary: string;
+  valuation: any;
+};
+
 type ClaudeResult =
   | { ok: true; parsed: any; raw: string }
   | { ok: false; error: any };
@@ -3655,14 +3705,14 @@ if (missing.label_photo) {
     };
   },
 
-  p2(digest: EvidenceDigest, gate: Phase1Gate) {
+  p2(digest: EvidenceDigest, gate: Phase1Gate): Phase2Result {
     const ranked = scoreForms(digest);
     const best = ranked[0];
     const form = best?.form || "Unclassified furniture";
     return dateFromEvidence(digest, form);
   },
 
-  p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any) {
+  p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any): Phase3Result {
     const ranked = scoreForms(digest);
     const best = ranked[0];
     const alternatives = ranked.slice(1, 4).map((r) => r.form);
@@ -3691,7 +3741,7 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     };
   },
 
- p4(digest: EvidenceDigest) {
+ p4(digest: EvidenceDigest): Phase4Result {
   const AUTHORITY_RANK: Record<string, number> = {
     construction: 10,
     joinery: 9,
@@ -3866,7 +3916,7 @@ const style = deriveStyleContext(digest) || styleFromObservation;
     category_scores,
   };
 },
-p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
+p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: Phase3Result): Phase5Result {
   const { weighted_clues } = weighting;
 
   const highAuthority = weighted_clues.filter(w => w.authority_rank >= 8);
@@ -3941,7 +3991,7 @@ p5(digest: EvidenceDigest, weighting: any, dating: any, form: any) {
   };
 },
 
- p6(gate: any, dating: any, form: any, weighting: any, conflict: any, digest?: EvidenceDigest) {
+ p6(gate: Phase1Gate, dating: Phase2Result, form: Phase3Result, weighting: Phase4Result, conflict: Phase5Result, digest?: EvidenceDigest): Phase6Result {
   const vb = valueBand(
     form.display_form || form.form || "Unknown",
     dating.range || "",
