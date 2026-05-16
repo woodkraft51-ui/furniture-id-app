@@ -6,6 +6,7 @@ import {
   evaluateSubtype,
   evaluateAntiBackClassification,
   evaluateDimensional,
+  getCommonAliasesForDisplay,
   type SubtypeAssignment,
   type AntiBackViolation,
 } from "./engineFormEvaluators";
@@ -15,11 +16,28 @@ import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleW
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
 // Falls back to CLUE_LIBRARY for KEPT_IN_ENGINE clues (style cues, material
 // observations, *_pattern keys from detectStructuralPatterns).
+//
+// Block 2c fix: OR the hardNegative flag from both sources. Canonical
+// authority alone (>=8) misses entries like substrate_evidence_plywood
+// (authority 7) that are categorical date disqualifiers per audit log
+// (D-PH3HCL-S4-3 Q4). Engine's CLUE_LIBRARY correctly flagged them; that
+// flag must survive the canonical preference.
 function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
   if (!clueKey) return undefined;
   const fromCanonical = getClueMetaFromCanonical(clueKey);
-  if (fromCanonical) return fromCanonical;
-  return CLUE_LIBRARY[clueKey];
+  const fromInline = CLUE_LIBRARY[clueKey];
+  if (fromCanonical) {
+    // Canonical wins for fields it populates. Inline fields fill gaps where
+    // canonical lacks them (hardNegative on Q4-locked HARD-NEGATIVE entries
+    // that don't carry explicit hard_negative flag; dateHint on canonical
+    // entries whose dates live in notes prose rather than date_floor/ceiling).
+    return {
+      ...fromCanonical,
+      hardNegative: fromCanonical.hardNegative || fromInline?.hardNegative,
+      dateHint: fromCanonical.dateHint || fromInline?.dateHint,
+    };
+  }
+  return fromInline;
 }
 
 export type RuntimeMode = "mock" | "live";
@@ -3848,10 +3866,19 @@ if (missing.label_photo) {
       || deriveStyleContext(digest)
       || styleFromObservation;
 
+    // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
+    // canonical form has aliases. Surfaces user-trust language without surrendering
+    // canonical identification ("Identified as buffet (also commonly called sideboard)").
+    const aliases = getCommonAliasesForDisplay(form_id, 2);
+    const styledForm = style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form;
+    const display_form = aliases.length
+      ? `${styledForm} (also commonly called: ${aliases.join(", ")})`
+      : styledForm;
+
     return {
       form,
       form_id,
-      display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form,
+      display_form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
       support: buildReportEvidenceSupport(digest, bestForm?.support || []),
@@ -3904,30 +3931,14 @@ if (missing.label_photo) {
     heavy_carving: 0.25,
   };
 
+  // Block 2c trim: all DATE_HINTS entries except thick_veneer are now covered
+  // by meta?.dateHint (canonical first, CLUE_LIBRARY fallback). thick_veneer
+  // is NO_MATCH canonical AND absent from CLUE_LIBRARY (knowledge migrated
+  // to prose-only notes in woodEvidence per Block 0.5d D-PH3HCL-S2). Keeping
+  // a minimal single-entry fallback rather than introducing a synthetic
+  // CLUE_LIBRARY entry just for this case.
   const DATE_HINTS: Record<string, string> = {
-    hand_forged_nail: "pre-1800",
-    cut_nail: "1790–1890",
-    wire_nail: "post-1880",
-    phillips_screw: "post-1934",
-    staple_fastener: "post-1945",
-    hand_cut_dovetails: "pre-1860",
-    machine_dovetails: "post-1860",
-    dowel_joinery: "post-1900",
-    pit_saw_marks: "pre-1830",
-    circular_saw_arcs: "post-1830",
-    band_saw_lines: "post-1870",
-    plywood_structural: "post-1920",
-    plywood_drawer_bottom: "post-1920",
-    sheet_back_panel: "post-1900",
-    modern_concealed_hinge: "post-1950",
-    shellac_crazing: "1800–1920",
-    polyurethane: "post-1960",
     thick_veneer: "pre-1910",
-    porcelain_caster: "1830–1900",
-    cylinder_roll: "1870–1920",
-    slant_front: "1700–1860",
-    gateleg_support: "1680–1800; revival 1880–1930",
-    drop_leaf_hinged: "1720–1930",
   };
 
   const photoCounts: Record<string, Set<string>> = {};
@@ -4104,11 +4115,21 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   );
 }
  
-  // Hard negative overrides
+  // Hard negative overrides. Per D-PH3-11: hard-negative override stays
+  // engine-internal logic (universal rule, not per-entry data). Block 2c
+  // upgrade: surface canonical diagnostic_caution_text when the canonical
+  // entry carries it; falls back to engine-generic message otherwise.
   hardNegatives.forEach((hn) => {
-    resolutions.push(
-      `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
-    );
+    const canonicalText = getCanonicalCautionText(hn.clue);
+    if (canonicalText) {
+      resolutions.push(
+        `${hn.display_label} is a hard-negative indicator. Canonical guidance: ${canonicalText}`
+      );
+    } else {
+      resolutions.push(
+        `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
+      );
+    }
   });
 
   // Replacement logic

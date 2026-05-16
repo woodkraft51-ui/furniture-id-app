@@ -184,3 +184,26 @@ export function evaluateCousinContrast(
 ): null {
   return null;
 }
+
+/**
+ * Block 2c D-PH3-10: return display-ready common_aliases list for a form_id.
+ * Strips parenthetical context from each alias entry ("bureau (in casual...)"
+ * → "bureau") and dedups. Returns top N for report rendering.
+ */
+export function getCommonAliasesForDisplay(form_id: string | null, limit = 3): string[] {
+  if (!form_id) return [];
+  const form = getForm(form_id);
+  const aliases = (form?.common_aliases ?? []) as string[];
+  const cleaned: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of aliases) {
+    // Take portion before first "(" if present; trim.
+    const name = String(raw).split("(")[0].trim();
+    if (name && !seen.has(name.toLowerCase())) {
+      seen.add(name.toLowerCase());
+      cleaned.push(name);
+    }
+    if (cleaned.length >= limit) break;
+  }
+  return cleaned;
+}
