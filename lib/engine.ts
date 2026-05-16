@@ -3336,8 +3336,6 @@ if (parsed) {
   return { ok: true, parsed, raw };
 }
 
-console.log("CLAUDE RAW NON-JSON RESPONSE:", raw);
-
 return {
   ok: false,
   error: {
@@ -3542,7 +3540,6 @@ const languageAlignmentDebug = {
     .map((o) => o.description),
 };
 
-console.log("[NCW LANGUAGE ALIGNMENT DEBUG]", languageAlignmentDebug);
     observations.forEach((obs) => {
       API.addObservation(caseData.id, {
         observation_type: obs.type,
@@ -4011,15 +4008,7 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
   const p0 = await this.p0(caseData, images, intake, onPhase);
   stage_outputs.p0 = p0;
 
-  console.log("----- PHASE 0 DEBUG START -----");
-  console.log("P0 RAW ERROR:", p0.raw_error);
-console.log("P0 DEBUG:", p0.debug);
-console.log("P0 RAW RESULT:", p0.raw_result);
-console.log("P0 PARSED RESULT:", p0.parsed_result);
-console.log("P0 PERCEPTION:", p0.perception);
-console.log("P0 OBSERVATIONS:", p0.observations);
-console.log("IMAGES PASSED TO P0:", images);
-  console.log("----- PHASE 0 DEBUG END -----");
+  // (P0 debug logs removed in Block 0.55; re-instrument as needed)
 
   if (!p0.observations || p0.observations.length === 0) {
     p0.observations = [
