@@ -27,9 +27,14 @@ function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
   const fromCanonical = getClueMetaFromCanonical(clueKey);
   const fromInline = CLUE_LIBRARY[clueKey];
   if (fromCanonical) {
+    // Canonical wins for fields it populates. Inline fields fill gaps where
+    // canonical lacks them (hardNegative on Q4-locked HARD-NEGATIVE entries
+    // that don't carry explicit hard_negative flag; dateHint on canonical
+    // entries whose dates live in notes prose rather than date_floor/ceiling).
     return {
       ...fromCanonical,
       hardNegative: fromCanonical.hardNegative || fromInline?.hardNegative,
+      dateHint: fromCanonical.dateHint || fromInline?.dateHint,
     };
   }
   return fromInline;
@@ -3926,30 +3931,14 @@ if (missing.label_photo) {
     heavy_carving: 0.25,
   };
 
+  // Block 2c trim: all DATE_HINTS entries except thick_veneer are now covered
+  // by meta?.dateHint (canonical first, CLUE_LIBRARY fallback). thick_veneer
+  // is NO_MATCH canonical AND absent from CLUE_LIBRARY (knowledge migrated
+  // to prose-only notes in woodEvidence per Block 0.5d D-PH3HCL-S2). Keeping
+  // a minimal single-entry fallback rather than introducing a synthetic
+  // CLUE_LIBRARY entry just for this case.
   const DATE_HINTS: Record<string, string> = {
-    hand_forged_nail: "pre-1800",
-    cut_nail: "1790–1890",
-    wire_nail: "post-1880",
-    phillips_screw: "post-1934",
-    staple_fastener: "post-1945",
-    hand_cut_dovetails: "pre-1860",
-    machine_dovetails: "post-1860",
-    dowel_joinery: "post-1900",
-    pit_saw_marks: "pre-1830",
-    circular_saw_arcs: "post-1830",
-    band_saw_lines: "post-1870",
-    plywood_structural: "post-1920",
-    plywood_drawer_bottom: "post-1920",
-    sheet_back_panel: "post-1900",
-    modern_concealed_hinge: "post-1950",
-    shellac_crazing: "1800–1920",
-    polyurethane: "post-1960",
     thick_veneer: "pre-1910",
-    porcelain_caster: "1830–1900",
-    cylinder_roll: "1870–1920",
-    slant_front: "1700–1860",
-    gateleg_support: "1680–1800; revival 1880–1930",
-    drop_leaf_hinged: "1720–1930",
   };
 
   const photoCounts: Record<string, Set<string>> = {};
