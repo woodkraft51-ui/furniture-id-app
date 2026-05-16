@@ -1,5 +1,18 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
+import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
+import { getClueMetaFromCanonical, ClueMeta } from "./engineClueResolver";
+
+// Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
+// the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
+// Falls back to CLUE_LIBRARY for KEPT_IN_ENGINE clues (style cues, material
+// observations, *_pattern keys from detectStructuralPatterns).
+function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
+  if (!clueKey) return undefined;
+  const fromCanonical = getClueMetaFromCanonical(clueKey);
+  if (fromCanonical) return fromCanonical;
+  return CLUE_LIBRARY[clueKey];
+}
 
 export type RuntimeMode = "mock" | "live";
 export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
@@ -842,7 +855,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
   normalizePhase0Clue(raw) ||
   detectClueFromText(description);
 
-    const meta = clue ? CLUE_LIBRARY[clue] : undefined;
+    const meta = getClueMeta(clue);
 
     const type =
       asString(raw?.type) ||
@@ -876,7 +889,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     collectText(parsed).forEach((t) => {
       const clue = detectClueFromText(t);
       push({
-        category: clue ? CLUE_LIBRARY[clue]?.category : "context",
+        category: getClueMeta(clue)?.category ?? "context",
         key: clue,
         description: t,
         confidence: clue ? 55 : 35,
@@ -1014,7 +1027,7 @@ function promotePerceptionObservations(
   ) => {
     if (out.some((o) => o.clue === clue)) return;
 
-    const meta = CLUE_LIBRARY[clue];
+    const meta = getClueMeta(clue);
 
     out.push({
       type: meta?.category || "context",
@@ -1724,7 +1737,7 @@ function addIntakeObservations(intake: any, observations: Observation[]): Observ
   const out = [...observations];
   const add = (clue: string, description: string) => {
     if (out.some((o) => o.clue === clue)) return;
-    const meta = CLUE_LIBRARY[clue];
+    const meta = getClueMeta(clue);
     out.push({ type: meta?.category || "context", clue, description, confidence: 55, source_image: "intake", hard_negative: false });
   };
   if (intake?.has_drawers) add("drawer_present", "User indicates drawers are present");
@@ -1732,7 +1745,18 @@ function addIntakeObservations(intake: any, observations: Observation[]): Observ
   return dedupeObservations(out);
 }
 
-function scoreForms(digest: EvidenceDigest): Array<{ form: string; score: number; support: string[] }> {
+// Block 1 D-PH3-7: scoreForms returns canonical form_id alongside free-text label.
+// `form` field preserved as backward-compat display string; `form_id` is null
+// when the engine label has no canonical FormEntry equivalent (e.g., style-as-form
+// labels like "Victorian Eastlake furniture" — those route to style_context in p3).
+export type ScoredForm = {
+  form: string;
+  form_id: string | null;
+  score: number;
+  support: string[];
+};
+
+function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
   const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
 
@@ -2218,7 +2242,17 @@ if (hasSpecific) {
   );
 }
 
-return results.sort((a, b) => b.score - a.score);
+// Block 1 D-PH3-7: resolve canonical form_id for each result via FORM_LABEL_TO_CANONICAL.
+// NO_MATCH → form_id stays null; engine label preserved as `form` for display backward-compat.
+const withCanonical: ScoredForm[] = results.map((r) => {
+  const lookup = canonicalFormIdForLabel(r.form);
+  return {
+    ...r,
+    form_id: lookup === NO_MATCH ? null : lookup,
+  };
+});
+
+return withCanonical.sort((a, b) => b.score - a.score);
 }
 function buildReportEvidenceSupport(digest: EvidenceDigest, formSupport: string[]): string[] {
   const priorityOrder: Record<string, number> = {
@@ -3714,30 +3748,61 @@ if (missing.label_photo) {
 
   p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any): Phase3Result {
     const ranked = scoreForms(digest);
-    const best = ranked[0];
-    const alternatives = ranked.slice(1, 4).map((r) => r.form);
-    
-    const form = best?.form || "Unclassified furniture";
-    const confidencePct = best ? Math.min(gate.confidence_cap_pct, best.score >= 80 ? 90 : best.score >= 45 ? 72 : 48) : 35;
+    const rawBest = ranked[0];
+
+    // Block 1 D-PH3-13 #2: when the highest-scoring scoreForms label is a
+    // style-as-form (e.g., "Victorian Eastlake furniture", form_id NO_MATCH),
+    // prefer the highest-scoring NON-style-label alternative as the actual form,
+    // and surface the style label as style_context. This separates form
+    // identification from style attribution.
+    const bestForm = ranked.find((r) => r.form_id !== null) || rawBest;
+    const styleAsFormPrimary = rawBest && rawBest !== bestForm ? rawBest : null;
+
+    const form = bestForm?.form || "Unclassified furniture";
+    const form_id = bestForm?.form_id ?? null;
+    const alternatives = ranked
+      .filter((r) => r !== bestForm)
+      .slice(0, 3)
+      .map((r) => r.form);
+    const alternative_form_ids = ranked
+      .filter((r) => r !== bestForm)
+      .slice(0, 3)
+      .map((r) => r.form_id)
+      .filter((id): id is string => id !== null);
+
+    // Confidence ladder uses the actual form's score, not the (possibly higher) style-label score.
+    const confidencePct = bestForm
+      ? Math.min(gate.confidence_cap_pct, bestForm.score >= 80 ? 90 : bestForm.score >= 45 ? 72 : 48)
+      : 35;
+
     const observedStyle = [...(digest.observations || [])]
-  .filter((o) => o.type === "style" && o.clue && (o.confidence || 0) >= 70)
-  .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
+      .filter((o) => o.type === "style" && o.clue && (o.confidence || 0) >= 70)
+      .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
 
-const styleFromObservation = observedStyle
-  ? String(observedStyle.clue)
-      .replace(/_style$/i, "")
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase())
-  : null;
+    const styleFromObservation = observedStyle
+      ? String(observedStyle.clue)
+          .replace(/_style$/i, "")
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase())
+      : null;
 
-const style = deriveStyleContext(digest) || styleFromObservation;
+    // If scoreForms promoted a style-label, treat it as authoritative style context
+    // (it's the strongest style signal the engine detected).
+    const styleFromForm = styleAsFormPrimary
+      ? styleAsFormPrimary.form.replace(/\s+furniture$/i, "").trim()
+      : null;
+
+    const style = styleFromForm || deriveStyleContext(digest) || styleFromObservation;
+
     return {
       form,
+      form_id,
       display_form: style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
-      support: buildReportEvidenceSupport(digest, best?.support || []),
+      support: buildReportEvidenceSupport(digest, bestForm?.support || []),
       alternatives,
+      alternative_form_ids,
     };
   },
 
@@ -3817,7 +3882,7 @@ const style = deriveStyleContext(digest) || styleFromObservation;
 
   const weighted_clues = digest.observations
     .map((o) => {
-      const meta = o.clue ? CLUE_LIBRARY[o.clue] : undefined;
+      const meta = getClueMeta(o.clue);
       const clue = o.clue || o.description;
       const category = meta?.category || o.type || "context";
 
