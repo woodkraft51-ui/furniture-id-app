@@ -207,3 +207,38 @@ export function getCommonAliasesForDisplay(form_id: string | null, limit = 3): s
   }
   return cleaned;
 }
+
+// ── B5 Hybrid form router ────────────────────────────────────────────────
+
+export type HybridAnnotation = {
+  primary_form_id: string;
+  primary_form_name: string;
+  secondary_form_ids: string[];
+  secondary_form_names: string[];
+};
+
+/**
+ * B5 hybrid form router per D-PH3-3 lean. Reads FormEntry.secondary_form_associations
+ * for the identified form_id. Returns a hybrid annotation when the form has
+ * secondary associations populated; null otherwise.
+ *
+ * Currently only form_chest_of_drawers populates secondary_form_associations
+ * (with ["form_blanket_chest"], capturing the mule-chest hybrid identity).
+ * As more forms surface hybrid character during canonical authoring, this
+ * evaluator activates without code changes.
+ */
+export function evaluateHybridForm(form_id: string | null): HybridAnnotation | null {
+  if (!form_id) return null;
+  const form = getForm(form_id);
+  const secondaryIds = (form?.secondary_form_associations ?? []) as string[];
+  if (secondaryIds.length === 0) return null;
+  const secondaryNames = secondaryIds
+    .map((id) => getForm(id)?.name)
+    .filter((n): n is string => Boolean(n));
+  return {
+    primary_form_id: form_id,
+    primary_form_name: form?.name ?? form_id,
+    secondary_form_ids: secondaryIds,
+    secondary_form_names: secondaryNames,
+  };
+}
