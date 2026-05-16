@@ -9,7 +9,7 @@ import {
   type SubtypeAssignment,
   type AntiBackViolation,
 } from "./engineFormEvaluators";
-import { attributeStyle, type StyleAttribution } from "./engineStyleEvaluator";
+import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleWaveAttribution } from "./engineStyleEvaluator";
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -117,6 +117,8 @@ type Phase3Result = {
   // Block 2a: structured style attribution from styleFamilies.ts
   style_attribution?: StyleAttribution | null;
   style_alternatives?: StyleAttribution[]; // up to 3 lower-confidence attributions
+  // Block 2b: style-wave aggregator output (≥2-of-N rule per D-PH3-9)
+  style_waves?: StyleWaveAttribution[];
 };
 
 type Phase4Result = {
@@ -4224,6 +4226,23 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
   stage_outputs.p2 = p2; onPhase?.("p2", p2);
 
   const p3 = this.p3(digest, p1, intake);
+
+  // Block 2b: style-wave aggregation runs post-p3 (needs p2 dating envelope).
+  // Mutates p3 in place so downstream phases see style_waves in form context.
+  if (p3.style_attribution || (p3.style_alternatives && p3.style_alternatives.length > 0)) {
+    const allAttributions = [
+      ...(p3.style_attribution ? [p3.style_attribution] : []),
+      ...(p3.style_alternatives ?? []),
+    ];
+    const observationDescriptions = (digest.observations || []).map((o: any) => o.description || "");
+    p3.style_waves = aggregateStyleWaves(
+      allAttributions,
+      p2.date_floor ?? null,
+      p2.date_ceiling ?? null,
+      observationDescriptions
+    );
+  }
+
   stage_outputs.p3 = p3; onPhase?.("p3", p3);
 
   const p4 = this.p4(digest);

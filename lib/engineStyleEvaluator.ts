@@ -22,8 +22,8 @@
  * STYLE_REVIVAL_WAVES and surface wave-level evidence.
  */
 
-import { STYLE_FAMILIES } from "./constraints/styleFamilies";
-import type { StyleFamilyEntry } from "./constraints/styleFamilies";
+import { STYLE_FAMILIES, STYLE_REVIVAL_WAVES } from "./constraints/styleFamilies";
+import type { StyleFamilyEntry, StyleRevivalWaveEntry } from "./constraints/styleFamilies";
 
 export type StyleAttribution = {
   style_family_id: string;
@@ -163,4 +163,141 @@ export function attributeStyle(
   }
 
   return results.sort((a, b) => b.confidence - a.confidence);
+}
+
+// ── Block 2b: Style-wave aggregator ──────────────────────────────────────
+
+export type StyleWaveAttribution = {
+  wave_id: string;
+  wave_name: string;
+  parent_style_id: string;
+  wave_number: number;
+  date_floor: number | null;
+  date_ceiling: number | null;
+  signals_matched: string[];      // human-readable list of what matched
+  signal_count: number;            // gate threshold per D-PH3-9 (2-of-N rule)
+};
+
+// Index by parent_style_id for fast lookup during aggregation
+let wavesByParent: Map<string, StyleRevivalWaveEntry[]> | null = null;
+function getWavesByParent(): Map<string, StyleRevivalWaveEntry[]> {
+  if (wavesByParent) return wavesByParent;
+  const m = new Map<string, StyleRevivalWaveEntry[]>();
+  for (const w of STYLE_REVIVAL_WAVES) {
+    const arr = m.get(w.parent_style_id) ?? [];
+    arr.push(w);
+    m.set(w.parent_style_id, arr);
+  }
+  wavesByParent = m;
+  return m;
+}
+
+function datesOverlap(
+  aFloor: number | null,
+  aCeiling: number | null,
+  bFloor: number | null,
+  bCeiling: number | null
+): boolean {
+  if (aFloor === null && aCeiling === null) return false;
+  if (bFloor === null && bCeiling === null) return false;
+  const aLo = aFloor ?? -Infinity;
+  const aHi = aCeiling ?? Infinity;
+  const bLo = bFloor ?? -Infinity;
+  const bHi = bCeiling ?? Infinity;
+  return aLo <= bHi && bLo <= aHi;
+}
+
+/**
+ * Block 2b — Style-wave aggregation.
+ *
+ * Per D-PH3-9 (2-of-N rule): surface a wave attribution only when at least
+ * 2 evidence layers point to the same wave. Layers per wave:
+ *   1. Style family attribution matches wave.parent_style_id
+ *   2. Dating envelope overlaps wave.date_floor/date_ceiling
+ *   3. ≥1 design_subtleties.signal token matches observation text
+ *
+ * Reaching ≥2 of these layers qualifies the wave for surfacing.
+ * Per Q5 framing: output reads as supporting evidence, not authoritative
+ * attribution ("consistent with X wave, c. YYYY-ZZZZ").
+ */
+export function aggregateStyleWaves(
+  styleAttributions: StyleAttribution[],
+  dateFloor: number | null,
+  dateCeiling: number | null,
+  observationDescriptions: string[]
+): StyleWaveAttribution[] {
+  if (styleAttributions.length === 0) return [];
+
+  // Build observation token set (used for design_subtleties signal matching)
+  const obsTokens = new Set<string>();
+  for (const d of observationDescriptions) for (const t of tokenize(d)) obsTokens.add(t);
+
+  const wavesIdx = getWavesByParent();
+  const matched: StyleWaveAttribution[] = [];
+
+  // Only seed wave search from reasonably-confident attributions (≥0.5).
+  // Lower-confidence alternatives often surface noise (e.g., mcm_plastic_chair
+  // attribution alternative "postmodern" 0.29 → 2010+ Memphis Revival wave).
+  // Floor balances signal vs noise. 0.5 was too aggressive (filtered out
+  // mcm 0.43 attribution which had a real 3/3-signal wave hit).
+  // 0.4 catches weak-but-valid 2-token matches and filters 0.29 noise.
+  const ATTRIBUTION_FLOOR = 0.4;
+  const attributionIdsArr = Array.from(
+    new Set(
+      styleAttributions
+        .filter((s) => s.confidence >= ATTRIBUTION_FLOOR)
+        .map((s) => s.style_family_id)
+    )
+  );
+
+  for (const styleId of attributionIdsArr) {
+    const waves = wavesIdx.get(styleId) ?? [];
+    for (const wave of waves) {
+      const signals: string[] = [];
+
+      // Layer 1: style family attribution matched (always true here, we're iterating from attributions)
+      signals.push(`Style family attribution: ${styleId}`);
+
+      // Layer 2: dating envelope overlaps wave date range
+      const wFloor = (wave as any).date_floor ?? null;
+      const wCeiling = (wave as any).date_ceiling ?? null;
+      if (datesOverlap(dateFloor, dateCeiling, wFloor, wCeiling)) {
+        const dateLabel = wFloor != null && wCeiling != null
+          ? `c. ${wFloor}-${wCeiling}`
+          : wFloor != null ? `post-${wFloor}` : `pre-${wCeiling}`;
+        signals.push(`Dating envelope overlaps wave range (${dateLabel})`);
+      }
+
+      // Layer 3: design_subtleties signal token match in observation text
+      const subtleties = ((wave as any).design_subtleties ?? []) as Array<{ signal: string }>;
+      for (const sub of subtleties) {
+        const sigTokens = tokenize(sub.signal).filter((t) => !STOP_TOKENS.has(t) && t.length >= 4);
+        const sigMatched = sigTokens.filter((t) => obsTokens.has(t));
+        if (sigMatched.length > 0) {
+          signals.push(`Design signal "${sub.signal}" matched on ${sigMatched.join(", ")}`);
+          break; // single subtlety match counts as layer-3 hit; don't multi-count
+        }
+      }
+
+      // D-PH3-9: 2-of-N gate
+      if (signals.length >= 2) {
+        matched.push({
+          wave_id: wave.id,
+          wave_name: wave.name,
+          parent_style_id: styleId,
+          wave_number: (wave as any).wave_number ?? 0,
+          date_floor: wFloor,
+          date_ceiling: wCeiling,
+          signals_matched: signals,
+          signal_count: signals.length,
+        });
+      }
+    }
+  }
+
+  // Sort: more signals first, then earliest wave date
+  return matched.sort((a, b) => {
+    if (b.signal_count !== a.signal_count) return b.signal_count - a.signal_count;
+    return (a.date_floor ?? 9999) - (b.date_floor ?? 9999);
+  });
 }
