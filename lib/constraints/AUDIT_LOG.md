@@ -3926,3 +3926,6 @@ Patterns 5/8/9/10 (recursive gap discovery / prefix-mismatch / vocabulary granul
 
 ## D-PH3HCL-FINAL — Path A series CLOSED
 Closes the Path A series. 4 sub-blocks shipped; 21 new canonical entries authored; 17 M2 notes-extensions applied; 3 M4 Frame-R3 entries populated; 31 forward-refs scrubbed; evidence.ts deleted (554 lines removed); D-AR8B-6 corrected. PHASE 2: NOW ACTUALLY FULLY CLOSED. Next: Block 1 Foundation on Mike's authorization (W0a binding + W0b field-naming + W4 absorbed + tests + weighting.ts deletion).
+
+## D-PH3HCL-S4-8 — weighting.ts deletion pulled forward
+lib/weighting.ts deletion pulled forward from Block 1 Foundation scope. Vercel deployment failure on PR #47 surfaced dangling HISTORICAL_CLUE_LIBRARY reference at weighting.ts:216. Original locked scope deferred deletion to Block 1; defer lifted to keep main deployable. 276-line orphan removed; CLUE_WEIGHT_TABLE abandoned per same Block 0 held-back default.
