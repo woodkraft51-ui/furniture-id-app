@@ -11,6 +11,7 @@ import {
   type AntiBackViolation,
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleWaveAttribution } from "./engineStyleEvaluator";
+import { buildDatingOverlap, type DatingOverlapData } from "./engineDatingOverlap";
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -157,6 +158,8 @@ type Phase6Result = {
   more_evidence_needed: string[];
   summary: string;
   valuation: any;
+  // Block 3a: structured 8-layer dating-overlap data for Full Analysis viz
+  dating_overlap?: DatingOverlapData;
 };
 
 type ClaudeResult =
@@ -4191,6 +4194,15 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     },
   };
 
+  // Block 3a: build 8-layer dating-overlap data for Full Analysis viz (D-PH3-6).
+  // Engine produces structured data; React rendering lands in Block 3b.
+  const dating_overlap = buildDatingOverlap(
+    weighting.weighted_clues || [],
+    form.style_attribution ?? null,
+    form.style_waves ?? [],
+    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null }
+  );
+
   return {
     supported_findings: [
       `The strongest supported reading is ${form.display_form || form.form}.`,
@@ -4212,6 +4224,7 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
       high: vb.marketplace[1],
       platform_breakdown: valuationBreakdown,
     },
+    dating_overlap,
   };
 },
 
