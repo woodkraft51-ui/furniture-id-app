@@ -135,32 +135,91 @@ export function getCanonicalCautionText(engineKey: string): string | null {
 /**
  * Block 1 step 7: parse engine free-text date range strings into numeric
  * { date_floor, date_ceiling } per D-PH3-13 #4. Handles common engine formats:
- *   "c. 1830-1870" / "c. 1830–1870" → { 1830, 1870 }
- *   "1700–1860"                     → { 1700, 1860 }
- *   "post-1934"                     → { 1934, null }
- *   "pre-1860"                      → { null, 1860 }
- *   "late 19th to early 20th century" → null (no parse)
+ *   "c. 1830-1870" / "c. 1830–1870" / "1700–1860" → { 1830, 1870 }
+ *   "post-1934"                                   → { 1934, null }
+ *   "pre-1860"                                    → { null, 1860 }
+ * Block 5 expansion (real-data formats observed in LLM outputs):
+ *   "c. 1900" / "ca. 1900" / "circa 1900"         → { 1890, 1910 } (±10y)
+ *   "1870s" / "1870's"                            → { 1870, 1879 }
+ *   "early 19th century"                          → { 1800, 1830 }
+ *   "mid 19th century" / "middle of the 19th c."  → { 1830, 1870 }
+ *   "late 19th century"                           → { 1870, 1900 }
+ *   "early 20th century"                          → { 1900, 1930 }
+ *   "mid 20th century"                            → { 1930, 1970 }
+ *   "late 20th century"                           → { 1970, 2000 }
+ *   "19th century" / "19th c."                    → { 1800, 1900 }
+ *   "1850" (bare year)                            → { 1850, 1850 }
+ *
+ * Returns { null, null } when no defensible parse is available.
  */
 export function parseRangeToNumeric(range: string | null | undefined): {
   date_floor: number | null;
   date_ceiling: number | null;
 } {
   if (!range) return { date_floor: null, date_ceiling: null };
-  const r = String(range);
+  const r = String(range).trim();
+
   // Range form: "c. 1830-1870" / "c. 1830–1870" / "1700–1860"
   const rangeMatch = r.match(/(\d{4})\s*[-–]\s*(\d{4})/);
   if (rangeMatch) {
     return { date_floor: parseInt(rangeMatch[1], 10), date_ceiling: parseInt(rangeMatch[2], 10) };
   }
+
   // Open-ended: "post-YYYY"
   const postMatch = r.match(/post[-\s]+(\d{4})/i);
   if (postMatch) {
     return { date_floor: parseInt(postMatch[1], 10), date_ceiling: null };
   }
+
   // Open-ended: "pre-YYYY"
   const preMatch = r.match(/pre[-\s]+(\d{4})/i);
   if (preMatch) {
     return { date_floor: null, date_ceiling: parseInt(preMatch[1], 10) };
   }
+
+  // Decade: "1870s" / "1870's"
+  const decadeMatch = r.match(/(\d{3})0'?s\b/);
+  if (decadeMatch) {
+    const decadeStart = parseInt(decadeMatch[1] + "0", 10);
+    return { date_floor: decadeStart, date_ceiling: decadeStart + 9 };
+  }
+
+  // Circa / approximate single year: "c. 1900" / "ca. 1900" / "circa 1900"
+  // Treats as a ±10-year band — common appraiser usage.
+  const circaMatch = r.match(/(?:^|\s)(?:c\.|ca\.|circa)\s*(\d{4})/i);
+  if (circaMatch) {
+    const center = parseInt(circaMatch[1], 10);
+    return { date_floor: center - 10, date_ceiling: center + 10 };
+  }
+
+  // Century period phrases: "early 19th century", "mid 20th c.", "late 18th century", etc.
+  const centuryPhraseMatch = r.match(/(early|mid(?:dle)?|late)\s+(?:of\s+the\s+)?(\d{1,2})(?:st|nd|rd|th)\s+c(?:entury|\.)/i);
+  if (centuryPhraseMatch) {
+    const phase = centuryPhraseMatch[1].toLowerCase();
+    const century = parseInt(centuryPhraseMatch[2], 10);
+    const centuryStart = (century - 1) * 100;
+    if (phase.startsWith("early")) return { date_floor: centuryStart, date_ceiling: centuryStart + 30 };
+    if (phase.startsWith("mid"))   return { date_floor: centuryStart + 30, date_ceiling: centuryStart + 70 };
+    if (phase.startsWith("late"))  return { date_floor: centuryStart + 70, date_ceiling: centuryStart + 100 };
+  }
+
+  // Bare century: "19th century" / "19th c."
+  const bareCenturyMatch = r.match(/(\d{1,2})(?:st|nd|rd|th)\s+c(?:entury|\.)/i);
+  if (bareCenturyMatch) {
+    const century = parseInt(bareCenturyMatch[1], 10);
+    const centuryStart = (century - 1) * 100;
+    return { date_floor: centuryStart, date_ceiling: centuryStart + 100 };
+  }
+
+  // Bare 4-digit year as last resort (point estimate, ±5y band for visibility)
+  const bareYearMatch = r.match(/\b(\d{4})\b/);
+  if (bareYearMatch) {
+    const year = parseInt(bareYearMatch[1], 10);
+    // Sanity check — furniture date range is roughly 1600-2050
+    if (year >= 1600 && year <= 2050) {
+      return { date_floor: year - 5, date_ceiling: year + 5 };
+    }
+  }
+
   return { date_floor: null, date_ceiling: null };
 }
