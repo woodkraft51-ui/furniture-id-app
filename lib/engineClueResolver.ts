@@ -66,15 +66,18 @@ function metaFromCanonical(entry: any): ClueMeta {
   const positiveAuthority = typeof entry?.positive_authority === "number" ? entry.positive_authority : 5;
   // 1-10 scale → 0-1 weight. Mirror engine's CLUE_LIBRARY 0-1 range.
   const weight = positiveAuthority / 10;
-  // hardNegative when canonical entry flags hard_negative OR when
-  // hard_negative_authority dominates (signaling exclusion semantics).
-  const hardNegative = entry?.hard_negative === true
-    || (typeof entry?.hard_negative_authority === "number" && entry.hard_negative_authority >= 8);
+  // hardNegative: ONLY when canonical entry has explicit hard_negative flag.
+  // Do NOT infer from hard_negative_authority (that's confidence in the
+  // exclusion if interpreted exclusionary, not a flag that this IS exclusionary).
+  // Engine's inline CLUE_LIBRARY hardNegative flag is OR'd in via getClueMeta
+  // caller for entries known-categorical per audit log (phillips_screw,
+  // staple_fastener, plywood, modern_concealed_hinge).
+  const hardNegative = entry?.hard_negative === true || undefined;
 
   return {
     category: engineCategoryFor(entry?.category ?? "other"),
     weight,
-    hardNegative: hardNegative || undefined,
+    hardNegative,
     dateHint: dateHintFor(entry),
   };
 }

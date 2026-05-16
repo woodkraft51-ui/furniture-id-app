@@ -16,11 +16,23 @@ import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleW
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
 // Falls back to CLUE_LIBRARY for KEPT_IN_ENGINE clues (style cues, material
 // observations, *_pattern keys from detectStructuralPatterns).
+//
+// Block 2c fix: OR the hardNegative flag from both sources. Canonical
+// authority alone (>=8) misses entries like substrate_evidence_plywood
+// (authority 7) that are categorical date disqualifiers per audit log
+// (D-PH3HCL-S4-3 Q4). Engine's CLUE_LIBRARY correctly flagged them; that
+// flag must survive the canonical preference.
 function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
   if (!clueKey) return undefined;
   const fromCanonical = getClueMetaFromCanonical(clueKey);
-  if (fromCanonical) return fromCanonical;
-  return CLUE_LIBRARY[clueKey];
+  const fromInline = CLUE_LIBRARY[clueKey];
+  if (fromCanonical) {
+    return {
+      ...fromCanonical,
+      hardNegative: fromCanonical.hardNegative || fromInline?.hardNegative,
+    };
+  }
+  return fromInline;
 }
 
 export type RuntimeMode = "mock" | "live";
@@ -4114,11 +4126,21 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   );
 }
  
-  // Hard negative overrides
+  // Hard negative overrides. Per D-PH3-11: hard-negative override stays
+  // engine-internal logic (universal rule, not per-entry data). Block 2c
+  // upgrade: surface canonical diagnostic_caution_text when the canonical
+  // entry carries it; falls back to engine-generic message otherwise.
   hardNegatives.forEach((hn) => {
-    resolutions.push(
-      `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
-    );
+    const canonicalText = getCanonicalCautionText(hn.clue);
+    if (canonicalText) {
+      resolutions.push(
+        `${hn.display_label} is a hard-negative indicator. Canonical guidance: ${canonicalText}`
+      );
+    } else {
+      resolutions.push(
+        `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
+      );
+    }
   });
 
   // Replacement logic
