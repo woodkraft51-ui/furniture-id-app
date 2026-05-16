@@ -3778,3 +3778,64 @@ Block 0.5 split into 4 sub-blocks per the comprehensive gap-finding sweep A-7 co
 - Next: Block 0.5b (toolmarks + finish content population) on Mike's authorization.
 
 ---
+## Phase 3 Block 0.5c — New joinery + hardware + woodEvidence + woodIdentification entries (Path A sub-block 2 of 4)
+## Session 18+ / claude.ai-and-Claude-Code paired execution
+## Base SHA: main d125be4 (Block 0.5a schema foundation endpoint)
+
+Block 0.5c authors 7 new canonical entries against the Block 0.5a-locked schemas: 4 new joinery types (factory_case_construction, glued_and_nailed_casework, dado_joint, plywood_drawer_bottom), 1 new hardware type (eastlake_brass_pull), 1 new cut_grain_phenomenon (veneer_thickness, parent), 1 new cut_grain_evidence (thick_veneer, child). Closes the Phase 2 joinery gaps (3 hard + 1 M2 routing) + hardware specificity gap + cut-grain decoupling per Block 21 D-CG21-5 precedent. Schema augmentation: +1 inline field on JoineryTypeEntry (`replacement_likelihood?`). `lib/engine.ts` + `lib/constraints/styleFamilies.ts` + `lib/constraints/forms.ts` + `lib/evidence.ts` + the Block 0.5a-created files (toolmarks.ts + finish.ts) UNCHANGED. 5 files modified.
+
+### D-PH3HCL-S3-1 (locked): Block 0.5c scope per Path A sub-block 2 of 4
+7 new canonical entries authored: 4 joinery types + 1 hardware type + 1 cut_grain_phenomenon + 1 cut_grain_evidence. Path A sequence (0.5a → 0.5c → 0.5b → 0.5d) reordered to ensure NEW_IN_BLOCK FKs in toolmark entries (Block 0.5b) resolve to existing joinery types after 0.5c ships. Audit prefix D-PH3HCL-S3-N. Branch `feat/block-0-5c-new-entries`. No PR.
+
+### D-PH3HCL-S3-2 (locked): 4 new joinery types authored
+- **`joinery_type_factory_case_construction`** (post-1870 industrial signal; 6 unique_traits + 6 identifying_characteristics + 2 period_associations + 9 position_on_piece locations + caution_text + regional_persistence_notes; FKs to 6 related joinery + 5 related fasteners). Closes Phase 2 gap surfaced in first FK validation pass.
+- **`joinery_type_glued_and_nailed_casework`** (post-1880 budget-casework signal; 8/8 authority; 6 unique_traits + 6 identifying_characteristics + 3 period_associations + 10 position_on_piece locations + caution_text; FKs to 5 related joinery + 5 related fasteners). Closes Phase 2 gap.
+- **`joinery_type_dado_joint`** (spans_eras; case-construction primitive missing from Phase 2 joinery library entirely; 6 unique_traits + 7 identifying_characteristics + 4 period_associations spanning 1700-2030 + 10 position_on_piece locations + caution_text). Closes the hard Phase 2 gap surfaced in second FK validation pass A-2 ("zero 'dado' entry existed anywhere in joinery.ts").
+- **`joinery_type_plywood_drawer_bottom`** (post-1920 drawer-construction signal; parent_category_id `joinery_category_drawer`; 5 unique_traits + 6 identifying_characteristics + 3 period_associations + 4 position_on_piece locations + caution_text). HCL plywood_drawer_bottom key M2-routed to joinery (cross-library with woodEvidence substrate_evidence_plywood).
+
+### D-PH3HCL-S3-3 (locked): JoineryTypeEntry inline schema augmentation
+Added `replacement_likelihood?: "low" | "medium" | "high"` to `JoineryTypeEntry` interface in joinery.ts. The Block 0.5a Op B-3 plan assumed `replacement_likelihood` inherited from CanonicalEntry, but inspection during Block 0.5c B-2a tsc check confirmed CanonicalEntry only carries `replacement_risk?: number` (a distinct numeric-frame field) — the `replacement_likelihood` enum is declared inline on FastenerTypeEntry / HardwareTypeEntry / UpholsteryConstructionTypeEntry / UpholsteryCoverTypeEntry but NOT on the base. JoineryTypeEntry now joins those 4 libraries with an inline declaration. Additive optional field; existing 40 joinery type entries compile unchanged. The 4 new joinery types populate this field; the original 40 continue to omit it.
+
+### D-PH3HCL-S3-4 (locked): hardware_type_eastlake_brass_pull authored
+Preserves HCL's specificity to incised brass pulls (1870-1890 Eastlake-era anchor) as distinct from the broader `hardware_type_eastlake_hardware` type. 8/8 authority. 6 unique_traits + 7 identifying_characteristics + 3 period_associations + 3 style_associations (Eastlake / Late Victorian / Colonial-Revival-or-reproduction) + 4 position_on_piece locations + caution_text. `assessment_layer` inherits from parent category `hardware_category_specialty_and_era_diagnostic_hardware` per D-FA33-5 dual-assessment architecture (no inline `assessment_layer` field on HardwareTypeEntry — confirmed by Block 0.5c B-2b tsc check; the inline `assessment_layer: "frame"` originally drafted was correctly removed).
+
+### D-PH3HCL-S3-5 (locked): cut_grain_phenomenon_veneer_thickness + cut_grain_evidence_thick_veneer authored
+**Phenomenon (parent)**: `cut_grain_phenomenon_veneer_thickness` — 7/7 authority; `phenomenon_type: "veneer_slicing"`; 5 common_aliases + 5 unique_traits + 5 identifying_elements + 10 applicable_species + 1 applicable_substrate (engineered_substrate_plywood with cautious-use characteristic_expression) + 3 period_associations + 3 regional_patterns + 5 cousin_phenomenon_contrasts + caution_text. Decoupled from cut-method per Block 21 D-CG21-5 precedent: thickness is the structurally distinct observation, while cut method is captured separately through existing `hand_sawn_veneer` / `plain_sliced_veneer` / `rotary_cut_veneer` / `quarter_sliced_veneer` phenomena. Option B rename from `veneer_thickness_and_cut_method` to `veneer_thickness` preserves the D-CG21-5 decoupling.
+
+**Evidence (child)**: `cut_grain_evidence_thick_veneer` — 7/7 authority; `cut_phenomenon_id` FK to the new phenomenon ✓; 3 period_associations + 4 regional_associations (see D-PH3HCL-S3-7 for WoodRegion enum mapping) + 6 usage_role values (drawing from CutGrainUsageRole 5→11 enum extension in Block 0.5a B-2: decorative_face, premium_solid_substitute, show_surface, figured_wood_economy, substrate_covering, repair_or_reveneering_evidence — all 6 new enum values utilized) + 11 style_wave_associations (8 family-level + 3 wave-level per third FK pass A-3) + diagnostic_caution_text.
+
+### D-PH3HCL-S3-6 (locked): Substrate FK validation outcome — Sub-A applied
+Per the substrate FK validation report: 4 traditional-substrate FKs Mike originally authored on the phenomenon entry (`substrate_solid_wood_secondary_core`, `substrate_softwood_secondary_core`, `substrate_poplar_secondary_core`, `substrate_pine_secondary_core`) hit NO_MATCH against the canonical SUBSTRATES inventory. Per Block 16 D-WI3 + Block 20 D-ES20-1 architectural lock, traditional substrates are captured at species level in NATURAL_WOOD_SPECIES (`usage_role: "primary_secondary"` etc.), NOT as substrate entries. Sub-A resolution applied: 4 NO_MATCH FKs dropped from `applicable_substrates`; only the VALID `engineered_substrate_plywood` remains. Traditional-substrate-applicability appraiser knowledge preserved in the entry's `description` prose (second paragraph explicitly names solid-wood secondary cores, softwood secondary cores, poplar, pine, and traditional pre-1850 substrate context). Sub-C (schema extension `applicable_species_as_substrate?` on CutGrainPhenomenonEntry) flagged as future-block candidate pending 3+ occurrence rule trigger (D-MM27-2).
+
+### D-PH3HCL-S3-7 (locked): WoodRegion enum mapping for cut_grain_evidence_thick_veneer regional_associations
+Mike's 3 free-form region strings (American urban cabinetmaking centers / American factory furniture regions / Rural, local shop, repair, and restoration contexts) were typed as `WoodRegion` enum (6 values: new_england / mid_atlantic / southern / midwest / appalachian / west_coast). Mapping applied:
+- "American urban cabinetmaking centers" → **2** WoodRegionalAssociation entries: `mid_atlantic` (primary; Philadelphia/NY anchor) + `new_england` (Boston anchor) — both carry the same traits + complementary notes capturing the multi-region "urban cabinetmaking centers" framing.
+- "American factory furniture regions" → **`midwest`** (Grand Rapids dominance anchor) + notes prose captures the broader factory-region framing (Grand Rapids, Chicago, Cincinnati, High Point, Jamestown).
+- "Rural, local shop, repair, and restoration contexts" → **`appalachian`** (rural-persistence anchor per Phase 2 canonical convention) + notes prose captures the broader rural-context framing.
+4 total `WoodRegionalAssociation` entries on the evidence entry (Mike's original 3 free-form regions expanded to 4 enum-typed entries).
+
+### D-PH3HCL-S3-8 (locked): FK substitutions and within-block cross-references
+All FK substitutions from validation passes 1-3 applied per-entry per the locked tables. Q1=Option D cut-nail type-tier upgrades applied Block-0.5c-wide. Pattern 8 prefix mismatches resolved. Style_wave references mixed-substituted per third FK pass A-3 (8 family-level + 3 wave-level). Within-block cross-references between the 4 new joinery types (factory_case_construction ↔ glued_and_nailed_casework ↔ dado_joint ↔ plywood_drawer_bottom) intact — all FKs resolve at ship. Cross-array FK from `cut_grain_evidence_thick_veneer.cut_phenomenon_id` to `cut_grain_phenomenon_veneer_thickness` resolves cleanly (phenomenon inserted FIRST per B-2c-i ordering).
+
+### D-PH3HCL-S3-9 (locked): PositionOnPiece reshape + caution_text migration applied
+Decision 1 = L2 PositionOnPiece reshape: 46 location strings across the 4 new joinery types + 1 new hardware type mapped to canonical PhysicalLocation enum (34 values) + appraiser-specific `physical_location_notes` supplements. Examples: "back panel attachment point" supplements `case_back`; "drawer underside" supplements `drawer_bottom`; "fall-front or drop-front" supplements `lid_or_top_movable`; "small drawer or gallery drawer" supplements `drawer_front`.
+
+AG1 caution_text migration: 5 observation-discipline caution statements (4 joinery types + 1 phenomenon entry) authored in `caution_text?` field (inherits from CanonicalEntry per Block 0.5a B-1). AntiClassificationGuidance 4-field shape preserved unused per AG1 lock (continues to serve forms.ts crisp-date back-classification only).
+
+### D-PH3HCL-S3-FINAL (post-execution summary)
+- 5 files modified: `joinery.ts` (+4 entries, +1 inline schema field), `hardware.ts` (+1 entry), `woodIdentification.ts` (+1 phenomenon entry), `woodEvidence.ts` (+1 evidence entry), `AUDIT_LOG.md` (append).
+- JOINERY_TYPES: 40 → **44** (+4); HARDWARE_TYPES: 43 → **44** (+1); CUT_GRAIN_PHENOMENA: 25 → **26** (+1); CUT_GRAIN_EVIDENCE: 35 → **36** (+1). Net **+7 new canonical entries**.
+- JoineryTypeEntry interface +1 inline schema field (`replacement_likelihood?`) per D-PH3HCL-S3-3 — additive optional; existing 40 joinery type entries unchanged.
+- tsc clean across all sub-batches (B-2a → B-2b → B-2c-i → B-2c-ii) and after Op C audit append.
+- All existing canonical libraries compile unchanged.
+- `lib/engine.ts`: UNCHANGED (must remain 4098 lines).
+- `lib/constraints/styleFamilies.ts`: UNCHANGED (must remain 3221 lines).
+- `lib/constraints/forms.ts`: UNCHANGED in 0.5c (M2 migration deferred to 0.5d).
+- `lib/evidence.ts`: UNCHANGED (deletion deferred to 0.5d).
+- `lib/constraints/toolmarks.ts` + `lib/constraints/finish.ts`: UNCHANGED (still empty shells; populated in 0.5b).
+- `lib/constraints/entryShape.ts`: UNCHANGED (Block 0.5a additions preserved).
+- 11 D-PH3HCL-S3-N decisions captured (S3-1 through S3-9 + S3-FINAL).
+- **PHASE 3 BLOCK 0.5c: CLOSED.** 4 joinery gaps + 1 hardware specificity + 1 phenomenon-evidence pair landed cleanly.
+- Next: Block 0.5b (toolmarks + finish content population) on Mike's authorization. Toolmark entries' NEW_IN_BLOCK FKs to the 4 new joinery types now resolve cleanly because 0.5c shipped first.
+
+---
