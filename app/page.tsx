@@ -331,6 +331,299 @@ function SectionCard({ title, children }: { title: string; children?: React.Reac
   );
 }
 
+// Block 3b: Dating-overlap visualization per D-PH3-6 lock.
+// 9 timeline rows (one per evidence layer: form / joinery / fastener / wood /
+// finish / toolmark / style / style_wave / hardware), each with a colored band
+// showing the layer's date envelope. Convergence zones rendered as overlaid
+// vertical green highlights where ≥3 layers agree (Q5 framing: supporting
+// evidence anchor, not authoritative).
+
+type LayerBand = {
+  layer: string;
+  date_floor: number | null;
+  date_ceiling: number | null;
+  source_count: number;
+  source_clues: string[];
+  confidence: "high" | "moderate" | "low" | "none";
+};
+
+type ConvergenceZone = {
+  date_floor: number;
+  date_ceiling: number;
+  layer_count: number;
+  layers: string[];
+};
+
+type DatingOverlapData = {
+  layers: LayerBand[];
+  convergence_zones: ConvergenceZone[];
+  overall_floor: number | null;
+  overall_ceiling: number | null;
+};
+
+// Color per layer — distinct enough to read at row level without clashing
+// when convergence highlight overlays.
+const LAYER_COLORS: Record<string, string> = {
+  form:       "#8b6f47",  // warm brown (form is the central call)
+  joinery:    "#7a4a3a",  // dark red-brown
+  fastener:   "#7a7a7a",  // steel gray
+  toolmark:   "#9c7b4f",  // tan
+  wood:       "#5d7a4a",  // green-brown (wood/material)
+  hardware:   "#a87143",  // copper
+  finish:     "#c9a76b",  // amber
+  style:      "#7d6b9c",  // muted lavender
+  style_wave: "#6e8ba8",  // muted blue
+};
+
+const LAYER_LABELS: Record<string, string> = {
+  form: "Form",
+  joinery: "Joinery",
+  fastener: "Fasteners",
+  toolmark: "Toolmarks",
+  wood: "Wood/Substrate",
+  hardware: "Hardware",
+  finish: "Finish",
+  style: "Style attribution",
+  style_wave: "Style wave",
+};
+
+function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
+  // Determine axis range. Fall back to a sensible default if data is sparse.
+  const allFloors = data.layers.map((l) => l.date_floor).filter((v): v is number => v !== null);
+  const allCeilings = data.layers.map((l) => l.date_ceiling).filter((v): v is number => v !== null);
+  if (allFloors.length === 0 && allCeilings.length === 0) {
+    return <div style={{ fontSize: 14, color: "#776654", fontStyle: "italic" }}>No date evidence to chart.</div>;
+  }
+  const dataMin = allFloors.length > 0 ? Math.min(...allFloors) : 1700;
+  const dataMax = allCeilings.length > 0 ? Math.max(...allCeilings) : 2030;
+  // Pad axis 30 years either side, clamp to project domain
+  const axisMin = Math.max(1600, Math.floor((dataMin - 30) / 10) * 10);
+  const axisMax = Math.min(2040, Math.ceil((dataMax + 30) / 10) * 10);
+  const axisSpan = axisMax - axisMin;
+
+  const yearToPct = (y: number) => ((y - axisMin) / axisSpan) * 100;
+  const clampPct = (p: number) => Math.max(0, Math.min(100, p));
+
+  // Tick marks every 50 years
+  const tickStep = axisSpan > 200 ? 50 : 20;
+  const ticks: number[] = [];
+  for (let y = Math.ceil(axisMin / tickStep) * tickStep; y <= axisMax; y += tickStep) ticks.push(y);
+
+  // Render layers in this stable order (groups: form/structural first, then evidence, then style)
+  const layerOrder = ["form", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "style", "style_wave"];
+  const layersOrdered = layerOrder
+    .map((name) => data.layers.find((l) => l.layer === name))
+    .filter((l): l is LayerBand => Boolean(l));
+
+  const ROW_HEIGHT = 28;
+  const LABEL_WIDTH = 130;
+  const PLOT_TOP_PADDING = 22; // room for tick labels
+  const PLOT_HEIGHT = layersOrdered.length * ROW_HEIGHT;
+
+  return (
+    <div style={{ display: "grid", gap: 10 }}>
+      {/* Header: axis info + overall envelope */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: 13, color: "#574634" }}>
+        <span>
+          Per-layer date envelopes ({axisMin}–{axisMax}). Each row shows one evidence layer's date range.
+        </span>
+        {data.overall_floor !== null && data.overall_ceiling !== null && (
+          <span>
+            Overall envelope: <strong>{data.overall_floor}–{data.overall_ceiling}</strong>
+          </span>
+        )}
+      </div>
+
+      {/* Chart canvas: labels on left, timeline on right */}
+      <div style={{ display: "grid", gridTemplateColumns: `${LABEL_WIDTH}px 1fr`, alignItems: "stretch" }}>
+        {/* Left labels column */}
+        <div style={{ paddingTop: PLOT_TOP_PADDING }}>
+          {layersOrdered.map((l) => (
+            <div
+              key={l.layer}
+              style={{
+                height: ROW_HEIGHT,
+                display: "flex",
+                alignItems: "center",
+                fontSize: 13,
+                color: l.confidence === "none" ? "#aaa092" : "#3e2f1f",
+                paddingRight: 8,
+                fontWeight: 600,
+              }}
+              title={l.source_count > 0 ? `${l.source_count} contributing clue(s): ${l.source_clues.join(", ")}` : "no signal"}
+            >
+              {LAYER_LABELS[l.layer] ?? l.layer}
+            </div>
+          ))}
+        </div>
+
+        {/* Plot column */}
+        <div
+          style={{
+            position: "relative",
+            background: "#fdf9ef",
+            borderLeft: "1px solid #ded3bf",
+            borderRight: "1px solid #ded3bf",
+            paddingTop: PLOT_TOP_PADDING,
+            height: PLOT_HEIGHT + PLOT_TOP_PADDING,
+            overflow: "hidden",
+          }}
+        >
+          {/* Tick labels + gridlines */}
+          {ticks.map((y) => (
+            <div
+              key={`tick-${y}`}
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: `${yearToPct(y)}%`,
+                width: 1,
+                background: "#ebe0ca",
+                pointerEvents: "none",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  left: -16,
+                  fontSize: 11,
+                  color: "#8a785f",
+                  width: 32,
+                  textAlign: "center",
+                }}
+              >
+                {y}
+              </div>
+            </div>
+          ))}
+
+          {/* Convergence zones (rendered first so they sit BEHIND bands) */}
+          {data.convergence_zones.map((z, i) => {
+            const left = clampPct(yearToPct(z.date_floor));
+            const right = clampPct(yearToPct(z.date_ceiling));
+            const width = Math.max(0.5, right - left);
+            return (
+              <div
+                key={`zone-${i}`}
+                title={`Convergence: ${z.layer_count} layers agree on ${z.date_floor}–${z.date_ceiling} (${z.layers.join(", ")})`}
+                style={{
+                  position: "absolute",
+                  top: PLOT_TOP_PADDING - 4,
+                  bottom: 0,
+                  left: `${left}%`,
+                  width: `${width}%`,
+                  background: "rgba(123, 178, 121, 0.18)",
+                  borderLeft: "1px dashed rgba(75, 134, 70, 0.55)",
+                  borderRight: "1px dashed rgba(75, 134, 70, 0.55)",
+                  pointerEvents: "none",
+                }}
+              />
+            );
+          })}
+
+          {/* Per-layer bands */}
+          {layersOrdered.map((l, idx) => {
+            const rowTop = PLOT_TOP_PADDING + idx * ROW_HEIGHT;
+            if (l.confidence === "none" || (l.date_floor === null && l.date_ceiling === null)) {
+              return (
+                <div
+                  key={`band-${l.layer}`}
+                  style={{
+                    position: "absolute",
+                    top: rowTop + ROW_HEIGHT / 2 - 1,
+                    left: 0,
+                    right: 0,
+                    height: 2,
+                    background: "repeating-linear-gradient(90deg, #e6dcc8 0 4px, transparent 4px 8px)",
+                    pointerEvents: "none",
+                  }}
+                  title="no signal"
+                />
+              );
+            }
+            // Clamp open-ended bounds to axis
+            const floor = l.date_floor ?? axisMin;
+            const ceiling = l.date_ceiling ?? axisMax;
+            const left = clampPct(yearToPct(floor));
+            const right = clampPct(yearToPct(ceiling));
+            const width = Math.max(0.5, right - left);
+            const color = LAYER_COLORS[l.layer] ?? "#7a5a3a";
+            const opacity = l.confidence === "high" ? 0.85 : l.confidence === "moderate" ? 0.65 : 0.45;
+            const dateLabel =
+              l.date_floor != null && l.date_ceiling != null
+                ? `${l.date_floor}–${l.date_ceiling}`
+                : l.date_floor != null
+                ? `post-${l.date_floor}`
+                : `pre-${l.date_ceiling}`;
+            return (
+              <div key={`band-${l.layer}`}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: rowTop + 5,
+                    left: `${left}%`,
+                    width: `${width}%`,
+                    height: ROW_HEIGHT - 10,
+                    background: color,
+                    opacity,
+                    borderRadius: 4,
+                  }}
+                  title={`${LAYER_LABELS[l.layer] ?? l.layer}: ${dateLabel} (${l.confidence} confidence; ${l.source_count} clue${l.source_count !== 1 ? "s" : ""})`}
+                />
+                {/* Date label adjacent to the band, if there's room */}
+                {width >= 12 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: rowTop + 6,
+                      left: `${left}%`,
+                      width: `${width}%`,
+                      height: ROW_HEIGHT - 12,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 11,
+                      color: "#fff",
+                      fontWeight: 600,
+                      textShadow: "0 1px 1px rgba(0,0,0,0.2)",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    {dateLabel}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Legend for convergence zones */}
+      {data.convergence_zones.length > 0 && (
+        <div style={{ fontSize: 12, color: "#574634", display: "flex", alignItems: "center", gap: 8 }}>
+          <span
+            style={{
+              display: "inline-block",
+              width: 16,
+              height: 12,
+              background: "rgba(123, 178, 121, 0.4)",
+              border: "1px dashed rgba(75, 134, 70, 0.7)",
+            }}
+          />
+          <span>
+            Convergence zones — where ≥3 evidence layers agree on the same date range.{" "}
+            {data.convergence_zones.length === 1
+              ? "1 zone identified."
+              : `${data.convergence_zones.length} zones identified.`}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function UploadTooLargeNotice({ onAdjust, onSwitchToFull }: { onAdjust: () => void; onSwitchToFull: () => void }) {
   return (
     <div style={{ marginTop: 14, padding: 16, borderRadius: 12, background: "#fdf7ec", border: "1px solid #e3d3b3", color: "#3d2d1f" }}>
@@ -883,6 +1176,11 @@ const p7 = stageOutputs.p7 || null;
                 {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
             </div>
+            {p6?.dating_overlap && (
+              <SectionCard title="Dating Overlap by Evidence Layer">
+                <DatingOverlapViz data={p6.dating_overlap} />
+              </SectionCard>
+            )}
             <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>{evidenceMeaning(item)}</div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Supported Findings">{p6?.supported_findings?.length ? <ul style={listStyle}>{p6.supported_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No supported findings were returned.</div>}</SectionCard>
