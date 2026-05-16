@@ -1,6 +1,18 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
+import { getClueMetaFromCanonical, ClueMeta } from "./engineClueResolver";
+
+// Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
+// the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
+// Falls back to CLUE_LIBRARY for KEPT_IN_ENGINE clues (style cues, material
+// observations, *_pattern keys from detectStructuralPatterns).
+function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
+  if (!clueKey) return undefined;
+  const fromCanonical = getClueMetaFromCanonical(clueKey);
+  if (fromCanonical) return fromCanonical;
+  return CLUE_LIBRARY[clueKey];
+}
 
 export type RuntimeMode = "mock" | "live";
 export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
@@ -843,7 +855,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
   normalizePhase0Clue(raw) ||
   detectClueFromText(description);
 
-    const meta = clue ? CLUE_LIBRARY[clue] : undefined;
+    const meta = getClueMeta(clue);
 
     const type =
       asString(raw?.type) ||
@@ -877,7 +889,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     collectText(parsed).forEach((t) => {
       const clue = detectClueFromText(t);
       push({
-        category: clue ? CLUE_LIBRARY[clue]?.category : "context",
+        category: getClueMeta(clue)?.category ?? "context",
         key: clue,
         description: t,
         confidence: clue ? 55 : 35,
@@ -1015,7 +1027,7 @@ function promotePerceptionObservations(
   ) => {
     if (out.some((o) => o.clue === clue)) return;
 
-    const meta = CLUE_LIBRARY[clue];
+    const meta = getClueMeta(clue);
 
     out.push({
       type: meta?.category || "context",
@@ -1725,7 +1737,7 @@ function addIntakeObservations(intake: any, observations: Observation[]): Observ
   const out = [...observations];
   const add = (clue: string, description: string) => {
     if (out.some((o) => o.clue === clue)) return;
-    const meta = CLUE_LIBRARY[clue];
+    const meta = getClueMeta(clue);
     out.push({ type: meta?.category || "context", clue, description, confidence: 55, source_image: "intake", hard_negative: false });
   };
   if (intake?.has_drawers) add("drawer_present", "User indicates drawers are present");
@@ -3870,7 +3882,7 @@ if (missing.label_photo) {
 
   const weighted_clues = digest.observations
     .map((o) => {
-      const meta = o.clue ? CLUE_LIBRARY[o.clue] : undefined;
+      const meta = getClueMeta(o.clue);
       const clue = o.clue || o.description;
       const category = meta?.category || o.type || "context";
 
