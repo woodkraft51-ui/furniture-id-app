@@ -55,6 +55,95 @@ export type DatingOverlapData = {
   overall_ceiling: number | null;
 };
 
+// ── Block 7b3: convergence-override refinement for p2 ───────────────────
+
+export type RefinedDating = {
+  range: string;
+  date_floor: number | null;
+  date_ceiling: number | null;
+  confidence: "High" | "Moderate" | "Low";
+  reason: string;
+  refined: boolean;       // false when convergence doesn't beat original p2; original returned
+};
+
+/**
+ * Block 7b3 — when the dating-overlap convergence is sharper than p2's
+ * original date range, propose refined dating for the report's Working Range.
+ * Feature-flagged for easy disable.
+ *
+ * Override rule:
+ * - Convergence zone must have ≥3 layers agreeing
+ * - Width ≤60 years (anything wider is no improvement over current behavior)
+ * - Convergence range must be TIGHTER than current p2 range (smaller width)
+ *   OR p2 has no parseable numeric range
+ *
+ * When override fires, confidence bumps based on convergence layer count:
+ *   3 layers → Moderate
+ *   4 layers → Moderate
+ *   5+ layers → High
+ */
+export const CONVERGENCE_OVERRIDE_ENABLED = true; // Block 7b3 feature flag
+
+export function refineDatingFromConvergence(
+  original: {
+    range: string;
+    date_floor: number | null;
+    date_ceiling: number | null;
+    confidence: string;
+  },
+  overlap: DatingOverlapData
+): RefinedDating {
+  const fallback: RefinedDating = {
+    range: original.range,
+    date_floor: original.date_floor,
+    date_ceiling: original.date_ceiling,
+    confidence: normalizeConfidence(original.confidence),
+    reason: "no convergence override applied",
+    refined: false,
+  };
+
+  if (!CONVERGENCE_OVERRIDE_ENABLED) return fallback;
+  if (!overlap.convergence_zones?.length) return fallback;
+
+  // Pick the strongest qualifying convergence zone: most layers, then narrowest.
+  const qualifying = overlap.convergence_zones
+    .filter((z) => z.layer_count >= 3 && (z.date_ceiling - z.date_floor) <= 60)
+    .sort((a, b) => {
+      if (b.layer_count !== a.layer_count) return b.layer_count - a.layer_count;
+      return (a.date_ceiling - a.date_floor) - (b.date_ceiling - b.date_floor);
+    });
+  if (qualifying.length === 0) return fallback;
+
+  const best = qualifying[0];
+  const convergenceWidth = best.date_ceiling - best.date_floor;
+  const originalWidth =
+    original.date_floor !== null && original.date_ceiling !== null
+      ? original.date_ceiling - original.date_floor
+      : Infinity; // no parseable original → convergence wins
+
+  // Only override when convergence is strictly tighter (not equal)
+  if (convergenceWidth >= originalWidth) return fallback;
+
+  const confidence: "High" | "Moderate" | "Low" =
+    best.layer_count >= 5 ? "High" : "Moderate";
+
+  return {
+    range: `c. ${best.date_floor}–${best.date_ceiling}`,
+    date_floor: best.date_floor,
+    date_ceiling: best.date_ceiling,
+    confidence,
+    reason: `${best.layer_count} evidence layers converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
+    refined: true,
+  };
+}
+
+function normalizeConfidence(c: string): "High" | "Moderate" | "Low" {
+  const v = String(c).toLowerCase();
+  if (v.startsWith("hi")) return "High";
+  if (v.startsWith("mo")) return "Moderate";
+  return "Low";
+}
+
 // Engine clue category → layer name. Note "fastener" (singular) matches p4
 // category "fasteners" (plural per AUTHORITY_RANK).
 const CATEGORY_TO_LAYER: Record<string, LayerName> = {

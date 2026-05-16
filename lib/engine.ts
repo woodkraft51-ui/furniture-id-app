@@ -13,7 +13,7 @@ import {
   type HybridAnnotation,
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleWaveAttribution } from "./engineStyleEvaluator";
-import { buildDatingOverlap, type DatingOverlapData } from "./engineDatingOverlap";
+import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -4518,6 +4518,34 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
 
   const p6 = this.p6(p1, p2, p3, p4, p5, digest);
 stage_outputs.p6 = p6; onPhase?.("p6", p6);
+
+// Block 7b3: convergence override for the user-facing Working Range.
+// When dating_overlap reveals ≥3 evidence layers converging on a tighter
+// date range than p2's initial fallback, mutate p2 with the refined dating.
+// Feature-flagged in engineDatingOverlap.ts (CONVERGENCE_OVERRIDE_ENABLED).
+// Mutation is scoped to the report layer — p5/p6 internal logic already ran
+// against the unrefined p2; this only affects what the UI shows.
+if (p6.dating_overlap) {
+  const refined = refineDatingFromConvergence(
+    {
+      range: p2.range,
+      date_floor: p2.date_floor ?? null,
+      date_ceiling: p2.date_ceiling ?? null,
+      confidence: String(p2.confidence ?? ""),
+    },
+    p6.dating_overlap
+  );
+  if (refined.refined) {
+    p2.range = refined.range;
+    p2.date_floor = refined.date_floor ?? undefined;
+    p2.date_ceiling = refined.date_ceiling ?? undefined;
+    p2.confidence = refined.confidence;
+    const supportArr = Array.isArray(p2.support) ? [...p2.support] : [];
+    supportArr.push(`Engine reasoning: ${refined.reason}`);
+    p2.support = supportArr;
+    stage_outputs.p2 = p2;
+  }
+}
 
 const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);
 
