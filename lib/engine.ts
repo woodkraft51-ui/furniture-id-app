@@ -154,6 +154,10 @@ type Phase5Result = {
   conflicts: any[];
   resolutions: any[];
   summary: string;
+  // Block 7a: hard-negative clues whose dating is COMPATIBLE with the
+  // overall dating envelope are surfaced as supporting context rather than
+  // conflicts. Conflicts section stays for genuine date-incompatible cases.
+  supporting_context?: string[];
 };
 
 type Phase6Result = {
@@ -4073,6 +4077,42 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
 
   const conflicts: string[] = [];
   const resolutions: string[] = [];
+  const supporting_context: string[] = []; // Block 7a sub-task 3
+
+  // Block 7a sub-task 2: numeric date-range overlap helper. Two date hints
+  // are compatible (no conflict) when their parsed year ranges overlap.
+  // Replaces the prior string-equality comparison which over-flagged any
+  // distinct-string pair as a conflict (e.g., "post-1900" vs "post-1910"
+  // surfaced as conflict despite both pointing the same direction).
+  // Returns true when ranges are INCOMPATIBLE (genuine conflict).
+  const datesIncompatible = (hintA: string | null | undefined, hintB: string | null | undefined): boolean => {
+    if (!hintA || !hintB) return false;
+    const a = parseRangeToNumeric(hintA);
+    const b = parseRangeToNumeric(hintB);
+    if (a.date_floor === null && a.date_ceiling === null) return false; // unparseable; no claim
+    if (b.date_floor === null && b.date_ceiling === null) return false;
+    const aLo = a.date_floor ?? -Infinity;
+    const aHi = a.date_ceiling ?? Infinity;
+    const bLo = b.date_floor ?? -Infinity;
+    const bHi = b.date_ceiling ?? Infinity;
+    // Disjoint: one range ends before the other begins.
+    return aHi < bLo || bHi < aLo;
+  };
+
+  // Block 7a sub-task 3: check whether a clue's date_hint aligns with the
+  // overall dating envelope. Used to route hard-neg cautions: compatible
+  // dating → supporting context; incompatible → genuine conflict.
+  const clueAlignsWithDating = (clueHint: string | null | undefined): boolean => {
+    if (!clueHint) return true; // no claim → no conflict
+    const cRange = parseRangeToNumeric(clueHint);
+    if (cRange.date_floor === null && cRange.date_ceiling === null) return true;
+    if ((dating.date_floor ?? null) === null && (dating.date_ceiling ?? null) === null) return true;
+    const cLo = cRange.date_floor ?? -Infinity;
+    const cHi = cRange.date_ceiling ?? Infinity;
+    const dLo = dating.date_floor ?? -Infinity;
+    const dHi = dating.date_ceiling ?? Infinity;
+    return !(cHi < dLo || dHi < cLo);
+  };
 
   // Block 1 step 7: B4 anti-back-classification check via canonical
   // FormEntry.anti_classification_guidance. Surfaces guidance_text in conflicts
@@ -4095,24 +4135,22 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   const clues = new Set(digest.clue_keys || []);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
-  // Detect conflicts
+  // Block 7a sub-task 2: detect conflicts via numeric date-range incompatibility
+  // (not string mismatch). Only flag pairs whose parsed year ranges are disjoint
+  // (e.g., pre-1860 alongside post-1934 = genuine conflict). Same-direction
+  // hints like "post-1900" + "post-1910" no longer fire false-positive conflicts.
   highAuthority.forEach((strong) => {
     lowAuthority.forEach((weak) => {
-      if (
-        strong.date_hint &&
-        weak.date_hint &&
-        strong.date_hint !== weak.date_hint
-      ) {
+      if (datesIncompatible(strong.date_hint, weak.date_hint)) {
         conflicts.push(
           `${weak.display_label} (${weak.date_hint}) conflicts with ${strong.display_label} (${strong.date_hint})`
         );
-
         // Resolve by authority
         resolutions.push(
           `${strong.display_label} carries greater authority (${strong.authority_rank}/10) and is favored over ${weak.display_label}.`
         );
       }
-       });
+    });
   });
 
  if (
@@ -4132,16 +4170,32 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   // Hard negative overrides. Per D-PH3-11: hard-negative override stays
   // engine-internal logic (universal rule, not per-entry data). Block 2c
   // upgrade: surface canonical diagnostic_caution_text when the canonical
-  // entry carries it; falls back to engine-generic message otherwise.
+  // entry carries it.
+  //
+  // Block 7a sub-task 3: route by date-alignment. When a hard-neg's dating
+  // is COMPATIBLE with the overall dating envelope (e.g., plywood + MCM
+  // piece), the hard-neg is supporting evidence, not a conflict. When dating
+  // is INCOMPATIBLE (e.g., plywood + Federal-period claim), it's a genuine
+  // conflict that overrides the form/style call.
   hardNegatives.forEach((hn) => {
+    const aligns = clueAlignsWithDating(hn.date_hint);
     const canonicalText = getCanonicalCautionText(hn.clue);
-    if (canonicalText) {
-      resolutions.push(
-        `${hn.display_label} is a hard-negative indicator. Canonical guidance: ${canonicalText}`
-      );
+    if (aligns) {
+      // Compatible dating → supporting context, not a conflict.
+      if (canonicalText) {
+        supporting_context.push(
+          `${hn.display_label} (hard-negative class): ${canonicalText}`
+        );
+      } else {
+        supporting_context.push(
+          `${hn.display_label} indicates ${hn.date_hint ?? "categorical period"} construction; consistent with the dating envelope.`
+        );
+      }
     } else {
+      // Incompatible dating → genuine conflict requiring authority override.
+      const guidanceSuffix = canonicalText ? ` Canonical guidance: ${canonicalText}` : "";
       resolutions.push(
-        `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.`
+        `${hn.display_label} is a hard-negative indicator and overrides conflicting stylistic or lower-authority evidence.${guidanceSuffix}`
       );
     }
   });
@@ -4165,6 +4219,7 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     conflicts: conflicts.slice(0, 6),
     resolutions: resolutions.slice(0, 6),
     summary,
+    supporting_context: supporting_context.slice(0, 6),
   };
 },
 
@@ -4218,6 +4273,10 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     supported_findings: [
       `The strongest supported reading is ${form.display_form || form.form}.`,
       `Current dating evidence supports ${dating.range}.`,
+      // Block 7a sub-task 3: hard-negative cues with dating compatible with
+      // the overall envelope surface here as supporting context (no longer
+      // mislabeled as "cautions and conflicts" when they actually agree).
+      ...((conflict as Phase5Result).supporting_context || []),
       `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
       `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
       `Sellability score: ${vb.sellability_score}/100.`,
