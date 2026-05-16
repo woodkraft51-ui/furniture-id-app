@@ -345,6 +345,8 @@ type LayerBand = {
   source_count: number;
   source_clues: string[];
   confidence: "high" | "moderate" | "low" | "none";
+  present_without_dates?: number;
+  undated_clues?: string[];
 };
 
 type ConvergenceZone = {
@@ -527,6 +529,39 @@ function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
           {layersOrdered.map((l, idx) => {
             const rowTop = PLOT_TOP_PADDING + idx * ROW_HEIGHT;
             if (l.confidence === "none" || (l.date_floor === null && l.date_ceiling === null)) {
+              // Block 5: distinguish "evidence present, no parseable date" from
+              // true "no signal" — surfaces P4-2 diagnostic state to user.
+              const undatedCount = l.present_without_dates ?? 0;
+              if (undatedCount > 0) {
+                const undatedSamples = (l.undated_clues ?? []).slice(0, 3).map((c) => c.replace(/_/g, " ")).join(", ");
+                return (
+                  <div
+                    key={`band-${l.layer}`}
+                    style={{
+                      position: "absolute",
+                      top: rowTop + 5,
+                      left: 4,
+                      right: 4,
+                      height: ROW_HEIGHT - 10,
+                      borderRadius: 4,
+                      border: "1px dashed #b8a572",
+                      background: "rgba(184, 165, 114, 0.10)",
+                      pointerEvents: "auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 11,
+                      color: "#6e5a36",
+                      fontStyle: "italic",
+                      padding: "0 8px",
+                      boxSizing: "border-box",
+                    }}
+                    title={`${undatedCount} observation${undatedCount !== 1 ? "s" : ""} present, no parseable date: ${undatedSamples}${(l.undated_clues?.length ?? 0) > 3 ? "…" : ""}`}
+                  >
+                    {undatedCount} observation{undatedCount !== 1 ? "s" : ""} present, no parseable date
+                  </div>
+                );
+              }
               return (
                 <div
                   key={`band-${l.layer}`}

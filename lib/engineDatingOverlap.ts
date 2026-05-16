@@ -31,9 +31,14 @@ export type LayerDateBand = {
   layer: LayerName;
   date_floor: number | null;
   date_ceiling: number | null;
-  source_count: number;       // how many distinct clues contributed
-  source_clues: string[];     // up to 4 sample clue keys for display
+  source_count: number;        // distinct clues that contributed parseable dates
+  source_clues: string[];      // up to 4 sample clue keys for display
   confidence: "high" | "moderate" | "low" | "none";
+  // Block 5: diagnostic surface — observations present in this category but
+  // without a parseable date_hint. Lets the viz show "evidence present, no
+  // date band" instead of falsely reading as "no signal."
+  present_without_dates: number;
+  undated_clues: string[];     // up to 4 sample undated clue keys
 };
 
 export type ConvergenceZone = {
@@ -88,11 +93,19 @@ export function buildDatingOverlap(
 ): DatingOverlapData {
   // Bucket weighted_clues per evidence-library layer
   const buckets: Partial<Record<LayerName, Array<{ clue: string; floor: number | null; ceiling: number | null }>>> = {};
+  // Block 5: parallel bucket for present-but-undated observations. Diagnostic
+  // surface — when LLM returns observations in an evidence category but date_hint
+  // doesn't parse, the layer would otherwise read as "no signal" (wrong — there
+  // IS signal, just no parseable date band).
+  const undatedBuckets: Partial<Record<LayerName, string[]>> = {};
   for (const wc of weightedClues) {
     const layer = CATEGORY_TO_LAYER[wc.category];
     if (!layer) continue;
     const { date_floor, date_ceiling } = parseRangeToNumeric(wc.date_hint ?? null);
-    if (date_floor === null && date_ceiling === null) continue;
+    if (date_floor === null && date_ceiling === null) {
+      (undatedBuckets[layer] ||= []).push(wc.clue);
+      continue;
+    }
     (buckets[layer] ||= []).push({ clue: wc.clue, floor: date_floor, ceiling: date_ceiling });
   }
 
@@ -106,11 +119,14 @@ export function buildDatingOverlap(
     source_count: formDating?.date_floor !== null || formDating?.date_ceiling !== null ? 1 : 0,
     source_clues: formDating?.date_floor !== null || formDating?.date_ceiling !== null ? ["form-dated envelope"] : [],
     confidence: formDating?.date_floor !== null && formDating?.date_ceiling !== null ? "high" : "low",
+    present_without_dates: 0,
+    undated_clues: [],
   });
 
   // 6 evidence-library layers
   for (const layerName of ["joinery", "fastener", "toolmark", "wood", "hardware", "finish"] as LayerName[]) {
     const items = buckets[layerName] ?? [];
+    const undated = undatedBuckets[layerName] ?? [];
     const { floor, ceiling } = aggregateRange(items.map((i) => ({ floor: i.floor, ceiling: i.ceiling })));
     layers.push({
       layer: layerName,
@@ -122,6 +138,8 @@ export function buildDatingOverlap(
         items.length === 0 ? "none" :
         items.length >= 3 ? "high" :
         items.length === 2 ? "moderate" : "low",
+      present_without_dates: undated.length,
+      undated_clues: undated.slice(0, 4),
     });
   }
 
@@ -135,6 +153,8 @@ export function buildDatingOverlap(
     source_count: styleHasDates && styleConf >= 0.5 ? 1 : 0,
     source_clues: styleHasDates && styleConf >= 0.5 ? ["style attribution"] : [],
     confidence: styleConf >= 0.7 ? "high" : styleConf >= 0.5 ? "moderate" : styleConf >= 0.4 ? "low" : "none",
+    present_without_dates: 0,
+    undated_clues: [],
   });
 
   // Style-wave layer (union of all surfaced waves)
@@ -149,6 +169,8 @@ export function buildDatingOverlap(
       styleWaves.length === 0 ? "none" :
       styleWaves.length >= 3 ? "high" :
       styleWaves.length === 2 ? "moderate" : "low",
+    present_without_dates: 0,
+    undated_clues: [],
   });
 
   // Convergence zones: scan year-by-year across all populated layers; find spans
