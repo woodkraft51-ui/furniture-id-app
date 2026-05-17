@@ -3583,7 +3583,13 @@ export const PE = {
     mode: "field_scan" | "full_analysis"
   ): Promise<ClaudeResult> {
     try {
-      const max_tokens = mode === "full_analysis" ? 8000 : 4000;
+      // Block 11: raised from 8000/4000 to remove output-truncation risk on
+       // information-rich scans. Block 6 + 9 + 10 prompt expansion added
+       // substantial new vocabulary the LLM has to emit observations for;
+       // 8000-token ceiling was clipping rich-piece scans. Sonnet 4.6 ceiling
+       // is 64000 — 16000 leaves substantial headroom. Cost impact metered
+       // and captured for subscription-pricing review in P4-11 backlog.
+       const max_tokens = mode === "full_analysis" ? 16000 : 8000;
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },

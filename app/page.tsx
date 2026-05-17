@@ -78,12 +78,75 @@ const INITIAL_INTAKE: IntakeState = {
   suggests_prior_function: false,
 };
 
+// Block 11 P4-1: client-side image downscaling. Removes Vercel's 4.5MB
+// FUNCTION_PAYLOAD_TOO_LARGE failure on Full Analysis. Modern phone photos
+// are typically 2-4MB each; 5-photo Full Analysis blew the cap. Downscale
+// to max 1600px longer edge, JPEG quality 0.82 → typical ~300-600KB/photo.
+// Skip re-encoding when image is already small (<1.5MB AND ≤1600px longer
+// edge) — avoids unnecessary processing time + potential quality loss
+// from re-encoding already-compressed JPEGs.
+const MAX_IMAGE_EDGE = 1600;
+const JPEG_QUALITY = 0.82;
+const SKIP_DOWNSCALE_BYTES = 1_500_000;
+
+async function downscaleImageFile(file: File): Promise<File> {
+  // Skip if not an image, or if already small enough.
+  if (!file.type.startsWith("image/")) return file;
+
+  // Load the image to inspect dimensions.
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error("Image decode failed"));
+      i.src = url;
+    });
+    const longerEdge = Math.max(img.naturalWidth, img.naturalHeight);
+    if (longerEdge <= MAX_IMAGE_EDGE && file.size <= SKIP_DOWNSCALE_BYTES) {
+      return file; // already small enough
+    }
+
+    // Render to canvas at target dimensions.
+    const scale = longerEdge > MAX_IMAGE_EDGE ? MAX_IMAGE_EDGE / longerEdge : 1;
+    const targetWidth = Math.round(img.naturalWidth * scale);
+    const targetHeight = Math.round(img.naturalHeight * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file; // canvas unsupported — fall back to original
+    ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+    // Export as JPEG. Modern browsers handle HEIC display via image decode
+    // but canvas re-encode goes to JPEG cleanly.
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), "image/jpeg", JPEG_QUALITY);
+    });
+    if (!blob) return file; // toBlob unsupported — fall back
+
+    // Construct a File with same name (minus extension swap if needed).
+    const baseName = file.name.replace(/\.(heic|heif|png|webp)$/i, ".jpg");
+    return new File([blob], baseName, { type: "image/jpeg", lastModified: Date.now() });
+  } catch {
+    return file; // any error — fall back to original
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ""));
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Block 11: downscale first to stay under Vercel's 4.5MB payload cap.
+      const processed = await downscaleImageFile(file);
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = reject;
+      reader.readAsDataURL(processed);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
