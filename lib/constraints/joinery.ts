@@ -147,6 +147,13 @@ export interface JoineryTypeEntry extends CanonicalEntry {
    * common_observed_locations bare-string pattern for joinery types
    * authored with finer-grained appraiser-knowledge nuance. */
   position_on_piece?: PositionOnPiece[];
+
+  /** Block 19 drift-cleanup: parallel to woodEvidence pattern. Engine
+   * surfaces this field via getCanonicalCautionText (engineClueResolver.ts)
+   * for any joinery clue whose canonical entry carries one. The shared
+   * CanonicalEntry.caution_text field is NOT engine-read; diagnostic
+   * warning text intended for user-facing surfacing must live here. */
+  diagnostic_caution_text?: string;
 }
 
 /**
@@ -1664,8 +1671,8 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
       "Pair the reading with tool marks, fasteners, drawer joinery, veneer type, finish chemistry, and hardware before narrowing the date.",
     ],
     period_associations: [
-      { period_label: "Industrial factory casework production", date_floor: 1870, date_ceiling: 2030 },
-      { period_label: "Common standardized factory casework era", date_floor: 1900, date_ceiling: 2030 },
+      { period_label: "Industrial factory casework production", date_floor: 1870 },
+      { period_label: "Common standardized factory casework era", date_floor: 1900 },
     ],
     date_range_summary: "post-1870 broadly; increasingly common after c. 1900 and dominant in many mass-produced case goods through the present",
     position_on_piece: [
@@ -1679,7 +1686,7 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
       { physical_location: "drawer_runner", physical_location_notes: "drawer runner" },
       { physical_location: "case_back", physical_location_notes: "back panel attachment point" },
     ],
-    caution_text: "Do not classify every machine-cut part as factory case construction. Skilled shop-made casework may use machine-sawn stock while still relying on hand-fitted joinery. Transitional 1850s-1870s furniture may show mixed hand and machine methods. High-quality dovetailed casework with machine-prepared parts should not be reduced to generic factory case construction unless the overall assembly clearly reflects standardized production. Also avoid classifying isolated replacement backs, shelves, drawer bottoms, or repair parts as evidence for the whole case.",
+    diagnostic_caution_text: "Do not classify every machine-cut part as factory case construction. Skilled shop-made casework may use machine-sawn stock while still relying on hand-fitted joinery. Transitional 1850s-1870s furniture may show mixed hand and machine methods. High-quality dovetailed casework with machine-prepared parts should not be reduced to generic factory case construction unless the overall assembly clearly reflects standardized production. Also avoid classifying isolated replacement backs, shelves, drawer bottoms, or repair parts as evidence for the whole case.",
     replacement_likelihood: "low",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_industrial",
@@ -1729,8 +1736,8 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
       "Treat visible nail-and-glue repairs differently from original glued-and-nailed factory construction; repairs may date the intervention, not the piece.",
     ],
     period_associations: [
-      { period_label: "Cheap-tier factory casework era", date_floor: 1880, date_ceiling: 2030 },
-      { period_label: "Common budget and utility furniture production", date_floor: 1900, date_ceiling: 2030 },
+      { period_label: "Cheap-tier factory casework era", date_floor: 1880 },
+      { period_label: "Common budget and utility furniture production", date_floor: 1900 },
       { period_label: "Depression-era and mid-century low-cost case goods", date_floor: 1930, date_ceiling: 1970 },
     ],
     date_range_summary: "post-1880 broadly; common in budget factory casework from c. 1900 through the present",
@@ -1746,7 +1753,7 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
       { physical_location: "case_back", physical_location_notes: "back panel attachment point" },
       { physical_location: "structural_reinforcement", physical_location_notes: "glue block reinforcement" },
     ],
-    caution_text: "Do not classify all nailed furniture as glued-and-nailed casework. Early hand-built furniture may use nails in legitimate period construction, and high-quality factory furniture may use glue as secondary reinforcement while relying on real mechanical joinery. Do not classify restoration repairs, later regluing, added brads, replaced backs, or patched shelves as original glued-and-nailed casework unless the repeated construction pattern supports that conclusion across the whole case.",
+    diagnostic_caution_text: "Do not classify all nailed furniture as glued-and-nailed casework. Early hand-built furniture may use nails in legitimate period construction, and high-quality factory furniture may use glue as secondary reinforcement while relying on real mechanical joinery. Do not classify restoration repairs, later regluing, added brads, replaced backs, or patched shelves as original glued-and-nailed casework unless the repeated construction pattern supports that conclusion across the whole case.",
     replacement_likelihood: "low",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_industrial",
@@ -1798,8 +1805,8 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
     period_associations: [
       { period_label: "Hand-cut dado and saw-and-chisel casework", date_floor: 1700, date_ceiling: 1860 },
       { period_label: "Transitional shop-cut dado construction", date_floor: 1840, date_ceiling: 1900 },
-      { period_label: "Machine-routed, table-sawn, and factory dado construction", date_floor: 1860, date_ceiling: 2030 },
-      { period_label: "Sheet-good and modern cabinet dado construction", date_floor: 1920, date_ceiling: 2030 },
+      { period_label: "Machine-routed, table-sawn, and factory dado construction", date_floor: 1860 },
+      { period_label: "Sheet-good and modern cabinet dado construction", date_floor: 1920 },
     ],
     date_range_summary: "spans nearly all case-construction eras; the cutting method, material context, precision, fasteners, and surrounding construction are the actual dating signals",
     position_on_piece: [
@@ -1814,7 +1821,7 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
       { physical_location: "case_interior_framing", physical_location_notes: "desk interior surface" },
       { physical_location: "case_interior_framing", physical_location_notes: "interior cabinet partition" },
     ],
-    caution_text: "Do not classify every slot as a dado. A groove usually runs with the grain, while a dado is normally cut across the grain or across the face to receive another board. A rabbet is cut along an edge, not across the middle of a board face. Also avoid treating modern routed channels, shelf-pin rows, adjustable shelf tracks, sliding-door tracks, hardware channels, veneer seams, or repair cuts as dado joints unless they actually receive a fixed board member. Do not use the presence of a dado alone to date a piece; date the dado by its tool marks, precision, material context, and whether it is original.",
+    diagnostic_caution_text: "Do not classify every slot as a dado. A groove usually runs with the grain, while a dado is normally cut across the grain or across the face to receive another board. A rabbet is cut along an edge, not across the middle of a board face. Also avoid treating modern routed channels, shelf-pin rows, adjustable shelf tracks, sliding-door tracks, hardware channels, veneer seams, or repair cuts as dado joints unless they actually receive a fixed board member. Do not use the presence of a dado alone to date a piece; date the dado by its tool marks, precision, material context, and whether it is original.",
     replacement_likelihood: "low",
     original_persistence: "high",
     hand_vs_machine_classification: "spans_eras",
@@ -1862,8 +1869,8 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
     ],
     period_associations: [
       { period_label: "Early plywood drawer-bottom era", date_floor: 1920, date_ceiling: 1950 },
-      { period_label: "Common factory plywood drawer-bottom era", date_floor: 1950, date_ceiling: 2030 },
-      { period_label: "Repair and replacement plywood drawer-bottom use", date_floor: 1920, date_ceiling: 2030 },
+      { period_label: "Common factory plywood drawer-bottom era", date_floor: 1950 },
+      { period_label: "Repair and replacement plywood drawer-bottom use", date_floor: 1920 },
     ],
     date_range_summary: "broadly post-1920; strongest as common factory-production evidence after c. 1950, unless proven to be a later replacement",
     position_on_piece: [
@@ -1872,7 +1879,7 @@ export const JOINERY_TYPES: JoineryTypeEntry[] = [
       { physical_location: "drawer_back", physical_location_notes: "drawer-bottom edge is often exposed or partly visible where the bottom meets the drawer back" },
       { physical_location: "drawer_runner", physical_location_notes: "drawer groove for runner (plywood may be captured in a groove, dado, or slot in the drawer sides and front)" },
     ],
-    caution_text: "Do not classify every thin drawer bottom as plywood. Thin solid boards, fiberboard, hardboard, Masonite-type panels, laminated repairs, veneered panels, or heavily painted surfaces can be mistaken for plywood. Confirm visible plies at an exposed edge, broken corner, nail hole, underside, or cross-section before assigning plywood. Also do not use one plywood drawer bottom to date the entire piece unless it appears original and consistent with the other drawers and construction. A plywood bottom in a much older drawer may be a later repair, replacement, or restoration. Look for mismatched color, fresh saw cuts, modern nails, staples, glue, filled holes, missing old grooves, uneven fit, or plywood that does not match the wear and oxidation of the drawer. If the plywood is clearly a replacement, treat it as alteration evidence rather than original construction evidence.",
+    diagnostic_caution_text: "Do not classify every thin drawer bottom as plywood. Thin solid boards, fiberboard, hardboard, Masonite-type panels, laminated repairs, veneered panels, or heavily painted surfaces can be mistaken for plywood. Confirm visible plies at an exposed edge, broken corner, nail hole, underside, or cross-section before assigning plywood. Also do not use one plywood drawer bottom to date the entire piece unless it appears original and consistent with the other drawers and construction. A plywood bottom in a much older drawer may be a later repair, replacement, or restoration. Look for mismatched color, fresh saw cuts, modern nails, staples, glue, filled holes, missing old grooves, uneven fit, or plywood that does not match the wear and oxidation of the drawer. If the plywood is clearly a replacement, treat it as alteration evidence rather than original construction evidence.",
     replacement_likelihood: "medium",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_industrial",
