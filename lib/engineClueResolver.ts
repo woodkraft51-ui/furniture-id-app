@@ -548,6 +548,110 @@ export function buildFastenerCanonicalAppendix(): string {
 }
 
 /**
+ * Block 21: same pattern as buildJoineryCanonicalAppendix and
+ * buildFastenerCanonicalAppendix but for the hardware library. Iterates
+ * HARDWARE_CATEGORIES + HARDWARE_TYPES directly (NOT CLUE_TO_CANONICAL),
+ * so every authored canonical hardware entry surfaces to the LLM at
+ * perception time. Hardware library uses a TWO-tier structure (categories
+ * + types) — no intermediate subcategory tier like fasteners.
+ *
+ * The hardware_category_upholstery_hardware category carries
+ * assessment_layer: "upholstery" per the D-FA33-5 dual-assessment
+ * architecture. Its three type entries (upholstery_tacks,
+ * decorative_nailhead_trim, coil_spring_hardware) inherit this routing
+ * and are annotated [→ upholstery layer] in the appendix.
+ *
+ * Called once at engine module init; result interpolated into the system
+ * prompt template literal.
+ */
+export function buildHardwareCanonicalAppendix(): string {
+  const canonicalToEngine = new Map<string, string>();
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (canonicalId.startsWith("hardware_")) {
+      canonicalToEngine.set(canonicalId, engineKey);
+    }
+  }
+
+  // Pre-compute which categories carry assessment_layer: "upholstery" so
+  // type entries inherit and annotate correctly.
+  const upholsteryRoutedCategories = new Set<string>();
+  for (const cat of HARDWARE_CATEGORIES) {
+    if ((cat as any).assessment_layer === "upholstery") {
+      upholsteryRoutedCategories.add((cat as any).id);
+    }
+  }
+
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY HARDWARE IDENTIFYING DETAILS (Block 21 — canonical library guidance):");
+  lines.push("Use these per-entry identifying characteristics from the canonical hardware library");
+  lines.push("to describe what you observe in hardware evidence. When an entry below has an");
+  lines.push("engine key listed, set that key in your observation. When an entry has no engine");
+  lines.push("key listed, still describe the feature in your observation text using the entry's");
+  lines.push("vocabulary — engine-side text fallbacks will route the description when present.");
+  lines.push("");
+  lines.push("Note: hardware_category_upholstery_hardware carries assessment_layer:");
+  lines.push("\"upholstery\" — the engine routes its types' dating-overlap evidence (upholstery");
+  lines.push("tacks, decorative nailhead trim, coil spring hardware) to the upholstery layer,");
+  lines.push("not the hardware layer, per the dual-assessment architecture wired in");
+  lines.push("engineCategoryFor.");
+  lines.push("");
+
+  lines.push("### Hardware categories (top-level structural buckets)");
+  lines.push("");
+  for (const entry of HARDWARE_CATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    const layerAnnot = e.assessment_layer === "upholstery" ? ` [→ upholstery layer]` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}${layerAnnot}:`);
+    if (typeof e.category_description === "string" && e.category_description.length > 0) {
+      lines.push(`- ${e.category_description}`);
+    }
+    const uct: string[] = Array.isArray(e.unique_category_traits) ? e.unique_category_traits : [];
+    for (const t of uct) lines.push(`- ${t}`);
+    const ie: string[] = Array.isArray(e.identifying_elements) ? e.identifying_elements : [];
+    for (const c of ie) lines.push(`- ${c}`);
+    const ci: string[] = Array.isArray(e.common_in) ? e.common_in : [];
+    if (ci.length > 0) lines.push(`- Common in: ${ci.join(", ")}`);
+    lines.push("");
+  }
+
+  lines.push("### Hardware types (specific hardware identifications)");
+  lines.push("");
+  for (const entry of HARDWARE_TYPES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : " (no engine key — describe in observation text)";
+    const layerAnnot = upholsteryRoutedCategories.has(e.parent_category_id) ? ` [→ upholstery layer]` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}${layerAnnot}:`);
+
+    const ic: string[] = Array.isArray(e.identifying_characteristics) ? e.identifying_characteristics : [];
+    for (const c of ic) lines.push(`- ${c}`);
+
+    const wc: string[] = Array.isArray(e.wear_characteristics) ? e.wear_characteristics : [];
+    if (wc.length > 0) {
+      lines.push(`- Wear / condition diagnostic markers:`);
+      for (const w of wc) lines.push(`  • ${w}`);
+    }
+
+    const rl = e.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl} (${rl === "high" ? "commonly replaced during restoration" : rl === "low" ? "durable, original hardware typically survives" : "moderate persistence"}).`);
+    }
+
+    const drs = e.date_range_summary;
+    if (typeof drs === "string" && drs.length > 0) lines.push(`- Date range: ${drs}`);
+
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Block 1 step 7: parse engine free-text date range strings into numeric
  * { date_floor, date_ceiling } per D-PH3-13 #4. Handles common engine formats:
  *   "c. 1830-1870" / "c. 1830–1870" / "1700–1860" → { 1830, 1870 }

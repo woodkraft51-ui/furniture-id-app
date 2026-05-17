@@ -1,7 +1,7 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix } from "./engineClueResolver";
 
 // Block 15: build canonical upholstery prompt appendix ONCE at module init.
 // Avoids per-request canonical-index traversal in P0.
@@ -21,6 +21,14 @@ const JOINERY_CANONICAL_APPENDIX = buildJoineryCanonicalAppendix();
 // tack are annotated [→ upholstery layer] to signal the assessment_layer
 // routing override.
 const FASTENER_CANONICAL_APPENDIX = buildFastenerCanonicalAppendix();
+
+// Block 21: same pattern for hardware. Iterates HARDWARE_CATEGORIES (14) +
+// HARDWARE_TYPES (44) = 58 entries. Two-tier surfacing (no subcategory
+// tier in hardware library). hardware_category_upholstery_hardware and
+// its 3 children (upholstery_tacks, decorative_nailhead_trim,
+// coil_spring_hardware) annotated [→ upholstery layer] to signal the
+// assessment_layer routing override.
+const HARDWARE_CANONICAL_APPENDIX = buildHardwareCanonicalAppendix();
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
@@ -4302,6 +4310,8 @@ ${UPHOLSTERY_CANONICAL_APPENDIX}
 ${JOINERY_CANONICAL_APPENDIX}
 
 ${FASTENER_CANONICAL_APPENDIX}
+
+${HARDWARE_CANONICAL_APPENDIX}
 `;
 
     const result = await this.callClaude(
