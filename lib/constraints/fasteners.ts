@@ -74,6 +74,13 @@ export interface FastenerCategoryEntry extends CanonicalEntry {
   unique_category_traits: string[];
   core_identifying_elements?: string[];
   assessment_layer: "frame" | "upholstery";
+  /** Block 20: visible degradation patterns applicable to this fastener
+   * category as a whole. Parallel to Block 17 upholstery + Block 19
+   * joinery schema extensions. */
+  wear_characteristics?: string[];
+  /** Block 20: narrative cousin-contrast prose distinguishing this
+   * category from related fastener categories. */
+  cousin_contrasts?: string[];
 }
 
 /**
@@ -119,6 +126,16 @@ export interface FastenerSubcategoryEntry extends CanonicalEntry {
    * contamination semantics independent of per-type variation
    * (e.g., machine_staples per Mike Q2 staple-target confirmation). */
   replacement_likelihood?: "low" | "medium" | "high";
+  /** Block 20: visible degradation patterns. Parallel to Block 17/19
+   * pattern. Surfaced in buildFastenerCanonicalAppendix. */
+  wear_characteristics?: string[];
+  /** Block 20: narrative cousin-contrast prose distinguishing this
+   * subcategory from related ones. Not yet engine-consumed. */
+  cousin_contrasts?: string[];
+  /** Block 20: subcategory-tier diagnostic warning. Engine-immediate
+   * via getCanonicalCautionText when a clue mapping fires at the
+   * subcategory level. Parallel to Block 19 joinery addition. */
+  diagnostic_caution_text?: string;
 }
 
 /**
@@ -189,6 +206,24 @@ export interface FastenerTypeEntry extends CanonicalEntry {
    * populated on rural-persistence-bounded types only.
    */
   regional_persistence_notes?: string;
+  /** Block 20: visible degradation patterns specific to this fastener
+   * type (e.g., wire nails: head loss, rust streaks, head pull-through;
+   * cut nails: head separation, prying scars). Parallel to Block 17
+   * upholstery + Block 19 joinery. Surfaced in buildFastenerCanonical
+   * Appendix. */
+  wear_characteristics?: string[];
+  /** Block 20: narrative cousin-contrast prose distinguishing this
+   * fastener type from similar types (e.g., common wire nail vs
+   * finish nail vs box nail). Parallels forms.ts cousin_form_contrasts.
+   * Not yet engine-consumed; available for a future cousin-contrast
+   * evaluator. */
+  cousin_contrasts?: string[];
+  /** Block 20: type-tier diagnostic warning. Engine-immediate via
+   * getCanonicalCautionText when this clue fires. Parallel to Block 19
+   * joinery + Block 17 upholstery pattern. The shared CanonicalEntry
+   * caution_text field is NOT engine-read; diagnostic warning text
+   * intended for user-facing surfacing must live here. */
+  diagnostic_caution_text?: string;
 }
 
 /**

@@ -420,6 +420,134 @@ export function buildJoineryCanonicalAppendix(): string {
 }
 
 /**
+ * Block 20: same shape as buildJoineryCanonicalAppendix but for the fastener
+ * library. Iterates FASTENER_CATEGORIES + FASTENER_SUBCATEGORIES +
+ * FASTENER_TYPES directly so all 40 authored canonical fastener entries
+ * surface to the LLM at perception time. Fastener engine-key coverage is
+ * better than joinery (more entries with CLUE_TO_CANONICAL mappings) but
+ * still sparse vs canonical depth; iterating the library directly extracts
+ * value from the rich per-entry authoring beyond what engine keys alone
+ * surface.
+ *
+ * Three-tier surfacing: categories (top-level context), subcategories (the
+ * intermediate tier introduced in fasteners library; uses
+ * subcategory_description + assessment_layer), types (specific fasteners).
+ *
+ * Called once at engine module init; result interpolated into the system
+ * prompt template literal.
+ */
+export function buildFastenerCanonicalAppendix(): string {
+  // Reverse-map: canonical_id → engine_key (joinery already does this for
+  // its own appendix; fasteners-side equivalent here).
+  const canonicalToEngine = new Map<string, string>();
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (canonicalId.startsWith("fastener_")) {
+      canonicalToEngine.set(canonicalId, engineKey);
+    }
+  }
+
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY FASTENER IDENTIFYING DETAILS (Block 20 — canonical library guidance):");
+  lines.push("Use these per-entry identifying characteristics from the canonical fastener library");
+  lines.push("to describe what you observe in fastener evidence. When an entry below has an");
+  lines.push("engine key listed, set that key in your observation. When an entry has no engine");
+  lines.push("key listed, still describe the feature in your observation text using the entry's");
+  lines.push("vocabulary — engine-side text fallbacks will route the description when present.");
+  lines.push("");
+  lines.push("Note: STAPLES subcategories (3A upholstery_tacks, 3B machine_staples) and the");
+  lines.push("decorative brass tack type carry assessment_layer: \"upholstery\" — the engine");
+  lines.push("routes their dating-overlap evidence to the upholstery layer, not the fasteners");
+  lines.push("layer, per the dual-assessment architecture wired in engineCategoryFor.");
+  lines.push("");
+
+  lines.push("### Fastener categories (top-level structural buckets)");
+  lines.push("");
+  for (const entry of FASTENER_CATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    const layerAnnot = e.assessment_layer === "upholstery" ? ` [→ upholstery layer]` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}${layerAnnot}:`);
+    if (typeof e.category_description === "string" && e.category_description.length > 0) {
+      lines.push(`- ${e.category_description}`);
+    }
+    const uct: string[] = Array.isArray(e.unique_category_traits) ? e.unique_category_traits : [];
+    for (const t of uct) lines.push(`- ${t}`);
+    const cie: string[] = Array.isArray(e.core_identifying_elements) ? e.core_identifying_elements : [];
+    for (const c of cie) lines.push(`- ${c}`);
+    const wc: string[] = Array.isArray(e.wear_characteristics) ? e.wear_characteristics : [];
+    if (wc.length > 0) {
+      lines.push(`- Wear / condition diagnostic markers:`);
+      for (const w of wc) lines.push(`  • ${w}`);
+    }
+    lines.push("");
+  }
+
+  lines.push("### Fastener subcategories (mid-tier between category and type)");
+  lines.push("");
+  for (const entry of FASTENER_SUBCATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    const layerAnnot = e.assessment_layer === "upholstery" ? ` [→ upholstery layer]` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}${layerAnnot}:`);
+    if (typeof e.subcategory_description === "string" && e.subcategory_description.length > 0) {
+      lines.push(`- ${e.subcategory_description}`);
+    }
+    const ut: string[] = Array.isArray(e.unique_traits) ? e.unique_traits : [];
+    for (const t of ut) lines.push(`- ${t}`);
+    const ic: string[] = Array.isArray(e.identifying_characteristics) ? e.identifying_characteristics : [];
+    for (const c of ic) lines.push(`- ${c}`);
+    const wc: string[] = Array.isArray(e.wear_characteristics) ? e.wear_characteristics : [];
+    if (wc.length > 0) {
+      lines.push(`- Wear / condition diagnostic markers:`);
+      for (const w of wc) lines.push(`  • ${w}`);
+    }
+    const rl = e.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl} (${rl === "high" ? "commonly replaced; restoration-contamination class" : rl === "low" ? "durable; original construction typically survives" : "moderate persistence"}).`);
+    }
+    const drs = e.date_range_summary;
+    if (typeof drs === "string" && drs.length > 0) lines.push(`- Date range: ${drs}`);
+    lines.push("");
+  }
+
+  lines.push("### Fastener types (specific fastener identifications)");
+  lines.push("");
+  for (const entry of FASTENER_TYPES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : " (no engine key — describe in observation text)";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+
+    const ic: string[] = Array.isArray(e.identifying_characteristics) ? e.identifying_characteristics : [];
+    for (const c of ic) lines.push(`- ${c}`);
+
+    const wc: string[] = Array.isArray(e.wear_characteristics) ? e.wear_characteristics : [];
+    if (wc.length > 0) {
+      lines.push(`- Wear / condition diagnostic markers:`);
+      for (const w of wc) lines.push(`  • ${w}`);
+    }
+
+    const rl = e.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl} (${rl === "high" ? "commonly replaced during restoration" : rl === "low" ? "durable, original fastener typically survives" : "moderate persistence"}).`);
+    }
+
+    const drs = e.date_range_summary;
+    if (typeof drs === "string" && drs.length > 0) lines.push(`- Date range: ${drs}`);
+
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Block 1 step 7: parse engine free-text date range strings into numeric
  * { date_floor, date_ceiling } per D-PH3-13 #4. Handles common engine formats:
  *   "c. 1830-1870" / "c. 1830–1870" / "1700–1860" → { 1830, 1870 }

@@ -1,7 +1,7 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix } from "./engineClueResolver";
 
 // Block 15: build canonical upholstery prompt appendix ONCE at module init.
 // Avoids per-request canonical-index traversal in P0.
@@ -13,6 +13,14 @@ const UPHOLSTERY_CANONICAL_APPENDIX = buildUpholsteryCanonicalAppendix();
 // mappings. Entries with mappings carry their engine key alongside; entries
 // without are still surfaced so the LLM can describe the feature.
 const JOINERY_CANONICAL_APPENDIX = buildJoineryCanonicalAppendix();
+
+// Block 20: same pattern for fasteners. Iterates FASTENER_CATEGORIES (6) +
+// FASTENER_SUBCATEGORIES (9) + FASTENER_TYPES (25) = 40 entries total.
+// Three-tier surfacing because fasteners library uses an intermediate
+// subcategory tier. STAPLES subcategories (3A + 3B) and decorative brass
+// tack are annotated [→ upholstery layer] to signal the assessment_layer
+// routing override.
+const FASTENER_CANONICAL_APPENDIX = buildFastenerCanonicalAppendix();
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
@@ -4292,6 +4300,8 @@ coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, mars
 ${UPHOLSTERY_CANONICAL_APPENDIX}
 
 ${JOINERY_CANONICAL_APPENDIX}
+
+${FASTENER_CANONICAL_APPENDIX}
 `;
 
     const result = await this.callClaude(
