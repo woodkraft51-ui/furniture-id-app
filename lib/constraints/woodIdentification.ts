@@ -118,6 +118,74 @@ export interface RegionalPattern {
  * regional) is captured in woodEvidence.ts via optional subspecies_id field
  * on species evidence entries.
  */
+/**
+ * Wood market/finish/era variant. Semantically DISTINCT from WoodSubspecies:
+ * a subspecies is a biological/anatomical variant of a species (white oak vs
+ * red oak within the oak group). A variant is a market/finish/era
+ * characterization of a species — wood + finish + production context — that
+ * carries dating and style-overlap signals without being a separate species.
+ * Example: "Golden Oak Era" is an oak variant — same species (could be white
+ * or red oak), distinguished by amber/honey finish, prominent open grain
+ * presentation, and factory-era production c. 1890–1915 peak. A piece can
+ * legitimately read as a Golden Oak variant of either white_oak or red_oak,
+ * which is why this lives at the species frame rather than the subspecies
+ * frame.
+ *
+ * Variants attach at the species level (variants?: WoodVariant[]) and carry
+ * their own period_associations + identifying_elements. The paired evidence
+ * library (woodEvidence.ts) attaches dating and style-wave-association
+ * content via variant_id FK, mirroring the species_id / subspecies_id
+ * pattern on WoodSpeciesEvidenceEntry.
+ */
+export interface WoodVariant {
+  /**
+   * Identifier within the parent species. Format: variant_<descriptor>.
+   */
+  id: string;
+
+  /**
+   * Display name for the variant (e.g., "Golden Oak Era").
+   */
+  name: string;
+
+  /**
+   * Description of what defines this variant — finish, grain presentation,
+   * production context, and the signals that distinguish it from the parent
+   * species's other variants and from the period-agnostic species reading.
+   */
+  description: string;
+
+  /**
+   * Traits unique to this variant that differentiate it from the parent
+   * species's other variants. Finish + grain + market-era characteristics
+   * rather than biological/anatomical (those belong on subspecies).
+   */
+  unique_traits: string[];
+
+  /**
+   * Identifying elements an appraiser would examine to confirm variant
+   * identification — finish color/tone, surface character, hardware
+   * conventions, factory-era proportions, etc.
+   */
+  identifying_elements: string[];
+
+  /**
+   * Period associations for this variant. Variants always carry their own
+   * period_associations because the variant identity IS partly defined by
+   * its market era; unlike subspecies, which may inherit period content
+   * from the parent species.
+   */
+  period_associations: PeriodAssociation[];
+
+  /**
+   * Free-form list of style vocabularies that commonly co-occur with this
+   * variant. Reminder that variants are orthogonal to style attribution: a
+   * Golden Oak Era piece can carry Eastlake, Colonial Revival, Mission, or
+   * Empire Revival ornamental vocabulary on the same wood/finish anchor.
+   */
+  style_overlaps?: string[];
+}
+
 export interface WoodSubspecies {
   /**
    * Identifier within the parent species. Format: subspecies_<descriptor>.
@@ -237,6 +305,16 @@ export interface WoodSpeciesEntry extends CanonicalEntry {
    * Optional subspecies array. See WoodSubspecies interface for shape.
    */
   subspecies?: WoodSubspecies[];
+
+  /**
+   * Optional variants array — market/finish/era characterizations of the
+   * species (e.g., "Golden Oak Era" on oak). See WoodVariant interface for
+   * shape. Variants are semantically distinct from subspecies: subspecies
+   * partition the species biologically; variants partition it by market
+   * era and finish convention. A piece can identify as a variant of either
+   * subspecies of the same parent species.
+   */
+  variants?: WoodVariant[];
 
   /**
    * Structural role this species typically plays in furniture construction.
@@ -787,6 +865,45 @@ export const NATURAL_WOOD_SPECIES: WoodSpeciesEntry[] = [
         ],
         regional_patterns: [
           { region: "Midwest factory centers", notes: "Grand Rapids, Rockford, Chicago." },
+        ],
+      },
+    ],
+    variants: [
+      {
+        id: "wood_variant_golden_oak_era",
+        name: "Golden Oak Era",
+        description:
+          "Market/finish/era variant of oak — not a biological subspecies. Describes the late 19th to early 20th-century American furniture production period when oak became the dominant visible furniture wood, especially in middle-class and mass-market furniture. Identification combines oak species + warm amber/honey/golden-brown finish + prominent open grain + factory-era construction. A Golden Oak Era piece can be either white or red oak; the variant identity is the wood + finish + market era, not the species biology. Per appraiser-supplied definition (May 2026 session): a piece can legitimately read as 'Golden Oak Colonial Revival chest of drawers, c. 1900–1915' or 'Late Victorian Golden Oak dresser, c. 1890–1910' — the Golden Oak anchor is orthogonal to the style label and supplements the market-era diagnostic without claiming style attribution.",
+        unique_traits: [
+          "Oak as the dominant visible wood (flat-sawn, quarter-sawn, or mixed)",
+          "Warm amber/honey/orange-brown/golden-brown finish",
+          "Prominent open grain (strong cathedral grain on flat-sawn; visible ray fleck on quarter-sawn)",
+          "Thick tops and broad drawer fronts",
+          "Machine-cut case regularity with factory-standard proportions",
+          "Substantial, honest-looking, practical commercial appearance — heavier and more wood-forward than earlier mahogany/walnut/rosewood Victorian high-style furniture",
+        ],
+        identifying_elements: [
+          "Honey/amber/golden-brown finish on oak primary surfaces",
+          "Strong cathedral grain visible on flat-sawn drawer fronts, case sides, and tops",
+          "Ray fleck visible on quarter-sawn surfaces (higher-grade Mission/Arts & Crafts/premium Golden Oak)",
+          "Round wooden knobs or pressed brass hardware on drawers and doors",
+          "Paneled or plank sides; shaped skirts or bracket feet at base",
+          "Solid secondary woods (pine or poplar) on drawer sides and bottoms; wood-on-wood drawer runners",
+          "Plank back panels (multiple horizontal solid boards) or paneled backs; pre-plywood construction",
+        ],
+        period_associations: [
+          { period_label: "Golden Oak Era peak production", date_floor: 1890, date_ceiling: 1915 },
+          { period_label: "Golden Oak Era emergence", date_floor: 1870, date_ceiling: 1890 },
+          { period_label: "Golden Oak Era decline", date_floor: 1915, date_ceiling: 1925 },
+          { period_label: "Later oak factory survival", date_floor: 1925 },
+        ],
+        style_overlaps: [
+          "Late Victorian — heavy proportions, shaped skirts, carved pulls, mixed ornament",
+          "Eastlake — incised lines, geometric carving, squared form",
+          "Mission / Arts & Crafts — straight lines, exposed joinery look, quarter-sawn oak",
+          "Colonial Revival — simple knobs, restrained classical shaping, bracket feet",
+          "Empire Revival / Classical echoes — overhanging tops, rounded drawer fronts, scroll-like supports on factory-era construction",
+          "Country / vernacular oak — plain utility forms with minimal ornament",
         ],
       },
     ],

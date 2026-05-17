@@ -59,6 +59,14 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   plywood_drawer_bottom: "substrate_evidence_plywood", // cross-references joinery_type_plywood_drawer_bottom
   cedar_lining: "wood_species_evidence_cedar_group",
   sheet_back_panel: NO_MATCH, // generic; specific substrate inferred from context
+  // Golden Oak Era market/finish/era variant — routes the LLM-emitted
+  // `golden_oak_era_possible` clue to the wood-variant evidence entry so the
+  // engine resolves the dateHint from canonical period_associations (peak
+  // 1890–1915) rather than from a CLUE_LIBRARY inline string. Per appraiser
+  // direction (May 2026 session): Golden Oak is a wood-HCL anchor, not a
+  // style family.
+  golden_oak_era_possible: "wood_variant_evidence_golden_oak_era",
+  golden_oak_structural_pattern: "wood_variant_evidence_golden_oak_era",
 
   // ── HARDWARE (delete from CLUE_LIBRARY where canonical exists) ────────────
   modern_concealed_hinge: "hardware_type_concealed_euro_hinge",

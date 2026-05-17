@@ -247,6 +247,12 @@ export interface WoodSpeciesEvidenceEntry extends CanonicalEntry {
    * differs from parent species (Block 16 D-WE4 authoring rule). */
   subspecies_id?: string;
 
+  /** Optional FK to nested variant id (woodIdentification.ts WoodVariant)
+   * when variant-level evidence differs from the parent species. Variants
+   * are market/finish/era characterizations (e.g., Golden Oak Era on oak);
+   * see WoodVariant interface for the semantic distinction from subspecies. */
+  variant_id?: string;
+
   /** Period associations sourced from File A chronological breakdown
    * content. Reuses PeriodAssociation from woodIdentification.ts:109-125
    * per Block 16 D-WE2. */
@@ -610,6 +616,39 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     usage_role_notes: "Quarter-sawn white oak as Mission/Golden Oak identity wood. Heavy ray fleck visible on show surfaces.",
     style_wave_associations: ["golden_oak", "mission_arts_and_crafts"],
     diagnostic_caution_text: "Quarter-sawn white oak's heavy ray fleck is the key identifier (File A Section 3). Subspecies-level diagnostic distinct from oak_group: parent oak entry covers multiple eras; white_oak entry specifically encodes the Mission/Golden Oak quarter-sawn dominance signature.",
+  },
+  {
+    id: "wood_variant_evidence_golden_oak_era",
+    category: "wood_species_evidence",
+    species_id: "wood_species_oak_group",
+    variant_id: "wood_variant_golden_oak_era",
+    positive_authority: 6,
+    hard_negative_authority: 6,
+    period_associations: [
+      { period_label: "Golden Oak Era peak production", date_floor: 1890, date_ceiling: 1915,
+        usage_notes: "Dominant middle-class American furniture wood and finish era. Oak overtakes walnut as the dominant fashion wood; factory production drives standardization of proportions and hardware. Diagnostic when oak species + amber/honey finish + factory-era construction co-occur on a piece." },
+      { period_label: "Golden Oak Era emergence", date_floor: 1870, date_ceiling: 1890,
+        usage_notes: "Expanding factory production; Centennial-era resurgence of oak as a 'patriotic' American wood. Eastlake aesthetic vocabulary common in early-era examples." },
+      { period_label: "Golden Oak Era decline", date_floor: 1915, date_ceiling: 1925,
+        usage_notes: "Golden Oak market identity weakens as Colonial Revival mahogany and walnut return to fashion. Oak factory production continues but no longer carries the dominant middle-class identity." },
+      { period_label: "Later oak factory survival", date_floor: 1925,
+        usage_notes: "Oak factory production continues through the 20th century in utility furniture, Depression-era pieces, and Colonial Revival reproductions, but the classic 'Golden Oak' market identity is no longer the dominant frame." },
+    ],
+    regional_associations: [
+      { region: "midwest", usage_intensity: "dominant",
+        traits: ["Factory centers Grand Rapids, Rockford, Chicago, Indiana"],
+        notes: "Midwestern factory production was the engine of the Golden Oak Era. Grand Rapids alone produced massive volumes of oak dressers, sideboards, washstands, and case goods through the period." },
+      { region: "new_england", usage_intensity: "common",
+        traits: ["Mixed factory + workshop production"] },
+      { region: "mid_atlantic", usage_intensity: "common",
+        traits: ["Factory production in Pennsylvania and New York"] },
+      { region: "southern", usage_intensity: "common",
+        traits: ["Catalog/mail-order distribution from Midwest factories"] },
+    ],
+    usage_role: ["primary_show_wood"],
+    usage_role_notes: "Golden Oak Era variant identifies the wood + finish + market-era anchor on the SHOW surfaces of factory-era American case goods. Diagnostic for dating but orthogonal to style attribution — a piece may legitimately carry Late Victorian, Eastlake, Mission/Arts & Crafts, Colonial Revival, or Empire Revival ornamental vocabulary on the same Golden Oak anchor.",
+    style_wave_associations: ["late_victorian", "eastlake_aesthetic", "golden_oak", "mission_arts_and_crafts", "colonial_revival", "empire_revival"],
+    diagnostic_caution_text: "Golden Oak Era is a market/finish/era anchor, not a style identification. A piece's style label (Late Victorian, Eastlake, Mission, Colonial Revival, Empire Revival) is determined separately from style vocabulary; the Golden Oak Era anchor supplements the wood-layer dating diagnostic with a c. 1890–1915 peak window. Per File A Important Caveat: wood alone should never date furniture — Golden Oak Era is supporting evidence reinforced when combined with factory-era construction (machine joinery, no hand-cut dovetails), factory-era hardware (round wood knobs, lock escutcheons, porcelain casters even if replaced), and factory-standard proportions. Per appraiser-supplied definition (May 2026 session): treat Golden Oak as a material/market-era signal rather than a single design language.",
   },
   {
     id: "wood_species_evidence_ash",

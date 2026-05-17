@@ -306,11 +306,14 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   spindle_gallery: { category: "style", weight: 0.62 },
 
   // Golden Oak Era / late-Victorian factory oak vocabulary. These keys are
-  // emitted by the LLM on oak-era dressers, sideboards, and case goods but
-  // were previously undefined here, so they landed in P4 via the catch-all
-  // default without any date hint or style routing. Routing into the
-  // Golden Oak family is done via STRUCTURAL_PATTERN_FAMILY + CLUE_STYLE_ASSOCIATIONS.
-  golden_oak_era_possible: { category: "style", dateHint: "c. 1890–1915", weight: 0.65 },
+  // emitted by the LLM on oak-era dressers, sideboards, and case goods.
+  // `golden_oak_era_possible` is now a materials/wood-layer anchor (not a
+  // style cue) — per appraiser direction it lives in the wood HCL as an oak
+  // variant, NOT as a style family. dateHint resolves from canonical via
+  // engineCanonicalMap (wood_variant_evidence_golden_oak_era → peak 1890–1915);
+  // category=materials routes the dating signal into the wood layer of the
+  // dating overlap, where it converges with form/construction evidence.
+  golden_oak_era_possible: { category: "materials", weight: 0.65 },
   flat_top_overhanging: { category: "form", dateHint: "c. 1800–1930", weight: 0.5 },
   empire_transitional_style: { category: "style", dateHint: "c. 1840–1880", weight: 0.5 },
   scrolled_bracket_feet: { category: "form", dateHint: "c. 1880–1930", weight: 0.55 },
@@ -1865,7 +1868,13 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     !hasClue("pit_saw_marks")
   ) {
     out.push({
-      type: "structure",
+      // Materials-layer signal (not structure): Golden Oak Era is a wood +
+      // finish + market-era anchor authored as an oak variant in
+      // woodIdentification.ts (wood_variant_golden_oak_era) with paired
+      // evidence in woodEvidence.ts. The dateHint resolves from canonical
+      // (peak 1890–1915) via engineCanonicalMap; category routes the signal
+      // into the wood layer of the dating overlap.
+      type: "materials",
       clue: "golden_oak_structural_pattern",
       description:
         "Oak primary wood, flat-sawn or quarter-sawn oak grain, multiple-drawer case, and factory-era hardware (round wood knobs / lock escutcheons / porcelain casters) with no hand-cut joinery indicate Golden Oak Era factory production (c. 1890–1915 peak).",
