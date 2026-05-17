@@ -58,28 +58,51 @@ function dateHintFor(entry: any): string | undefined {
   const notes = String(entry?.notes ?? "");
   const m = notes.match(/typical_date_range\s+"([^"]+)"/);
   if (m) return m[1];
-  // Block 8: fall back to period_associations aggregate when neither top-level
-  // dates nor HCL attribution exists. Many canonical entries (hardware, joinery,
-  // wood, substrate libraries) carry rich period_associations: structured year
-  // ranges that the prior resolver never read. This is the largest unrealized
-  // canonical investment surfaced during Block 7 verification. Aggregation:
-  // min(date_floors), max(date_ceilings) across all populated periods → unified
-  // date range that the date parser can consume downstream.
+  // Block 8: fall back to period_associations when neither top-level dates
+  // nor HCL attribution exists.
+  //
+  // Block 10b discipline (revised after fixture review): take the FIRST
+  // period_association entry's range. Canonical authoring convention places
+  // the diagnostic/dominant period first (e.g., pit_saw_marks period[0] =
+  // "Pre-industrial pit-saw production 1620-1830" while period[1] =
+  // "Regional persistence 1830-1870"). The first period IS the primary
+  // identification window; later entries capture afterwave / persistence.
+  // Block 8's prior union-of-all-periods aggregation produced over-broad
+  // ranges. Block 10b's first attempt (tightest-closed) regressed
+  // semantically by picking the secondary persistence period over the
+  // primary diagnostic window. Falls back to tightest-closed only when
+  // first entry is malformed; final fallback to first open-ended period.
   const periods = entry?.period_associations;
   if (Array.isArray(periods) && periods.length > 0) {
-    let floor: number | null = null;
-    let ceiling: number | null = null;
+    // Pass 1: prefer the FIRST entry (canonical primary period)
+    const first = periods[0];
+    if (typeof first?.date_floor === "number" && typeof first?.date_ceiling === "number") {
+      return `c. ${first.date_floor}–${first.date_ceiling}`;
+    }
+    if (typeof first?.date_floor === "number") return `post-${first.date_floor}`;
+    if (typeof first?.date_ceiling === "number") return `pre-${first.date_ceiling}`;
+    // Pass 2: first entry malformed — fall back to tightest closed period
+    let tightestFloor: number | null = null;
+    let tightestCeiling: number | null = null;
+    let tightestSpan = Infinity;
     for (const p of periods) {
-      if (typeof p?.date_floor === "number") {
-        floor = floor === null ? p.date_floor : Math.min(floor, p.date_floor);
-      }
-      if (typeof p?.date_ceiling === "number") {
-        ceiling = ceiling === null ? p.date_ceiling : Math.max(ceiling, p.date_ceiling);
+      if (typeof p?.date_floor === "number" && typeof p?.date_ceiling === "number") {
+        const span = p.date_ceiling - p.date_floor;
+        if (span < tightestSpan) {
+          tightestSpan = span;
+          tightestFloor = p.date_floor;
+          tightestCeiling = p.date_ceiling;
+        }
       }
     }
-    if (floor !== null && ceiling !== null) return `c. ${floor}–${ceiling}`;
-    if (floor !== null) return `post-${floor}`;
-    if (ceiling !== null) return `pre-${ceiling}`;
+    if (tightestFloor !== null && tightestCeiling !== null) {
+      return `c. ${tightestFloor}–${tightestCeiling}`;
+    }
+    // Pass 3: still nothing — fall back to first open-ended period
+    for (const p of periods) {
+      if (typeof p?.date_floor === "number") return `post-${p.date_floor}`;
+      if (typeof p?.date_ceiling === "number") return `pre-${p.date_ceiling}`;
+    }
   }
   return undefined;
 }

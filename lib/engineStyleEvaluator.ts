@@ -34,10 +34,21 @@ export type StyleAttribution = {
   matched_terms: string[];
 };
 
-// Tokens that appear in nearly every style name and shouldn't gate matches
+// Tokens that appear in nearly every style name and shouldn't gate matches.
+// Block 10a expansion: added generic period/material/regional words that
+// caused false-positive attributions in real LLM scans (e.g., "american"
+// matching style_family_early_colonial's aliases on a Toledo industrial chair;
+// "windsor" matching across multiple revival families without being style-
+// defining alone).
 const STOP_TOKENS = new Set([
   "and", "the", "of", "or", "style", "pattern", "case", "form",
   "revival", "movement", "period", "early", "late", "modern",
+  // Block 10a additions:
+  "american", "century", "antique", "windsor",
+  "design", "design's", "designed",
+  "type", "types", "form", "forms",
+  "wood", "wooden", "metal", "fabric",
+  "general", "generic", "classic",
 ]);
 
 type FamilyIndex = {
@@ -114,7 +125,49 @@ function periodEnvelope(family: StyleFamilyEntry): { date_floor: number | null; 
 /**
  * Score each style family against the observation evidence; return ranked attributions.
  * Empty array if no family matches.
+ *
+ * Block 10a discipline tightening (revised after fixture impact review):
+ * - STOP_TOKENS expanded above to catch generic words that produced single-
+ *   token false-positive attributions in real scans ("american", "century",
+ *   "windsor" etc.) — primary surgical lever.
+ * - Structural-pattern competitive suppression: when detectStructuralPatterns
+ *   clues fire (mcm_structural_pattern, toledo_industrial_style, etc.),
+ *   competing style attributions get a 30% penalty unless they're in the
+ *   same family as the structural pattern. Higher-authority structural
+ *   detection should outrank alias-token matching when they disagree.
+ * - Soft floor: single-token attributions require confidence ≥ 0.60 to
+ *   surface; multi-token can pass at the lower 0.45 floor. Catches "single
+ *   weak token wins" failure mode without killing legitimate single-token
+ *   matches that score high on their own merit.
  */
+const SINGLE_TOKEN_CONFIDENCE_FLOOR = 0.60;
+const MULTI_TOKEN_CONFIDENCE_FLOOR = 0.45;
+
+// Maps detectStructuralPatterns synthesized keys to the style family they
+// canonically belong to. When one of these fires in the digest, attributions
+// to other families get a competitive penalty.
+const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
+  mcm_structural_pattern: "style_family_mid_century_modern",
+  toledo_industrial_style: "style_family_mid_century_modern",
+  mid_century_industrial_office: "style_family_mid_century_modern",
+  victorian_eastlake_pattern: "style_family_eastlake",
+  rococo_revival_pattern: "style_family_rococo_revival",
+  gothic_revival_pattern: "style_family_gothic_revival",
+  federal_hepplewhite_sheraton_pattern: "style_family_federal",
+  chippendale_pattern: "style_family_chippendale",
+  jacobean_tudor_revival_case_pattern: "style_family_jacobean",
+  william_and_mary_pattern: "style_family_william_and_mary",
+  art_deco_pattern: "style_family_art_deco",
+  edwardian_pattern: "style_family_edwardian",
+  art_nouveau_pattern: "style_family_art_nouveau",
+  shaker_pattern: "style_family_shaker",
+  colonial_revival_pattern: "style_family_colonial_revival",
+  mission_arts_crafts_structural_pattern: "style_family_arts_and_crafts",
+  louis_xvi_revival_pattern: "style_family_louis_xvi_french_neoclassical",
+  queen_anne_revival_pattern: "style_family_queen_anne",
+  american_empire_style: "style_family_american_classical",
+};
+
 export function attributeStyle(
   clueKeys: string[],
   observationDescriptions: string[]
@@ -127,6 +180,15 @@ export function attributeStyle(
   const bump = (t: string) => haystack.set(t, (haystack.get(t) ?? 0) + 1);
   for (const k of clueKeys) for (const t of tokenize(k)) bump(t);
   for (const d of observationDescriptions) for (const t of tokenize(d)) bump(t);
+
+  // Block 10a: identify structural-pattern families that fired in the digest.
+  // Style attributions to families OTHER than these get a competitive penalty
+  // (structural pattern detection is higher-authority than alias token matching).
+  const structuralFamiliesPresent = new Set<string>();
+  for (const k of clueKeys) {
+    const fam = STRUCTURAL_PATTERN_FAMILY[k];
+    if (fam) structuralFamiliesPresent.add(fam);
+  }
 
   const results: StyleAttribution[] = [];
   for (const { family, tokens } of getIndex()) {
@@ -149,7 +211,21 @@ export function attributeStyle(
     const authority = typeof (family as any).positive_authority === "number"
       ? (family as any).positive_authority / 10
       : 0.5;
-    const confidence = Number((baseConf * (0.7 + 0.3 * authority)).toFixed(2));
+    let confidence = Number((baseConf * (0.7 + 0.3 * authority)).toFixed(2));
+
+    // Block 10a: competitive suppression. If structural-pattern detection
+    // points to a different family, penalize this attribution by 30%.
+    if (structuralFamiliesPresent.size > 0 && !structuralFamiliesPresent.has(family.id)) {
+      confidence = Number((confidence * 0.7).toFixed(2));
+    }
+
+    // Block 10a: soft confidence floor. Single-token matches must be
+    // high-confidence (deep token match, dominant family); multi-token can
+    // pass at lower floor.
+    const requiredFloor = matched.length === 1
+      ? SINGLE_TOKEN_CONFIDENCE_FLOOR
+      : MULTI_TOKEN_CONFIDENCE_FLOOR;
+    if (confidence < requiredFloor) continue;
 
     const { date_floor, date_ceiling } = periodEnvelope(family);
     results.push({
