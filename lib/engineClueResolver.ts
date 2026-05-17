@@ -99,12 +99,21 @@ function dateHintFor(entry: any): string | undefined {
   const isUpholstery = typeof entry?.category === "string" &&
     (entry.category.startsWith("upholstery_construction") ||
      entry.category.startsWith("upholstery_cover"));
+  // Hardware entries (turned_wooden_knob, porcelain_caster, etc.) often
+  // author period_associations with an open-ended "Continuous use" entry
+  // first (e.g., date_floor: 1750) and a closed "Especially common period"
+  // entry second (e.g., 1820–1910). The Block 10b first-wins rule then
+  // emits "post-1750" as the dateHint — useless for dating overlap, even
+  // though the curated peak window is right there in the same array. Treat
+  // hardware like upholstery: prefer the tightest closed period.
+  const isHardware = typeof entry?.category === "string" &&
+    entry.category.startsWith("hardware_type");
 
   const periods = entry?.period_associations;
   if (Array.isArray(periods) && periods.length > 0) {
     // Block 15: upholstery — prefer tightest CLOSED period (skips the
     // open-ended "continuous era" period[0] in favor of the diagnostic window).
-    if (isUpholstery) {
+    if (isUpholstery || isHardware) {
       let tightestFloor: number | null = null;
       let tightestCeiling: number | null = null;
       let tightestSpan = Infinity;

@@ -227,6 +227,78 @@ const COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 7: Golden Oak dresser misdiagnosed as American Classical / Empire
+// c. 1845–1850. Synthesized from a real diagnostic trace (May 2026) where:
+//   - Form correctly read as form_chest_of_drawers
+//   - Style attribution incorrectly anchored to style_family_american_classical
+//     (0.83 confidence, matched only on the single token "empire" from
+//     `empire_transitional_style`)
+//   - 10 style waves surfaced across american_classical/rococo_revival/
+//     contemporary_transitional families with empty matched_signals (Layer 1
+//     + Layer 2 passed the gate without Layer 3 because attribution ≥0.6)
+//   - Style_wave dating layer polluted to 1845–2025
+//   - Convergence picked the 1845–1850 zone (hardware + style + style_wave =
+//     3 layers, narrowest) over the 1890–1900 zone (form + hardware +
+//     style_wave = 3 layers, wider) despite hardware being all replacement-
+//     risk porcelain casters and round wood knobs
+//   - round_wood_knob dated as "post-1750" because the canonical period_associations
+//     first entry is open-ended ("Continuous use" from 1750); the curated peak
+//     "Especially common 1820-1910" was ignored by the first-wins rule
+//   - golden_oak_era_possible LLM clue had zero references in the engine
+// Expected post-fix behavior:
+//   - form = form_chest_of_drawers (unchanged — was already correct)
+//   - style attribution NOT american_classical, OR confidence sharply reduced
+//   - style_family_golden_oak_era now in the alternates / structural pattern set
+//   - No 10-wave proliferation; only design-signal-matching waves surface
+//   - working range pulled toward c. 1890–1915 (Golden Oak peak), not 1845–1850
+//   - round_wood_knob dateHint reads as "c. 1820–1910" (peak), not "post-1750"
+const GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-golden-oak-dresser-misdiagnosed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "oak",
+    user_category_guess: "dresser",
+    has_drawers: true,
+    condition_notes:
+      "oak chest of drawers; flat-sawn cathedral grain on drawer fronts and case sides; two over four drawer layout with curved/rounded upper drawers; round wood knobs throughout; lock escutcheons on lower drawers; porcelain casters at base; horizontal plank back; wood-on-wood drawer runners; bracket feet with scrolled profile; flat overhanging top",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Oak chest of drawers / dresser with bold flat-sawn cathedral grain across drawer fronts, case sides, and top; ring-porous pore structure consistent with red oak (no visible ray fleck — flat-sawn rather than quarter-sawn). Two over four drawer configuration: upper row of two small side-by-side drawers with a curved/rounded drawer rail below them; lower rows are full-width graduated drawers. Round wood knobs throughout; lock escutcheons on lower drawers. Porcelain casters at base. Bracket feet with a scrolled profile. Flat overhanging top. Horizontal plank back constructed from multiple solid wood boards with visible seam lines. Drawer interiors show solid single-board drawer bottoms in pale secondary wood (pine/poplar). Drawer sides show wear consistent with wood-on-wood drawer runners. No hand-cut dovetails visible at case corners (rabbet or butt joint construction). Honey-amber Golden Oak era finish.",
+    },
+    observations: [
+      obs("multiple_drawer_case", "Two-over-four drawer configuration; chest-of-drawers form", 92),
+      obs("drawer_present", "Multiple drawers present", 95),
+      obs("two_over_four_drawer_configuration", "Top row of two small drawers; lower rows full-width graduated", 88),
+      obs("curved_drawer_rail", "Curved/rounded drawer rail divides upper drawers from lower stack", 80),
+      obs("scrolled_bracket_feet", "Bracket feet with shallow scrolled profile at base", 78),
+      obs("flat_top_overhanging", "Flat top with broad overhang on all three sides", 75),
+      obs("wood_species_oak", "Primary wood reads as oak (ring-porous open grain)", 90),
+      obs("flat_sawn_oak_grain", "Bold cathedral flat-sawn oak grain across fronts, sides, and top; no ray fleck (not quarter-sawn)", 88),
+      obs("golden_oak_era_possible", "Honey-amber finish + flat-sawn oak + factory-era proportions read as Golden Oak Era production", 82),
+      obs("empire_transitional_style", "Curved upper drawer rail + overhanging top read as transitional late-Empire decorative vocabulary on a factory case", 60),
+      obs("solid_wood_construction", "Drawer fronts, sides, and bottoms read as solid wood throughout; no plywood lamination at edges", 85),
+      obs("solid_plank_back", "Back panel constructed from multiple horizontal solid wood boards with visible seam lines (pre-plywood method)", 82),
+      obs("back_panel_horizontal_boards", "Horizontal plank back, multiple boards", 82),
+      obs("frame_and_panel_sides", "Side construction shows central floating panel framed by stiles and rails", 80),
+      obs("drawer_side_secondary_wood", "Drawer sides in a lighter secondary wood (pine/poplar), distinct from oak drawer fronts", 80),
+      obs("secondary_wood_drawer_bottom", "Drawer bottoms in pale secondary wood (pine/poplar)", 80),
+      obs("drawer_kicker_runner_system", "Wood-on-wood drawer runner/kicker system; no metal slides", 80),
+      obs("case_corner_joinery", "Case side meets top board with rabbet or butt joint at corners; no visible hand-cut dovetail tails", 70),
+      obs("round_wood_knob", "Round turned wood knobs on all drawers", 85),
+      obs("lock_escutcheons", "Lock escutcheons visible on lower drawers", 75),
+      obs("porcelain_caster", "Porcelain casters at base (likely replacement; one shows mismatched chip)", 70),
+      obs("finish_worn_not_refinished", "Honey-amber finish appears original; wear consistent with age, not refinishing", 70),
+      obs("age_darkening_patina", "Even age-darkening across exposed oak surfaces", 70),
+      obs("structural_integrity", "Case structurally tight; no significant racking or repair evidence", 75),
+      obs("cabriole_leg", "No cabriole legs visible — bracket feet only (negative observation captured by the LLM as a style-vocabulary contrast cue)", 30),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
@@ -235,6 +307,7 @@ const FIXTURES: Record<string, Fixture> = {
   pre_1860_piece: PRE_1860_PIECE_FIXTURE,
   mcm_plastic_chair: MCM_PLASTIC_CHAIR_FIXTURE,
   colonial_revival_lounge_chair: COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE,
+  golden_oak_dresser: GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE,
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {

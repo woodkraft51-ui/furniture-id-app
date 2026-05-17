@@ -46,6 +46,13 @@ export type ConvergenceZone = {
   date_floor: number;
   date_ceiling: number;
   layer_count: number;
+  // Sum of LAYER_AUTHORITY for the layers contributing to this zone. Used
+  // by refineDatingFromConvergence to break ties between zones with equal
+  // layer counts (the prior "narrower wins" rule produced wrong answers
+  // when low-authority layers crowded a tight zone, e.g., hardware+style+
+  // style_wave converging at 1845–1850 on a Golden Oak dresser whose
+  // form+hardware envelope actually pointed at 1890–1900).
+  authority_sum: number;
   layers: LayerName[];
 };
 
@@ -106,17 +113,45 @@ export function refineDatingFromConvergence(
   if (!CONVERGENCE_OVERRIDE_ENABLED) return fallback;
   if (!overlap.convergence_zones?.length) return fallback;
 
-  // Pick the strongest qualifying convergence zone: most layers, then narrowest.
+  // Pick the strongest qualifying convergence zone: highest authority sum,
+  // then most layers, then narrowest. Previously the picker sorted by layer
+  // count alone, with ties broken by narrowness — that let a tight zone of
+  // low-authority layers (style + style_wave + replacement-risk hardware)
+  // beat a wider zone of high-authority layers (form + hardware + wood).
   const qualifying = overlap.convergence_zones
     .filter((z) => z.layer_count >= 3 && (z.date_ceiling - z.date_floor) <= 60)
     .sort((a, b) => {
+      if (b.authority_sum !== a.authority_sum) return b.authority_sum - a.authority_sum;
       if (b.layer_count !== a.layer_count) return b.layer_count - a.layer_count;
       return (a.date_ceiling - a.date_floor) - (b.date_ceiling - b.date_floor);
     });
   if (qualifying.length === 0) return fallback;
 
   const best = qualifying[0];
-  const convergenceWidth = best.date_ceiling - best.date_floor;
+
+  // Hard-negative post-floor enforcement. Open-ended post-YYYY layer
+  // envelopes (e.g., phillips_screw post-1935, plywood_drawer_bottom
+  // post-1920, polyurethane post-1960) are construction-anchor floors: any
+  // valid final date MUST be ≥ the latest such floor. The convergence
+  // picker doesn't see them as anchors — it only counts overlapping years.
+  // Without this clamp, a Federal-style reproduction with phillips screws
+  // can converge on 1905–1910 (style + plywood overlap) and report a date
+  // that pre-dates one of its own hard-negative observations. Clamp the
+  // zone's floor up to the maximum post-floor; if that pushes floor past
+  // ceiling, slide the ceiling up by the original zone width.
+  let zFloor = best.date_floor;
+  let zCeiling = best.date_ceiling;
+  let hardFloorClamped = false;
+  for (const l of overlap.layers) {
+    if (l.date_floor != null && l.date_ceiling == null && l.date_floor > zFloor) {
+      const width = zCeiling - zFloor;
+      zFloor = l.date_floor;
+      if (zFloor > zCeiling) zCeiling = zFloor + width;
+      hardFloorClamped = true;
+    }
+  }
+
+  const convergenceWidth = zCeiling - zFloor;
   const originalWidth =
     original.date_floor !== null && original.date_ceiling !== null
       ? original.date_ceiling - original.date_floor
@@ -129,11 +164,13 @@ export function refineDatingFromConvergence(
     best.layer_count >= 5 ? "High" : "Moderate";
 
   return {
-    range: `c. ${best.date_floor}–${best.date_ceiling}`,
-    date_floor: best.date_floor,
-    date_ceiling: best.date_ceiling,
+    range: `c. ${zFloor}–${zCeiling}`,
+    date_floor: zFloor,
+    date_ceiling: zCeiling,
     confidence,
-    reason: `${best.layer_count} evidence layers converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
+    reason: hardFloorClamped
+      ? `${best.layer_count} evidence layers converge on ${best.date_floor}–${best.date_ceiling}; hard-negative post-floor evidence clamps the floor to ${zFloor}.`
+      : `${best.layer_count} evidence layers converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
     refined: true,
   };
 }
@@ -161,7 +198,41 @@ type WeightedClue = {
   clue: string;
   category: string;
   date_hint?: string | null;
+  // p4 already computes these on every weighted_clue (lib/engine.ts AUTHORITY_RANK
+  // + REPLACEMENT_RISK tables); previously dropped on the way into the dating
+  // overlap. They are now used by convergence-zone selection to (a) sum layer
+  // authority instead of counting layers and (b) skip replacement-risk hardware
+  // from contributing to any layer envelope (porcelain casters, round wood knobs,
+  // decorative bail pulls are commonly replaced and should not anchor an early
+  // date even when authentically authored).
+  authority_rank?: number;
+  replacement_risk?: number;
 };
+
+// Per-layer authority rank for convergence weighting. Mirrors the clue-category
+// AUTHORITY_RANK in lib/engine.ts (joinery 9, fasteners 8, toolmarks 8, form 7,
+// hardware 6, wood 6, upholstery 5, finish 4, style 3) plus style_wave at 2
+// (style waves are diagnostic context, weakest of all dating layers).
+const LAYER_AUTHORITY: Record<LayerName, number> = {
+  joinery: 9,
+  fastener: 8,
+  toolmark: 8,
+  form: 7,
+  hardware: 6,
+  wood: 6,
+  upholstery: 5,
+  finish: 4,
+  style: 3,
+  style_wave: 2,
+};
+
+// Replacement-risk threshold above which a hardware clue is excluded from
+// contributing to its layer envelope. Porcelain casters (0.35), round wood
+// knobs (0.4), decorative bail pulls (0.45) are all above this floor and
+// commonly replaced; trusting them as date anchors was producing artificial
+// early-convergence zones (e.g., a Golden Oak dresser convergence at 1845–1850
+// driven by porcelain caster 1830–1900 + knob "post-1750").
+const REPLACEMENT_RISK_EXCLUSION_THRESHOLD = 0.35;
 
 function aggregateRange(ranges: Array<{ floor: number | null; ceiling: number | null }>) {
   let floor: number | null = null;
@@ -231,6 +302,21 @@ export function buildDatingOverlap(
   for (const wc of weightedClues) {
     const layer = CATEGORY_TO_LAYER[wc.category];
     if (!layer) continue;
+    // Replacement-risk clues (commonly-replaced hardware: porcelain casters,
+    // round wood knobs, decorative bail pulls) are still recorded as undated
+    // observations so the diagnostic surface shows "present, not used for
+    // dating" rather than silently dropping them — but they do NOT
+    // contribute their (often broad and authentically-authored) period
+    // envelope to convergence. They were the leading cause of artificial
+    // early-convergence zones on factory-era pieces with later/replacement
+    // hardware.
+    if (
+      typeof wc.replacement_risk === "number" &&
+      wc.replacement_risk >= REPLACEMENT_RISK_EXCLUSION_THRESHOLD
+    ) {
+      (undatedBuckets[layer] ||= []).push(wc.clue);
+      continue;
+    }
     const { date_floor, date_ceiling } = parseRangeToNumeric(wc.date_hint ?? null);
     if (date_floor === null && date_ceiling === null) {
       (undatedBuckets[layer] ||= []).push(wc.clue);
@@ -357,21 +443,25 @@ export function buildDatingOverlap(
         yearLayers.forEach((l) => currentZone!.layers.add(l));
       }
     } else if (currentZone) {
+      const layerList = Array.from(currentZone.layers);
       zones.push({
         date_floor: currentZone.start,
         date_ceiling: year - 5,
         layer_count: currentZone.layers.size,
-        layers: Array.from(currentZone.layers),
+        authority_sum: layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0), 0),
+        layers: layerList,
       });
       currentZone = null;
     }
   }
   if (currentZone) {
+    const layerList = Array.from(currentZone.layers);
     zones.push({
       date_floor: currentZone.start,
       date_ceiling: latest,
       layer_count: currentZone.layers.size,
-      layers: Array.from(currentZone.layers),
+      authority_sum: layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0), 0),
+      layers: layerList,
     });
   }
 

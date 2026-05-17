@@ -176,6 +176,13 @@ const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
   // penalty when revival markers are present.
   neoclassical_revival_cues: "style_family_colonial_revival",
   colonial_revival_cues: "style_family_colonial_revival",
+  // Golden Oak Era anchors: when the LLM emits these (or the structural
+  // detector synthesizes golden_oak_structural_pattern from oak + factory-era
+  // construction cues), Golden Oak Era enters the structural-pattern set and
+  // original-period families (American Empire 1810–1850, Federal) take the
+  // competitive penalty. Material/market-era identification, not a single style.
+  golden_oak_structural_pattern: "style_family_golden_oak_era",
+  golden_oak_era_possible: "style_family_golden_oak_era",
   mission_arts_crafts_structural_pattern: "style_family_arts_and_crafts",
   louis_xvi_revival_pattern: "style_family_louis_xvi_french_neoclassical",
   queen_anne_revival_pattern: "style_family_queen_anne",
@@ -495,11 +502,18 @@ export function aggregateStyleWaves(
         }
       }
 
-      // D-PH3-9: 2-of-N gate (now genuine: Layer 1 only counts when the
-      // attribution itself is high-confidence, so low-confidence
-      // attributions must produce BOTH a date overlap AND a design-signal
-      // match to surface a wave).
-      if (signals.length >= 2) {
+      // D-PH3-9: 2-of-N gate. Yesterday's fix (Layer 1 only counts when
+      // attribution ≥0.6) closed the low-confidence loophole but left a
+      // larger one open: for a high-confidence attribution (e.g., 0.83
+      // American Classical from a single "empire" token match), Layer 1 +
+      // Layer 2 (any wave whose date range overlaps the working envelope)
+      // passes the gate without Layer 3 — surfacing waves with no actual
+      // observational support and polluting the style_wave dating envelope.
+      // Now require: at least 2 signals AND a Layer 3 (design signal)
+      // match. Attribution is the iteration anchor; date overlap alone is
+      // not corroboration.
+      const hasLayer3 = signals.some((s) => s.startsWith("Design signal"));
+      if (signals.length >= 2 && hasLayer3) {
         matched.push({
           wave_id: wave.id,
           wave_name: wave.name,

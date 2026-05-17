@@ -305,6 +305,16 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   heavy_carving: { category: "style", weight: 0.65 },
   spindle_gallery: { category: "style", weight: 0.62 },
 
+  // Golden Oak Era / late-Victorian factory oak vocabulary. These keys are
+  // emitted by the LLM on oak-era dressers, sideboards, and case goods but
+  // were previously undefined here, so they landed in P4 via the catch-all
+  // default without any date hint or style routing. Routing into the
+  // Golden Oak family is done via STRUCTURAL_PATTERN_FAMILY + CLUE_STYLE_ASSOCIATIONS.
+  golden_oak_era_possible: { category: "style", dateHint: "c. 1890–1915", weight: 0.65 },
+  flat_top_overhanging: { category: "form", dateHint: "c. 1800–1930", weight: 0.5 },
+  empire_transitional_style: { category: "style", dateHint: "c. 1840–1880", weight: 0.5 },
+  scrolled_bracket_feet: { category: "form", dateHint: "c. 1880–1930", weight: 0.55 },
+
   drop_leaf_hinged: { category: "construction", formHint: "Drop-leaf table", dateHint: "1720–1930", weight: 0.9 },
   gateleg_support: { category: "construction", formHint: "Gateleg table", dateHint: "1680–1800; revival 1880–1930", weight: 0.92 },
   rule_joint: { category: "joinery", weight: 0.78 },
@@ -714,6 +724,14 @@ function normalizePhase0Clue(raw: any): string | null {
 
   return key;
 }
+
+  // scrolled_bracket_feet is a decorative late-Victorian / Golden Oak /
+  // Colonial Revival foot treatment, NOT an Empire scroll foot. Keep it
+  // distinct so it does not collapse into american_empire_style and anchor
+  // an Empire (c. 1810–1850) attribution on a factory-era oak dresser.
+  if (key === "scrolled_bracket_feet") {
+    return "scrolled_bracket_feet";
+  }
 
   if (
     key === "empire_style_feet" ||
@@ -1802,6 +1820,56 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
       description:
         "Revival-marker cues (neoclassical/colonial *_revival_*) indicate Colonial Revival umbrella, not original-period attribution.",
       confidence: 80,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // Golden Oak Era detector. Factory-era oak case goods (dressers, sideboards,
+  // washstands, hall trees, desks) commonly read as oak + flat-sawn grain +
+  // multiple-drawer case + late-Victorian hardware (round wood knobs, lock
+  // escutcheons, porcelain casters) with no hand-cut joinery. Without this
+  // detector, the original Empire/American Classical alias tokens (e.g.,
+  // "empire" in empire_transitional_style) over-anchor pre-1860 attribution
+  // on what is plainly 1890–1915 factory production. The synthesized clue
+  // routes via STRUCTURAL_PATTERN_FAMILY → style_family_golden_oak_era and
+  // penalizes original-period family attributions by 30% via the competitive
+  // suppression in attributeStyle.
+  const oakSpecies =
+    hasClue("wood_species_oak") ||
+    hasClue("oak_primary") ||
+    hasClue("wood_species_oak_group") ||
+    hasText("oak");
+  const oakGrain =
+    hasClue("flat_sawn_oak_grain") ||
+    hasClue("quarter_sawn_oak") ||
+    hasClue("golden_oak_era_possible") ||
+    hasText("flat-sawn oak", "quarter-sawn oak", "cathedral grain", "golden oak");
+  const caseForm =
+    hasClue("multiple_drawer_case") ||
+    hasClue("drawer_present") ||
+    hasText("chest of drawers", "dresser", "sideboard", "washstand");
+  const factoryEraHardware =
+    hasClue("round_wood_knob") ||
+    hasClue("lock_escutcheons") ||
+    hasClue("porcelain_caster");
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    oakSpecies &&
+    oakGrain &&
+    caseForm &&
+    factoryEraHardware &&
+    !hasClue("hand_cut_dovetails") &&
+    !hasClue("hand_forged_nail") &&
+    !hasClue("pit_saw_marks")
+  ) {
+    out.push({
+      type: "structure",
+      clue: "golden_oak_structural_pattern",
+      description:
+        "Oak primary wood, flat-sawn or quarter-sawn oak grain, multiple-drawer case, and factory-era hardware (round wood knobs / lock escutcheons / porcelain casters) with no hand-cut joinery indicate Golden Oak Era factory production (c. 1890–1915 peak).",
+      confidence: 82,
       source_image: "derived",
       hard_negative: false,
       low_confidence_flag: false,
