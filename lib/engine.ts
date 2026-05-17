@@ -370,6 +370,37 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
     weight: 0.58,
   },
 
+  // Block 12: upholstery vocabulary expansion. Maps to canonical
+  // upholstery_construction + upholstery_cover libraries via
+  // engineCanonicalMap.ts CLUE_TO_CANONICAL. Categories use "upholstery"
+  // string so dating-overlap viz aggregates them into the upholstery layer.
+  coil_spring:           { category: "upholstery", weight: 0.78 },
+  hand_tied_coil_spring: { category: "upholstery", weight: 0.82 },
+  serpentine_spring:     { category: "upholstery", weight: 0.78 },
+  drop_in_spring_unit:   { category: "upholstery", weight: 0.78 },
+  marshall_pocket_coil:  { category: "upholstery", weight: 0.78 },
+  no_spring_seat:        { category: "upholstery", weight: 0.68 },
+  jute_webbing:          { category: "upholstery", weight: 0.72 },
+  elastic_webbing:       { category: "upholstery", weight: 0.72 },
+  horsehair_stuffing:    { category: "upholstery", weight: 0.78 },
+  cotton_batting:        { category: "upholstery", weight: 0.65 },
+  foam_padding:          { category: "upholstery", weight: 0.70 },
+  polyurethane_foam:     { category: "upholstery", weight: 0.78 },
+  feather_down_fill:     { category: "upholstery", weight: 0.72 },
+  button_tufting:        { category: "upholstery", weight: 0.65 },
+  nailhead_trim:         { category: "upholstery", weight: 0.62 },
+  hand_tacks:            { category: "upholstery", weight: 0.65 },
+  upholstery_staple_construction: { category: "upholstery", weight: 0.78 },
+  velvet_cover:          { category: "upholstery", weight: 0.65 },
+  damask_cover:          { category: "upholstery", weight: 0.65 },
+  haircloth_cover:       { category: "upholstery", weight: 0.78 },
+  leather_cover:         { category: "upholstery", weight: 0.65 },
+  vinyl_cover:           { category: "upholstery", weight: 0.78 },
+  chintz_cover:          { category: "upholstery", weight: 0.62 },
+  needlepoint_cover:     { category: "upholstery", weight: 0.65 },
+  brocade_cover:         { category: "upholstery", weight: 0.62 },
+  jacquard_cover:        { category: "upholstery", weight: 0.62 },
+
   woven_body: {
     category: "materials",
     dateHint: "woven wicker or reed construction appears in Victorian, porch, Arts and Crafts, and later revival furniture",
@@ -861,6 +892,38 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("pull") && includesAny(t, ["bail pull", "swing pull", "decorative pull"])) return "decorative_bail_pull";
   if (!isNegated("knob") && includesAny(t, ["wooden knob", "wood knob", "turned knob", "round wood knob"])) return "round_wood_knob";
   if (!isNegated("escutcheon") && includesAny(t, ["escutcheon", "keyhole plate"])) return "lock_escutcheons";
+
+  // Block 12: UPHOLSTERY EVIDENCE — text fallback patterns. Real LLM scans
+  // surface rich upholstery descriptions ("hand-tied coil springs", "horsehair
+  // stuffing", "damask velvet cover", "button tufting") but don't always set
+  // the structured clue field. Ordered most-specific first so generic patterns
+  // don't shadow.
+  if (!isNegated("hand-tied") && includesAny(t, ["hand-tied coil", "hand tied coil", "twine-tied spring", "hand-tied spring"])) return "hand_tied_coil_spring";
+  if (!isNegated("marshall") && includesAny(t, ["marshall coil", "pocket coil", "pocketed coil", "fabric-encased coil"])) return "marshall_pocket_coil";
+  if (!isNegated("drop-in") && includesAny(t, ["drop-in spring", "drop in spring unit", "drop-in cushion unit"])) return "drop_in_spring_unit";
+  if (!isNegated("serpentine") && includesAny(t, ["serpentine spring", "sinuous spring", "zigzag spring", "no-sag spring", "no sag spring"])) return "serpentine_spring";
+  if (!isNegated("coil spring") && includesAny(t, ["coil spring", "coil springs", "metal coil under seat"])) return "coil_spring";
+  if (!isNegated("no-spring") && includesAny(t, ["no-spring seat", "unsprung seat", "stuffed without springs"])) return "no_spring_seat";
+  if (!isNegated("webbing") && includesAny(t, ["jute webbing", "linen webbing", "hemp webbing", "natural-fiber webbing", "natural fiber webbing"])) return "jute_webbing";
+  if (!isNegated("elastic webbing") && includesAny(t, ["elastic webbing", "rubber webbing", "stretch webbing", "pirelli webbing"])) return "elastic_webbing";
+  if (!isNegated("horsehair") && includesAny(t, ["horsehair stuffing", "horse hair stuffing", "curled hair stuffing", "horsehair padding"])) return "horsehair_stuffing";
+  if (!isNegated("cotton batting") && includesAny(t, ["cotton batting", "cotton padding", "cotton wadding"])) return "cotton_batting";
+  if (!isNegated("polyurethane foam") && includesAny(t, ["polyurethane foam", "synthetic foam", "yellow foam", "memory foam"])) return "polyurethane_foam";
+  if (!isNegated("foam") && includesAny(t, ["foam padding", "foam cushion", "latex foam"])) return "foam_padding";
+  if (!isNegated("down") && includesAny(t, ["feather fill", "down fill", "feather and down", "feather cushion"])) return "feather_down_fill";
+  if (!isNegated("tufting") && includesAny(t, ["button tufting", "deep buttoned", "button-tufted", "buttoned tufting", "biscuit tufting"])) return "button_tufting";
+  if (!isNegated("nailhead") && includesAny(t, ["nailhead trim", "nail-head trim", "decorative brass nails", "brass tack trim", "nailhead detailing"])) return "nailhead_trim";
+  if (!isNegated("tacks") && includesAny(t, ["hand tacks", "hand-tacked", "upholstery tacks"])) return "hand_tacks";
+  if (!isNegated("staple") && includesAny(t, ["upholstery staple", "stapled fabric", "fabric staples"])) return "upholstery_staple_construction";
+  if (!isNegated("haircloth") && includesAny(t, ["haircloth", "horsehair cloth", "horsehair cover", "horsehair fabric"])) return "haircloth_cover";
+  if (!isNegated("damask") && includesAny(t, ["damask cover", "damask upholstery", "damask fabric"])) return "damask_cover";
+  if (!isNegated("brocade") && includesAny(t, ["brocade cover", "brocade upholstery", "brocade fabric"])) return "brocade_cover";
+  if (!isNegated("jacquard") && includesAny(t, ["jacquard cover", "jacquard upholstery", "jacquard weave"])) return "jacquard_cover";
+  if (!isNegated("velvet") && includesAny(t, ["velvet cover", "velvet upholstery", "velvet fabric", "velvet pile", "tufted velvet"])) return "velvet_cover";
+  if (!isNegated("vinyl") && includesAny(t, ["vinyl cover", "vinyl upholstery", "naugahyde", "faux leather"])) return "vinyl_cover";
+  if (!isNegated("leather") && includesAny(t, ["leather cover", "leather upholstery", "full grain leather", "top grain leather"])) return "leather_cover";
+  if (!isNegated("chintz") && includesAny(t, ["chintz cover", "chintz upholstery", "chintz fabric"])) return "chintz_cover";
+  if (!isNegated("needlepoint") && includesAny(t, ["needlepoint cover", "needlework cover", "needlepoint upholstery"])) return "needlepoint_cover";
 
   // WOOD/SUBSTRATE EVIDENCE — preserve existing plywood detection priority
   if (!isNegated("plywood") && includesAny(t, ["bent plywood", "molded plywood", "bent-plywood", "molded-plywood", "bent/molded plywood"])) return "bent_molded_plywood";
@@ -3848,6 +3911,60 @@ HARDWARE EVIDENCE (look at pulls, hinges, locks, casters, mechanisms):
 - lock escutcheons (decorative keyhole plates)
   → key: lock_escutcheons
 
+UPHOLSTERY EVIDENCE (look at any visible upholstery — under cushions, on
+exposed springs, deck visible when cushions removed, frame attachment
+points, cover material on seat/back/arms):
+- coil springs visible under seat (individual upright metal coils)
+  → key: coil_spring (or hand_tied_coil_spring if hand-tied with twine)
+- serpentine / sinuous / zigzag spring (horizontal continuous wire)
+  → key: serpentine_spring
+- drop-in spring unit (factory-assembled cushion spring pack)
+  → key: drop_in_spring_unit
+- marshall / pocket coil springs (springs in individual fabric pockets)
+  → key: marshall_pocket_coil
+- no-spring seat construction (stuffed seat without spring lift)
+  → key: no_spring_seat
+- jute / linen / hemp webbing (natural-fiber strap support)
+  → key: jute_webbing
+- elastic webbing (rubber/synthetic stretch strap)
+  → key: elastic_webbing
+- horsehair stuffing (curly black hair stuffing visible at tears or under deck)
+  → key: horsehair_stuffing
+- cotton batting (white fluffy cotton layer)
+  → key: cotton_batting
+- foam padding generic (modern foam cushion)
+  → key: foam_padding
+- polyurethane foam (yellow or white synthetic foam)
+  → key: polyurethane_foam
+- feather / down fill (loose feather cushion fill)
+  → key: feather_down_fill
+- button tufting (deep regular buttoned indentations)
+  → key: button_tufting
+- decorative nailhead trim (visible row of brass nails along upholstery edge)
+  → key: nailhead_trim
+- hand tacks (cut nails or upholstery tacks securing fabric to frame, pre-staple era)
+  → key: hand_tacks
+- staples for upholstery attachment (machine staples securing fabric; HARD NEGATIVE for pre-1945 ORIGINAL upholstery, but commonly seen on reupholstered antique frames)
+  → key: upholstery_staple_construction
+- velvet cover (smooth pile fabric, often with sheen)
+  → key: velvet_cover
+- damask cover (woven figured pattern in single color, reversible)
+  → key: damask_cover
+- haircloth / horsehair cover (stiff black horsehair-woven cover, characteristic Victorian)
+  → key: haircloth_cover
+- leather cover (genuine leather)
+  → key: leather_cover
+- vinyl / faux leather cover (synthetic; common 1950s+)
+  → key: vinyl_cover
+- chintz cover (printed glazed cotton)
+  → key: chintz_cover
+- needlepoint cover (hand-stitched needlework)
+  → key: needlepoint_cover
+- brocade cover (multi-color woven figured fabric)
+  → key: brocade_cover
+- jacquard cover (machine-loomed figured fabric)
+  → key: jacquard_cover
+
 WOOD / SUBSTRATE EVIDENCE (look at drawer bottoms, case backs, secondary surfaces):
 - structural plywood (multi-ply laminated panel; HARD NEGATIVE for pre-1920 case construction)
   → key: plywood_structural  (set hard_negative: true)
@@ -3878,6 +3995,9 @@ seating_surface, backrest_present, spindle_back, secondary_surface, writing_surf
 
 Preferred evidence-library keys (use whenever the evidence is visible):
 hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_joint, frame_and_panel_sides, solid_plank_back, hand_forged_nail, cut_nail, wire_nail, phillips_screw, staple_fastener, slotted_screw, pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter, shellac_crazing, shellac_intact, polyurethane, lacquer_finish, painted_metal_finish, refinished_surface, porcelain_caster, modern_caster, decorative_bail_pull, round_wood_knob, modern_concealed_hinge, swivel_mechanism, height_adjustment_mechanism, stamped_metal_bracket, lock_escutcheons, plywood_structural, plywood_drawer_bottom, bent_molded_plywood, cedar_lining, thick_veneer, solid_wood_construction, sheet_back_panel.
+
+Preferred upholstery-evidence keys (Block 12 — use whenever the piece has visible upholstery):
+coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, marshall_pocket_coil, no_spring_seat, jute_webbing, elastic_webbing, horsehair_stuffing, cotton_batting, foam_padding, polyurethane_foam, feather_down_fill, button_tufting, nailhead_trim, hand_tacks, upholstery_staple_construction, velvet_cover, damask_cover, haircloth_cover, leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover, jacquard_cover.
 `;
 
     const result = await this.callClaude(

@@ -85,6 +85,37 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   roos_label: NO_MATCH, // specific maker; lives in makerMarks.ts MAKER_ENTRIES
   lane_label: NO_MATCH, // specific maker; lives in makerMarks.ts MAKER_ENTRIES
 
+  // ── UPHOLSTERY CONSTRUCTION (Block 12) ────────────────────────────────────
+  coil_spring: "upholstery_construction_type_early_coil_spring",
+  hand_tied_coil_spring: "upholstery_construction_type_hand_tied_coil_springs",
+  serpentine_spring: "upholstery_construction_type_sinuous_serpentine_spring",
+  drop_in_spring_unit: "upholstery_construction_type_drop_in_spring_unit",
+  marshall_pocket_coil: "upholstery_construction_type_marshall_pocket_coil",
+  no_spring_seat: "upholstery_construction_category_no_spring_upholstery",
+  jute_webbing: "upholstery_construction_type_linen_hemp_jute_webbing",
+  elastic_webbing: "upholstery_construction_type_elastic_webbing",
+  horsehair_stuffing: "upholstery_construction_type_horsehair",
+  cotton_batting: "upholstery_construction_type_cotton_batting",
+  foam_padding: "upholstery_construction_type_latex_foam",
+  polyurethane_foam: "upholstery_construction_type_polyurethane_foam",
+  feather_down_fill: "upholstery_construction_type_feather_fill",
+  upholstery_staple_construction: "upholstery_construction_type_staples",
+  hand_tacks: "upholstery_construction_type_hand_tacks",
+  nailhead_trim: "upholstery_construction_type_decorative_brass_nails_nailhead_trim",
+  // button_tufting routes to construction category (no specific tufting type entry)
+  button_tufting: "upholstery_construction_category_layering_textiles_and_foundation_covers",
+
+  // ── UPHOLSTERY COVERS (Block 12) ──────────────────────────────────────────
+  velvet_cover: "upholstery_cover_type_velvet",
+  damask_cover: "upholstery_cover_type_damask",
+  haircloth_cover: "upholstery_cover_type_haircloth_horsehair",
+  leather_cover: "upholstery_cover_type_full_grain_top_grain_leather",
+  vinyl_cover: "upholstery_cover_type_vinyl_naugahyde_faux_leather",
+  chintz_cover: "upholstery_cover_type_chintz",
+  needlepoint_cover: "upholstery_cover_type_needlework",
+  brocade_cover: "upholstery_cover_type_brocade",
+  jacquard_cover: "upholstery_cover_type_jacquard",
+
   // ── KEPT IN CLUE_LIBRARY (per D-PH3-12 — no canonical home or pattern-synthesized) ──
   // These are listed here as KEPT_IN_ENGINE for documentation; not deleted from CLUE_LIBRARY.
   // (Block 2 may migrate the *_pattern keys to styleFamilies.ts integration.)

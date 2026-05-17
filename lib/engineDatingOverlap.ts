@@ -25,7 +25,8 @@ export type LayerName =
   | "toolmark"
   | "style"
   | "style_wave"
-  | "hardware";
+  | "hardware"
+  | "upholstery";
 
 export type LayerDateBand = {
   layer: LayerName;
@@ -153,6 +154,7 @@ const CATEGORY_TO_LAYER: Record<string, LayerName> = {
   finish: "finish",
   hardware: "hardware",
   materials: "wood",
+  upholstery: "upholstery",
 };
 
 type WeightedClue = {
@@ -212,8 +214,8 @@ export function buildDatingOverlap(
     undated_clues: [],
   });
 
-  // 6 evidence-library layers
-  for (const layerName of ["joinery", "fastener", "toolmark", "wood", "hardware", "finish"] as LayerName[]) {
+  // 7 evidence-library layers (Block 12 added upholstery)
+  for (const layerName of ["joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery"] as LayerName[]) {
     const items = buckets[layerName] ?? [];
     const undated = undatedBuckets[layerName] ?? [];
     const { floor, ceiling } = aggregateRange(items.map((i) => ({ floor: i.floor, ceiling: i.ceiling })));

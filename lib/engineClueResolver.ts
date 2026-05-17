@@ -21,6 +21,8 @@ import { TOOLMARK_TYPES, TOOLMARK_CATEGORIES } from "./constraints/toolmarks";
 import { FINISH_TYPES, FINISH_CATEGORIES } from "./constraints/finish";
 import { HARDWARE_TYPES, HARDWARE_CATEGORIES } from "./constraints/hardware";
 import { SUBSTRATE_EVIDENCE, SPECIES_EVIDENCE } from "./constraints/woodEvidence";
+import { UPHOLSTERY_CONSTRUCTION_CATEGORIES, UPHOLSTERY_CONSTRUCTION_TYPES } from "./constraints/upholsteryConstruction";
+import { UPHOLSTERY_COVER_CATEGORIES, UPHOLSTERY_COVER_TYPES } from "./constraints/upholsteryCovers";
 
 // Engine CLUE_LIBRARY entry shape (matches the inline declaration in engine.ts:68).
 export type ClueMeta = {
@@ -41,6 +43,10 @@ function engineCategoryFor(canonicalCategory: string): string {
   if (canonicalCategory.startsWith("substrate_evidence")) return "materials";
   if (canonicalCategory.startsWith("wood_species_evidence")) return "materials";
   if (canonicalCategory.startsWith("cut_grain_evidence")) return "materials";
+  // Block 12: upholstery construction + cover entries route to a single
+  // "upholstery" category, surfaced as its own layer in dating-overlap viz.
+  if (canonicalCategory.startsWith("upholstery_construction")) return "upholstery";
+  if (canonicalCategory.startsWith("upholstery_cover")) return "upholstery";
   return canonicalCategory; // pass through unknown
 }
 
@@ -140,6 +146,9 @@ function buildIndex(): Map<string, any> {
     ...FINISH_CATEGORIES, ...FINISH_TYPES,
     ...HARDWARE_CATEGORIES, ...HARDWARE_TYPES,
     ...SUBSTRATE_EVIDENCE, ...SPECIES_EVIDENCE,
+    // Block 12: upholstery libraries
+    ...UPHOLSTERY_CONSTRUCTION_CATEGORIES, ...UPHOLSTERY_CONSTRUCTION_TYPES,
+    ...UPHOLSTERY_COVER_CATEGORIES, ...UPHOLSTERY_COVER_TYPES,
   ];
   for (const entry of sources) {
     if (entry?.id) idx.set(entry.id, entry);

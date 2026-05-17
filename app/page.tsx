@@ -436,6 +436,7 @@ const LAYER_COLORS: Record<string, string> = {
   wood:       "#5d7a4a",  // green-brown (wood/material)
   hardware:   "#a87143",  // copper
   finish:     "#c9a76b",  // amber
+  upholstery: "#a8645f",  // muted rose (Block 12 — upholstery is its own layer)
   style:      "#7d6b9c",  // muted lavender
   style_wave: "#6e8ba8",  // muted blue
 };
@@ -448,6 +449,7 @@ const LAYER_LABELS: Record<string, string> = {
   wood: "Wood/Substrate",
   hardware: "Hardware",
   finish: "Finish",
+  upholstery: "Upholstery",
   style: "Style attribution",
   style_wave: "Style wave",
 };
@@ -475,7 +477,7 @@ function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
   for (let y = Math.ceil(axisMin / tickStep) * tickStep; y <= axisMax; y += tickStep) ticks.push(y);
 
   // Render layers in this stable order (groups: form/structural first, then evidence, then style)
-  const layerOrder = ["form", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "style", "style_wave"];
+  const layerOrder = ["form", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery", "style", "style_wave"];
   const layersOrdered = layerOrder
     .map((name) => data.layers.find((l) => l.layer === name))
     .filter((l): l is LayerBand => Boolean(l));
