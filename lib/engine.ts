@@ -911,7 +911,7 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("polyurethane foam") && includesAny(t, ["polyurethane foam", "synthetic foam", "yellow foam", "memory foam"])) return "polyurethane_foam";
   if (!isNegated("foam") && includesAny(t, ["foam padding", "foam cushion", "latex foam"])) return "foam_padding";
   if (!isNegated("down") && includesAny(t, ["feather fill", "down fill", "feather and down", "feather cushion"])) return "feather_down_fill";
-  if (!isNegated("tufting") && includesAny(t, ["button tufting", "deep buttoned", "button-tufted", "buttoned tufting", "biscuit tufting"])) return "button_tufting";
+  if (!isNegated("tufting") && includesAny(t, ["button tufting", "deep buttoned", "button-tufted", "buttoned tufting", "biscuit tufting", "deep tufted", "deeply tufted", "tufted seat cushion", "tufted back cushion", "tufted cushion"])) return "button_tufting";
   if (!isNegated("nailhead") && includesAny(t, ["nailhead trim", "nail-head trim", "decorative brass nails", "brass tack trim", "nailhead detailing"])) return "nailhead_trim";
   if (!isNegated("tacks") && includesAny(t, ["hand tacks", "hand-tacked", "upholstery tacks"])) return "hand_tacks";
   if (!isNegated("staple") && includesAny(t, ["upholstery staple", "stapled fabric", "fabric staples"])) return "upholstery_staple_construction";
@@ -3914,6 +3914,26 @@ HARDWARE EVIDENCE (look at pulls, hinges, locks, casters, mechanisms):
 UPHOLSTERY EVIDENCE (look at any visible upholstery — under cushions, on
 exposed springs, deck visible when cushions removed, frame attachment
 points, cover material on seat/back/arms):
+
+REQUIRED — cover material identification: If ANY upholstered surface is
+visible in the photos, you MUST classify the cover material using one of
+the cover keys below (velvet_cover, damask_cover, haircloth_cover,
+leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover,
+jacquard_cover). If uncertain between two, pick the best fit and note the
+uncertainty in the observation description. Saying "upholstered surfaces
+are visible" without classifying the cover material is insufficient — it
+produces broad date envelopes and inconclusive reports. Velvet specifically:
+smooth lustrous pile fabric, often with sheen; CUT-PILE vs UNCUT-PILE
+contrast can create stripes or figured patterns — striped or figured velvet
+is still velvet_cover (common in mid-century reupholstery, 1950s–1970s).
+
+REQUIRED — tufting identification: If tufting (regular dimples across the
+cushion surface) is visible, examine whether the dimples are held by
+covered buttons. If yes → key: button_tufting. If dimples are held by
+stitches with no visible buttons → still set button_tufting and note
+"stitch-tufted, no buttons" in the description. Do not describe tufting
+without classifying it.
+
 - coil springs visible under seat (individual upright metal coils)
   → key: coil_spring (or hand_tied_coil_spring if hand-tied with twine)
 - serpentine / sinuous / zigzag spring (horizontal continuous wire)
