@@ -56,6 +56,15 @@ export interface FinishTypeEntry extends CanonicalEntry {
   regional_persistence_notes?: string;
   related_finish_types?: string[];
   assessment_layer: "frame";
+
+  /**
+   * Block 22 schema extension (parallel to Blocks 17/19/20/21/22 pattern).
+   * Engine surfaces this field via getCanonicalCautionText when a finish
+   * clue fires. The shared CanonicalEntry.caution_text field is NOT
+   * engine-read; diagnostic warning text intended for user-facing
+   * surfacing must live here.
+   */
+  diagnostic_caution_text?: string;
 }
 
 export interface FinishReasoningRule extends CanonicalEntry {
@@ -144,7 +153,7 @@ export const FINISH_TYPES: FinishTypeEntry[] = [
       { physical_location: "frame_stile", physical_location_notes: "stile" },
       { physical_location: "edge_or_corner_protection", physical_location_notes: "protected edge" },
     ],
-    caution_text: "Do not classify all checked or cracked finishes as shellac crazing. Lacquer checking, aged varnish, heat damage, water damage, artificial distressing, or crazing beneath a later clear coat can mimic shellac aging. Confirm with finish behavior, surface context, and construction evidence.",
+    diagnostic_caution_text: "Do not classify all checked or cracked finishes as shellac crazing. Lacquer checking, aged varnish, heat damage, water damage, artificial distressing, or crazing beneath a later clear coat can mimic shellac aging. Confirm with finish behavior, surface context, and construction evidence.",
     replacement_likelihood: "medium",
     original_persistence: "low",
     finish_chemistry: "shellac",
@@ -194,7 +203,7 @@ export const FINISH_TYPES: FinishTypeEntry[] = [
       { physical_location: "show_surface", physical_location_notes: "high-wear use surface" },
       { physical_location: "show_surface", physical_location_notes: "refinished show surface" },
     ],
-    caution_text: "Polyurethane on a claimed pre-1960 piece is hard-negative evidence against an original period finish, but it is not automatic proof that the frame, form, or construction is post-1960. Treat it as a surface-alteration signal unless the entire construction also supports modern manufacture.",
+    diagnostic_caution_text: "Polyurethane on a claimed pre-1960 piece is hard-negative evidence against an original period finish, but it is not automatic proof that the frame, form, or construction is post-1960. Treat it as a surface-alteration signal unless the entire construction also supports modern manufacture.",
     replacement_likelihood: "low",
     original_persistence: "high",
     finish_chemistry: "polyurethane",
@@ -243,7 +252,7 @@ export const FINISH_TYPES: FinishTypeEntry[] = [
       { physical_location: "trim_or_molding", physical_location_notes: "carved detail surface" },
       { physical_location: "show_surface", physical_location_notes: "hardware shadow on show surface" },
     ],
-    caution_text: "Do not treat every amber or glossy surface as intact shellac. Later amber lacquer, tinted varnish, polyurethane over stain, wax buildup, and restoration shellac can imitate old shellac. Confirm with wear integration, finish continuity, and construction context.",
+    diagnostic_caution_text: "Do not treat every amber or glossy surface as intact shellac. Later amber lacquer, tinted varnish, polyurethane over stain, wax buildup, and restoration shellac can imitate old shellac. Confirm with wear integration, finish continuity, and construction context.",
     replacement_likelihood: "medium",
     original_persistence: "low",
     finish_chemistry: "shellac",
@@ -293,7 +302,7 @@ export const FINISH_TYPES: FinishTypeEntry[] = [
       { physical_location: "trim_or_molding", physical_location_notes: "carved detail surface" },
       { physical_location: "edge_or_corner_protection", physical_location_notes: "high-contact edge" },
     ],
-    caution_text: "Do not treat oil patina alone as proof of age. Modern oiling, restoration oil, Danish oil, tung oil blends, and recently refreshed surfaces can mimic older mellowed patina. Use construction, wear depth, oxidation, and finish continuity to decide whether the oil surface is original, maintained, or newly applied.",
+    diagnostic_caution_text: "Do not treat oil patina alone as proof of age. Modern oiling, restoration oil, Danish oil, tung oil blends, and recently refreshed surfaces can mimic older mellowed patina. Use construction, wear depth, oxidation, and finish continuity to decide whether the oil surface is original, maintained, or newly applied.",
     replacement_likelihood: "high",
     original_persistence: "low",
     finish_chemistry: "oil",
@@ -345,7 +354,7 @@ export const FINISH_TYPES: FinishTypeEntry[] = [
       { physical_location: "edge_or_corner_protection", physical_location_notes: "edge surface" },
       { physical_location: "foot_or_leg", physical_location_notes: "foot" },
     ],
-    caution_text: "Do not classify a well-preserved original finish as refinished merely because it is clean or glossy. Refinish classification should require evidence of interrupted patina, sanding, stripping, modern coating, inconsistent wear, finish trapped in recesses, or mismatch between exposed and protected surfaces.",
+    diagnostic_caution_text: "Do not classify a well-preserved original finish as refinished merely because it is clean or glossy. Refinish classification should require evidence of interrupted patina, sanding, stripping, modern coating, inconsistent wear, finish trapped in recesses, or mismatch between exposed and protected surfaces.",
     replacement_likelihood: "high",
     finish_chemistry: "other",
     is_alteration_evidence: true,
