@@ -660,6 +660,95 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     style_wave_associations: ["colonial"],
     diagnostic_caution_text: "Interlocked grain, split resistance, rope-like grain. Especially diagnostic in Windsor seating context where the interlocked grain's split resistance was structurally necessary.",
   },
+  {
+    id: "wood_species_evidence_hickory",
+    category: "wood_species_evidence",
+    species_id: "wood_species_hickory",
+    positive_authority: 6,
+    hard_negative_authority: 6,
+    period_associations: [
+      {
+        period_label: "Colonial and early republic utilitarian use",
+        date_floor: 1700,
+        date_ceiling: 1820,
+        usage_notes: "Hickory may support an early American or vernacular reading when found in structural, rural, or chair-related contexts, but it should not independently date a piece. Treat it as supporting evidence only when form, construction, surface, and regional indicators also point to early or rural production.",
+      },
+      {
+        period_label: "Nineteenth-century rural and country chair-making",
+        date_floor: 1820,
+        date_ceiling: 1900,
+        usage_notes: "Hickory is diagnostically useful in nineteenth-century American chair evidence, especially ladderback, country, Appalachian, Southern, Midwestern, Windsor-related, or utilitarian seating forms. Its value increases when paired with rungs, posts, stretchers, spindles, splint or rush seats, and handmade or small-shop construction.",
+      },
+      {
+        period_label: "Rustic hickory and resort furniture production",
+        date_floor: 1890,
+        date_ceiling: 1935,
+        usage_notes: "Bark-on hickory, sapling frames, bent rustic members, and rugged chair or settee forms may support late nineteenth- to early twentieth-century rustic, lodge, porch, camp, and resort furniture interpretation. This period should be cross-checked against fasteners, finish, joinery, and whether the bark-on elements are original or later decorative additions.",
+      },
+      {
+        period_label: "Modern specialty and reproduction use",
+        date_floor: 1935,
+        usage_notes: "Hickory remains in use for rustic revival furniture, country reproductions, Windsor-inspired seating, cabinets, flooring, and durable domestic hardwood furniture. Because use continues to the present, hickory evidence should broaden rather than narrow the date unless supported by stronger construction or maker evidence.",
+      },
+    ],
+    regional_associations: [
+      {
+        region: "appalachian",
+        region_notes: "Kentucky, Tennessee, West Virginia, western Virginia, western North Carolina, and related upland chair-making areas",
+        usage_intensity: "common",
+        traits: [
+          "Frequent association with ladderback and country chair construction",
+          "Use in rungs, posts, stretchers, spindles, and bent or split components",
+          "Often paired with rush, splint, cane, or woven seating traditions",
+        ],
+        notes: "Appalachian context strengthens hickory evidence when the object is a rural chair, rocker, bench, or rustic seating form. Hickory should still be weighed with construction details rather than treated as a standalone regional proof.",
+      },
+      {
+        region: "southern",
+        region_notes: "Southern hardwood belt and rural Southern chair-making traditions",
+        usage_intensity: "common",
+        traits: [
+          "Durable local hardwood use in vernacular seating",
+          "Coarse open grain and strong sapwood-heartwood contrast",
+          "Common relevance to utilitarian and country furniture",
+        ],
+        notes: "Southern hickory evidence is strongest in vernacular or utilitarian furniture, especially chairs and rockers. It is weaker as a date clue in refined case furniture unless other evidence explains the species choice.",
+      },
+      {
+        region: "midwest",
+        region_notes: "Ohio Valley, Indiana, Illinois, Missouri, and related rural or commercial rustic production areas",
+        usage_intensity: "common",
+        traits: [
+          "Country furniture and farm-use associations",
+          "Rustic hickory furniture and porch furniture associations",
+          "Durable domestic hardwood use in chairs and utilitarian forms",
+        ],
+        notes: "Midwestern hickory evidence may support rural, farm, country, or rustic production, especially from the nineteenth century forward and in commercial rustic furniture after the late nineteenth century.",
+      },
+      {
+        region: "mid_atlantic",
+        region_notes: "Pennsylvania and Ohio Valley vernacular furniture contexts",
+        usage_intensity: "occasional",
+        traits: [
+          "Possible use in rural chair parts and structural elements",
+          "More persuasive when paired with regional turning, seat construction, and local hardwood evidence",
+        ],
+        notes: "In Mid-Atlantic contexts, hickory should be treated as a supporting local-hardwood clue rather than a primary regional identifier.",
+      },
+    ],
+    usage_role: ["primary_show_wood", "secondary_structural", "specialized_use"],
+    usage_role_notes: "Hickory is most useful as evidence in chair construction, rustic furniture, country furniture, bent or split members, rungs, stretchers, spindles, and other parts where toughness and shock resistance matter. It can be a primary visible wood in rustic and country furniture, but it is also encountered as a structural or specialized hardwood rather than a refined cabinet veneer.",
+    style_wave_associations: [
+      "style_wave_windsor",
+      "style_wave_country_furniture",
+      "style_wave_rustic_furniture",
+      "style_wave_appalachian_chairmaking",
+      "style_wave_arts_and_crafts_rustic",
+      "style_wave_lodge_furniture",
+      "style_wave_colonial_revival_country",
+    ],
+    diagnostic_caution_text: "Hickory is most diagnostically useful when it appears with chair construction evidence, such as rungs, stretchers, spindles, bent members, ladderback forms, Windsor-related forms, country chairs, rockers, rustic seating, or Appalachian and Southern vernacular context. Use hickory as supporting evidence rather than a standalone date or origin proof, because the species remained available and continued in specialty, rustic, reproduction, cabinet, and flooring use into the present. Stronger dating should come from construction, fasteners, tool marks, finish, upholstery or seat support, maker evidence, and form.",
+  },
   // ─────────────────────────────────────────────────────────────
   // CATEGORY II + V NATURALS — Diffuse-Porous (11 entries)
   // ─────────────────────────────────────────────────────────────
