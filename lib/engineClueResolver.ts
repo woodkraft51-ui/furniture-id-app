@@ -58,6 +58,29 @@ function dateHintFor(entry: any): string | undefined {
   const notes = String(entry?.notes ?? "");
   const m = notes.match(/typical_date_range\s+"([^"]+)"/);
   if (m) return m[1];
+  // Block 8: fall back to period_associations aggregate when neither top-level
+  // dates nor HCL attribution exists. Many canonical entries (hardware, joinery,
+  // wood, substrate libraries) carry rich period_associations: structured year
+  // ranges that the prior resolver never read. This is the largest unrealized
+  // canonical investment surfaced during Block 7 verification. Aggregation:
+  // min(date_floors), max(date_ceilings) across all populated periods → unified
+  // date range that the date parser can consume downstream.
+  const periods = entry?.period_associations;
+  if (Array.isArray(periods) && periods.length > 0) {
+    let floor: number | null = null;
+    let ceiling: number | null = null;
+    for (const p of periods) {
+      if (typeof p?.date_floor === "number") {
+        floor = floor === null ? p.date_floor : Math.min(floor, p.date_floor);
+      }
+      if (typeof p?.date_ceiling === "number") {
+        ceiling = ceiling === null ? p.date_ceiling : Math.max(ceiling, p.date_ceiling);
+      }
+    }
+    if (floor !== null && ceiling !== null) return `c. ${floor}–${ceiling}`;
+    if (floor !== null) return `post-${floor}`;
+    if (ceiling !== null) return `pre-${ceiling}`;
+  }
   return undefined;
 }
 
