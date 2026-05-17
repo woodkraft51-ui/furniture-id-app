@@ -1,7 +1,11 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix } from "./engineClueResolver";
+
+// Block 15: build canonical upholstery prompt appendix ONCE at module init.
+// Avoids per-request canonical-index traversal in P0.
+const UPHOLSTERY_CANONICAL_APPENDIX = buildUpholsteryCanonicalAppendix();
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
@@ -2041,8 +2045,15 @@ function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
 
 // Block 14: compare frame and upholstery date envelopes to infer whether
 // upholstery is likely original to the frame. Default detached; only flag
-// likely-original when envelopes substantially overlap AND traditional
-// markers are present that fit the frame era.
+// likely-original when envelopes substantially overlap AND the canonical
+// library's per-entry replacement_likelihood signals support originality.
+//
+// Block 15: now consults getReplacementLikelihood from the canonical
+// library per upholstery clue present, replacing Block 14's hardcoded
+// traditional/modern clue-list heuristics with authoritative library data.
+// "low" replacement = durable (hand-tied coils, hand-tacks, horsehair) —
+// often survives reupholstery. "high" replacement = commonly replaced
+// (cover fabrics, button-tufted cushions, foam pads). "medium" = neutral.
 function applyOriginalityInference(
   upholsteryLayer: UpholsteryLayer,
   frame: { date_floor?: number; date_ceiling?: number },
@@ -2058,39 +2069,44 @@ function applyOriginalityInference(
     return upholsteryLayer;
   }
 
-  // Overlap test: ranges share any year
   const overlap = !(uc < ff || uf > fc);
   const upholsteryLater = uf > fc;
   const upholsteryEarlier = uc < ff;
 
-  const clues = new Set(digest.clue_keys);
-  const traditionalMarkers =
-    clues.has("hand_tied_coil_spring") ||
-    clues.has("hand_tacks") ||
-    clues.has("horsehair_stuffing") ||
-    clues.has("haircloth_cover") ||
-    clues.has("jute_webbing");
-  const modernMarkers =
-    clues.has("upholstery_staple_construction") ||
-    clues.has("polyurethane_foam") ||
-    clues.has("serpentine_spring") ||
-    clues.has("drop_in_spring_unit") ||
-    clues.has("vinyl_cover");
+  // Block 15: tally canonical replacement-likelihood signals across the
+  // upholstery clues actually present in this digest.
+  const upholsteryClues = (digest.clue_keys || []).filter(
+    (k) => CLUE_LIBRARY[k]?.category === "upholstery"
+  );
+  let lowReplCount = 0;
+  let highReplCount = 0;
+  const lowReplKeys: string[] = [];
+  const highReplKeys: string[] = [];
+  for (const k of upholsteryClues) {
+    const rl = getReplacementLikelihood(k);
+    if (rl === "low") { lowReplCount++; lowReplKeys.push(k); }
+    if (rl === "high") { highReplCount++; highReplKeys.push(k); }
+  }
 
-  if (overlap && traditionalMarkers && !modernMarkers) {
+  // Likely original: envelopes overlap, at least one low-replacement
+  // canonical marker present, and no high-replacement marker dominates.
+  if (overlap && lowReplCount > 0 && highReplCount <= lowReplCount) {
     return {
       ...upholsteryLayer,
       original_likely: true,
-      cross_reference_note: "Upholstery date envelope overlaps the frame envelope and construction markers (hand-tied coils, hand tacks, horsehair, or jute webbing) are traditional, supporting the possibility that the upholstery is original.",
+      cross_reference_note: `Upholstery dating overlaps the frame envelope and the canonical library marks ${lowReplCount} present feature(s) (${lowReplKeys.join(", ")}) as low-replacement-likelihood (durable construction that typically survives reupholstery). Originality is plausible.`,
     };
   }
 
   if (upholsteryLater) {
     const yearsLater = uf - fc;
+    const highReplPhrase = highReplCount > 0
+      ? ` Canonical high-replacement-likelihood markers present (${highReplKeys.join(", ")}) reinforce this reading.`
+      : "";
     return {
       ...upholsteryLayer,
       original_likely: false,
-      cross_reference_note: `Upholstery dating (${upholsteryLayer.range}) is later than the frame envelope (${ff}–${fc}); a reupholstery approximately ${yearsLater} years after the frame is the most likely reading.`,
+      cross_reference_note: `Upholstery dating (${upholsteryLayer.range}) is later than the frame envelope (${ff}–${fc}); a reupholstery approximately ${yearsLater} years after the frame is the most likely reading.${highReplPhrase}`,
     };
   }
 
@@ -2102,11 +2118,13 @@ function applyOriginalityInference(
     };
   }
 
-  // Overlap but mixed/modern markers
+  // Overlap but replacement-likelihood doesn't support originality
   return {
     ...upholsteryLayer,
     original_likely: false,
-    cross_reference_note: "Upholstery and frame date envelopes overlap, but construction markers are not specifically traditional; cannot confirm originality.",
+    cross_reference_note: highReplCount > 0
+      ? `Upholstery and frame date envelopes overlap, but ${highReplCount} canonical high-replacement-likelihood feature(s) (${highReplKeys.join(", ")}) are present; originality cannot be inferred.`
+      : "Upholstery and frame date envelopes overlap, but canonical replacement-likelihood signals do not clearly support originality.",
   };
 }
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
@@ -4262,6 +4280,8 @@ hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_
 
 Preferred upholstery-evidence keys (Block 12 — use whenever the piece has visible upholstery):
 coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, marshall_pocket_coil, no_spring_seat, jute_webbing, elastic_webbing, horsehair_stuffing, cotton_batting, foam_padding, polyurethane_foam, feather_down_fill, button_tufting, nailhead_trim, hand_tacks, upholstery_staple_construction, velvet_cover, damask_cover, haircloth_cover, leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover, jacquard_cover.
+
+${UPHOLSTERY_CANONICAL_APPENDIX}
 `;
 
     const result = await this.callClaude(

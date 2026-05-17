@@ -53,7 +53,17 @@ function engineCategoryFor(canonicalCategory: string): string {
 // Best-effort dateHint extraction from canonical entry.
 // Priority: explicit date_floor/date_ceiling on entry; else HCL attribution
 // embedded in notes field (preserved as provenance markers in Block 0.5d);
-// else null.
+// else period_associations.
+//
+// Block 15: upholstery_construction_* and upholstery_cover_* entries use a
+// different period_associations convention than joinery/fasteners/etc.
+// Their period[0] is typically an open-ended "continuous-use era" (e.g.,
+// velvet period[0] = {date_floor: 1600} with no ceiling; hand-tied coil
+// period[0] = {date_floor: 1800} with no ceiling). The DIAGNOSTIC window
+// for upholstery dating lives in period[1+] (e.g., velvet period[1] =
+// {date_floor: 1800, date_ceiling: 1970}). For upholstery, prefer the
+// tightest CLOSED period regardless of order. Non-upholstery libraries
+// continue to use Block 10b's first-wins rule.
 function dateHintFor(entry: any): string | undefined {
   if (typeof entry?.date_floor === "number" && typeof entry?.date_ceiling === "number") {
     return `c. ${entry.date_floor}–${entry.date_ceiling}`;
@@ -64,30 +74,48 @@ function dateHintFor(entry: any): string | undefined {
   const notes = String(entry?.notes ?? "");
   const m = notes.match(/typical_date_range\s+"([^"]+)"/);
   if (m) return m[1];
-  // Block 8: fall back to period_associations when neither top-level dates
-  // nor HCL attribution exists.
-  //
-  // Block 10b discipline (revised after fixture review): take the FIRST
-  // period_association entry's range. Canonical authoring convention places
-  // the diagnostic/dominant period first (e.g., pit_saw_marks period[0] =
-  // "Pre-industrial pit-saw production 1620-1830" while period[1] =
-  // "Regional persistence 1830-1870"). The first period IS the primary
-  // identification window; later entries capture afterwave / persistence.
-  // Block 8's prior union-of-all-periods aggregation produced over-broad
-  // ranges. Block 10b's first attempt (tightest-closed) regressed
-  // semantically by picking the secondary persistence period over the
-  // primary diagnostic window. Falls back to tightest-closed only when
-  // first entry is malformed; final fallback to first open-ended period.
+
+  const isUpholstery = typeof entry?.category === "string" &&
+    (entry.category.startsWith("upholstery_construction") ||
+     entry.category.startsWith("upholstery_cover"));
+
   const periods = entry?.period_associations;
   if (Array.isArray(periods) && periods.length > 0) {
-    // Pass 1: prefer the FIRST entry (canonical primary period)
+    // Block 15: upholstery — prefer tightest CLOSED period (skips the
+    // open-ended "continuous era" period[0] in favor of the diagnostic window).
+    if (isUpholstery) {
+      let tightestFloor: number | null = null;
+      let tightestCeiling: number | null = null;
+      let tightestSpan = Infinity;
+      for (const p of periods) {
+        if (typeof p?.date_floor === "number" && typeof p?.date_ceiling === "number") {
+          const span = p.date_ceiling - p.date_floor;
+          if (span < tightestSpan) {
+            tightestSpan = span;
+            tightestFloor = p.date_floor;
+            tightestCeiling = p.date_ceiling;
+          }
+        }
+      }
+      if (tightestFloor !== null && tightestCeiling !== null) {
+        return `c. ${tightestFloor}–${tightestCeiling}`;
+      }
+      // No closed period — fall through to first open-ended for upholstery
+      for (const p of periods) {
+        if (typeof p?.date_floor === "number") return `post-${p.date_floor}`;
+        if (typeof p?.date_ceiling === "number") return `pre-${p.date_ceiling}`;
+      }
+      return undefined;
+    }
+
+    // Non-upholstery: Block 10b first-wins rule (period[0] is the diagnostic
+    // window per joinery/fastener authoring convention).
     const first = periods[0];
     if (typeof first?.date_floor === "number" && typeof first?.date_ceiling === "number") {
       return `c. ${first.date_floor}–${first.date_ceiling}`;
     }
     if (typeof first?.date_floor === "number") return `post-${first.date_floor}`;
     if (typeof first?.date_ceiling === "number") return `pre-${first.date_ceiling}`;
-    // Pass 2: first entry malformed — fall back to tightest closed period
     let tightestFloor: number | null = null;
     let tightestCeiling: number | null = null;
     let tightestSpan = Infinity;
@@ -104,7 +132,6 @@ function dateHintFor(entry: any): string | undefined {
     if (tightestFloor !== null && tightestCeiling !== null) {
       return `c. ${tightestFloor}–${tightestCeiling}`;
     }
-    // Pass 3: still nothing — fall back to first open-ended period
     for (const p of periods) {
       if (typeof p?.date_floor === "number") return `post-${p.date_floor}`;
       if (typeof p?.date_ceiling === "number") return `pre-${p.date_ceiling}`;
@@ -185,6 +212,80 @@ export function getCanonicalCautionText(engineKey: string): string | null {
   const entry = canonicalIndex.get(canonicalId);
   const text = entry?.diagnostic_caution_text;
   return typeof text === "string" && text.length > 0 ? text : null;
+}
+
+/**
+ * Block 15: return the canonical entry's replacement_likelihood for an engine
+ * clue key. Used by Block 14 originality inference to distinguish features
+ * that typically survive reupholstery (low — durable construction like
+ * hand-tied coils, mortise-and-tenon frames) from features commonly
+ * replaced (high — cover fabrics, button-tufting cushions). Replaces
+ * hardcoded clue-list heuristics with authoritative library data.
+ */
+export function getReplacementLikelihood(
+  engineKey: string
+): "low" | "medium" | "high" | undefined {
+  const canonicalId = CLUE_TO_CANONICAL[engineKey];
+  if (!canonicalId || canonicalId === NO_MATCH) return undefined;
+  if (!canonicalIndex) canonicalIndex = buildIndex();
+  const entry = canonicalIndex.get(canonicalId);
+  const rl = entry?.replacement_likelihood;
+  if (rl === "low" || rl === "medium" || rl === "high") return rl;
+  return undefined;
+}
+
+/**
+ * Block 15: build per-entry identifying-characteristics appendix for the P0
+ * LLM system prompt. Iterates engine upholstery clue keys, looks each one up
+ * in the canonical library, and assembles a structured guidance block listing
+ * the canonical entry's identifying_characteristics. Surfaces library-
+ * authored diagnostic detail (e.g., velvet's nap-direction shading, hand-
+ * tied coil's twine crossings) to the LLM at perception time so it can
+ * apply the same diagnostic vocabulary as the engine.
+ *
+ * Called once at engine module init; the result is interpolated into the
+ * system prompt template literal.
+ */
+export function buildUpholsteryCanonicalAppendix(): string {
+  if (!canonicalIndex) canonicalIndex = buildIndex();
+
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY UPHOLSTERY IDENTIFYING DETAILS (Block 15 — canonical library guidance):");
+  lines.push("Use these per-entry identifying characteristics from the canonical upholstery library");
+  lines.push("to classify what you observe. When you see one of these features, set the listed key");
+  lines.push("and reference the matching characteristic in your observation description.");
+  lines.push("");
+
+  // Iterate engine upholstery keys in CLUE_TO_CANONICAL deterministic order.
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (!canonicalId.startsWith("upholstery_construction") &&
+        !canonicalId.startsWith("upholstery_cover")) continue;
+
+    const entry = canonicalIndex.get(canonicalId);
+    if (!entry) continue;
+
+    const name = entry.name || engineKey;
+    const ic: string[] = Array.isArray(entry.identifying_characteristics)
+      ? entry.identifying_characteristics
+      : [];
+    if (ic.length === 0) continue;
+
+    lines.push(`${String(name).toUpperCase()} (key: ${engineKey}):`);
+    for (const c of ic) {
+      lines.push(`- ${c}`);
+    }
+    // Replacement-likelihood hint helps the LLM frame originality in its
+    // descriptive prose ("velvet cover — commonly replaced", "hand-tied coils
+    // — durable, often original").
+    const rl = entry.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl} (${rl === "high" ? "commonly replaced in reupholstery" : rl === "low" ? "durable, often survives reupholstery" : "moderate persistence"}).`);
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n");
 }
 
 /**
