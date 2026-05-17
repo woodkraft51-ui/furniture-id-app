@@ -158,7 +158,10 @@ const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
   jacobean_tudor_revival_case_pattern: "style_family_jacobean",
   william_and_mary_pattern: "style_family_william_and_mary",
   art_deco_pattern: "style_family_art_deco",
-  edwardian_pattern: "style_family_edwardian",
+  // Block 24: removed `edwardian_pattern: "style_family_edwardian"` — dangling
+  // reference per Block 24a audit. No such style_family exists in canonical
+  // or in Styles_and_Waves.docx. Mike's call: drop the reference rather than
+  // author Edwardian. Re-add if Edwardian is added to docx + canonical later.
   art_nouveau_pattern: "style_family_art_nouveau",
   shaker_pattern: "style_family_shaker",
   colonial_revival_pattern: "style_family_colonial_revival",

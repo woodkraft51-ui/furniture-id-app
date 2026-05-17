@@ -133,6 +133,18 @@ export interface MakerMarkEntry extends CanonicalEntry {
   anti_classification_guidance?:
     | AntiClassificationGuidance
     | AntiClassificationGuidance[];
+
+  /**
+   * Block 23 schema extension (parallel to Blocks 17/19/20/21/22 pattern).
+   * Engine surfaces this field via getCanonicalCautionText when a maker
+   * clue fires. The shared CanonicalEntry.caution_text field is NOT
+   * engine-read; diagnostic warning text intended for user-facing
+   * surfacing must live here. Authored content target: the seed's
+   * Confidence Rule + False Positive Warning prose per-maker (highest-
+   * authority appraiser-voice content). Populated during the eventual
+   * Phase 3 engine integration when MAKER_ENTRIES is wired in.
+   */
+  diagnostic_caution_text?: string;
 }
 
 /**
@@ -813,7 +825,7 @@ export const MAKER_ENTRIES: MakerMarkEntry[] = [
     maker_name: "Globe-Wernicke Co.",
     region: "Cincinnati, Ohio; later multiple locations",
     furniture_categories: ["stacking_bookcases", "barrister_bookcases", "office_furniture", "filing_systems"],
-    known_mark_types: ["paper_label", "metal_tag", "decal", "catalog_plate"],
+    known_mark_types: ["paper_label", "metal_tag", "decal", "catalog_plate", "branded_stamp"],
     common_mark_locations: [
       { physical_location: "case_back", physical_location_notes: "inside bookcase backs (interior surface)" },
       { physical_location: "underside", physical_location_notes: "underside or rear of sections" },
@@ -821,13 +833,15 @@ export const MAKER_ENTRIES: MakerMarkEntry[] = [
       { physical_location: "backboard", physical_location_notes: "back panels" },
     ],
     known_wording: ["The Globe-Wernicke Co.", "Globe-Wernicke", "Globe Wernicke", "Cincinnati"],
-    visual_traits: "Stacking sectional bookcases and barrister bookcases with distinctive door-mechanism hardware; office furniture; filing systems. Full labels and metal tags on interior surfaces; sectional unit labels.",
+    visual_traits: "Stacking sectional bookcases and barrister bookcases with distinctive door-mechanism hardware; office furniture; filing systems. Full labels and metal tags on interior surfaces; sectional unit labels. Mark form evolution: paper label (early; c. 1899-1915) → stamped mark (later; c. 1916-1930) → continuing production with various label / decal / metal tag forms (c. 1930-1955).",
     mark_text_patterns: ["globe-wernicke", "globe wernicke", "the globe-wernicke co"],
     period_associations: [
-      { period_label: "Globe-Wernicke sectional bookcase peak", date_floor: 1890, date_ceiling: 1930,
-        usage_notes: "Per seed: 'sectional bookcases and office furniture most associated with c. 1890s to 1930s.'" },
+      { period_label: "Globe-Wernicke early paper-label era", date_floor: 1899, date_ceiling: 1915,
+        usage_notes: "Per Block 23 legacy variant preservation: early paper labels used on sectional bookcases prior to corporate restructuring. Strongest with full 'Globe-Wernicke' wording and paper-label form on interior bookcase surfaces. Preserved from legacy globe_wernicke_paper_label_early entry." },
+      { period_label: "Globe-Wernicke stamped-mark era", date_floor: 1916, date_ceiling: 1930,
+        usage_notes: "Per Block 23 legacy variant preservation: later stamped marks following corporate restructuring; commonly reads 'Globe-Wernicke Co Cincinnati'. Stamp form is distinct from earlier paper labels and from later mixed-form continuing production. Preserved from legacy globe_wernicke_stamped_mark_late entry." },
       { period_label: "Globe-Wernicke continuing production", date_floor: 1930, date_ceiling: 1955,
-        usage_notes: "Per seed Date Range: 'Late 19th to mid-20th century.'" },
+        usage_notes: "Per seed Date Range: 'Late 19th to mid-20th century.' Mixed label / decal / metal tag forms continue through the firm's late production." },
     ],
     dating_clues: "Hardware system evolution (early lever mechanisms vs later integrated tracks); catalog/style numbers; address evolution on labels.",
     false_positive_warnings: [
@@ -2920,25 +2934,11 @@ export const MAKER_MARKS: MakerMarkEntry_Legacy[] = [
   dating_authority: "moderate",
   notes: "Separate company from L&JG; often confused."
 },
-{
-  id: "thonet_mark",
-  maker: "Thonet",
-  mark_text_patterns: ["Thonet", "Gebruder Thonet"],
-  mark_type: "stamp",
-  date_range: "1850–1930",
-  confidence_weight: 0.95,
-  dating_authority: "high",
-  notes: "Bentwood furniture pioneer; marks vary by factory."
-},
-{
-  id: "wallace_nutting_label",
-  maker: "Wallace Nutting",
-  mark_text_patterns: ["Wallace Nutting"],
-  mark_type: "paper_label",
-  date_range: "1900–1941",
-  confidence_weight: 0.9,
-  dating_authority: "moderate"
-},
+// Block 23 orphan cleanup: removed thonet_mark and wallace_nutting_label
+// per Mike's "drop the 4 orphans entirely" decision. Legacy shim entries
+// had no parallel in the new docx-aligned MAKER_ENTRIES schema and the
+// legacy content was too sparse to mechanically migrate without authoring
+// fresh content from general knowledge.
   {
   id: "herman_miller_label",
   maker: "Herman Miller",
@@ -3003,15 +3003,8 @@ export const MAKER_MARKS: MakerMarkEntry_Legacy[] = [
   confidence_weight: 0.95,
   dating_authority: "high"
 },
-{
-  id: "karges_furniture_label",
-  maker: "Karges Furniture",
-  mark_text_patterns: ["Karges"],
-  mark_type: "label",
-  date_range: "1886–present",
-  confidence_weight: 0.95,
-  dating_authority: "high"
-},
+// Block 23 orphan cleanup: removed karges_furniture_label
+// per Mike's drop-the-orphans decision.
   {
   id: "drexel_heritage_label",
   maker: "Drexel Heritage",
@@ -3057,15 +3050,8 @@ export const MAKER_MARKS: MakerMarkEntry_Legacy[] = [
   confidence_weight: 0.9,
   dating_authority: "moderate"
 },
-  {
-  id: "toledo_metal_furniture_label",
-  maker: "Toledo Metal Furniture Co.",
-  mark_text_patterns: ["Toledo Metal Furniture"],
-  mark_type: "stamp",
-  date_range: "1920–1960",
-  confidence_weight: 0.95,
-  dating_authority: "high"
-},
+// Block 23 orphan cleanup: removed toledo_metal_furniture_label
+// per Mike's drop-the-orphans decision.
   {
     id: "roos_sweetheart_label",
     maker: "Ed Roos Company",
@@ -3083,20 +3069,10 @@ export const MAKER_MARKS: MakerMarkEntry_Legacy[] = [
     dating_authority: "high",
     notes: "Sweetheart label era; one of multiple Roos label variants. Heart-and-sweetheart graphic with 'Genuine Sweetheart Cedar Chest' text. Ed Roos Company name and Forest Park, IL address typically appear. Earlier Roos label variants (Roos Mfg. Co. Chicago, Ed Roos Company pre-Sweetheart, tree symbol) are not yet canonical pending appraiser research; see audit log.",
   },
-  {
-  id: "globe_wernicke_gw_office_equip_service_label",
-  maker: "Globe-Wernicke",
-  mark_text_patterns: [
-    "G W",
-    "GW",
-    "Office Equip Service",
-    "Office Equipment Service",
-    "Dependable Quality"
-  ],
-  mark_type: "paper_label",
-  date_range: "c. 1920–1940",
-  confidence_weight: 0.82,
-  dating_authority: "moderate",
-  notes: "Partial GW shield-style office equipment/service label. Treat as a moderate-confidence Globe-Wernicke-related label unless fuller wording is visible.",
-},
+  // Block 23 cleanup: removed globe_wernicke_gw_office_equip_service_label
+  // per Mike's per-variant decision. The variant's bare "GW" / "G W" patterns
+  // actively conflicted with the new schema's rule #8 ("'GW' alone must NEVER
+  // identify Globe-Wernicke"). Globe-Wernicke variants 1 + 2 (early paper
+  // label + later stamped mark) are preserved both in the legacy shim above
+  // and enriched into the new-schema maker_mark_globe_wernicke_co entry.
 ];

@@ -161,6 +161,29 @@ export interface HardwareTypeEntry extends CanonicalEntry {
   related_hardware_types?: string[];
   related_fastener_types?: string[];
   related_joinery_types?: string[];
+
+  /** Block 21 drift-cleanup + schema extension. Parallel to Block 19
+   * joinery + Block 20 fastener pattern. Engine surfaces this field
+   * via getCanonicalCautionText (engineClueResolver.ts) for any
+   * hardware clue whose canonical entry carries one. The shared
+   * CanonicalEntry.caution_text field is NOT engine-read; diagnostic
+   * warning text intended for user-facing surfacing must live here. */
+  diagnostic_caution_text?: string;
+
+  /** Block 21: visible degradation patterns specific to this hardware
+   * type (e.g., brass pulls: tarnish, plating loss, bent posts; cast
+   * iron casters: rust, broken wheels; hinges: loose pins, bent
+   * leaves). Distinct from identifying_characteristics. Surfaced in
+   * the buildHardwareCanonicalAppendix LLM prompt section. Parallel
+   * to Block 17/19/20 pattern. */
+  wear_characteristics?: string[];
+
+  /** Block 21: narrative cousin-contrast prose distinguishing this
+   * hardware type from visually similar types (e.g., drop pull vs
+   * bail pull vs ring pull; butt hinge vs H-L hinge vs strap hinge).
+   * Parallels forms.ts cousin_form_contrasts. Not yet engine-
+   * consumed; available for a future cousin-contrast evaluator. */
+  cousin_contrasts?: string[];
 }
 
 /**
@@ -1880,7 +1903,7 @@ export const HARDWARE_TYPES: HardwareTypeEntry[] = [
     period_associations: [
       { period_label: "Eastlake-era incised brass pulls", date_floor: 1870, date_ceiling: 1890 },
       { period_label: "Late Victorian persistence and transition", date_floor: 1890, date_ceiling: 1900 },
-      { period_label: "Reproduction and restoration hardware market", date_floor: 1900, date_ceiling: 2030 },
+      { period_label: "Reproduction and restoration hardware market", date_floor: 1900 },
     ],
     date_range_summary: "strongest 1870-1890 as original Eastlake-era hardware; possible persistence into the 1890s; widely reproduced later",
     style_associations: [
@@ -1888,7 +1911,7 @@ export const HARDWARE_TYPES: HardwareTypeEntry[] = [
         usage_notes: "Eastlake brass pulls are a strong Eastlake-era anchor when original to the furniture. Because Eastlake-style hardware has been heavily reproduced for restoration and decorative use after the original period, the app must verify screw holes, shadows, oxidation, mounting method, and overall furniture context before treating the pull as original." },
       { style_label: "Late Victorian", date_floor: 1870, date_ceiling: 1900,
         usage_notes: "Eastlake brass pulls can appear on late Victorian case furniture beyond strictly Eastlake pieces, especially on transitional Victorian furniture with angular or incised ornament." },
-      { style_label: "Colonial Revival or modern reproduction using Victorian-style hardware", date_floor: 1900, date_ceiling: 2030,
+      { style_label: "Colonial Revival or modern reproduction using Victorian-style hardware", date_floor: 1900,
         usage_notes: "Eastlake-pattern pulls may appear as later replacement or reproduction hardware. In these cases, the pull dates the hardware choice or restoration campaign, not the furniture frame." },
     ],
     maker_associations: [],
@@ -1898,7 +1921,7 @@ export const HARDWARE_TYPES: HardwareTypeEntry[] = [
       { physical_location: "lid_or_top_movable", physical_location_notes: "Fall-front or drop-front pull location. May appear on secretary desks, writing cabinets, or drop-front case furniture when the pull is used as a functional opening handle." },
       { physical_location: "drawer_front", physical_location_notes: "Small drawer or gallery drawer. Smaller matching Eastlake pulls may appear on interior drawers, gallery drawers, glove boxes, or small accessory drawers." },
     ],
-    caution_text: "Do not classify every incised Victorian-looking pull as an Eastlake brass pull. Confirm that the pull is brass or brass-plated metal, that the ornament fits Eastlake linear and geometric conventions, and that the pull is actually a drawer or door pull rather than a hinge, escutcheon, plate, drop handle from another style, or generic Victorian hardware. Do not treat a single Eastlake-style pull as a tight 1870-1890 date anchor unless it appears original to the furniture. Check for original screw-hole alignment, old hardware shadows, finish wear around the pull, oxidation, dirt buildup, matching hardware across the piece, and period-appropriate screws or posts. Modern reproductions often show overly bright brass, uniform artificial aging, new screws, modern threads, plated backs, crisp machine-perfect casting, inconsistent screw spacing, or no old shadow mark beneath the plate. If the pull is a replacement, use it as alteration or restoration evidence rather than as proof of the furniture's original date.",
+    diagnostic_caution_text: "Do not classify every incised Victorian-looking pull as an Eastlake brass pull. Confirm that the pull is brass or brass-plated metal, that the ornament fits Eastlake linear and geometric conventions, and that the pull is actually a drawer or door pull rather than a hinge, escutcheon, plate, drop handle from another style, or generic Victorian hardware. Do not treat a single Eastlake-style pull as a tight 1870-1890 date anchor unless it appears original to the furniture. Check for original screw-hole alignment, old hardware shadows, finish wear around the pull, oxidation, dirt buildup, matching hardware across the piece, and period-appropriate screws or posts. Modern reproductions often show overly bright brass, uniform artificial aging, new screws, modern threads, plated backs, crisp machine-perfect casting, inconsistent screw spacing, or no old shadow mark beneath the plate. If the pull is a replacement, use it as alteration or restoration evidence rather than as proof of the furniture's original date.",
     replacement_likelihood: "low",
     original_persistence: "high",
   },

@@ -143,6 +143,47 @@ export function evaluateAntiBackClassification(
 // ── B1 Dimensional + B3 Cousin contrast — stubs ──────────────────────────
 
 /**
+ * Block 16: extract form-emergence / form-extinction boundary years from a
+ * FormEntry's anti_classification_guidance for use in dating-overlap layer
+ * clipping. Returns the widest valid window across all guidance entries
+ * (min emergence, max extinction). Returns empty object when the form is
+ * not found or has no boundaries.
+ *
+ * For revival-cycle arrays (emergence + extinction + revival + extinction),
+ * this returns the outer bounds of the valid window — the gap between
+ * cycles is not currently surfaced. Viz layer clipping is conservative:
+ * pieces inside the inactive gap can still display but won't drive the
+ * viz floor or ceiling.
+ */
+export function getFormDatingBoundaries(
+  form_id: string | null
+): { emergence_date?: number; extinction_date?: number } {
+  if (!form_id) return {};
+  const form = getForm(form_id);
+  if (!form?.anti_classification_guidance) return {};
+
+  const guidances: AntiClassificationGuidance[] = Array.isArray(form.anti_classification_guidance)
+    ? form.anti_classification_guidance
+    : [form.anti_classification_guidance];
+
+  let emergence: number | undefined;
+  let extinction: number | undefined;
+  for (const g of guidances) {
+    if (g.boundary_type === "form_emergence") {
+      emergence = emergence === undefined ? g.boundary_date : Math.min(emergence, g.boundary_date);
+    }
+    if (g.boundary_type === "form_extinction") {
+      extinction = extinction === undefined ? g.boundary_date : Math.max(extinction, g.boundary_date);
+    }
+  }
+
+  const out: { emergence_date?: number; extinction_date?: number } = {};
+  if (emergence !== undefined) out.emergence_date = emergence;
+  if (extinction !== undefined) out.extinction_date = extinction;
+  return out;
+}
+
+/**
  * B1 stub. Implementation deferred — current fixtures don't populate intake
  * dimensions; evaluator becomes useful once real user submissions land.
  */

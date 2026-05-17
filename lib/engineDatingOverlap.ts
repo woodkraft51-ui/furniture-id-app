@@ -175,13 +175,46 @@ function aggregateRange(ranges: Array<{ floor: number | null; ceiling: number | 
 
 /**
  * Build per-layer date bands for the 8 evidence layers.
+ *
+ * Block 16: optional `formBoundaries` clips every layer's date envelope by
+ * the form's emergence/extinction dates from anti_classification_guidance.
+ * Without this clip, layer bands (especially style attribution) extend to
+ * their canonical period regardless of whether the form could exist then —
+ * e.g. a telephone bench with Louis XVI rosettes draws the style band at
+ * 1770s even though telephones weren't domestic before ~1900.
  */
 export function buildDatingOverlap(
   weightedClues: WeightedClue[],
   styleAttribution: { date_floor: number | null; date_ceiling: number | null; confidence: number } | null,
   styleWaves: Array<{ date_floor: number | null; date_ceiling: number | null }>,
-  formDating: { date_floor: number | null; date_ceiling: number | null } | null
+  formDating: { date_floor: number | null; date_ceiling: number | null } | null,
+  formBoundaries?: { emergence_date?: number; extinction_date?: number }
 ): DatingOverlapData {
+  // Block 16: clip helpers. Apply form's anti_classification_guidance to
+  // layer floors / ceilings. emergence pulls floors UP to the boundary;
+  // extinction pulls ceilings DOWN to the boundary. Bands entirely outside
+  // the valid window are nulled (collapse to "no signal").
+  const clipFloor = (f: number | null): number | null => {
+    if (f == null) return f;
+    const e = formBoundaries?.emergence_date;
+    return e !== undefined && f < e ? e : f;
+  };
+  const clipCeiling = (c: number | null): number | null => {
+    if (c == null) return c;
+    const x = formBoundaries?.extinction_date;
+    return x !== undefined && c > x ? x : c;
+  };
+  const clipBand = (
+    floor: number | null,
+    ceiling: number | null
+  ): { floor: number | null; ceiling: number | null; collapsed: boolean } => {
+    const f = clipFloor(floor);
+    const c = clipCeiling(ceiling);
+    // If both bounds were clipped past each other (band falls entirely
+    // outside form's valid window), collapse to null.
+    if (f != null && c != null && f > c) return { floor: null, ceiling: null, collapsed: true };
+    return { floor: f, ceiling: c, collapsed: false };
+  };
   // Bucket weighted_clues per evidence-library layer
   const buckets: Partial<Record<LayerName, Array<{ clue: string; floor: number | null; ceiling: number | null }>>> = {};
   // Block 5: parallel bucket for present-but-undated observations. Diagnostic
@@ -263,6 +296,26 @@ export function buildDatingOverlap(
     present_without_dates: 0,
     undated_clues: [],
   });
+
+  // Block 16: apply form_emergence / form_extinction clipping to every layer
+  // BEFORE convergence zone computation. Layers whose entire band falls
+  // outside the form's valid window collapse to null and read as "no signal"
+  // in the viz. Convergence zones built below will only consider years
+  // within the clipped windows.
+  if (formBoundaries && (formBoundaries.emergence_date !== undefined || formBoundaries.extinction_date !== undefined)) {
+    for (const l of layers) {
+      const clipped = clipBand(l.date_floor, l.date_ceiling);
+      l.date_floor = clipped.floor;
+      l.date_ceiling = clipped.ceiling;
+      if (clipped.collapsed) {
+        // Layer's entire band is outside the form's valid window — reads as
+        // "no signal" in the viz rather than implying the form could exist
+        // at the (impossible) original date.
+        l.source_count = 0;
+        l.confidence = "none";
+      }
+    }
+  }
 
   // Convergence zones: scan year-by-year across all populated layers; find spans
   // where ≥3 layers' envelopes contain that year. Threshold of 3 keeps zones

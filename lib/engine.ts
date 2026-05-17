@@ -1,13 +1,66 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
+
+// Block 15: build canonical upholstery prompt appendix ONCE at module init.
+// Avoids per-request canonical-index traversal in P0.
+const UPHOLSTERY_CANONICAL_APPENDIX = buildUpholsteryCanonicalAppendix();
+
+// Block 19: same pattern for joinery. Iterates the full JOINERY_CATEGORIES +
+// JOINERY_TYPES arrays (45 type + 16 category entries) so the LLM sees every
+// authored canonical joinery entry — not just the 4 with CLUE_TO_CANONICAL
+// mappings. Entries with mappings carry their engine key alongside; entries
+// without are still surfaced so the LLM can describe the feature.
+const JOINERY_CANONICAL_APPENDIX = buildJoineryCanonicalAppendix();
+
+// Block 20: same pattern for fasteners. Iterates FASTENER_CATEGORIES (6) +
+// FASTENER_SUBCATEGORIES (9) + FASTENER_TYPES (25) = 40 entries total.
+// Three-tier surfacing because fasteners library uses an intermediate
+// subcategory tier. STAPLES subcategories (3A + 3B) and decorative brass
+// tack are annotated [→ upholstery layer] to signal the assessment_layer
+// routing override.
+const FASTENER_CANONICAL_APPENDIX = buildFastenerCanonicalAppendix();
+
+// Block 21: same pattern for hardware. Iterates HARDWARE_CATEGORIES (14) +
+// HARDWARE_TYPES (44) = 58 entries. Two-tier surfacing (no subcategory
+// tier in hardware library). hardware_category_upholstery_hardware and
+// its 3 children (upholstery_tacks, decorative_nailhead_trim,
+// coil_spring_hardware) annotated [→ upholstery layer] to signal the
+// assessment_layer routing override.
+const HARDWARE_CANONICAL_APPENDIX = buildHardwareCanonicalAppendix();
+
+// Block 22-23 (engine pull-through bundle): five additional canonical
+// libraries surfaced to the P0 LLM system prompt.
+//
+// FINISH (8 entries: 3 categories + 5 types) — surface-finish dating
+// evidence (shellac crazing, polyurethane, oil patina, refinishing).
+const FINISH_CANONICAL_APPENDIX = buildFinishCanonicalAppendix();
+// TOOLMARKS (8 entries: 3 categories + 5 types) — production-surface
+// evidence (pit saw, circular saw, band saw, hand plane chatter).
+const TOOLMARK_CANONICAL_APPENDIX = buildToolmarkCanonicalAppendix();
+// WOOD IDENTIFICATION (~74 entries: 5 categories + 36 species + 6
+// engineered substrates + 27 cut/grain phenomena). Identification side —
+// answers WHAT WOOD it is.
+const WOOD_IDENTIFICATION_CANONICAL_APPENDIX = buildWoodIdentificationCanonicalAppendix();
+// WOOD EVIDENCE (~80 entries: 28 species evidence + 6 substrate evidence
+// + 37 cut/grain evidence + 9 diagnostic signals). Evidence side — HOW
+// the wood evidence factors into dating.
+const WOOD_EVIDENCE_CANONICAL_APPENDIX = buildWoodEvidenceCanonicalAppendix();
+// MAKER MARKS (77 maker entries) — per-maker attribution rules + false-
+// positive warnings. Note: MAKER_ENTRIES not yet engine-wired (Block 23a
+// audit; engine still imports legacy MAKER_MARKS shim). Surfacing the
+// new schema's content to the LLM at perception time so the LLM applies
+// the right attribution discipline whether or not Phase 3 engine
+// integration has shipped.
+const MAKER_MARK_CANONICAL_APPENDIX = buildMakerMarkCanonicalAppendix();
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
   evaluateDimensional,
   evaluateHybridForm,
   getCommonAliasesForDisplay,
+  getFormDatingBoundaries,
   type SubtypeAssignment,
   type AntiBackViolation,
   type HybridAnnotation,
@@ -2041,8 +2094,15 @@ function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
 
 // Block 14: compare frame and upholstery date envelopes to infer whether
 // upholstery is likely original to the frame. Default detached; only flag
-// likely-original when envelopes substantially overlap AND traditional
-// markers are present that fit the frame era.
+// likely-original when envelopes substantially overlap AND the canonical
+// library's per-entry replacement_likelihood signals support originality.
+//
+// Block 15: now consults getReplacementLikelihood from the canonical
+// library per upholstery clue present, replacing Block 14's hardcoded
+// traditional/modern clue-list heuristics with authoritative library data.
+// "low" replacement = durable (hand-tied coils, hand-tacks, horsehair) —
+// often survives reupholstery. "high" replacement = commonly replaced
+// (cover fabrics, button-tufted cushions, foam pads). "medium" = neutral.
 function applyOriginalityInference(
   upholsteryLayer: UpholsteryLayer,
   frame: { date_floor?: number; date_ceiling?: number },
@@ -2058,39 +2118,44 @@ function applyOriginalityInference(
     return upholsteryLayer;
   }
 
-  // Overlap test: ranges share any year
   const overlap = !(uc < ff || uf > fc);
   const upholsteryLater = uf > fc;
   const upholsteryEarlier = uc < ff;
 
-  const clues = new Set(digest.clue_keys);
-  const traditionalMarkers =
-    clues.has("hand_tied_coil_spring") ||
-    clues.has("hand_tacks") ||
-    clues.has("horsehair_stuffing") ||
-    clues.has("haircloth_cover") ||
-    clues.has("jute_webbing");
-  const modernMarkers =
-    clues.has("upholstery_staple_construction") ||
-    clues.has("polyurethane_foam") ||
-    clues.has("serpentine_spring") ||
-    clues.has("drop_in_spring_unit") ||
-    clues.has("vinyl_cover");
+  // Block 15: tally canonical replacement-likelihood signals across the
+  // upholstery clues actually present in this digest.
+  const upholsteryClues = (digest.clue_keys || []).filter(
+    (k) => CLUE_LIBRARY[k]?.category === "upholstery"
+  );
+  let lowReplCount = 0;
+  let highReplCount = 0;
+  const lowReplKeys: string[] = [];
+  const highReplKeys: string[] = [];
+  for (const k of upholsteryClues) {
+    const rl = getReplacementLikelihood(k);
+    if (rl === "low") { lowReplCount++; lowReplKeys.push(k); }
+    if (rl === "high") { highReplCount++; highReplKeys.push(k); }
+  }
 
-  if (overlap && traditionalMarkers && !modernMarkers) {
+  // Likely original: envelopes overlap, at least one low-replacement
+  // canonical marker present, and no high-replacement marker dominates.
+  if (overlap && lowReplCount > 0 && highReplCount <= lowReplCount) {
     return {
       ...upholsteryLayer,
       original_likely: true,
-      cross_reference_note: "Upholstery date envelope overlaps the frame envelope and construction markers (hand-tied coils, hand tacks, horsehair, or jute webbing) are traditional, supporting the possibility that the upholstery is original.",
+      cross_reference_note: `Upholstery dating overlaps the frame envelope and the canonical library marks ${lowReplCount} present feature(s) (${lowReplKeys.join(", ")}) as low-replacement-likelihood (durable construction that typically survives reupholstery). Originality is plausible.`,
     };
   }
 
   if (upholsteryLater) {
     const yearsLater = uf - fc;
+    const highReplPhrase = highReplCount > 0
+      ? ` Canonical high-replacement-likelihood markers present (${highReplKeys.join(", ")}) reinforce this reading.`
+      : "";
     return {
       ...upholsteryLayer,
       original_likely: false,
-      cross_reference_note: `Upholstery dating (${upholsteryLayer.range}) is later than the frame envelope (${ff}–${fc}); a reupholstery approximately ${yearsLater} years after the frame is the most likely reading.`,
+      cross_reference_note: `Upholstery dating (${upholsteryLayer.range}) is later than the frame envelope (${ff}–${fc}); a reupholstery approximately ${yearsLater} years after the frame is the most likely reading.${highReplPhrase}`,
     };
   }
 
@@ -2102,11 +2167,13 @@ function applyOriginalityInference(
     };
   }
 
-  // Overlap but mixed/modern markers
+  // Overlap but replacement-likelihood doesn't support originality
   return {
     ...upholsteryLayer,
     original_likely: false,
-    cross_reference_note: "Upholstery and frame date envelopes overlap, but construction markers are not specifically traditional; cannot confirm originality.",
+    cross_reference_note: highReplCount > 0
+      ? `Upholstery and frame date envelopes overlap, but ${highReplCount} canonical high-replacement-likelihood feature(s) (${highReplKeys.join(", ")}) are present; originality cannot be inferred.`
+      : "Upholstery and frame date envelopes overlap, but canonical replacement-likelihood signals do not clearly support originality.",
   };
 }
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
@@ -4262,6 +4329,24 @@ hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_
 
 Preferred upholstery-evidence keys (Block 12 — use whenever the piece has visible upholstery):
 coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, marshall_pocket_coil, no_spring_seat, jute_webbing, elastic_webbing, horsehair_stuffing, cotton_batting, foam_padding, polyurethane_foam, feather_down_fill, button_tufting, nailhead_trim, hand_tacks, upholstery_staple_construction, velvet_cover, damask_cover, haircloth_cover, leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover, jacquard_cover.
+
+${UPHOLSTERY_CANONICAL_APPENDIX}
+
+${JOINERY_CANONICAL_APPENDIX}
+
+${FASTENER_CANONICAL_APPENDIX}
+
+${HARDWARE_CANONICAL_APPENDIX}
+
+${FINISH_CANONICAL_APPENDIX}
+
+${TOOLMARK_CANONICAL_APPENDIX}
+
+${WOOD_IDENTIFICATION_CANONICAL_APPENDIX}
+
+${WOOD_EVIDENCE_CANONICAL_APPENDIX}
+
+${MAKER_MARK_CANONICAL_APPENDIX}
 `;
 
     const result = await this.callClaude(
@@ -4977,11 +5062,17 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
 
   // Block 3a: build 8-layer dating-overlap data for Full Analysis viz (D-PH3-6).
   // Engine produces structured data; React rendering lands in Block 3b.
+  // Block 16: pass form-emergence / form-extinction boundaries from the
+  // form's anti_classification_guidance so layer bands are clipped by
+  // form impossibility (e.g., telephone bench style band can't extend
+  // before 1900 even if the canonical Louis XVI style period is 1770s).
+  const formBoundaries = getFormDatingBoundaries(form.form_id ?? null);
   const dating_overlap = buildDatingOverlap(
     weighting.weighted_clues || [],
     form.style_attribution ?? null,
     form.style_waves ?? [],
-    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null }
+    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null },
+    formBoundaries
   );
 
   return {
@@ -5093,11 +5184,15 @@ if (p6.dating_overlap) {
   const frameClues = (stage_outputs.p4?.weighted_clues || []).filter(
     (c: any) => c.category !== "upholstery"
   );
+  // Block 16: same form-boundary clipping applies to the frame-only
+  // overlap used for convergence refinement.
+  const frameBoundaries = getFormDatingBoundaries(p3.form_id ?? null);
   const frameOverlap = buildDatingOverlap(
     frameClues,
     p3.style_attribution ?? null,
     p3.style_waves ?? [],
-    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null }
+    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null },
+    frameBoundaries
   );
   const refined = refineDatingFromConvergence(
     {

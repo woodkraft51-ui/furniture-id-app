@@ -660,6 +660,95 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
     style_wave_associations: ["colonial"],
     diagnostic_caution_text: "Interlocked grain, split resistance, rope-like grain. Especially diagnostic in Windsor seating context where the interlocked grain's split resistance was structurally necessary.",
   },
+  {
+    id: "wood_species_evidence_hickory",
+    category: "wood_species_evidence",
+    species_id: "wood_species_hickory",
+    positive_authority: 6,
+    hard_negative_authority: 6,
+    period_associations: [
+      {
+        period_label: "Colonial and early republic utilitarian use",
+        date_floor: 1700,
+        date_ceiling: 1820,
+        usage_notes: "Hickory may support an early American or vernacular reading when found in structural, rural, or chair-related contexts, but it should not independently date a piece. Treat it as supporting evidence only when form, construction, surface, and regional indicators also point to early or rural production.",
+      },
+      {
+        period_label: "Nineteenth-century rural and country chair-making",
+        date_floor: 1820,
+        date_ceiling: 1900,
+        usage_notes: "Hickory is diagnostically useful in nineteenth-century American chair evidence, especially ladderback, country, Appalachian, Southern, Midwestern, Windsor-related, or utilitarian seating forms. Its value increases when paired with rungs, posts, stretchers, spindles, splint or rush seats, and handmade or small-shop construction.",
+      },
+      {
+        period_label: "Rustic hickory and resort furniture production",
+        date_floor: 1890,
+        date_ceiling: 1935,
+        usage_notes: "Bark-on hickory, sapling frames, bent rustic members, and rugged chair or settee forms may support late nineteenth- to early twentieth-century rustic, lodge, porch, camp, and resort furniture interpretation. This period should be cross-checked against fasteners, finish, joinery, and whether the bark-on elements are original or later decorative additions.",
+      },
+      {
+        period_label: "Modern specialty and reproduction use",
+        date_floor: 1935,
+        usage_notes: "Hickory remains in use for rustic revival furniture, country reproductions, Windsor-inspired seating, cabinets, flooring, and durable domestic hardwood furniture. Because use continues to the present, hickory evidence should broaden rather than narrow the date unless supported by stronger construction or maker evidence.",
+      },
+    ],
+    regional_associations: [
+      {
+        region: "appalachian",
+        region_notes: "Kentucky, Tennessee, West Virginia, western Virginia, western North Carolina, and related upland chair-making areas",
+        usage_intensity: "common",
+        traits: [
+          "Frequent association with ladderback and country chair construction",
+          "Use in rungs, posts, stretchers, spindles, and bent or split components",
+          "Often paired with rush, splint, cane, or woven seating traditions",
+        ],
+        notes: "Appalachian context strengthens hickory evidence when the object is a rural chair, rocker, bench, or rustic seating form. Hickory should still be weighed with construction details rather than treated as a standalone regional proof.",
+      },
+      {
+        region: "southern",
+        region_notes: "Southern hardwood belt and rural Southern chair-making traditions",
+        usage_intensity: "common",
+        traits: [
+          "Durable local hardwood use in vernacular seating",
+          "Coarse open grain and strong sapwood-heartwood contrast",
+          "Common relevance to utilitarian and country furniture",
+        ],
+        notes: "Southern hickory evidence is strongest in vernacular or utilitarian furniture, especially chairs and rockers. It is weaker as a date clue in refined case furniture unless other evidence explains the species choice.",
+      },
+      {
+        region: "midwest",
+        region_notes: "Ohio Valley, Indiana, Illinois, Missouri, and related rural or commercial rustic production areas",
+        usage_intensity: "common",
+        traits: [
+          "Country furniture and farm-use associations",
+          "Rustic hickory furniture and porch furniture associations",
+          "Durable domestic hardwood use in chairs and utilitarian forms",
+        ],
+        notes: "Midwestern hickory evidence may support rural, farm, country, or rustic production, especially from the nineteenth century forward and in commercial rustic furniture after the late nineteenth century.",
+      },
+      {
+        region: "mid_atlantic",
+        region_notes: "Pennsylvania and Ohio Valley vernacular furniture contexts",
+        usage_intensity: "occasional",
+        traits: [
+          "Possible use in rural chair parts and structural elements",
+          "More persuasive when paired with regional turning, seat construction, and local hardwood evidence",
+        ],
+        notes: "In Mid-Atlantic contexts, hickory should be treated as a supporting local-hardwood clue rather than a primary regional identifier.",
+      },
+    ],
+    usage_role: ["primary_show_wood", "secondary_structural", "specialized_use"],
+    usage_role_notes: "Hickory is most useful as evidence in chair construction, rustic furniture, country furniture, bent or split members, rungs, stretchers, spindles, and other parts where toughness and shock resistance matter. It can be a primary visible wood in rustic and country furniture, but it is also encountered as a structural or specialized hardwood rather than a refined cabinet veneer.",
+    style_wave_associations: [
+      "style_wave_windsor",
+      "style_wave_country_furniture",
+      "style_wave_rustic_furniture",
+      "style_wave_appalachian_chairmaking",
+      "style_wave_arts_and_crafts_rustic",
+      "style_wave_lodge_furniture",
+      "style_wave_colonial_revival_country",
+    ],
+    diagnostic_caution_text: "Hickory is most diagnostically useful when it appears with chair construction evidence, such as rungs, stretchers, spindles, bent members, ladderback forms, Windsor-related forms, country chairs, rockers, rustic seating, or Appalachian and Southern vernacular context. Use hickory as supporting evidence rather than a standalone date or origin proof, because the species remained available and continued in specialty, rustic, reproduction, cabinet, and flooring use into the present. Stronger dating should come from construction, fasteners, tool marks, finish, upholstery or seat support, maker evidence, and form.",
+  },
   // ─────────────────────────────────────────────────────────────
   // CATEGORY II + V NATURALS — Diffuse-Porous (11 entries)
   // ─────────────────────────────────────────────────────────────
@@ -888,6 +977,66 @@ export const SPECIES_EVIDENCE: WoodSpeciesEvidenceEntry[] = [
       },
     ],
     diagnostic_caution_text: "Mahogany is strongest as a diagnostic clue in elite coastal cabinetmaking, Empire veneer work, and later revival furniture; it should not be treated as a simple date marker by itself. Cuban Mahogany had a dominant use period from 1720's-1810's. Production later shifted to Honduran Mahogany whose dominant production period existed from the 1700's-c.1900. CITES content for both Swietenia mahagoni (Cuban) and Swietenia macrophylla (Honduran) populates this entry's anti_classification_guidance field. Subspecies-level evidence entries deferred from Block 23a D-WE23a-10 resolved via fold-up per Block 23b Q2 ratification: subspecies-distinguishing source content insufficient in File A and File B to warrant standalone subspecies entries; subspecies-level content lives on this parent group entry.",
+  },
+  {
+    // Block 22 authoring (item 4 part B per Mike's two-part split): subspecies-
+    // specific evidence entry carrying Honduran/Big-Leaf mahogany period
+    // breakdown and post-2003 CITES anti_classification_guidance. The
+    // visual identification content (description, traits) lives on the
+    // wood_subspecies_honduran_mahogany entry inside wood_species_mahogany_
+    // group.subspecies[]; this evidence-side entry adds the period and
+    // trade-restriction context the parent species entry's diagnostic_caution_
+    // text alludes to but doesn't structure. Supersedes Block 23a D-WE23a-10
+    // / Block 23b Q2 "subspecies-level content folds up" decision for this
+    // specific subspecies — Mike's adjudication selected separate evidence
+    // authoring per per-pair decision-making framework.
+    id: "wood_species_evidence_mahogany_subspecies_honduran",
+    category: "wood_species_evidence",
+    species_id: "wood_species_mahogany_group",
+    subspecies_id: "wood_subspecies_honduran_mahogany",
+    positive_authority: 6,
+    hard_negative_authority: 6,
+    period_associations: [
+      {
+        period_label: "Honduran / Big-Leaf mahogany American furniture peak",
+        date_floor: 1770,
+        date_ceiling: 1930,
+        usage_notes: "Common in American fine furniture c. 1770–1930; strongest dating association late 18th through 19th century fine furniture; revival and veneer use continues into early/mid 20th century.",
+      },
+      {
+        period_label: "Specialty, veneer, revival, regulated era",
+        date_floor: 1930,
+        usage_notes: "Reduced but continued specialty, veneer, revival, and regulated use after c. 1930. Open-ended modern period.",
+      },
+    ],
+    regional_associations: [
+      {
+        region: "mid_atlantic",
+        region_notes: "Philadelphia, New York, Baltimore coastal cabinetmaking centers — imported through Atlantic trade routes",
+        usage_intensity: "common",
+        notes: "Honduran/Big-Leaf mahogany entered the American luxury market via the same coastal urban cabinetmaking centers that previously used Cuban mahogany.",
+      },
+      {
+        region: "new_england",
+        region_notes: "Boston, Newport, Salem coastal cabinetmaking centers",
+        usage_intensity: "common",
+        notes: "Honduran mahogany continued the coastal-trade fine-furniture pattern established by Cuban mahogany in the same New England cabinetmaking centers.",
+      },
+    ],
+    usage_role: ["primary_show_wood", "veneer"],
+    style_wave_associations: [
+      "style_family_chippendale",
+      "style_family_federal",
+      "style_family_american_classical",
+      "style_family_colonial_revival",
+    ],
+    anti_classification_guidance: {
+      boundary_date: 2003,
+      boundary_type: "form_extinction",
+      guidance_text: "Post-2003 Swietenia macrophylla is CITES Appendix II regulated. Furniture or veneer plausibly produced after 2003 from Honduran / Big-Leaf mahogany requires CITES documentation; absent such documentation, post-2003 examples should be treated cautiously and the wood identification may indicate pre-2003 production or undocumented modern stock.",
+      prominence: "prominent",
+    },
+    diagnostic_caution_text: "Honduran (Big-Leaf) mahogany is the dominant American-furniture mahogany from c. 1770 onward and remained common through the early 20th century. Reduced but continued specialty, veneer, revival, and regulated use after c. 1930. Post-2003 CITES Appendix II regulation conditions the plausibility of modern Honduran-mahogany furniture — undocumented post-2003 production requires caution. Use this evidence as period and trade-restriction context that complements the visual identification on wood_subspecies_honduran_mahogany.",
   },
   {
     id: "wood_species_evidence_birch_group",
@@ -2021,39 +2170,16 @@ export const CUT_GRAIN_EVIDENCE: CutGrainEvidenceEntry[] = [
         usage_notes: "Thicker veneer, especially veneer near or above roughly 1/16 inch, can support an earlier hand-sawn, shop-cut, or pre-modern veneer interpretation when it appears original to the piece. This is strongest when the veneer shows age-consistent oxidation, older adhesive behavior, hand-planed or scraped surface preparation, and traditional substrate construction. Thick veneer from this period often reflects the labor-intensive process of sawing decorative wood into usable sheets before modern thin slicing and rotary cutting became common." },
       { period_label: "Transitional sawn and sliced veneer era", date_floor: 1840, date_ceiling: 1910,
         usage_notes: "During the 19th and early 20th centuries, veneer thickness and cutting methods vary widely. Sawn, sliced, and machine-assisted veneer can appear on better-grade furniture, factory furniture, architectural work, and repair work. Thick veneer in this period remains useful evidence, but it should be interpreted with substrate, glue, construction, saw marks, finish, and style rather than as a standalone date marker." },
-      { period_label: "Thin rotary-cut and modern veneer era", date_floor: 1900, date_ceiling: 2030,
+      { period_label: "Thin rotary-cut and modern veneer era", date_floor: 1900,
         usage_notes: "By the 20th century, very thin rotary-cut, sliced, and commercially standardized veneer becomes common, especially on plywood, furniture panels, doors, cabinets, and mass-produced case goods. Thick veneer can still appear in restoration, premium work, shop-made furniture, and specialty applications, so modern date conclusions should rely on the full construction context." },
     ],
-    regional_associations: [
-      { region: "mid_atlantic", usage_intensity: "common",
-        traits: [
-          "Decorative veneer used on finer case goods, desks, tables, clock cases, cabinets, and architectural furniture.",
-          "Higher-quality examples may show carefully selected figure, bookmatching, crossbanding, inlay, or matched panels.",
-          "Thicker veneer may appear with traditional substrates, hand-fitted joinery, and older finish systems.",
-        ],
-        notes: "American urban cabinetmaking centers (Philadelphia, New York, Boston, and other major 18th- and 19th-century cabinetmaking centers spanning the mid-Atlantic and New England regions). Thick veneer in urban cabinetmaking contexts may support a higher-quality or earlier construction reading, especially when paired with hand-cut joinery, early fasteners, and original finish evidence." },
-      { region: "new_england", usage_intensity: "common",
-        traits: [
-          "Decorative veneer used on finer case goods, desks, tables, clock cases, cabinets, and architectural furniture.",
-          "Higher-quality examples may show carefully selected figure, bookmatching, crossbanding, inlay, or matched panels.",
-          "Thicker veneer may appear with traditional substrates, hand-fitted joinery, and older finish systems.",
-        ],
-        notes: "American urban cabinetmaking centers continued — Boston-anchored New England cabinetmaking tradition shares the urban-center patterns described in the mid_atlantic regional association above. The two regional associations together capture the multi-region 'American urban cabinetmaking centers' framing Mike's content describes." },
-      { region: "midwest", usage_intensity: "common",
-        traits: [
-          "Standardized veneer use on case fronts, tops, drawer fronts, panels, and show surfaces.",
-          "More consistent veneer thickness and repeated production methods.",
-          "Increasing use of thinner veneer, plywood, and factory-prepared panels over time.",
-        ],
-        notes: "American factory furniture regions (Grand Rapids, Chicago, Cincinnati, High Point, Jamestown, and other major industrial furniture manufacturing centers; the midwest enum anchors the dominant industrial furniture region per Phase 2 canonical convention). Factory veneer should be interpreted by substrate and production method. Thick veneer may indicate better-grade production or earlier factory work, while thin rotary-cut veneer over plywood or sheet goods usually supports a 20th-century or later reading." },
-      { region: "appalachian", usage_intensity: "occasional",
-        traits: [
-          "Veneer thickness may vary from piece to piece.",
-          "Repairs may use whatever veneer material was available.",
-          "Older furniture may receive newer veneer patches or complete reveneering.",
-        ],
-        notes: "Rural, local shop, repair, and restoration contexts (the appalachian enum serves as the rural-persistence anchor per Phase 2 canonical convention; the framing also applies to other rural areas including parts of the southern, midwest, and west_coast regions for local-shop and restoration work). Do not treat thick veneer as automatically original. Rural repairs, later restoration, and reused material can create mixed evidence." },
-    ],
+    // Block 22a reconciliation (item 2-A per Mike's per-pair adjudication):
+    // regional_associations omitted entirely. Thick veneer is a production-
+    // context signal (urban-cabinetmaking / factory / rural-repair), NOT a
+    // true WoodRegion-enum signal — the closed enum captures geographic
+    // regions and the production-context framing maps poorly into it. The
+    // production-context framing lives in the identification-side regional_
+    // patterns instead (which use free-form region strings).
     usage_role: [
       "decorative_face",
       "premium_solid_substitute",

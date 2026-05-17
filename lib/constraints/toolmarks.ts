@@ -53,6 +53,15 @@ export interface ToolmarkTypeEntry extends CanonicalEntry {
   related_joinery_types?: string[];
   related_fastener_types?: string[];
   assessment_layer: "frame";
+
+  /**
+   * Block 22 schema extension (parallel to Blocks 17/19/20/21/22 pattern).
+   * Engine surfaces this field via getCanonicalCautionText when a toolmark
+   * clue fires. The shared CanonicalEntry.caution_text field is NOT
+   * engine-read; diagnostic warning text intended for user-facing
+   * surfacing must live here.
+   */
+  diagnostic_caution_text?: string;
 }
 
 export interface ToolmarkReasoningRule extends CanonicalEntry {
@@ -129,7 +138,7 @@ export const TOOLMARK_TYPES: ToolmarkTypeEntry[] = [
       { physical_location: "backboard", physical_location_notes: "backboard" },
       { physical_location: "case_interior_framing", physical_location_notes: "secondary structural board" },
     ],
-    caution_text: "Do not classify ordinary roughness, sanding scratches, wire-brush marks, straight sash-saw marks, band-saw marks, or circular arcs as pit-saw marks. Pit-saw evidence should be irregular and hand-controlled, and it should be evaluated only on boards likely to be original to the furniture.",
+    diagnostic_caution_text: "Do not classify ordinary roughness, sanding scratches, wire-brush marks, straight sash-saw marks, band-saw marks, or circular arcs as pit-saw marks. Pit-saw evidence should be irregular and hand-controlled, and it should be evaluated only on boards likely to be original to the furniture.",
     replacement_likelihood: "low",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_early",
@@ -182,7 +191,7 @@ export const TOOLMARK_TYPES: ToolmarkTypeEntry[] = [
       { physical_location: "case_interior_framing", physical_location_notes: "secondary structural board" },
       { physical_location: "case_interior_framing", physical_location_notes: "later replacement board" },
     ],
-    caution_text: "Circular saw arcs on a board claimed to be original to a pre-1830 piece should be treated as a hard conflict unless there is strong evidence that the board is a later replacement, repair, reused industrial board, or added component. Do not treat circular arcs alone as proof of the entire furniture date.",
+    diagnostic_caution_text: "Circular saw arcs on a board claimed to be original to a pre-1830 piece should be treated as a hard conflict unless there is strong evidence that the board is a later replacement, repair, reused industrial board, or added component. Do not treat circular arcs alone as proof of the entire furniture date.",
     replacement_likelihood: "medium",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_industrial",
@@ -237,7 +246,7 @@ export const TOOLMARK_TYPES: ToolmarkTypeEntry[] = [
       { physical_location: "case_carcass", physical_location_notes: "later replacement component" },
       { physical_location: "frame_rail", physical_location_notes: "factory-shaped frame component" },
     ],
-    caution_text: "Do not automatically classify all straight saw marks as band-saw lines. Straight marks may come from sash saws, frame saws, later sanding, or other processes. Band-saw classification should rely on machine-era context, blade rhythm, component type, and supporting evidence.",
+    diagnostic_caution_text: "Do not automatically classify all straight saw marks as band-saw lines. Straight marks may come from sash saws, frame saws, later sanding, or other processes. Band-saw classification should rely on machine-era context, blade rhythm, component type, and supporting evidence.",
     replacement_likelihood: "medium",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_industrial",
@@ -293,7 +302,7 @@ export const TOOLMARK_TYPES: ToolmarkTypeEntry[] = [
       { physical_location: "frame_stile", physical_location_notes: "stile" },
       { physical_location: "frame_rail", physical_location_notes: "stretcher member" },
     ],
-    caution_text: "Do not treat every uneven surface as hand plane chatter. Water damage, sanding scratches, wire-brushing, rotary tool marks, finish checking, shrinkage, and deliberate distressing can mimic hand-tool texture. Chatter must follow plausible plane movement and fit the construction context.",
+    diagnostic_caution_text: "Do not treat every uneven surface as hand plane chatter. Water damage, sanding scratches, wire-brushing, rotary tool marks, finish checking, shrinkage, and deliberate distressing can mimic hand-tool texture. Chatter must follow plausible plane movement and fit the construction context.",
     replacement_likelihood: "low",
     original_persistence: "high",
     hand_vs_machine_classification: "strongly_early",

@@ -170,6 +170,28 @@ export interface UpholsteryCoverTypeEntry extends CanonicalEntry {
   description: string;
   unique_traits: string[];
   identifying_characteristics: string[];
+  /**
+   * Block 17: visible degradation patterns specific to this cover type.
+   * Authored from the canonical source's "Identifying elements" wear-side
+   * content (e.g., velvet: "crushed wear on seats and arms, pile loss at
+   * edges, deep color shift when brushed"). Distinct from
+   * identifying_characteristics which is positive identification; this
+   * field is for diagnostic markers visible on USED / WORN examples.
+   * Consumed by Block 15 LLM prompt appendix when populated.
+   */
+  wear_characteristics?: string[];
+  /**
+   * Block 17: narrative cousin-contrast descriptions distinguishing this
+   * cover type from visually similar covers. Parallels forms.ts
+   * cousin_form_contrasts. The related_cover_types FK array captures the
+   * structural relationship; cousin_contrasts captures the prose
+   * disambiguation language from the canonical source (e.g., velvet:
+   * "Velvet has cut pile. Velour usually has a knit or softer modern
+   * hand. Plush has a longer pile. Mohair velvet is more resilient
+   * and lustrous."). Not yet engine-consumed; available for future
+   * cousin-contrast evaluator (parallel to P4-6 backlog item).
+   */
+  cousin_contrasts?: string[];
   period_associations: PeriodAssociation[];
   date_range_summary: string;
   style_associations?: StyleAssociation[];

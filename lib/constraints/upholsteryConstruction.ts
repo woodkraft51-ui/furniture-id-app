@@ -187,6 +187,25 @@ export interface UpholsteryConstructionTypeEntry extends CanonicalEntry {
   description: string;
   unique_traits: string[];
   identifying_characteristics: string[];
+  /**
+   * Block 17: visible degradation patterns specific to this construction
+   * type (e.g., hand-tied coils: "broken twine, lumpy seats, tilted coils,
+   * hard ridges"; webbing: "sagging, broken straps, separation from tack
+   * rail"). Distinct from identifying_characteristics which captures
+   * positive identification. Authored from the canonical source's
+   * "Identifying elements" wear-side content. Consumed by Block 15 LLM
+   * prompt appendix when populated.
+   */
+  wear_characteristics?: string[];
+  /**
+   * Block 17: narrative cousin-contrast descriptions distinguishing this
+   * construction type from visually similar constructions. Parallels
+   * forms.ts cousin_form_contrasts. The related_construction_types FK
+   * array captures the structural relationship; cousin_contrasts captures
+   * the prose disambiguation language from the canonical source. Not yet
+   * engine-consumed; available for future cousin-contrast evaluator.
+   */
+  cousin_contrasts?: string[];
   period_associations: PeriodAssociation[];
   date_range_summary: string;
   style_associations?: StyleAssociation[];
@@ -1563,10 +1582,10 @@ export const UPHOLSTERY_CONSTRUCTION_TYPES: UpholsteryConstructionTypeEntry[] = 
       "Hand placement",
     ],
     period_associations: [
-      { period_label: "Hand-tack attachment era", date_floor: 1600, date_ceiling: 1920 },
+      { period_label: "Hand-tack attachment era", date_floor: 1700, date_ceiling: 1920 },
       { period_label: "Continued traditional and restoration tack use", date_floor: 1920 },
     ],
-    date_range_summary: "1600s to early 20th century, with continued traditional use.",
+    date_range_summary: "c. 1700 to early 20th century, with continued traditional use.",
     maker_associations: [],
     common_observed_locations: ["upholstery_attachment_point"],
     replacement_likelihood: "medium",
@@ -1599,9 +1618,9 @@ export const UPHOLSTERY_CONSTRUCTION_TYPES: UpholsteryConstructionTypeEntry[] = 
       "Modern strips often have every fifth nail real and the rest imitation",
     ],
     period_associations: [
-      { period_label: "Decorative nailhead trim era", date_floor: 1600 },
+      { period_label: "Decorative nailhead trim era", date_floor: 1800 },
     ],
-    date_range_summary: "1600s to present.",
+    date_range_summary: "c. 1800 to present.",
     maker_associations: [],
     common_observed_locations: ["upholstery_attachment_point", "upholstery_arm"],
     replacement_likelihood: "medium",
@@ -1615,8 +1634,8 @@ export const UPHOLSTERY_CONSTRUCTION_TYPES: UpholsteryConstructionTypeEntry[] = 
     category: "upholstery_construction_type",
     positive_authority: 8,
     hard_negative_authority: 8,
-    indicator_text: "U-shaped metal staples with regular spacing and pneumatic patterns; strong sign of modern upholstery or repair on antique frames; AG floor 1900.",
-    notes: "Per American_Furniture_Textile_Reference.docx construction section > Fasteners and Upholstery Attachment Clues > Staples (paragraphs 704-708). 8/8 AG-anchor per A-6. replacement_likelihood high per A-7 (modern-repair indicator). maker_associations: [] per D-UCN39-6. AG floor 1900 per A-4 + D-HW36-15 (Mike-locked; canonical 'Mostly 20th century to present' — corrected from plan Q2=C draft 1940 to 1900 per construction-source canonical fidelity). Cross-library FK per Q5=I + A-8: related_fastener_types to fastener_type_upholstery_staple, related_joinery_types to joinery_type_stapled_drawer_joinery. **D-FA34-11 / D-HW36-16 cross-library AG floor DIVERGENCE — third concrete instance (D-UC40-5): construction Staples AG floor 1900 (per American_Furniture_Textile_Reference.docx 'Mostly 20th century') vs fasteners library fastener_type_upholstery_staple AG floor 1930 (per Fastener_Reference.docx 'c. 1930'). Each library encodes its own canonical-source floor; the divergence is per-source-document fidelity, not an error.**",
+    indicator_text: "U-shaped metal staples with regular spacing and pneumatic patterns; strong sign of modern upholstery or repair on antique frames; AG floor 1930.",
+    notes: "Per American_Furniture_Textile_Reference.docx construction section > Fasteners and Upholstery Attachment Clues > Staples (paragraphs 704-708). 8/8 AG-anchor per A-6. replacement_likelihood high per A-7 (modern-repair indicator). maker_associations: [] per D-UCN39-6. Cross-library FK per Q5=I + A-8: related_fastener_types to fastener_type_upholstery_staple, related_joinery_types to joinery_type_stapled_drawer_joinery. **Block 20a reconciliation (cross-library overlap resolution): AG floor migrated from 1900 to 1930 to align with fastener-library fastener_type_upholstery_staple per Fastener_Reference.docx FASTENER TYPE: UPHOLSTERY STAPLE 'c. 1930-present, very common after 1950'. Supersedes prior D-FA34-11 / D-HW36-16 cross-library AG floor divergence convention for this pair specifically — the divergence was per-source-document fidelity but Mike's per-pair adjudication (Block 20a) selected the fastener-docx type-level date as authoritative for both libraries.**",
     name: "Staples",
     parent_category_id: "upholstery_construction_category_fasteners_and_upholstery_attachment_clues",
     description: "U-shaped metal staples used to attach webbing, foundation textiles, and covers. A strong sign of modern upholstery or repair on antique frames; staples usually date the upholstery campaign to the 20th century or later, not the frame.",
@@ -1631,15 +1650,15 @@ export const UPHOLSTERY_CONSTRUCTION_TYPES: UpholsteryConstructionTypeEntry[] = 
       "Staples usually date the upholstery campaign to the 20th century or later, not the frame",
     ],
     period_associations: [
-      { period_label: "Upholstery staple era", date_floor: 1900 },
+      { period_label: "Upholstery staple era", date_floor: 1930 },
     ],
-    date_range_summary: "Mostly 20th century to present in upholstery.",
+    date_range_summary: "c. 1930 to present in upholstery, very common after 1950.",
     maker_associations: [],
     common_observed_locations: ["upholstery_attachment_point"],
     anti_classification_guidance: {
-      boundary_date: 1900,
+      boundary_date: 1930,
       boundary_type: "form_emergence",
-      guidance_text: "Staples in upholstery are mostly 20th century to present; the decade-floor of 1900 is applied per D-HW36-15 (canonical 'Mostly 20th century to present'). Pre-1900 presence indicates misidentification or later reupholstery (reupholstery_campaign_warning per Rule #6) — staples on an antique frame are a strong sign of modern upholstery or repair, dating the upholstery campaign, not the frame. NOTE: this construction-library AG floor (1900) diverges from the fasteners-library fastener_type_upholstery_staple AG floor (1930) per D-FA34-11 / D-HW36-16 cross-library AG floor divergence convention — each library encodes its own canonical source document's introduction phrasing.",
+      guidance_text: "Upholstery staples are c. 1930 to present, very common after 1950. Pre-1930 presence indicates misidentification or later reupholstery (reupholstery_campaign_warning per Rule #6) — staples on an antique frame are a strong sign of modern upholstery or repair, dating the upholstery campaign, not the frame. Block 20a reconciliation: AG floor migrated from 1900 to 1930 per Mike's per-pair adjudication aligning with fastener-library fastener_type_upholstery_staple.",
       prominence: "prominent",
     },
     replacement_likelihood: "high",

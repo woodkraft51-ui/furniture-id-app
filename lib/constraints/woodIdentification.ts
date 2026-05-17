@@ -531,6 +531,18 @@ export interface CutGrainPhenomenonEntry extends CanonicalEntry {
    * Added in Block 21 D-CG21-12.
    */
   applicable_substrates?: { substrate_id: string; characteristic_expression?: string }[];
+
+  /**
+   * Block 22 schema extension (item 1d): prose appraiser-knowledge framing
+   * that the engine surfaces via getCanonicalCautionText when a phenomenon
+   * clue fires. Parallels diagnostic_caution_text on evidence-side
+   * interfaces (CutGrainEvidenceEntry, WoodSpeciesEvidenceEntry, etc.) and
+   * on Blocks 17/19/20/21 schema extensions for upholstery / joinery /
+   * fastener / hardware libraries. The shared CanonicalEntry.caution_text
+   * field is NOT engine-read; diagnostic warning text intended for user-
+   * facing surfacing must live here.
+   */
+  diagnostic_caution_text?: string;
 }
 
 export const WOOD_CATEGORIES: WoodCategoryEntry[] = [
@@ -847,6 +859,97 @@ export const NATURAL_WOOD_SPECIES: WoodSpeciesEntry[] = [
     ],
   },
   {
+    id: "wood_species_hickory",
+    category: "wood_species",
+    name: "hickory",
+    common_aliases: [
+      "shagbark hickory",
+      "shellbark hickory",
+      "pignut hickory",
+      "mockernut hickory",
+      "true hickory",
+      "hickory sapwood",
+      "hickory heartwood",
+      "pecan hickory",
+    ],
+    scientific_name: "Carya spp.",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    wood_category_id: "wood_category_ring_porous_hardwoods",
+    description: "Hickory is a very dense, hard, ring-porous North American hardwood with strong earlywood and latewood contrast, open grain, and exceptional shock resistance. It commonly shows pale cream to tan sapwood with darker brown heartwood, often with bold streaking when sapwood and heartwood are used together. In furniture, it is most strongly associated with chair parts, rustic furniture, bent or turned elements, ladderback and country seating, and durable utilitarian construction rather than refined veneer work. Its weight, toughness, coarse grain, and high contrast between pale and darker zones are often more diagnostic than color alone.",
+    unique_traits: [
+      "Very high density and shock resistance",
+      "Ring-porous grain structure",
+      "Strong earlywood and latewood contrast",
+      "Pale sapwood with darker brown heartwood",
+      "Coarse open grain",
+      "Frequent bold sapwood-heartwood streaking",
+      "Common in chair parts and rustic furniture",
+      "Rare as fine decorative veneer",
+    ],
+    identifying_elements: [
+      "Large earlywood pores visible in growth-ring bands",
+      "Coarse grain on flat-sawn faces",
+      "Heavy weight relative to many other domestic hardwoods",
+      "Pale cream, tan, and brown color variation within the same board",
+      "Strong, tough turnings or spindles in chair construction",
+      "Rustic bark-on or sapling elements in hickory furniture",
+      "Durable wear surfaces with pronounced open grain",
+      "Limited ray fleck compared with oak",
+    ],
+    typical_structural_role: "primary_show",
+    period_associations: [
+      {
+        period_label: "Colonial and early republic utilitarian use",
+        date_floor: 1700,
+        date_ceiling: 1820,
+        usage_notes: "Hickory appears most plausibly in rural, vernacular, and utilitarian contexts where local hardwood strength mattered more than refined figure. It is especially relevant as supporting evidence in chair construction, tool-like structural parts, rungs, stretchers, and other elements requiring toughness.",
+      },
+      {
+        period_label: "Nineteenth-century rural and country chair-making",
+        date_floor: 1820,
+        date_ceiling: 1900,
+        usage_notes: "Hickory is strongly associated with American country, Appalachian, Southern, and Midwestern chair-making traditions, especially where durable rungs, posts, stretchers, spindles, and bent or split components were valued. It should be treated as a strong supporting clue for vernacular seating when the form, construction, and regional context agree.",
+      },
+      {
+        period_label: "Rustic hickory and resort furniture production",
+        date_floor: 1890,
+        date_ceiling: 1935,
+        usage_notes: "Hickory became especially visible in rustic furniture, lodge furniture, porch furniture, camp furniture, and resort-related production, including bark-on sapling forms and bent rustic frames. In this period, hickory may be a primary visual identity rather than merely a hidden structural choice.",
+      },
+      {
+        period_label: "Modern specialty and reproduction use",
+        date_floor: 1935,
+        usage_notes: "Hickory continues in specialty furniture, rustic revival pieces, Windsor-inspired chairs, country reproductions, cabinetry, flooring, and durable domestic hardwood furniture. Open-ended modern use means hickory alone should not be used as a date anchor without supporting construction, hardware, finish, and form evidence.",
+      },
+    ],
+    regional_patterns: [
+      {
+        region: "Appalachian region",
+        notes: "Commonly associated with ladderback, country, split-bottom, and rustic seating traditions, especially where locally available hardwoods were used for strength and flexibility.",
+      },
+      {
+        region: "Southern hardwood belt",
+        notes: "Plausible in vernacular seating, utilitarian furniture, and rustic furniture where local hardwood supply and durable construction were priorities.",
+      },
+      {
+        region: "Midwest",
+        notes: "Relevant to country furniture, farm furniture, rustic furniture, and later commercial hickory furniture production where durable domestic hardwoods were available.",
+      },
+      {
+        region: "Pennsylvania and Ohio Valley",
+        notes: "Possible in vernacular chair-making and country furniture contexts, especially when paired with turned posts, rungs, rush or splint seating, and regional rural construction.",
+      },
+    ],
+    cousin_species_contrasts: [
+      "Distinct from ash: hickory is usually heavier, harder, and tougher, with stronger shock resistance; ash may show similar ring-porous structure but often reads lighter in weight and more elastic in chair and tool-related contexts.",
+      "Distinct from oak: hickory lacks the strong medullary ray fleck that often identifies quarter-sawn oak, and it usually presents more as tough, coarse-grained structural hardwood than as a ray-flecked decorative show wood.",
+      "Distinct from beech: hickory is ring-porous with stronger growth-ring contrast, while beech is diffuse-porous or very fine-textured by comparison and often shows small flecking rather than bold pore bands.",
+      "Distinct from locust: both may be hard and durable, but locust often carries more yellow-green to golden brown tones and outdoor durability associations, while hickory is more commonly tied to chair parts, rungs, rustic furniture, and pale sapwood-heartwood contrast.",
+      "Distinct from maple: hickory is coarser and ring-porous, while maple is tighter grained and diffuse-porous; maple usually lacks hickory's open pore bands and rugged sapwood-heartwood striping.",
+    ],
+  },
+  {
     id: "wood_species_walnut_group",
     category: "wood_species",
     wood_category_id: "wood_category_diffuse_porous_hardwoods",
@@ -1097,7 +1200,7 @@ export const NATURAL_WOOD_SPECIES: WoodSpeciesEntry[] = [
       {
         id: "wood_subspecies_honduran_mahogany",
         name: "honduran mahogany",
-        description: "Honduran mahogany subspecies of the Mahogany Group.",
+        description: "Honduran Mahogany (also called Big-Leaf Mahogany; Swietenia macrophylla) is the dominant mahogany subspecies in American furniture from c. 1760s onward. It became the primary American luxury mahogany after Cuban mahogany trade declined and remained common in fine American furniture through the early 20th century, with reduced but continued specialty, veneer, revival, and regulated use after c. 1930. Post-2003 examples require caution because legal trade is CITES-regulated; period and trade-restriction context lives on the evidence-side wood_species_evidence_mahogany_subspecies_honduran entry.",
         unique_traits: [
           "Warm red-brown tone",
           "Excellent carving response",
@@ -3300,7 +3403,7 @@ export const CUT_GRAIN_PHENOMENA: CutGrainPhenomenonEntry[] = [
     phenomenon_type: "veneer_slicing",
     positive_authority: 7,
     hard_negative_authority: 7,
-    description: "Veneer thickness is an independent diagnostic dimension that records how thick the applied veneer layer is, separate from the method used to cut it. Substantially thicker veneer, especially veneer roughly above 1/16 inch, can support older, hand-prepared, early sliced, or premium construction readings when it appears original to the piece. Decomposed from veneer-as-paired-diagnostic content per Block 0.5c D-PH3HCL-S3-N: thickness is the structurally distinct observation, while cut method is captured separately through hand_sawn_veneer, plain_sliced_veneer, rotary_cut_veneer, and related phenomena.\n\nThick veneer is most commonly applied over traditional secondary substrates including solid-wood secondary cores, softwood secondary cores, poplar, pine, and other natural-species substrates used in pre-1850 case furniture, drawer fronts, panels, and show surfaces. These traditional substrates are captured at the species level in NATURAL_WOOD_SPECIES (usage_role: \"primary_secondary\" or similar) rather than as engineered-substrate entries. When evaluating thick veneer originality, the substrate context matters: thick veneer over traditional solid-wood secondary cores supports earlier and higher-quality construction readings, while thick veneer over engineered substrates (plywood, composite veneer cores) is more likely to indicate later premium construction, repair, or specialty production.",
+    description: "Veneer thickness is an independent diagnostic dimension that records how thick the applied veneer layer is, separate from the method used to cut it. Substantially thicker veneer, especially veneer roughly above 1/16 inch, can support older, hand-prepared, early sliced, or premium construction readings when it appears original to the piece. Decomposed from veneer-as-paired-diagnostic content per Block 0.5c D-PH3HCL-S3-N: thickness is the structurally distinct observation, while cut method is captured separately through hand_sawn_veneer, plain_sliced_veneer, rotary_cut_veneer, and related phenomena.",
     unique_traits: [
       "Substantially thicker than modern paper-thin or rotary-cut veneer, often roughly above 1/16 inch when visible at an exposed edge or loss.",
       "Functions as a measurement or observation, not as a slicing method by itself.",
@@ -3324,7 +3427,6 @@ export const CUT_GRAIN_PHENOMENA: CutGrainPhenomenonEntry[] = [
       { species_id: "wood_species_ebony_group" },
       { species_id: "wood_species_rosewood_group" },
       { species_id: "wood_species_maple_group" },
-      { species_id: "wood_species_birdseye_maple" },
       { species_id: "wood_species_oak_group" },
     ],
     applicable_substrates: [
@@ -3336,18 +3438,18 @@ export const CUT_GRAIN_PHENOMENA: CutGrainPhenomenonEntry[] = [
         usage_notes: "Thick veneer in this period can support early or hand-prepared construction when it appears original. Before modern commercial thin veneer production, decorative veneer was often sawn or prepared by more labor-intensive methods, which could leave a heavier applied layer than later paper-thin veneer. This is strongest when paired with traditional substrate construction, early joinery, hand-tool marks, old glue behavior, and original surface wear." },
       { period_label: "Transitional thickness era", date_floor: 1850, date_ceiling: 1910,
         usage_notes: "Veneer thickness varies widely during the transition from hand-sawn and shop-prepared veneer toward increasingly mechanized slicing and factory veneer production. Thick veneer may still appear on better-grade furniture, shop-made work, architectural furniture, repair work, or early factory pieces. Interpret thickness with cut method, substrate, adhesive, finish, and construction evidence." },
-      { period_label: "Modern thin-veneer dominance with thick-veneer exceptions", date_floor: 1910, date_ceiling: 2030,
+      { period_label: "Modern thin-veneer dominance with thick-veneer exceptions", date_floor: 1910,
         usage_notes: "After commercial thin veneer and engineered sheet goods become more common, very thick veneer becomes less typical as ordinary mass-production evidence. Thick veneer may still appear in high-quality modern work, restoration, custom furniture, specialty panels, architectural millwork, and repair campaigns. In this period, thick veneer should not automatically imply early manufacture." },
     ],
     regional_patterns: [
       { region: "American urban cabinetmaking centers",
-        notes: "Thick decorative veneer commonly appears on higher-grade case furniture, desks, tables, cabinets, clocks, and architectural work; often associated with figured walnut, mahogany, rosewood, satinwood, maple, or other show woods used over a plainer substrate. Stronger as an early or premium signal when paired with hand-cut joinery, old finish, traditional substrate, and age-consistent veneer loss. Use as a quality and production-context clue rather than a region-only identifier." },
+        notes: "Thick decorative veneer is commonly used on finer case goods, desks, tables, clock cases, cabinets, and architectural furniture. Higher-quality examples may show carefully selected figure, bookmatching, crossbanding, inlay, or matched panels. Thicker veneer may appear with traditional substrates, hand-fitted joinery, and older finish systems. Thick veneer in urban cabinetmaking contexts may support a higher-quality or earlier construction reading, especially when paired with hand-cut joinery, early fasteners, and original finish evidence." },
       { region: "American factory furniture regions",
-        notes: "Variable veneer thickness during the late 19th and early 20th centuries; more standardized veneer and substrate combinations over time; thicker veneer may indicate better-grade production, transitional methods, or specialty use. In factory contexts, thickness should be weighed against machine-cut joinery, plywood or panel substrates, factory finish, and repeated production methods." },
-      { region: "Rural, repair, restoration, and local-shop contexts",
-        notes: "Thickness can vary based on material availability and repair practice; later repairs may use thicker veneer patches or reveneering material; mixed evidence is common when old furniture has been restored or altered. Do not assume thick veneer is original without confirming edge wear, oxidation, adhesive behavior, and consistency across the piece." },
+        notes: "Standardized veneer use on case fronts, tops, drawer fronts, panels, and show surfaces. More consistent veneer thickness and repeated production methods. Increasing use of thinner veneer, plywood, and factory-prepared panels over time. Factory veneer should be interpreted by substrate and production method. Thick veneer may indicate better-grade production or earlier factory work, while thin rotary-cut veneer over plywood or sheet goods usually supports a 20th-century or later reading." },
+      { region: "Rural, local shop, repair, and restoration contexts",
+        notes: "Veneer thickness may vary from piece to piece. Repairs may use whatever veneer material was available. Older furniture may receive newer veneer patches or complete reveneering. Do not treat thick veneer as automatically original. Rural repairs, later restoration, and reused material can create mixed evidence." },
     ],
-    caution_text: "Do not classify a surface as thick veneer simply because it looks like a separate layer. Confirm actual veneer thickness at a chip, loss, lifted corner, exposed edge, drawer-front edge, panel edge, or cross-section. Do not confuse thick veneer with solid wood, edge banding, plywood face plies, laminated construction, applied molding, repair patches, or a thick finish layer. Do not use thickness alone to identify the cut method. Thick veneer may suggest hand-sawn or early sliced production, but cut method must be identified separately through saw marks, knife marks, grain behavior, sheet width, figure pattern, and substrate context. Also avoid treating thick veneer as automatically antique, since thick veneer can appear in high-quality modern work, restoration, and custom furniture.",
+    diagnostic_caution_text: "Thick veneer is a useful but cautious dating signal. Look for veneer that is visibly thicker than modern paper-thin veneer, often around or above 1/16 inch, especially at chips, losses, lifted corners, worn edges, drawer fronts, case tops, panel edges, and exposed cross-sections. Thick veneer can support an earlier or higher-quality construction reading when it appears original, aged, hand-fitted, and bonded to an older solid-wood or traditional secondary substrate. It is especially helpful when paired with hand-cut joinery, early tool marks, old glue behavior, original finish, oxidation, and consistent wear. Do not classify a thick surface layer as early veneer without confirming that it is a separate applied face and not solid wood, edge banding, laminated plywood, a repair patch, or a later reveneering campaign. Also do not assume all thin veneer is modern or all thick veneer is antique. Thin veneer exists historically, and thick veneer can still appear in premium modern work, restoration, and custom furniture. The app should treat veneer thickness as a supporting clue and should date it through cut method, substrate, adhesive, edge evidence, grain continuity, finish history, and whether the veneer is original to the furniture.",
     cousin_phenomenon_contrasts: [
       "Distinct from hand_sawn_veneer: hand_sawn_veneer identifies the production method used to cut the veneer; veneer_thickness identifies the measured or observed thickness of the veneer layer.",
       "Distinct from plain_sliced_veneer: plain_sliced_veneer identifies a slicing method and grain presentation; veneer_thickness records whether the resulting veneer layer is thick, moderate, or thin.",
