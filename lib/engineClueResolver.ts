@@ -33,8 +33,27 @@ export type ClueMeta = {
   weight: number;
 };
 
-// Map canonical entry category prefix to engine AUTHORITY_RANK category key.
-function engineCategoryFor(canonicalCategory: string): string {
+// Map canonical entry category to engine AUTHORITY_RANK category key.
+//
+// Block 20: honor the entry's `assessment_layer` field when present, per the
+// D-FA33-5 dual-assessment architecture intent. Fasteners library uses this
+// to route upholstery-related fasteners (machine staples, hand tacks,
+// decorative brass tacks/nailheads) to the upholstery dating-overlap layer
+// despite their `fastener_*` canonical ID prefix. Without this override
+// the engine routed staples to the fasteners layer in defiance of the
+// authored intent — a silent routing bug surfaced by Block 20a audit.
+//
+// Recognized assessment_layer values:
+//   - "upholstery" → routes to "upholstery" layer (override)
+//   - "style_and_waves" → routes to "style_wave" layer (override)
+//   - "frame" or undefined → falls back to canonical-ID-prefix routing
+//     (default behavior for the majority of entries)
+function engineCategoryFor(entry: any): string {
+  const al = entry?.assessment_layer;
+  if (al === "upholstery") return "upholstery";
+  if (al === "style_and_waves") return "style_wave";
+
+  const canonicalCategory = String(entry?.category ?? "other");
   if (canonicalCategory.startsWith("joinery_")) return "joinery";
   if (canonicalCategory.startsWith("fastener_")) return "fasteners";
   if (canonicalCategory.startsWith("toolmark_")) return "toolmarks";
@@ -154,7 +173,7 @@ function metaFromCanonical(entry: any): ClueMeta {
   const hardNegative = entry?.hard_negative === true || undefined;
 
   return {
-    category: engineCategoryFor(entry?.category ?? "other"),
+    category: engineCategoryFor(entry),
     weight,
     hardNegative,
     dateHint: dateHintFor(entry),
