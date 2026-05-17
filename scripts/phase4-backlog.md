@@ -31,6 +31,37 @@ request 413s, and the report never renders.
 
 ---
 
+## P4-11 — Token cost impact on subscription pricing
+
+**Surfaced during**: Block 11 scoping conversation (2026-05-16) — Mike
+authorized raising LLM max_tokens from 8000 → 16000 (Full Analysis)
+and 4000 → 8000 (Field Scan) to remove output-truncation risk on
+information-rich scans (per Block 6 + 9 + 10 prompt expansion).
+
+**Problem**: Anthropic API output tokens are metered. Raising the
+ceiling per scan increases the WORST-CASE cost per Full Analysis
+(2× theoretical max output cost). Typical actual output is much
+lower than the ceiling — so real cost impact is small in practice
+— but the per-scan cost envelope needs to factor into subscription
+pricing tier calculations.
+
+**Action needed at subscription-pricing stage**:
+- Measure actual mean + p95 output tokens per Full Analysis on
+  production traffic (after the raise lands)
+- Compute mean + p95 marginal cost per scan at Anthropic's current
+  rate card
+- Factor into subscription tier pricing (e.g., scans/month caps,
+  Field Scan vs Full Analysis pricing differential, premium-tier
+  unlimited)
+- Build a usage telemetry surface so cost trends are visible
+  pre-revenue, not just at end-of-month invoice
+
+**Priority**: NOT urgent for development. URGENT before subscription
+pricing is set or marketed. Capture for Phase 6 (Marketing and
+Launch Readiness per synthesis 13.3).
+
+---
+
 ## P4-2 — Evidence-vocabulary expansion in LLM observation parsing
 
 **Surfaced during**: Block 3b rendering verification — dating-overlap viz
