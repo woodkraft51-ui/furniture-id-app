@@ -1264,18 +1264,66 @@ const p7 = stageOutputs.p7 || null;
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
             <SectionCard title="Analysis Summary"><div style={{ fontSize: 15, lineHeight: 1.7, color: "#3e2f1f", whiteSpace: "pre-wrap" }}>{p6?.summary || report.final_report || "No final report text returned."}</div></SectionCard>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-              <SectionCard title="Primary Identification">
+              <SectionCard title="Primary Identification (Frame)">
                 <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
                 <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p3?.confidence) }}>{p3?.confidence || "Inconclusive"}</strong></div>
                 {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && <><div style={subheadStyle}>Alternate possibilities</div><ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
-              <SectionCard title="Dating Analysis">
+              <SectionCard title="Dating Analysis (Frame)">
                 <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
                 <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
                 {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
             </div>
+            {/* Block 14: Upholstery treated as a separate identification + dating track.
+                Frame ID + dating above are driven only by frame evidence (form,
+                joinery, wood, hardware, finish, toolmark, style). This card
+                surfaces the upholstery track when upholstery evidence is present. */}
+            {p2?.upholstery_layer && (
+              <SectionCard title="Upholstery (separate from frame)">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+                  <div>
+                    <div style={metaRowStyle}>
+                      <span>Upholstery identification</span>
+                      <strong>{p2.upholstery_layer.identification || "Upholstery present"}</strong>
+                    </div>
+                    {p2.upholstery_layer.original_likely === true && (
+                      <div style={{ marginTop: 8, fontSize: 13, color: "#2f6b3a", fontWeight: 600 }}>
+                        Likely original to frame
+                      </div>
+                    )}
+                    {p2.upholstery_layer.original_likely === false && (
+                      <div style={{ marginTop: 8, fontSize: 13, color: "#8a5a2a", fontWeight: 600 }}>
+                        Likely a later reupholstery
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div style={metaRowStyle}>
+                      <span>Upholstery date</span>
+                      <strong>{p2.upholstery_layer.range}</strong>
+                    </div>
+                    <div style={metaRowStyle}>
+                      <span>Upholstery confidence</span>
+                      <strong style={{ color: bandColor(p2.upholstery_layer.confidence) }}>
+                        {p2.upholstery_layer.confidence}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+                {p2.upholstery_layer.note && (
+                  <div style={{ marginTop: 12, fontSize: 13, color: "#5c4a37", lineHeight: 1.5 }}>
+                    {p2.upholstery_layer.note}
+                  </div>
+                )}
+                {p2.upholstery_layer.cross_reference_note && (
+                  <div style={{ marginTop: 8, fontSize: 13, color: "#5c4a37", lineHeight: 1.5, fontStyle: "italic" }}>
+                    {p2.upholstery_layer.cross_reference_note}
+                  </div>
+                )}
+              </SectionCard>
+            )}
             {p6?.dating_overlap && (
               <SectionCard title="Dating Overlap by Evidence Layer">
                 <DatingOverlapViz data={p6.dating_overlap} />
