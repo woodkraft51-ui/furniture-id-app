@@ -14,6 +14,20 @@ import {
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleWaveAttribution } from "./engineStyleEvaluator";
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
+import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
+
+// Block 8 helper: estimate width of a date-hint string for tighter-wins
+// selection. Returns Infinity when unparseable (so inline KEPT_IN_ENGINE
+// always loses if it's the only source and unparseable).
+function dateHintWidth(hint: string | null | undefined): number {
+  if (!hint) return Infinity;
+  const r = _parseRangeForCompare(hint);
+  if (r.date_floor === null && r.date_ceiling === null) return Infinity;
+  // Open-ended ranges get penalized but stay finite-comparable.
+  if (r.date_floor === null) return 200;
+  if (r.date_ceiling === null) return 200;
+  return r.date_ceiling - r.date_floor;
+}
 
 // Block 1 step 5: prefer canonical-derived meta over inline CLUE_LIBRARY when
 // the clue has been migrated (per CLUE_TO_CANONICAL in engineCanonicalMap).
@@ -25,19 +39,29 @@ import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData
 // (authority 7) that are categorical date disqualifiers per audit log
 // (D-PH3HCL-S4-3 Q4). Engine's CLUE_LIBRARY correctly flagged them; that
 // flag must survive the canonical preference.
+//
+// Block 8 fix: when BOTH canonical and inline have parseable dateHints,
+// prefer the TIGHTER one. Block 8 added period_associations fallback to
+// the canonical dateHint resolver, which sometimes produces a broader
+// union range than the engine's specifically-tuned inline dateHint
+// (e.g., fastener_subcategory_cut_nails period_associations span
+// 1600-1900 across multiple period entries, while inline CLUE_LIBRARY
+// has the tighter 1790-1890 cut_nail dating).
 function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
   if (!clueKey) return undefined;
   const fromCanonical = getClueMetaFromCanonical(clueKey);
   const fromInline = CLUE_LIBRARY[clueKey];
   if (fromCanonical) {
-    // Canonical wins for fields it populates. Inline fields fill gaps where
-    // canonical lacks them (hardNegative on Q4-locked HARD-NEGATIVE entries
-    // that don't carry explicit hard_negative flag; dateHint on canonical
-    // entries whose dates live in notes prose rather than date_floor/ceiling).
+    // Tighter dateHint wins between canonical and inline. Falls back to OR-merge
+    // when only one source has it.
+    const canonW = dateHintWidth(fromCanonical.dateHint);
+    const inlineW = dateHintWidth(fromInline?.dateHint);
+    const chosenDateHint =
+      canonW <= inlineW ? fromCanonical.dateHint : fromInline?.dateHint;
     return {
       ...fromCanonical,
       hardNegative: fromCanonical.hardNegative || fromInline?.hardNegative,
-      dateHint: fromCanonical.dateHint || fromInline?.dateHint,
+      dateHint: chosenDateHint,
     };
   }
   return fromInline;
