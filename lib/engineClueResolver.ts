@@ -275,6 +275,20 @@ export function buildUpholsteryCanonicalAppendix(): string {
     for (const c of ic) {
       lines.push(`- ${c}`);
     }
+    // Block 17: surface wear_characteristics when populated. Distinct from
+    // identifying_characteristics — these are diagnostic markers visible on
+    // USED examples (crushed pile, broken twine, sagging webbing) and help
+    // the LLM verify a feature on a piece that's been in use vs a pristine
+    // catalog photo.
+    const wc: string[] = Array.isArray((entry as any).wear_characteristics)
+      ? (entry as any).wear_characteristics
+      : [];
+    if (wc.length > 0) {
+      lines.push(`- Wear / condition diagnostic markers:`);
+      for (const w of wc) {
+        lines.push(`  • ${w}`);
+      }
+    }
     // Replacement-likelihood hint helps the LLM frame originality in its
     // descriptive prose ("velvet cover — commonly replaced", "hand-tied coils
     // — durable, often original").

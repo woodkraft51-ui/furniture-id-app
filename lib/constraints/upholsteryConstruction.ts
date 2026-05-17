@@ -187,6 +187,25 @@ export interface UpholsteryConstructionTypeEntry extends CanonicalEntry {
   description: string;
   unique_traits: string[];
   identifying_characteristics: string[];
+  /**
+   * Block 17: visible degradation patterns specific to this construction
+   * type (e.g., hand-tied coils: "broken twine, lumpy seats, tilted coils,
+   * hard ridges"; webbing: "sagging, broken straps, separation from tack
+   * rail"). Distinct from identifying_characteristics which captures
+   * positive identification. Authored from the canonical source's
+   * "Identifying elements" wear-side content. Consumed by Block 15 LLM
+   * prompt appendix when populated.
+   */
+  wear_characteristics?: string[];
+  /**
+   * Block 17: narrative cousin-contrast descriptions distinguishing this
+   * construction type from visually similar constructions. Parallels
+   * forms.ts cousin_form_contrasts. The related_construction_types FK
+   * array captures the structural relationship; cousin_contrasts captures
+   * the prose disambiguation language from the canonical source. Not yet
+   * engine-consumed; available for future cousin-contrast evaluator.
+   */
+  cousin_contrasts?: string[];
   period_associations: PeriodAssociation[];
   date_range_summary: string;
   style_associations?: StyleAssociation[];
