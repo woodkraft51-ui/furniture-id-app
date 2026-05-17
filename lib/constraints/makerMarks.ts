@@ -133,6 +133,18 @@ export interface MakerMarkEntry extends CanonicalEntry {
   anti_classification_guidance?:
     | AntiClassificationGuidance
     | AntiClassificationGuidance[];
+
+  /**
+   * Block 23 schema extension (parallel to Blocks 17/19/20/21/22 pattern).
+   * Engine surfaces this field via getCanonicalCautionText when a maker
+   * clue fires. The shared CanonicalEntry.caution_text field is NOT
+   * engine-read; diagnostic warning text intended for user-facing
+   * surfacing must live here. Authored content target: the seed's
+   * Confidence Rule + False Positive Warning prose per-maker (highest-
+   * authority appraiser-voice content). Populated during the eventual
+   * Phase 3 engine integration when MAKER_ENTRIES is wired in.
+   */
+  diagnostic_caution_text?: string;
 }
 
 /**
