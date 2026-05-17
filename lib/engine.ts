@@ -1,11 +1,18 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix } from "./engineClueResolver";
 
 // Block 15: build canonical upholstery prompt appendix ONCE at module init.
 // Avoids per-request canonical-index traversal in P0.
 const UPHOLSTERY_CANONICAL_APPENDIX = buildUpholsteryCanonicalAppendix();
+
+// Block 19: same pattern for joinery. Iterates the full JOINERY_CATEGORIES +
+// JOINERY_TYPES arrays (45 type + 16 category entries) so the LLM sees every
+// authored canonical joinery entry — not just the 4 with CLUE_TO_CANONICAL
+// mappings. Entries with mappings carry their engine key alongside; entries
+// without are still surfaced so the LLM can describe the feature.
+const JOINERY_CANONICAL_APPENDIX = buildJoineryCanonicalAppendix();
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
@@ -4283,6 +4290,8 @@ Preferred upholstery-evidence keys (Block 12 — use whenever the piece has visi
 coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, marshall_pocket_coil, no_spring_seat, jute_webbing, elastic_webbing, horsehair_stuffing, cotton_batting, foam_padding, polyurethane_foam, feather_down_fill, button_tufting, nailhead_trim, hand_tacks, upholstery_staple_construction, velvet_cover, damask_cover, haircloth_cover, leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover, jacquard_cover.
 
 ${UPHOLSTERY_CANONICAL_APPENDIX}
+
+${JOINERY_CANONICAL_APPENDIX}
 `;
 
     const result = await this.callClaude(

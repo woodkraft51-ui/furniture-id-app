@@ -303,6 +303,104 @@ export function buildUpholsteryCanonicalAppendix(): string {
 }
 
 /**
+ * Block 19: build per-entry identifying-characteristics appendix for the P0
+ * LLM system prompt, sourced from the JOINERY canonical library. Iterates
+ * JOINERY_TYPES + JOINERY_CATEGORIES directly (NOT CLUE_TO_CANONICAL), so
+ * every authored canonical joinery entry surfaces to the LLM at perception
+ * time — including the ~41 entries that lack an engine clue key today.
+ * For entries that DO have a CLUE_TO_CANONICAL mapping, the engine key is
+ * annotated alongside so the LLM can tag the observation structurally.
+ *
+ * Different shape from buildUpholsteryCanonicalAppendix because upholstery
+ * has dense engine-key coverage (26 of 47 construction + 60 covers) while
+ * joinery has sparse coverage (4 of 45 types). Iterating the canonical
+ * library directly extracts value from the richer authoring even before
+ * structured engine keys exist.
+ *
+ * Called once at engine module init; result interpolated into the system
+ * prompt template literal.
+ */
+export function buildJoineryCanonicalAppendix(): string {
+  // Build reverse map: canonical_id → engine_key (for the few joinery
+  // canonical ids that have a mapping).
+  const canonicalToEngine = new Map<string, string>();
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (canonicalId.startsWith("joinery_")) {
+      canonicalToEngine.set(canonicalId, engineKey);
+    }
+  }
+
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY JOINERY IDENTIFYING DETAILS (Block 19 — canonical library guidance):");
+  lines.push("Use these per-entry identifying characteristics from the canonical joinery library");
+  lines.push("to describe what you observe in joinery surfaces. When an entry below has an");
+  lines.push("engine key listed, set that key in your observation. When an entry has no engine");
+  lines.push("key listed, still describe the feature in your observation text using the entry's");
+  lines.push("vocabulary — engine-side text fallbacks will route the description when present.");
+  lines.push("");
+
+  // Categories first (high-level structural buckets — descriptive context
+  // only, no engine keys typically; uses category_description + unique_
+  // category_traits + identifying_elements + common_in field names per
+  // JoineryCategoryEntry interface). Then types (specific construction
+  // methods — full identifying_characteristics + wear_characteristics +
+  // replacement_likelihood + date_range_summary).
+  lines.push("### Joinery categories (top-level structural buckets)");
+  lines.push("");
+  for (const entry of JOINERY_CATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    if (typeof e.category_description === "string" && e.category_description.length > 0) {
+      lines.push(`- ${e.category_description}`);
+    }
+    const uct: string[] = Array.isArray(e.unique_category_traits) ? e.unique_category_traits : [];
+    for (const t of uct) lines.push(`- ${t}`);
+    const ie: string[] = Array.isArray(e.identifying_elements) ? e.identifying_elements : [];
+    for (const c of ie) lines.push(`- ${c}`);
+    const ci: string[] = Array.isArray(e.common_in) ? e.common_in : [];
+    if (ci.length > 0) lines.push(`- Common in: ${ci.join(", ")}`);
+    lines.push("");
+  }
+
+  lines.push("### Joinery types (specific construction methods)");
+  lines.push("");
+  for (const entry of JOINERY_TYPES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : " (no engine key — describe in observation text)";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+
+    const ic: string[] = Array.isArray(e.identifying_characteristics) ? e.identifying_characteristics : [];
+    for (const c of ic) lines.push(`- ${c}`);
+
+    const wc: string[] = Array.isArray(e.wear_characteristics) ? e.wear_characteristics : [];
+    if (wc.length > 0) {
+      lines.push(`- Wear / condition diagnostic markers:`);
+      for (const w of wc) lines.push(`  • ${w}`);
+    }
+
+    const rl = e.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl} (${rl === "high" ? "commonly replaced during restoration" : rl === "low" ? "durable, original joinery typically survives" : "moderate persistence"}).`);
+    }
+
+    const drs = e.date_range_summary;
+    if (typeof drs === "string" && drs.length > 0) {
+      lines.push(`- Date range: ${drs}`);
+    }
+
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Block 1 step 7: parse engine free-text date range strings into numeric
  * { date_floor, date_ceiling } per D-PH3-13 #4. Handles common engine formats:
  *   "c. 1830-1870" / "c. 1830–1870" / "1700–1860" → { 1830, 1870 }

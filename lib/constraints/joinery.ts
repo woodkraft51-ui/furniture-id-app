@@ -154,6 +154,27 @@ export interface JoineryTypeEntry extends CanonicalEntry {
    * CanonicalEntry.caution_text field is NOT engine-read; diagnostic
    * warning text intended for user-facing surfacing must live here. */
   diagnostic_caution_text?: string;
+
+  /** Block 19: visible degradation patterns specific to this joinery
+   * type (e.g., dovetails: tail-pin separation, loose pegs, gap on
+   * the back face; M&T: tenon shoulder pulled away, peg sheared,
+   * glue line failure). Distinct from identifying_characteristics
+   * which captures positive identification. Authored from the
+   * canonical source's wear-side content. Surfaced in the
+   * buildJoineryCanonicalAppendix LLM prompt section. Parallel to
+   * Block 17's upholstery schema extension. */
+  wear_characteristics?: string[];
+
+  /** Block 19: narrative cousin-contrast descriptions distinguishing
+   * this joinery type from visually similar joinery (e.g., dado vs
+   * rabbet vs groove; through-tenon vs blind-tenon; hand-cut vs
+   * machine-cut dovetail). Parallels forms.ts cousin_form_contrasts.
+   * The related_joinery_types FK array captures the structural
+   * relationship; cousin_contrasts captures the prose disambiguation
+   * language from the canonical source. Not yet engine-consumed;
+   * available for a future cousin-contrast evaluator (parallel to
+   * P4-6 backlog item for forms). */
+  cousin_contrasts?: string[];
 }
 
 /**
