@@ -72,7 +72,12 @@ export function evaluateSubtype(
       }
     }
     const confidence = matched.length / attrs.length;
-    if (confidence >= SUBTYPE_CONFIDENCE_FLOOR && (!best || confidence > best.confidence)) {
+    // Require at least one actual attribute match. Without this, a subtype
+    // whose attrs all fail token-matching would still surface (e.g. the
+    // telephone_cabinet subtype was assigned confidence 1.0 with
+    // matched_attributes: [] when the form scoring fired on unrelated
+    // composite-pattern evidence).
+    if (matched.length > 0 && confidence >= SUBTYPE_CONFIDENCE_FLOOR && (!best || confidence > best.confidence)) {
       best = {
         subtype_id: st.id,
         subtype_name: st.name,

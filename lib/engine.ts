@@ -1788,6 +1788,26 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
+  // LLM-emitted `*_revival_cues` clues synthesize a colonial_revival_pattern
+  // so the structural-pattern penalty pulls attribution away from original-
+  // period families (Louis XVI 1770–1830, Federal, etc.) toward the post-
+  // 1876 Colonial Revival umbrella.
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("neoclassical_revival_cues") || hasClue("colonial_revival_cues"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "colonial_revival_pattern",
+      description:
+        "Revival-marker cues (neoclassical/colonial *_revival_*) indicate Colonial Revival umbrella, not original-period attribution.",
+      confidence: 80,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
   // =========================
   // MATERIAL-AGNOSTIC (DO NOT BLOCK)
   // =========================
@@ -2369,11 +2389,30 @@ const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
     benchSupport.push("desk or secretary features");
   }
 
+  // Armchair / lounge / upholstered-seating evidence vetoes telephone-bench
+  // routing. Previously a piece with `armchair_form` + `barrel_tub_back` +
+  // `secondary_surface` (e.g., a tub chair with a side table feature
+  // perceived in-frame) was scored as a telephone bench because the
+  // composite-pattern threshold (65) fires on seating + secondary_surface
+  // alone — even though full upholstery, tufting, and barrel/tub forms are
+  // structurally incompatible with telephone-bench identity.
+  const armchairVeto = hasAny(
+    "armchair_form",
+    "barrel_tub_back",
+    "fully_upholstered",
+    "button_tufting",
+    "wingback_form",
+    "lounge_chair_form",
+    "club_chair_form",
+  );
+
   const hasTelephoneBenchEvidence =
-  clues.has("telephone_shelf") ||
-  (
-    hasAny("seating_surface", "seating_present") &&
-    hasAny("secondary_surface")
+  !armchairVeto && (
+    clues.has("telephone_shelf") ||
+    (
+      hasAny("seating_surface", "seating_present") &&
+      hasAny("secondary_surface")
+    )
   );
 
 if (benchScore >= 65 && hasTelephoneBenchEvidence) {

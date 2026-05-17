@@ -167,8 +167,14 @@ function aggregateRange(ranges: Array<{ floor: number | null; ceiling: number | 
   let floor: number | null = null;
   let ceiling: number | null = null;
   for (const r of ranges) {
-    if (r.floor != null) floor = floor === null ? r.floor : Math.min(floor, r.floor);
-    if (r.ceiling != null) ceiling = ceiling === null ? r.ceiling : Math.max(ceiling, r.ceiling);
+    // Defensively normalize any reversed input before folding into the running min/max.
+    const f = r.floor != null && r.ceiling != null ? Math.min(r.floor, r.ceiling) : r.floor;
+    const c = r.floor != null && r.ceiling != null ? Math.max(r.floor, r.ceiling) : r.ceiling;
+    if (f != null) floor = floor === null ? f : Math.min(floor, f);
+    if (c != null) ceiling = ceiling === null ? c : Math.max(ceiling, c);
+  }
+  if (floor != null && ceiling != null && floor > ceiling) {
+    [floor, ceiling] = [ceiling, floor];
   }
   return { floor, ceiling };
 }

@@ -163,6 +163,70 @@ const MCM_PLASTIC_CHAIR_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 6: Colonial Revival tub/lounge chair misdiagnosed as a telephone
+// bench + Louis XVI + MCM. Synthesized from a real diagnostic trace
+// (May 2026) that surfaced four engine bugs simultaneously:
+//   - Form: telephone_stand winning over armchair (composite-pattern
+//     threshold fired on seating + secondary_surface alone)
+//   - Form subtype: telephone_cabinet at confidence 1.0 with
+//     matched_attributes: [] (subtype scoring did not require ≥1 match)
+//   - Style: Louis XVI / French Neoclassical (1770–1830) winning over
+//     Colonial Revival because "revival" was stopword-filtered and the
+//     `neoclassical` token anchored to the original-period family
+//   - Style waves: MCM waves firing on a false CNC-derived date hint
+//     because the 2-of-N gate effectively required only one of
+//     {date overlap, design signal} (Layer 1 was pushed unconditionally)
+//   - Dating overlap: reversed envelopes (e.g., finish 1880–1830)
+//     flowing through parseRangeToNumeric without normalization
+// Expected post-fix behavior:
+//   - form attribution = form_armchair (telephone-bench vetoed by armchair_form)
+//   - colonial_revival_pattern synthesized; Louis XVI penalized
+//   - no MCM waves with empty matched signals
+//   - shellac_intact envelope normalized to 1830–1880, not 1880–1830
+const COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-colonial-revival-lounge-chair-misdiagnosed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "walnut",
+    user_category_guess: "chair",
+    condition_notes:
+      "tufted velvet upholstery; cane side panels; tapered front legs with block corners; decorative rosette applique blocks at arm terminals; possible incised maker mark near back rail; OCR picked up 'CNC' text on a faded paper label",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Walnut tub/barrel-back armchair with full upholstery, button-tufted velvet seat and back, cane-paneled sides, square tapered front legs with block-corner detail and decorative rosette applique. Possible incised maker mark partially legible. Faded paper label includes the letters 'CNC'.",
+    },
+    observations: [
+      obs("seating_surface", "Loose tufted seat cushion present within a framed wooden seat platform; clearly a seating form", 95),
+      obs("backrest_present", "Upholstered backrest present", 95),
+      obs("armchair_form", "Full upholstered arms continuing to flared arm terminals; classic armchair form", 92),
+      obs("barrel_tub_back", "Curved continuous barrel/tub back rail wraps from one arm around through back", 90),
+      obs("cane_panel_sides", "Both side panels feature woven cane in open hexagonal weave; machine-pressed sheet cane appearance", 85),
+      obs("pressed_sheet_cane", "Machine-pressed sheet cane with regular geometric repeat", 85),
+      obs("tapered_legs", "Square-section tapered front legs with incised panel carving near top", 88),
+      obs("block_corner_detail", "Block-corner detail at the junction of arm and leg", 82),
+      obs("decorative_rosette_applique", "Carved rosette applique blocks at arm terminals", 84),
+      obs("neoclassical_revival_cues", "Tapered legs + rosette applique + block corners read as neoclassical revival vocabulary", 80),
+      obs("possible_maker_mark_incised", "Possible incised maker mark partially legible near back rail", 60),
+      obs("velvet_cover", "Velvet upholstery cover on seat, back, and arms", 90),
+      obs("button_tufting", "Button-tufted back and seat cushion", 88),
+      obs("foam_padding", "Foam padding under velvet cover (modern foam compression)", 75),
+      obs("arm_upholstery", "Full upholstered arms", 92),
+      obs("wood_species_walnut_group", "Visible frame wood reads as walnut group", 80),
+      obs("shellac_intact", "Shellac finish appears intact on exposed wood", 70),
+      obs("wear_at_arm_terminals", "Wear and minor abrasion at arm terminals consistent with use", 70),
+      obs("fully_upholstered", "Frame is fully upholstered; seat, back, and arms covered", 92),
+      // The "secondary_surface" observation is what triggered telephone-bench
+      // misrouting pre-fix: a small side-attached writing/holding surface was
+      // perceived in-frame on the lounge chair photo.
+      obs("secondary_surface", "Small flat surface visible adjacent to one arm", 55),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
@@ -170,6 +234,7 @@ const FIXTURES: Record<string, Fixture> = {
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
   pre_1860_piece: PRE_1860_PIECE_FIXTURE,
   mcm_plastic_chair: MCM_PLASTIC_CHAIR_FIXTURE,
+  colonial_revival_lounge_chair: COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE,
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {

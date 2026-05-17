@@ -1000,7 +1000,11 @@ export function parseRangeToNumeric(range: string | null | undefined): {
   // Range form: "c. 1830-1870" / "c. 1830–1870" / "1700–1860"
   const rangeMatch = r.match(/(\d{4})\s*[-–]\s*(\d{4})/);
   if (rangeMatch) {
-    return { date_floor: parseInt(rangeMatch[1], 10), date_ceiling: parseInt(rangeMatch[2], 10) };
+    const y1 = parseInt(rangeMatch[1], 10);
+    const y2 = parseInt(rangeMatch[2], 10);
+    // Normalize reversed inputs (e.g. "1880-1830") so downstream aggregators
+    // and renderers always see floor ≤ ceiling.
+    return { date_floor: Math.min(y1, y2), date_ceiling: Math.max(y1, y2) };
   }
 
   // Open-ended: "post-YYYY"
