@@ -1,7 +1,7 @@
 import { API } from "./store";
 import { MAKER_MARKS } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
-import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix } from "./engineClueResolver";
+import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
 
 // Block 15: build canonical upholstery prompt appendix ONCE at module init.
 // Avoids per-request canonical-index traversal in P0.
@@ -29,6 +29,31 @@ const FASTENER_CANONICAL_APPENDIX = buildFastenerCanonicalAppendix();
 // coil_spring_hardware) annotated [→ upholstery layer] to signal the
 // assessment_layer routing override.
 const HARDWARE_CANONICAL_APPENDIX = buildHardwareCanonicalAppendix();
+
+// Block 22-23 (engine pull-through bundle): five additional canonical
+// libraries surfaced to the P0 LLM system prompt.
+//
+// FINISH (8 entries: 3 categories + 5 types) — surface-finish dating
+// evidence (shellac crazing, polyurethane, oil patina, refinishing).
+const FINISH_CANONICAL_APPENDIX = buildFinishCanonicalAppendix();
+// TOOLMARKS (8 entries: 3 categories + 5 types) — production-surface
+// evidence (pit saw, circular saw, band saw, hand plane chatter).
+const TOOLMARK_CANONICAL_APPENDIX = buildToolmarkCanonicalAppendix();
+// WOOD IDENTIFICATION (~74 entries: 5 categories + 36 species + 6
+// engineered substrates + 27 cut/grain phenomena). Identification side —
+// answers WHAT WOOD it is.
+const WOOD_IDENTIFICATION_CANONICAL_APPENDIX = buildWoodIdentificationCanonicalAppendix();
+// WOOD EVIDENCE (~80 entries: 28 species evidence + 6 substrate evidence
+// + 37 cut/grain evidence + 9 diagnostic signals). Evidence side — HOW
+// the wood evidence factors into dating.
+const WOOD_EVIDENCE_CANONICAL_APPENDIX = buildWoodEvidenceCanonicalAppendix();
+// MAKER MARKS (77 maker entries) — per-maker attribution rules + false-
+// positive warnings. Note: MAKER_ENTRIES not yet engine-wired (Block 23a
+// audit; engine still imports legacy MAKER_MARKS shim). Surfacing the
+// new schema's content to the LLM at perception time so the LLM applies
+// the right attribution discipline whether or not Phase 3 engine
+// integration has shipped.
+const MAKER_MARK_CANONICAL_APPENDIX = buildMakerMarkCanonicalAppendix();
 import {
   evaluateSubtype,
   evaluateAntiBackClassification,
@@ -4312,6 +4337,16 @@ ${JOINERY_CANONICAL_APPENDIX}
 ${FASTENER_CANONICAL_APPENDIX}
 
 ${HARDWARE_CANONICAL_APPENDIX}
+
+${FINISH_CANONICAL_APPENDIX}
+
+${TOOLMARK_CANONICAL_APPENDIX}
+
+${WOOD_IDENTIFICATION_CANONICAL_APPENDIX}
+
+${WOOD_EVIDENCE_CANONICAL_APPENDIX}
+
+${MAKER_MARK_CANONICAL_APPENDIX}
 `;
 
     const result = await this.callClaude(

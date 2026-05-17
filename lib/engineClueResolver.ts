@@ -20,9 +20,11 @@ import { FASTENER_TYPES, FASTENER_SUBCATEGORIES, FASTENER_CATEGORIES } from "./c
 import { TOOLMARK_TYPES, TOOLMARK_CATEGORIES } from "./constraints/toolmarks";
 import { FINISH_TYPES, FINISH_CATEGORIES } from "./constraints/finish";
 import { HARDWARE_TYPES, HARDWARE_CATEGORIES } from "./constraints/hardware";
-import { SUBSTRATE_EVIDENCE, SPECIES_EVIDENCE } from "./constraints/woodEvidence";
+import { SUBSTRATE_EVIDENCE, SPECIES_EVIDENCE, CUT_GRAIN_EVIDENCE, WOOD_DIAGNOSTIC_SIGNALS } from "./constraints/woodEvidence";
 import { UPHOLSTERY_CONSTRUCTION_CATEGORIES, UPHOLSTERY_CONSTRUCTION_TYPES } from "./constraints/upholsteryConstruction";
 import { UPHOLSTERY_COVER_CATEGORIES, UPHOLSTERY_COVER_TYPES } from "./constraints/upholsteryCovers";
+import { WOOD_CATEGORIES, NATURAL_WOOD_SPECIES, ENGINEERED_SUBSTRATES, CUT_GRAIN_PHENOMENA } from "./constraints/woodIdentification";
+import { MAKER_ENTRIES } from "./constraints/makerMarks";
 
 // Engine CLUE_LIBRARY entry shape (matches the inline declaration in engine.ts:68).
 export type ClueMeta = {
@@ -648,6 +650,323 @@ export function buildHardwareCanonicalAppendix(): string {
     lines.push("");
   }
 
+  return lines.join("\n");
+}
+
+/**
+ * Block 22 (engine pull-through): finish library canonical appendix.
+ * Iterates FINISH_CATEGORIES (3) + FINISH_TYPES (5) = 8 entries directly.
+ * Two-tier surfacing (no subcategory tier). Finish is engine-routed via
+ * canonical-id prefix "finish_" → "finish" layer in engineCategoryFor.
+ */
+export function buildFinishCanonicalAppendix(): string {
+  const canonicalToEngine = new Map<string, string>();
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (canonicalId.startsWith("finish_")) canonicalToEngine.set(canonicalId, engineKey);
+  }
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY FINISH IDENTIFYING DETAILS (Block 22 — canonical library guidance):");
+  lines.push("Use these per-entry identifying characteristics from the canonical finish library");
+  lines.push("to describe surface-finish evidence. When an entry has an engine key listed, set");
+  lines.push("that key in your observation. Engine routes finish_* canonical ids to the finish");
+  lines.push("dating-overlap layer.");
+  lines.push("");
+  lines.push("### Finish categories (natural / synthetic / alteration)");
+  lines.push("");
+  for (const entry of FINISH_CATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    if (typeof e.description === "string" && e.description.length > 0) lines.push(`- ${e.description}`);
+    if (typeof e.date_range_summary === "string") lines.push(`- Date range: ${e.date_range_summary}`);
+    if (typeof e.indicator_text === "string") lines.push(`- ${e.indicator_text}`);
+    lines.push("");
+  }
+  lines.push("### Finish types (specific finish identifications)");
+  lines.push("");
+  for (const entry of FINISH_TYPES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : " (no engine key — describe in observation text)";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    const ic: string[] = Array.isArray(e.identifying_characteristics) ? e.identifying_characteristics : [];
+    for (const c of ic) lines.push(`- ${c}`);
+    if (typeof e.finish_chemistry === "string") lines.push(`- Finish chemistry: ${e.finish_chemistry}`);
+    const rl = e.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl} (${rl === "high" ? "commonly replaced during restoration" : rl === "low" ? "durable, original finish typically survives" : "moderate persistence"}).`);
+    }
+    if (typeof e.date_range_summary === "string") lines.push(`- Date range: ${e.date_range_summary}`);
+    if (typeof e.diagnostic_caution_text === "string") lines.push(`- Caution: ${e.diagnostic_caution_text}`);
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+/**
+ * Block 22 (engine pull-through): toolmarks library canonical appendix.
+ * Iterates TOOLMARK_CATEGORIES + TOOLMARK_TYPES (~8 entries). Two-tier.
+ * Engine routes toolmark_* canonical ids to the toolmarks dating-overlap
+ * layer. hand_vs_machine_classification surfaced because it's the
+ * library's signature dating axis.
+ */
+export function buildToolmarkCanonicalAppendix(): string {
+  const canonicalToEngine = new Map<string, string>();
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (canonicalId.startsWith("toolmark_")) canonicalToEngine.set(canonicalId, engineKey);
+  }
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY TOOLMARK IDENTIFYING DETAILS (Block 22 — canonical library guidance):");
+  lines.push("Use these per-entry identifying characteristics from the canonical toolmarks");
+  lines.push("library to describe production-surface evidence. Toolmark types carry");
+  lines.push("hand_vs_machine_classification — a key dating axis distinguishing pre-industrial");
+  lines.push("hand work from industrial-era machine work.");
+  lines.push("");
+  lines.push("### Toolmark categories");
+  lines.push("");
+  for (const entry of TOOLMARK_CATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    if (typeof e.description === "string") lines.push(`- ${e.description}`);
+    if (typeof e.date_range_summary === "string") lines.push(`- Date range: ${e.date_range_summary}`);
+    lines.push("");
+  }
+  lines.push("### Toolmark types (specific production-surface evidence)");
+  lines.push("");
+  for (const entry of TOOLMARK_TYPES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : " (no engine key — describe in observation text)";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    const ic: string[] = Array.isArray(e.identifying_characteristics) ? e.identifying_characteristics : [];
+    for (const c of ic) lines.push(`- ${c}`);
+    if (typeof e.hand_vs_machine_classification === "string") {
+      lines.push(`- Production era: ${e.hand_vs_machine_classification.replace(/_/g, " ")}`);
+    }
+    const rl = e.replacement_likelihood;
+    if (rl === "high" || rl === "medium" || rl === "low") {
+      lines.push(`- Replacement likelihood: ${rl}.`);
+    }
+    if (typeof e.date_range_summary === "string") lines.push(`- Date range: ${e.date_range_summary}`);
+    if (typeof e.diagnostic_caution_text === "string") lines.push(`- Caution: ${e.diagnostic_caution_text}`);
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+/**
+ * Block 22 (engine pull-through): wood identification library canonical
+ * appendix. Iterates WOOD_CATEGORIES (5) + NATURAL_WOOD_SPECIES (~36 with
+ * nested subspecies) + ENGINEERED_SUBSTRATES (~6) + CUT_GRAIN_PHENOMENA
+ * (~27). Surface focus: species names + identifying_elements +
+ * typical_structural_role + period anchoring. The identification side is
+ * about WHAT WOOD it is; evidence-side patterns are in
+ * buildWoodEvidenceCanonicalAppendix.
+ */
+export function buildWoodIdentificationCanonicalAppendix(): string {
+  const canonicalToEngine = new Map<string, string>();
+  for (const [engineKey, canonicalId] of Object.entries(CLUE_TO_CANONICAL)) {
+    if (!canonicalId || canonicalId === NO_MATCH) continue;
+    if (canonicalId.startsWith("wood_species") || canonicalId.startsWith("wood_category") ||
+        canonicalId.startsWith("engineered_substrate") || canonicalId.startsWith("cut_grain_phenomenon")) {
+      canonicalToEngine.set(canonicalId, engineKey);
+    }
+  }
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY WOOD IDENTIFICATION DETAILS (Block 22 — canonical library guidance):");
+  lines.push("Use these per-entry identifying elements from the canonical wood identification");
+  lines.push("library to classify what wood you observe. Identification produces what evidence");
+  lines.push("consumes — name the species/substrate/figure phenomenon when visible, and the");
+  lines.push("engine will combine it with construction evidence to date the piece.");
+  lines.push("");
+  lines.push("### Wood categories (top-level classification)");
+  lines.push("");
+  for (const entry of WOOD_CATEGORIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    lines.push(`${String(name).toUpperCase()}:`);
+    if (typeof e.description === "string") lines.push(`- ${e.description.slice(0, 400)}`);
+    const sit: string[] = Array.isArray(e.shared_identifying_traits) ? e.shared_identifying_traits : [];
+    for (const c of sit.slice(0, 6)) lines.push(`- ${c}`);
+    lines.push("");
+  }
+  lines.push("### Wood species (~36 entries; subspecies nested under parent)");
+  lines.push("");
+  for (const entry of NATURAL_WOOD_SPECIES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    if (typeof e.scientific_name === "string") lines.push(`- Scientific name: ${e.scientific_name}`);
+    const ie: string[] = Array.isArray(e.identifying_elements) ? e.identifying_elements : [];
+    for (const c of ie.slice(0, 5)) lines.push(`- ${c}`);
+    if (typeof e.typical_structural_role === "string") lines.push(`- Typical role: ${e.typical_structural_role.replace(/_/g, " ")}`);
+    const subs = Array.isArray(e.subspecies) ? e.subspecies : [];
+    if (subs.length > 0) {
+      lines.push(`- Subspecies: ${subs.map((s: any) => s.name).join(", ")}`);
+    }
+    lines.push("");
+  }
+  lines.push("### Engineered substrates (plywood, MDF, particleboard, etc.)");
+  lines.push("");
+  for (const entry of ENGINEERED_SUBSTRATES) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    if (typeof e.description === "string") lines.push(`- ${e.description.slice(0, 300)}`);
+    const ia = e.introduction_anchor;
+    if (ia && typeof ia.widespread_adoption_year === "number") {
+      lines.push(`- Introduction: earliest plausible ${ia.earliest_plausible_year ?? "?"}; widespread by ${ia.widespread_adoption_year}.`);
+    }
+    lines.push("");
+  }
+  lines.push("### Cut / grain / figure phenomena (~27 entries — visible patterns)");
+  lines.push("");
+  for (const entry of CUT_GRAIN_PHENOMENA) {
+    const e = entry as any;
+    const name = e.name || e.id;
+    const engineKey = canonicalToEngine.get(e.id);
+    const keyAnnot = engineKey ? ` (key: ${engineKey})` : "";
+    lines.push(`${String(name).toUpperCase()}${keyAnnot}:`);
+    const ic: string[] = Array.isArray(e.identifying_elements) ? e.identifying_elements : [];
+    for (const c of ic.slice(0, 4)) lines.push(`- ${c}`);
+    if (typeof e.diagnostic_caution_text === "string") lines.push(`- Caution: ${e.diagnostic_caution_text.slice(0, 300)}`);
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+/**
+ * Block 22 (engine pull-through): wood evidence library canonical appendix.
+ * Iterates SPECIES_EVIDENCE + SUBSTRATE_EVIDENCE + CUT_GRAIN_EVIDENCE +
+ * WOOD_DIAGNOSTIC_SIGNALS. Surface focus: period associations + usage roles
+ * + diagnostic_caution_text (heavily populated on this library). The
+ * evidence side answers HOW the wood evidence factors into dating.
+ */
+export function buildWoodEvidenceCanonicalAppendix(): string {
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY WOOD EVIDENCE DETAILS (Block 22 — canonical library guidance):");
+  lines.push("Wood-as-evidence patterns conditioning period, regional, and style-wave");
+  lines.push("attribution. Wood alone never dates furniture — these entries condition how");
+  lines.push("wood evidence joins construction + form + fasteners to refine dating. Pair the");
+  lines.push("identification appendix (species/substrate/cut) with these entries' usage_role,");
+  lines.push("period_associations, and diagnostic_caution_text.");
+  lines.push("");
+  lines.push("### Species evidence (27 entries — per-species period + regional + usage)");
+  lines.push("");
+  for (const entry of SPECIES_EVIDENCE) {
+    const e = entry as any;
+    lines.push(`SPECIES EVIDENCE: ${e.species_id}${e.subspecies_id ? ` (subspecies: ${e.subspecies_id})` : ""}:`);
+    const usage = Array.isArray(e.usage_role) ? e.usage_role : (e.usage_role ? [e.usage_role] : []);
+    if (usage.length > 0) lines.push(`- Usage roles: ${usage.join(", ")}`);
+    if (typeof e.usage_role_notes === "string") lines.push(`- ${e.usage_role_notes.slice(0, 300)}`);
+    const sw: string[] = Array.isArray(e.style_wave_associations) ? e.style_wave_associations : [];
+    if (sw.length > 0) lines.push(`- Style waves: ${sw.slice(0, 6).join(", ")}`);
+    if (typeof e.diagnostic_caution_text === "string") lines.push(`- Caution: ${e.diagnostic_caution_text.slice(0, 400)}`);
+    lines.push("");
+  }
+  lines.push("### Substrate evidence (plywood / particleboard / MDF / hardboard — adoption curves)");
+  lines.push("");
+  for (const entry of SUBSTRATE_EVIDENCE) {
+    const e = entry as any;
+    lines.push(`SUBSTRATE EVIDENCE: ${e.substrate_id}:`);
+    const ac = e.adoption_curve;
+    if (ac && typeof ac.earliest_plausible_year === "number") {
+      lines.push(`- Adoption: earliest ${ac.earliest_plausible_year}; widespread ${ac.widespread_adoption_year}${ac.dominance_year ? `; dominant ${ac.dominance_year}` : ""}.`);
+    }
+    const usage = Array.isArray(e.usage_role) ? e.usage_role : (e.usage_role ? [e.usage_role] : []);
+    if (usage.length > 0) lines.push(`- Usage roles: ${usage.join(", ")}`);
+    if (typeof e.diagnostic_caution_text === "string") lines.push(`- Caution: ${e.diagnostic_caution_text.slice(0, 400)}`);
+    lines.push("");
+  }
+  lines.push("### Cut/grain evidence (~37 entries — composed species+cut patterns)");
+  lines.push("");
+  for (const entry of CUT_GRAIN_EVIDENCE) {
+    const e = entry as any;
+    lines.push(`CUT/GRAIN EVIDENCE: ${e.cut_phenomenon_id}${e.species_id ? ` × ${e.species_id}` : ""}${e.subspecies_id ? ` × ${e.subspecies_id}` : ""}:`);
+    const usage = Array.isArray(e.usage_role) ? e.usage_role : (e.usage_role ? [e.usage_role] : []);
+    if (usage.length > 0) lines.push(`- Usage roles: ${usage.join(", ")}`);
+    const sw: string[] = Array.isArray(e.style_wave_associations) ? e.style_wave_associations : [];
+    if (sw.length > 0) lines.push(`- Style waves: ${sw.slice(0, 6).join(", ")}`);
+    if (typeof e.diagnostic_caution_text === "string") lines.push(`- Caution: ${e.diagnostic_caution_text.slice(0, 300)}`);
+    lines.push("");
+  }
+  lines.push("### Composed multi-entity diagnostic signals (~9 entries — strongest signals)");
+  lines.push("");
+  for (const entry of WOOD_DIAGNOSTIC_SIGNALS) {
+    const e = entry as any;
+    lines.push(`SIGNAL: ${e.signal_description}`);
+    lines.push(`- Meaning: ${e.diagnostic_meaning}`);
+    const sw: string[] = Array.isArray(e.style_wave_associations) ? e.style_wave_associations : [];
+    if (sw.length > 0) lines.push(`- Style waves: ${sw.slice(0, 4).join(", ")}`);
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+/**
+ * Block 23 (engine pull-through): maker marks library canonical appendix.
+ * Iterates MAKER_ENTRIES (77). Per-maker surfacing of attribution-confidence
+ * rules + false-positive warnings — the highest-authority appraiser-voice
+ * content per maker. NOTE: MAKER_ENTRIES is not yet engine-wired today
+ * (engine.ts imports only the legacy MAKER_MARKS shim per Block 23a audit).
+ * This appendix surfaces the new schema's content to the LLM at perception
+ * time so the LLM applies the same attribution discipline whether or not
+ * Phase 3 engine integration has shipped.
+ */
+export function buildMakerMarkCanonicalAppendix(): string {
+  const lines: string[] = [];
+  lines.push("PER-LIBRARY MAKER MARK IDENTIFYING DETAILS (Block 23 — canonical library guidance):");
+  lines.push("Use these per-maker attribution rules from the canonical maker library when you");
+  lines.push("observe a maker mark, label, stamp, decal, stencil, brand, or attribution clue.");
+  lines.push("The Core Attribution Rule: a maker mark should only create a HIGH-CONFIDENCE");
+  lines.push("attribution when at least one of (a) full or near-full maker name, (b) known");
+  lines.push("branded device + supporting construction context, (c) maker-specific serial/");
+  lines.push("style/model/label format, or (d) retail label + separate construction evidence");
+  lines.push("is present. Initials alone are LOW authority. Style-line names are NOT maker");
+  lines.push("names. Retail labels are NOT always maker labels. Geographic association marks");
+  lines.push("(Grand Rapids triangle, etc.) are NOT single-maker marks.");
+  lines.push("");
+  for (const entry of MAKER_ENTRIES) {
+    const e = entry as any;
+    lines.push(`MAKER: ${e.maker_name}`);
+    if (typeof e.region === "string") lines.push(`- Region: ${e.region}`);
+    const fc: string[] = Array.isArray(e.furniture_categories) ? e.furniture_categories : [];
+    if (fc.length > 0) lines.push(`- Furniture: ${fc.join(", ")}`);
+    const mt: string[] = Array.isArray(e.known_mark_types) ? e.known_mark_types : [];
+    if (mt.length > 0) lines.push(`- Mark types: ${mt.join(", ")}`);
+    const kw: string[] = Array.isArray(e.known_wording) ? e.known_wording : [];
+    if (kw.length > 0) lines.push(`- Known wording: ${kw.slice(0, 6).map((w: string) => `"${w}"`).join(", ")}`);
+    const pa = Array.isArray(e.period_associations) ? e.period_associations : [];
+    if (pa.length > 0) {
+      const ranges = pa.map((p: any) => {
+        const f = p.date_floor, c = p.date_ceiling;
+        return f && c ? `${f}-${c}` : f ? `post-${f}` : c ? `pre-${c}` : "?";
+      });
+      lines.push(`- Period(s): ${ranges.join("; ")}`);
+    }
+    if (typeof e.attribution_confidence_rule === "string") {
+      lines.push(`- Attribution rule: ${e.attribution_confidence_rule.slice(0, 350)}`);
+    }
+    const fpw: string[] = Array.isArray(e.false_positive_warnings) ? e.false_positive_warnings : [];
+    if (fpw.length > 0) {
+      lines.push(`- False-positive warnings:`);
+      for (const w of fpw.slice(0, 3)) lines.push(`  • ${w.slice(0, 250)}`);
+    }
+    lines.push("");
+  }
   return lines.join("\n");
 }
 
