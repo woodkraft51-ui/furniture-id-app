@@ -795,6 +795,23 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("cabriole") && t.includes("cabriole")) return "cabriole_leg";
   if (!isNegated("barley twist") && t.includes("barley twist")) return "barley_twist";
 
+  // Block 7b2: form-defining clue text fallbacks. Real LLM scans surface these
+  // forms in description text (e.g., "cylinder lid visible", "drop-leaf
+  // construction") but don't always set clue: cylinder_roll explicitly. Without
+  // these text fallbacks, scoreForms can't fire the form-specific branches and
+  // the engine falls back to weaker form readings (Secretary on letter-slot
+  // evidence alone, etc.). Ordered most-specific first.
+  if (!isNegated("cylinder") && includesAny(t, ["cylinder roll", "cylinder lid", "cylinder closure", "tambour cylinder", "bureau a cylindre", "bureau à cylindre", "cylindre", "rolling cylinder"])) return "cylinder_roll";
+  if (!isNegated("cylinder") && t.includes("cylinder") && !t.includes("hydraulic")) return "cylinder_roll";
+  if (!isNegated("slant") && includesAny(t, ["slant front", "slant-front", "slant top", "slanted writing"])) return "slant_front";
+  if (!isNegated("drop leaf") && includesAny(t, ["drop-leaf", "drop leaf", "hinged leaf"])) return "drop_leaf_hinged";
+  if (!isNegated("gateleg") && includesAny(t, ["gateleg", "gate-leg", "gate leg"])) return "gateleg_support";
+  if (!isNegated("lift lid") && includesAny(t, ["lift lid", "lift-lid", "hinged top chest", "blanket chest top", "lift top"])) return "lift_lid";
+  if (!isNegated("extension") && includesAny(t, ["extension mechanism", "extension table", "leaf extension"])) return "extension_mechanism";
+  if (!isNegated("pedestal") && includesAny(t, ["pedestal column", "central pedestal", "pedestal base"])) return "pedestal_column";
+  if (!isNegated("drop front") && includesAny(t, ["drop-front desk", "drop front desk", "drop-front writing surface", "drop front writing"])) return "drop_front_desk";
+  if (!isNegated("pigeonhole") && includesAny(t, ["pigeonhole", "pigeon hole", "interior cubbies", "letter slot"])) return "pigeonholes";
+
   // Block 6: text-fallback patterns for evidence-library vocabulary. The
   // expanded P0 prompt instructs the LLM to use preferred keys directly,
   // but these fallbacks catch cases where the LLM emits descriptive text
@@ -2003,11 +2020,23 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     );
   }
 
-  // Desk and secretary forms
-  if (clues.has("drop_front_desk")) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
-  if (clues.has("pigeonholes")) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
-  if (clues.has("slant_front")) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
-    if (clues.has("cylinder_roll")) {
+  // Desk and secretary forms.
+  // Block 7b2: form-defining features take precedence over sub-features.
+  // When a cylinder closure is present, pigeonholes and drop-front-style
+  // writing surfaces (letter slots etc.) inside the cylinder are
+  // sub-features of the cylinder desk — NOT independent evidence for
+  // Secretary or drop-front secretary forms. Slant-front carries the
+  // same precedence over pigeonholes (pigeonholes inside a slant-front
+  // are part of slant-front identity). Without this suppression,
+  // letter-slot observations were boosting Secretary above Cylinder
+  // even when cylinder was clearly the dominant structural form.
+  const cylinderActive = clues.has("cylinder_roll");
+  const slantActive = clues.has("slant_front");
+  const deskFormDominant = cylinderActive || slantActive;
+  if (clues.has("drop_front_desk") && !deskFormDominant) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
+  if (clues.has("pigeonholes") && !deskFormDominant) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
+  if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
+    if (cylinderActive) {
     add(
       hasAny("parquetry_veneer", "ormolu_mounts", "brass_foot_sabots", "louis_xvi_french_neoclassical", "louis_xvi_revival_pattern")
         ? "Louis XVI Revival cylinder desk (bureau à cylindre)"
@@ -3638,6 +3667,57 @@ FORM SIGNALS:
 - mirror
 - pedestal / column
 - bed rails / headboard / footboard
+
+FORM-DEFINING STRUCTURAL FEATURES (look carefully — these are highest-
+priority structural identifiers that resolve form ambiguity. Use the
+preferred key whenever the feature is visible, even if also visible
+inside or alongside other forms):
+- cylinder roll-top or tambour roll-top closure (curved/cylindrical
+  rotating closure over writing surface; common on bureau à cylindre
+  desks; the cylinder itself is the form-defining feature even when
+  letter slots / pigeonholes are visible inside)
+  → key: cylinder_roll
+- slant-front writing surface (angled hinged writing flap, characteristic
+  of slant-front desks)
+  → key: slant_front
+- drop-front desk (vertical writing surface that hinges down to horizontal,
+  characteristic of secretary desks; distinct from cylinder closure)
+  → key: drop_front_desk
+- pigeonholes / interior cubbies / letter slots (compartmented interior
+  visible inside a desk; can occur inside cylinder, slant-front, OR
+  drop-front desks — does not by itself determine form)
+  → key: pigeonholes
+- drop-leaf hinged construction (table with hinged side leaves that
+  fold down; defines drop-leaf table form)
+  → key: drop_leaf_hinged
+- gateleg support (pivoting leg structure swings out to support a
+  drop leaf; defines gateleg table form)
+  → key: gateleg_support
+- extension mechanism (table that extends with inserted leaves)
+  → key: extension_mechanism
+- pedestal column or central pedestal base
+  → key: pedestal_column
+- lift-lid or hinged-top chest construction (defines blanket chest
+  and storage chest forms)
+  → key: lift_lid
+- multiple stacked drawers in single case (defines chest-of-drawers
+  form vs single drawer cases)
+  → key: multiple_drawer_case
+- metal bed frame structural members (iron, brass, or steel bed
+  components)
+  → key: metal_bed_frame
+- telephone shelf / telephone bench shelf (defines telephone
+  bench/stand form)
+  → key: telephone_shelf
+- cedar lining (aromatic red cedar interior; defines cedar/hope
+  chest form)
+  → key: cedar_lining
+
+CRITICAL: When multiple form-defining features are visible (e.g., cylinder
+closure WITH interior pigeonholes), emit ALL of them as separate
+observations — the engine reasons about which is form-defining vs
+sub-feature based on combinatorial rules. Do NOT suppress a cylinder
+observation because pigeonholes are also visible inside.
 
 FUNCTION SIGNALS:
 - sitting
