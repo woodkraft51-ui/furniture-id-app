@@ -245,6 +245,33 @@ export interface DesignSubtlety {
     | "hardware_character";
   signal: string;
   weight: "low";
+
+  /**
+   * Block 24 schema extension per Block 24a audit critical finding.
+   * The `signal` field is appraiser-prose ("often heavier than true
+   * 17th-century work", "darker", "amber or honey finish") that
+   * doesn't tokenize cleanly against LLM observation text. Without
+   * matchable tokens, the aggregateStyleWaves 2-of-N gate
+   * (engineStyleEvaluator.ts:391-469) rarely fires on real scans —
+   * the wave evidence layer is wired but silent.
+   *
+   * engine_match_tokens carries the LLM-tokenizer-friendly keyword
+   * phrases the engine matches against observation descriptions to
+   * fire wave evidence. Multiple alternative phrasings per signal
+   * because LLM language varies (e.g., "amber finish" might be
+   * described as "honey-colored stain", "warm amber tone",
+   * "amber-stained surface"). Empty array → engine skips this
+   * signal in the 2-of-N count.
+   *
+   * Authoring guidance: aim for 3-6 tokens per signal covering the
+   * most plausible LLM phrasings; tokens are matched case-insensitive
+   * via substring includes; avoid tokens so generic they false-match
+   * (e.g., "wood" alone) or so specific they never match (e.g., full
+   * sentences). Block 24 token-authoring batch populates this field
+   * across all 108 waves; entries with empty engine_match_tokens
+   * arrays remain valid but contribute no wave evidence in practice.
+   */
+  engine_match_tokens?: string[];
 }
 
 /**
@@ -856,12 +883,18 @@ export const STYLE_REVIVAL_WAVES: StyleRevivalWaveEntry[] = [
     traits_summary: "Early forms reinterpreted as patriotic ancestral furniture. Often heavier, darker, more polished, and more “decorative antique” than true 17th-century work.",
     contrast_summary: "Contrast from original: Original pieces are structural and practical first; Centennial pieces are more self-conscious, commemorative, and often cleaner in finish.",
     design_subtleties: [
-      { aspect: "massing_and_proportion", signal: "often heavier than true 17th-century work", weight: "low" },
-      { aspect: "surface_and_finish", signal: "darker", weight: "low" },
-      { aspect: "surface_and_finish", signal: "more polished", weight: "low" },
-      { aspect: "surface_and_finish", signal: "often cleaner in finish than original work", weight: "low" },
-      { aspect: "ornament_and_motif", signal: "reads as a 'decorative antique' rather than structural furniture", weight: "low" },
-      { aspect: "construction_expression", signal: "self-conscious, commemorative execution rather than structural-practical", weight: "low" },
+      { aspect: "massing_and_proportion", signal: "often heavier than true 17th-century work", weight: "low",
+        engine_match_tokens: ["heavier than", "more substantial than", "thicker than", "heavier proportion", "more weight", "chunkier", "heftier"] },
+      { aspect: "surface_and_finish", signal: "darker", weight: "low",
+        engine_match_tokens: ["dark finish", "darker finish", "dark stain", "darker stain", "ebonized", "dark-stained", "dark coloring"] },
+      { aspect: "surface_and_finish", signal: "more polished", weight: "low",
+        engine_match_tokens: ["high polish", "highly polished", "polished surface", "glossy finish", "shiny finish", "lustrous", "mirror finish"] },
+      { aspect: "surface_and_finish", signal: "often cleaner in finish than original work", weight: "low",
+        engine_match_tokens: ["clean finish", "cleaner finish", "smooth finish", "refined finish", "even finish"] },
+      { aspect: "ornament_and_motif", signal: "reads as a 'decorative antique' rather than structural furniture", weight: "low",
+        engine_match_tokens: ["decorative rather than", "ornamental piece", "decorative antique", "self-conscious decoration", "decorative motif"] },
+      { aspect: "construction_expression", signal: "self-conscious, commemorative execution rather than structural-practical", weight: "low",
+        engine_match_tokens: ["commemorative", "self-conscious construction", "patriotic", "centennial", "ancestral", "commemorating"] },
     ],
     assessment_layer: "style_and_waves",
   },
