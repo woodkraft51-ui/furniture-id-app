@@ -129,6 +129,21 @@ type Phase1Gate = {
 
 type ConfidenceBand = "High" | "Moderate" | "Low" | "Inconclusive";
 
+// Block 14: upholstery is treated as a separate identification + dating track
+// from the frame. detectUpholsteryLayer populates these fields; originality
+// inference compares frame vs upholstery date envelopes to set
+// original_likely + cross_reference_note.
+type UpholsteryLayer = {
+  identification?: string;
+  range: string;
+  confidence: ConfidenceBand | string;
+  note?: string;
+  date_floor?: number | null;
+  date_ceiling?: number | null;
+  original_likely?: boolean;
+  cross_reference_note?: string;
+};
+
 // Phase 2 result. Block 1 preserves `range` (free-text display string) per
 // D-PH3-7 backward-compat; later steps add structured numerics alongside.
 type Phase2Result = {
@@ -136,7 +151,7 @@ type Phase2Result = {
   confidence: ConfidenceBand | string;
   support?: string[];
   limitations?: string[];
-  upholstery_layer?: any;
+  upholstery_layer?: UpholsteryLayer;
   date_tightening_evidence?: any;
   // Block 1 additive fields (populated when canonical lookups resolve):
   date_floor?: number;
@@ -911,7 +926,7 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("polyurethane foam") && includesAny(t, ["polyurethane foam", "synthetic foam", "yellow foam", "memory foam"])) return "polyurethane_foam";
   if (!isNegated("foam") && includesAny(t, ["foam padding", "foam cushion", "latex foam"])) return "foam_padding";
   if (!isNegated("down") && includesAny(t, ["feather fill", "down fill", "feather and down", "feather cushion"])) return "feather_down_fill";
-  if (!isNegated("tufting") && includesAny(t, ["button tufting", "deep buttoned", "button-tufted", "buttoned tufting", "biscuit tufting"])) return "button_tufting";
+  if (!isNegated("tufting") && includesAny(t, ["button tufting", "deep buttoned", "button-tufted", "buttoned tufting", "biscuit tufting", "deep tufted", "deeply tufted", "tufted seat cushion", "tufted back cushion", "tufted cushion"])) return "button_tufting";
   if (!isNegated("nailhead") && includesAny(t, ["nailhead trim", "nail-head trim", "decorative brass nails", "brass tack trim", "nailhead detailing"])) return "nailhead_trim";
   if (!isNegated("tacks") && includesAny(t, ["hand tacks", "hand-tacked", "upholstery tacks"])) return "hand_tacks";
   if (!isNegated("staple") && includesAny(t, ["upholstery staple", "stapled fabric", "fabric staples"])) return "upholstery_staple_construction";
@@ -1803,73 +1818,295 @@ function computeMissingEvidence(images: any[]) {
     label_photo: !types.has("label_makers_mark"),
   };
 }
-function detectUpholsteryLayer(digest: EvidenceDigest) {
+// Block 14: full rewrite. Detection consumes Block 12 vocabulary (velvet_cover,
+// button_tufting, coil_spring, etc.) in addition to the legacy clue keys.
+// Produces structured {identification, range, confidence, date_floor,
+// date_ceiling, note}. Originality inference vs frame dating is applied
+// later in dateFromEvidence once the frame envelope is known.
+function detectUpholsteryLayer(digest: EvidenceDigest): UpholsteryLayer | null {
   const clues = new Set(digest.clue_keys);
+  const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
-  const hasUpholstery =
-    clues.has("fully_upholstered") ||
-    clues.has("upholstery_fabric") ||
-    clues.has("visible_springs") ||
-    clues.has("exposed_upholstery_tacks");
+  // Block 12 cover vocabulary
+  const cover_velvet = has("velvet_cover");
+  const cover_damask = has("damask_cover");
+  const cover_brocade = has("brocade_cover");
+  const cover_jacquard = has("jacquard_cover");
+  const cover_chintz = has("chintz_cover");
+  const cover_needlepoint = has("needlepoint_cover");
+  const cover_haircloth = has("haircloth_cover");
+  const cover_leather = has("leather_cover");
+  const cover_vinyl = has("vinyl_cover");
+  const anyCover =
+    cover_velvet || cover_damask || cover_brocade || cover_jacquard ||
+    cover_chintz || cover_needlepoint || cover_haircloth ||
+    cover_leather || cover_vinyl;
 
-  if (!hasUpholstery) return null;
+  // Block 12 construction vocabulary
+  const spring_hand_tied = has("hand_tied_coil_spring");
+  const spring_coil = has("coil_spring");
+  const spring_marshall = has("marshall_pocket_coil");
+  const spring_serpentine = has("serpentine_spring");
+  const spring_drop_in = has("drop_in_spring_unit");
+  const spring_none = has("no_spring_seat");
+  const fill_horsehair = has("horsehair_stuffing");
+  const fill_cotton = has("cotton_batting");
+  const fill_foam = has("foam_padding");
+  const fill_polyurethane = has("polyurethane_foam");
+  const fill_feather = has("feather_down_fill");
+  const web_jute = has("jute_webbing");
+  const web_elastic = has("elastic_webbing");
+  const attach_button_tuft = has("button_tufting");
+  const attach_nailhead = has("nailhead_trim");
+  const attach_hand_tacks = has("hand_tacks");
+  const attach_staples = has("upholstery_staple_construction");
 
-  const hasTraditional =
-  clues.has("horsehair_stuffing") ||
-  clues.has("horsehair_cotton_stuffing") ||
-  clues.has("burlap_visible") ||
-  clues.has("burlap_foundation") ||
-  clues.has("cotton_batting") ||
+  // Legacy generic markers (pre-Block-12 vocabulary)
+  const legacyPresence =
+    has("fully_upholstered", "upholstery_fabric", "visible_springs",
+        "exposed_upholstery_tacks", "tufted_upholstery");
+  const legacyTraditional =
+    has("horsehair_cotton_stuffing", "burlap_visible", "burlap_foundation",
+        "dark_coarse_fibrous_stuffing", "coarse_black_fiber_stuffing",
+        "traditional_upholstery_fill", "burlap_backing", "webbing_visible");
+  const legacyModern =
+    has("synthetic_fabric_pattern", "vinyl_or_bonded_leather",
+        "uniform_machine_tufting", "clean_modern_fabric");
 
-  // 🔴 ADD THESE (your real-world matches)
-  clues.has("dark_coarse_fibrous_stuffing") ||
-  clues.has("coarse_black_fiber_stuffing") ||
-  clues.has("traditional_upholstery_fill") ||
-  clues.has("burlap_backing") ||
-  clues.has("webbing_visible");
+  const upholsteryPresent =
+    anyCover || spring_hand_tied || spring_coil || spring_marshall ||
+    spring_serpentine || spring_drop_in || spring_none ||
+    fill_horsehair || fill_cotton || fill_foam || fill_polyurethane ||
+    fill_feather || web_jute || web_elastic ||
+    attach_button_tuft || attach_nailhead || attach_hand_tacks ||
+    attach_staples || legacyPresence || legacyTraditional || legacyModern;
 
-  const hasModern =
-    clues.has("synthetic_fabric_pattern") ||
-    clues.has("vinyl_or_bonded_leather") ||
-    clues.has("uniform_machine_tufting") ||
-    clues.has("clean_modern_fabric");
+  if (!upholsteryPresent) return null;
 
-  // 🔴 Strong traditional upholstery system
-  if (hasTraditional && !hasModern) {
+  // Classify the construction/era profile. Most-specific signals win.
+  const modernSynthetic = fill_polyurethane || fill_foam ||
+    spring_serpentine || spring_drop_in || attach_staples ||
+    cover_vinyl || legacyModern;
+  const earlyTwentiethTraditional = spring_coil && (fill_horsehair || fill_cotton);
+  const victorianTraditional = fill_horsehair && (cover_haircloth || attach_hand_tacks);
+  const handCraftedSpring = spring_hand_tied;
+
+  // Cover identification phrase (covers + tufting are the most visible signals
+  // and drive the report's identification string).
+  const coverPhrase =
+    cover_velvet ? "velvet" :
+    cover_haircloth ? "haircloth" :
+    cover_leather ? "leather" :
+    cover_vinyl ? "vinyl" :
+    cover_damask ? "damask" :
+    cover_brocade ? "brocade" :
+    cover_jacquard ? "jacquard" :
+    cover_chintz ? "chintz" :
+    cover_needlepoint ? "needlepoint" :
+    null;
+  const tuftPhrase = attach_button_tuft ? "button-tufted" : null;
+  const nailheadPhrase = attach_nailhead ? "nailhead-trimmed" : null;
+  const constructionPhrase =
+    handCraftedSpring ? "hand-tied coil spring construction" :
+    spring_marshall ? "Marshall pocket-coil construction" :
+    spring_drop_in ? "drop-in spring unit" :
+    spring_serpentine ? "serpentine spring construction" :
+    spring_coil ? "coil spring construction" :
+    spring_none ? "no-spring stuffed seat" :
+    null;
+
+  const identificationParts = [
+    tuftPhrase,
+    coverPhrase,
+    nailheadPhrase,
+    "upholstery",
+    constructionPhrase ? `with ${constructionPhrase}` : null,
+  ].filter(Boolean);
+  const identification = identificationParts.length > 1
+    ? identificationParts.join(" ")
+        .replace(/^./, (c) => c.toUpperCase())
+    : "Upholstery present (insufficient detail to classify)";
+
+  // Era classification → date envelope. Specific construction combinations
+  // anchor narrower windows; generic presence falls through to broad ranges.
+  // Mid-century velvet+button-tufting+synthetic markers is the Hollywood
+  // Regency / 60s-70s reupholstery profile Block 14 was scoped to address.
+  if (modernSynthetic && (cover_velvet || attach_button_tuft)) {
     return {
-      range: "c. 1880–1920",
+      identification,
+      range: "c. 1955–1980",
       confidence: "Moderate",
-      note:
-        "Horsehair stuffing, burlap foundation, and cotton batting support traditional upholstery methods consistent with late 19th to early 20th century work. Upholstery may be original or an early reupholstery.",
+      date_floor: 1955,
+      date_ceiling: 1980,
+      note: "Synthetic-era construction markers (polyurethane foam, staple attachment, or serpentine/drop-in spring) combined with velvet cover and button tufting are characteristic of mid-century reupholstery, frequently 1960s–1970s.",
     };
   }
 
-  // 🟡 Mixed signals (possible reupholstery)
-  if (hasTraditional && hasModern) {
+  if (modernSynthetic) {
     return {
-      range: "mixed periods (reupholstered)",
-      confidence: "Moderate",
-      note:
-        "Traditional upholstery materials are present alongside later fabric or construction cues, indicating likely reupholstery.",
-    };
-  }
-
-  // 🔵 Modern upholstery
-  if (hasModern) {
-    return {
+      identification,
       range: "post-1950",
       confidence: "Moderate",
-      note:
-        "Upholstery materials and construction suggest later modern or replacement upholstery.",
+      date_floor: 1950,
+      date_ceiling: 2010,
+      note: "Synthetic-era upholstery materials (polyurethane foam, staples, or vinyl cover) indicate later modern or replacement upholstery.",
     };
   }
 
-  // ⚪ Weak evidence
+  if (victorianTraditional) {
+    return {
+      identification,
+      range: "c. 1860–1900",
+      confidence: "Moderate",
+      date_floor: 1860,
+      date_ceiling: 1900,
+      note: "Horsehair stuffing with haircloth cover or hand-tacked attachment supports Victorian-era traditional upholstery.",
+    };
+  }
+
+  if (handCraftedSpring && (fill_horsehair || fill_cotton || web_jute)) {
+    return {
+      identification,
+      range: "c. 1870–1930",
+      confidence: "Moderate",
+      date_floor: 1870,
+      date_ceiling: 1930,
+      note: "Hand-tied coil springs with horsehair, cotton, or jute webbing is canonical pre-WWII traditional upholstery construction.",
+    };
+  }
+
+  if (earlyTwentiethTraditional || legacyTraditional) {
+    return {
+      identification,
+      range: "c. 1880–1920",
+      confidence: "Moderate",
+      date_floor: 1880,
+      date_ceiling: 1920,
+      note: "Traditional spring + natural-fiber stuffing combination is consistent with late 19th to early 20th century work.",
+    };
+  }
+
+  if (cover_haircloth) {
+    return {
+      identification,
+      range: "c. 1840–1900",
+      confidence: "Moderate",
+      date_floor: 1840,
+      date_ceiling: 1900,
+      note: "Haircloth cover is canonical Victorian upholstery fabric.",
+    };
+  }
+
+  // Cover-only or attachment-only — wide envelope; cover material alone
+  // doesn't tightly date the upholstery without construction confirmation.
+  if (anyCover || attach_button_tuft || attach_nailhead) {
+    return {
+      identification,
+      range: "broad — cover-only signal",
+      confidence: "Low",
+      date_floor: null,
+      date_ceiling: null,
+      note: "Cover material or surface attachment is visible but underlying construction (springs, webbing, stuffing) is not, so the upholstery date envelope is broad. Underside or cushion-removed photos would tighten this.",
+    };
+  }
+
+  // Construction signal without cover identification — fall through to broad
   return {
+    identification,
     range: "unknown upholstery date",
     confidence: "Low",
-    note:
-      "Upholstery is present but lacks clear construction or material evidence for independent dating.",
+    date_floor: null,
+    date_ceiling: null,
+    note: "Upholstery is present but lacks combined cover + construction evidence for independent dating.",
+  };
+}
+
+// Block 14: build a frame-only digest by filtering out clues categorized as
+// "upholstery" in CLUE_LIBRARY. Used to keep form ID, style attribution,
+// and frame-date computation independent of upholstery evidence.
+function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
+  const upholsteryClueKeys = new Set<string>(
+    Object.entries(CLUE_LIBRARY)
+      .filter(([, meta]: [string, any]) => meta?.category === "upholstery")
+      .map(([k]) => k)
+  );
+  return {
+    ...digest,
+    clue_keys: (digest.clue_keys || []).filter((k) => !upholsteryClueKeys.has(k)),
+    observations: (digest.observations || []).filter(
+      (o) => !o.clue || !upholsteryClueKeys.has(o.clue)
+    ),
+  };
+}
+
+// Block 14: compare frame and upholstery date envelopes to infer whether
+// upholstery is likely original to the frame. Default detached; only flag
+// likely-original when envelopes substantially overlap AND traditional
+// markers are present that fit the frame era.
+function applyOriginalityInference(
+  upholsteryLayer: UpholsteryLayer,
+  frame: { date_floor?: number; date_ceiling?: number },
+  digest: EvidenceDigest
+): UpholsteryLayer {
+  const uf = upholsteryLayer.date_floor;
+  const uc = upholsteryLayer.date_ceiling;
+  const ff = frame.date_floor;
+  const fc = frame.date_ceiling;
+
+  // Need numeric ranges on both sides to make any inference
+  if (uf == null || uc == null || ff == null || fc == null) {
+    return upholsteryLayer;
+  }
+
+  // Overlap test: ranges share any year
+  const overlap = !(uc < ff || uf > fc);
+  const upholsteryLater = uf > fc;
+  const upholsteryEarlier = uc < ff;
+
+  const clues = new Set(digest.clue_keys);
+  const traditionalMarkers =
+    clues.has("hand_tied_coil_spring") ||
+    clues.has("hand_tacks") ||
+    clues.has("horsehair_stuffing") ||
+    clues.has("haircloth_cover") ||
+    clues.has("jute_webbing");
+  const modernMarkers =
+    clues.has("upholstery_staple_construction") ||
+    clues.has("polyurethane_foam") ||
+    clues.has("serpentine_spring") ||
+    clues.has("drop_in_spring_unit") ||
+    clues.has("vinyl_cover");
+
+  if (overlap && traditionalMarkers && !modernMarkers) {
+    return {
+      ...upholsteryLayer,
+      original_likely: true,
+      cross_reference_note: "Upholstery date envelope overlaps the frame envelope and construction markers (hand-tied coils, hand tacks, horsehair, or jute webbing) are traditional, supporting the possibility that the upholstery is original.",
+    };
+  }
+
+  if (upholsteryLater) {
+    const yearsLater = uf - fc;
+    return {
+      ...upholsteryLayer,
+      original_likely: false,
+      cross_reference_note: `Upholstery dating (${upholsteryLayer.range}) is later than the frame envelope (${ff}–${fc}); a reupholstery approximately ${yearsLater} years after the frame is the most likely reading.`,
+    };
+  }
+
+  if (upholsteryEarlier) {
+    return {
+      ...upholsteryLayer,
+      original_likely: false,
+      cross_reference_note: `Upholstery dating (${upholsteryLayer.range}) reads earlier than the frame envelope (${ff}–${fc}); this is unusual and may indicate misidentified construction markers or salvaged upholstery on a later frame.`,
+    };
+  }
+
+  // Overlap but mixed/modern markers
+  return {
+    ...upholsteryLayer,
+    original_likely: false,
+    cross_reference_note: "Upholstery and frame date envelopes overlap, but construction markers are not specifically traditional; cannot confirm originality.",
   };
 }
 function buildDateTighteningEvidence(digest: EvidenceDigest) {
@@ -2592,9 +2829,16 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
 }
 
 function dateFromEvidence(digest: EvidenceDigest, form: string) {
+  // Block 14: detect upholstery from the FULL digest first, then switch the
+  // function's internal `digest` to a frame-only filtered view. All
+  // subsequent clue checks, text scans, and style/material classifiers see
+  // only frame evidence — keeping form ID + frame dating independent of
+  // upholstery (which is reported as its own track).
+  const upholsteryLayer = detectUpholsteryLayer(digest);
+  digest = buildFrameDigest(digest);
+
   const clues = new Set(digest.clue_keys);
   const support = buildReportEvidenceSupport(digest, []);
-  const upholsteryLayer = detectUpholsteryLayer(digest);
   const limitations: string[] = [];
 
   const text = `${digest.perception?.raw_text || ""} ${digest.observations
@@ -3914,6 +4158,26 @@ HARDWARE EVIDENCE (look at pulls, hinges, locks, casters, mechanisms):
 UPHOLSTERY EVIDENCE (look at any visible upholstery — under cushions, on
 exposed springs, deck visible when cushions removed, frame attachment
 points, cover material on seat/back/arms):
+
+REQUIRED — cover material identification: If ANY upholstered surface is
+visible in the photos, you MUST classify the cover material using one of
+the cover keys below (velvet_cover, damask_cover, haircloth_cover,
+leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover,
+jacquard_cover). If uncertain between two, pick the best fit and note the
+uncertainty in the observation description. Saying "upholstered surfaces
+are visible" without classifying the cover material is insufficient — it
+produces broad date envelopes and inconclusive reports. Velvet specifically:
+smooth lustrous pile fabric, often with sheen; CUT-PILE vs UNCUT-PILE
+contrast can create stripes or figured patterns — striped or figured velvet
+is still velvet_cover (common in mid-century reupholstery, 1950s–1970s).
+
+REQUIRED — tufting identification: If tufting (regular dimples across the
+cushion surface) is visible, examine whether the dimples are held by
+covered buttons. If yes → key: button_tufting. If dimples are held by
+stitches with no visible buttons → still set button_tufting and note
+"stitch-tufted, no buttons" in the description. Do not describe tufting
+without classifying it.
+
 - coil springs visible under seat (individual upright metal coils)
   → key: coil_spring (or hand_tied_coil_spring if hand-tied with twine)
 - serpentine / sinuous / zigzag spring (horizontal continuous wire)
@@ -4204,7 +4468,10 @@ if (missing.label_photo) {
   },
 
   p2(digest: EvidenceDigest, gate: Phase1Gate): Phase2Result {
-    const ranked = scoreForms(digest);
+    // Block 14: form scoring uses frame-filtered digest so upholstery clues
+    // (velvet, button-tufting, springs) don't influence form identification.
+    const frameDigest = buildFrameDigest(digest);
+    const ranked = scoreForms(frameDigest);
     const best = ranked[0];
     const form = best?.form || "Unclassified furniture";
     const raw = dateFromEvidence(digest, form);
@@ -4228,11 +4495,25 @@ if (missing.label_photo) {
     const result: Phase2Result = { ...raw, support };
     if (date_floor !== null) result.date_floor = date_floor;
     if (date_ceiling !== null) result.date_ceiling = date_ceiling;
+
+    // Block 14: apply originality inference now that frame envelope is known.
+    if (result.upholstery_layer) {
+      result.upholstery_layer = applyOriginalityInference(
+        result.upholstery_layer,
+        { date_floor: result.date_floor, date_ceiling: result.date_ceiling },
+        digest
+      );
+    }
+
     return result;
   },
 
   p3(digest: EvidenceDigest, gate: Phase1Gate, intake: any): Phase3Result {
-    const ranked = scoreForms(digest);
+    // Block 14: frame-only digest for form identification and style
+    // attribution. Upholstery clues feed the separate upholstery_layer
+    // track in p2 and must not influence frame ID or style here.
+    const frameDigest = buildFrameDigest(digest);
+    const ranked = scoreForms(frameDigest);
     const rawBest = ranked[0];
 
     // Block 1 D-PH3-13 #2: when the highest-scoring scoreForms label is a
@@ -4260,7 +4541,7 @@ if (missing.label_photo) {
       ? Math.min(gate.confidence_cap_pct, bestForm.score >= 80 ? 90 : bestForm.score >= 45 ? 72 : 48)
       : 35;
 
-    const observedStyle = [...(digest.observations || [])]
+    const observedStyle = [...(frameDigest.observations || [])]
       .filter((o) => o.type === "style" && o.clue && (o.confidence || 0) >= 70)
       .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
 
@@ -4279,7 +4560,9 @@ if (missing.label_photo) {
 
     // Block 1 step 6: subtype + dimensional evaluators consume canonical FormEntry data.
     // Anti-back wired in step 7 (needs dateFromEvidence numeric envelope).
-    const observationDescriptions = (digest.observations || []).map((o) => o.description || "");
+    // Block 14: frame-filtered observations so subtype evaluator isn't
+    // pulled by upholstery descriptions.
+    const observationDescriptions = (frameDigest.observations || []).map((o) => o.description || "");
     const subtype = evaluateSubtype(form_id, observationDescriptions);
     const dimensional_check = evaluateDimensional(form_id, intake);
 
@@ -4291,7 +4574,10 @@ if (missing.label_photo) {
 
     // Block 2a: structured style attribution from styleFamilies.ts.
     // Falls back to engine-derived style strings when no canonical match.
-    const styleRanked = attributeStyle(digest.clue_keys || [], observationDescriptions);
+    // Block 14: frame-filtered clue keys so style attribution can't see
+    // upholstery vocabulary (velvet, button-tufting, etc.) when scoring
+    // frame styles.
+    const styleRanked = attributeStyle(frameDigest.clue_keys || [], observationDescriptions);
     const style_attribution = styleRanked[0] ?? null;
     const style_alternatives = styleRanked.slice(1, 4);
 
@@ -4302,13 +4588,13 @@ if (missing.label_photo) {
     // in the report — does NOT add to dating-overlap (would double-count).
     const style_supporting_evidence = collectStyleSupportingEvidence(
       style_attribution,
-      digest.observations ?? []
+      frameDigest.observations ?? []
     );
 
     // style_context string: prefer canonical attribution name, then engine-derived fallback.
     const style = style_attribution?.name
       || styleFromForm
-      || deriveStyleContext(digest)
+      || deriveStyleContext(frameDigest)
       || styleFromObservation;
 
     // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
@@ -4326,7 +4612,7 @@ if (missing.label_photo) {
       display_form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
-      support: buildReportEvidenceSupport(digest, bestForm?.support || []),
+      support: buildReportEvidenceSupport(frameDigest, bestForm?.support || []),
       alternatives,
       alternative_form_ids,
       subtype,
@@ -4800,6 +5086,19 @@ stage_outputs.p6 = p6; onPhase?.("p6", p6);
 // Mutation is scoped to the report layer — p5/p6 internal logic already ran
 // against the unrefined p2; this only affects what the UI shows.
 if (p6.dating_overlap) {
+  // Block 14: convergence refinement uses a frame-only overlap so the
+  // upholstery layer's dates can't pull the refined p2 envelope.
+  // The full overlap (p6.dating_overlap) is still passed to the viz
+  // unchanged.
+  const frameClues = (stage_outputs.p4?.weighted_clues || []).filter(
+    (c: any) => c.category !== "upholstery"
+  );
+  const frameOverlap = buildDatingOverlap(
+    frameClues,
+    p3.style_attribution ?? null,
+    p3.style_waves ?? [],
+    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null }
+  );
   const refined = refineDatingFromConvergence(
     {
       range: p2.range,
@@ -4807,7 +5106,7 @@ if (p6.dating_overlap) {
       date_ceiling: p2.date_ceiling ?? null,
       confidence: String(p2.confidence ?? ""),
     },
-    p6.dating_overlap
+    frameOverlap
   );
   if (refined.refined) {
     p2.range = refined.range;
