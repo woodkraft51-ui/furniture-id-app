@@ -165,6 +165,98 @@ export function attributeStyle(
   return results.sort((a, b) => b.confidence - a.confidence);
 }
 
+// ── Block 9: Controlled style-supporting evidence ───────────────────────
+//
+// Maps engine clue keys (typically clues with broad/unparseable dateHints
+// that the dating-overlap diagnostic surfaces as "found but not parsed") to
+// the style families they categorically belong to. Used by p3 to surface
+// these clues as SUPPORTING EVIDENCE for the style attribution in the
+// report — not as independent date contributions (avoids double-counting
+// against the style's own date envelope).
+//
+// "Controlled" gates per Mike's authorization:
+// - Only fires when style_attribution.confidence ≥ 0.5 (high-floor style)
+// - Only the clues with categorical alignment to a SPECIFIC style family
+//   are listed (no fishing for marginal associations)
+// - Mapping is conservative; broader cross-family clues (e.g., tapered_leg
+//   appears in many neoclassical-adjacent styles) stay multi-mapped only
+//   where the appraiser-knowledge alignment is clean
+
+export const CLUE_STYLE_ASSOCIATIONS: Record<string, string[]> = {
+  // Louis XVI / French Neoclassical category
+  louis_xvi_french_neoclassical: ["style_family_louis_xvi_french_neoclassical"],
+  ormolu_mounts: ["style_family_louis_xvi_french_neoclassical", "style_family_american_classical"],
+  brass_foot_sabots: ["style_family_louis_xvi_french_neoclassical", "style_family_american_classical"],
+  parquetry_veneer: ["style_family_louis_xvi_french_neoclassical", "style_family_federal", "style_family_william_and_mary"],
+  stringing_inlay: ["style_family_louis_xvi_french_neoclassical", "style_family_federal", "style_family_american_classical"],
+
+  // Federal / English Neoclassical category
+  tapered_leg: ["style_family_federal", "style_family_louis_xvi_french_neoclassical", "style_family_american_classical"],
+
+  // Queen Anne / Chippendale family
+  cabriole_leg: ["style_family_queen_anne", "style_family_chippendale", "style_family_rococo_revival"],
+  shell_carving: ["style_family_queen_anne", "style_family_chippendale", "style_family_federal"],
+  claw_or_pad_foot: ["style_family_queen_anne", "style_family_chippendale"],
+
+  // Jacobean / William and Mary family
+  barley_twist: ["style_family_jacobean", "style_family_william_and_mary"],
+
+  // Eastlake / Arts and Crafts family
+  spindle_gallery: ["style_family_eastlake", "style_family_arts_and_crafts"],
+
+  // American Classical (Empire)
+  rope_carved_pilasters: ["style_family_american_classical"],
+  overhanging_top: ["style_family_american_classical"],
+
+  // Heavy carving — multiple revival styles
+  heavy_carving: ["style_family_renaissance_revival", "style_family_gothic_revival", "style_family_jacobean"],
+};
+
+export type StyleSupportingObservation = {
+  clue: string;
+  display_label: string;
+  description: string;
+  style_family_id: string;
+};
+
+/**
+ * Block 9 — collect undated observations that are categorically aligned
+ * with the surfaced style attribution. Per Mike's "controlled way" lock:
+ * only fires when style attribution is reasonably confident; only clues
+ * with explicit mappings in CLUE_STYLE_ASSOCIATIONS participate.
+ *
+ * Result surfaces in the report as supporting context for the style
+ * attribution. Does NOT contribute to dating-overlap layers (would
+ * double-count against the style attribution's own date envelope).
+ */
+const STYLE_SUPPORTING_CONFIDENCE_FLOOR = 0.5;
+
+export function collectStyleSupportingEvidence(
+  styleAttribution: StyleAttribution | null,
+  observations: Array<{ clue?: string | null; description?: string; date_hint?: string | null }>
+): StyleSupportingObservation[] {
+  if (!styleAttribution) return [];
+  if (styleAttribution.confidence < STYLE_SUPPORTING_CONFIDENCE_FLOOR) return [];
+  const targetFamilyId = styleAttribution.style_family_id;
+
+  const result: StyleSupportingObservation[] = [];
+  const seenClues = new Set<string>();
+  for (const obs of observations) {
+    const clue = obs.clue;
+    if (!clue || seenClues.has(clue)) continue;
+    const associations = CLUE_STYLE_ASSOCIATIONS[clue];
+    if (!associations || !associations.includes(targetFamilyId)) continue;
+    seenClues.add(clue);
+    result.push({
+      clue,
+      display_label: clue.replace(/_/g, " "),
+      description: obs.description ?? "",
+      style_family_id: targetFamilyId,
+    });
+  }
+  return result;
+}
+
 // ── Block 2b: Style-wave aggregator ──────────────────────────────────────
 
 export type StyleWaveAttribution = {

@@ -12,7 +12,7 @@ import {
   type AntiBackViolation,
   type HybridAnnotation,
 } from "./engineFormEvaluators";
-import { attributeStyle, aggregateStyleWaves, type StyleAttribution, type StyleWaveAttribution } from "./engineStyleEvaluator";
+import { attributeStyle, aggregateStyleWaves, collectStyleSupportingEvidence, type StyleAttribution, type StyleWaveAttribution, type StyleSupportingObservation } from "./engineStyleEvaluator";
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
@@ -166,6 +166,10 @@ type Phase3Result = {
   style_waves?: StyleWaveAttribution[];
   // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
   hybrid?: HybridAnnotation | null;
+  // Block 9: undated observations categorically aligned with the style
+  // attribution. Surfaced in the report as supporting context — does NOT
+  // contribute to dating-overlap layers to avoid double-counting.
+  style_supporting_evidence?: StyleSupportingObservation[];
 };
 
 type Phase4Result = {
@@ -2156,7 +2160,25 @@ if (
 
   // Bed forms
   if (clues.has("metal_bed_frame")) {
-    add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
+    // Block 9: seating signals suppress Iron bed frame. A chair with iron
+    // frame is not a bed regardless of the metal_bed_frame clue firing.
+    // The LLM sometimes emits metal_bed_frame on any iron/steel-framed
+    // furniture; this guard prevents Iron bed frame from outranking
+    // chair-specific form scores. Mutual exclusion: bed and chair forms
+    // are categorically distinct (mattress platform vs seat surface).
+    const seatingPresent = clues.has("seating_surface")
+      || clues.has("seating_present")
+      || clues.has("backrest_present")
+      || clues.has("armchair_form")
+      || clues.has("mcm_structural_pattern")
+      || clues.has("toledo_industrial_style")
+      || clues.has("mid_century_industrial_office")
+      || clues.has("renaissance_revival_upholstered_armchair_pattern")
+      || clues.has("colonial_georgian_revival_upholstered_armchair_pattern")
+      || clues.has("mission_arts_crafts_structural_pattern");
+    if (!seatingPresent) {
+      add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
+    }
   }
      // Non-wood and mixed-material form families
   if (hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
@@ -3703,8 +3725,13 @@ inside or alongside other forms):
 - multiple stacked drawers in single case (defines chest-of-drawers
   form vs single drawer cases)
   → key: multiple_drawer_case
-- metal bed frame structural members (iron, brass, or steel bed
-  components)
+- metal bed frame structural members (iron, brass, or steel BED
+  components — only when the piece is clearly a bed: mattress
+  platform, headboard/footboard, side rails meant to support a
+  mattress. Do NOT emit for chairs, tables, stools, desks, or
+  other metal-framed furniture even when iron/steel structure is
+  visible. If the metal frame is clearly part of a non-bed form,
+  use metal_frame instead.)
   → key: metal_bed_frame
 - telephone shelf / telephone bench shelf (defines telephone
   bench/stand form)
@@ -4142,6 +4169,16 @@ if (missing.label_photo) {
     const style_attribution = styleRanked[0] ?? null;
     const style_alternatives = styleRanked.slice(1, 4);
 
+    // Block 9: controlled style-supporting evidence. Pulls forward undated
+    // observations whose clues are categorically aligned with the surfaced
+    // style attribution (via CLUE_STYLE_ASSOCIATIONS mapping) when the
+    // attribution confidence is at least 0.5. Surfaces as supporting context
+    // in the report — does NOT add to dating-overlap (would double-count).
+    const style_supporting_evidence = collectStyleSupportingEvidence(
+      style_attribution,
+      digest.observations ?? []
+    );
+
     // style_context string: prefer canonical attribution name, then engine-derived fallback.
     const style = style_attribution?.name
       || styleFromForm
@@ -4171,6 +4208,7 @@ if (missing.label_photo) {
       style_attribution,
       style_alternatives,
       hybrid,
+      style_supporting_evidence,
     };
   },
 
@@ -4542,6 +4580,12 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
       // the overall envelope surface here as supporting context (no longer
       // mislabeled as "cautions and conflicts" when they actually agree).
       ...((conflict as Phase5Result).supporting_context || []),
+      // Block 9: undated observations categorically aligned with the style
+      // attribution surface here as supporting context for the style call.
+      // These don't independently narrow dating but bolster the style read.
+      ...(form.style_supporting_evidence && form.style_supporting_evidence.length > 0
+        ? [`Supporting ${form.style_context ?? "style"} attribution: ${form.style_supporting_evidence.map((s) => s.display_label).join(", ")} (these features are characteristic of the style but don't independently narrow dating).`]
+        : []),
       `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
       `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
       `Sellability score: ${vb.sellability_score}/100.`,
