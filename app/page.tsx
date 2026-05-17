@@ -454,6 +454,297 @@ const LAYER_LABELS: Record<string, string> = {
   style_wave: "Style wave",
 };
 
+// Block 25 diagnostic — Engine Trace card. REMOVE BEFORE LAUNCH.
+// Per-phase visibility into engine capture + routing + scoring + dating
+// overlap sources. Default-collapsed sections via native <details>.
+// Per Mike: "see precisely what information is getting captured and
+// passed on at each block." Full pipeline trace covering perception
+// (P0), clue capture (P4), frame/upholstery split (Block 14),
+// identification scoring (P3), style waves, dating overlap sources +
+// convergence (P6), conflicts + resolutions (P5).
+function EngineTraceCard({ report }: { report: any }) {
+  if (!report) return null;
+  const so = report.stage_outputs || {};
+  const digest = report.evidence_digest;
+  const observations: any[] = report.observations || digest?.observations || [];
+  const clueKeys: string[] = digest?.clue_keys || [];
+  const weightedClues: any[] = so.p4?.weighted_clues || [];
+  const tracePhase = so.p3 || {};
+  const datingOverlap: any = so.p6?.dating_overlap;
+  const p2: any = so.p2 || {};
+  const p5: any = so.p5 || {};
+
+  // Frame/upholstery clue split per Block 14
+  const upholsteryWeightedClues = weightedClues.filter((w: any) => w.category === "upholstery");
+  const frameWeightedClues = weightedClues.filter((w: any) => w.category !== "upholstery");
+
+  // Weighted clues bucketed by category for readability
+  const cluesByCategory: Record<string, any[]> = {};
+  for (const wc of weightedClues) {
+    const cat = wc.category || "uncategorized";
+    (cluesByCategory[cat] ||= []).push(wc);
+  }
+
+  const monoStyle: React.CSSProperties = { fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 12, color: "#3e2f1f" };
+  const traceRow: React.CSSProperties = { padding: "4px 0", borderBottom: "1px solid #f0e8d8" };
+  const summaryStyle: React.CSSProperties = { cursor: "pointer", padding: "6px 0", fontWeight: 600, color: "#5a3e1b", fontSize: 13 };
+  const subSection: React.CSSProperties = { marginTop: 8, marginBottom: 12, paddingLeft: 12, borderLeft: "2px solid #ded3bf" };
+
+  return (
+    <SectionCard title="Engine Trace (diagnostic — remove before launch)">
+      <div style={{ fontSize: 12, color: "#8a785f", marginBottom: 10, fontStyle: "italic" }}>
+        Per-phase visibility into what the engine captured, routed, and scored. Expand each section
+        to inspect. Sections show raw structured data so you can verify the engine is processing
+        each phase correctly.
+      </div>
+
+      {/* === P0 PERCEPTION === */}
+      <details>
+        <summary style={summaryStyle}>
+          P0 Perception — {observations.length} observations, {clueKeys.length} clue keys detected
+        </summary>
+        <div style={subSection}>
+          <div style={{ fontSize: 13, color: "#574634", marginBottom: 6 }}>
+            <strong>Clue keys ({clueKeys.length}):</strong>
+          </div>
+          <div style={monoStyle}>
+            {clueKeys.length === 0 ? <em>none</em> : clueKeys.join(", ")}
+          </div>
+          <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 6 }}>
+            <strong>Observations ({observations.length}):</strong>
+          </div>
+          {observations.length === 0 ? <em style={{ fontSize: 12 }}>none</em> : (
+            <div style={{ maxHeight: 320, overflowY: "auto", border: "1px solid #ede2cc", padding: 8, background: "#fffefb" }}>
+              {observations.map((o: any, i: number) => (
+                <div key={i} style={traceRow}>
+                  <div style={monoStyle}>
+                    [{o.type || "?"}] {o.clue ? <strong>{o.clue}</strong> : <em>no clue</em>} (conf {o.confidence ?? "?"})
+                    {o.hard_negative ? <span style={{ color: "#a8645f" }}> [hard_negative]</span> : null}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#5c4a37", marginTop: 2 }}>{o.description || ""}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </details>
+
+      {/* === FRAME / UPHOLSTERY SPLIT (Block 14) === */}
+      <details>
+        <summary style={summaryStyle}>
+          Frame / Upholstery clue split (Block 14) — {frameWeightedClues.length} frame · {upholsteryWeightedClues.length} upholstery
+        </summary>
+        <div style={subSection}>
+          <div style={{ fontSize: 13, color: "#574634", marginBottom: 6 }}>
+            <strong>Frame clues ({frameWeightedClues.length})</strong> — fed scoreForms, attributeStyle, dateFromEvidence:
+          </div>
+          <div style={monoStyle}>
+            {frameWeightedClues.length === 0 ? <em>none</em> :
+              frameWeightedClues.map((w: any) => `${w.clue}[${w.category}]`).join(", ")}
+          </div>
+          <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 6 }}>
+            <strong>Upholstery clues ({upholsteryWeightedClues.length})</strong> — fed detectUpholsteryLayer + upholstery dating-overlap layer:
+          </div>
+          <div style={monoStyle}>
+            {upholsteryWeightedClues.length === 0 ? <em>none</em> :
+              upholsteryWeightedClues.map((w: any) => `${w.clue}[${w.category}]`).join(", ")}
+          </div>
+        </div>
+      </details>
+
+      {/* === P3 FORM IDENTIFICATION === */}
+      <details>
+        <summary style={summaryStyle}>
+          Form identification (P3) — best: {tracePhase.form_id || tracePhase.form || "?"}
+        </summary>
+        <div style={subSection}>
+          <div style={{ fontSize: 13, color: "#574634" }}>
+            <div><strong>Best form:</strong> <span style={monoStyle}>{tracePhase.form_id || "?"}</span> ({tracePhase.form})</div>
+            <div><strong>Display:</strong> {tracePhase.display_form}</div>
+            <div><strong>Confidence:</strong> {tracePhase.confidence}</div>
+            <div><strong>Style context:</strong> {tracePhase.style_context || <em>none</em>}</div>
+            {tracePhase.subtype && <div><strong>Subtype:</strong> <span style={monoStyle}>{JSON.stringify(tracePhase.subtype)}</span></div>}
+            {tracePhase.dimensional_check && <div><strong>Dimensional check:</strong> {tracePhase.dimensional_check.ok ? "OK" : "FAIL"} — {tracePhase.dimensional_check.note}</div>}
+            {tracePhase.hybrid && <div><strong>Hybrid:</strong> <span style={monoStyle}>{JSON.stringify(tracePhase.hybrid)}</span></div>}
+          </div>
+          <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 4 }}><strong>Alternative forms considered ({(tracePhase.alternatives || []).length}):</strong></div>
+          <ul style={{ ...monoStyle, marginTop: 4, paddingLeft: 20 }}>
+            {(tracePhase.alternatives || []).map((alt: string, i: number) => {
+              const altId = tracePhase.alternative_form_ids?.[i];
+              return <li key={i}>{alt}{altId ? ` (${altId})` : ""}</li>;
+            })}
+          </ul>
+        </div>
+      </details>
+
+      {/* === STYLE ATTRIBUTION === */}
+      <details>
+        <summary style={summaryStyle}>
+          Style attribution ranking (P3) — top: {tracePhase.style_attribution?.name || "none"}
+        </summary>
+        <div style={subSection}>
+          <div style={{ fontSize: 13, color: "#574634", marginBottom: 6 }}>
+            <strong>Top attribution:</strong>
+          </div>
+          <div style={monoStyle}>
+            {tracePhase.style_attribution ? JSON.stringify(tracePhase.style_attribution, null, 2) : "none"}
+          </div>
+          <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 6 }}>
+            <strong>Alternatives ({(tracePhase.style_alternatives || []).length}):</strong>
+          </div>
+          {(tracePhase.style_alternatives || []).length === 0 ? <em style={{ fontSize: 12 }}>none</em> : (
+            <div style={{ ...monoStyle, maxHeight: 240, overflowY: "auto", background: "#fffefb", padding: 8, border: "1px solid #ede2cc" }}>
+              {(tracePhase.style_alternatives || []).map((s: any, i: number) => (
+                <div key={i} style={traceRow}>{s.name} (conf {s.confidence?.toFixed?.(2) ?? "?"}, source {s.source ?? "?"})</div>
+              ))}
+            </div>
+          )}
+        </div>
+      </details>
+
+      {/* === STYLE WAVES === */}
+      <details>
+        <summary style={summaryStyle}>
+          Style waves detected — {(tracePhase.style_waves || []).length} wave(s)
+        </summary>
+        <div style={subSection}>
+          {(tracePhase.style_waves || []).length === 0 ? (
+            <em style={{ fontSize: 12 }}>No waves fired. The 2-of-N gate at engineStyleEvaluator.ts requires at least 2 signal matches per wave; check Block 24b engine_match_tokens authoring + Block 24a layer-3 signal vocabulary.</em>
+          ) : (
+            <div style={{ ...monoStyle, background: "#fffefb", padding: 8, border: "1px solid #ede2cc" }}>
+              {(tracePhase.style_waves || []).map((w: any, i: number) => (
+                <div key={i} style={traceRow}>
+                  <strong>{w.name}</strong> — {w.date_floor}{w.date_ceiling ? `–${w.date_ceiling}` : "+"} (parent: {w.parent_style_id}, matched_signals: {w.matched_signals_count ?? "?"})
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </details>
+
+      {/* === P4 WEIGHTED CLUES === */}
+      <details>
+        <summary style={summaryStyle}>
+          P4 Weighted clues — {weightedClues.length} clues across {Object.keys(cluesByCategory).length} categories
+        </summary>
+        <div style={subSection}>
+          {Object.keys(cluesByCategory).sort().map((cat) => (
+            <div key={cat} style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 13, color: "#574634", marginBottom: 4 }}>
+                <strong>{cat}</strong> ({cluesByCategory[cat].length} clues):
+              </div>
+              <div style={{ ...monoStyle, paddingLeft: 12 }}>
+                {cluesByCategory[cat].map((w: any, i: number) => (
+                  <div key={i} style={traceRow}>
+                    {w.clue} — weight {typeof w.weight === "number" ? w.weight.toFixed(2) : w.weight}
+                    {w.date_hint ? <span style={{ color: "#5c4a37" }}> · date: {w.date_hint}</span> : ""}
+                    {w.hard_negative ? <span style={{ color: "#a8645f" }}> [HARD NEG]</span> : ""}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      {/* === DATING OVERLAP LAYER SOURCES === */}
+      <details>
+        <summary style={summaryStyle}>
+          Dating overlap — per-layer evidence sources
+        </summary>
+        <div style={subSection}>
+          {!datingOverlap ? <em style={{ fontSize: 12 }}>no dating overlap data</em> : (
+            <>
+              <div style={{ fontSize: 13, color: "#574634", marginBottom: 6 }}>
+                <strong>Overall envelope:</strong> {datingOverlap.overall_floor ?? "?"}{datingOverlap.overall_floor && datingOverlap.overall_ceiling ? `–${datingOverlap.overall_ceiling}` : ""}
+              </div>
+              <div style={{ ...monoStyle, background: "#fffefb", padding: 8, border: "1px solid #ede2cc" }}>
+                {(datingOverlap.layers || []).map((l: any, i: number) => (
+                  <div key={i} style={{ ...traceRow, paddingTop: 6, paddingBottom: 6 }}>
+                    <div>
+                      <strong>{l.layer}</strong> — {l.date_floor ?? "?"}{l.date_floor && l.date_ceiling ? `–${l.date_ceiling}` : ""} ({l.confidence}, {l.source_count} contributing clue{l.source_count !== 1 ? "s" : ""})
+                    </div>
+                    {l.source_clues?.length > 0 && (
+                      <div style={{ paddingLeft: 12, color: "#5c4a37" }}>source: {l.source_clues.join(", ")}</div>
+                    )}
+                    {l.present_without_dates > 0 && (
+                      <div style={{ paddingLeft: 12, color: "#a8645f" }}>
+                        present but undated: {l.present_without_dates} ({(l.undated_clues || []).join(", ")})
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 6 }}>
+                <strong>Convergence zones ({(datingOverlap.convergence_zones || []).length}):</strong>
+              </div>
+              {(datingOverlap.convergence_zones || []).length === 0 ? <em style={{ fontSize: 12 }}>no convergence zones (≥3 layers must agree)</em> : (
+                <div style={{ ...monoStyle, paddingLeft: 12 }}>
+                  {(datingOverlap.convergence_zones || []).map((z: any, i: number) => (
+                    <div key={i} style={traceRow}>
+                      {z.date_floor}–{z.date_ceiling} ({z.layer_count} layers: {(z.layers || []).join(", ")})
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </details>
+
+      {/* === P5 CONFLICTS + RESOLUTIONS === */}
+      <details>
+        <summary style={summaryStyle}>
+          P5 Conflicts + resolutions — {(p5?.conflicts || []).length} conflicts, {(p5?.resolutions || []).length} resolutions
+        </summary>
+        <div style={subSection}>
+          <div style={{ fontSize: 13, color: "#574634", marginBottom: 6 }}><strong>Conflicts:</strong></div>
+          {(p5?.conflicts || []).length === 0 ? <em style={{ fontSize: 12 }}>none</em> :
+            <ul style={{ ...monoStyle, paddingLeft: 20 }}>
+              {(p5?.conflicts || []).map((c: string, i: number) => <li key={i}>{c}</li>)}
+            </ul>}
+          <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 6 }}><strong>Resolutions:</strong></div>
+          {(p5?.resolutions || []).length === 0 ? <em style={{ fontSize: 12 }}>none</em> :
+            <ul style={{ ...monoStyle, paddingLeft: 20 }}>
+              {(p5?.resolutions || []).map((r: string, i: number) => <li key={i}>{r}</li>)}
+            </ul>}
+          <div style={{ fontSize: 13, color: "#574634", marginTop: 10, marginBottom: 6 }}><strong>Supporting context:</strong></div>
+          {(p5?.supporting_context || []).length === 0 ? <em style={{ fontSize: 12 }}>none</em> :
+            <ul style={{ ...monoStyle, paddingLeft: 20 }}>
+              {(p5?.supporting_context || []).map((s: string, i: number) => <li key={i}>{s}</li>)}
+            </ul>}
+        </div>
+      </details>
+
+      {/* === P2 FRAME DATING DETAILS === */}
+      <details>
+        <summary style={summaryStyle}>
+          P2 Frame dating + upholstery layer — frame range: {p2?.range || "?"}
+        </summary>
+        <div style={subSection}>
+          <div style={{ fontSize: 13, color: "#574634" }}>
+            <div><strong>Frame range:</strong> {p2?.range} (confidence {p2?.confidence}, floor {p2?.date_floor ?? "?"}, ceiling {p2?.date_ceiling ?? "?"})</div>
+            {p2?.upholstery_layer && (
+              <div style={{ marginTop: 8 }}>
+                <strong>Upholstery layer:</strong>
+                <div style={{ ...monoStyle, marginTop: 4 }}>{JSON.stringify(p2.upholstery_layer, null, 2)}</div>
+              </div>
+            )}
+            {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && (
+              <div style={{ marginTop: 8 }}>
+                <strong>Limitations:</strong>
+                <ul style={{ ...monoStyle, paddingLeft: 20 }}>
+                  {p2.limitations.map((l: string, i: number) => <li key={i}>{l}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </details>
+    </SectionCard>
+  );
+}
+
 function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
   // Determine axis range. Fall back to a sensible default if data is sparse.
   const allFloors = data.layers.map((l) => l.date_floor).filter((v): v is number => v !== null);
@@ -941,6 +1232,7 @@ const stageOutputs = report?.stage_outputs || {};
   const p1 = stageOutputs.p1 || null;
 const p2 = stageOutputs.p2 || null;
 const p3 = stageOutputs.p3 || null;
+const p4 = stageOutputs.p4 || null;
 const p5 = stageOutputs.p5 || null;
 const p6 = stageOutputs.p6 || null;
 const p7 = stageOutputs.p7 || null;
@@ -1344,6 +1636,11 @@ const p7 = stageOutputs.p7 || null;
               <TipsList items={p7?.selling_tips} />
             </SectionCard>
         </div>
+        {/* Block 25 diagnostic — Engine Trace card. REMOVE BEFORE LAUNCH per Mike's directive.
+            Per-phase visibility into what the engine captured, how it routed, and where each
+            dating-overlap layer's evidence came from. Defaults collapsed; expand sections to
+            inspect individual phase data. */}
+        <EngineTraceCard report={report} />
           </div>
         )}
       </div>
