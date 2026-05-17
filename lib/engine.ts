@@ -12,6 +12,7 @@ import {
   evaluateDimensional,
   evaluateHybridForm,
   getCommonAliasesForDisplay,
+  getFormDatingBoundaries,
   type SubtypeAssignment,
   type AntiBackViolation,
   type HybridAnnotation,
@@ -4997,11 +4998,17 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
 
   // Block 3a: build 8-layer dating-overlap data for Full Analysis viz (D-PH3-6).
   // Engine produces structured data; React rendering lands in Block 3b.
+  // Block 16: pass form-emergence / form-extinction boundaries from the
+  // form's anti_classification_guidance so layer bands are clipped by
+  // form impossibility (e.g., telephone bench style band can't extend
+  // before 1900 even if the canonical Louis XVI style period is 1770s).
+  const formBoundaries = getFormDatingBoundaries(form.form_id ?? null);
   const dating_overlap = buildDatingOverlap(
     weighting.weighted_clues || [],
     form.style_attribution ?? null,
     form.style_waves ?? [],
-    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null }
+    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null },
+    formBoundaries
   );
 
   return {
@@ -5113,11 +5120,15 @@ if (p6.dating_overlap) {
   const frameClues = (stage_outputs.p4?.weighted_clues || []).filter(
     (c: any) => c.category !== "upholstery"
   );
+  // Block 16: same form-boundary clipping applies to the frame-only
+  // overlap used for convergence refinement.
+  const frameBoundaries = getFormDatingBoundaries(p3.form_id ?? null);
   const frameOverlap = buildDatingOverlap(
     frameClues,
     p3.style_attribution ?? null,
     p3.style_waves ?? [],
-    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null }
+    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null },
+    frameBoundaries
   );
   const refined = refineDatingFromConvergence(
     {
