@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { API } from "../lib/store";
+import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
 
 type ImageRecord = {
   image_type: string;
@@ -653,6 +654,62 @@ function renderStyleRowPair(
           );
         })}
     </React.Fragment>
+  );
+}
+
+// Tone → visual palette for the dating-finding headline callout.
+// Confident: cream-on-warm, dark text (default appraiser-voice).
+// Qualified: same as confident, slightly muted (caveats acknowledged).
+// Tentative: gray-on-muted (weak evidence; encourage caution).
+// Caution: amber-on-warm (reproduction / impossible pair; clearly different).
+const TONE_PALETTE: Record<DatingFindingNarrative["tone"], {
+  bg: string;
+  border: string;
+  text: string;
+  accent: string;
+  label: string;
+}> = {
+  confident: { bg: "#f0ebd9", border: "#c9b990", text: "#3d2d1f", accent: "#7a5a3a", label: "What the evidence shows" },
+  qualified: { bg: "#f3eedd", border: "#cdbe96", text: "#4a3a28", accent: "#8a7350", label: "What the evidence shows" },
+  tentative: { bg: "#eee9dd", border: "#c4b89e", text: "#5c4a37", accent: "#8a785f", label: "Limited evidence" },
+  caution:   { bg: "#f8e8d4", border: "#d8a96b", text: "#5a3a1a", accent: "#a26a2a", label: "Dating caution" },
+};
+
+function DatingFindingCallout({ narrative }: { narrative: DatingFindingNarrative }) {
+  const palette = TONE_PALETTE[narrative.tone];
+  return (
+    <div
+      style={{
+        marginBottom: 14,
+        padding: "12px 14px",
+        borderRadius: 10,
+        background: palette.bg,
+        border: `1px solid ${palette.border}`,
+        borderLeft: `4px solid ${palette.accent}`,
+        color: palette.text,
+        lineHeight: 1.6,
+        fontSize: 14,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: 0.6,
+          textTransform: "uppercase",
+          color: palette.accent,
+          marginBottom: 6,
+        }}
+      >
+        {palette.label}
+      </div>
+      <div style={{ fontSize: 14, color: palette.text }}>{narrative.headline}</div>
+      {narrative.detail && (
+        <div style={{ marginTop: 8, fontSize: 13, color: palette.text, opacity: 0.85, lineHeight: 1.55 }}>
+          {narrative.detail}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -2008,6 +2065,16 @@ const p7 = stageOutputs.p7 || null;
             )}
             {p6?.dating_overlap && (
               <SectionCard title="Dating Overlap by Evidence Layer">
+                {(() => {
+                  const narrative = buildDatingFindingNarrative({
+                    data: p6.dating_overlap,
+                    styleAttribution: p3?.style_attribution ?? null,
+                    finalStyle: p3?.final_style ?? null,
+                    finalDatingFloor: p2?.date_floor ?? null,
+                    finalDatingCeiling: p2?.date_ceiling ?? null,
+                  });
+                  return narrative ? <DatingFindingCallout narrative={narrative} /> : null;
+                })()}
                 <DatingOverlapViz
                   data={p6.dating_overlap}
                   styleAttribution={p3?.style_attribution ?? null}
