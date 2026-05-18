@@ -772,6 +772,53 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // wood frame, separate seat/back panels); resolve at scoreForms via
   // four-corner suspended sling geometry evidence.
 
+  "Adirondack chair": "form_adirondack_chair",
+  "Adirondak chair": "form_adirondack_chair", // common misspelling
+  "Westport chair": "form_adirondack_chair", // subtype_adirondack_westport — Bunnell attribution requires documentation
+  "Westport Adirondack": "form_adirondack_chair", // subtype_adirondack_westport
+  "Muskoka chair": "form_adirondack_chair", // Canadian regional naming for Adirondack-type
+  "Fan-back Adirondack": "form_adirondack_chair", // subtype_adirondack_fan_back
+  "Folding Adirondack": "form_adirondack_chair", // subtype_adirondack_folding (boundary form with form_folding_chair)
+  "Rocking Adirondack": "form_adirondack_chair", // subtype_adirondack_rocking (boundary form with form_rocking_chair)
+  "Poly Adirondack": "form_adirondack_chair", // subtype_adirondack_composite (post-1990)
+  "Composite Adirondack": "form_adirondack_chair", // subtype_adirondack_composite
+  "HDPE Adirondack": "form_adirondack_chair", // subtype_adirondack_composite
+  "Recycled plastic Adirondack": "form_adirondack_chair", // subtype_adirondack_composite
+  "Child Adirondack": "form_adirondack_chair", // subtype_adirondack_child
+  "Double Adirondack": "form_adirondack_chair", // subtype_adirondack_double
+  "Adirondack tête-à-tête": "form_adirondack_chair", // subtype_adirondack_double
+  // Note: "Lawn chair", "Camp chair", "Porch chair", "Garden chair",
+  // "Deck chair", "Patio chair", "Outdoor lounge chair", "Rustic lounge
+  // chair", "Plank lounge chair" intentionally NOT mapped — these are
+  // outdoor-use vocabulary that span Adirondack/butterfly/folding/deck/
+  // patio dining/rustic camp forms. Adirondack identity requires the
+  // combined sloped-seat + reclined-back + wide-arm + plank geometry;
+  // resolve at scoreForms via structural evidence rather than location.
+
+  "Porch glider": "form_porch_lawn_glider",
+  "Lawn glider": "form_porch_lawn_glider",
+  "Metal glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Metal lawn glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Glider bench": "form_porch_lawn_glider", // subtype_glider_bench
+  "Glider loveseat": "form_porch_lawn_glider", // subtype_glider_loveseat
+  "Glider settee": "form_porch_lawn_glider", // subtype_glider_loveseat
+  "Porch glider bench": "form_porch_lawn_glider", // subtype_glider_bench
+  "Patio glider": "form_porch_lawn_glider", // subtype_glider_cushioned_patio
+  "Outdoor glider": "form_porch_lawn_glider",
+  "Vintage lawn glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Tin glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Steel glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Bunting glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn — maker attribution requires documentation
+  "Lloyd glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Howell glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Shott glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  "Cosco glider": "form_porch_lawn_glider", // subtype_glider_metal_lawn
+  // Note: "Porch swing" and "Swing bench" intentionally NOT mapped to
+  // form_porch_lawn_glider — per the canonical's own cousin contrast,
+  // porch swings suspend from overhead chains/rope/beam while gliders
+  // rest on a stationary ground base with linkage/hanger mechanism.
+  // These aliases route to porch-swing logic when that canonical exists.
+
   "Stool": "form_stool",
   "Tabouret": "form_stool", // subtype_stool_tabouret
   "Counter stool": "form_stool", // subtype_stool_counter
