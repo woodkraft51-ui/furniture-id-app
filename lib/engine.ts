@@ -2994,6 +2994,9 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
     .join(" ")}`.toLowerCase();
 
   const has = (word: string) => text.includes(word);
+  const hasClue = (clue: string) =>
+    (digest.clue_keys || []).includes(clue) ||
+    digest.observations.some((o) => o.clue === clue);
 
   const not = (word: string) =>
     includesAny(text, [
@@ -3002,6 +3005,22 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
       `without ${word}`,
       `${word} not`,
     ]);
+
+  // Golden Oak Era market/finish/era anchor (wood HCL — oak variant per
+  // lib/constraints/woodIdentification.ts wood_variant_golden_oak_era).
+  // Surfaces FIRST so the report carries a positive market-era identity
+  // on pieces with no style attribution and prevents the Empire fallback
+  // below from misfiring on factory-era oak pieces whose descriptions
+  // happen to contain words like "empire" or "transitional" (e.g.,
+  // empire_transitional_style clue on a Golden Oak dresser). Returns the
+  // bare variant name so it composes cleanly with the form display
+  // ("Golden Oak Era Chest of drawers / dresser"). The longer
+  // "market production" / "factory production" framing lives in the
+  // variant's family_description and gets surfaced in the supporting-
+  // evidence / style-context sentence rather than the display prefix.
+  if (hasClue("golden_oak_era_possible") || hasClue("golden_oak_structural_pattern")) {
+    return "Golden Oak Era";
+  }
 
   // Jacobean
   if (
