@@ -1098,6 +1098,100 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // long horizontal multi-shade task-lighting layout (line spacing
   // over an elongated table surface). Resolve at scoreForms.
 
+  // ───────────────────────────────────────────────────────────────────
+  // Portable surface lighting — Item 17 Batch D (Tier B lighting)
+  // ───────────────────────────────────────────────────────────────────
+
+  "Candlestick": "form_candlestick",
+  "Candle stick": "form_candlestick",
+  "Candleholder": "form_candlestick",
+  "Single candleholder": "form_candlestick",
+  "Chamberstick": "form_candlestick", // subtype_candlestick_chamberstick
+  "Pricket stick": "form_candlestick", // subtype_candlestick_pricket
+  "Pricket candlestick": "form_candlestick", // subtype_candlestick_pricket
+  "Push-up candlestick": "form_candlestick", // subtype_candlestick_push_up
+  "Hog-scraper candlestick": "form_candlestick", // subtype_candlestick_hog_scraper
+  "Taper holder": "form_candlestick",
+
+  "Oil lamp": "form_oil_lamp", // generic pre-kerosene fluid lighting; kerosene burner/chimney evidence reroutes to form_kerosene_lamp at scoreForms
+  "Fluid lamp": "form_oil_lamp",
+  "Whale oil lamp": "form_oil_lamp", // subtype_oil_lamp_whale_oil
+  "Sperm oil lamp": "form_oil_lamp", // subtype_oil_lamp_sperm_oil
+  "Lard oil lamp": "form_oil_lamp", // subtype_oil_lamp_lard_oil
+  "Burning-fluid lamp": "form_oil_lamp", // subtype_oil_lamp_fluid_or_camphene
+  "Camphene lamp": "form_oil_lamp", // subtype_oil_lamp_fluid_or_camphene
+  "Converted oil lamp": "form_oil_lamp", // subtype_oil_lamp_electrified
+  // Note: "Astral lamp" and "Sinumbra lamp" intentionally route to
+  // form_argand_lamp (below) — the canonical Argand burner technology
+  // is the diagnostic, and both astral and sinumbra are explicit
+  // Argand subtypes per the argand_lamp canonical.
+
+  "Kerosene lamp": "form_kerosene_lamp",
+  "Coal oil lamp": "form_kerosene_lamp", // period synonym for kerosene
+  "Center-draft lamp": "form_kerosene_lamp", // subtype_kerosene_lamp_center_draft
+  "Aladdin lamp": "form_kerosene_lamp", // subtype_kerosene_lamp_aladdin — maker attribution requires marked burner/font/model
+  "Aladdin mantle lamp": "form_kerosene_lamp", // subtype_kerosene_lamp_aladdin
+  "Rayo lamp": "form_kerosene_lamp", // subtype_kerosene_lamp_rayo — attribution requires marked parts/catalog match
+  "Finger lamp": "form_kerosene_lamp", // subtype_kerosene_lamp_finger_lamp
+  "Hurricane lamp": "form_kerosene_lamp", // common retail term for kerosene lamp with chimney; railroad/utility hurricane lanterns route via lantern form at scoreForms
+  "Converted kerosene lamp": "form_kerosene_lamp", // subtype_kerosene_lamp_electrified
+  // Note: "Parlor lamp" appears in both kerosene and banquet aliases.
+  // Routing decision: banquet lamp gets it (tall ornate parlor form is
+  // the dominant retail use of "parlor lamp"); kerosene parlor lamps
+  // smaller than banquet scale resolve at scoreForms via dimensional
+  // evidence. "Oil lamp" intentionally NOT routed here — that bare
+  // alias routes to form_oil_lamp above (broader form); kerosene
+  // identity requires kerosene burner/chimney evidence.
+
+  "Argand lamp": "form_argand_lamp",
+  "Astral lamp": "form_argand_lamp", // subtype_argand_lamp_astral (astral is an Argand variant per canonical; sinumbra likewise routes here)
+  "Sinumbra lamp": "form_argand_lamp", // subtype_argand_lamp_sinumbra
+  "Solar lamp": "form_argand_lamp", // period term for Argand-derived lighting
+  "Circular wick lamp": "form_argand_lamp", // diagnostic Argand burner technology
+  "Draft lamp": "form_argand_lamp",
+  "Converted Argand lamp": "form_argand_lamp", // subtype_argand_lamp_converted_kerosene or _electrified
+  // Note: "Early oil lamp" intentionally NOT mapped — too generic;
+  // Argand identity requires circular wick / chimney draft evidence,
+  // not just early date. Resolve at scoreForms via burner inspection.
+
+  "Betty lamp": "form_betty_lamp",
+  "Grease lamp": "form_betty_lamp",
+  "Fat lamp": "form_betty_lamp",
+  "Pan lamp": "form_betty_lamp", // shallow pan/grease lighting
+  "Iron betty lamp": "form_betty_lamp",
+  "Lidded betty lamp": "form_betty_lamp", // subtype_betty_lamp_lidded
+  "Rat-tail lamp": "form_betty_lamp", // subtype_betty_lamp_rat_tail
+  "Early grease light": "form_betty_lamp",
+  // Note: "Primitive lamp" intentionally NOT mapped — too generic;
+  // primitive-looking lighting spans betty lamp / oil lamp / candlestick /
+  // reproductions. Betty lamp identity requires pan/grease construction.
+
+  "Student lamp": "form_student_lamp",
+  "Study lamp": "form_student_lamp",
+  "Reading lamp": "form_student_lamp",
+  "Double student lamp": "form_student_lamp", // subtype_student_lamp_double_burner
+  "Kerosene student lamp": "form_student_lamp", // subtype_student_lamp_kerosene
+  "Rochester student lamp": "form_student_lamp", // subtype_student_lamp_rochester_or_bh_type — attribution requires marks
+  "Bradley and Hubbard student lamp": "form_student_lamp", // subtype_student_lamp_rochester_or_bh_type
+  "Bradley & Hubbard student lamp": "form_student_lamp",
+  "Banker lamp": "form_student_lamp", // subtype_student_lamp_bankers_or_library
+  "Banker's lamp": "form_student_lamp",
+  "Library lamp": "form_student_lamp", // subtype_student_lamp_bankers_or_library
+  // Note: "Desk lamp" intentionally NOT mapped — too generic; spans
+  // student lamp / table lamp / modern task lighting. Student lamp
+  // identity requires adjustable/offset task-light architecture.
+
+  "Banquet lamp": "form_banquet_lamp",
+  "Parlor lamp": "form_banquet_lamp", // dominant retail use is for tall ornate parlor form
+  "Victorian banquet lamp": "form_banquet_lamp",
+  "GWTW lamp": "form_banquet_lamp", // subtype_banquet_lamp_gone_with_the_wind
+  "Gone With the Wind lamp": "form_banquet_lamp", // subtype_banquet_lamp_gone_with_the_wind
+  "Tall kerosene lamp": "form_banquet_lamp",
+  "Converted banquet lamp": "form_banquet_lamp", // subtype_banquet_lamp_electrified
+  "Painted glass lamp": "form_banquet_lamp", // subtype_banquet_lamp_painted_glass
+  "Formal parlor lamp": "form_banquet_lamp",
+
+
   // Note: "Jelly cupboard" intentionally NOT remapped — already routes
   // to form_jelly_cupboard (existing canonical at line 1946+); jam_cupboard
   // and jelly_cupboard are peer forms with overlapping aliases. The jam
