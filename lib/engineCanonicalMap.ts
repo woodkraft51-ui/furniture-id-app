@@ -334,6 +334,32 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Kitchen gateleg table": "form_gateleg_table", // subtype_gateleg_kitchen
   "Breakfast gateleg table": "form_gateleg_table", // subtype_gateleg_breakfast
   "English gateleg table": "form_gateleg_table",
+  "Trestle table": "form_trestle_table",
+  "Trestle dining table": "form_trestle_table",
+  "Refectory table": "form_trestle_table", // subtype_trestle_refectory
+  "Refectory dining table": "form_trestle_table", // subtype_trestle_refectory
+  "Monastery table": "form_trestle_table", // subtype_trestle_refectory
+  "Abbey table": "form_trestle_table",
+  "Harvest table": "form_trestle_table", // overlaps with subtype_kitchen_table_farm; trestle wins when end-support construction dominates
+  "Sawhorse table": "form_trestle_table", // subtype_trestle_sawhorse
+  "A-frame table": "form_trestle_table", // subtype_trestle_sawhorse
+  "X-base table": "form_trestle_table",
+  "Jacobean table": "form_trestle_table", // subtype_trestle_jacobean_revival
+  "Jacobean Revival table": "form_trestle_table", // subtype_trestle_jacobean_revival
+  "Tudor table": "form_trestle_table", // subtype_trestle_jacobean_revival
+  "Mission trestle table": "form_trestle_table", // subtype_trestle_arts_crafts
+  "Arts and Crafts trestle table": "form_trestle_table", // subtype_trestle_arts_crafts
+  "Craftsman trestle table": "form_trestle_table", // subtype_trestle_arts_crafts
+  "Library trestle table": "form_trestle_table", // subtype_trestle_library
+  "Work trestle table": "form_trestle_table", // subtype_trestle_work
+  "Draw-leaf trestle table": "form_trestle_table", // subtype_trestle_draw_leaf
+  // Note: "Farm table", "Farmhouse table" stay routed to form_kitchen_table
+  // (existing mappings per Tier A integration). Per trestle's own cousin
+  // contrast, farm-table identity is use/context vocabulary; trestle activates
+  // via "Trestle table" alias or via scoreForms structural cues when end-
+  // support construction dominates. "Hall table" intentionally NOT mapped —
+  // hall tables are more commonly console-table or hall-context tables;
+  // trestle-as-hall-table examples activate via "Trestle table" alias.
   // Note: "Tea table", "Tripod table", "Pedestal table", "Candle stand",
   // "Candle table", "Occasional table", "Parlor table" intentionally NOT
   // remapped here — they retain their existing routes to form_tea_table,
