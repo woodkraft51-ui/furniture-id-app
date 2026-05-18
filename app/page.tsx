@@ -1705,6 +1705,11 @@ const p7 = stageOutputs.p7 || null;
               <SectionCard title="Likely Identification">
                 <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
                 {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
+                {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair"].includes(p3.final_style.kind) && (
+                  <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                    Why this label: {p3.final_style.final_style_reason}
+                  </div>
+                )}
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && <><div style={subheadStyle}>Alternate possibilities</div><ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
               <SectionCard title="Broad Date Lane">
@@ -1796,6 +1801,11 @@ const p7 = stageOutputs.p7 || null;
                 <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
                 <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p3?.confidence) }}>{p3?.confidence || "Inconclusive"}</strong></div>
                 {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
+                {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair"].includes(p3.final_style.kind) && (
+                  <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                    Why this label: {p3.final_style.final_style_reason}
+                  </div>
+                )}
                 {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && <><div style={subheadStyle}>Alternate possibilities</div><ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               </SectionCard>
               <SectionCard title="Dating Analysis (Frame)">

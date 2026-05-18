@@ -69,6 +69,7 @@ import { attributeStyle, aggregateStyleWaves, collectStyleSupportingEvidence, ty
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
 import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
+import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -251,6 +252,14 @@ type Phase3Result = {
   // transitional moment worth a second row. p5 also uses this list to skip
   // generic "competing attribution" framing for these pairs.
   stacked_revival_partner_ids?: string[];
+  // Post-final-assessment style refinement: after convergence refines the
+  // final dating envelope, reconcileFinalStyle() picks the appraiser-voice
+  // label that the date actually supports (revival wave name when dates
+  // match a wave, named transitional period when applicable, reproduction
+  // framing when dates fall outside all known windows). Surfaces in
+  // display_form and the report's "Style identification" line instead of
+  // the bare attribution-time label.
+  final_style?: FinalStyleReconciliation;
   // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
   hybrid?: HybridAnnotation | null;
   // Block 9: undated observations categorically aligned with the style
@@ -5457,6 +5466,52 @@ if (p6.dating_overlap) {
     p2.support = supportArr;
     stage_outputs.p2 = p2;
   }
+}
+
+// Post-final-assessment style reconciliation. Runs AFTER convergence
+// refinement settles the final dating envelope so it can compare the
+// attribution-time style winner against the date the engine actually
+// converged on. Refines the displayed label to the appraiser-voice
+// identification (revival wave name when dates match a wave, named
+// transitional period when applicable, reproduction framing when dates
+// fall outside all known windows). Mutates p3.final_style and updates
+// p3.display_form so downstream report / chart rendering uses the
+// reconciled label.
+{
+  const hasImpossiblePair = ((p5 as Phase5Result).conflicts || []).some(
+    (c: string) => typeof c === "string" && c.startsWith("Impossible style co-attribution:")
+  );
+  const reconciled = reconcileFinalStyle({
+    styleAttribution: p3.style_attribution ?? null,
+    styleWaves: p3.style_waves ?? [],
+    bestIntersection: p3.best_style_intersection ?? null,
+    finalDatingFloor: p2.date_floor ?? null,
+    finalDatingCeiling: p2.date_ceiling ?? null,
+    styleContext: p3.style_context ?? null,
+    hasImpossiblePair,
+  });
+  p3.final_style = reconciled;
+
+  // Update display_form to use the reconciled label only when the
+  // reconciliation actually refines the original attribution-time choice
+  // (kind ∈ {named_transitional, revival_wave, reproduction, impossible_pair}).
+  // For original_period / context_only / unresolved, the existing
+  // display_form is already correct.
+  const refinedKinds: Array<typeof reconciled.kind> = [
+    "named_transitional",
+    "revival_wave",
+    "reproduction",
+    "impossible_pair",
+  ];
+  if (refinedKinds.includes(reconciled.kind) && p3.form) {
+    const base = p3.form;
+    const styled = `${reconciled.final_style_label} ${base}`;
+    // Preserve the canonical "(also commonly called: ...)" aliases tail
+    // when the prior display_form had one.
+    const aliasesMatch = (p3.display_form || "").match(/\s\(also commonly called:[^)]*\)\s*$/);
+    p3.display_form = aliasesMatch ? styled + aliasesMatch[0] : styled;
+  }
+  stage_outputs.p3 = p3;
 }
 
 const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);
