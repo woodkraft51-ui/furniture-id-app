@@ -191,9 +191,9 @@ export const FORMS: FormEntry[] = [
     date_floor: 1820,
     date_ceiling: 1900,
     common_conversion_targets: ["bathroom_vanity"],
-    positive_authority: 7,
-    hard_negative_authority: 7,
-    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘washstand’ sits in the case-piece form group. Canonical production span c. 1820–1900. Diagnostic identity rests on 9 canonical distinguishing features. Anti-classification guidance fixes a form_emergence boundary at c. 1820. Supporting diagnostic content: regional/period context in regional_period_notes, documented conversion targets.",
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8) plus Path A reconciliation of duplicate form_washstand entries (2026-05-18): bedroom-context placement (per Bedroom_Family_updated source-doc note 'moved from Dining/Specialized into Bedroom context') is preserved; the 1820 form_emergence anti_classification_guidance is preserved; subtypes (basin_stand, water_stand, chamber_stand, towel_stand, shaving_stand), cousin_form_contrasts, dimensional_thresholds, and common_aliases from the previously-duplicate Entry/Support-placement entry (formerly at line 11643) are merged in. 'washstand' sits in the case-piece form group. Canonical production span c. 1820-1900 in the American bedroom-suite sense; pre-1820 basin-and-pitcher furniture is routed by anti_classification_guidance to earlier identities (small chests, side tables, basin stands). Diagnostic identity rests on 9 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds, common aliases for retail-language recognition, documented conversion targets.",
     migration_status: "partial",
     distinguishing_features: [
       "Water-resistant top surface — marble, slate, tile, zinc, or similar; ordinary small dressers and side cabinets use plain wood tops meant for storage rather than repeated wet use",
@@ -205,6 +205,71 @@ export const FORMS: FormEntry[] = [
       "Compact height and depth suited to standing use at a basin — proportions read as a washing station rather than as miniature clothing storage",
       "Wear, staining, water marks, or finish loss concentrated on the top surface and rear splash area — diagnostic of original water use even when basin and pitcher are absent",
       "Evidence of removed water-service components — missing basin ring, gallery, towel rail, marble slab, or rear splash structure may be visible as mounting holes, repaired fastener locations, or finish discontinuities",
+    ],
+    subtypes: [
+      {
+        id: "subtype_washstand_basin_stand",
+        name: "basin stand",
+        distinguishing_attributes: [
+          "Washstand variant in compact stand form supporting a basin alone (without integrated towel rails or extensive splash protection). Often the simplest washstand configuration in vernacular American furniture.",
+        ],
+      },
+      {
+        id: "subtype_washstand_water_stand",
+        name: "water stand",
+        distinguishing_attributes: [
+          "Washstand variant emphasizing water container support with pitcher and basin accommodation. Often features integrated lower shelf for additional water storage or accessory containers.",
+        ],
+      },
+      {
+        id: "subtype_washstand_chamber_stand",
+        name: "chamber stand",
+        distinguishing_attributes: [
+          "Washstand variant designed for bedroom (chamber) context with full pitcher-basin-towel-soap accommodation. Distinguished from broader washstand by chamber-specific use and often more refined finish.",
+        ],
+      },
+      {
+        id: "subtype_washstand_towel_stand",
+        name: "towel stand",
+        distinguishing_attributes: [
+          "Washstand variant emphasizing towel storage and drying with prominent towel rails or racks. May lack basin-supporting top surface or position basin support secondary to towel accommodation.",
+        ],
+      },
+      {
+        id: "subtype_washstand_shaving_stand",
+        name: "shaving stand",
+        distinguishing_attributes: [
+          "Washstand variant designed for shaving with mirror integration at face height and accessory storage for razor, shaving soap, brush, and strop. Compact scale suited to gentleman's-room placement.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Washstand vs. side table: washstand has water-resistant top, splash board, and often towel rails; side table is general beside-seating utility surface.",
+      "Washstand vs. dry sink: washstand supports basin and pitcher for personal washing; dry sink is larger kitchen-context form for dish washing and water containment.",
+      "Washstand vs. shaving stand: shaving stand is specialized washstand variant with integrated mirror and shaving accessory storage (now captured as subtype_washstand_shaving_stand within form_washstand).",
+      "Washstand vs. towel stand: washstand has primary basin-supporting top; towel stand emphasizes towel storage with reduced or absent basin accommodation (now captured as subtype_washstand_towel_stand within form_washstand).",
+    ],
+    dimensional_thresholds: {
+      height_min: 30,
+      height_max: 36,
+      width_min: 18,
+      width_max: 30,
+      depth_min: 16,
+      depth_max: 22,
+      weight_min: 20,
+      weight_max: 80,
+      notes: "Personal hygiene support form. Top surface at 30-36 inches above floor (basin top at convenient working height). Footprint 18-30 inches wide × 16-22 inches deep. Towel rails extend 8-14 inches above; lower shelves typically 8-12 inches above floor.",
+    },
+    common_aliases: [
+      "Washstand",
+      "Basin stand",
+      "Water stand",
+      "Chamber stand",
+      "Towel stand",
+      "Shaving stand",
+      "Wash basin stand",
+      "Bedroom washstand",
+      "Pitcher and basin stand",
     ],
     regional_period_notes: "Washstands are fundamentally a pre-plumbing solution; their evolution and decline are directly tied to indoor plumbing adoption, which proceeded unevenly across class, region, and urban/rural settings. Form was originally bedroom-located, briefly migrating to kitchens during the early plumbing transition, and ultimately replaced by bathroom installations as plumbing became standard. Regional traditions during the peak development period (1860–1885): Urban Northeast and Mid-Atlantic produced refined marble-top examples aligned with major cabinetmaking centers (New York, Philadelphia, Boston), with mahogany, cherry, and walnut common. Midwest production mixed factory and regional cabinetmaking with practical hybrid forms and earlier adoption of standardized components, primarily walnut, oak, poplar, and mixed woods. Southern examples persist longer due to slower plumbing infrastructure, use local woods (walnut, pine, regional hardwoods), and often lag urban stylistic trends. Rural and Appalachian production maintains plain vernacular forms with painted finishes long after urban styles have moved on; pine and poplar are common; older styles continue well into later decades. Critical engine caution: confirm dating with construction evidence (joinery, fasteners, finish layering, machine evidence) rather than stylistic markers in isolation. Rural production lags urban styles substantially, painted and plain examples often appear earlier than they are stylistically, and marble tops can be added or replaced later. Bedroom-private functional furniture (washstands, dressing tables, chamber pot cabinets) shows additional ~10 year style lag from urban trends due to private domestic placement insulating the form from rapid stylistic turnover.",
     anti_classification_guidance: {
@@ -11638,94 +11703,6 @@ export const FORMS: FormEntry[] = [
     positive_authority: 8,
     hard_negative_authority: 8,
     notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘package station’ sits in the entry / support form group. Canonical production span opens c. 2010 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 2 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 3 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
-    migration_status: "partial",
-  },
-  {
-    id: "form_washstand",
-    category: "form",
-    name: "washstand",
-    parent_category: "entry_support_form",
-    family_id: "family_entry_support_forms",
-    spatial_behavior_id: "spatial_personal_hygiene_stands",
-    date_floor: 1750,
-    distinguishing_features: [
-      "Top surface designed to support a water basin and pitcher for personal washing",
-      "Often integrated lower shelf, towel rail, or splash board",
-      "Marble or water-resistant top common in 19th-century examples",
-      "Compact horizontal footprint with body-scale proportions",
-      "Towel rails or drying racks frequent at top or sides",
-      "Predates plumbed bathrooms; later forms persist as auxiliary or stylistic furniture",
-    ],
-    subtypes: [
-      {
-        id: "subtype_washstand_basin_stand",
-        name: "basin stand",
-        distinguishing_attributes: [
-          "Washstand variant in compact stand form supporting a basin alone (without integrated towel rails or extensive splash protection). Often the simplest washstand configuration in vernacular American furniture.",
-        ],
-      },
-      {
-        id: "subtype_washstand_water_stand",
-        name: "water stand",
-        distinguishing_attributes: [
-          "Washstand variant emphasizing water container support with pitcher and basin accommodation. Often features integrated lower shelf for additional water storage or accessory containers.",
-        ],
-      },
-      {
-        id: "subtype_washstand_chamber_stand",
-        name: "chamber stand",
-        distinguishing_attributes: [
-          "Washstand variant designed for bedroom (chamber) context with full pitcher-basin-towel-soap accommodation. Distinguished from broader washstand by chamber-specific use and often more refined finish.",
-        ],
-      },
-      {
-        id: "subtype_washstand_towel_stand",
-        name: "towel stand",
-        distinguishing_attributes: [
-          "Washstand variant emphasizing towel storage and drying with prominent towel rails or racks. May lack basin-supporting top surface or position basin support secondary to towel accommodation.",
-        ],
-      },
-      {
-        id: "subtype_washstand_shaving_stand",
-        name: "shaving stand",
-        distinguishing_attributes: [
-          "Washstand variant designed for shaving with mirror integration at face height and accessory storage for razor, shaving soap, brush, and strop. Compact scale suited to gentleman's-room placement.",
-        ],
-      },
-    ],
-    dimensional_thresholds: {
-      height_min: 30,
-      height_max: 36,
-      width_min: 18,
-      width_max: 30,
-      depth_min: 16,
-      depth_max: 22,
-      weight_min: 20,
-      weight_max: 80,
-      notes: "Personal hygiene support form. Top surface at 30-36 inches above floor (basin top at convenient working height). Footprint 18-30 inches wide × 16-22 inches deep. Towel rails extend 8-14 inches above; lower shelves typically 8-12 inches above floor.",
-    },
-    cousin_form_contrasts: [
-      "Washstand vs. side table: washstand has water-resistant top, splash board, and often towel rails; side table is general beside-seating utility surface.",
-      "Washstand vs. dry sink: washstand supports basin and pitcher for personal washing; dry sink is larger kitchen-context form for dish washing and water containment.",
-      "Washstand vs. shaving stand: shaving stand is specialized washstand variant with integrated mirror and shaving accessory storage.",
-      "Washstand vs. towel stand: washstand has primary basin-supporting top; towel stand emphasizes towel storage with reduced or absent basin accommodation.",
-    ],
-    common_aliases: [
-      "Washstand",
-      "Basin stand",
-      "Water stand",
-      "Chamber stand",
-      "Towel stand",
-      "Shaving stand",
-      "Wash basin stand",
-      "Bedroom washstand",
-      "Pitcher and basin stand",
-    ],
-    regional_period_notes:
-      "Personal hygiene support form in the washstand family. Date envelope: c. 1750-present broad use; strongest diagnostic range c. 1800-1920 reflecting peak pre-plumbing residential personal-hygiene conventions. American examples vary by regional cabinetmaking traditions: Federal-period mahogany examples in formal Eastern bedrooms; Victorian marble-top oak examples in middle-class bedrooms; vernacular pine and poplar examples in rural homes. Decline began with widespread indoor plumbing adoption c. 1900-1940 in American homes. Modern persistence as guest-room or stylistic auxiliary furniture rather than primary hygiene accommodation.",
-    positive_authority: 8,
-    hard_negative_authority: 8,
-    notes: "Per Phase 2 Session 8b retroactive rationale population (D-AR8B-2; Block 29 Issue 3 per D-AR29-8). rationale synthesized from this entry’s existing canonical fields per Q1=A appraiser-call discipline. ‘washstand’ sits in the entry / support form group. Canonical production span opens c. 1750 and continues to the present; the prior fixed 2030 forward-sentinel ceiling is removed and the open-ended ‘to present’ range is recorded here per D-AR8B-3 Pattern 3 (D-FA34-3 notes-field-marker convention, aligning forms.ts with the Blocks 30-40 evidence-library cluster). Diagnostic identity rests on 6 canonical distinguishing features and 5 documented subtypes. Supporting diagnostic content: cousin-form contrasts against 4 closely-related forms, regional/period context in regional_period_notes, dimensional thresholds.",
     migration_status: "partial",
   },
   {
