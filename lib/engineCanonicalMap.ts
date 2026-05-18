@@ -728,6 +728,50 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // furniture span multiple forms). Frameless body-conforming evidence
   // resolves at scoreForms.
 
+  "Papasan": "form_papasan_chair",
+  "Papasan chair": "form_papasan_chair",
+  "Papa-san chair": "form_papasan_chair",
+  "Mamasan": "form_papasan_chair", // subtype_papasan_double_mamasan
+  "Mamasan chair": "form_papasan_chair", // subtype_papasan_double_mamasan
+  "Double papasan": "form_papasan_chair", // subtype_papasan_double_mamasan
+  "Double papasan chair": "form_papasan_chair", // subtype_papasan_double_mamasan
+  "Wicker papasan": "form_papasan_chair", // subtype_papasan_traditional
+  "Rattan papasan": "form_papasan_chair", // subtype_papasan_traditional
+  "Wicker bowl chair": "form_papasan_chair",
+  "Swivel papasan": "form_papasan_chair", // subtype_papasan_swivel
+  "Hanging papasan": "form_papasan_chair", // subtype_papasan_hanging (suspension may reroute if swing-chair behavior dominates)
+  "Outdoor papasan": "form_papasan_chair", // subtype_papasan_outdoor
+  "Resin wicker papasan": "form_papasan_chair", // subtype_papasan_modern_synthetic
+  "Dorm papasan": "form_papasan_chair", // subtype_papasan_child_or_dorm
+  // Note: "Bowl chair", "Round bowl chair", "Satellite chair", "Round chair",
+  // "Rattan chair", "Saucer chair", "Moon chair", "Dish chair", "Circle
+  // chair" intentionally NOT mapped — too ambiguous (bowl/round/rattan
+  // span papasan/saucer/moon/butterfly/wicker forms; resolve at
+  // scoreForms via bowl-frame + removable round cushion evidence).
+
+  "Butterfly chair": "form_butterfly_chair",
+  "Butterfly sling chair": "form_butterfly_chair",
+  "BKF chair": "form_butterfly_chair", // subtype_butterfly_classic
+  "B.K.F. chair": "form_butterfly_chair", // subtype_butterfly_classic
+  "Hardoy chair": "form_butterfly_chair", // subtype_butterfly_hardoy — true attribution requires documentation
+  "Hardoy butterfly chair": "form_butterfly_chair", // subtype_butterfly_hardoy
+  "Bonet chair": "form_butterfly_chair", // subtype_butterfly_hardoy
+  "Bonet-Kurchan-Ferrari chair": "form_butterfly_chair", // subtype_butterfly_hardoy
+  "Leather sling chair": "form_butterfly_chair", // subtype_butterfly_leather
+  "Hide sling chair": "form_butterfly_chair", // subtype_butterfly_leather
+  "Cowhide butterfly chair": "form_butterfly_chair", // subtype_butterfly_leather
+  "Canvas sling chair": "form_butterfly_chair", // subtype_butterfly_canvas
+  "MCM butterfly chair": "form_butterfly_chair", // subtype_butterfly_classic
+  "Mid-century sling chair": "form_butterfly_chair",
+  "Modern sling chair": "form_butterfly_chair",
+  "Folding sling chair": "form_butterfly_chair", // subtype_butterfly_folding (boundary form with form_folding_chair)
+  // Note: "Sling chair", "Outdoor sling chair", "Patio sling chair",
+  // "Dorm chair", "Casual lounge chair", "Safari chair" intentionally NOT
+  // mapped — "Sling chair" alone spans butterfly/deck/patio dining/director
+  // forms; "Safari chair" is structurally different (campaign-derived
+  // wood frame, separate seat/back panels); resolve at scoreForms via
+  // four-corner suspended sling geometry evidence.
+
   "Stool": "form_stool",
   "Tabouret": "form_stool", // subtype_stool_tabouret
   "Counter stool": "form_stool", // subtype_stool_counter
