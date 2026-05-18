@@ -1029,6 +1029,75 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Jam cupboard": "form_jam_cupboard",
   "Preserve cupboard": "form_jam_cupboard", // preserves/jars storage
   "Jar cupboard": "form_jam_cupboard",
+
+  // ───────────────────────────────────────────────────────────────────
+  // Suspended lighting — Item 17 Batch E (Tier B lighting elevations)
+  // ───────────────────────────────────────────────────────────────────
+
+  "Chandelier": "form_chandelier",
+  "Ceiling chandelier": "form_chandelier",
+  "Crystal chandelier": "form_chandelier", // subtype_chandelier_crystal
+  "Candle chandelier": "form_chandelier", // subtype_chandelier_candle
+  "Gas chandelier": "form_chandelier", // subtype_chandelier_gas — preserve original fuel-system lineage even when electrified
+  "Gasolier": "form_chandelier", // subtype_chandelier_gas (period term)
+  "Gaselier": "form_chandelier", // subtype_chandelier_gas (period spelling variant)
+  "Gas-electric chandelier": "form_chandelier", // subtype_chandelier_gas_electric
+  "Electric chandelier": "form_chandelier", // subtype_chandelier_electric
+  "Electrolier": "form_chandelier", // subtype_chandelier_electric (period term)
+  "Art-glass chandelier": "form_chandelier", // subtype_chandelier_art_glass
+  "Colonial Revival chandelier": "form_chandelier", // subtype_chandelier_colonial_revival
+  "Multi-light fixture": "form_chandelier", // multi-light radial structure
+  "Multi-arm chandelier": "form_chandelier",
+  // Note: "Pendant chandelier" intentionally NOT mapped — ambiguous;
+  // resolve at scoreForms via multi-arm vs single-drop evidence.
+
+  "Pendant": "form_pendant_light",
+  "Pendant light": "form_pendant_light",
+  "Hanging pendant": "form_pendant_light",
+  "Single pendant": "form_pendant_light",
+  "Ceiling pendant": "form_pendant_light",
+  "Drop light": "form_pendant_light",
+  "Schoolhouse light": "form_pendant_light", // subtype_pendant_light_schoolhouse
+  "Schoolhouse pendant": "form_pendant_light", // subtype_pendant_light_schoolhouse
+  "Industrial pendant": "form_pendant_light", // subtype_pendant_light_industrial
+  "Pulley pendant": "form_pendant_light", // subtype_pendant_light_pulley
+  "Rise and fall light": "form_pendant_light", // subtype_pendant_light_pulley
+  "Pendant cluster": "form_pendant_light", // subtype_pendant_light_cluster
+  "Mid-century pendant": "form_pendant_light", // subtype_pendant_light_mid_century
+  // Note: "Art-glass pendant" intentionally NOT mapped — overlaps with
+  // form_chandelier "Art-glass chandelier" routing when multi-shade;
+  // resolve at scoreForms via single-drop vs multi-light evidence.
+
+  "Hanging lantern": "form_lantern_hanging",
+  "Ceiling lantern": "form_lantern_hanging",
+  "Hall lantern": "form_lantern_hanging",
+  "Entry lantern": "form_lantern_hanging",
+  "Porch lantern": "form_lantern_hanging",
+  "Colonial lantern": "form_lantern_hanging", // subtype_lantern_hanging_colonial_revival — revival vocabulary common
+  "Pierced-tin hanging lantern": "form_lantern_hanging", // subtype_lantern_hanging_pierced_tin
+  "Kerosene hanging lamp": "form_lantern_hanging", // subtype_lantern_hanging_kerosene
+  "Arts and Crafts lantern": "form_lantern_hanging", // subtype_lantern_hanging_arts_crafts
+  // Note: "Tin lantern", "Gas lantern" intentionally NOT mapped —
+  // "Tin lantern" alone is ambiguous (could be portable lantern vs
+  // hanging); "Gas lantern" spans hanging lantern / gas sconce /
+  // exterior gas fixtures. Resolve at scoreForms via mounting evidence
+  // (suspension vs wall-projection vs portable handle).
+
+  "Billiard light": "form_billiard_light",
+  "Pool table light": "form_billiard_light",
+  "Snooker light": "form_billiard_light",
+  "Pool hall light": "form_billiard_light",
+  "Saloon light": "form_billiard_light",
+  "Linear billiard fixture": "form_billiard_light",
+  "Gas billiard light": "form_billiard_light", // subtype_billiard_light_gas
+  "Slag-glass billiard light": "form_billiard_light", // subtype_billiard_light_slag_glass
+  "Advertising billiard light": "form_billiard_light", // subtype_billiard_light_advertising
+  // Note: "Game room light", "Bar light" intentionally NOT mapped —
+  // too generic; span billiard light / pendant / chandelier / sconce
+  // depending on architecture. Billiard light identity requires the
+  // long horizontal multi-shade task-lighting layout (line spacing
+  // over an elongated table surface). Resolve at scoreForms.
+
   // Note: "Jelly cupboard" intentionally NOT remapped — already routes
   // to form_jelly_cupboard (existing canonical at line 1946+); jam_cupboard
   // and jelly_cupboard are peer forms with overlapping aliases. The jam
