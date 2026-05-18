@@ -5196,6 +5196,129 @@ export const FORMS: FormEntry[] = [
       "Wing chairs originate in late seventeenth-century England as functional fireside seating with draft-blocking wings, lateral head support, and warmth retention. American production begins broadly c. 1700 with William and Mary and early Georgian turned-leg examples, broadens substantially through Queen Anne c. 1720-1760 and Chippendale c. 1755-1790 production, and continues through Federal c. 1790-1815, Empire-era traditional seating, Colonial Revival reproduction, and modern reinterpretation. In American originals, regional differences may appear in foot form, leg turnings, proportions, wood species, and upholstery history; Philadelphia and Newport high-style examples are especially associated with refined carving and mahogany, while more regional examples may be plainer or show walnut, maple, birch, or mixed secondary woods. The form sees continuous Colonial Revival reproduction from c. 1900 and modern designer reinterpretation from c. 1945. Upholstered examples require separating frame date from upholstery date because upholstery, springs, padding, webbing, dust covers, and cushions are commonly replaced; original eighteenth-century upholstery survival is extremely rare. Watch for: (a) wing chair vs Colonial Revival wing chair distinction requires construction evidence, including hand-cut versus machine-cut joinery, period-appropriate leg construction, tool marks, frame oxidation, tack evidence, spring history, and upholstery substrate; silhouette alone does not date a piece; (b) modern designer wing chairs are valuable when authenticated, but silhouette resemblance is insufficient without maker marks, labels, provenance, or construction evidence; (c) reclining wing chairs are post-1960s in normal American mass-market use, and the mechanism is a hard dating anchor; (d) 'wing-back club chair' marketing language overlaps wing-chair and club-chair vocabulary and should resolve to wing chair primary identity when wings are structurally present; (e) armless or low-backed modern chairs with small side flares should not be called wing chairs unless the upper side projections function visually and structurally as wings.",
   },
   {
+    id: "form_slipper_chair",
+    category: "form",
+    name: "slipper chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1850,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    notes:
+      "Per appraiser authoring 2026-05-17. Slipper chair earns its own canonical entry rather than being a subtype of side_chair, armchair, lounge_chair, or wing_chair because the defining identity is a coincident triplet of structural features: armless, low-seated, and upholstered. The form originated as a functional bedroom, boudoir, or dressing-room chair where the low seat allowed a seated user to put on shoes, slippers, or stockings. Cousin form to form_side_chair, which is typically more upright and not necessarily low-seated; form_armchair, which has arms; form_lounge_chair, which is larger-scale and posture-based; and form_wing_chair, which has structural wings. Canonical production span opens c. 1850 in American Victorian production, broadens through Rococo Revival, Renaissance Revival, Eastlake, Aesthetic Movement, Edwardian, Hollywood Regency, mid-century, and contemporary production, and continues to the present. Diagnostic identity rests on 8 canonical distinguishing features and 8 documented subtypes.",
+    migration_status: "complete",
+    distinguishing_features: [
+      "Single-person upholstered seating that is armless, low-seated, and small-scale",
+      "Armlessness is a defining structural feature; adding arms converts the form to armchair, lounge chair, club chair, or another arm-bearing form depending on posture and scale",
+      "Low seat height is defining, typically 14-17 inches from floor, compared to roughly 16-19 inches for many armchairs and 17-19 inches for many dining or side chairs",
+      "Originally associated with bedroom, dressing-room, boudoir, vanity, or shoe-changing use; modern usage includes accent, occasional, parlor, and living-room placement",
+      "Seat and back are usually upholstered; exposed wood, cane, metal, or modern frames may occur, but a padded or upholstered seat is expected",
+      "Back shape varies widely: straight, slightly reclined, scrolled, shield-shaped, button-tufted, channeled, humpback, camelback, barrel-curved, or modern geometric",
+      "Legs vary by period: cabriole, balloon, turned, ebonized, tapered, reeded, block, bracket, tubular, splayed, or sculptural; legs may also be partly or fully concealed by a skirt",
+      "Often smaller and lighter than lounge chairs or armchairs, with a visual identity closer to bedroom, parlor, accent, or occasional seating than dining or task seating",
+    ],
+    subtypes: [
+      {
+        id: "subtype_slipper_victorian",
+        name: "Victorian slipper chair",
+        distinguishing_attributes: [
+          "Mid-to-late-nineteenth-century American slipper chair, usually with button-tufted or deeply tufted upholstered back, low armless profile, balloon, cabriole, or turned front legs, and skirt, fringe, or exposed carved frame depending on fashion. Walnut, rosewood, or stained hardwood may appear where the frame is exposed. Strong association with Rococo Revival and parlor or boudoir vocabulary. Period c. 1850-1880 primary production.",
+        ],
+      },
+      {
+        id: "subtype_slipper_renaissance_revival",
+        name: "Renaissance Revival slipper chair",
+        distinguishing_attributes: [
+          "Slipper chair with Renaissance Revival vocabulary: heavier silhouette than Rococo Revival examples, carved cartouches, medallions, applied ornament, burl walnut veneer, ebonized accents, incised detail, or architectural framing where exposed. Period c. 1860-1885 primary production.",
+        ],
+      },
+      {
+        id: "subtype_slipper_eastlake",
+        name: "Eastlake / Aesthetic slipper chair",
+        distinguishing_attributes: [
+          "Late-nineteenth-century slipper chair with Eastlake or Aesthetic Movement vocabulary: incised geometric carving, ebonized or stained finish, turned spindle or ring-turned legs, rectilinear exposed frame, stylized ornament, and often a partially upholstered back with exposed structural elements. Period c. 1870-1895 primary production.",
+        ],
+      },
+      {
+        id: "subtype_slipper_edwardian",
+        name: "Edwardian / early-twentieth-century slipper chair",
+        distinguishing_attributes: [
+          "Lighter and more restrained slipper chair with tapered, reeded, or turned legs, less massive upholstery, occasional cane or open-frame details, and possible Federal Revival, Sheraton Revival, or Colonial Revival influence. Period c. 1900-1925 primary production.",
+        ],
+      },
+      {
+        id: "subtype_slipper_hollywood_regency",
+        name: "Hollywood Regency slipper chair",
+        distinguishing_attributes: [
+          "Twentieth-century decorator slipper chair with glamorous low profile, bold upholstery, channel-tufted or button-tufted back, contrasting trim, deep skirt, lacquered or gilded legs, and frequent matched-pair use. Associated with Hollywood Regency, decorator, and mid-century traditional interiors. Period c. 1930-1960 primary production, with later revival.",
+        ],
+      },
+      {
+        id: "subtype_slipper_modern",
+        name: "Mid-century / modern slipper chair",
+        distinguishing_attributes: [
+          "Post-1945 reinterpretation of the slipper chair using modernist construction: molded plywood shell, tubular steel frame, sculptural exposed wood frame, vinyl, leather, sling upholstery, fiberglass, aluminum, low-slung geometry, or simplified armless accent-chair profile. Designer attribution may be relevant where supported by maker marks, labels, construction evidence, or provenance.",
+        ],
+      },
+      {
+        id: "subtype_slipper_boudoir",
+        name: "Boudoir / bedroom slipper chair",
+        distinguishing_attributes: [
+          "Functional-placement slipper chair associated with bedroom, boudoir, dressing-room, or private sitting use. Often softer, more decorative, or more textile-forward than parlor or accent variants. This subtype is functional rather than period-specific and may appear across Victorian, Edwardian, Hollywood Regency, and modern production.",
+        ],
+      },
+      {
+        id: "subtype_slipper_vanity",
+        name: "Vanity slipper chair",
+        distinguishing_attributes: [
+          "Small slipper chair designed or marketed to pair with a vanity, dressing table, or makeup table. Usually smaller in width and depth than a general slipper chair, with seat height calibrated to a related vanity surface. Often part of a matched bedroom suite. Period spans Victorian through contemporary production.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs side chair: side chair is usually more upright, often has standard dining or occasional seat height, and is not necessarily upholstered. Slipper chair is low-seated, armless, upholstered, and originally tied to bedroom or dressing use. An upholstered armless chair at standard dining height remains a side chair unless low slipper proportions are present.",
+      "Vs armchair: armchair has arms; slipper chair is armless. Adding arms to a low upholstered chair converts the primary form away from slipper chair.",
+      "Vs lounge chair: lounge chair is posture-based, usually larger, deeper, and often arm-bearing. Slipper chair is smaller, armless, and low-seated. Some modern or Hollywood Regency examples may have lounge-like posture, but armless small-scale low seating controls toward slipper chair.",
+      "Vs wing chair: wing chair has structural wings extending forward from the upper back; slipper chair has no wings and is normally lower and smaller.",
+      "Vs club chair: club chair is a deep, substantial, arm-bearing lounge form; slipper chair is armless, smaller-scale, and usually lighter.",
+      "Vs nursing chair: nursing chair, sewing chair, low chair, or lady's chair may overlap visually, but nursing-chair identity is functional and may include a rocker base, higher back, close-work posture, or specific breastfeeding/sewing use. Marginal cases may be classified as slipper chair primary with a nursing-chair functional note.",
+      "Vs vanity stool / bedroom bench / boudoir stool: stools and benches have no back; slipper chair has a back. An upholstered backed seat at vanity scale is subtype_slipper_vanity; a backless equivalent is form_stool or form_bench.",
+      "Vs boudoir chair: boudoir chair is largely synonymous with slipper chair in modern American retail usage. Treat as an alias unless structural evidence, such as arms or unusual scale, indicates another form.",
+      "Vs accent chair / occasional chair: accent chair and occasional chair are retail-context labels, not precise canonical forms. Slipper chair is one possible structural occupant of those retail categories; structure controls over retail naming.",
+    ],
+    dimensional_thresholds: {
+      width_min: 18,
+      width_max: 26,
+      height_min: 28,
+      height_max: 38,
+      depth_min: 18,
+      depth_max: 26,
+      weight_min: 15,
+      weight_max: 40,
+      notes:
+        "Seat height typically 14-17 inches, lower than a standard side chair's common 17-19 inches and lower than many armchairs' common 16-19 inches. Seat depth typically 16-20 inches, shallower than lounge chair's common 20-28 inches. Width typically 18-26 inches, narrower than many armchairs. Victorian and Hollywood Regency examples with deep skirts, heavy tufting, hardwood frames, or coil springs may exceed the normal weight range. Modern examples using molded plywood, tubular steel, fiberglass, aluminum, or minimal upholstery may fall below 15 pounds. Oversized armless lounge chairs should be checked against form_lounge_chair rather than forced into slipper chair solely because arms are absent.",
+    },
+    common_aliases: [
+      "Boudoir chair",
+      "Bedroom chair",
+      "Dressing chair",
+      "Vanity chair",
+      "Accent chair",
+      "Occasional chair",
+      "Low chair",
+      "Lady's chair",
+      "Parlor chair",
+      "Tufted slipper chair",
+      "Armless chair",
+      "Armless accent chair",
+      "Side chair",
+      "Boudoir slipper chair",
+    ],
+    regional_period_notes:
+      "Slipper chairs originate as functional bedroom and dressing-room seating in mid-nineteenth-century American Victorian production, with the name tied to the use of a low armless chair for putting on shoes or slippers. Strong Rococo Revival, Renaissance Revival, Eastlake, and Aesthetic Movement production c. 1850-1895 establishes the form's primary nineteenth-century vocabulary. Edwardian and early-twentieth-century production lightens the silhouette; Hollywood Regency production c. 1930-1960 reasserts the low armless form in glamorous decorator vocabulary; mid-century and contemporary production reinterpret the form through modernist materials, armless accent-chair profiles, and simplified interiors. Upholstered examples require separating frame date from upholstery date because upholstery, springs, padding, webbing, dust covers, and skirts are commonly replaced; original Victorian upholstery survival is uncommon. Watch for: (a) slipper chair vs upholstered side chair depends on seat height, scale, and low armless silhouette; (b) slipper chair vs nursing chair depends on functional design evidence such as rocker base, higher back, and nursing or sewing posture; (c) Hollywood Regency slipper chairs are often paired, and matched-pair evidence strengthens period and decorator-context dating; (d) modern designer slipper chairs require maker marks, labels, provenance, or construction evidence for designer attribution; silhouette resemblance is insufficient; (e) boudoir chair and slipper chair are largely synonymous in modern American retail usage and should resolve to form_slipper_chair unless arms, wings, task mechanics, or unusual scale indicate another form.",
+  },
+  {
     id: "form_bar_chair",
     category: "form",
     name: "bar chair",

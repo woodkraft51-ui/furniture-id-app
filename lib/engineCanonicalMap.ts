@@ -255,6 +255,20 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // per modern dominant usage; 18th-century English period usage where
   // "easy chair" = wing chair is handled at scoreForms via structural cues
   // (wing presence routes to form_wing_chair regardless of common-alias hit).
+  "Slipper chair": "form_slipper_chair",
+  "Boudoir chair": "form_slipper_chair",
+  "Boudoir slipper chair": "form_slipper_chair",
+  "Tufted slipper chair": "form_slipper_chair",
+  "Vanity chair": "form_slipper_chair", // subtype_slipper_vanity within form_slipper_chair
+  "Dressing chair": "form_slipper_chair",
+  "Bedroom slipper chair": "form_slipper_chair", // subtype_slipper_boudoir within form_slipper_chair
+  "Victorian slipper chair": "form_slipper_chair", // subtype_slipper_victorian
+  "Hollywood Regency slipper chair": "form_slipper_chair", // subtype_slipper_hollywood_regency
+  // Note: "Accent chair", "Occasional chair", "Side chair", "Parlor chair",
+  // "Lady's chair", "Low chair", "Armless chair", "Bedroom chair" intentionally
+  // NOT mapped — too generic or overlapping with other canonical forms.
+  // Resolves at scoreForms via structural cues (armless + low-seated + small-
+  // scale + upholstered routes to form_slipper_chair).
   "Colonial / Georgian Revival upholstered armchair": "form_armchair",
   "Upholstered armchair": "form_armchair",
   "Bench / seating furniture": NO_MATCH, // form_bench not yet authored

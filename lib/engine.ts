@@ -1875,6 +1875,57 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   }
 
   // =========================
+  // SLIPPER-CHAIR FORM SYNTHESIZER
+  // Armless + low-seated + small-scale + upholstered coincident triplet —
+  // distinct from side_chair (typically upright, often exposed wood),
+  // armchair (has arms), lounge_chair (larger-scale, typically arm-bearing),
+  // and wing_chair (has wings) per the structural-triplet decision
+  // documented in form_slipper_chair.cousin_form_contrasts. Emits
+  // slipper_chair_form so the armchairVeto at engine.ts:2504 covers
+  // vanity-slipper-chair-near-vanity telephone-bench mis-routing scenarios
+  // (a vanity slipper chair photographed next to its paired vanity could
+  // otherwise fire the seating + secondary_surface composite-pattern
+  // threshold and mis-route to telephone bench).
+  // Canonical: lib/constraints/forms.ts form_slipper_chair (8 subtypes).
+  // =========================
+
+  const hasSlipperCues =
+    hasText(
+      "slipper chair",
+      "slipper chairs",
+      "boudoir chair",
+      "boudoir slipper",
+      "bedroom chair",
+      "dressing chair",
+      "vanity chair",
+      "vanity slipper",
+      "armless upholstered chair",
+      "armless slipper",
+      "low upholstered chair",
+      "low armless chair",
+      "lady's chair",
+      "ladies chair",
+    );
+
+  if (
+    !hasClue("slipper_chair_form") &&
+    hasSlipperCues &&
+    (hasClue("seating_surface") || hasClue("backrest_present")) &&
+    !hasClue("armchair_form")
+  ) {
+    out.push({
+      type: "form",
+      clue: "slipper_chair_form",
+      description:
+        "Armless, low-seated, small-scale upholstered seating with bedroom / boudoir / dressing-room vocabulary indicates slipper-chair form. Canonical: form_slipper_chair.",
+      confidence: 78,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // =========================
   // WOOD-FRAME DEPENDENT STYLES
   // =========================
   if (
@@ -2676,6 +2727,7 @@ const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
     "wingback_form",
     "lounge_chair_form",
     "club_chair_form",
+    "slipper_chair_form",
   );
 
   const hasTelephoneBenchEvidence =
