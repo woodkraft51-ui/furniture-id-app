@@ -314,6 +314,44 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Short pew": "form_pew", // subtype_pew_short (cut-down conversion)
   "Cut-down pew": "form_pew", // subtype_pew_short
   "Salvage pew": "form_pew", // subtype_pew_short
+  "Sofa": "form_sofa",
+  "Couch": "form_sofa",
+  "Davenport": "form_sofa", // ambiguous with Davenport desk; resolves at scoreForms via construction cues
+  "Divan": "form_sofa",
+  "Loveseat": "form_sofa", // subtype_sofa_loveseat within form_sofa
+  "Love seat": "form_sofa",
+  "Sectional": "form_sofa", // subtype_sofa_sectional within form_sofa (post-1940)
+  "Sectional sofa": "form_sofa", // subtype_sofa_sectional
+  "Sectional couch": "form_sofa",
+  "Sleeper sofa": "form_sofa", // subtype_sofa_sleeper within form_sofa (post-1899)
+  "Sofa bed": "form_sofa", // subtype_sofa_sleeper
+  "Convertible sofa": "form_sofa", // subtype_sofa_sleeper
+  "Pull-out sofa": "form_sofa", // subtype_sofa_sleeper
+  "Reclining sofa": "form_sofa", // subtype_sofa_reclining
+  "Recliner sofa": "form_sofa", // subtype_sofa_reclining
+  "Chesterfield": "form_sofa", // subtype_sofa_chesterfield
+  "Chesterfield sofa": "form_sofa", // subtype_sofa_chesterfield
+  "Tuxedo sofa": "form_sofa", // subtype_sofa_tuxedo
+  "Camelback sofa": "form_sofa", // subtype_sofa_camelback
+  "Lawson sofa": "form_sofa", // subtype_sofa_lawson
+  "Parlor sofa": "form_sofa",
+  "Parlor couch": "form_sofa",
+  "Mid-century sofa": "form_sofa", // subtype_sofa_mcm
+  "MCM sofa": "form_sofa", // subtype_sofa_mcm
+  "Danish modern sofa": "form_sofa", // subtype_sofa_mcm
+  "Settee": "form_settee",
+  "Parlor settee": "form_settee", // subtype_settee_parlor
+  "Hall settee": "form_settee", // subtype_settee_hall
+  "Cane settee": "form_settee", // subtype_settee_cane_back
+  "Cane-back settee": "form_settee", // subtype_settee_cane_back
+  "Windsor settee": "form_settee", // subtype_settee_windsor
+  "Wicker settee": "form_settee", // subtype_settee_wicker_rattan
+  "Rattan settee": "form_settee", // subtype_settee_wicker_rattan
+  "Porch settee": "form_settee",
+  "Reception settee": "form_settee",
+  // Note: "Canapé" / "Canape" intentionally NOT mapped — historically loose
+  // term spanning sofa, settee, and chaise; resolves at scoreForms via
+  // structural cues (depth, posture, lounge-vs-upright character).
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
