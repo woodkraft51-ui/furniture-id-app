@@ -1,8 +1,30 @@
 'use client';
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { API } from "../lib/store";
 import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
+
+// Viewport-aware sizing for the DatingOverlapViz mobile responsiveness.
+// React inline styles don't support @media; this hook tracks window width
+// and returns breakpoint flags consumers can switch on. Initial value is
+// false/false so SSR renders the desktop layout; the effect adjusts after
+// mount.
+function useViewport() {
+  const [width, setWidth] = useState<number>(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  return {
+    width,
+    isMobile: width <= 640,
+    isTablet: width > 640 && width <= 1024,
+  };
+}
 
 type ImageRecord = {
   image_type: string;
@@ -787,8 +809,15 @@ function DatingOverlapViz({
   const yearToPct = (y: number) => ((y - axisMin) / axisSpan) * 100;
   const clampPct = (p: number) => Math.max(0, Math.min(100, p));
 
-  // Tick marks every 50 years
-  const tickStep = axisSpan > 200 ? 50 : 20;
+  const viewport = useViewport();
+
+  // Tick marks — density adapts to viewport so labels don't overlap.
+  // Desktop: every 50 years (or 20 for narrow spans). Mobile: every 100
+  // years for wide spans to prevent "165017001750..." concatenation
+  // visible on phone-width charts where each tick has ~30-40px of room.
+  const tickStep = viewport.isMobile
+    ? (axisSpan > 300 ? 100 : axisSpan > 150 ? 50 : 25)
+    : (axisSpan > 200 ? 50 : 20);
   const ticks: number[] = [];
   for (let y = Math.ceil(axisMin / tickStep) * tickStep; y <= axisMax; y += tickStep) ticks.push(y);
 
@@ -926,11 +955,41 @@ function DatingOverlapViz({
     .map((name) => dataLayers.find((l) => l.layer === name))
     .filter((l): l is LayerBand => Boolean(l));
 
-  const ROW_HEIGHT = 28;
-  const LABEL_WIDTH = 150;
+  // Row height adapts to viewport so wrapped multi-line labels (mobile) get
+  // enough vertical room without breaking chart-bar alignment. Bars are
+  // positioned absolutely using ROW_HEIGHT × index, so both columns stay
+  // in sync as long as every row uses the same height.
+  const ROW_HEIGHT = viewport.isMobile ? 44 : 28;
+  // Row-label column width adapts to viewport so the chart pane gets enough
+  // pixels on phones. Mobile rows wrap to multiple lines but stay compact.
+  const LABEL_WIDTH = viewport.isMobile ? 96 : viewport.isTablet ? 130 : 150;
+  const LABEL_FONT = viewport.isMobile ? 11 : 13;
+  const LABEL_SUB_FONT = viewport.isMobile ? 10 : 12;
   const PLOT_TOP_PADDING = 50; // tick labels + zone-summary chips (year ticks at top:2; zone chips at top:22-44; bands start at PLOT_TOP_PADDING-4=46)
   const ZONE_LABEL_TOP = 22; // top offset for convergence-zone chip labels
   const ZONE_LABEL_HEIGHT = 22;
+  // Chip min/max widths shrink on mobile so they're less likely to overflow
+  // the chart edges. Chip overflow is also clamped by the plot column's
+  // overflow: hidden, but tighter widths look cleaner.
+  const ZONE_CHIP_MIN_WIDTH = viewport.isMobile ? 90 : 120;
+  const ZONE_CHIP_MAX_WIDTH = viewport.isMobile ? 160 : 240;
+
+  // Measure the plot column's width so zone chips can be clamped to stay
+  // within the visible chart area (chips otherwise overflow past the right
+  // edge on narrow viewports when zones cluster near the axis extremes).
+  const plotRef = useRef<HTMLDivElement | null>(null);
+  const [plotWidth, setPlotWidth] = useState<number>(0);
+  useEffect(() => {
+    if (!plotRef.current) return;
+    const el = plotRef.current;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width ?? 0;
+      setPlotWidth(w);
+    });
+    ro.observe(el);
+    setPlotWidth(el.getBoundingClientRect().width);
+    return () => ro.disconnect();
+  }, []);
   // Top rows: Style (primary) + Design Distinctives + optional partner
   // Style + optional partner Design Distinctives. Each pair only renders
   // when its data is present.
@@ -962,12 +1021,25 @@ function DatingOverlapViz({
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
-      {/* Header: axis info + overall envelope */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: 13, color: "#574634" }}>
+      {/* Header: axis info + overall envelope. On mobile, stack vertically
+          and shorten the axis description so it doesn't wrap awkwardly. */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: viewport.isMobile ? "column" : "row",
+          justifyContent: "space-between",
+          alignItems: viewport.isMobile ? "flex-start" : "baseline",
+          gap: viewport.isMobile ? 4 : 0,
+          fontSize: viewport.isMobile ? 12 : 13,
+          color: "#574634",
+        }}
+      >
         <span>
-          {styleBlocks.length > 0
-            ? `Style lineage on top; construction and material evidence below. Axis ${axisMin}–${axisMax}.`
-            : `Per-layer date envelopes (${axisMin}–${axisMax}). Each row shows one evidence layer's date range.`}
+          {viewport.isMobile
+            ? `Axis ${axisMin}–${axisMax}.`
+            : styleBlocks.length > 0
+              ? `Style lineage on top; construction and material evidence below. Axis ${axisMin}–${axisMax}.`
+              : `Per-layer date envelopes (${axisMin}–${axisMax}). Each row shows one evidence layer's date range.`}
         </span>
         {data.overall_floor !== null && data.overall_ceiling !== null && (
           <span>
@@ -987,10 +1059,12 @@ function DatingOverlapViz({
                   height: ROW_HEIGHT,
                   display: "flex",
                   alignItems: "center",
-                  fontSize: 13,
+                  fontSize: LABEL_FONT,
+                  lineHeight: 1.2,
                   color: "#3e2f1f",
                   paddingRight: 8,
                   fontWeight: 700,
+                  overflow: "hidden",
                 }}
                 title={
                   styleAttribution?.name
@@ -1005,11 +1079,13 @@ function DatingOverlapViz({
                   height: ROW_HEIGHT,
                   display: "flex",
                   alignItems: "center",
-                  fontSize: 12,
+                  fontSize: LABEL_SUB_FONT,
+                  lineHeight: 1.2,
                   color: "#5c4a37",
                   paddingRight: 8,
                   fontWeight: 600,
                   fontStyle: "italic",
+                  overflow: "hidden",
                 }}
                 title="Design subtleties — the small distinguishing details that point to one wave over another. Each chip is color-matched to the wave it supports above."
               >
@@ -1024,10 +1100,12 @@ function DatingOverlapViz({
                   height: ROW_HEIGHT,
                   display: "flex",
                   alignItems: "center",
-                  fontSize: 13,
+                  fontSize: LABEL_FONT,
+                  lineHeight: 1.2,
                   color: "#3e2f1f",
                   paddingRight: 8,
                   fontWeight: 700,
+                  overflow: "hidden",
                 }}
                 title={
                   transitionalPartner?.name
@@ -1042,11 +1120,13 @@ function DatingOverlapViz({
                   height: ROW_HEIGHT,
                   display: "flex",
                   alignItems: "center",
-                  fontSize: 12,
+                  fontSize: LABEL_SUB_FONT,
+                  lineHeight: 1.2,
                   color: "#5c4a37",
                   paddingRight: 8,
                   fontWeight: 600,
                   fontStyle: "italic",
+                  overflow: "hidden",
                 }}
                 title="Design subtleties supporting the partner attribution."
               >
@@ -1061,7 +1141,8 @@ function DatingOverlapViz({
                 height: ROW_HEIGHT,
                 display: "flex",
                 alignItems: "center",
-                fontSize: 13,
+                fontSize: LABEL_FONT,
+                lineHeight: 1.2,
                 color: l.confidence === "none" ? "#aaa092" : "#3e2f1f",
                 paddingRight: 8,
                 fontWeight: 600,
@@ -1075,6 +1156,7 @@ function DatingOverlapViz({
 
         {/* Plot column */}
         <div
+          ref={plotRef}
           style={{
             position: "relative",
             background: "#fdf9ef",
@@ -1148,7 +1230,21 @@ function DatingOverlapViz({
           {data.convergence_zones.map((z, i) => {
             const leftPct = clampPct(yearToPct(z.date_floor));
             const rightPct = clampPct(yearToPct(z.date_ceiling));
-            const centerPct = (leftPct + rightPct) / 2;
+            const rawCenterPct = (leftPct + rightPct) / 2;
+            // Clamp chip center so the chip stays within the plot column.
+            // Chip is rendered with translateX(-50%), so to keep the right
+            // edge at <= 100% we need centerPct <= 100 - chipHalfWidth%; and
+            // centerPct >= chipHalfWidth% for the left edge. Uses the
+            // chip's MIN width as a conservative estimate (actual chip may
+            // grow up to maxWidth, in which case it could overflow slightly,
+            // but the plot column's overflow:hidden catches it visually).
+            const chipHalfWidthPct = plotWidth > 0
+              ? (ZONE_CHIP_MIN_WIDTH / 2 / plotWidth) * 100
+              : 0;
+            const centerPct = Math.max(
+              chipHalfWidthPct,
+              Math.min(100 - chipHalfWidthPct, rawCenterPct)
+            );
             const isStrongest = i === strongestZoneIdx;
             const layerSummary = z.layers
               .map((l) => LAYER_LABELS[l] ?? l)
@@ -1163,34 +1259,35 @@ function DatingOverlapViz({
                   left: `${centerPct}%`,
                   transform: "translateX(-50%)",
                   height: ZONE_LABEL_HEIGHT,
-                  minWidth: 120,
-                  maxWidth: 240,
+                  minWidth: ZONE_CHIP_MIN_WIDTH,
+                  maxWidth: ZONE_CHIP_MAX_WIDTH,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: 5,
-                  padding: "0 8px",
+                  gap: viewport.isMobile ? 3 : 5,
+                  padding: viewport.isMobile ? "0 5px" : "0 8px",
                   boxSizing: "border-box",
                   borderRadius: 4,
                   background: isStrongest ? "rgba(75, 134, 70, 0.9)" : "rgba(123, 178, 121, 0.6)",
                   border: isStrongest ? "1px solid rgba(40, 90, 38, 0.9)" : "1px solid rgba(75, 134, 70, 0.7)",
                   color: isStrongest ? "#fff" : "#1f3a1d",
-                  fontSize: 11,
+                  fontSize: viewport.isMobile ? 10 : 11,
                   fontWeight: 600,
                   whiteSpace: "nowrap",
                   pointerEvents: "auto",
                   zIndex: 2,
                 }}
               >
-                <span>
-                  {z.date_floor}–{z.date_ceiling} · {z.layer_count} layer{z.layer_count !== 1 ? "s" : ""}
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {z.date_floor}–{z.date_ceiling} · {z.layer_count}
+                  {viewport.isMobile ? "L" : ` layer${z.layer_count !== 1 ? "s" : ""}`}
                 </span>
                 {isStrongest && (
                   <span
                     style={{
-                      fontSize: 9,
+                      fontSize: viewport.isMobile ? 8 : 9,
                       fontWeight: 700,
-                      padding: "1px 5px",
+                      padding: viewport.isMobile ? "1px 3px" : "1px 5px",
                       borderRadius: 2,
                       background: "rgba(255,255,255,0.3)",
                       color: "#fff",
@@ -1199,7 +1296,7 @@ function DatingOverlapViz({
                       flexShrink: 0,
                     }}
                   >
-                    Strongest
+                    {viewport.isMobile ? "★" : "Strongest"}
                   </span>
                 )}
               </div>
