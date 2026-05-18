@@ -443,6 +443,33 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // (resolve at scoreForms), Pier table has its own canonical
   // (form_pier_table), Federal table is style-only.
 
+  "Bistro table": "form_bistro_cafe_table",
+  "Bistro café table": "form_bistro_cafe_table",
+  "Bistro cafe table": "form_bistro_cafe_table",
+  "Café table": "form_bistro_cafe_table",
+  "Cafe table": "form_bistro_cafe_table",
+  "Sidewalk café table": "form_bistro_cafe_table",
+  "Sidewalk cafe table": "form_bistro_cafe_table",
+  "Paris café table": "form_bistro_cafe_table",
+  "French café table": "form_bistro_cafe_table",
+  "Counter-height table": "form_bistro_cafe_table", // subtype_bistro_counter_height
+  "Patio bistro table": "form_bistro_cafe_table", // subtype_bistro_outdoor_patio
+  "Patio café table": "form_bistro_cafe_table", // subtype_bistro_outdoor_patio
+  "Cast-iron bistro table": "form_bistro_cafe_table", // subtype_bistro_cast_iron
+  "Marble-top café table": "form_bistro_cafe_table", // subtype_bistro_marble_top
+  "Ice-cream parlor table": "form_bistro_cafe_table", // subtype_bistro_cast_iron (commercial context)
+  "Soda-fountain table": "form_bistro_cafe_table", // subtype_bistro_cast_iron (commercial context)
+  "Commercial café table": "form_bistro_cafe_table", // subtype_bistro_commercial_restaurant
+  "Folding café table": "form_bistro_cafe_table", // subtype_bistro_folding_cafe
+  "Bar-height table": "form_pub_table", // bar/pub context dominates per bistro_cafe_table's bar-height cousin contrast
+  "Bar table": "form_pub_table", // bar context dominates; bistro/café for non-bar-height examples
+  // Note: "Pub table" stays routed to form_pub_table (existing); bistro
+  // aliases include it but pub context controls. "Apartment dining table",
+  // "Small dining table", "Round kitchen table", "Breakfast table" stay
+  // routed to form_breakfast_table (Tier A); these are domestic seated-
+  // dining-height labels not commercial café identity. "Restaurant table"
+  // intentionally NOT mapped — too generic; resolves at scoreForms.
+
   // Case furniture
   "Chest of drawers / dresser": "form_chest_of_drawers",
   "Dresser / drawer case": "form_chest_of_drawers",
@@ -715,12 +742,11 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Small dining table": "form_breakfast_table",
   "Round kitchen table": "form_breakfast_table", // small-round informal eating identity dominates
   "Laminate table": "form_breakfast_table",
-  // Note: "Bistro table", "Café table", "Cafe table" intentionally NOT mapped
-  // — per form_breakfast_table cousin contrast, bistro/café may be commercial,
-  // outdoor, or counter-height; only domestic seated-dining-height examples
-  // route to form_breakfast_table. Resolves at scoreForms via height/context
-  // cues. A future form_bistro_table or form_cafe_table canonical would absorb
-  // these labels.
+  // Note: "Bistro table", "Café table", "Cafe table" now mapped to
+  // form_bistro_cafe_table per Tier C item 8 elevation (see Tier C
+  // peer-canonical elevations section above). Bistro/café identity is
+  // height-tier-dependent (dining 28-31, counter 34-36, bar 40-42);
+  // bar-height examples cross-reference form_pub_table.
   "Work table": "form_work_table", // bare alias routes to the broader work/task table canonical (subtype_kitchen_table_work cross-references this for kitchen-context overlap)
   "Occasional table": "form_occasional_table",
   "Accent table": "form_occasional_table", // subtype_occasional_accent
