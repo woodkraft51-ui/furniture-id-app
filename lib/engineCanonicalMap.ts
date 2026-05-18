@@ -352,6 +352,50 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // Note: "Canapé" / "Canape" intentionally NOT mapped — historically loose
   // term spanning sofa, settee, and chaise; resolves at scoreForms via
   // structural cues (depth, posture, lounge-vs-upright character).
+  "Chaise longue": "form_chaise_longue",
+  "Chaise lounge": "form_chaise_longue", // American misspelling, treated as alias
+  "Long chair": "form_chaise_longue",
+  "Fainting couch": "form_chaise_longue", // subtype_chaise_fainting_couch
+  "Fainting sofa": "form_chaise_longue", // subtype_chaise_fainting_couch
+  "Recamier": "form_chaise_longue", // subtype_chaise_recamier
+  "Récamier": "form_chaise_longue", // subtype_chaise_recamier
+  "Méridienne": "form_chaise_longue", // subtype_chaise_meridienne
+  "Meridienne": "form_chaise_longue", // subtype_chaise_meridienne
+  "Duchesse brisée": "form_chaise_longue", // subtype_chaise_duchesse_brisee
+  "Duchesse brisee": "form_chaise_longue",
+  "Patio chaise": "form_chaise_longue", // subtype_chaise_outdoor
+  "Pool lounger": "form_chaise_longue", // subtype_chaise_outdoor
+  "Outdoor lounger": "form_chaise_longue", // subtype_chaise_outdoor
+  "Sun lounger": "form_chaise_longue", // subtype_chaise_outdoor
+  "Garden chaise": "form_chaise_longue", // subtype_chaise_outdoor
+  "Sectional chaise": "form_chaise_longue", // subtype_chaise_sectional_terminal (cross-references subtype_sofa_sectional)
+  "Daybed": "form_daybed",
+  "Day bed": "form_daybed",
+  "Studio couch": "form_daybed", // subtype_daybed_studio_couch
+  "Couch bed": "form_daybed",
+  "Day couch": "form_daybed",
+  "Lounge bed": "form_daybed",
+  "Settee bed": "form_daybed",
+  "Trundle daybed": "form_daybed", // subtype_daybed_trundle
+  "Iron daybed": "form_daybed", // subtype_daybed_iron
+  "Wood daybed": "form_daybed", // subtype_daybed_wood_frame
+  "Upholstered daybed": "form_daybed", // subtype_daybed_upholstered
+  "Platform daybed": "form_daybed", // subtype_daybed_modern_platform
+  "Modern daybed": "form_daybed", // subtype_daybed_modern_platform
+  "Mid-century daybed": "form_daybed", // subtype_daybed_mid_century
+  "MCM daybed": "form_daybed", // subtype_daybed_mid_century
+  "Sleigh daybed": "form_daybed", // subtype_daybed_sleigh
+  "Backed daybed": "form_daybed", // subtype_daybed_backed
+  "Bolster daybed": "form_daybed",
+  "Twin daybed": "form_daybed",
+  "Convertible couch": "form_daybed", // boundary form with subtype_sofa_sleeper; resolves at scoreForms
+  "Porch bed": "form_daybed",
+  "Sleeping porch bed": "form_daybed",
+  "Guest bed": "form_daybed", // ambiguous with form_bedstead; resolves at scoreForms via structural cues
+  // Note: "Trundle bed", "Cot", "Futon", "Campaign bed" intentionally NOT
+  // mapped — sleeping-first vs day-use boundary; resolves at scoreForms
+  // (subtype_daybed_trundle handles day-use trundle; form_bedstead handles
+  // sleeping-first trundle).
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
