@@ -262,6 +262,46 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Lowboy": "form_lowboy",
   "Pedestal stand": NO_MATCH, // intentionally generic; resolves at scoreForms via pedestal-table vs plant-stand vs candle-stand structural cues
 
+  // Pedestal-cluster elevations (#6) — peer canonicals lifted from
+  // form_pedestal_table subtypes per appraiser elevation decision.
+  // Existing subtype cross-references in form_pedestal_table remain.
+  "Tilt-top table": "form_tilt_top_table",
+  "Tip-top table": "form_tilt_top_table",
+  "Tilt table": "form_tilt_top_table",
+  "Flip-top table": "form_tilt_top_table",
+  "Tilting tea table": "form_tilt_top_table",
+  "Tripod tilt-top table": "form_tilt_top_table", // subtype_tilt_top_tripod
+  "Birdcage table": "form_tilt_top_table", // subtype_tilt_top_birdcage (cross-references subtype_piecrust_birdcage)
+  "Birdcage tilt-top table": "form_tilt_top_table", // subtype_tilt_top_birdcage
+  "Piecrust table": "form_piecrust_table", // edge identity dominant; subtype_tilt_top_piecrust cross-references
+  "Pie-crust table": "form_piecrust_table",
+  "Pie crust table": "form_piecrust_table",
+  "Piecrust tea table": "form_piecrust_table", // subtype_piecrust_tea
+  "Piecrust tilt-top table": "form_piecrust_table", // subtype_piecrust_tilt_top (cross-references subtype_tilt_top_piecrust)
+  "Chippendale piecrust table": "form_piecrust_table", // subtype_piecrust_chippendale
+  "Chippendale tea table": "form_piecrust_table", // subtype_piecrust_chippendale
+  "Birdcage piecrust table": "form_piecrust_table", // subtype_piecrust_birdcage
+  "Tripod piecrust table": "form_piecrust_table", // subtype_piecrust_tripod
+  "Scalloped-edge table": "form_piecrust_table",
+  "Scalloped tea table": "form_piecrust_table",
+  "Carved-edge tea table": "form_piecrust_table",
+  "Raised-edge tea table": "form_piecrust_table",
+  "Mahogany piecrust table": "form_piecrust_table",
+  "Colonial Revival piecrust table": "form_piecrust_table", // subtype_piecrust_revival
+  // Note: "Colonial Revival tea table" appears in both form_tilt_top_table
+  // and form_piecrust_table alias lists. Routed to form_piecrust_table
+  // because the Colonial Revival tea-table tradition is more strongly
+  // associated with piecrust edge treatment than with tilt mechanism
+  // alone. Tilt-top revival examples activate via "Tilt-top table" or
+  // "Colonial Revival tilt-top table" if the latter is used.
+  "Colonial Revival tea table": "form_piecrust_table",
+  // Note: "Tea table", "Tripod table", "Pedestal table", "Candle stand",
+  // "Candle table", "Occasional table", "Parlor table" intentionally NOT
+  // remapped here — they retain their existing routes to form_tea_table,
+  // form_pedestal_table (Tripod is a subtype within), form_candle_stand,
+  // form_occasional_table, form_center_table respectively. The new
+  // canonicals activate via the more specific aliases above.
+
   // Case furniture
   "Chest of drawers / dresser": "form_chest_of_drawers",
   "Dresser / drawer case": "form_chest_of_drawers",
