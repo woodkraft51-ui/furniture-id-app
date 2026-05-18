@@ -31,15 +31,35 @@
  */
 
 import type { StyleAttribution, StyleWaveAttribution } from "./engineStyleEvaluator";
+import {
+  findStyleCompatibility,
+  type StyleCompatibilityClass,
+  type StyleCompatibilityEntry,
+} from "./constraints/styleCompatibility";
+import {
+  findTransitionalPeriodByPair,
+  type TransitionalPeriodEntry,
+} from "./constraints/transitionalPeriods";
 
 export type StyleIntersection = {
   kind: "family" | "wave";
   participants: string[];          // display names; e.g. ["Rococo Revival", "Renaissance Revival"]
   participant_ids: string[];       // style_family_ids OR wave_ids
+  parent_style_ids?: [string, string]; // for wave-kind intersections, the parent families
   date_floor: number;
   date_ceiling: number;
   width: number;                   // ceiling - floor; tighter = stronger
   source_summary: string;          // human-readable reason for surfacing
+
+  // Canonical compatibility lookup (lib/constraints/styleCompatibility.ts).
+  // Populated by enrichIntersectionWithCompatibility() before the
+  // intersection is returned to callers. Drives downstream framing in p5
+  // (transitional convergence vs. expected stacked revival vs.
+  // reproduction-signal conflict) and the chart's transitional overlap
+  // band rendering.
+  compatibility_class?: StyleCompatibilityClass;
+  compatibility_notes?: string;
+  named_transitional_period?: TransitionalPeriodEntry | null;
 };
 
 const QUALIFYING_ATTRIBUTION_CONFIDENCE = 0.5;
@@ -81,6 +101,24 @@ export type StyleIntersectionResult = {
   best: StyleIntersection | null;
 };
 
+function enrichWithCompatibility(
+  intersection: StyleIntersection,
+  familyAId: string,
+  familyBId: string
+): StyleIntersection {
+  const compat = findStyleCompatibility(familyAId, familyBId);
+  if (!compat) return intersection; // no canonical record; treat as default
+  return {
+    ...intersection,
+    compatibility_class: compat.compatibility_class,
+    compatibility_notes: compat.notes,
+    named_transitional_period:
+      compat.named_transitional_period_id
+        ? findTransitionalPeriodByPair(familyAId, familyBId)
+        : null,
+  };
+}
+
 export function computeStyleIntersections(
   styleAttribution: StyleAttribution | null,
   styleAlternatives: StyleAttribution[],
@@ -119,7 +157,7 @@ export function computeStyleIntersections(
       const bWidth = (b.date_ceiling ?? 0) - (b.date_floor ?? 0);
       const interWidth = overlap.ceiling - overlap.floor;
       if (!isTightening(interWidth, aWidth, bWidth)) continue;
-      intersections.push({
+      const raw: StyleIntersection = {
         kind: "family",
         participants: [a.name, b.name],
         participant_ids: [a.style_family_id, b.style_family_id],
@@ -127,7 +165,20 @@ export function computeStyleIntersections(
         date_ceiling: overlap.ceiling,
         width: interWidth,
         source_summary: `${a.name} and ${b.name} both in production c. ${overlap.floor}–${overlap.ceiling}`,
-      });
+      };
+      const enriched = enrichWithCompatibility(raw, a.style_family_id, b.style_family_id);
+      // If a named transitional period covers this pair, prefer the
+      // appraiser-curated window over the simple date intersection.
+      // Typically tighter and historically grounded.
+      const namedFloor = enriched.named_transitional_period?.period_associations?.[0]?.date_floor;
+      const namedCeiling = enriched.named_transitional_period?.period_associations?.[0]?.date_ceiling;
+      if (typeof namedFloor === "number" && typeof namedCeiling === "number" && namedCeiling > namedFloor) {
+        enriched.date_floor = namedFloor;
+        enriched.date_ceiling = namedCeiling;
+        enriched.width = namedCeiling - namedFloor;
+        enriched.source_summary = `${enriched.named_transitional_period!.name}: ${a.name} and ${b.name} co-production c. ${namedFloor}–${namedCeiling}`;
+      }
+      intersections.push(enriched);
     }
   }
 
@@ -148,28 +199,96 @@ export function computeStyleIntersections(
       const bWidth = (b.date_ceiling ?? 0) - (b.date_floor ?? 0);
       const interWidth = overlap.ceiling - overlap.floor;
       if (!isTightening(interWidth, aWidth, bWidth)) continue;
-      intersections.push({
+      const raw: StyleIntersection = {
         kind: "wave",
         participants: [a.wave_name, b.wave_name],
         participant_ids: [a.wave_id, b.wave_id],
+        parent_style_ids: [a.parent_style_id, b.parent_style_id],
         date_floor: overlap.floor,
         date_ceiling: overlap.ceiling,
         width: interWidth,
         source_summary: `${a.wave_name} (${a.date_floor}–${a.date_ceiling}) overlaps ${b.wave_name} (${b.date_floor}–${b.date_ceiling}) at c. ${overlap.floor}–${overlap.ceiling}`,
-      });
+      };
+      const enriched = enrichWithCompatibility(raw, a.parent_style_id, b.parent_style_id);
+      intersections.push(enriched);
     }
   }
 
+  // ── Compatibility-class filtering ───────────────────────────────────
+  // - "impossible": surface ONLY when the intersection is genuinely
+  //   computed (rare — most impossible pairs have non-overlapping date
+  //   envelopes already). When it does fire, the surfacing carries the
+  //   compatibility_class so downstream framing can flag as reproduction
+  //   signal rather than as a transitional confirmation.
+  // - "stacked_revival": suppress entirely. The overlap is the EXPECTED
+  //   co-attribution pattern (Colonial Revival × Chippendale on a post-
+  //   1876 piece IS Colonial Revival Chippendale), not a transitional
+  //   moment. Surfacing it as an intersection would falsely frame the
+  //   expected co-attribution as a special diagnostic event.
+  // - "adjacent" / unclassified: pass through as transitional convergence.
+  const filtered = intersections.filter((i) => i.compatibility_class !== "stacked_revival");
+
   // Sort by tightness (narrowest first); ties broken by wave > family
-  // (waves are higher-resolution evidence).
-  intersections.sort((x, y) => {
+  // (waves are higher-resolution evidence). Adjacent pairs with named
+  // transitional periods rank above generic adjacent pairs at equal width.
+  filtered.sort((x, y) => {
     if (x.width !== y.width) return x.width - y.width;
     if (x.kind !== y.kind) return x.kind === "wave" ? -1 : 1;
-    return 0;
+    const xNamed = x.named_transitional_period ? 1 : 0;
+    const yNamed = y.named_transitional_period ? 1 : 0;
+    return yNamed - xNamed;
   });
 
   return {
-    intersections,
-    best: intersections[0] ?? null,
+    intersections: filtered,
+    best: filtered[0] ?? null,
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Impossible-pair detection: surface as conflict signal when two
+// attributions fire on the same piece and their canonical compatibility
+// class is "impossible." This is independent of date intersection (which
+// usually won't compute for impossible pairs because their date envelopes
+// don't overlap). Consumed by p5 to emit a reproduction-signal conflict.
+// ─────────────────────────────────────────────────────────────────────────
+export type ImpossiblePairConflict = {
+  participants: [string, string];
+  participant_ids: [string, string];
+  compatibility_entry: StyleCompatibilityEntry;
+};
+
+export function detectImpossiblePairs(
+  styleAttribution: StyleAttribution | null,
+  styleAlternatives: StyleAttribution[]
+): ImpossiblePairConflict[] {
+  const conflicts: ImpossiblePairConflict[] = [];
+  const pool: StyleAttribution[] = [];
+  if (styleAttribution && styleAttribution.confidence >= QUALIFYING_ATTRIBUTION_CONFIDENCE) {
+    pool.push(styleAttribution);
+  }
+  for (const a of styleAlternatives) {
+    if (a.confidence >= QUALIFYING_ATTRIBUTION_CONFIDENCE) pool.push(a);
+  }
+  // Dedupe by family id.
+  const byId = new Map<string, StyleAttribution>();
+  for (const f of pool) {
+    const existing = byId.get(f.style_family_id);
+    if (!existing || f.confidence > existing.confidence) byId.set(f.style_family_id, f);
+  }
+  const families = Array.from(byId.values());
+  for (let i = 0; i < families.length; i++) {
+    for (let j = i + 1; j < families.length; j++) {
+      const a = families[i];
+      const b = families[j];
+      const compat = findStyleCompatibility(a.style_family_id, b.style_family_id);
+      if (!compat || compat.compatibility_class !== "impossible") continue;
+      conflicts.push({
+        participants: [a.name, b.name],
+        participant_ids: [a.style_family_id, b.style_family_id],
+        compatibility_entry: compat,
+      });
+    }
+  }
+  return conflicts;
 }

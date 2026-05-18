@@ -658,19 +658,30 @@ function DatingOverlapViz({
   styleAlternatives,
   styleWaves,
   bestStyleIntersection,
+  suppressedPartnerIds,
 }: {
   data: DatingOverlapData;
   styleAttribution?: StyleAttributionForViz;
   styleAlternatives?: Array<NonNullable<StyleAttributionForViz>>;
   styleWaves?: StyleWaveForViz[];
   bestStyleIntersection?: StyleIntersectionForViz;
+  suppressedPartnerIds?: string[];
 }) {
   const waves = styleWaves ?? [];
   // Filter alternatives by qualifying confidence floor — only render an
   // alternative as its own Style row when the engine actually treated it
-  // as a co-occurring attribution worth reasoning about.
+  // as a co-occurring attribution worth reasoning about. Then suppress
+  // any alternative whose canonical compatibility with the winning
+  // attribution is "stacked_revival" (the engine flags these in
+  // p3.stacked_revival_partner_ids — those are expected umbrella
+  // co-attributions, not transitional moments that earn a partner row).
+  const suppressed = new Set(suppressedPartnerIds ?? []);
   const qualifiedAlternatives = (styleAlternatives ?? []).filter(
-    (a) => a && typeof a.confidence === "number" && a.confidence >= ALTERNATIVE_ATTRIBUTION_FLOOR
+    (a) =>
+      a &&
+      typeof a.confidence === "number" &&
+      a.confidence >= ALTERNATIVE_ATTRIBUTION_FLOOR &&
+      !(a.style_family_id && suppressed.has(a.style_family_id))
   );
   // Cap at the single best transitional partner — beyond 2 Style rows the
   // chart gets unwieldy and the marginal alternative adds noise.
@@ -1849,6 +1860,7 @@ const p7 = stageOutputs.p7 || null;
                   styleAlternatives={p3?.style_alternatives ?? []}
                   styleWaves={p3?.style_waves ?? []}
                   bestStyleIntersection={p3?.best_style_intersection ?? null}
+                  suppressedPartnerIds={p3?.stacked_revival_partner_ids ?? []}
                 />
               </SectionCard>
             )}

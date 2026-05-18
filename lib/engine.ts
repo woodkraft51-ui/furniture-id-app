@@ -67,7 +67,8 @@ import {
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, collectStyleSupportingEvidence, type StyleAttribution, type StyleWaveAttribution, type StyleSupportingObservation } from "./engineStyleEvaluator";
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
-import { computeStyleIntersections, type StyleIntersection } from "./engineStyleIntersection";
+import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
+import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -243,6 +244,13 @@ type Phase3Result = {
   // highlight band).
   style_intersections?: StyleIntersection[];
   best_style_intersection?: StyleIntersection | null;
+  // Alternatives whose canonical compatibility with the winning attribution
+  // is "stacked_revival" (e.g., Colonial Revival × Chippendale on a post-
+  // 1876 piece). Listed here so the chart can SUPPRESS the partner Style
+  // row for these — co-attribution is expected umbrella behavior, not a
+  // transitional moment worth a second row. p5 also uses this list to skip
+  // generic "competing attribution" framing for these pairs.
+  stacked_revival_partner_ids?: string[];
   // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
   hybrid?: HybridAnnotation | null;
   // Block 9: undated observations categorically aligned with the style
@@ -5068,18 +5076,27 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   // supporting_context with framing the appraiser would actually use
   // ("both vocabularies were in production c. YYYY–YYYY") rather than the
   // legacy "competing attributions" framing that read as engine confusion.
+  // When a canonical named transitional period covers the pair (per
+  // lib/constraints/transitionalPeriods.ts), use its diagnostic_caution_text
+  // for trade-period framing instead of the generic transitional convergence
+  // wording.
   const bestIntersection = form.best_style_intersection ?? null;
   if (bestIntersection) {
-    const tightnessQualifier =
-      bestIntersection.width <= 25
-        ? "tightly anchors"
-        : bestIntersection.width <= 40
-        ? "anchors"
-        : "is broadly consistent with";
-    const layerNoun = bestIntersection.kind === "wave" ? "revival waves" : "style families";
-    supporting_context.push(
-      `Transitional convergence — both ${bestIntersection.participants.join(" and ")} ${layerNoun} were in production c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}; the overlap ${tightnessQualifier} a transitional dating window of c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}.`
-    );
+    const namedPeriod = bestIntersection.named_transitional_period;
+    if (namedPeriod && namedPeriod.diagnostic_caution_text) {
+      supporting_context.push(namedPeriod.diagnostic_caution_text);
+    } else {
+      const tightnessQualifier =
+        bestIntersection.width <= 25
+          ? "tightly anchors"
+          : bestIntersection.width <= 40
+          ? "anchors"
+          : "is broadly consistent with";
+      const layerNoun = bestIntersection.kind === "wave" ? "revival waves" : "style families";
+      supporting_context.push(
+        `Transitional convergence — both ${bestIntersection.participants.join(" and ")} ${layerNoun} were in production c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}; the overlap ${tightnessQualifier} a transitional dating window of c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}.`
+      );
+    }
     if ((form.style_intersections ?? []).length > 1) {
       const others = (form.style_intersections ?? []).slice(1, 3);
       for (const o of others) {
@@ -5088,6 +5105,26 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
         );
       }
     }
+  }
+
+  // Impossible-pair detection: when two style attributions fire whose
+  // canonical compatibility class is "impossible" (no historical
+  // co-production window per lib/constraints/styleCompatibility.ts),
+  // surface as a p5 conflict with reproduction-signal framing. This is
+  // independent of intersection math because impossible pairs usually
+  // don't have overlapping date envelopes.
+  const impossiblePairs = detectImpossiblePairs(
+    form.style_attribution ?? null,
+    form.style_alternatives ?? []
+  );
+  for (const ip of impossiblePairs) {
+    const text =
+      ip.compatibility_entry.diagnostic_caution_text ??
+      `${ip.participants[0]} and ${ip.participants[1]} both attribute to this piece, but these styles did not historically co-occur. This usually indicates a reproduction, decorator's eclectic mix, or LLM mis-read — verify the attributions and/or look for revival-era construction evidence.`;
+    conflicts.push(`Impossible style co-attribution: ${text}`);
+    resolutions.push(
+      `Per canonical style compatibility matrix, ${ip.participants[0]} and ${ip.participants[1]} have no historical co-production window. Down-weight both attributions and treat the piece as a revival, reproduction, or eclectic later work pending further evidence.`
+    );
   }
 
   // Block 7a sub-task 2: detect conflicts via numeric date-range incompatibility
@@ -5328,6 +5365,22 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
     );
     p3.style_intersections = intersectionResult.intersections;
     p3.best_style_intersection = intersectionResult.best;
+
+    // Compute the set of alternative attributions that should be suppressed
+    // from the chart's partner Style row because their canonical
+    // compatibility class with the winning attribution is "stacked_revival"
+    // (umbrella co-attribution, not a transitional moment).
+    if (p3.style_attribution && (p3.style_alternatives ?? []).length > 0) {
+      const winnerId = p3.style_attribution.style_family_id;
+      const suppressed: string[] = [];
+      for (const alt of p3.style_alternatives ?? []) {
+        const compat = findStyleCompatibility(winnerId, alt.style_family_id);
+        if (compat?.compatibility_class === "stacked_revival") {
+          suppressed.push(alt.style_family_id);
+        }
+      }
+      p3.stacked_revival_partner_ids = suppressed;
+    }
   }
 
   stage_outputs.p3 = p3; onPhase?.("p3", p3);
