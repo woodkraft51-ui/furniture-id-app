@@ -59,11 +59,13 @@ import {
   evaluateAntiBackClassification,
   evaluateDimensional,
   evaluateHybridForm,
+  evaluateCousinContrast,
   getCommonAliasesForDisplay,
   getFormDatingBoundaries,
   type SubtypeAssignment,
   type AntiBackViolation,
   type HybridAnnotation,
+  type CousinContrastMatch,
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, collectStyleSupportingEvidence, type StyleAttribution, type StyleWaveAttribution, type StyleSupportingObservation } from "./engineStyleEvaluator";
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
@@ -262,6 +264,12 @@ type Phase3Result = {
   final_style?: FinalStyleReconciliation;
   // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
   hybrid?: HybridAnnotation | null;
+  // Parking-lot 2d: cousin contrasts from the picked form that name the
+  // p3-scored alternative forms. Lean wiring per D-PH3-2 lean: string
+  // matching from cousin_form_contrasts prose against alternative form
+  // names/ids. Surfaces in the report to explain "why this form, not
+  // that one" calls. Does NOT influence scoring decisions.
+  cousin_contrasts?: CousinContrastMatch[];
   // Block 9: undated observations categorically aligned with the style
   // attribution. Surfaced in the report as supporting context — does NOT
   // contribute to dating-overlap layers to avoid double-counting.
@@ -5039,6 +5047,12 @@ if (missing.label_photo) {
     // authoring surfaces additional hybrid identities).
     const hybrid = evaluateHybridForm(form_id);
 
+    // Parking-lot 2d lean wiring: cousin_form_contrasts from the picked
+    // form, matched against p3-scored alternative form names/ids. Surfaces
+    // in the report for "why this form, not that one" explanation. Does
+    // NOT influence scoring.
+    const cousin_contrasts = evaluateCousinContrast(form_id, alternative_form_ids);
+
     // Block 2a: structured style attribution from styleFamilies.ts.
     // Falls back to engine-derived style strings when no canonical match.
     // Block 14: frame-filtered clue keys so style attribution can't see
@@ -5087,6 +5101,7 @@ if (missing.label_photo) {
       style_attribution,
       style_alternatives,
       hybrid,
+      cousin_contrasts,
       style_supporting_evidence,
     };
   },

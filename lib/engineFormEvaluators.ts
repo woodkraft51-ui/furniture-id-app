@@ -220,15 +220,90 @@ export function evaluateDimensional(
 }
 
 /**
- * B3 stub. Implementation deferred per D-PH3-2 — start with string matching
- * if cousin contrast quality is needed; defer to follow-on if quality bad.
- * Current return: no-op (null).
+ * Single cousin-contrast match returned by evaluateCousinContrast.
+ * Surfaces in p3.cousin_contrasts and is consumed by the report-rendering
+ * layer to explain "why this form, not that one" calls when the engine has
+ * close alternatives. Does NOT influence scoring decisions.
+ */
+export type CousinContrastMatch = {
+  vs_form_id: string;
+  vs_form_name: string;
+  contrast_text: string;
+};
+
+/**
+ * B3 implementation per D-PH3-2 lean: string matching from the picked form's
+ * cousin_form_contrasts against the names and form_ids of the alternative
+ * forms scored by p3. Returns matched contrasts for surfacing in the report.
+ *
+ * Matching is intentionally permissive: each cousin_form_contrasts entry is
+ * scanned for case-insensitive substring presence of any alternative form's
+ * `name` (e.g., "pedestal table") or `id` (e.g., "form_pedestal_table"). When
+ * an alternative form name appears in a contrast string, that contrast is
+ * recorded as applying to that alternative.
+ *
+ * Quality is dependent on appraiser-authored prose. If a piece's picked form
+ * has rich cousin_form_contrasts naming its actual alternates, matches will
+ * surface. If the prose names cousin forms the engine didn't score as
+ * alternates, no match — that's fine; the contrasts remain as authoring
+ * documentation.
+ *
+ * NOT engine-consumed by scoreForms — this is post-processing for report
+ * explanation. Per the D-PH3-2 lean wiring decision: if string-matching
+ * quality proves insufficient in practice, escalate to structured
+ * disambiguation (medium or heavy paths from the 2d discussion).
  */
 export function evaluateCousinContrast(
-  _form_id: string | null,
-  _observationDescriptions: string[]
-): null {
-  return null;
+  form_id: string | null,
+  alternative_form_ids: string[],
+): CousinContrastMatch[] {
+  if (!form_id) return [];
+  const form = getForm(form_id);
+  const contrasts = (form?.cousin_form_contrasts ?? []) as string[];
+  if (!contrasts.length || !alternative_form_ids.length) return [];
+
+  // Defensive: filter out the picked form's own id from alternatives.
+  // p3's alternative_form_ids construction (engine.ts:5000) has a known
+  // edge case where the picked form can appear in the alternatives list
+  // (the `.filter((r) => r !== bestForm)` doesn't always exclude it).
+  // Without this guard, cousin contrasts would self-match.
+  const altIds = alternative_form_ids.filter((id) => id !== form_id);
+  if (!altIds.length) return [];
+
+  // Build lookup of alternative forms with both name and id for matching.
+  const alternatives = altIds
+    .map((id) => {
+      const f = getForm(id);
+      return f ? { id, name: f.name.toLowerCase(), display_name: f.name } : null;
+    })
+    .filter((x): x is { id: string; name: string; display_name: string } => x !== null);
+
+  if (!alternatives.length) return [];
+
+  const matches: CousinContrastMatch[] = [];
+  const seen = new Set<string>(); // dedup by (vs_form_id + contrast_text)
+
+  for (const contrast of contrasts) {
+    const haystack = contrast.toLowerCase();
+    for (const alt of alternatives) {
+      // Match against either the form name (e.g., "pedestal table") or the
+      // form_id (e.g., "form_pedestal_table"). Form_id matching catches
+      // appraiser prose that uses explicit form_X references.
+      if (haystack.includes(alt.name) || haystack.includes(alt.id)) {
+        const key = `${alt.id}|${contrast}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          matches.push({
+            vs_form_id: alt.id,
+            vs_form_name: alt.display_name,
+            contrast_text: contrast,
+          });
+        }
+      }
+    }
+  }
+
+  return matches;
 }
 
 /**
