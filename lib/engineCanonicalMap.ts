@@ -242,6 +242,19 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Bergère chair": "form_lounge_chair", // subtype_lounge_bergere within form_lounge_chair
   "Easy chair": "form_lounge_chair", // subtype_lounge_easy within form_lounge_chair
   "Recliner": "form_lounge_chair", // subtype_lounge_recliner within form_lounge_chair
+  "Wing chair": "form_wing_chair",
+  "Wingback chair": "form_wing_chair",
+  "Wingback armchair": "form_wing_chair",
+  "Wing-back chair": "form_wing_chair",
+  "Queen Anne wing chair": "form_wing_chair", // subtype_wing_queen_anne within form_wing_chair
+  "Chippendale wing chair": "form_wing_chair", // subtype_wing_chippendale within form_wing_chair
+  "Federal wing chair": "form_wing_chair", // subtype_wing_federal within form_wing_chair
+  "Fireside chair": "form_wing_chair",
+  "Wing recliner": "form_wing_chair", // subtype_wing_recliner within form_wing_chair
+  // Note: "Easy chair" intentionally remains mapped to form_lounge_chair above
+  // per modern dominant usage; 18th-century English period usage where
+  // "easy chair" = wing chair is handled at scoreForms via structural cues
+  // (wing presence routes to form_wing_chair regardless of common-alias hit).
   "Colonial / Georgian Revival upholstered armchair": "form_armchair",
   "Upholstered armchair": "form_armchair",
   "Bench / seating furniture": NO_MATCH, // form_bench not yet authored

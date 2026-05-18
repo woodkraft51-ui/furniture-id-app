@@ -5072,6 +5072,130 @@ export const FORMS: FormEntry[] = [
       "Lounge chairs span 300+ years of furniture history, but the modern fully-upholstered American lounge chair is most associated with c. 1900-1940 Edwardian, Colonial Revival, Arts and Crafts, club chair, and hotel or library seating production, and with c. 1945-1970 mid-century modern designer and designer-influenced production. Earlier lounge-chair logic may appear in French Bergère, easy chair, fireside chair, reading chair, and elite parlor seating precedents, but American mass-market lounge-chair identity becomes much stronger after the rise of fully upholstered domestic seating. Upholstered examples require separating frame date from upholstery date because upholstery, springs, padding, cushions, and dust covers are commonly replaced. Watch for: (a) a secondary_surface observation on a clearly-upholstered lounge form usually indicates LLM mis-perception of a separate object in the image, not a telephone-bench identification; (b) shallow-seat or upright-back examples should be re-routed to form_armchair, form_side_chair, form_parlor_chair, or form_desk_chair depending on arm presence and use posture; (c) mechanical reclining mechanisms are post-1928 dating anchors and define the recliner subtype; (d) exposed-frame modern examples should not be rejected merely because they are not fully upholstered; posture and seat geometry remain controlling.",
   },
   {
+    id: "form_wing_chair",
+    category: "form",
+    name: "wing chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1650,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    notes:
+      "Per appraiser authoring 2026-05-17. Wing chair earns its own canonical entry rather than being an armchair or lounge-chair subtype because the defining identity is structural: upper side wings extending forward from the back, originally functional for draft-blocking near a fireplace. Wings are present even on small-scale, upright, or non-upholstered examples and are absent on ordinary armchairs, lounge chairs, club chairs, tub chairs, and slipper chairs. Cousin form to form_armchair, which is arm-based, and form_lounge_chair, which is posture-based, per the wing-as-structural-feature decision documented in both entries' cousin_form_contrasts. Canonical production span opens c. 1650 in England, broadens to American production c. 1700, and continues to the present with continuous Colonial Revival, Federal Revival, and twentieth-century reinterpretation. Diagnostic identity rests on 8 canonical distinguishing features and 8 documented subtypes.",
+    migration_status: "complete",
+    distinguishing_features: [
+      "Single-person upholstered seating with structural side wings extending forward from the upper back; wings are the defining feature",
+      "Wings originally served to block drafts near fireplaces, retain warmth around the sitter, and provide lateral head support during reading, resting, or sleeping; vestigial in many modern examples but still structurally defining",
+      "Back is typically tall, commonly 38-50 inches from floor, with wings reaching above the sitter's shoulder line",
+      "Wings may be straight, scrolled, hooked, ogee, saddle-shaped, flared, rolled, or sharply angular; variation in wing silhouette is a major subtype and period indicator",
+      "Arms are usually present and typically visually integrated with the wing structure, often with a downward sweep from wing terminal to arm front; armless wing chairs are rare and usually modern reinterpretations",
+      "Frame may be fully upholstered, which is most common, or may have exposed wood at legs, stretchers, arms, side rails, and occasionally back frame in early American, Federal, Colonial Revival, French, or modern designer examples",
+      "Legs vary widely by period: turned and stretchered legs for William and Mary or early Georgian examples; cabriole legs with pad, trifid, or ball-and-claw feet for Queen Anne and Chippendale examples; tapered or reeded legs for Federal and Hepplewhite examples; bracket, block, or cabriole revival legs for Colonial Revival examples; tubular, splayed, molded, or sculptural supports for modern examples",
+      "Commonly found near hearths, in libraries, parlors, bedrooms, sitting rooms, reading nooks, clubs, and formal living spaces; rare in dining, desk, vanity, or task contexts",
+    ],
+    subtypes: [
+      {
+        id: "subtype_wing_william_mary",
+        name: "William and Mary / early Georgian wing chair",
+        distinguishing_attributes: [
+          "Early wing chair subtype with tall upholstered back, large functional wings, turned legs joined by box stretchers, and Spanish, ball, bun, or paintbrush feet. Wings tend to be larger and more pronounced as functional draft-blockers. Walnut primary is common in English examples; needlework, worsted wool, leather, or later replacement upholstery may appear. Period c. 1690-1730, with rare American examples, more common English imports, and later revival production.",
+        ],
+      },
+      {
+        id: "subtype_wing_queen_anne",
+        name: "Queen Anne wing chair",
+        distinguishing_attributes: [
+          "Wing chair with cabriole legs, pad, slipper, trifid, or early ball-and-claw feet, restrained scrolling on wings and arm fronts, and balanced curvilinear silhouette. American walnut and mahogany frames are typical depending on region and date. American primary production c. 1720-1760, with strong Colonial Revival reproduction c. 1900-1940 and continuing traditional production thereafter.",
+        ],
+      },
+      {
+        id: "subtype_wing_chippendale",
+        name: "Chippendale wing chair",
+        distinguishing_attributes: [
+          "Wing chair with Marlborough straight square legs, often with carved corner detail, or cabriole legs with ball-and-claw feet. Usually heavier and more architectural than Queen Anne examples, with more elaborate carving on knee blocks, arm fronts, wing terminals, or exposed frame details. Mahogany is dominant in high-style examples. Period c. 1755-1790, with strong Colonial Revival and late traditional revival production.",
+        ],
+      },
+      {
+        id: "subtype_wing_federal",
+        name: "Federal / Hepplewhite wing chair",
+        distinguishing_attributes: [
+          "Lighter neoclassical wing chair with tapered square legs, reeded round legs, spade feet, restrained frame lines, and flatter, more vertical wings. Inlay, stringing, reeding, or delicate turning may appear where the frame is exposed. Generally less massive than Queen Anne or Chippendale wing chairs. Period c. 1790-1815, with continuing Federal Revival production.",
+        ],
+      },
+      {
+        id: "subtype_wing_colonial_revival",
+        name: "Colonial Revival wing chair",
+        distinguishing_attributes: [
+          "Reproduction or reinterpretation of Queen Anne, Chippendale, William and Mary, or Federal wing-chair vocabulary, usually with machine-cut joinery, standardized frame construction, coil-spring or later foam upholstery, modern fabric, machine-turned legs, bracket feet, block feet, cabriole revival legs, or factory-made exposed components. Period c. 1900-1960 dominant, with continuing traditional-style production. Often the source of confusion with original-period wing chairs; construction evidence controls dating.",
+        ],
+      },
+      {
+        id: "subtype_wing_modern",
+        name: "Modern / designer wing chair",
+        distinguishing_attributes: [
+          "Post-1945 reinterpretation of the wing-chair silhouette using modernist construction: molded plywood shell with vestigial wings, tubular steel frame with upholstered wing panels, fiberglass shell, Scandinavian-influenced exposed wood frame, angular lounge geometry, or sculptural single-piece foam. Eames, Jens Risom, Hans Wegner, Arne Jacobsen Egg-family, and Tom Dixon reinterpretations are relevant comparison references, but designer attribution requires direct evidence such as maker marks, documented provenance, period labels, or construction matches.",
+        ],
+      },
+      {
+        id: "subtype_wing_recliner",
+        name: "Reclining wing chair",
+        distinguishing_attributes: [
+          "Wing chair with mechanical reclining mechanism, such as footrest extension, back-pitch adjustment, push-back action, lever release, electric motor, swivel-recliner base, or rocker-recliner mechanism. Post-1960s mass-market production commonly combines wing silhouette with recliner mechanics, often in oversized leather, vinyl, or club-and-wing format. Mechanism overlaps with subtype_lounge_recliner; canonical placement belongs here when the wing structure is clearly present.",
+        ],
+      },
+      {
+        id: "subtype_wing_petite",
+        name: "Petite / lady's wing chair",
+        distinguishing_attributes: [
+          "Narrower-scale wing chair, often paired with a larger 'gentleman's' wing chair in parlor, bedroom, or library suites. Width typically 24-28 inches versus roughly 30-36 inches for standard wing chairs. Period-specific examples occur through Queen Anne, Chippendale, Federal, Colonial Revival, and twentieth-century traditional production. Scale alone is not a date indicator; construction and upholstery evidence must control dating.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs armchair: armchair lacks structural side wings extending forward from the upper back; wing chair always has them. An armchair with a tall back but no wings remains an armchair.",
+      "Vs lounge chair: lounge chair is posture-based, meaning deeper seat, lower seat height, and more reclined back. Wing chair is structurally defined by wings regardless of posture. A reclined wing chair should be classified as wing chair primary with lounge-chair posture as a secondary note.",
+      "Vs club chair: club chair is a deep upholstered lounge variant without structural wings; wing chair has wings. A 'wing-back club chair' is a wing-chair and club-chair hybrid and is usually best classified under form_wing_chair with subtype_wing_modern, subtype_wing_colonial_revival, or subtype_wing_recliner depending on construction.",
+      "Vs tub chair: tub chair has a curved barrel or cylindrical back wrapping continuously from arm to arm; wing chair has a flat, concave, or only slightly curved back with discrete wings rising above the arm line. Hybrid tub-wing chairs are uncommon and usually modern or late twentieth-century designs.",
+      "Vs slipper chair: slipper chair is armless, low-seated, and small-scale; wing chair usually has arms, is taller, and has wings. Armless wing-like modern chairs should be handled cautiously and should require clear wing structure before receiving wing-chair primary identification.",
+      "Vs sofa / settee: sofa and settee seat 2+ persons; wing chair seats 1 person. Wing settees and wing-back sofas do exist, but they are classified under form_settee or form_sofa with a wing-back note rather than under form_wing_chair.",
+      "Vs porter's chair / hooded chair: porter's chair has a continuous arched canopy hood that encloses the sitter rather than discrete forward wings; it is a rare specialized form and may be added later as form_porters_chair if diagnostic frequency justifies.",
+      "Vs barber chair / dentist chair: barber and dentist chairs are task-mechanical chairs with adjustable mechanisms, pedestal bases, and service-work positioning; wing chair is domestic or lounge seating and is not defined by task adjustability.",
+      "Vs throne chair / ceremonial chair: ceremonial chairs are oversized, presentation-focused, and often heavily carved; they may have wing-like extensions, but their identity is ceremonial display rather than domestic comfort. Classified separately under form_throne_chair if added.",
+    ],
+    dimensional_thresholds: {
+      width_min: 26,
+      width_max: 38,
+      height_min: 38,
+      height_max: 52,
+      depth_min: 28,
+      depth_max: 38,
+      weight_min: 35,
+      weight_max: 130,
+      notes:
+        "Back height, including wings, typically 38-50 inches, taller than a standard armchair's common 30-45 inches and taller than many lounge chairs' common 28-42 inches. Seat height typically 15-19 inches. Wing extension typically projects 4-8 inches forward of the back plane at the upper third of the back. Petite or lady's variants may fall to 24-26 inches width. Oversized twentieth-century wing recliners may exceed the normal width, depth, and weight ranges and should be evaluated under subtype_wing_recliner rather than rejected automatically. Modern designer wing chairs using molded plywood, tubular steel, fiberglass, aluminum, or exposed-frame construction may fall to 30-40 pounds; traditional fully upholstered wing chairs with hardwood frames and coil springs commonly run 80-130 pounds.",
+    },
+    common_aliases: [
+      "Wingback chair",
+      "Wing-back chair",
+      "Wingback armchair",
+      "Wing chair",
+      "Easy chair",
+      "Fireside chair",
+      "Grandfather chair",
+      "Library wing chair",
+      "Reading wing chair",
+      "Saddle-back chair",
+      "Queen Anne wing chair",
+      "Chippendale wing chair",
+      "Federal wing chair",
+      "Wing recliner",
+      "Porter's chair",
+    ],
+    regional_period_notes:
+      "Wing chairs originate in late seventeenth-century England as functional fireside seating with draft-blocking wings, lateral head support, and warmth retention. American production begins broadly c. 1700 with William and Mary and early Georgian turned-leg examples, broadens substantially through Queen Anne c. 1720-1760 and Chippendale c. 1755-1790 production, and continues through Federal c. 1790-1815, Empire-era traditional seating, Colonial Revival reproduction, and modern reinterpretation. In American originals, regional differences may appear in foot form, leg turnings, proportions, wood species, and upholstery history; Philadelphia and Newport high-style examples are especially associated with refined carving and mahogany, while more regional examples may be plainer or show walnut, maple, birch, or mixed secondary woods. The form sees continuous Colonial Revival reproduction from c. 1900 and modern designer reinterpretation from c. 1945. Upholstered examples require separating frame date from upholstery date because upholstery, springs, padding, webbing, dust covers, and cushions are commonly replaced; original eighteenth-century upholstery survival is extremely rare. Watch for: (a) wing chair vs Colonial Revival wing chair distinction requires construction evidence, including hand-cut versus machine-cut joinery, period-appropriate leg construction, tool marks, frame oxidation, tack evidence, spring history, and upholstery substrate; silhouette alone does not date a piece; (b) modern designer wing chairs are valuable when authenticated, but silhouette resemblance is insufficient without maker marks, labels, provenance, or construction evidence; (c) reclining wing chairs are post-1960s in normal American mass-market use, and the mechanism is a hard dating anchor; (d) 'wing-back club chair' marketing language overlaps wing-chair and club-chair vocabulary and should resolve to wing chair primary identity when wings are structurally present; (e) armless or low-backed modern chairs with small side flares should not be called wing chairs unless the upper side projections function visually and structurally as wings.",
+  },
+  {
     id: "form_bar_chair",
     category: "form",
     name: "bar chair",

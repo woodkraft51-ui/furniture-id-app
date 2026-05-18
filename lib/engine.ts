@@ -1827,6 +1827,54 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   }
 
   // =========================
+  // WING-CHAIR FORM SYNTHESIZER
+  // Structural wings extending forward from the upper back — distinct
+  // from armchair (arm-based) and lounge chair (posture-based) per the
+  // wing-as-structural-feature decision documented in form_wing_chair,
+  // form_armchair, and form_lounge_chair cousin_form_contrasts. Emits
+  // wingback_form so the armchairVeto at engine.ts:2504 (telephone-bench
+  // mis-routing block) becomes reachable on wing chairs as well as
+  // standard upholstered seating.
+  // Canonical: lib/constraints/forms.ts form_wing_chair (8 subtypes).
+  // =========================
+
+  const hasWingCues =
+    hasText(
+      "wing chair",
+      "wing chairs",
+      "wingback",
+      "wing-back",
+      "wing back",
+      "side wings",
+      "draft wings",
+      "fireside wing",
+      "queen anne wing",
+      "chippendale wing",
+      "federal wing",
+      "wing recliner",
+      "wing-back club",
+    );
+
+  if (
+    !hasClue("wingback_form") &&
+    hasWingCues &&
+    (hasClue("seating_surface") ||
+      hasClue("armchair_form") ||
+      hasClue("backrest_present"))
+  ) {
+    out.push({
+      type: "form",
+      clue: "wingback_form",
+      description:
+        "Structural side wings extending forward from upper back indicate wing-chair form. Canonical: form_wing_chair.",
+      confidence: 80,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // =========================
   // WOOD-FRAME DEPENDENT STYLES
   // =========================
   if (
