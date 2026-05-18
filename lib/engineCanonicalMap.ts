@@ -849,6 +849,120 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // form. Resolve at scoreForms via individual-station + row-mounting
   // evidence.
 
+  // ───────────────────────────────────────────────────────────────────
+  // Dining cases — Item 16 Batch A (Tier B dining storage elevations)
+  // ───────────────────────────────────────────────────────────────────
+
+  "Hutch": "form_hutch",
+  "hutch": "form_hutch",
+  "China hutch": "form_hutch", // subtype_hutch_china_hutch (dominant retail use; Welsh dresser also lists this as alias but the canonical there flags it as misuse)
+  "Dining hutch": "form_hutch",
+  "Kitchen hutch": "form_hutch",
+  "Buffet and hutch": "form_hutch", // subtype_hutch_buffet_hutch
+  "Buffet hutch": "form_hutch", // subtype_hutch_buffet_hutch
+  "Country hutch": "form_hutch", // subtype_hutch_country_hutch
+  "Display hutch": "form_hutch",
+  "Cupboard hutch": "form_hutch",
+  "Step-back hutch": "form_hutch", // subtype_hutch_stepback_hutch (boundary form with step-back cupboard when food-storage cupboard function dominates)
+  "Open-shelf hutch": "form_hutch", // subtype_hutch_open_shelf_hutch (boundary form with Welsh dresser when British/country-dresser configuration dominates)
+  // Note: "China cupboard" intentionally NOT mapped — too ambiguous;
+  // can route to form_china_cabinet (existing canonical) or form_hutch
+  // depending on base-plus-upper structure evidence; resolve at scoreForms.
+
+  "Breakfront": "form_breakfront",
+  "Breakfront cabinet": "form_breakfront",
+  "Breakfront china cabinet": "form_breakfront", // subtype_breakfront_china_cabinet
+  "Break-front": "form_breakfront",
+  "Broken-front cabinet": "form_breakfront",
+  "Georgian breakfront": "form_breakfront",
+  "Colonial Revival breakfront": "form_breakfront",
+  "Breakfront bookcase": "form_breakfront", // subtype_breakfront_bookcase (routes to bookcase family if dining evidence absent)
+  "Breakfront secretary": "form_breakfront", // subtype_breakfront_secretary_bookcase (should NOT route as dining storage if writing function dominates)
+  "Breakfront secretary bookcase": "form_breakfront", // subtype_breakfront_secretary_bookcase
+  // Note: "Formal china cabinet" intentionally NOT mapped — bare term
+  // without "breakfront" qualifier should route to form_china_cabinet;
+  // breakfront identity requires actual projecting center geometry.
+
+  "Corner cabinet": "form_corner_cabinet",
+  "Corner cupboard": "form_corner_cabinet",
+  "Corner china cabinet": "form_corner_cabinet", // subtype_corner_cabinet_glazed
+  "Corner hutch": "form_corner_cabinet", // corner geometry outranks hutch base-plus-upper structure
+  "Corner display cabinet": "form_corner_cabinet", // subtype_corner_cabinet_glazed
+  "Built-in corner cupboard": "form_corner_cabinet", // subtype_corner_cabinet_built_in
+  "Hanging corner cupboard": "form_corner_cabinet", // subtype_corner_cabinet_hanging
+  "Corner curio": "form_corner_cabinet", // subtype_corner_cabinet_glazed (display-only function may secondarily route to form_curio_cabinet via dual-routing if implemented)
+  "Pie-shaped cabinet": "form_corner_cabinet",
+
+  "Huntboard": "form_huntboard",
+  "Hunt board": "form_huntboard",
+  "Hunting board": "form_huntboard",
+  "Southern huntboard": "form_huntboard", // subtype_huntboard_southern_country
+  "Standing sideboard": "form_huntboard",
+  "Hall sideboard": "form_huntboard", // huntboard hall-service tradition
+  // Note: "Tall sideboard", "Country sideboard", "Serving board" intentionally
+  // NOT mapped — "Tall sideboard" alone is ambiguous (could be a tall but
+  // ordinary sideboard not Huntboard); "Country sideboard" overlaps with
+  // Welsh dresser and other country forms; "Serving board" is too generic
+  // (could be cutting board, charcuterie board, or any service surface).
+  // Resolve at scoreForms via height tier + regional construction evidence.
+
+  "Credenza": "form_credenza", // distinct from form_credenza_desk; storage form dominates modern retail use
+  "Dining credenza": "form_credenza", // subtype_credenza_dining
+  "Office credenza": "form_credenza", // subtype_credenza_office (NOT credenza_desk unless work surface present)
+  "Mid-century credenza": "form_credenza", // subtype_credenza_mid_century
+  "Mid century credenza": "form_credenza", // subtype_credenza_mid_century
+  "MCM credenza": "form_credenza", // subtype_credenza_mid_century
+  "Sideboard credenza": "form_credenza", // subtype_credenza_sideboard_crossover
+  "Media credenza": "form_credenza", // subtype_credenza_media
+  "Storage credenza": "form_credenza",
+  "Tambour credenza": "form_credenza", // subtype_credenza_tambour
+  "Floating credenza": "form_credenza", // subtype_credenza_floating_wall_mounted
+  // Note: "Low cabinet", "Modern sideboard" intentionally NOT mapped —
+  // "Low cabinet" is too generic; "Modern sideboard" should route to
+  // form_sideboard with credenza-crossover noted (subtype_credenza_
+  // sideboard_crossover handles ambiguous cases at scoreForms).
+
+  "Welsh dresser": "form_welsh_dresser",
+  "Kitchen dresser": "form_welsh_dresser", // subtype_welsh_dresser_country
+  "Country dresser": "form_welsh_dresser", // subtype_welsh_dresser_country
+  "Pewter cupboard": "form_welsh_dresser", // open-rack display tradition
+  "Plate rack dresser": "form_welsh_dresser", // subtype_welsh_dresser_plate_rack
+  "Pine dresser": "form_welsh_dresser", // subtype_welsh_dresser_pine
+  "Open hutch": "form_welsh_dresser", // open-rack upper distinguishes from form_hutch (glazed/enclosed upper)
+  "Farmhouse dresser": "form_welsh_dresser",
+  // Note: "China hutch" appears in Welsh dresser aliases but per the
+  // canonical's own anti_classification_guidance ("false use of 'hutch'
+  // for open-rack dressers") this is flagged as a misuse; the alias is
+  // routed to form_hutch (above) where the dominant retail use sits.
+
+  "Curio": "form_curio_cabinet",
+  "Curio cabinet": "form_curio_cabinet",
+  "Vitrine": "form_curio_cabinet", // subtype_curio_cabinet_vitrine (no separate vitrine canonical yet)
+  "Glass display cabinet": "form_curio_cabinet",
+  "Collectibles cabinet": "form_curio_cabinet",
+  "Lighted curio": "form_curio_cabinet", // subtype_curio_cabinet_modern_lighted
+  "Lighted curio cabinet": "form_curio_cabinet", // subtype_curio_cabinet_modern_lighted
+  "Bowed-glass curio": "form_curio_cabinet", // subtype_curio_cabinet_bowed_glass
+  "Tabletop curio": "form_curio_cabinet", // subtype_curio_cabinet_tabletop
+  "Wall curio": "form_curio_cabinet", // subtype_curio_cabinet_wall_mounted
+  // Note: "Display cabinet" intentionally NOT mapped — too ambiguous;
+  // spans curio/china cabinet/hutch/museum cases. "Corner curio"
+  // intentionally routes to form_corner_cabinet (corner geometry outranks
+  // display-only function) per the corner cabinet aliases above.
+
+  "Cellarette": "form_cellarette",
+  "Cellaret": "form_cellarette",
+  "Wine cooler": "form_cellarette", // historic furniture-form sense, not modern thermoelectric appliance
+  "Bottle case": "form_cellarette",
+  "Liquor cabinet": "form_cellarette", // modern bar-cellarette boundary; subtype_cellarette_modern_bar_cabinet
+  "Decanter case": "form_cellarette",
+  "Tantalus": "form_cellarette", // subtype_cellarette_tantalus
+  "Chest-form cellarette": "form_cellarette", // subtype_cellarette_chest
+  // Note: "Bar cabinet" intentionally NOT mapped — flagged in the
+  // cellarette canonical for separate bar-cabinet canonical if one exists;
+  // modern bar cabinets with full cocktail service and barware storage
+  // are functionally broader than historic cellarette bottle storage.
+
   "Stool": "form_stool",
   "Tabouret": "form_stool", // subtype_stool_tabouret
   "Counter stool": "form_stool", // subtype_stool_counter
