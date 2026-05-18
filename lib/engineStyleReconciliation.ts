@@ -38,9 +38,14 @@
  *   5. Final dating is AFTER all known waves and original period
  *      → "[Style] vocabulary, post-[date] reproduction" framing.
  *
- *   6. No style attribution at all (Golden Oak Era piece, etc.)
- *      → use the style_context (already computed by deriveStyleContext;
- *      this is what surfaces e.g. "Golden Oak Era" for wood-variant pieces).
+ *   6. No style attribution but a non-empty style_context fallback was
+ *      produced by deriveStyleContext (Jacobean, Queen Anne / Colonial
+ *      Revival, American Empire / late Classical Revival from text cues).
+ *      → use the style_context as the final label. Note: Golden Oak Era
+ *      pieces are NOT handled here — per appraiser direction, Golden Oak
+ *      is a vernacular dating/material/era marker (NOT a style), and
+ *      deriveStyleContext returns null for Golden Oak clues. The era
+ *      anchor surfaces via the wood-evidence dating layer instead.
  *
  * Outputs both a structured `final_style` object AND a one-line reason so
  * the report can show the appraiser "why this label, not that one."
@@ -55,7 +60,8 @@ export type FinalStyleKind =
   | "revival_wave"         // surfaced wave overlaps final dating
   | "original_period"      // attribution's own date range overlaps final dating
   | "reproduction"         // dating falls outside all waves AND original period
-  | "context_only"         // no style attribution; using style_context fallback (Golden Oak, etc.)
+  | "context_only"         // no style attribution; using style_context fallback (Jacobean / Queen Anne / Empire text cues; NOT Golden Oak — that's a wood/era marker, not a style)
+  | "era_only"             // no style attribution; era marker present (Golden Oak Era and similar vernacular dating/material/market-era anchors that are NOT styles). Final label frames the era as a market-context identification.
   | "impossible_pair"      // detectImpossiblePairs flagged a reproduction signal
   | "unresolved";          // no attribution, no context, no dating to reconcile against
 
@@ -104,6 +110,12 @@ export function reconcileFinalStyle(input: {
   finalDatingFloor: number | null;
   finalDatingCeiling: number | null;
   styleContext: string | null;
+  /** Vernacular dating/material/market-era marker that is NOT a style.
+   * Currently populated for Golden Oak Era pieces. Used by Rule 7 (era_only)
+   * when no style attribution and no style_context are present, to produce
+   * a final label that frames the era as a market-context identification
+   * rather than leaving the piece "Unresolved". */
+  eraContext?: string | null;
   hasImpossiblePair: boolean;
 }): FinalStyleReconciliation {
   const {
@@ -113,6 +125,7 @@ export function reconcileFinalStyle(input: {
     finalDatingFloor,
     finalDatingCeiling,
     styleContext,
+    eraContext,
     hasImpossiblePair,
   } = input;
 
@@ -205,13 +218,30 @@ export function reconcileFinalStyle(input: {
     };
   }
 
-  // Rule 6: No style attribution but a context label is present (e.g.,
-  // Golden Oak Era market production). Use the context as the final label.
+  // Rule 6: No style attribution but a style_context fallback is present
+  // (Jacobean / Queen Anne / Empire from text cues). Use the context as
+  // the final label. Note: per appraiser direction, Golden Oak Era does
+  // NOT flow through this rule — Golden Oak is a vernacular era marker
+  // (NOT a style), and deriveStyleContext now returns null for Golden Oak
+  // clues. Era markers are handled by Rule 7 below.
   if (!styleAttribution && styleContext) {
     return {
       final_style_label: styleContext,
       kind: "context_only",
-      final_style_reason: `No style-family attribution; piece identified via the broader context "${styleContext}" (wood / finish / market-era anchor rather than a single style language).`,
+      final_style_reason: `No style-family attribution; piece identified via the broader style context "${styleContext}" derived from text cues.`,
+    };
+  }
+
+  // Rule 7: No style attribution AND no style_context, but an era marker
+  // (eraContext) is present. Surface the era as a market-context
+  // identification — explicitly framed as NOT a style. Currently fires for
+  // Golden Oak Era pieces; future vernacular era markers (Centennial Era,
+  // Depression Era, Post-War Era, etc.) can route here.
+  if (!styleAttribution && !styleContext && eraContext) {
+    return {
+      final_style_label: `${eraContext} market production`,
+      kind: "era_only",
+      final_style_reason: `No style-family attribution; piece carries ${eraContext} vernacular dating/material/market-era markers (wood species, finish, cut pattern, factory hardware). ${eraContext} is a production-era anchor, not a style — pieces from this era may be in any of several actual styles (Eastlake, Mission, Colonial Revival, etc.) or have no specific style language. The era marker contributes to dating via the wood-evidence layer.`,
     };
   }
 

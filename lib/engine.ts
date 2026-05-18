@@ -2089,10 +2089,14 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
   // escutcheons, porcelain casters) with no hand-cut joinery. Without this
   // detector, the original Empire/American Classical alias tokens (e.g.,
   // "empire" in empire_transitional_style) over-anchor pre-1860 attribution
-  // on what is plainly 1890–1915 factory production. The synthesized clue
-  // routes via STRUCTURAL_PATTERN_FAMILY → style_family_golden_oak_era and
-  // penalizes original-period family attributions by 30% via the competitive
-  // suppression in attributeStyle.
+  // on what is plainly 1890–1915 factory production. Per appraiser direction,
+  // Golden Oak Era is NOT a style — it is a vernacular dating/material/
+  // market-era marker. The synthesized clue routes via canonical map to
+  // the wood-evidence layer (wood_variant_evidence_golden_oak_era) for
+  // dating contribution, and via STRUCTURAL_PATTERN_FAMILY to
+  // style_family_colonial_revival (the broadest post-1876 umbrella) for
+  // competitive suppression of pre-1876 family attributions — without
+  // claiming Golden Oak Era is itself a style.
   const oakSpecies =
     hasClue("wood_species_oak") ||
     hasClue("oak_primary") ||
@@ -3242,20 +3246,36 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
       `${word} not`,
     ]);
 
-  // Golden Oak Era market/finish/era anchor (wood HCL — oak variant per
-  // lib/constraints/woodIdentification.ts wood_variant_golden_oak_era).
-  // Surfaces FIRST so the report carries a positive market-era identity
-  // on pieces with no style attribution and prevents the Empire fallback
-  // below from misfiring on factory-era oak pieces whose descriptions
-  // happen to contain words like "empire" or "transitional" (e.g.,
-  // empire_transitional_style clue on a Golden Oak dresser). Returns the
-  // bare variant name so it composes cleanly with the form display
-  // ("Golden Oak Era Chest of drawers / dresser"). The longer
-  // "market production" / "factory production" framing lives in the
-  // variant's family_description and gets surfaced in the supporting-
-  // evidence / style-context sentence rather than the display prefix.
+  // Golden Oak Era guard: per appraiser direction, Golden Oak Era is NOT
+  // a style — it is a vernacular dating / material / market-era marker
+  // tied to wood species, finish, and cut pattern (oak + flat-sawn or
+  // quarter-sawn grain + warm honey finish + factory-era hardware,
+  // c. 1890-1915 peak). Pieces from the Golden Oak Era can be in any
+  // actual style (Eastlake, Mission, Colonial Revival, Empire Revival,
+  // etc.) — Golden Oak is the common production-era denominator, not
+  // the style language. Surfacing "Golden Oak Era" as a style_context
+  // string (which then composed into display_form as "Golden Oak Era
+  // Chest of drawers") was an architectural mismatch — analogous to
+  // calling both a Mustang Mach 1 and a Dodge Super Bee "muscle cars"
+  // as if that were their style.
+  //
+  // Return null here so deriveStyleContext does NOT claim a style on
+  // Golden Oak Era pieces. The era marker is properly carried by:
+  // (a) the wood-evidence layer (wood_variant_evidence_golden_oak_era
+  //     in woodEvidence.ts with period_associations: peak 1890-1915,
+  //     emergence 1870, decline 1915-1925)
+  // (b) the dating overlap convergence (wood layer contributes the
+  //     1890-1915 window)
+  // (c) supporting-evidence surfacing in the report (era context
+  //     framed as wood/finish/market-era anchor, not style)
+  //
+  // The early return ALSO preserves the original guard purpose: it
+  // prevents the Empire fallback below from misfiring on factory-era
+  // oak pieces whose descriptions happen to contain words like "empire"
+  // or "transitional" (e.g., empire_transitional_style clue on a
+  // Golden Oak dresser).
   if (hasClue("golden_oak_era_possible") || hasClue("golden_oak_structural_pattern")) {
-    return "Golden Oak Era";
+    return null;
   }
 
   // Jacobean
@@ -5726,6 +5746,19 @@ if (p6.dating_overlap) {
   const hasImpossiblePair = ((p5 as Phase5Result).conflicts || []).some(
     (c: string) => typeof c === "string" && c.startsWith("Impossible style co-attribution:")
   );
+  // Era context: vernacular dating/material/market-era markers that are NOT
+  // styles (Golden Oak Era and future analogs). Surfaced into the era_only
+  // reconciliation branch so pieces with no style attribution but clear era
+  // identification get a proper market-context label instead of "Unresolved".
+  // Detected from clue presence at the call site rather than from style_context
+  // (which deriveStyleContext now correctly leaves null for Golden Oak).
+  const hasGoldenOakEra = (digest.clue_keys ?? []).some(
+    (k) => k === "golden_oak_era_possible" || k === "golden_oak_structural_pattern"
+  ) || (digest.observations ?? []).some(
+    (o) => o.clue === "golden_oak_era_possible" || o.clue === "golden_oak_structural_pattern"
+  );
+  const eraContext = hasGoldenOakEra ? "Golden Oak Era" : null;
+
   const reconciled = reconcileFinalStyle({
     styleAttribution: p3.style_attribution ?? null,
     styleWaves: p3.style_waves ?? [],
@@ -5733,6 +5766,7 @@ if (p6.dating_overlap) {
     finalDatingFloor: p2.date_floor ?? null,
     finalDatingCeiling: p2.date_ceiling ?? null,
     styleContext: p3.style_context ?? null,
+    eraContext,
     hasImpossiblePair,
   });
   p3.final_style = reconciled;
