@@ -681,6 +681,53 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // Note: "Easy chair" intentionally NOT remapped — already routes to
   // form_lounge_chair per earlier mapping; only mechanism-evidenced
   // chairs should route to form_recliner.
+
+  "Morris chair": "form_morris_chair",
+  "Mission Morris chair": "form_morris_chair",
+  "Craftsman Morris chair": "form_morris_chair",
+  "Arts and Crafts Morris chair": "form_morris_chair",
+  "Stickley Morris chair": "form_morris_chair", // subtype_morris_stickley_type — attribution requires marks/proof
+  "Stickley-style chair": "form_morris_chair", // subtype_morris_stickley_type
+  "Morris recliner": "form_morris_chair", // exposed manual adjustable back, not integrated mechanical recliner
+  "Mission recliner": "form_morris_chair", // exposed manual adjustable back; modern Mission-styled integrated recliners should route via mechanism evidence
+  "Mission lounge chair": "form_morris_chair", // Mission adjustable-back lounge → Morris identity; non-adjustable Mission armchairs resolve at scoreForms
+  "Adjustable-back chair": "form_morris_chair",
+  "Adjustable back chair": "form_morris_chair",
+  "Adjustable-back lounge chair": "form_morris_chair",
+  "Bow-arm Morris chair": "form_morris_chair", // subtype_morris_bow_arm
+  "Flat-arm Morris chair": "form_morris_chair", // subtype_morris_flat_arm
+  "Peg-adjusted Morris chair": "form_morris_chair", // subtype_morris_peg_adjusted
+  "Chain-adjusted Morris chair": "form_morris_chair", // subtype_morris_chain_adjusted
+  "Oak Morris chair": "form_morris_chair",
+  "Quartersawn oak Morris chair": "form_morris_chair",
+  "Morris rocker": "form_morris_chair", // subtype_morris_rocker (Morris adjustable-back identity dominates over rocking-base motion)
+  "Mission rocker recliner": "form_morris_chair", // subtype_morris_rocker; mechanism-evidenced modern Mission recliners route via mechanism cues
+
+  "Beanbag": "form_bean_bag_chair",
+  "Bean bag": "form_bean_bag_chair",
+  "Bean bag chair": "form_bean_bag_chair",
+  "Beanbag chair": "form_bean_bag_chair",
+  "Bean bag lounger": "form_bean_bag_chair", // subtype_bean_bag_lounger
+  "Beanbag lounger": "form_bean_bag_chair", // subtype_bean_bag_lounger
+  "Bean bag sofa": "form_bean_bag_chair", // subtype_bean_bag_chair_sofa
+  "Bean bag loveseat": "form_bean_bag_chair", // subtype_bean_bag_chair_sofa
+  "Lounge sack": "form_bean_bag_chair", // subtype_bean_bag_oversized / subtype_bean_bag_foam_filled
+  "Memory foam bean bag": "form_bean_bag_chair", // subtype_bean_bag_foam_filled
+  "Gaming bean bag": "form_bean_bag_chair", // subtype_bean_bag_gaming
+  "Crash chair": "form_bean_bag_chair",
+  "Crash pad chair": "form_bean_bag_chair",
+  "Sacco chair": "form_bean_bag_chair", // subtype_bean_bag_sacco_type — designer attribution requires label/provenance
+  "Sacco-style chair": "form_bean_bag_chair", // subtype_bean_bag_sacco_type
+  "Oversized bean bag": "form_bean_bag_chair", // subtype_bean_bag_oversized
+  "Media room bean bag": "form_bean_bag_chair", // subtype_bean_bag_gaming / subtype_bean_bag_oversized
+  "Kids bean bag": "form_bean_bag_chair", // subtype_bean_bag_child
+  "Outdoor bean bag": "form_bean_bag_chair", // subtype_bean_bag_outdoor
+  // Note: "Foam chair", "Foam-filled chair", "Floor chair", "Floor lounger",
+  // "Gaming chair", "Dorm chair" intentionally NOT mapped — too ambiguous
+  // (rigid foam-shell chairs, modern gaming chairs with frames, and dorm
+  // furniture span multiple forms). Frameless body-conforming evidence
+  // resolves at scoreForms.
+
   "Stool": "form_stool",
   "Tabouret": "form_stool", // subtype_stool_tabouret
   "Counter stool": "form_stool", // subtype_stool_counter
