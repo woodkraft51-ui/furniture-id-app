@@ -227,7 +227,7 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Coffee table": "form_coffee_table",
   "Tea table": "form_tea_table",
   "Center table": "form_center_table",
-  "Parlor table": "form_center_table",
+  "Parlor table": "form_parlor_table", // remapped from form_center_table per Tier C parlor_table elevation; center_table cousin-contrast cross-reference remains in form_center_table
   "Console table": "form_console_table",
   "Console": "form_console_table",
   "Hall console": "form_console_table",
@@ -361,11 +361,87 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // hall tables are more commonly console-table or hall-context tables;
   // trestle-as-hall-table examples activate via "Trestle table" alias.
   // Note: "Tea table", "Tripod table", "Pedestal table", "Candle stand",
-  // "Candle table", "Occasional table", "Parlor table" intentionally NOT
-  // remapped here — they retain their existing routes to form_tea_table,
-  // form_pedestal_table (Tripod is a subtype within), form_candle_stand,
-  // form_occasional_table, form_center_table respectively. The new
-  // canonicals activate via the more specific aliases above.
+  // "Candle table", "Occasional table" intentionally NOT remapped here —
+  // they retain their existing routes to form_tea_table, form_pedestal_table
+  // (Tripod is a subtype within), form_candle_stand, form_occasional_table.
+  // The new canonicals activate via the more specific aliases above.
+  // "Parlor table" WAS remapped from form_center_table to form_parlor_table
+  // per the Tier C parlor_table elevation (see Tables section above).
+
+  // Tier C peer-canonical elevations — parlor/Pembroke/Sutherland/demilune
+  // forms lifted from cousin/subtype status per appraiser elevation.
+  // Existing subtype cross-references in parent canonicals remain.
+  "Parlour table": "form_parlor_table",
+  "Victorian parlor table": "form_parlor_table",
+  "Victorian parlour table": "form_parlor_table",
+  "Marble-top parlor table": "form_parlor_table", // subtype_parlor_table_marble_top
+  "Eastlake parlor table": "form_parlor_table", // subtype_parlor_table_eastlake
+  "Eastlake table": "form_parlor_table", // Eastlake-style table; routes to parlor_table when parlor vocabulary dominates
+  "Aesthetic Movement table": "form_parlor_table", // subtype_parlor_table_aesthetic_movement
+  "Renaissance Revival parlor table": "form_parlor_table", // subtype_parlor_table_renaissance_revival
+  "Rococo Revival parlor table": "form_parlor_table", // subtype_parlor_table_rococo_revival
+  "Pedestal parlor table": "form_parlor_table", // subtype_parlor_table_pedestal
+  "Golden Oak parlor table": "form_parlor_table", // subtype_parlor_table_golden_oak
+  "Sitting-room table": "form_parlor_table",
+  "Drawing-room table": "form_parlor_table",
+  "Front-room table": "form_parlor_table",
+  // Note: "Lamp table", "Display table", "Marble top table",
+  // "Renaissance Revival table" (bare), "Rococo Revival table" (bare),
+  // "Victorian accent table", "Victorian side table",
+  // "Oak/Walnut/Rosewood parlor table" intentionally NOT mapped to
+  // form_parlor_table — too generic (Lamp/Display already routed),
+  // boundary with side/occasional/wood-only descriptors, or style-only
+  // labels that need scoreForms structural disambiguation.
+
+  "Pembroke table": "form_pembroke_table",
+  "Pembroke side table": "form_pembroke_table",
+  "Pembroke drop-leaf table": "form_pembroke_table",
+  "Federal Pembroke table": "form_pembroke_table", // subtype_pembroke_federal
+  "Sheraton Pembroke table": "form_pembroke_table", // subtype_pembroke_sheraton_hepplewhite
+  "Hepplewhite Pembroke table": "form_pembroke_table", // subtype_pembroke_sheraton_hepplewhite
+  "Colonial Revival Pembroke table": "form_pembroke_table", // subtype_pembroke_revival
+  "Mahogany Pembroke table": "form_pembroke_table",
+  // Note: "Lamp table", "Bedside table", "Drop-leaf side table",
+  // "Small drop-leaf table", "Drop-side table", "Drop leaf end table",
+  // "Small leaf table" intentionally NOT mapped to form_pembroke_table
+  // — too generic; Bedside table belongs to form_nightstand identity
+  // when bedroom storage dominates.
+
+  "Sutherland table": "form_sutherland_table",
+  "Sutherland drop-leaf": "form_sutherland_table",
+  "Sutherland drop-leaf table": "form_sutherland_table",
+  "Victorian Sutherland table": "form_sutherland_table",
+  "Edwardian Sutherland table": "form_sutherland_table", // subtype_sutherland_edwardian
+  "Mahogany Sutherland table": "form_sutherland_table",
+  "Walnut Sutherland table": "form_sutherland_table",
+  // Note: "Narrow drop-leaf table", "Slim drop-leaf table", "Folding side
+  // table", "Drop-leaf occasional table", "Drop-leaf tea table",
+  // "Parlor drop-leaf table", "Drop-side table", "Tea table" intentionally
+  // NOT mapped — too generic or have own canonicals; scoreForms resolves
+  // narrow-footprint cases via structural cues.
+
+  "Demilune table": "form_demilune_table",
+  "Demi-lune table": "form_demilune_table",
+  "Half-moon table": "form_demilune_table",
+  "Half moon table": "form_demilune_table",
+  "Semicircular table": "form_demilune_table",
+  "Semi-circular table": "form_demilune_table",
+  "Demilune console": "form_demilune_table", // subtype_demilune_console
+  "Demi-lune console": "form_demilune_table",
+  "Half-round console": "form_demilune_table",
+  "Half-round table": "form_demilune_table",
+  "Federal demilune": "form_demilune_table", // subtype_demilune_federal
+  "Sheraton demilune": "form_demilune_table", // subtype_demilune_sheraton_hepplewhite
+  "Hepplewhite demilune": "form_demilune_table", // subtype_demilune_sheraton_hepplewhite
+  "Neoclassical console": "form_demilune_table",
+  "Pair of demilunes": "form_demilune_table", // subtype_demilune_pair
+  "Fold-over demilune": "form_demilune_table", // subtype_demilune_card_table
+  "Demilune card table": "form_demilune_table", // subtype_demilune_card_table
+  // Note: "Hall table", "Entry table", "Entryway table", "Pier table",
+  // "Federal table", "Wall table" intentionally NOT mapped to
+  // form_demilune_table — Hall/Entry/Wall are placement-context labels
+  // (resolve at scoreForms), Pier table has its own canonical
+  // (form_pier_table), Federal table is style-only.
 
   // Case furniture
   "Chest of drawers / dresser": "form_chest_of_drawers",
