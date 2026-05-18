@@ -819,6 +819,36 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // rest on a stationary ground base with linkage/hanger mechanism.
   // These aliases route to porch-swing logic when that canonical exists.
 
+  "Theater seat": "form_theater_auditorium_seat", // subtype_theater_seat
+  "Theatre seat": "form_theater_auditorium_seat", // subtype_theater_seat
+  "Auditorium chair": "form_theater_auditorium_seat", // subtype_auditorium_seat
+  "Auditorium seat": "form_theater_auditorium_seat", // subtype_auditorium_seat
+  "Cinema seat": "form_theater_auditorium_seat", // subtype_cinema_seat
+  "Movie theater seat": "form_theater_auditorium_seat", // subtype_cinema_seat
+  "Movie theatre seat": "form_theater_auditorium_seat", // subtype_cinema_seat
+  "Opera seat": "form_theater_auditorium_seat", // subtype_opera_house_seat
+  "Opera house seat": "form_theater_auditorium_seat", // subtype_opera_house_seat
+  "Lecture hall seat": "form_theater_auditorium_seat", // subtype_lecture_hall_seat
+  "Stadium seat": "form_theater_auditorium_seat", // subtype_stadium_seat
+  "Arena seat": "form_theater_auditorium_seat", // subtype_stadium_seat
+  "Folding auditorium seat": "form_theater_auditorium_seat", // subtype_folding_auditorium
+  "Assembly hall seat": "form_theater_auditorium_seat", // subtype_church_auditorium_seat
+  "Church auditorium seat": "form_theater_auditorium_seat", // subtype_church_auditorium_seat (continuous pews route to form_pew)
+  "Salvaged theater seat": "form_theater_auditorium_seat", // subtype_salvaged_row_seat
+  "Salvaged auditorium seat": "form_theater_auditorium_seat", // subtype_salvaged_row_seat
+  "Antique theater seat": "form_theater_auditorium_seat",
+  "Vintage theater seat": "form_theater_auditorium_seat",
+  // Note: "Row seating", "Fixed row seat", "Fold-up seat", "Flip-up seat",
+  // "Fixed seat", "Institutional seat", "Theater row", "Auditorium row",
+  // "Home theater seat" intentionally NOT mapped — "Row seating" /
+  // "Fixed seat" / "Institutional seat" are too generic and span pews,
+  // benches, fixed industrial seating, etc.; fold/flip-up alone doesn't
+  // establish row mounting; "Home theater seat" is a domestic-use label
+  // commonly applied to recliners that should route to form_recliner;
+  // "Theater row" / "Auditorium row" describe row sections rather than
+  // form. Resolve at scoreForms via individual-station + row-mounting
+  // evidence.
+
   "Stool": "form_stool",
   "Tabouret": "form_stool", // subtype_stool_tabouret
   "Counter stool": "form_stool", // subtype_stool_counter
