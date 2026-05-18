@@ -454,10 +454,68 @@ const LAYER_LABELS: Record<string, string> = {
   style_wave: "Style wave",
 };
 
-function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
-  // Determine axis range. Fall back to a sensible default if data is sparse.
-  const allFloors = data.layers.map((l) => l.date_floor).filter((v): v is number => v !== null);
-  const allCeilings = data.layers.map((l) => l.date_ceiling).filter((v): v is number => v !== null);
+// Per-wave color palette — sequential hues all in the muted style-family
+// register so the Style row reads as a single "wave lineage" even with 3–4
+// distinct blocks side by side. Original-period block uses a 5th, ghosted
+// tone so the viewer's eye separates "lineage" from "production windows."
+const WAVE_PALETTE = ["#6b8aa8", "#8b6f9c", "#7a9c6b", "#a8826b", "#a8617b"];
+const ORIGINAL_PERIOD_COLOR = "#b4a5c2"; // light, ghosted lavender
+
+type StyleAttributionForViz = {
+  name?: string;
+  style_family_id?: string;
+  date_floor: number | null;
+  date_ceiling: number | null;
+} | null;
+
+type StyleWaveForViz = {
+  wave_id?: string;
+  wave_name?: string;
+  date_floor: number | null;
+  date_ceiling: number | null;
+  signals_matched?: string[];
+  parent_style_id?: string;
+};
+
+// Pull just the quoted design-signal name out of a signals_matched string
+// like:  Design signal "machine-age restraint" matched on machine
+// Returns null when the string isn't a Layer 3 design-signal match.
+function extractDesignDistinctive(signal: string): string | null {
+  const m = signal.match(/^Design signal\s+"([^"]+)"/);
+  return m ? m[1] : null;
+}
+
+function DatingOverlapViz({
+  data,
+  styleAttribution,
+  styleWaves,
+}: {
+  data: DatingOverlapData;
+  styleAttribution?: StyleAttributionForViz;
+  styleWaves?: StyleWaveForViz[];
+}) {
+  const waves = styleWaves ?? [];
+  // Style row + Design Distinctives row are rendered separately at the top,
+  // so drop the legacy aggregated `style` and `style_wave` rows from the
+  // standard per-layer loop. Their dates still feed the axis-range
+  // computation below so the chart frames them correctly.
+  const dataLayers = data.layers.filter((l) => l.layer !== "style" && l.layer !== "style_wave");
+
+  // Determine axis range from EVERYTHING that will render — non-style
+  // layers + style attribution + every individual wave. Otherwise the
+  // axis can clip the per-wave blocks at the right edge.
+  const allFloors: number[] = [];
+  const allCeilings: number[] = [];
+  for (const l of dataLayers) {
+    if (l.date_floor != null) allFloors.push(l.date_floor);
+    if (l.date_ceiling != null) allCeilings.push(l.date_ceiling);
+  }
+  if (styleAttribution?.date_floor != null) allFloors.push(styleAttribution.date_floor);
+  if (styleAttribution?.date_ceiling != null) allCeilings.push(styleAttribution.date_ceiling);
+  for (const w of waves) {
+    if (w.date_floor != null) allFloors.push(w.date_floor);
+    if (w.date_ceiling != null) allCeilings.push(w.date_ceiling);
+  }
   if (allFloors.length === 0 && allCeilings.length === 0) {
     return <div style={{ fontSize: 14, color: "#776654", fontStyle: "italic" }}>No date evidence to chart.</div>;
   }
@@ -476,23 +534,113 @@ function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
   const ticks: number[] = [];
   for (let y = Math.ceil(axisMin / tickStep) * tickStep; y <= axisMax; y += tickStep) ticks.push(y);
 
-  // Render layers in this stable order (groups: form/structural first, then evidence, then style)
-  const layerOrder = ["form", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery", "style", "style_wave"];
+  // ── Compose Style row blocks ────────────────────────────────────────
+  // The Style row reads as a single lineage: original period (when the
+  // attribution period doesn't already match a "wave 1 / Original X" wave)
+  // on the left, each surfaced revival wave to the right in chronological
+  // order. Each wave gets a distinct hue from WAVE_PALETTE so the viewer
+  // can match a wave block to its Design Distinctives chips below.
+  type StyleBlock = {
+    kind: "original" | "wave";
+    label: string;
+    date_floor: number | null;
+    date_ceiling: number | null;
+    color: string;
+    distinctives: string[]; // for the Design Distinctives row, color-matched
+    wave_id?: string;
+  };
+  const styleBlocks: StyleBlock[] = [];
+  // De-dupe: if a wave's date range substantially overlaps the attribution
+  // period (i.e. it IS the "Original X" wave), don't render a separate
+  // attribution block — the wave already covers it.
+  const sortedWaves = [...waves].sort((a, b) => (a.date_floor ?? 9999) - (b.date_floor ?? 9999));
+  const attrFloor = styleAttribution?.date_floor ?? null;
+  const attrCeiling = styleAttribution?.date_ceiling ?? null;
+  const attrCoveredByWave = sortedWaves.some((w) => {
+    if (attrFloor == null || attrCeiling == null || w.date_floor == null || w.date_ceiling == null) return false;
+    // "Substantially overlaps" = at least 75% of the attribution period is covered by the wave.
+    const overlap = Math.max(0, Math.min(attrCeiling, w.date_ceiling) - Math.max(attrFloor, w.date_floor));
+    const attrSpan = Math.max(1, attrCeiling - attrFloor);
+    return overlap / attrSpan >= 0.75;
+  });
+  if (styleAttribution && (attrFloor != null || attrCeiling != null) && !attrCoveredByWave) {
+    styleBlocks.push({
+      kind: "original",
+      label: "Original period",
+      date_floor: attrFloor,
+      date_ceiling: attrCeiling,
+      color: ORIGINAL_PERIOD_COLOR,
+      distinctives: [],
+    });
+  }
+  sortedWaves.forEach((w, idx) => {
+    const distinctives = (w.signals_matched ?? [])
+      .map(extractDesignDistinctive)
+      .filter((s): s is string => Boolean(s));
+    styleBlocks.push({
+      kind: "wave",
+      label: w.wave_name ?? w.wave_id ?? `Wave ${idx + 1}`,
+      date_floor: w.date_floor,
+      date_ceiling: w.date_ceiling,
+      color: WAVE_PALETTE[idx % WAVE_PALETTE.length],
+      distinctives,
+      wave_id: w.wave_id,
+    });
+  });
+
+  // ── Between-wave conditional callout ────────────────────────────────
+  // Surfaces only when the strongest convergence zone (driven by non-style
+  // construction/material evidence) falls in the gap between two surfaced
+  // wave blocks. Wording approved by appraiser (May 2026 session).
+  const waveBlocks = styleBlocks.filter((b) => b.kind === "wave");
+  const strongestZone = data.convergence_zones[0] ?? null;
+  let betweenWaveCallout: string | null = null;
+  if (strongestZone && waveBlocks.length >= 2) {
+    const zoneOverlapsAnyWave = waveBlocks.some(
+      (w) =>
+        w.date_floor != null &&
+        w.date_ceiling != null &&
+        strongestZone.date_ceiling >= w.date_floor &&
+        strongestZone.date_floor <= w.date_ceiling
+    );
+    const waveBefore = waveBlocks.some(
+      (w) => w.date_ceiling != null && strongestZone.date_floor > w.date_ceiling
+    );
+    const waveAfter = waveBlocks.some(
+      (w) => w.date_floor != null && strongestZone.date_ceiling < w.date_floor
+    );
+    if (!zoneOverlapsAnyWave && waveBefore && waveAfter) {
+      betweenWaveCallout =
+        "Furniture styles never really go dormant. Between the major revival waves, smaller shops and regional makers keep producing at lower volume — and your piece's construction evidence lands in one of those quieter intervals rather than at a wave peak.";
+    }
+  }
+
+  // ── Row order ───────────────────────────────────────────────────────
+  // Top: Style (combined original + waves) + Design Distinctives.
+  // Below: Form / Joinery / Fastener / Toolmark / Wood / Hardware /
+  //        Finish / Upholstery — original ordering preserved.
+  const layerOrder = ["form", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery"];
   const layersOrdered = layerOrder
-    .map((name) => data.layers.find((l) => l.layer === name))
+    .map((name) => dataLayers.find((l) => l.layer === name))
     .filter((l): l is LayerBand => Boolean(l));
 
   const ROW_HEIGHT = 28;
-  const LABEL_WIDTH = 130;
+  const LABEL_WIDTH = 150;
   const PLOT_TOP_PADDING = 22; // room for tick labels
-  const PLOT_HEIGHT = layersOrdered.length * ROW_HEIGHT;
+  // 2 top rows (Style + Design Distinctives) when we have any style blocks
+  // to render; otherwise just the standard layers.
+  const topRowCount = styleBlocks.length > 0 ? 2 : 0;
+  const PLOT_HEIGHT = (topRowCount + layersOrdered.length) * ROW_HEIGHT;
+  const styleFamilyLabel = styleAttribution?.name ? `Style: ${styleAttribution.name}` : "Style";
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
       {/* Header: axis info + overall envelope */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", fontSize: 13, color: "#574634" }}>
         <span>
-          Per-layer date envelopes ({axisMin}–{axisMax}). Each row shows one evidence layer's date range.
+          {styleBlocks.length > 0
+            ? `Style lineage on top; construction and material evidence below. Axis ${axisMin}–${axisMax}.`
+            : `Per-layer date envelopes (${axisMin}–${axisMax}). Each row shows one evidence layer's date range.`}
         </span>
         {data.overall_floor !== null && data.overall_ceiling !== null && (
           <span>
@@ -505,6 +653,43 @@ function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
       <div style={{ display: "grid", gridTemplateColumns: `${LABEL_WIDTH}px 1fr`, alignItems: "stretch" }}>
         {/* Left labels column */}
         <div style={{ paddingTop: PLOT_TOP_PADDING }}>
+          {styleBlocks.length > 0 && (
+            <>
+              <div
+                style={{
+                  height: ROW_HEIGHT,
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: 13,
+                  color: "#3e2f1f",
+                  paddingRight: 8,
+                  fontWeight: 700,
+                }}
+                title={
+                  styleAttribution?.name
+                    ? `We know the style is ${styleAttribution.name}; the blocks to the right show which wave or production window the piece most likely belongs to.`
+                    : "Style lineage: original period (lighter block) and surfaced revival waves."
+                }
+              >
+                {styleFamilyLabel}
+              </div>
+              <div
+                style={{
+                  height: ROW_HEIGHT,
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: 12,
+                  color: "#5c4a37",
+                  paddingRight: 8,
+                  fontWeight: 600,
+                  fontStyle: "italic",
+                }}
+                title="Design subtleties — the small distinguishing details that point to one wave over another. Each chip is color-matched to the wave it supports above."
+              >
+                Design Distinctives
+              </div>
+            </>
+          )}
           {layersOrdered.map((l) => (
             <div
               key={l.layer}
@@ -590,9 +775,129 @@ function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
             );
           })}
 
+          {/* Top rows: Style (combined original + waves) + Design Distinctives */}
+          {styleBlocks.length > 0 && (() => {
+            const styleRowTop = PLOT_TOP_PADDING;
+            const distinctivesRowTop = PLOT_TOP_PADDING + ROW_HEIGHT;
+            return (
+              <>
+                {styleBlocks.map((b, bi) => {
+                  // Render block; clamp open ends to axis.
+                  const floor = b.date_floor ?? axisMin;
+                  const ceiling = b.date_ceiling ?? axisMax;
+                  const left = clampPct(yearToPct(floor));
+                  const right = clampPct(yearToPct(ceiling));
+                  const width = Math.max(0.5, right - left);
+                  const dateLabel =
+                    b.date_floor != null && b.date_ceiling != null
+                      ? `${b.date_floor}–${b.date_ceiling}`
+                      : b.date_floor != null
+                      ? `post-${b.date_floor}`
+                      : `pre-${b.date_ceiling}`;
+                  const isOriginal = b.kind === "original";
+                  return (
+                    <div key={`style-block-${bi}`}>
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: styleRowTop + 5,
+                          left: `${left}%`,
+                          width: `${width}%`,
+                          height: ROW_HEIGHT - 10,
+                          background: isOriginal ? "transparent" : b.color,
+                          border: isOriginal ? `1px dashed ${b.color}` : "none",
+                          opacity: isOriginal ? 0.85 : 0.8,
+                          borderRadius: 4,
+                        }}
+                        title={
+                          isOriginal
+                            ? `Original style period: ${dateLabel}. Shown for lineage; the piece is most likely from one of the revival waves to the right.`
+                            : `${b.label}: ${dateLabel}${b.distinctives.length ? ` — distinctives: ${b.distinctives.join(", ")}` : ""}`
+                        }
+                      />
+                      {width >= 14 && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: styleRowTop + 6,
+                            left: `${left}%`,
+                            width: `${width}%`,
+                            height: ROW_HEIGHT - 12,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 11,
+                            color: isOriginal ? b.color : "#fff",
+                            fontWeight: 600,
+                            textShadow: isOriginal ? "none" : "0 1px 1px rgba(0,0,0,0.2)",
+                            pointerEvents: "none",
+                          }}
+                        >
+                          {dateLabel}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                {/* Design Distinctives chips, color-matched to their parent wave */}
+                {styleBlocks
+                  .filter((b) => b.kind === "wave" && b.distinctives.length > 0)
+                  .map((b, bi) => {
+                    const floor = b.date_floor ?? axisMin;
+                    const ceiling = b.date_ceiling ?? axisMax;
+                    const left = clampPct(yearToPct(floor));
+                    const right = clampPct(yearToPct(ceiling));
+                    const width = Math.max(0.5, right - left);
+                    // Show first 2 distinctives as visible chip; full list in tooltip.
+                    const shown = b.distinctives.slice(0, 2);
+                    const more = b.distinctives.length - shown.length;
+                    const chipText = shown.join(" · ") + (more > 0 ? ` +${more}` : "");
+                    return (
+                      <div
+                        key={`distinctive-${bi}`}
+                        style={{
+                          position: "absolute",
+                          top: distinctivesRowTop + 6,
+                          left: `${left}%`,
+                          width: `${width}%`,
+                          height: ROW_HEIGHT - 12,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "0 6px",
+                          boxSizing: "border-box",
+                          pointerEvents: "auto",
+                        }}
+                        title={`Wave-distinguishing design subtleties for ${b.label}: ${b.distinctives.join(", ")}`}
+                      >
+                        <span
+                          style={{
+                            display: "inline-block",
+                            maxWidth: "100%",
+                            padding: "2px 8px",
+                            borderRadius: 10,
+                            background: b.color,
+                            opacity: 0.85,
+                            color: "#fff",
+                            fontSize: 10,
+                            fontWeight: 600,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {chipText}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </>
+            );
+          })()}
+
           {/* Per-layer bands */}
           {layersOrdered.map((l, idx) => {
-            const rowTop = PLOT_TOP_PADDING + idx * ROW_HEIGHT;
+            const rowTop = PLOT_TOP_PADDING + (topRowCount + idx) * ROW_HEIGHT;
             if (l.confidence === "none" || (l.date_floor === null && l.date_ceiling === null)) {
               // Block 5: distinguish "evidence present, no parseable date" from
               // true "no signal" — surfaces P4-2 diagnostic state to user.
@@ -718,6 +1023,25 @@ function DatingOverlapViz({ data }: { data: DatingOverlapData }) {
               ? "1 zone identified."
               : `${data.convergence_zones.length} zones identified.`}
           </span>
+        </div>
+      )}
+
+      {/* Conditional between-wave callout. Fires only when construction
+          convergence sits in the gap between two surfaced revival waves. */}
+      {betweenWaveCallout && (
+        <div
+          style={{
+            marginTop: 4,
+            padding: "10px 12px",
+            borderRadius: 8,
+            background: "#fbf4e3",
+            border: "1px solid #e3d3b3",
+            fontSize: 13,
+            color: "#3d2d1f",
+            lineHeight: 1.55,
+          }}
+        >
+          {betweenWaveCallout}
         </div>
       )}
     </div>
@@ -1326,7 +1650,11 @@ const p7 = stageOutputs.p7 || null;
             )}
             {p6?.dating_overlap && (
               <SectionCard title="Dating Overlap by Evidence Layer">
-                <DatingOverlapViz data={p6.dating_overlap} />
+                <DatingOverlapViz
+                  data={p6.dating_overlap}
+                  styleAttribution={p3?.style_attribution ?? null}
+                  styleWaves={p3?.style_waves ?? []}
+                />
               </SectionCard>
             )}
             <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>{evidenceMeaning(item)}</div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
