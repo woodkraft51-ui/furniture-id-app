@@ -271,7 +271,49 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // scale + upholstered routes to form_slipper_chair).
   "Colonial / Georgian Revival upholstered armchair": "form_armchair",
   "Upholstered armchair": "form_armchair",
-  "Bench / seating furniture": NO_MATCH, // form_bench not yet authored
+  "Bench / seating furniture": "form_bench",
+  "Bench": "form_bench",
+  "Hall bench": "form_bench", // subtype_bench_hall
+  "Entry bench": "form_bench",
+  "Foyer bench": "form_bench",
+  "Piano bench": "form_bench", // subtype_bench_piano
+  "Storage bench": "form_bench", // subtype_bench_storage
+  "Window bench": "form_bench", // subtype_bench_window
+  "Window seat": "form_bench", // subtype_bench_window
+  "Garden bench": "form_bench", // subtype_bench_garden_park
+  "Park bench": "form_bench", // subtype_bench_garden_park
+  "Dining bench": "form_bench", // subtype_bench_dining
+  "Farmhouse bench": "form_bench", // subtype_bench_dining
+  "Upholstered bench": "form_bench", // subtype_bench_upholstered
+  "Bed-end bench": "form_bench", // subtype_bench_upholstered
+  "Vanity bench": "form_bench", // subtype_bench_upholstered
+  "School bench": "form_bench", // subtype_bench_school
+  "Settle bench": "form_bench", // subtype_bench_settle
+  "Ottoman": "form_ottoman_footstool",
+  "Footstool": "form_ottoman_footstool", // subtype_ottoman_footstool
+  "Foot stool": "form_ottoman_footstool",
+  "Footrest": "form_ottoman_footstool",
+  "Hassock": "form_ottoman_footstool", // subtype_ottoman_hassock
+  "Pouf": "form_ottoman_footstool", // subtype_ottoman_pouf
+  "Pouffe": "form_ottoman_footstool",
+  "Tuffet": "form_ottoman_footstool", // subtype_ottoman_tuffet
+  "Storage ottoman": "form_ottoman_footstool", // subtype_ottoman_storage
+  "Cocktail ottoman": "form_ottoman_footstool", // subtype_ottoman_cocktail (boundary form with form_ottoman_table)
+  "Lounge ottoman": "form_ottoman_footstool", // subtype_ottoman_lounge
+  "Bench ottoman": "form_ottoman_footstool", // subtype_ottoman_bench
+  "Vanity ottoman": "form_ottoman_footstool",
+  "Pew": "form_pew",
+  "Church pew": "form_pew", // subtype_pew_church
+  "Meetinghouse pew": "form_pew", // subtype_pew_meetinghouse
+  "Meetinghouse bench": "form_pew",
+  "Chapel pew": "form_pew",
+  "Box pew": "form_pew", // subtype_pew_box
+  "Gothic Revival pew": "form_pew", // subtype_pew_gothic_revival
+  "Sanctuary pew": "form_pew",
+  "Congregational pew": "form_pew",
+  "Short pew": "form_pew", // subtype_pew_short (cut-down conversion)
+  "Cut-down pew": "form_pew", // subtype_pew_short
+  "Salvage pew": "form_pew", // subtype_pew_short
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
