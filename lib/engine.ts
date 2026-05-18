@@ -1707,6 +1707,125 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     low_confidence_flag: false,
   });
 }
+
+  // =========================
+  // LOUNGE-CHAIR FORM SYNTHESIZERS
+  // Posture-based seating identity (deeper seat, lower seat height, more
+  // reclined back, often fully upholstered) — distinct from arm-based
+  // armchair_form per form_armchair.cousin_form_contrasts architectural
+  // decision. Emits lounge_chair_form + club_chair_form + barrel_tub_back
+  // so the armchairVeto at engine.ts:2504 (which blocks telephone-bench
+  // mis-routing when seating + secondary_surface co-occur on an
+  // upholstered lounge form) becomes reachable from textual perception
+  // evidence in addition to direct LLM-emitted clues.
+  // Canonical: lib/constraints/forms.ts form_lounge_chair (7 subtypes).
+  // =========================
+
+  const hasBarrelTubCues =
+    hasClue("barrel_tub_back") ||
+    hasText(
+      "barrel back",
+      "barrel-back",
+      "tub back",
+      "tub-back",
+      "tub chair",
+      "barrel chair",
+      "cylindrical back",
+      "wrap-around back",
+      "wraparound back",
+    );
+
+  const hasClubCues =
+    hasText(
+      "club chair",
+      "leather club",
+      "smoking chair",
+      "library club",
+      "gentleman's chair",
+    );
+
+  const hasDeepLoungeCues =
+    hasClue("fully_upholstered") &&
+    (hasClue("button_tufting") ||
+      hasClue("velvet_cover") ||
+      hasClue("arm_upholstery") ||
+      hasText(
+        "rolled arms",
+        "deep seat",
+        "low seat",
+        "reclined back",
+        "overstuffed",
+        "deep cushion",
+        "loose cushion",
+        "lounge chair",
+        "easy chair",
+      ));
+
+  if (
+    !hasClue("barrel_tub_back") &&
+    hasBarrelTubCues &&
+    (hasClue("seating_surface") ||
+      hasClue("armchair_form") ||
+      hasClue("backrest_present"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "barrel_tub_back",
+      description:
+        "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction.",
+      confidence: 76,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  if (
+    !hasClue("lounge_chair_form") &&
+    (hasDeepLoungeCues ||
+      (hasBarrelTubCues &&
+        (hasClue("seating_surface") || hasClue("armchair_form"))) ||
+      hasText(
+        "lounge chair",
+        "easy chair",
+        "bergère",
+        "bergere",
+        "barrel chair",
+        "tub chair",
+      ) ||
+      hasClubCues)
+  ) {
+    out.push({
+      type: "form",
+      clue: "lounge_chair_form",
+      description:
+        "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair.",
+      confidence: 78,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  if (
+    !hasClue("club_chair_form") &&
+    hasClubCues &&
+    (hasClue("fully_upholstered") ||
+      hasClue("armchair_form") ||
+      hasText("leather", "deep cushion", "rolled arms"))
+  ) {
+    out.push({
+      type: "form",
+      clue: "club_chair_form",
+      description:
+        "Club-chair vocabulary with deep upholstery indicates club chair variant. Canonical: form_lounge_chair / subtype_lounge_club.",
+      confidence: 76,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
   // =========================
   // WOOD-FRAME DEPENDENT STYLES
   // =========================
