@@ -1191,6 +1191,45 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Painted glass lamp": "form_banquet_lamp", // subtype_banquet_lamp_painted_glass
   "Formal parlor lamp": "form_banquet_lamp",
 
+  // ───────────────────────────────────────────────────────────────────
+  // Wall lighting — Item 17 Batch F (Tier B wall lighting elevations)
+  // ───────────────────────────────────────────────────────────────────
+
+  "Sconce": "form_sconce",
+  "Wall sconce": "form_sconce",
+  "Wall light": "form_sconce",
+  "Wall fixture": "form_sconce",
+  "Wall bracket light": "form_sconce",
+  "Candle sconce": "form_sconce", // subtype_sconce_candle
+  "Electric sconce": "form_sconce", // subtype_sconce_electric
+  "Kerosene wall lamp": "form_sconce", // subtype_sconce_kerosene
+  "Kerosene wall sconce": "form_sconce", // subtype_sconce_kerosene
+  "Mirror-back sconce": "form_sconce", // subtype_sconce_mirror_back
+  "Two-arm sconce": "form_sconce",
+  "Single-arm sconce": "form_sconce",
+  "Wall mounted lamp": "form_sconce",
+  // Note: "Gas sconce" intentionally routes to form_gas_bracket (below)
+  // per the sconce canonical's own subtype_sconce_gas guidance ("If gas
+  // system is the dominant diagnostic, compare standalone form_gas_
+  // bracket"). Gas evidence is the dominant diagnostic when the alias
+  // explicitly includes "gas".
+
+  "Gas bracket": "form_gas_bracket",
+  "Gas wall bracket": "form_gas_bracket",
+  "Gas sconce": "form_gas_bracket", // gas evidence dominates; routes per sconce canonical's own guidance
+  "Gas wall light": "form_gas_bracket",
+  "Gaslight bracket": "form_gas_bracket",
+  "Gas arm": "form_gas_bracket",
+  "Swing-arm gas bracket": "form_gas_bracket", // subtype_gas_bracket_swing_arm
+  "Gas-electric bracket": "form_gas_bracket", // subtype_gas_bracket_gas_electric
+  "Gas-electric wall bracket": "form_gas_bracket", // subtype_gas_bracket_gas_electric
+  "Converted gas bracket": "form_gas_bracket", // subtype_gas_bracket_electrified
+  "Wall gas fixture": "form_gas_bracket",
+  "Gas-mantle bracket": "form_gas_bracket", // subtype_gas_bracket_mantle
+  "Single-arm gas bracket": "form_gas_bracket", // subtype_gas_bracket_single_arm
+  "Double-arm gas bracket": "form_gas_bracket", // subtype_gas_bracket_double_arm
+  "Reflector gas bracket": "form_gas_bracket", // subtype_gas_bracket_reflector
+
 
   // Note: "Jelly cupboard" intentionally NOT remapped — already routes
   // to form_jelly_cupboard (existing canonical at line 1946+); jam_cupboard
