@@ -241,7 +241,10 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Barrel chair": "form_lounge_chair", // subtype_lounge_barrel within form_lounge_chair
   "Bergère chair": "form_lounge_chair", // subtype_lounge_bergere within form_lounge_chair
   "Easy chair": "form_lounge_chair", // subtype_lounge_easy within form_lounge_chair
-  "Recliner": "form_lounge_chair", // subtype_lounge_recliner within form_lounge_chair
+  // Note: "Recliner" was previously mapped to form_lounge_chair here; remapped
+  // to form_recliner below (the bare alias is mechanism-dominant per
+  // form_recliner authoring decision; subtype_lounge_recliner remains as
+  // cross-reference for club-chair-styled recliners).
   "Wing chair": "form_wing_chair",
   "Wingback chair": "form_wing_chair",
   "Wingback armchair": "form_wing_chair",
@@ -250,7 +253,10 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Chippendale wing chair": "form_wing_chair", // subtype_wing_chippendale within form_wing_chair
   "Federal wing chair": "form_wing_chair", // subtype_wing_federal within form_wing_chair
   "Fireside chair": "form_wing_chair",
-  "Wing recliner": "form_wing_chair", // subtype_wing_recliner within form_wing_chair
+  // Note: "Wing recliner" was previously mapped to form_wing_chair here;
+  // remapped to form_recliner below (the bare alias is mechanism-dominant
+  // per form_recliner authoring decision; subtype_wing_recliner remains
+  // as cross-reference for wing-chair-styled recliners).
   // Note: "Easy chair" intentionally remains mapped to form_lounge_chair above
   // per modern dominant usage; 18th-century English period usage where
   // "easy chair" = wing chair is handled at scoreForms via structural cues
@@ -396,6 +402,61 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // mapped — sleeping-first vs day-use boundary; resolves at scoreForms
   // (subtype_daybed_trundle handles day-use trundle; form_bedstead handles
   // sleeping-first trundle).
+  "Recliner": "form_recliner",
+  "Reclining chair": "form_recliner",
+  "La-Z-Boy": "form_recliner", // brand-as-form alias
+  "La-Z-Boy style chair": "form_recliner",
+  "Lazy Boy": "form_recliner",
+  "Easy recliner": "form_recliner",
+  "Rocker recliner": "form_recliner", // subtype_recliner_rocker
+  "Rocking recliner": "form_recliner", // subtype_recliner_rocker
+  "Swivel recliner": "form_recliner", // subtype_recliner_swivel
+  "Glider recliner": "form_recliner",
+  "Wall-hugger": "form_recliner", // subtype_recliner_wall_hugger
+  "Wall hugger recliner": "form_recliner", // subtype_recliner_wall_hugger
+  "Power recliner": "form_recliner", // subtype_recliner_power (post-1980)
+  "Electric recliner": "form_recliner", // subtype_recliner_power
+  "Lift chair": "form_recliner", // subtype_recliner_lift (post-1980)
+  "Lift recliner": "form_recliner", // subtype_recliner_lift
+  "Push-back chair": "form_recliner", // subtype_recliner_push_back
+  "Push-back recliner": "form_recliner", // subtype_recliner_push_back
+  "Lever recliner": "form_recliner", // subtype_recliner_manual_lever
+  "Manual recliner": "form_recliner", // subtype_recliner_manual_lever
+  "Club recliner": "form_recliner", // subtype_recliner_club (cross-refs subtype_lounge_recliner)
+  "Wing recliner": "form_recliner", // subtype_recliner_wing (cross-refs subtype_wing_recliner)
+  "Theater recliner": "form_recliner",
+  "Home theater recliner": "form_recliner",
+  "Massage recliner": "form_recliner",
+  // Note: "Easy chair" intentionally NOT remapped — already routes to
+  // form_lounge_chair per earlier mapping; only mechanism-evidenced
+  // chairs should route to form_recliner.
+  "Stool": "form_stool",
+  "Tabouret": "form_stool", // subtype_stool_tabouret
+  "Counter stool": "form_stool", // subtype_stool_counter
+  "Kitchen stool": "form_stool",
+  "Bar stool": "form_stool", // subtype_stool_bar (backed bar stools route to form_bar_chair)
+  "Piano stool": "form_stool", // subtype_stool_piano
+  "Vanity stool": "form_stool", // subtype_stool_vanity
+  "Dressing stool": "form_stool", // subtype_stool_vanity
+  "Shop stool": "form_stool", // subtype_stool_work
+  "Work stool": "form_stool", // subtype_stool_work
+  "Drafting stool": "form_stool", // subtype_stool_drafting
+  "Lab stool": "form_stool", // subtype_stool_work
+  "Laboratory stool": "form_stool", // subtype_stool_work
+  "Industrial stool": "form_stool", // subtype_stool_work
+  "Swivel stool": "form_stool", // subtype_stool_swivel
+  "Screw stool": "form_stool", // subtype_stool_swivel
+  "Step stool": "form_stool", // subtype_stool_step (boundary form with ladder/access support)
+  "Joint stool": "form_stool", // subtype_stool_joint
+  "Hearth stool": "form_stool", // subtype_stool_low
+  "Three-legged stool": "form_stool", // subtype_stool_low
+  "Tripod stool": "form_stool",
+  "Saddle stool": "form_stool",
+  "Milking stool": "form_milking_stool", // specialty canonical retains identity for dairy/work-context examples; subtype_stool_milking within form_stool is the broader vernacular cross-reference
+  // Note: "Seat", "Footstool", "Foot stool" intentionally NOT mapped to
+  // form_stool — "Seat" is too generic; "Footstool"/"Foot stool" route
+  // to form_ottoman_footstool (soft support dominant) per the
+  // ottoman/footstool canonical mappings above.
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
