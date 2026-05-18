@@ -416,6 +416,10 @@ type ConvergenceZone = {
   date_floor: number;
   date_ceiling: number;
   layer_count: number;
+  // Sum of LAYER_AUTHORITY weights for contributing layers. Used to identify
+  // the "strongest" zone for chip-label badging (max authority_sum wins,
+  // tiebreak by layer_count then narrowest range).
+  authority_sum: number;
   layers: string[];
 };
 
@@ -867,7 +871,9 @@ function DatingOverlapViz({
 
   const ROW_HEIGHT = 28;
   const LABEL_WIDTH = 150;
-  const PLOT_TOP_PADDING = 22; // room for tick labels
+  const PLOT_TOP_PADDING = 50; // tick labels + zone-summary chips (year ticks at top:2; zone chips at top:22-44; bands start at PLOT_TOP_PADDING-4=46)
+  const ZONE_LABEL_TOP = 22; // top offset for convergence-zone chip labels
+  const ZONE_LABEL_HEIGHT = 22;
   // Top rows: Style (primary) + Design Distinctives + optional partner
   // Style + optional partner Design Distinctives. Each pair only renders
   // when its data is present.
@@ -877,6 +883,25 @@ function DatingOverlapViz({
   const PLOT_HEIGHT = (topRowCount + layersOrdered.length) * ROW_HEIGHT;
   const styleFamilyLabel = styleAttribution?.name ? `Style: ${styleAttribution.name}` : "Style";
   const partnerStyleLabel = transitionalPartner?.name ? `Style: ${transitionalPartner.name}` : "Style (partner)";
+
+  // Identify the strongest convergence zone for "strongest" badge labeling.
+  // Tiebreak: max authority_sum, then max layer_count, then narrowest range.
+  // Returns the index in data.convergence_zones, or -1 if no zones.
+  const strongestZoneIdx = data.convergence_zones.length === 0
+    ? -1
+    : data.convergence_zones.reduce(
+        (bestIdx, z, i, arr) => {
+          const best = arr[bestIdx];
+          if (z.authority_sum > best.authority_sum) return i;
+          if (z.authority_sum < best.authority_sum) return bestIdx;
+          if (z.layer_count > best.layer_count) return i;
+          if (z.layer_count < best.layer_count) return bestIdx;
+          const zWidth = z.date_ceiling - z.date_floor;
+          const bestWidth = best.date_ceiling - best.date_floor;
+          return zWidth < bestWidth ? i : bestIdx;
+        },
+        0
+      );
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
@@ -1057,6 +1082,73 @@ function DatingOverlapViz({
             );
           })}
 
+          {/* Zone summary chips — positioned above each green band so users
+              can identify zone ranges without measuring against the axis.
+              Chips are CENTERED on the zone midpoint with a minimum width
+              of ~120px so narrow zones (e.g., 10-year ranges) get readable
+              labels that may extend beyond the band edges. "strongest"
+              badge marks the highest-authority zone. */}
+          {data.convergence_zones.map((z, i) => {
+            const leftPct = clampPct(yearToPct(z.date_floor));
+            const rightPct = clampPct(yearToPct(z.date_ceiling));
+            const centerPct = (leftPct + rightPct) / 2;
+            const isStrongest = i === strongestZoneIdx;
+            const layerSummary = z.layers
+              .map((l) => LAYER_LABELS[l] ?? l)
+              .join(", ");
+            return (
+              <div
+                key={`zone-label-${i}`}
+                title={`Zone ${i + 1}: ${z.date_floor}–${z.date_ceiling} · ${z.layer_count} layer${z.layer_count !== 1 ? "s" : ""} agree (${layerSummary})${isStrongest ? " · STRONGEST convergence" : ""}`}
+                style={{
+                  position: "absolute",
+                  top: ZONE_LABEL_TOP,
+                  left: `${centerPct}%`,
+                  transform: "translateX(-50%)",
+                  height: ZONE_LABEL_HEIGHT,
+                  minWidth: 120,
+                  maxWidth: 240,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 5,
+                  padding: "0 8px",
+                  boxSizing: "border-box",
+                  borderRadius: 4,
+                  background: isStrongest ? "rgba(75, 134, 70, 0.9)" : "rgba(123, 178, 121, 0.6)",
+                  border: isStrongest ? "1px solid rgba(40, 90, 38, 0.9)" : "1px solid rgba(75, 134, 70, 0.7)",
+                  color: isStrongest ? "#fff" : "#1f3a1d",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  whiteSpace: "nowrap",
+                  pointerEvents: "auto",
+                  zIndex: 2,
+                }}
+              >
+                <span>
+                  {z.date_floor}–{z.date_ceiling} · {z.layer_count} layer{z.layer_count !== 1 ? "s" : ""}
+                </span>
+                {isStrongest && (
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      padding: "1px 5px",
+                      borderRadius: 2,
+                      background: "rgba(255,255,255,0.3)",
+                      color: "#fff",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.5,
+                      flexShrink: 0,
+                    }}
+                  >
+                    Strongest
+                  </span>
+                )}
+              </div>
+            );
+          })}
+
           {/* Transitional overlap highlight — vertical band spanning both
               Style rows where the engine's best style intersection lives.
               Rendered FIRST so style blocks sit on top of it. */}
@@ -1209,26 +1301,78 @@ function DatingOverlapViz({
         </div>
       </div>
 
-      {/* Legend for convergence zones */}
-      {data.convergence_zones.length > 0 && (
-        <div style={{ fontSize: 12, color: "#574634", display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              display: "inline-block",
-              width: 16,
-              height: 12,
-              background: "rgba(123, 178, 121, 0.4)",
-              border: "1px dashed rgba(75, 134, 70, 0.7)",
-            }}
-          />
-          <span>
-            Convergence zones — where ≥3 evidence layers agree on the same date range.{" "}
-            {data.convergence_zones.length === 1
-              ? "1 zone identified."
-              : `${data.convergence_zones.length} zones identified.`}
-          </span>
+      {/* "How to read this" footer — static explainer of the chart's visual
+          language. Helps casual users decode wide-vs-narrow bars, empty
+          rows, the "no parseable date" state, the green convergence bands,
+          and (when present) the transitional overlap highlight. */}
+      <div
+        style={{
+          fontSize: 12,
+          color: "#574634",
+          lineHeight: 1.6,
+          padding: "10px 12px",
+          borderRadius: 8,
+          background: "#f6efde",
+          border: "1px solid #e3d3b3",
+        }}
+      >
+        <div style={{ fontWeight: 700, marginBottom: 6, color: "#3d2d1f" }}>How to read this chart</div>
+        <div style={{ display: "grid", gap: 4 }}>
+          <div>
+            <strong>Each row</strong> shows the date envelope for one evidence layer (style, joinery, hardware, etc.).
+            <strong> Wide bars</strong> mean the evidence supports a long span — usually because the technique or
+            material was used continuously through the period.
+            <strong> Narrow bars</strong> pinpoint specific eras and carry stronger dating weight.
+          </div>
+          {data.convergence_zones.length > 0 && (
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 16,
+                  height: 12,
+                  marginTop: 4,
+                  background: "rgba(123, 178, 121, 0.4)",
+                  border: "1px dashed rgba(75, 134, 70, 0.7)",
+                  flexShrink: 0,
+                }}
+              />
+              <div>
+                <strong>Green vertical bands</strong> mark <strong>convergence zones</strong> where 3 or more layers
+                agree on the same date range. These are the strongest dating signals. The chip-label above each band
+                shows the zone&apos;s range and layer count; the darker green chip marked &ldquo;strongest&rdquo;
+                identifies the highest-authority zone (most layers and/or highest-authority evidence). Currently
+                showing {data.convergence_zones.length === 1 ? "1 convergence zone" : `${data.convergence_zones.length} convergence zones`}.
+              </div>
+            </div>
+          )}
+          {bestStyleIntersection && hasPartnerStyle && (
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 16,
+                  height: 12,
+                  marginTop: 4,
+                  background: TRANSITIONAL_OVERLAP_FILL,
+                  border: `1.5px dashed ${TRANSITIONAL_OVERLAP_BORDER}`,
+                  flexShrink: 0,
+                }}
+              />
+              <div>
+                <strong>Orange-bordered band on the Style rows</strong> marks the
+                <strong> transitional overlap</strong> — the date window in which both style vocabularies were
+                in production simultaneously. Pieces in this window often combine elements from both styles.
+              </div>
+            </div>
+          )}
+          <div>
+            <strong>Empty rows</strong> mean no observations were recorded for that layer.
+            Rows marked &ldquo;<em>N observation(s) present, no parseable date</em>&rdquo; mean the engine found
+            evidence (e.g., visible hardware or wood) but couldn&apos;t anchor the observation to a specific year window.
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Conditional between-wave callout. Fires only when construction
           convergence sits in the gap between two surfaced revival waves. */}
