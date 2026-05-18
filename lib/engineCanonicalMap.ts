@@ -457,6 +457,47 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // form_stool — "Seat" is too generic; "Footstool"/"Foot stool" route
   // to form_ottoman_footstool (soft support dominant) per the
   // ottoman/footstool canonical mappings above.
+  "Kitchen table": "form_kitchen_table",
+  "Kitchen utility table": "form_kitchen_table",
+  "Kitchen dining table": "form_kitchen_table",
+  "Farm table": "form_kitchen_table", // subtype_kitchen_table_farm
+  "Farmhouse table": "form_kitchen_table", // subtype_kitchen_table_farm
+  "Farm kitchen table": "form_kitchen_table", // subtype_kitchen_table_farm
+  "Enamel table": "form_kitchen_table", // subtype_kitchen_table_enamel_top (c. 1900-1950)
+  "Enamel-top table": "form_kitchen_table", // subtype_kitchen_table_enamel_top
+  "Porcelain top table": "form_kitchen_table", // subtype_kitchen_table_enamel_top
+  "Hoosier table": "form_kitchen_table", // subtype_kitchen_table_enamel_top (Hoosier-era kitchen)
+  "Hoosier-era table": "form_kitchen_table",
+  "Chrome kitchen table": "form_kitchen_table", // subtype_kitchen_table_chrome_laminate
+  "Formica table": "form_kitchen_table", // subtype_kitchen_table_chrome_laminate (laminate is kitchen-table-dominant; subtype_breakfast_table_dinette cross-references)
+  "Laminate kitchen table": "form_kitchen_table", // subtype_kitchen_table_chrome_laminate
+  "Drop-leaf kitchen table": "form_kitchen_table", // subtype_kitchen_table_drop_leaf
+  "Gateleg kitchen table": "form_kitchen_table", // subtype_kitchen_table_drop_leaf
+  "Baking table": "form_kitchen_table", // subtype_kitchen_table_work
+  "Bread table": "form_kitchen_table", // subtype_kitchen_table_work
+  "Utility table": "form_kitchen_table",
+  "Apartment table": "form_kitchen_table",
+  "Breakfast table": "form_breakfast_table",
+  "Breakfast nook table": "form_breakfast_table", // subtype_breakfast_table_nook
+  "Nook table": "form_breakfast_table", // subtype_breakfast_table_nook
+  "Dinette table": "form_breakfast_table", // subtype_breakfast_table_dinette (c. 1920-present; cross-references subtype_kitchen_table_dinette when work/prep evidence dominates)
+  "Chrome dinette table": "form_breakfast_table", // subtype_breakfast_table_dinette
+  "Round breakfast table": "form_breakfast_table", // subtype_breakfast_table_round
+  "Drop-leaf breakfast table": "form_breakfast_table", // subtype_breakfast_table_drop_leaf
+  "Gateleg breakfast table": "form_breakfast_table", // subtype_breakfast_table_drop_leaf
+  "Pedestal breakfast table": "form_breakfast_table", // subtype_breakfast_table_pedestal
+  "Sunroom table": "form_breakfast_table",
+  "Apartment dining table": "form_breakfast_table",
+  "Small dining table": "form_breakfast_table",
+  "Round kitchen table": "form_breakfast_table", // small-round informal eating identity dominates
+  "Laminate table": "form_breakfast_table",
+  // Note: "Bistro table", "Café table", "Cafe table" intentionally NOT mapped
+  // — per form_breakfast_table cousin contrast, bistro/café may be commercial,
+  // outdoor, or counter-height; only domestic seated-dining-height examples
+  // route to form_breakfast_table. Resolves at scoreForms via height/context
+  // cues. A future form_bistro_table or form_cafe_table canonical would absorb
+  // these labels.
+  "Work table": "form_work_table", // bare alias routes to the broader work/task table canonical (subtype_kitchen_table_work cross-references this for kitchen-context overlap)
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
