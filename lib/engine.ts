@@ -5005,8 +5005,19 @@ if (missing.label_photo) {
       .filter((r) => r !== bestForm)
       .slice(0, 3)
       .map((r) => r.form);
+    // alternative_form_ids must exclude the picked form. The reference-
+    // equality filter (.filter((r) => r !== bestForm)) is insufficient
+    // because scoreForms can return multiple ranked entries that resolve
+    // to the same canonical form_id (e.g., "Dresser" label and "Chest of
+    // drawers" label both → form_chest_of_drawers). Without the form_id
+    // dedupe, alternative_form_ids would contain the picked form's own id
+    // — which broke evaluateCousinContrast self-matching before its
+    // defensive filter was added (a1580ec discovery). Fixing here at the
+    // source so all downstream consumers benefit.
+    const bestFormId = bestForm?.form_id ?? null;
     const alternative_form_ids = ranked
       .filter((r) => r !== bestForm)
+      .filter((r) => r.form_id !== bestFormId)
       .slice(0, 3)
       .map((r) => r.form_id)
       .filter((id): id is string => id !== null);
