@@ -350,6 +350,110 @@ const TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 9: 1980s-90s decorator's fantasy reproduction carrying BOTH
+// Chippendale vocabulary (cabriole legs, claw-and-ball feet, pierced
+// splat, shell carving) AND Art Deco vocabulary (waterfall edges, stepped
+// profile, chrome hardware, geometric veneer). This is an "impossible"
+// historical pairing per lib/constraints/styleCompatibility.ts —
+// original Chippendale ends c. 1785 and Art Deco begins c. 1925, so any
+// piece carrying both vocabularies is reproduction, decorator's mix,
+// fantasy, or LLM mis-read. Exercises detectImpossiblePairs() and the
+// p5 reproduction-signal conflict surfacing.
+const CHIPPENDALE_ART_DECO_FANTASY_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-chippendale-art-deco-fantasy" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "mahogany",
+    user_category_guess: "side chair",
+    condition_notes:
+      "1980s-90s decorator-styled side chair mixing Chippendale leg/splat vocabulary with Art Deco waterfall edges and chrome trim; phillips screws throughout; mahogany veneer over plywood substrate",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Side chair with mixed-vocabulary fantasy design. Chippendale-style cabriole legs with claw-and-ball feet at front; pierced Chippendale splat with carved shell motif at the crest. But the apron carries a waterfall edge with stepped profile, the front rail has chrome trim, and the underside shows phillips screws securing plywood drawer slip rails. Geometric veneer pattern on the apron face. Reads as an 1980s or 1990s decorator's Chippendale-Deco fantasy piece, not original-period production.",
+    },
+    observations: [
+      // Chippendale vocabulary — fires style_family_chippendale via token matches
+      obs("cabriole_leg", "Chippendale-style cabriole legs at the front of the chair", 88),
+      obs("claw_or_pad_foot", "Carved claw-and-ball feet on the front Chippendale legs", 85),
+      obs("shell_carving", "Carved shell motif at the crest rail, Chippendale vocabulary", 82),
+      obs("pierced_splat", "Pierced Chippendale-style center splat with C-scroll fretwork", 85),
+      obs("chippendale_pattern", "Overall splat + cabriole + claw-foot + shell program reads as Chippendale-style", 80),
+      // Art Deco vocabulary — fires art_deco_pattern detector + token matches
+      obs("waterfall_edge", "Apron carries a pronounced waterfall edge profile", 80),
+      obs("stepped_profile", "Stepped geometric profile at the front rail of the apron", 78),
+      obs("chrome_hardware", "Chrome trim band on the front rail and chrome accent at the leg-to-rail junction", 85),
+      obs("geometric_veneer", "Geometric Art Deco veneer pattern across the apron face", 75),
+      // Construction giveaways for reproduction-era production
+      obs("phillips_screw", "Phillips-head screws securing plywood slip rails under the seat", 95),
+      obs("plywood_structural", "Plywood substrate visible at the seat underside, mahogany veneer over plywood", 90),
+      obs("wood_species_mahogany_group", "Mahogany veneer on show surfaces", 80),
+      obs("machine_dovetails", "Machine-cut joinery on apron-to-leg connections", 82),
+    ],
+  },
+};
+
+// Fixture 10: Centennial Colonial Revival Chippendale chest of drawers
+// c. 1900. Colonial Revival × Chippendale is explicitly "stacked_revival"
+// per the canonical compatibility matrix (Chippendale Revival is one of
+// the most common Colonial Revival vocabularies, especially in mahogany
+// dining and case furniture). Exercises:
+//   - both attributions surfacing above the 0.5 confidence floor
+//   - engine flagging Chippendale alternative in
+//     p3.stacked_revival_partner_ids
+//   - intersection logic SUPPRESSING the transitional convergence
+//     framing (no best_style_intersection)
+//   - p5 NOT surfacing "transitional convergence" prose for this pair
+//   - chart's partner Style row suppressed (verified via the engine-side
+//     suppressed_partner_ids list that drives the chart filter)
+const CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-centennial-colonial-revival-chippendale" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "mahogany",
+    user_category_guess: "chest of drawers",
+    has_drawers: true,
+    condition_notes:
+      "Centennial-era academic Colonial Revival Chippendale chest of drawers, c. 1900. Mahogany show surfaces; cabriole legs with ball-and-claw feet; carved shell motif on the apron; pierced cresting; machine-cut dovetails on drawer construction.",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Academic Centennial Colonial Revival Chippendale chest of drawers c. 1900. Mahogany show wood with carved Chippendale-style shell motif at the apron, cabriole legs terminating in ball-and-claw feet, and pierced Chippendale fretwork at the cresting. Machine-cut dovetails throughout the drawer construction (no hand-cut joinery). Solid plank back panel. Standard Centennial-era academic Colonial Revival production — revives Chippendale vocabulary at scale through Grand Rapids-style factory methods.",
+    },
+    observations: [
+      // Form / structure
+      obs("multiple_drawer_case", "Chest of drawers with four full-width graduated drawers", 92),
+      obs("drawer_present", "Multiple drawers visible", 95),
+      obs("symmetrical_case_form", "Symmetrical case form characteristic of Colonial Revival case furniture", 80),
+      // Chippendale vocabulary
+      obs("cabriole_leg", "Cabriole legs with C-curve at front of case", 88),
+      obs("claw_or_pad_foot", "Ball-and-claw feet on front cabriole legs, classic Chippendale vocabulary", 85),
+      obs("shell_carving", "Carved shell motif at the apron, Chippendale shell carving program", 82),
+      obs("pierced_splat", "Pierced Chippendale fretwork at the cresting above the top drawer", 78),
+      // chippendale_pattern routes via STRUCTURAL_PATTERN_FAMILY to
+      // style_family_chippendale so the family enters structuralFamiliesPresent
+      // alongside Colonial Revival (via colonial_revival_cues), preventing the
+      // 30% competitive suppression that would otherwise drop Chippendale below
+      // the single-token confidence floor.
+      obs("chippendale_pattern", "Overall splat + cabriole + claw-foot + shell program reads as Chippendale-style", 80),
+      // Colonial Revival markers — Centennial-era academic production
+      obs("centennial_colonial_revival_pattern", "Academic Centennial Colonial Revival production reviving Chippendale vocabulary at scale", 80),
+      obs("colonial_revival_cues", "Restrained classical shaping and factory-era proportions consistent with Colonial Revival reuse of Chippendale", 78),
+      // Construction giveaways for post-1876 production
+      obs("machine_dovetails", "Machine-cut dovetails throughout drawer construction; no hand-cut joinery visible", 90),
+      obs("wood_species_mahogany_group", "Mahogany show wood across drawer fronts, sides, and case", 85),
+      obs("solid_plank_back", "Solid plank back panel", 78),
+      obs("secondary_wood_drawer_bottom", "Pale secondary wood (pine/poplar) on drawer bottoms", 75),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
@@ -360,6 +464,8 @@ const FIXTURES: Record<string, Fixture> = {
   colonial_revival_lounge_chair: COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE,
   golden_oak_dresser: GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE,
   transitional_rococo_renaissance: TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE,
+  chippendale_art_deco_fantasy: CHIPPENDALE_ART_DECO_FANTASY_FIXTURE,
+  centennial_colonial_revival_chippendale: CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE,
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {
