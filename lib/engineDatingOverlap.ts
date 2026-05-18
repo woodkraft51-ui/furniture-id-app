@@ -118,8 +118,21 @@ export function refineDatingFromConvergence(
   // count alone, with ties broken by narrowness — that let a tight zone of
   // low-authority layers (style + style_wave + replacement-risk hardware)
   // beat a wider zone of high-authority layers (form + hardware + wood).
+  //
+  // Synthetic style-intersection zones (authority_sum ≥ 20, injected from
+  // engineStyleIntersection.computeStyleIntersections) bypass the
+  // layer_count threshold. The intersection IS the corroboration — it
+  // means two independent style families' production windows agree on the
+  // same era, which is stronger evidence than three weak layers happening
+  // to overlap.
+  const SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR = 20;
   const qualifying = overlap.convergence_zones
-    .filter((z) => z.layer_count >= 3 && (z.date_ceiling - z.date_floor) <= 60)
+    .filter((z) => {
+      const widthOk = (z.date_ceiling - z.date_floor) <= 60;
+      if (!widthOk) return false;
+      const isSyntheticIntersection = z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR;
+      return isSyntheticIntersection || z.layer_count >= 3;
+    })
     .sort((a, b) => {
       if (b.authority_sum !== a.authority_sum) return b.authority_sum - a.authority_sum;
       if (b.layer_count !== a.layer_count) return b.layer_count - a.layer_count;
@@ -265,7 +278,8 @@ export function buildDatingOverlap(
   styleAttribution: { date_floor: number | null; date_ceiling: number | null; confidence: number } | null,
   styleWaves: Array<{ date_floor: number | null; date_ceiling: number | null }>,
   formDating: { date_floor: number | null; date_ceiling: number | null } | null,
-  formBoundaries?: { emergence_date?: number; extinction_date?: number }
+  formBoundaries?: { emergence_date?: number; extinction_date?: number },
+  styleIntersection?: { kind: "family" | "wave"; participants: string[]; date_floor: number; date_ceiling: number } | null
 ): DatingOverlapData {
   // Block 16: clip helpers. Apply form's anti_classification_guidance to
   // layer floors / ceilings. emergence pulls floors UP to the boundary;
@@ -462,6 +476,28 @@ export function buildDatingOverlap(
       layer_count: currentZone.layers.size,
       authority_sum: layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0), 0),
       layers: layerList,
+    });
+  }
+
+  // Style intersection: when a transitional intersection is supplied (two
+  // style families OR two waves from different families with overlapping
+  // date envelopes), inject a synthetic high-authority zone so the
+  // convergence picker prefers the intersection band over generic layer
+  // overlaps. The synthetic zone uses style_wave as its representative
+  // layer name (purely for tooltip display); its authority_sum is set to
+  // dominate the picker — wave-level intersections beat family-level
+  // because waves are higher-resolution evidence.
+  if (
+    styleIntersection &&
+    styleIntersection.date_ceiling > styleIntersection.date_floor
+  ) {
+    const syntheticAuthoritySum = styleIntersection.kind === "wave" ? 24 : 20;
+    zones.unshift({
+      date_floor: styleIntersection.date_floor,
+      date_ceiling: styleIntersection.date_ceiling,
+      layer_count: styleIntersection.participants.length,
+      authority_sum: syntheticAuthoritySum,
+      layers: [styleIntersection.kind === "wave" ? "style_wave" : "style"],
     });
   }
 

@@ -67,6 +67,7 @@ import {
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, collectStyleSupportingEvidence, type StyleAttribution, type StyleWaveAttribution, type StyleSupportingObservation } from "./engineStyleEvaluator";
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
+import { computeStyleIntersections, type StyleIntersection } from "./engineStyleIntersection";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -232,6 +233,16 @@ type Phase3Result = {
   style_alternatives?: StyleAttribution[]; // up to 3 lower-confidence attributions
   // Block 2b: style-wave aggregator output (≥2-of-N rule per D-PH3-9)
   style_waves?: StyleWaveAttribution[];
+  // Transitional-piece reasoning: date-envelope intersections across
+  // competing style attributions and across surfaced waves from different
+  // parent families. Captures the "Rococo Revival + Renaissance Revival
+  // both fire → both were in production c. 1865–1885 → that's the
+  // transitional window" diagnostic. best_style_intersection is the
+  // tightest qualifying intersection; consumed by p5 (transitional
+  // framing) and by the dating-overlap chart (multi-Style-row + overlap
+  // highlight band).
+  style_intersections?: StyleIntersection[];
+  best_style_intersection?: StyleIntersection | null;
   // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
   hybrid?: HybridAnnotation | null;
   // Block 9: undated observations categorically aligned with the style
@@ -5051,6 +5062,34 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   const clues = new Set(digest.clue_keys || []);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
+  // Transitional-piece reframing: when two style attributions OR two waves
+  // from different families surface AND their date ranges intersect, treat
+  // the intersection as a CONFIRMATION signal, not a conflict. Surfaces as
+  // supporting_context with framing the appraiser would actually use
+  // ("both vocabularies were in production c. YYYY–YYYY") rather than the
+  // legacy "competing attributions" framing that read as engine confusion.
+  const bestIntersection = form.best_style_intersection ?? null;
+  if (bestIntersection) {
+    const tightnessQualifier =
+      bestIntersection.width <= 25
+        ? "tightly anchors"
+        : bestIntersection.width <= 40
+        ? "anchors"
+        : "is broadly consistent with";
+    const layerNoun = bestIntersection.kind === "wave" ? "revival waves" : "style families";
+    supporting_context.push(
+      `Transitional convergence — both ${bestIntersection.participants.join(" and ")} ${layerNoun} were in production c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}; the overlap ${tightnessQualifier} a transitional dating window of c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}.`
+    );
+    if ((form.style_intersections ?? []).length > 1) {
+      const others = (form.style_intersections ?? []).slice(1, 3);
+      for (const o of others) {
+        supporting_context.push(
+          `Additional ${o.kind}-level overlap — ${o.source_summary}.`
+        );
+      }
+    }
+  }
+
   // Block 7a sub-task 2: detect conflicts via numeric date-range incompatibility
   // (not string mismatch). Only flag pairs whose parsed year ranges are disjoint
   // (e.g., pre-1860 alongside post-1934 = genuine conflict). Same-direction
@@ -5188,7 +5227,8 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     form.style_attribution ?? null,
     form.style_waves ?? [],
     { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null },
-    formBoundaries
+    formBoundaries,
+    form.best_style_intersection ?? null
   );
 
   return {
@@ -5275,6 +5315,21 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
     );
   }
 
+  // Transitional-piece intersection: compute date-envelope overlaps across
+  // competing style attributions and across waves from different parent
+  // families. Surfaces the "both vocabularies were in production c.
+  // YYYY–YYYY" dating window that makes transitional pieces a CONFIRMATION
+  // signal rather than a confusion signal.
+  if (p3.style_attribution || (p3.style_alternatives ?? []).length > 0 || (p3.style_waves ?? []).length > 0) {
+    const intersectionResult = computeStyleIntersections(
+      p3.style_attribution ?? null,
+      p3.style_alternatives ?? [],
+      p3.style_waves ?? []
+    );
+    p3.style_intersections = intersectionResult.intersections;
+    p3.best_style_intersection = intersectionResult.best;
+  }
+
   stage_outputs.p3 = p3; onPhase?.("p3", p3);
 
   const p4 = this.p4(digest);
@@ -5308,7 +5363,8 @@ if (p6.dating_overlap) {
     p3.style_attribution ?? null,
     p3.style_waves ?? [],
     { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null },
-    frameBoundaries
+    frameBoundaries,
+    p3.best_style_intersection ?? null
   );
   const refined = refineDatingFromConvergence(
     {

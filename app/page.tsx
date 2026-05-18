@@ -461,11 +461,23 @@ const LAYER_LABELS: Record<string, string> = {
 const WAVE_PALETTE = ["#6b8aa8", "#8b6f9c", "#7a9c6b", "#a8826b", "#a8617b"];
 const ORIGINAL_PERIOD_COLOR = "#b4a5c2"; // light, ghosted lavender
 
+// Partner Style row (transitional-pair second attribution) uses a warm-rust
+// palette so the eye reads it as "second voice" not "duplicate of primary."
+const PARTNER_WAVE_PALETTE = ["#a8714a", "#9c6b3a", "#8a5a3a", "#7a5a4a"];
+const PARTNER_ORIGINAL_PERIOD_COLOR = "#cda58e";
+
+// Transitional overlap highlight — slightly more saturated than the
+// standard convergence-zone green so the eye treats it as a stronger
+// "they agree" signal than a generic layer-overlap convergence.
+const TRANSITIONAL_OVERLAP_FILL = "rgba(82, 142, 105, 0.28)";
+const TRANSITIONAL_OVERLAP_BORDER = "rgba(46, 96, 60, 0.7)";
+
 type StyleAttributionForViz = {
   name?: string;
   style_family_id?: string;
   date_floor: number | null;
   date_ceiling: number | null;
+  confidence?: number;
 } | null;
 
 type StyleWaveForViz = {
@@ -477,6 +489,20 @@ type StyleWaveForViz = {
   parent_style_id?: string;
 };
 
+type StyleIntersectionForViz = {
+  kind: "family" | "wave";
+  participants: string[];
+  date_floor: number;
+  date_ceiling: number;
+  width: number;
+  source_summary: string;
+} | null;
+
+// Confidence floor above which an alternative attribution earns its own
+// Style row on the chart. Matches the engine-side QUALIFYING_ATTRIBUTION_
+// CONFIDENCE so the chart shows what the engine reasoned about.
+const ALTERNATIVE_ATTRIBUTION_FLOOR = 0.5;
+
 // Pull just the quoted design-signal name out of a signals_matched string
 // like:  Design signal "machine-age restraint" matched on machine
 // Returns null when the string isn't a Layer 3 design-signal match.
@@ -485,16 +511,170 @@ function extractDesignDistinctive(signal: string): string | null {
   return m ? m[1] : null;
 }
 
+type StyleBlock = {
+  kind: "original" | "wave";
+  label: string;
+  date_floor: number | null;
+  date_ceiling: number | null;
+  color: string;
+  distinctives: string[];
+  wave_id?: string;
+};
+
+// Helper: render a Style row + a Design Distinctives row from a list of
+// StyleBlocks at a given vertical offset. Used twice for transitional
+// pieces (primary + partner) so both Style rows render with identical
+// geometry and the transitional-overlap highlight can span them cleanly.
+function renderStyleRowPair(
+  blocks: StyleBlock[],
+  rowTopOffset: number,
+  ctx: {
+    yearToPct: (y: number) => number;
+    clampPct: (p: number) => number;
+    axisMin: number;
+    axisMax: number;
+    rowHeight: number;
+    keyPrefix: string;
+  }
+) {
+  const styleRowTop = rowTopOffset;
+  const distinctivesRowTop = rowTopOffset + ctx.rowHeight;
+  return (
+    <React.Fragment key={`${ctx.keyPrefix}-style-pair`}>
+      {blocks.map((b, bi) => {
+        const floor = b.date_floor ?? ctx.axisMin;
+        const ceiling = b.date_ceiling ?? ctx.axisMax;
+        const left = ctx.clampPct(ctx.yearToPct(floor));
+        const right = ctx.clampPct(ctx.yearToPct(ceiling));
+        const width = Math.max(0.5, right - left);
+        const dateLabel =
+          b.date_floor != null && b.date_ceiling != null
+            ? `${b.date_floor}–${b.date_ceiling}`
+            : b.date_floor != null
+            ? `post-${b.date_floor}`
+            : `pre-${b.date_ceiling}`;
+        const isOriginal = b.kind === "original";
+        return (
+          <div key={`${ctx.keyPrefix}-style-block-${bi}`}>
+            <div
+              style={{
+                position: "absolute",
+                top: styleRowTop + 5,
+                left: `${left}%`,
+                width: `${width}%`,
+                height: ctx.rowHeight - 10,
+                background: isOriginal ? "transparent" : b.color,
+                border: isOriginal ? `1px dashed ${b.color}` : "none",
+                opacity: isOriginal ? 0.85 : 0.8,
+                borderRadius: 4,
+              }}
+              title={
+                isOriginal
+                  ? `Original style period: ${dateLabel}. Shown for lineage; the piece is most likely from one of the revival waves to the right.`
+                  : `${b.label}: ${dateLabel}${b.distinctives.length ? ` — distinctives: ${b.distinctives.join(", ")}` : ""}`
+              }
+            />
+            {width >= 14 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: styleRowTop + 6,
+                  left: `${left}%`,
+                  width: `${width}%`,
+                  height: ctx.rowHeight - 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 11,
+                  color: isOriginal ? b.color : "#fff",
+                  fontWeight: 600,
+                  textShadow: isOriginal ? "none" : "0 1px 1px rgba(0,0,0,0.2)",
+                  pointerEvents: "none",
+                }}
+              >
+                {dateLabel}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {blocks
+        .filter((b) => b.kind === "wave" && b.distinctives.length > 0)
+        .map((b, bi) => {
+          const floor = b.date_floor ?? ctx.axisMin;
+          const ceiling = b.date_ceiling ?? ctx.axisMax;
+          const left = ctx.clampPct(ctx.yearToPct(floor));
+          const right = ctx.clampPct(ctx.yearToPct(ceiling));
+          const width = Math.max(0.5, right - left);
+          const shown = b.distinctives.slice(0, 2);
+          const more = b.distinctives.length - shown.length;
+          const chipText = shown.join(" · ") + (more > 0 ? ` +${more}` : "");
+          return (
+            <div
+              key={`${ctx.keyPrefix}-distinctive-${bi}`}
+              style={{
+                position: "absolute",
+                top: distinctivesRowTop + 6,
+                left: `${left}%`,
+                width: `${width}%`,
+                height: ctx.rowHeight - 12,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 6px",
+                boxSizing: "border-box",
+                pointerEvents: "auto",
+              }}
+              title={`Wave-distinguishing design subtleties for ${b.label}: ${b.distinctives.join(", ")}`}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  maxWidth: "100%",
+                  padding: "2px 8px",
+                  borderRadius: 10,
+                  background: b.color,
+                  opacity: 0.85,
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {chipText}
+              </span>
+            </div>
+          );
+        })}
+    </React.Fragment>
+  );
+}
+
 function DatingOverlapViz({
   data,
   styleAttribution,
+  styleAlternatives,
   styleWaves,
+  bestStyleIntersection,
 }: {
   data: DatingOverlapData;
   styleAttribution?: StyleAttributionForViz;
+  styleAlternatives?: Array<NonNullable<StyleAttributionForViz>>;
   styleWaves?: StyleWaveForViz[];
+  bestStyleIntersection?: StyleIntersectionForViz;
 }) {
   const waves = styleWaves ?? [];
+  // Filter alternatives by qualifying confidence floor — only render an
+  // alternative as its own Style row when the engine actually treated it
+  // as a co-occurring attribution worth reasoning about.
+  const qualifiedAlternatives = (styleAlternatives ?? []).filter(
+    (a) => a && typeof a.confidence === "number" && a.confidence >= ALTERNATIVE_ATTRIBUTION_FLOOR
+  );
+  // Cap at the single best transitional partner — beyond 2 Style rows the
+  // chart gets unwieldy and the marginal alternative adds noise.
+  const transitionalPartner = qualifiedAlternatives[0] ?? null;
   // Style row + Design Distinctives row are rendered separately at the top,
   // so drop the legacy aggregated `style` and `style_wave` rows from the
   // standard per-layer loop. Their dates still feed the axis-range
@@ -512,9 +692,15 @@ function DatingOverlapViz({
   }
   if (styleAttribution?.date_floor != null) allFloors.push(styleAttribution.date_floor);
   if (styleAttribution?.date_ceiling != null) allCeilings.push(styleAttribution.date_ceiling);
+  if (transitionalPartner?.date_floor != null) allFloors.push(transitionalPartner.date_floor);
+  if (transitionalPartner?.date_ceiling != null) allCeilings.push(transitionalPartner.date_ceiling);
   for (const w of waves) {
     if (w.date_floor != null) allFloors.push(w.date_floor);
     if (w.date_ceiling != null) allCeilings.push(w.date_ceiling);
+  }
+  if (bestStyleIntersection) {
+    allFloors.push(bestStyleIntersection.date_floor);
+    allCeilings.push(bestStyleIntersection.date_ceiling);
   }
   if (allFloors.length === 0 && allCeilings.length === 0) {
     return <div style={{ fontSize: 14, color: "#776654", fontStyle: "italic" }}>No date evidence to chart.</div>;
@@ -540,15 +726,7 @@ function DatingOverlapViz({
   // on the left, each surfaced revival wave to the right in chronological
   // order. Each wave gets a distinct hue from WAVE_PALETTE so the viewer
   // can match a wave block to its Design Distinctives chips below.
-  type StyleBlock = {
-    kind: "original" | "wave";
-    label: string;
-    date_floor: number | null;
-    date_ceiling: number | null;
-    color: string;
-    distinctives: string[]; // for the Design Distinctives row, color-matched
-    wave_id?: string;
-  };
+  // (StyleBlock type defined at module scope for the renderStyleRowPair helper.)
   const styleBlocks: StyleBlock[] = [];
   // De-dupe: if a wave's date range substantially overlaps the attribution
   // period (i.e. it IS the "Original X" wave), don't render a separate
@@ -573,7 +751,20 @@ function DatingOverlapViz({
       distinctives: [],
     });
   }
-  sortedWaves.forEach((w, idx) => {
+  // Partition waves by parent_style_id so the primary Style row shows only
+  // the winner's waves; the partner Style row shows the partner's waves.
+  // For pieces with no qualifying alternative, all waves go on the primary
+  // row (current behavior preserved).
+  const primaryParentId = styleAttribution?.style_family_id ?? null;
+  const partnerParentId = transitionalPartner?.style_family_id ?? null;
+  const primaryWaves = transitionalPartner
+    ? sortedWaves.filter((w) => !partnerParentId || w.parent_style_id !== partnerParentId)
+    : sortedWaves;
+  const partnerWaves = transitionalPartner
+    ? sortedWaves.filter((w) => w.parent_style_id === partnerParentId)
+    : [];
+
+  primaryWaves.forEach((w, idx) => {
     const distinctives = (w.signals_matched ?? [])
       .map(extractDesignDistinctive)
       .filter((s): s is string => Boolean(s));
@@ -587,6 +778,45 @@ function DatingOverlapViz({
       wave_id: w.wave_id,
     });
   });
+
+  // Build partner-row style blocks (the second Style row for transitional
+  // pieces). Uses a complementary palette so the partner reads as a
+  // sibling story, not a duplicate of the primary row.
+  const partnerStyleBlocks: StyleBlock[] = [];
+  if (transitionalPartner) {
+    const ptrFloor = transitionalPartner.date_floor ?? null;
+    const ptrCeil = transitionalPartner.date_ceiling ?? null;
+    const partnerCoveredByWave = partnerWaves.some((w) => {
+      if (ptrFloor == null || ptrCeil == null || w.date_floor == null || w.date_ceiling == null) return false;
+      const overlap = Math.max(0, Math.min(ptrCeil, w.date_ceiling) - Math.max(ptrFloor, w.date_floor));
+      const span = Math.max(1, ptrCeil - ptrFloor);
+      return overlap / span >= 0.75;
+    });
+    if ((ptrFloor != null || ptrCeil != null) && !partnerCoveredByWave) {
+      partnerStyleBlocks.push({
+        kind: "original",
+        label: "Original period",
+        date_floor: ptrFloor,
+        date_ceiling: ptrCeil,
+        color: PARTNER_ORIGINAL_PERIOD_COLOR,
+        distinctives: [],
+      });
+    }
+    partnerWaves.forEach((w, idx) => {
+      const distinctives = (w.signals_matched ?? [])
+        .map(extractDesignDistinctive)
+        .filter((s): s is string => Boolean(s));
+      partnerStyleBlocks.push({
+        kind: "wave",
+        label: w.wave_name ?? w.wave_id ?? `Partner wave ${idx + 1}`,
+        date_floor: w.date_floor,
+        date_ceiling: w.date_ceiling,
+        color: PARTNER_WAVE_PALETTE[idx % PARTNER_WAVE_PALETTE.length],
+        distinctives,
+        wave_id: w.wave_id,
+      });
+    });
+  }
 
   // ── Between-wave conditional callout ────────────────────────────────
   // Surfaces only when the strongest convergence zone (driven by non-style
@@ -627,11 +857,15 @@ function DatingOverlapViz({
   const ROW_HEIGHT = 28;
   const LABEL_WIDTH = 150;
   const PLOT_TOP_PADDING = 22; // room for tick labels
-  // 2 top rows (Style + Design Distinctives) when we have any style blocks
-  // to render; otherwise just the standard layers.
-  const topRowCount = styleBlocks.length > 0 ? 2 : 0;
+  // Top rows: Style (primary) + Design Distinctives + optional partner
+  // Style + optional partner Design Distinctives. Each pair only renders
+  // when its data is present.
+  const hasPrimaryStyle = styleBlocks.length > 0;
+  const hasPartnerStyle = partnerStyleBlocks.length > 0;
+  const topRowCount = (hasPrimaryStyle ? 2 : 0) + (hasPartnerStyle ? 2 : 0);
   const PLOT_HEIGHT = (topRowCount + layersOrdered.length) * ROW_HEIGHT;
   const styleFamilyLabel = styleAttribution?.name ? `Style: ${styleAttribution.name}` : "Style";
+  const partnerStyleLabel = transitionalPartner?.name ? `Style: ${transitionalPartner.name}` : "Style (partner)";
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
@@ -653,7 +887,7 @@ function DatingOverlapViz({
       <div style={{ display: "grid", gridTemplateColumns: `${LABEL_WIDTH}px 1fr`, alignItems: "stretch" }}>
         {/* Left labels column */}
         <div style={{ paddingTop: PLOT_TOP_PADDING }}>
-          {styleBlocks.length > 0 && (
+          {hasPrimaryStyle && (
             <>
               <div
                 style={{
@@ -685,6 +919,43 @@ function DatingOverlapViz({
                   fontStyle: "italic",
                 }}
                 title="Design subtleties — the small distinguishing details that point to one wave over another. Each chip is color-matched to the wave it supports above."
+              >
+                Design Distinctives
+              </div>
+            </>
+          )}
+          {hasPartnerStyle && (
+            <>
+              <div
+                style={{
+                  height: ROW_HEIGHT,
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: 13,
+                  color: "#3e2f1f",
+                  paddingRight: 8,
+                  fontWeight: 700,
+                }}
+                title={
+                  transitionalPartner?.name
+                    ? `${transitionalPartner.name} also fires above threshold — your piece carries both vocabularies. Where the two Style rows agree on the same period (highlighted band) is the transitional production window.`
+                    : "Second style attribution; shown when a transitional piece carries two style vocabularies."
+                }
+              >
+                {partnerStyleLabel}
+              </div>
+              <div
+                style={{
+                  height: ROW_HEIGHT,
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: 12,
+                  color: "#5c4a37",
+                  paddingRight: 8,
+                  fontWeight: 600,
+                  fontStyle: "italic",
+                }}
+                title="Design subtleties supporting the partner attribution."
               >
                 Design Distinctives
               </div>
@@ -775,125 +1046,47 @@ function DatingOverlapViz({
             );
           })}
 
-          {/* Top rows: Style (combined original + waves) + Design Distinctives */}
-          {styleBlocks.length > 0 && (() => {
-            const styleRowTop = PLOT_TOP_PADDING;
-            const distinctivesRowTop = PLOT_TOP_PADDING + ROW_HEIGHT;
+          {/* Transitional overlap highlight — vertical band spanning both
+              Style rows where the engine's best style intersection lives.
+              Rendered FIRST so style blocks sit on top of it. */}
+          {bestStyleIntersection && hasPartnerStyle && (() => {
+            const left = clampPct(yearToPct(bestStyleIntersection.date_floor));
+            const right = clampPct(yearToPct(bestStyleIntersection.date_ceiling));
+            const width = Math.max(0.5, right - left);
+            // Span: primary style row through partner Design Distinctives row.
+            const topY = PLOT_TOP_PADDING - 2;
+            const bottomRowEnd = PLOT_TOP_PADDING + (hasPrimaryStyle ? 2 : 0) * ROW_HEIGHT + 2 * ROW_HEIGHT;
+            const height = bottomRowEnd - topY;
             return (
-              <>
-                {styleBlocks.map((b, bi) => {
-                  // Render block; clamp open ends to axis.
-                  const floor = b.date_floor ?? axisMin;
-                  const ceiling = b.date_ceiling ?? axisMax;
-                  const left = clampPct(yearToPct(floor));
-                  const right = clampPct(yearToPct(ceiling));
-                  const width = Math.max(0.5, right - left);
-                  const dateLabel =
-                    b.date_floor != null && b.date_ceiling != null
-                      ? `${b.date_floor}–${b.date_ceiling}`
-                      : b.date_floor != null
-                      ? `post-${b.date_floor}`
-                      : `pre-${b.date_ceiling}`;
-                  const isOriginal = b.kind === "original";
-                  return (
-                    <div key={`style-block-${bi}`}>
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: styleRowTop + 5,
-                          left: `${left}%`,
-                          width: `${width}%`,
-                          height: ROW_HEIGHT - 10,
-                          background: isOriginal ? "transparent" : b.color,
-                          border: isOriginal ? `1px dashed ${b.color}` : "none",
-                          opacity: isOriginal ? 0.85 : 0.8,
-                          borderRadius: 4,
-                        }}
-                        title={
-                          isOriginal
-                            ? `Original style period: ${dateLabel}. Shown for lineage; the piece is most likely from one of the revival waves to the right.`
-                            : `${b.label}: ${dateLabel}${b.distinctives.length ? ` — distinctives: ${b.distinctives.join(", ")}` : ""}`
-                        }
-                      />
-                      {width >= 14 && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: styleRowTop + 6,
-                            left: `${left}%`,
-                            width: `${width}%`,
-                            height: ROW_HEIGHT - 12,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 11,
-                            color: isOriginal ? b.color : "#fff",
-                            fontWeight: 600,
-                            textShadow: isOriginal ? "none" : "0 1px 1px rgba(0,0,0,0.2)",
-                            pointerEvents: "none",
-                          }}
-                        >
-                          {dateLabel}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-                {/* Design Distinctives chips, color-matched to their parent wave */}
-                {styleBlocks
-                  .filter((b) => b.kind === "wave" && b.distinctives.length > 0)
-                  .map((b, bi) => {
-                    const floor = b.date_floor ?? axisMin;
-                    const ceiling = b.date_ceiling ?? axisMax;
-                    const left = clampPct(yearToPct(floor));
-                    const right = clampPct(yearToPct(ceiling));
-                    const width = Math.max(0.5, right - left);
-                    // Show first 2 distinctives as visible chip; full list in tooltip.
-                    const shown = b.distinctives.slice(0, 2);
-                    const more = b.distinctives.length - shown.length;
-                    const chipText = shown.join(" · ") + (more > 0 ? ` +${more}` : "");
-                    return (
-                      <div
-                        key={`distinctive-${bi}`}
-                        style={{
-                          position: "absolute",
-                          top: distinctivesRowTop + 6,
-                          left: `${left}%`,
-                          width: `${width}%`,
-                          height: ROW_HEIGHT - 12,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "0 6px",
-                          boxSizing: "border-box",
-                          pointerEvents: "auto",
-                        }}
-                        title={`Wave-distinguishing design subtleties for ${b.label}: ${b.distinctives.join(", ")}`}
-                      >
-                        <span
-                          style={{
-                            display: "inline-block",
-                            maxWidth: "100%",
-                            padding: "2px 8px",
-                            borderRadius: 10,
-                            background: b.color,
-                            opacity: 0.85,
-                            color: "#fff",
-                            fontSize: 10,
-                            fontWeight: 600,
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {chipText}
-                        </span>
-                      </div>
-                    );
-                  })}
-              </>
+              <div
+                title={`Transitional overlap — ${bestStyleIntersection.source_summary}. This is the date window in which both style vocabularies were in production.`}
+                style={{
+                  position: "absolute",
+                  top: topY,
+                  left: `${left}%`,
+                  width: `${width}%`,
+                  height,
+                  background: TRANSITIONAL_OVERLAP_FILL,
+                  border: `1.5px dashed ${TRANSITIONAL_OVERLAP_BORDER}`,
+                  borderRadius: 3,
+                  pointerEvents: "auto",
+                }}
+              />
             );
           })()}
+
+          {/* Top rows: Style (primary) + Design Distinctives, plus optional
+              partner Style + Design Distinctives rows for transitional pieces. */}
+          {hasPrimaryStyle && renderStyleRowPair(
+            styleBlocks,
+            PLOT_TOP_PADDING,
+            { yearToPct, clampPct, axisMin, axisMax, rowHeight: ROW_HEIGHT, keyPrefix: "primary" }
+          )}
+          {hasPartnerStyle && renderStyleRowPair(
+            partnerStyleBlocks,
+            PLOT_TOP_PADDING + (hasPrimaryStyle ? 2 : 0) * ROW_HEIGHT,
+            { yearToPct, clampPct, axisMin, axisMax, rowHeight: ROW_HEIGHT, keyPrefix: "partner" }
+          )}
 
           {/* Per-layer bands */}
           {layersOrdered.map((l, idx) => {
@@ -1653,7 +1846,9 @@ const p7 = stageOutputs.p7 || null;
                 <DatingOverlapViz
                   data={p6.dating_overlap}
                   styleAttribution={p3?.style_attribution ?? null}
+                  styleAlternatives={p3?.style_alternatives ?? []}
                   styleWaves={p3?.style_waves ?? []}
+                  bestStyleIntersection={p3?.best_style_intersection ?? null}
                 />
               </SectionCard>
             )}

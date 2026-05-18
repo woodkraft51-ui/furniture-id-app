@@ -299,6 +299,57 @@ const GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 8: Transitional Victorian eclectic piece carrying BOTH Rococo
+// Revival vocabulary (serpentine curves, scroll/floral carving, naturalistic
+// motifs) AND Renaissance Revival vocabulary (architectural mass, pediment
+// top, burled panels, incised medallions). Exercises the new
+// engineStyleIntersection logic (May 2026 session): when two style
+// attributions surface with overlapping date envelopes, the intersection
+// (here c. 1860–1870 — the high Rococo Revival 1845-1870 ∩ Renaissance
+// Revival 1860-1885 overlap) is the most likely production window and
+// becomes a confirmation signal rather than a "competing attributions"
+// conflict. Most real Victorian pieces are transitional like this.
+const TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-transitional-rococo-renaissance" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "walnut",
+    user_category_guess: "parlor table",
+    condition_notes:
+      "Mid-Victorian walnut parlor table with serpentine front and scrolled apron; burled walnut panels with incised medallions; small architectural pediment with central rosette; marble top removed; cabriole-like front legs with carved floral/grape clusters at knees",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Mid-Victorian walnut parlor table mixing rococo revival and renaissance revival vocabularies. Serpentine front rail with scrolled apron and floral/grape naturalistic carving at the knees of the cabriole-like front legs (rococo revival vocabulary). Burled walnut panels on the apron framed by incised renaissance medallions and a small architectural pediment with central rosette (renaissance revival vocabulary). Marble top removed (rectangular shadow visible on the carcass top). Walnut throughout the show surfaces; pine secondary. Machine-cut dovetails on the apron joinery. Shellac finish.",
+    },
+    observations: [
+      // Rococo Revival vocabulary — fires rococo_revival_pattern + token "rococo"
+      obs("scroll_carving", "Scrolled apron with bold S-scroll motifs on the front rail", 85),
+      obs("floral_carving", "Carved floral and grape clusters at the knees of the cabriole front legs", 88),
+      obs("serpentine_front", "Pronounced serpentine front rail with curved corner returns", 88),
+      obs("cabriole_leg", "Cabriole-like front legs with carved floral knees, classic rococo revival vocabulary", 82),
+      obs("naturalistic_victorian_carving", "Naturalistic rococo revival carving program — leaves, grapes, scrolls in continuous flow across the apron", 80),
+      // Renaissance Revival vocabulary — token "renaissance" + architectural-mass cues
+      obs("renaissance_revival_pediment", "Small architectural renaissance pediment over center of apron with central carved rosette", 82),
+      obs("burled_walnut_panels", "Burled walnut decorative panels framed by incised renaissance medallions", 85),
+      obs("incised_medallion", "Incised renaissance-style medallion carving framing the burled panels", 80),
+      obs("architectural_mass", "Architectural mass + pediment treatment characteristic of renaissance revival case furniture", 75),
+      obs("marble_top_evidence", "Rectangular shadow on carcass top indicates a removed marble top (renaissance revival convention)", 70),
+      // Construction / material / fasteners — lands in the 1860s-1880s window
+      obs("wood_species_walnut_group", "Walnut throughout the show surfaces; characteristic mid-Victorian primary wood", 90),
+      obs("machine_dovetails", "Machine-cut dovetails on apron drawer joinery", 88),
+      obs("mortise_and_tenon", "Mortise-and-tenon apron-to-leg joinery", 82),
+      obs("cut_nail", "Square tapered cut nails on secondary surfaces", 78),
+      obs("shellac_intact", "Shellac finish appears intact on exposed walnut", 70),
+      obs("drawer_present", "Single apron drawer", 80),
+      obs("secondary_wood_drawer_bottom", "Pine secondary wood on drawer bottom and dust panel", 75),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
@@ -308,6 +359,7 @@ const FIXTURES: Record<string, Fixture> = {
   mcm_plastic_chair: MCM_PLASTIC_CHAIR_FIXTURE,
   colonial_revival_lounge_chair: COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE,
   golden_oak_dresser: GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE,
+  transitional_rococo_renaissance: TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE,
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {
