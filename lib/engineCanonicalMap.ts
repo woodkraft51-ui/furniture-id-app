@@ -863,7 +863,10 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Country hutch": "form_hutch", // subtype_hutch_country_hutch
   "Display hutch": "form_hutch",
   "Cupboard hutch": "form_hutch",
-  "Step-back hutch": "form_hutch", // subtype_hutch_stepback_hutch (boundary form with step-back cupboard when food-storage cupboard function dominates)
+  // Note: "Step-back hutch" intentionally routes to form_step_back_cupboard
+  // (line 1004 below) — step-back geometry is the diagnostic that controls
+  // even when the upper section is glazed/dining-oriented. The hutch
+  // canonical's subtype_hutch_stepback_hutch acknowledges this routing.
   "Open-shelf hutch": "form_hutch", // subtype_hutch_open_shelf_hutch (boundary form with Welsh dresser when British/country-dresser configuration dominates)
   // Note: "China cupboard" intentionally NOT mapped — too ambiguous;
   // can route to form_china_cabinet (existing canonical) or form_hutch
@@ -962,6 +965,79 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // cellarette canonical for separate bar-cabinet canonical if one exists;
   // modern bar cabinets with full cocktail service and barware storage
   // are functionally broader than historic cellarette bottle storage.
+
+  // ───────────────────────────────────────────────────────────────────
+  // Kitchen storage — Item 16 Batch C (Tier B kitchen storage elevations)
+  // ───────────────────────────────────────────────────────────────────
+
+  "Hoosier": "form_hoosier_cabinet",
+  "Hoosier cabinet": "form_hoosier_cabinet",
+  "Hoosier cupboard": "form_hoosier_cabinet",
+  "Kitchen workstation": "form_hoosier_cabinet", // Hoosier is the canonical workstation form
+  "Sellers cabinet": "form_hoosier_cabinet", // subtype_hoosier_cabinet_seller_or_maker_labeled — maker attribution requires label/hardware/catalog match
+  "McDougall cabinet": "form_hoosier_cabinet", // subtype_hoosier_cabinet_seller_or_maker_labeled
+  "Napanee cabinet": "form_hoosier_cabinet", // subtype_hoosier_cabinet_seller_or_maker_labeled
+  "Coppes cabinet": "form_hoosier_cabinet", // subtype_hoosier_cabinet_seller_or_maker_labeled
+  "Boone cabinet": "form_hoosier_cabinet", // subtype_hoosier_cabinet_seller_or_maker_labeled
+  "Flour cabinet": "form_hoosier_cabinet", // flour-bin diagnostic
+  // Note: "Kitchen cabinet" appears in Hoosier aliases but routes to
+  // form_kitchen_cabinet (broader freestanding storage) below; Hoosier
+  // identity requires the workstation diagnostics (flour bin, sifter,
+  // pull-out work surface, accessory fittings). "Baker's cabinet" routes
+  // to form_kitchen_cabinet below (also a kitchen_cabinet alias).
+
+  "Kitchen cabinet": "form_kitchen_cabinet",
+  "Kitchen cupboard": "form_kitchen_cabinet",
+  "Pantry cabinet": "form_kitchen_cabinet", // subtype_kitchen_cabinet_pantry_cabinet
+  "Utility cabinet": "form_kitchen_cabinet", // subtype_kitchen_cabinet_utility_cabinet
+  "Farmhouse cabinet": "form_kitchen_cabinet",
+  "Dry goods cabinet": "form_kitchen_cabinet", // subtype_kitchen_cabinet_pantry_cabinet
+  "Baker's cabinet": "form_kitchen_cabinet", // also listed under Hoosier aliases; routed here as the broader form (Hoosier identity requires specific workstation diagnostics)
+  "Bakers cabinet": "form_kitchen_cabinet",
+  "Painted kitchen cupboard": "form_kitchen_cabinet", // subtype_kitchen_cabinet_enamel_or_painted
+  // Note: "Freestanding cabinet" intentionally NOT mapped — too generic;
+  // could be any freestanding case piece (kitchen cabinet, cupboard,
+  // wardrobe, bookcase). Resolve at scoreForms via kitchen-function
+  // evidence (food-storage compartments, pantry wear, etc.).
+
+  "Step-back cupboard": "form_step_back_cupboard",
+  "Stepback cupboard": "form_step_back_cupboard",
+  "Step back cupboard": "form_step_back_cupboard",
+  "Stepback hutch": "form_step_back_cupboard", // step-back geometry outranks hutch dining-display routing
+  "Step-back hutch": "form_step_back_cupboard", // also appears in form_hutch subtype as boundary form; step-back geometry controls when food-storage cupboard dominates
+  "Two-piece cupboard": "form_step_back_cupboard",
+  "Glazed step-back cupboard": "form_step_back_cupboard", // subtype_step_back_cupboard_glazed
+  // Note: "Country cupboard", "Kitchen cupboard", "Farmhouse cupboard",
+  // "Cupboard hutch" intentionally NOT mapped to step_back_cupboard —
+  // "Kitchen cupboard" routes to form_kitchen_cabinet (above) as the
+  // broader form; the others are too ambiguous (could be step-back,
+  // jelly, jam, kitchen cabinet, or hutch). Resolve at scoreForms via
+  // side-profile setback evidence (the diagnostic geometry).
+
+  "Dough box": "form_dough_box",
+  "Dough trough": "form_dough_box", // subtype_dough_box_trough
+  "Bread trough": "form_dough_box", // subtype_dough_box_trough
+  "Kneading trough": "form_dough_box", // subtype_dough_box_trough
+  "Dough bin": "form_dough_box",
+  "Farmhouse dough box": "form_dough_box",
+  "Primitive dough box": "form_dough_box",
+  // Note: "Bread box" intentionally NOT mapped — modern bread box is a
+  // countertop kitchen accessory, not the historic dough-box furniture
+  // form. Bread-trough variants route via "Bread trough" above; small
+  // tabletop bread containers are out of scope for case-piece routing.
+
+  "Jam cupboard": "form_jam_cupboard",
+  "Preserve cupboard": "form_jam_cupboard", // preserves/jars storage
+  "Jar cupboard": "form_jam_cupboard",
+  // Note: "Jelly cupboard" intentionally NOT remapped — already routes
+  // to form_jelly_cupboard (existing canonical at line 1946+); jam_cupboard
+  // and jelly_cupboard are peer forms with overlapping aliases. The jam
+  // cupboard canonical itself lists "jelly cupboard" as an alias but
+  // notes the existing jelly_cupboard form takes that label per
+  // convention. "Pantry cupboard", "Country cupboard", "Kitchen cupboard",
+  // "Primitive cupboard", "Farmhouse cupboard" intentionally NOT mapped
+  // — too generic; span jam/jelly/kitchen cabinet/step-back/Welsh dresser.
+  // Resolve at scoreForms via open-shelf vs enclosed evidence.
 
   "Stool": "form_stool",
   "Tabouret": "form_stool", // subtype_stool_tabouret
