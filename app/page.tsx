@@ -1605,6 +1605,125 @@ function TipsList({ items }: { items?: string[] }) {
     </ul>
   );
 }
+
+type ValuationShape = {
+  display?: string;
+  sellability_score?: number;
+  sellability_factors?: Array<{ label: string; delta: number; category: string }>;
+  sellability_clamped_note?: string | null;
+  age_factor?: number;
+  market_factor?: number;
+  platform_breakdown?: Record<
+    "dealer_buy" | "quick_sale" | "marketplace" | "as_found_retail" | "restored_retail",
+    { label: string; range: string; note: string }
+  >;
+};
+
+function ResaleValuationSection({ valuation, formLabel }: { valuation?: ValuationShape; formLabel?: string }) {
+  if (!valuation || !valuation.platform_breakdown) {
+    return <div style={emptyText}>No resale valuation was returned.</div>;
+  }
+
+  const breakdown = valuation.platform_breakdown;
+  const laneOrder: Array<keyof typeof breakdown> = ["dealer_buy", "quick_sale", "marketplace", "as_found_retail", "restored_retail"];
+  const score = typeof valuation.sellability_score === "number" ? valuation.sellability_score : null;
+  const factors = Array.isArray(valuation.sellability_factors) ? valuation.sellability_factors : [];
+  const positiveFactors = factors.filter((f) => f.delta > 0);
+  const negativeFactors = factors.filter((f) => f.delta < 0);
+
+  const scoreColor = score == null ? "#6a5845" : score >= 70 ? "#3a7d44" : score >= 45 ? "#9a7d2c" : "#a04a2e";
+  const scoreLabel = score == null ? "—" : score >= 70 ? "Strong" : score >= 45 ? "Moderate" : "Weak";
+
+  return (
+    <div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "baseline", marginBottom: 14 }}>
+        <div>
+          <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Standard marketplace</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: "#3d2d1f", lineHeight: 1.2 }}>{breakdown.marketplace.range}</div>
+        </div>
+        {score != null && (
+          <div style={{ marginLeft: "auto", textAlign: "right" }}>
+            <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Sellability</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: scoreColor, lineHeight: 1.2 }}>
+              {score}/100 <span style={{ fontSize: 13, fontWeight: 500 }}>({scoreLabel})</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div style={{ border: "1px solid #e5d8c2", borderRadius: 10, overflow: "hidden", background: "#fffefb" }}>
+        {laneOrder.map((key, idx) => {
+          const lane = breakdown[key];
+          const isHeadline = key === "marketplace";
+          return (
+            <div
+              key={key}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(140px, 1fr) minmax(110px, 140px) minmax(0, 2fr)",
+                gap: 12,
+                padding: "10px 14px",
+                borderTop: idx === 0 ? "none" : "1px solid #efe4d0",
+                background: isHeadline ? "#fbf3e3" : "transparent",
+                alignItems: "baseline",
+              }}
+            >
+              <div style={{ fontSize: 13, fontWeight: isHeadline ? 700 : 600, color: "#3d2d1f" }}>{lane.label}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#3d2d1f", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{lane.range}</div>
+              <div style={{ fontSize: 12.5, color: "#5c4a37", lineHeight: 1.5 }}>{lane.note}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <details style={{ marginTop: 14, fontSize: 13, color: "#574634" }}>
+        <summary style={{ cursor: "pointer", fontWeight: 600, color: "#5a3e1b", padding: "6px 0" }}>
+          How this was estimated
+        </summary>
+        <div style={{ marginTop: 8, padding: "10px 14px", background: "#fbf6ec", border: "1px solid #e5d8c2", borderRadius: 8, lineHeight: 1.6 }}>
+          <p style={{ margin: "0 0 10px" }}>
+            These ranges are <strong>heuristic estimates</strong>, not based on comparable sales. They are computed from form type, date range, and visible construction / condition signals — not from auction records or marketplace listings.
+          </p>
+          <p style={{ margin: "0 0 10px" }}>
+            Formula: a base price band for{formLabel ? <> a <em>{formLabel.toLowerCase()}</em></> : " the form bucket"} is multiplied by an age factor
+            {typeof valuation.age_factor === "number" ? <> (<strong>{valuation.age_factor.toFixed(2)}×</strong>)</> : null} and a market factor
+            {typeof valuation.market_factor === "number" ? <> (<strong>{valuation.market_factor.toFixed(2)}×</strong>)</> : null} derived from the sellability score. Lane ratios then split the result into Dealer Buy through Restored Retail.
+          </p>
+          {(positiveFactors.length > 0 || negativeFactors.length > 0) && (
+            <div style={{ marginTop: 10 }}>
+              <div style={{ fontWeight: 700, color: "#3d2d1f", marginBottom: 6 }}>Factors driving the sellability score on this piece:</div>
+              {positiveFactors.length > 0 && (
+                <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
+                  {positiveFactors.map((f, i) => (
+                    <li key={`p${i}`} style={{ color: "#3a7d44" }}>
+                      <strong style={{ fontVariantNumeric: "tabular-nums" }}>+{f.delta}</strong> <span style={{ color: "#3d2d1f" }}>{f.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {negativeFactors.length > 0 && (
+                <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
+                  {negativeFactors.map((f, i) => (
+                    <li key={`n${i}`} style={{ color: "#a04a2e" }}>
+                      <strong style={{ fontVariantNumeric: "tabular-nums" }}>{f.delta}</strong> <span style={{ color: "#3d2d1f" }}>{f.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {valuation.sellability_clamped_note && (
+                <div style={{ fontSize: 12, color: "#6a5845", fontStyle: "italic", marginTop: 4 }}>{valuation.sellability_clamped_note}</div>
+              )}
+            </div>
+          )}
+          <p style={{ margin: "10px 0 0", fontSize: 12, color: "#6a5845", fontStyle: "italic" }}>
+            Treat these as orientation, not appraisal. Real market comparables for the specific piece should override these estimates when available.
+          </p>
+        </div>
+      </details>
+    </div>
+  );
+}
+
 export default function Page() {
   const [coreImages, setCoreImages] = useState<CoreImageMap>({ overall_front: null, overall_side: null, underside: null, back: null, label_makers_mark: null });
   const [groupImages, setGroupImages] = useState<GroupImageMap>({ hardware: [], construction: [] });
@@ -2183,6 +2302,9 @@ const p7 = stageOutputs.p7 || null;
               </SectionCard>
             )}
             <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>{evidenceMeaning(item)}</div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
+            <SectionCard title="Resale Valuation">
+              <ResaleValuationSection valuation={p6?.valuation as ValuationShape | undefined} formLabel={p3?.display_form || p3?.form} />
+            </SectionCard>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Supported Findings">{p6?.supported_findings?.length ? <ul style={listStyle}>{p6.supported_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No supported findings were returned.</div>}</SectionCard>
               <SectionCard title="Cautions and Conflicts">{p6?.tentative_findings?.length ? <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>

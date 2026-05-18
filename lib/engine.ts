@@ -4055,70 +4055,79 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
 
   // Sellability score: market reality, not theoretical appraisal value
   let sellability = 50;
+  const factors: Array<{ label: string; delta: number; category: "material" | "construction" | "form" | "condition" | "style" }> = [];
+  const bump = (label: string, delta: number, category: "material" | "construction" | "form" | "condition" | "style") => {
+    sellability += delta;
+    factors.push({ label, delta, category });
+  };
 
   // Non-wood material adjustments
   if (has("molded_plastic", "acrylic_clear")) {
     low = Math.max(low, 30);
     high = Math.min(high, 300);
-    sellability += 5;
+    bump("Molded plastic or acrylic construction", 5, "material");
   }
 
   if (has("laminate_surface", "formica_surface", "chrome_and_laminate")) {
     low = Math.max(low, 60);
     high = Math.min(high, 450);
-    sellability += 8;
+    bump("Laminate or Formica surface (mid-century appeal)", 8, "material");
   }
 
   if (has("woven_body", "rattan_frame")) {
     low = Math.max(low, 75);
     high = Math.min(high, 500);
-    sellability += 10;
+    bump("Woven body or rattan frame", 10, "material");
   }
 
   if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
     low = Math.max(low, 75);
     high = Math.min(high, 600);
-    sellability += 6;
+    bump("Upholstered construction", 6, "material");
   }
 
   if (has("metal_frame", "wrought_iron", "cast_iron", "brass_frame")) {
     low = Math.max(low, 50);
     high = Math.min(high, 400);
-    sellability += 6;
+    bump("Metal frame (wrought iron, cast iron, or brass)", 6, "material");
   }
 
   if (has("tubular_steel", "chrome_frame")) {
     low = Math.max(low, 120);
     high = Math.max(high, 900);
-    sellability += 12;
+    bump("Tubular steel or chrome frame (modernist appeal)", 12, "material");
   }
 
   if (has("glass_top")) {
-    sellability += 2;
+    bump("Glass top", 2, "material");
   }
 
   if (has("laminate_surface") && has("molded_plastic")) {
-    sellability -= 5;
+    bump("Mixed budget materials (laminate + plastic)", -5, "material");
   }
 
   // Positive signals
-  if (has("solid_wood_construction")) sellability += 5;
-  if (has("solid_plank_back")) sellability += 5;
-  if (has("frame_and_panel_sides")) sellability += 4;
-  if (has("solid_wood_drawer_construction")) sellability += 4;
-  if (has("maker_label", "roos_label", "lane_label")) sellability += 8;
-  if (textHas("empire", "jacobean", "mission", "arts and crafts", "queen anne")) sellability += 4;
-  if (textHas("unusual", "scarce", "rare", "highboy", "telephone")) sellability += 5;
+  if (has("solid_wood_construction")) bump("Solid wood construction", 5, "construction");
+  if (has("solid_plank_back")) bump("Solid plank back panel", 5, "construction");
+  if (has("frame_and_panel_sides")) bump("Frame-and-panel side construction", 4, "construction");
+  if (has("solid_wood_drawer_construction")) bump("Solid wood drawer construction", 4, "construction");
+  if (has("maker_label", "roos_label", "lane_label")) bump("Maker label or branded mark present", 8, "construction");
+  if (textHas("empire", "jacobean", "mission", "arts and crafts", "queen anne")) bump("Collectible style vocabulary (Empire / Jacobean / Mission / Arts & Crafts / Queen Anne)", 4, "style");
+  if (textHas("unusual", "scarce", "rare", "highboy", "telephone")) bump("Unusual or scarce form noted", 5, "style");
 
   // Market dampeners
-  if (f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) sellability -= 8;
-  if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) sellability -= 12;
-  if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) sellability -= 8;
-  if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) sellability -= 15;
-  if (has("possible_plywood_or_laminated_panel")) sellability -= 8;
-  if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) sellability -= 5;
+  if (f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) bump("Dresser / chest of drawers (oversupplied category)", -8, "form");
+  if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) bump("Finish loss, water staining, or white haze", -12, "condition");
+  if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) bump("Surface scratches or top damage", -8, "condition");
+  if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) bump("Missing / broken / loose parts or veneer loss", -15, "condition");
+  if (has("possible_plywood_or_laminated_panel")) bump("Possible plywood or laminated panel construction", -8, "construction");
+  if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) bump("No diagnostic joinery or fastener evidence", -5, "construction");
 
+  const sellabilityRaw = sellability;
   sellability = clamp(sellability, 20, 90);
+  const clampedNote = sellability !== sellabilityRaw
+    ? (sellabilityRaw > 90 ? "Clamped at 90 (ceiling)" : "Clamped at 20 (floor)")
+    : null;
 
   // Convert sellability into value pressure
   const marketFactor = 0.65 + sellability / 140;
@@ -4149,6 +4158,10 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
       Math.round(finalHigh * 1.85),
     ],
     sellability_score: sellability,
+    sellability_factors: factors,
+    sellability_clamped_note: clampedNote,
+    age_factor: ageFactor,
+    market_factor: marketFactor,
   };
 }
 
@@ -5575,9 +5588,9 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
       ...(form.style_supporting_evidence && form.style_supporting_evidence.length > 0
         ? [`Supporting ${form.style_context ?? "style"} attribution: ${form.style_supporting_evidence.map((s) => s.display_label).join(", ")} (these features are characteristic of the style but don't independently narrow dating).`]
         : []),
-      `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
-      `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
-      `Sellability score: ${vb.sellability_score}/100.`,
+      // Resale lane / valuation breakdown / sellability score now render in
+      // the dedicated Resale Valuation section in app/page.tsx (full_analysis
+      // mode); removed from supported_findings to avoid visual duplication.
     ],
     tentative_findings: [
       ...(conflict.conflicts || []),
