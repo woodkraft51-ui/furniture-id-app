@@ -498,6 +498,49 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // cues. A future form_bistro_table or form_cafe_table canonical would absorb
   // these labels.
   "Work table": "form_work_table", // bare alias routes to the broader work/task table canonical (subtype_kitchen_table_work cross-references this for kitchen-context overlap)
+  "Occasional table": "form_occasional_table",
+  "Accent table": "form_occasional_table", // subtype_occasional_accent
+  "Drink table": "form_occasional_table", // subtype_occasional_martini boundary; no form_drink_table canonical yet
+  "Martini table": "form_occasional_table", // subtype_occasional_martini
+  "Decorative table": "form_occasional_table",
+  "Occasional stand": "form_occasional_table",
+  "Accent stand": "form_occasional_table",
+  "Display table": "form_occasional_table",
+  "Display stand": "form_occasional_table",
+  "Corner table": "form_occasional_table",
+  "Sculptural table": "form_occasional_table",
+  "Novelty table": "form_occasional_table", // subtype_occasional_novelty
+  "Cocktail table": "form_cocktail_table",
+  "Glass cocktail table": "form_cocktail_table", // subtype_cocktail_glass (c. 1930+)
+  "Brass cocktail table": "form_cocktail_table",
+  "Chrome cocktail table": "form_cocktail_table",
+  "Lucite cocktail table": "form_cocktail_table",
+  "Acrylic cocktail table": "form_cocktail_table",
+  "Tray-top cocktail table": "form_cocktail_table", // subtype_cocktail_tray_top
+  "Storage cocktail table": "form_cocktail_table", // subtype_cocktail_storage
+  "Lift-top cocktail table": "form_cocktail_table", // subtype_cocktail_storage (post-1990 strong consumer marker)
+  "Round cocktail table": "form_cocktail_table", // subtype_cocktail_round
+  "Oval cocktail table": "form_cocktail_table", // subtype_cocktail_oval
+  "Square cocktail table": "form_cocktail_table", // subtype_cocktail_square
+  "Hollywood Regency cocktail table": "form_cocktail_table",
+  "MCM cocktail table": "form_cocktail_table", // subtype_cocktail_modern_sculptural
+  "Modern cocktail table": "form_cocktail_table", // subtype_cocktail_modern_sculptural
+  "Lounge table": "form_cocktail_table", // low seating-zone table identity dominates
+  // Note: bare aliases "Side table", "End table", "Coffee table", "Pedestal
+  // table", "Nesting table", "Nest of tables", "Tray table", "Center table",
+  // "Console table", "Sofa table", "Tea table", "Small table", "Low table",
+  // "Living room table", "Folding table", "Tiered table", "Tiered stand",
+  // "Pedestal stand" intentionally NOT mapped here. Per appraiser cousin
+  // contrasts, these labels belong to their named parent canonicals
+  // (form_side_table, form_coffee_table, form_pedestal_table,
+  // form_nesting_tables, form_tray_table, form_center_table,
+  // form_console_table, form_sofa_table, form_tea_table, form_etagere_table)
+  // when those canonicals have engine-label routes. Pre-existing gap:
+  // those canonicals exist in forms.ts but have NO engine-label routes yet
+  // — separate cleanup commit needed. New form_occasional_table /
+  // form_cocktail_table activate via the unique aliases above and via
+  // scoreForms structural cues; bare-alias routing to the parent canonicals
+  // remains the responsibility of the pending cleanup commit.
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
