@@ -218,7 +218,7 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // but had no engine-label routes here. Surfaced during Tier A
   // form_occasional_table / form_cocktail_table integration (9aae961).
   "Drop-leaf table": "form_drop_leaf_table",
-  "Gateleg table": "form_drop_leaf_table", // gateleg is a drop-leaf subtype; if pedestal-cluster elevation lands (parking-lot #6), this routes to a future form_gateleg_table
+  "Gateleg table": "form_gateleg_table", // remapped from form_drop_leaf_table per #6 elevation (commit lands with drum/gateleg pair); subtype within form_drop_leaf_table remains as cross-reference
   "Extension table": "form_extension_table",
   "Dining table": "form_dining_table",
   "Dining room table": "form_dining_table",
@@ -295,6 +295,45 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // alone. Tilt-top revival examples activate via "Tilt-top table" or
   // "Colonial Revival tilt-top table" if the latter is used.
   "Colonial Revival tea table": "form_piecrust_table",
+  "Drum table": "form_drum_table",
+  "Library drum table": "form_drum_table", // subtype_drum_library
+  "Round drum table": "form_drum_table",
+  "Round pedestal table": "form_drum_table", // drum-shaped pedestal table; bare "Pedestal table" still routes to form_pedestal_table
+  "Regency drum table": "form_drum_table", // subtype_drum_regency
+  "Empire drum table": "form_drum_table", // subtype_drum_empire
+  "Leather-top table": "form_drum_table", // subtype_drum_leather_top (boundary form; routes here when drum body is present)
+  "Leather top drum table": "form_drum_table", // subtype_drum_leather_top
+  "Leather-topped drum table": "form_drum_table",
+  "Center drum table": "form_drum_table", // subtype_drum_center
+  "Drum side table": "form_drum_table", // subtype_drum_side_lamp
+  "Side drum table": "form_drum_table",
+  "Occasional drum table": "form_drum_table", // subtype_drum_occasional
+  "Pedestal drum table": "form_drum_table",
+  "Round library table": "form_drum_table", // round library table identity overlaps drum and library; drum structure dominates
+  "Circular library table": "form_drum_table",
+  "Drawer drum table": "form_drum_table", // subtype_drum_storage
+  "Storage drum table": "form_drum_table", // subtype_drum_storage
+  // Note: "Lamp table" intentionally NOT mapped to form_drum_table —
+  // bare alias is too ambiguous between drum-shaped lamp tables, side
+  // tables with lamps, and lamp-specific tables; resolves at scoreForms.
+  // "Center table" stays routed to form_center_table; drum-center
+  // examples activate via "Center drum table" alias above.
+  "Gate-leg table": "form_gateleg_table",
+  "Gate leg table": "form_gateleg_table",
+  "Drop-leaf gateleg": "form_gateleg_table",
+  "Gateleg drop-leaf table": "form_gateleg_table",
+  "Colonial gateleg": "form_gateleg_table",
+  "Colonial Revival gateleg": "form_gateleg_table", // subtype_gateleg_colonial_revival
+  "Barley-twist table": "form_gateleg_table", // subtype_gateleg_barley_twist
+  "Barley-twist gateleg": "form_gateleg_table", // subtype_gateleg_barley_twist
+  "William and Mary gateleg": "form_gateleg_table", // subtype_gateleg_william_and_mary
+  "Folding dining table": "form_gateleg_table", // per user authoring; gateleg is the dominant folding-dining-table form
+  "Drop-side dining table": "form_gateleg_table",
+  "Drop-leaf dining table": "form_gateleg_table", // gateleg-specific dining variant
+  "Small gateleg table": "form_gateleg_table", // subtype_gateleg_small
+  "Kitchen gateleg table": "form_gateleg_table", // subtype_gateleg_kitchen
+  "Breakfast gateleg table": "form_gateleg_table", // subtype_gateleg_breakfast
+  "English gateleg table": "form_gateleg_table",
   // Note: "Tea table", "Tripod table", "Pedestal table", "Candle stand",
   // "Candle table", "Occasional table", "Parlor table" intentionally NOT
   // remapped here — they retain their existing routes to form_tea_table,
