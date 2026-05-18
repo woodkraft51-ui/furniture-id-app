@@ -234,7 +234,14 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Toledo-style mid-century industrial task chair": NO_MATCH, // form_office_chair / form_task_chair not yet authored
   "Renaissance Revival upholstered armchair": "form_armchair",
   "Mission / Arts & Crafts furniture": NO_MATCH, // style-as-form; resolves in Block 2
-  "Mid-century modern spindle-back lounge chair": NO_MATCH, // form_lounge_chair not yet authored
+  "Mid-century modern spindle-back lounge chair": "form_lounge_chair",
+  "Lounge chair": "form_lounge_chair",
+  "Club chair": "form_lounge_chair", // subtype_lounge_club within form_lounge_chair
+  "Tub chair": "form_lounge_chair", // subtype_lounge_tub within form_lounge_chair
+  "Barrel chair": "form_lounge_chair", // subtype_lounge_barrel within form_lounge_chair
+  "Bergère chair": "form_lounge_chair", // subtype_lounge_bergere within form_lounge_chair
+  "Easy chair": "form_lounge_chair", // subtype_lounge_easy within form_lounge_chair
+  "Recliner": "form_lounge_chair", // subtype_lounge_recliner within form_lounge_chair
   "Colonial / Georgian Revival upholstered armchair": "form_armchair",
   "Upholstered armchair": "form_armchair",
   "Bench / seating furniture": NO_MATCH, // form_bench not yet authored

@@ -4955,6 +4955,123 @@ export const FORMS: FormEntry[] = [
       "Armchairs often mark hierarchical status within dining or parlor suites (head/foot armchairs paired with side chairs). Upholstered examples require separating frame date from upholstery date because upholstery is commonly replaced. \"Captain's chair,\" \"host chair,\" \"library chair,\" and \"easy chair\" are often use or retail terms rather than strict form names — the arms-presence structural identity controls canonical classification regardless of common-alias usage. Outdoor-use evidence should be treated as a material and wear layer, not as a separate armchair form unless the structure is truly Adirondack, glider, or another distinct outdoor canonical form.",
   },
   {
+    id: "form_lounge_chair",
+    category: "form",
+    name: "lounge chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    date_floor: 1700,
+    positive_authority: 8,
+    hard_negative_authority: 8,
+    notes:
+      "Per appraiser authoring 2026-05-17. Lounge chair earns its own canonical entry rather than being an armchair subtype because the defining identity is postural: deeper seat, lower seat height, and more reclined back. Arm presence is incidental; many lounge chairs have arms, but the form is defined by relaxed posture rather than by arm construction. Cousin form to form_armchair: armchair is arm-based, lounge chair is posture-based. Canonical production span opens broadly c. 1700 and continues to the present, with major American production strength after c. 1900 and again during the mid-century modern period. Diagnostic identity rests on 8 canonical distinguishing features and 7 documented subtypes.",
+    migration_status: "complete",
+    distinguishing_features: [
+      "Single-person upholstered seating with posture-based identity: deeper seat, lower seat height, and more reclined back than a standard armchair",
+      "Seat depth typically 20-28 inches, compared to armchair's common 18-24 inches",
+      "Seat height typically 14-18 inches, compared to armchair's common 16-19 inches",
+      "Back angle typically 100-115 degrees from seat plane, more reclined than the standard upright armchair range of roughly 95-110 degrees",
+      "Arms may be present or absent; when present, often integrated with the back or sides as continuous upholstery rather than as discrete arm-rests",
+      "Designed for extended sitting, reading, conversation, lounging, or relaxed reclining; not primarily for upright dining, desk, sewing, vanity, or task posture",
+      "Usually fully upholstered, with the structural frame often concealed, but may have an exposed wood, metal, molded plywood, cane, or rattan frame in Bergère, French Revival, Arts and Crafts, wicker, or mid-century examples",
+      "Commonly found in parlors, sitting rooms, living rooms, libraries, dens, lounges, hotel lobbies, clubs, and reception spaces; not normally paired with dining tables, writing desks, or work tables",
+    ],
+    subtypes: [
+      {
+        id: "subtype_lounge_club",
+        name: "Club chair",
+        distinguishing_attributes: [
+          "Deep, low, fully-upholstered lounge chair with substantial arms and squared, rounded, or rolled silhouette. Arms are usually visually continuous with the upholstered back and body. Commonly leather-upholstered or heavy-fabric upholstered, with gentleman's-library, hotel-lobby, smoking-room, or club vocabulary. Most strongly associated with c. 1900-1940 production, with continuing revival and reproduction thereafter.",
+        ],
+      },
+      {
+        id: "subtype_lounge_tub",
+        name: "Tub chair",
+        distinguishing_attributes: [
+          "Lounge chair with a curved barrel, tub, or cylindrical back rail that wraps continuously from one arm around through the back to the other arm. The back may be fully upholstered, exposed wood, cane-paneled, or framed with an upholstered interior. Strong Regency and nineteenth-century precedent, with especially common twentieth-century Colonial Revival, Art Deco, Hollywood Regency, and modern production.",
+        ],
+      },
+      {
+        id: "subtype_lounge_barrel",
+        name: "Barrel chair",
+        distinguishing_attributes: [
+          "Variant of tub chair with a pronounced barrel-stave, rounded, or semi-cylindrical body and a very deep curved back. Often reads as heavier and more enclosed than a general tub chair. Common in American Colonial Revival, Art Deco, mid-century, and postwar living-room production, with especially common c. 1920-1960 examples.",
+        ],
+      },
+      {
+        id: "subtype_lounge_bergere",
+        name: "Bergère lounge chair",
+        distinguishing_attributes: [
+          "French-origin or French-Revival lounge chair with exposed carved wood frame surrounding an upholstered seat, upholstered back, and inset upholstered arm panels. Usually has loose or semi-loose seat cushion and open visual separation between frame and upholstery. Original French Louis XV and Louis XVI precedents, with American and European revivals through Colonial Revival, French Provincial, Hollywood Regency, and late traditional production.",
+        ],
+      },
+      {
+        id: "subtype_lounge_easy",
+        name: "Easy chair",
+        distinguishing_attributes: [
+          "Traditional comfortable lounge chair, usually fully upholstered and usually with arms. 'Easy' refers to relaxed sitting posture rather than a specific construction system. It overlaps with armchair as a common retail term, but canonical placement belongs here when the diagnostic features are deeper seat, lower seat height, and relaxed back pitch rather than upright arm-based seating.",
+        ],
+      },
+      {
+        id: "subtype_lounge_modern",
+        name: "Mid-century / modern lounge chair",
+        distinguishing_attributes: [
+          "Post-1940 lounge chair with modernist construction or silhouette: molded plywood shell, tubular steel, fiberglass, aluminum, sling upholstery, bentwood, Scandinavian teak or walnut frame, low-slung profile, exposed structural frame, or separate ottoman pairing. Eames, Saarinen, Wegner, Jacobsen, Pollock, Plycraft, and similar designer or designer-influenced attribution may be relevant, but designer attribution requires direct evidence.",
+        ],
+      },
+      {
+        id: "subtype_lounge_recliner",
+        name: "Mechanical recliner",
+        distinguishing_attributes: [
+          "Lounge chair with mechanical reclining mechanism, such as footrest extension, back-pitch adjustment, lever release, push-back action, swivel base, rocker-recliner base, or electric reclining motor. Post-1928 La-Z-Boy origin is an important dating anchor for American recliner logic, with broad mass-market production continuing to the present. Mechanism is the defining subtype feature.",
+        ],
+      },
+    ],
+    cousin_form_contrasts: [
+      "Vs armchair: armchair is arm-based, meaning arms are the defining structural feature; lounge chair is posture-based, meaning deeper seat, lower seat height, and more reclined back are defining. A piece can have arms and still not be a lounge chair if the posture is upright.",
+      "Vs wing chair: wing chair has structural side wings extending forward from the upper back. Lounge chair may or may not have a reclined posture, but wings are not its defining feature. Wing chairs remain a separate canonical form under the wing-as-structural-feature decision.",
+      "Vs side chair: side chair has no arms and normally has an upright posture for dining, writing, or occasional seating. Lounge chair may have arms or no arms, but must have relaxed lounge posture.",
+      "Vs slipper chair: slipper chair is armless, low-seated, and often bedroom or dressing-room related. It may overlap visually with lounge posture, but slipper chair is defined by armless low form and dressing or occasional use; lounge chair is defined by deeper relaxed seating and broader lounge function.",
+      "Vs sofa / settee: sofa and settee seat 2+ persons; lounge chair seats 1 person.",
+      "Vs chaise lounge: chaise lounge has an integrated extended leg-support surface; lounge chair has only the chair seat. A lounge chair may be paired with an ottoman, but a separate ottoman does not convert it into a chaise lounge.",
+      "Vs telephone bench: telephone bench has a secondary surface for telephone, writing, or storage and is typically upright-posture small-scale seating. Lounge chair has no integrated secondary work surface and has reclined-posture large-scale seating. A secondary_surface observation should be treated as a red flag against lounge chair identification, not as evidence for telephone bench when the other lounge cues are present.",
+      "Vs desk chair: desk chair is task-positioned and may swivel, roll, or tuck under a desk. Lounge chair is domestic, relaxed, and not designed primarily for desk-height work.",
+      "Vs glider / rocker: glider and rocker are defined by motion mechanism in the base. Lounge chair base is static unless the piece is specifically a rocker-recliner or glider-recliner subtype, in which case motion mechanism should be recorded separately from lounge-chair posture.",
+    ],
+    dimensional_thresholds: {
+      width_min: 24,
+      width_max: 42,
+      height_min: 28,
+      height_max: 42,
+      depth_min: 28,
+      depth_max: 42,
+      weight_min: 25,
+      weight_max: 150,
+      notes:
+        "Seat height typically 14-18 inches, lower than armchair's common 16-19 inches. Seat depth typically 20-28 inches, deeper than armchair's common 18-24 inches. Back angle typically 100-115 degrees from seat plane. Fully-upholstered examples with hardwood frames, coil springs, dense padding, reclining hardware, or overbuilt twentieth-century frames may exceed 150 pounds. Lightweight modern designer lounge chairs using molded plywood, tubular steel, aluminum, sling construction, or minimal upholstery may fall in the 25-40 pound range. Large overstuffed recliners may exceed the normal width, depth, and weight ranges and should be evaluated under subtype_lounge_recliner rather than rejected automatically.",
+    },
+    common_aliases: [
+      "Easy chair",
+      "Club chair",
+      "Tub chair",
+      "Barrel chair",
+      "Reading chair",
+      "Library chair",
+      "Parlor chair",
+      "Occasional chair",
+      "Lounge armchair",
+      "Overstuffed chair",
+      "Comfy chair",
+      "Reclining chair",
+      "Recliner",
+      "Bergère",
+      "Slipper lounge chair",
+    ],
+    regional_period_notes:
+      "Lounge chairs span 300+ years of furniture history, but the modern fully-upholstered American lounge chair is most associated with c. 1900-1940 Edwardian, Colonial Revival, Arts and Crafts, club chair, and hotel or library seating production, and with c. 1945-1970 mid-century modern designer and designer-influenced production. Earlier lounge-chair logic may appear in French Bergère, easy chair, fireside chair, reading chair, and elite parlor seating precedents, but American mass-market lounge-chair identity becomes much stronger after the rise of fully upholstered domestic seating. Upholstered examples require separating frame date from upholstery date because upholstery, springs, padding, cushions, and dust covers are commonly replaced. Watch for: (a) a secondary_surface observation on a clearly-upholstered lounge form usually indicates LLM mis-perception of a separate object in the image, not a telephone-bench identification; (b) shallow-seat or upright-back examples should be re-routed to form_armchair, form_side_chair, form_parlor_chair, or form_desk_chair depending on arm presence and use posture; (c) mechanical reclining mechanisms are post-1928 dating anchors and define the recliner subtype; (d) exposed-frame modern examples should not be rejected merely because they are not fully upholstered; posture and seat geometry remain controlling.",
+  },
+  {
     id: "form_bar_chair",
     category: "form",
     name: "bar chair",
