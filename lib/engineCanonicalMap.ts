@@ -213,11 +213,54 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Louis XVI Revival cylinder desk (bureau à cylindre)": "form_cylinder_desk",
   "Cylinder roll-top desk": "form_cylinder_desk",
 
-  // Tables
+  // Tables — comprehensive bare-alias routes for existing canonicals.
+  // Previously a pre-existing gap: ~16 table canonicals existed in forms.ts
+  // but had no engine-label routes here. Surfaced during Tier A
+  // form_occasional_table / form_cocktail_table integration (9aae961).
   "Drop-leaf table": "form_drop_leaf_table",
-  "Gateleg table": NO_MATCH, // canonical form not authored at table level
+  "Gateleg table": "form_drop_leaf_table", // gateleg is a drop-leaf subtype; if pedestal-cluster elevation lands (parking-lot #6), this routes to a future form_gateleg_table
   "Extension table": "form_extension_table",
-  "Pedestal stand": NO_MATCH, // canonical form not authored
+  "Dining table": "form_dining_table",
+  "Dining room table": "form_dining_table",
+  "Side table": "form_side_table",
+  "End table": "form_side_table",
+  "Coffee table": "form_coffee_table",
+  "Tea table": "form_tea_table",
+  "Center table": "form_center_table",
+  "Parlor table": "form_center_table",
+  "Console table": "form_console_table",
+  "Console": "form_console_table",
+  "Hall console": "form_console_table",
+  "Sofa table": "form_sofa_table",
+  "Pedestal table": "form_pedestal_table",
+  "Pier table": "form_pier_table",
+  "Pub table": "form_pub_table",
+  "Tavern table": "form_pub_table",
+  "Library table": "form_library_table",
+  "Writing table": "form_writing_table",
+  "Drafting table": "form_drafting_table",
+  "Architect's table": "form_drafting_table",
+  "Sewing table": "form_sewing_table",
+  "Dressing table": "form_dressing_table",
+  "Vanity table": "form_dressing_table",
+  "Game table": "form_game_table",
+  "Card table": "form_game_table", // card table is a game-table subtype
+  "Gaming table": "form_game_table",
+  "Nesting table": "form_nesting_tables",
+  "Nesting tables": "form_nesting_tables",
+  "Nest of tables": "form_nesting_tables",
+  "Tray table": "form_tray_table",
+  "TV tray": "form_tray_table",
+  "Folding tray": "form_tray_table",
+  "Etagere table": "form_etagere_table",
+  "Étagère table": "form_etagere_table",
+  "Etagere": "form_etagere_table",
+  "Étagère": "form_etagere_table",
+  "Tier table": "form_etagere_table",
+  "Tiered display table": "form_etagere_table",
+  "Ottoman table": "form_ottoman_table",
+  "Lowboy": "form_lowboy",
+  "Pedestal stand": NO_MATCH, // intentionally generic; resolves at scoreForms via pedestal-table vs plant-stand vs candle-stand structural cues
 
   // Case furniture
   "Chest of drawers / dresser": "form_chest_of_drawers",
@@ -528,19 +571,13 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Lounge table": "form_cocktail_table", // low seating-zone table identity dominates
   // Note: bare aliases "Side table", "End table", "Coffee table", "Pedestal
   // table", "Nesting table", "Nest of tables", "Tray table", "Center table",
-  // "Console table", "Sofa table", "Tea table", "Small table", "Low table",
-  // "Living room table", "Folding table", "Tiered table", "Tiered stand",
-  // "Pedestal stand" intentionally NOT mapped here. Per appraiser cousin
-  // contrasts, these labels belong to their named parent canonicals
-  // (form_side_table, form_coffee_table, form_pedestal_table,
-  // form_nesting_tables, form_tray_table, form_center_table,
-  // form_console_table, form_sofa_table, form_tea_table, form_etagere_table)
-  // when those canonicals have engine-label routes. Pre-existing gap:
-  // those canonicals exist in forms.ts but have NO engine-label routes yet
-  // — separate cleanup commit needed. New form_occasional_table /
-  // form_cocktail_table activate via the unique aliases above and via
-  // scoreForms structural cues; bare-alias routing to the parent canonicals
-  // remains the responsibility of the pending cleanup commit.
+  // "Console table", "Sofa table", "Tea table" route to their named parent
+  // canonicals in the Tables section above (form_side_table, form_coffee_table,
+  // etc.). form_occasional_table and form_cocktail_table activate via the
+  // unique aliases above and via scoreForms structural cues when the more
+  // specific parent canonicals don't match. "Small table", "Low table",
+  // "Living room table", "Folding table", "Tiered table", "Tiered stand"
+  // remain intentionally unmapped — too generic; resolve at scoreForms.
   "Upholstered seating": NO_MATCH, // too generic
 
   // Material-anchored (catch-all forms — no canonical 1:1)
