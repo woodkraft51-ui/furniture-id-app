@@ -130,14 +130,52 @@ export function reconcileFinalStyle(input: {
   } = input;
 
   // Rule 1: Named transitional period takes precedence (highest-resolution
-  // appraiser-voice identification available).
+  // appraiser-voice identification available) — BUT only when the named
+  // period's date range actually overlaps the final dating envelope.
+  //
+  // Without this guard, Rule 1 was firing too eagerly during stress-test:
+  // a piece whose style VOCABULARY matched a named transitional window
+  // (e.g., "William and Mary to Queen Anne Transition", 1690–1730, or
+  // "Rococo to Renaissance Revival Transition", c. 1860–1875) was being
+  // labeled as that ORIGINAL transitional period even when the
+  // construction evidence + revival-wave evidence pointed at a
+  // 19th-c-or-later REVIVAL. Result: a Victorian-revival slant-front
+  // desk dated 1920–1930 got the name "William and Mary to Queen Anne
+  // Transition" — implying 1690–1730. Same pattern hit a Victorian shelf
+  // clock that picked up "Rococo to Renaissance Revival Transition" but
+  // was actually c. 1875–1895 Eastlake.
+  //
+  // The fix: require the named transitional period's date range to
+  // overlap the final dating envelope before applying the named-period
+  // label. If it doesn't overlap, fall through to Rule 3 (revival wave
+  // matching) or Rule 5 (reproduction framing) so the report's style
+  // label honestly reflects what the dating actually supports.
   if (bestIntersection?.named_transitional_period) {
-    return {
-      final_style_label: bestIntersection.named_transitional_period.name,
-      kind: "named_transitional",
-      final_style_reason: `Two style vocabularies (${bestIntersection.participants.join(" + ")}) co-occur in the documented ${bestIntersection.named_transitional_period.name} window.`,
-      source_id: bestIntersection.named_transitional_period.id,
-    };
+    const ntp = bestIntersection.named_transitional_period;
+    const ntpFloor =
+      ntp.period_associations && ntp.period_associations[0]
+        ? ntp.period_associations[0].date_floor ?? null
+        : null;
+    const ntpCeiling =
+      ntp.period_associations && ntp.period_associations[0]
+        ? ntp.period_associations[0].date_ceiling ?? null
+        : null;
+    const ntpOverlapsFinalDating =
+      finalDatingFloor == null ||
+      finalDatingCeiling == null ||
+      rangesOverlap(ntpFloor, ntpCeiling, finalDatingFloor, finalDatingCeiling);
+    if (ntpOverlapsFinalDating) {
+      return {
+        final_style_label: ntp.name,
+        kind: "named_transitional",
+        final_style_reason: `Two style vocabularies (${bestIntersection.participants.join(" + ")}) co-occur in the documented ${ntp.name} window.`,
+        source_id: ntp.id,
+      };
+    }
+    // Otherwise fall through. The piece carries the named period's
+    // vocabulary but its dating doesn't fall within that window —
+    // almost certainly a revival of the named transitional style
+    // rather than the original transitional production.
   }
 
   // Rule 2: Impossible-pair detection (handled by p5 via
