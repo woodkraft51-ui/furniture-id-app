@@ -231,72 +231,96 @@ function FieldScanIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Field Scan icon: a chair silhouette inside camera viewfinder focus brackets."
+      aria-label="Field Scan icon: an antique chair silhouette inside rounded viewfinder focus brackets, with a scanning reticle centered on a gold seat."
     >
-      {/* Viewfinder focus brackets — gold */}
-      <path
-        d="M 10 22 L 10 10 L 22 10"
-        stroke={GOLD}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M 74 10 L 86 10 L 86 22"
-        stroke={GOLD}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M 86 74 L 86 86 L 74 86"
-        stroke={GOLD}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M 22 86 L 10 86 L 10 74"
-        stroke={GOLD}
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {/* Filter: subtle gold-tinted drop shadow under the chair body.
+          Gold tint (rather than gray) keeps the shadow inside the brand
+          palette and reads as warm rather than clinical. Low opacity +
+          small spread = barely-noticed dimensionality. */}
+      <defs>
+        <filter id="fsSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow
+            dx="0"
+            dy="1.5"
+            stdDeviation="1.5"
+            floodColor={GOLD}
+            floodOpacity="0.30"
+          />
+        </filter>
+      </defs>
 
-      {/* Chair silhouette — navy line art */}
-      {/* Back posts and crest rail */}
+      {/* Viewfinder focus brackets — gold, bolder strokes, ROUNDED corners
+          (3px radius) for softer feel without losing the scanning cue. */}
       <path
-        d="M 36 30 L 36 56"
-        stroke={NAVY}
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 60 30 L 60 56"
-        stroke={NAVY}
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 34 30 Q 48 24 62 30"
-        stroke={NAVY}
-        strokeWidth="3"
+        d="M 8 22 L 8 11 Q 8 8 11 8 L 22 8"
+        stroke={GOLD}
+        strokeWidth="4"
         strokeLinecap="round"
         fill="none"
       />
-      {/* Two horizontal back slats */}
-      <line x1="38" y1="38" x2="58" y2="38" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
-      <line x1="38" y1="46" x2="58" y2="46" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
-      {/* Seat */}
       <path
-        d="M 30 56 L 66 56 L 66 60 L 30 60 Z"
-        fill={NAVY}
+        d="M 74 8 L 85 8 Q 88 8 88 11 L 88 22"
+        stroke={GOLD}
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
       />
-      {/* Front legs */}
-      <line x1="34" y1="60" x2="34" y2="76" stroke={NAVY} strokeWidth="3" strokeLinecap="round" />
-      <line x1="62" y1="60" x2="62" y2="76" stroke={NAVY} strokeWidth="3" strokeLinecap="round" />
-      {/* Stretcher */}
-      <line x1="34" y1="70" x2="62" y2="70" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M 88 74 L 88 85 Q 88 88 85 88 L 74 88"
+        stroke={GOLD}
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M 22 88 L 11 88 Q 8 88 8 85 L 8 74"
+        stroke={GOLD}
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Antique chair silhouette — navy structure + gold seat cushion.
+          Era-neutral (tall back with spindles, simple seat, turned legs
+          hinted via turn-ring accents). Wrapped in a group so the drop
+          shadow applies to the whole chair as a unit. */}
+      <g filter="url(#fsSoftShadow)">
+        {/* Crest rail — slight upward curve at top */}
+        <path
+          d="M 30 24 Q 48 18 66 24 L 66 28 L 30 28 Z"
+          fill={NAVY}
+        />
+
+        {/* Four back spindles */}
+        <line x1="36" y1="28" x2="36" y2="52" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="44" y1="28" x2="44" y2="52" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="52" y1="28" x2="52" y2="52" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="60" y1="28" x2="60" y2="52" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Seat — NOW GOLD (color rebalance). Reads as upholstered or
+            warm-wood seat cushion against the navy structural frame. */}
+        <path
+          d="M 26 52 L 70 52 L 70 58 L 26 58 Z"
+          fill={GOLD}
+        />
+
+        {/* Four turned legs — wider stroke + turn-ring accents */}
+        <path d="M 30 58 L 30 78" stroke={NAVY} strokeWidth="4" strokeLinecap="round" />
+        <path d="M 66 58 L 66 78" stroke={NAVY} strokeWidth="4" strokeLinecap="round" />
+        <line x1="27" y1="68" x2="33" y2="68" stroke={NAVY} strokeWidth="2" />
+        <line x1="63" y1="68" x2="69" y2="68" stroke={NAVY} strokeWidth="2" />
+
+        {/* Stretcher between front legs */}
+        <line x1="30" y1="72" x2="66" y2="72" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
+      </g>
+
+      {/* Scanning reticle — NAVY (flipped from gold so it reads against
+          the now-gold seat). Small, decisive, centered on the seat. */}
+      <circle cx="48" cy="55" r="4" stroke={NAVY} strokeWidth="2" fill="none" />
+      <line x1="48" y1="48" x2="48" y2="51" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
+      <line x1="48" y1="59" x2="48" y2="62" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
+      <line x1="41" y1="55" x2="44" y2="55" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
+      <line x1="52" y1="55" x2="55" y2="55" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
@@ -310,77 +334,77 @@ function FullAnalysisIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Full Analysis icon: a document page with annotation marks and a folded corner."
+      aria-label="Full Analysis icon: an annotated case-file document with gold heading, marginal review check, and verification seal."
     >
-      {/* Background document (the second page peeking out) */}
-      <path
-        d="M 22 22 L 64 22 L 64 84 L 22 84 Z"
-        fill="#fff"
-        stroke={NAVY}
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
+      {/* Filter: same soft gold-tinted drop shadow as Field Scan — keeps
+          both icons visually consistent. */}
+      <defs>
+        <filter id="faSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow
+            dx="0"
+            dy="1.5"
+            stdDeviation="1.5"
+            floodColor={GOLD}
+            floodOpacity="0.30"
+          />
+        </filter>
+      </defs>
 
-      {/* Main document with folded corner — navy outline */}
-      <path
-        d="M 16 14 L 60 14 L 72 26 L 72 78 L 16 78 Z"
-        fill="#fff"
-        stroke={NAVY}
-        strokeWidth="3"
-        strokeLinejoin="round"
-      />
-      {/* Folded corner fill */}
-      <path
-        d="M 60 14 L 60 26 L 72 26 Z"
-        fill={CREAM}
-        stroke={NAVY}
-        strokeWidth="3"
-        strokeLinejoin="round"
-      />
+      {/* Document group with shadow — both pages share the soft shadow
+          so they read as a layered case file rather than separate sheets. */}
+      <g filter="url(#faSoftShadow)">
+        {/* Background page peeking behind the main */}
+        <path
+          d="M 24 22 L 64 22 L 64 84 L 24 84 Z"
+          fill="#fff"
+          stroke={NAVY}
+          strokeWidth="2.5"
+          strokeLinejoin="round"
+        />
 
-      {/* Document text lines — navy */}
-      <line x1="24" y1="36" x2="56" y2="36" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="24" y1="44" x2="64" y2="44" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="24" y1="52" x2="48" y2="52" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="24" y1="60" x2="60" y2="60" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
+        {/* Main document with folded top-right corner */}
+        <path
+          d="M 14 12 L 60 12 L 74 26 L 74 78 L 14 78 Z"
+          fill="#fff"
+          stroke={NAVY}
+          strokeWidth="4"
+          strokeLinejoin="round"
+        />
+        {/* Folded corner — cream fill for "page lifted" look */}
+        <path
+          d="M 60 12 L 60 26 L 74 26 Z"
+          fill={CREAM}
+          stroke={NAVY}
+          strokeWidth="4"
+          strokeLinejoin="round"
+        />
+      </g>
 
-      {/* Annotation circle highlighting a detail — gold accent */}
-      <circle
-        cx="50"
-        cy="44"
-        r="9"
+      {/* Document heading bar — NOW GOLD (color rebalance). Reads as a
+          report-header band warming the doc without losing the
+          professional case-file feel. */}
+      <rect x="22" y="36" width="28" height="5" fill={GOLD} rx="1" />
+
+      {/* Body text lines — navy, decisive */}
+      <line x1="22" y1="48" x2="60" y2="48" stroke={NAVY} strokeWidth="3" strokeLinecap="round" />
+      <line x1="22" y1="56" x2="64" y2="56" stroke={NAVY} strokeWidth="3" strokeLinecap="round" />
+      <line x1="22" y1="64" x2="52" y2="64" stroke={NAVY} strokeWidth="3" strokeLinecap="round" />
+
+      {/* Gold marginal annotation — checkmark beside the second text
+          line ("evidence verified" on this finding) */}
+      <path
+        d="M 65 53 L 68 57 L 73 50"
         stroke={GOLD}
-        strokeWidth="2.5"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         fill="none"
       />
-      {/* Annotation arrow/leader from circle pointing outside the document */}
-      <line
-        x1="57"
-        y1="50"
-        x2="74"
-        y2="62"
-        stroke={GOLD}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      <line
-        x1="74"
-        y1="62"
-        x2="69"
-        y2="60"
-        stroke={GOLD}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      <line
-        x1="74"
-        y1="62"
-        x2="72"
-        y2="57"
-        stroke={GOLD}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
+
+      {/* Small gold seal in lower-right of doc body — abstract "verified
+          / completed case file" mark */}
+      <circle cx="62" cy="71" r="6" stroke={GOLD} strokeWidth="2.5" fill="none" />
+      <circle cx="62" cy="71" r="2" fill={GOLD} />
     </svg>
   );
 }
