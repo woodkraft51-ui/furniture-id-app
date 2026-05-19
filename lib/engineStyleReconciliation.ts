@@ -256,10 +256,12 @@ export function reconcileFinalStyle(input: {
         w.date_floor === styleAttribution.date_floor &&
         w.date_ceiling === styleAttribution.date_ceiling;
       if (!waveIsOriginalPeriod) {
+        const softWaveName = softenAcademicLabel(w.wave_name);
+        const softAttrName = softenAcademicLabel(styleAttribution.name);
         return {
-          final_style_label: w.wave_name,
+          final_style_label: softWaveName,
           kind: "revival_wave",
-          final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) aligns with the ${w.wave_name} (c. ${w.date_floor}–${w.date_ceiling}) wave of ${styleAttribution.name}, not the original period.`,
+          final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) aligns with the ${softWaveName} (c. ${w.date_floor}–${w.date_ceiling}) wave of ${softAttrName}, not the original period.`,
           source_id: w.wave_id,
         };
       }

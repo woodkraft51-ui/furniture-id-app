@@ -5702,60 +5702,60 @@ Begin recovery extraction now. Do not return the empty observations array under 
     if (hasLabel) pct += 20;
     pct = clamp(pct, 25, 94);
 
-    // Stress-test fix #4 (2026-05-20): structural-evidence cap.
-    // Issue: the existing pct calculation gave +15 for ANY construction
-    // category having observations, so even one solid_wood_construction
-    // clue counted the same as full structural evidence across multiple
-    // layers. Result: chairs with 0 dating-relevant structural evidence
-    // (no underside, no joinery, no fasteners, no toolmarks) reached
-    // 95% confidence based on style + form + label alone.
+    // Stress-test fix #4 refined (2026-05-20): confidence cap based on
+    // DATING-STRUCTURAL evidence categories, not all "structural" categories.
     //
-    // Fix: count DISTINCT structural-evidence categories present in
-    // the digest. Cap the gate's confidence pct based on how many
-    // structural categories actually contributed observations:
+    // Original fix (2c6c72b) counted construction, joinery, fastener,
+    // toolmark, hardware, material, finish, wood as "structural" — and a
+    // chair with construction (5 clues, all observed from front/side
+    // photos) + material (visible wood species) + finish (surface
+    // observation) still hit the 88% / "High" cap. Appraiser feedback:
+    // "production-date confidence should remain moderate until construction
+    // evidence is available." Construction evidence = the things photos
+    // typically DON'T capture without intentional detail shots: joinery,
+    // fasteners, tool marks, hardware close-ups, wood-evidence beyond
+    // surface identification.
     //
-    //   0 categories  → cap at 72 (Moderate-High max)
-    //   1 category    → cap at 80
-    //   2-3 categories → cap at 88
-    //   4+ categories  → no additional cap (use existing 94)
+    // Refined distinction:
+    //   DATING-STRUCTURAL categories — require detail photos (underside,
+    //   close-ups, hardware shots) to surface, and genuinely anchor
+    //   dating confidence:
+    //     joinery, fastener, toolmark, hardware, wood
     //
-    // This only ever LOWERS pct, never raises it. Style + form + label
-    // alone gets capped at 72 (Moderate-High) which honestly reflects
-    // the missing construction evidence. Pieces with multi-layer
-    // structural evidence (joinery + fasteners + hardware + finish +
-    // toolmarks) keep their High cap.
+    //   SURFACE-STRUCTURAL categories — observable from typical front/
+    //   side photos, useful but don't anchor dating without the
+    //   dating-structural layer:
+    //     construction, material, finish
     //
-    // Categories considered structural (i.e., contributing to
-    // construction-evidence dating, not style/condition/label/upholstery):
-    //   joinery, fastener, toolmark, hardware, material, finish, wood,
-    //   construction
+    // Cap progression now keys ONLY on dating-structural categories:
+    //   0 dating-structural categories  → cap at 72 (Moderate)
+    //   1 dating-structural category    → cap at 80 (Moderate)
+    //   2 dating-structural categories  → cap at 86 (High threshold)
+    //   3+ dating-structural categories → cap at 94 (full High allowed)
     //
-    // Note: at P1 time, dating_overlap doesn't exist yet (it's built in
-    // p6). So this is a heuristic based on category PRESENCE rather than
-    // dated-layer CONTRIBUTION. Future refinement could re-check the
-    // cap at p6 and downgrade further when actual dating layers
-    // contributed 0 clues.
-    const STRUCTURAL_CATEGORIES = [
+    // Effect on the French Louis XVI medallion chair scan that surfaced
+    // this refinement: chair has 0 dating-structural categories (only
+    // construction / material / finish observations from exterior).
+    // Cap drops from 88 to 72 — honest Moderate confidence reflecting
+    // the missing dating-detail photos.
+    const DATING_STRUCTURAL_CATEGORIES = [
       "joinery",
       "fastener",
       "toolmark",
       "hardware",
-      "material",
-      "finish",
       "wood",
-      "construction",
     ];
-    const structuralCategoryCount = STRUCTURAL_CATEGORIES.filter((cat) => {
+    const datingStructuralCount = DATING_STRUCTURAL_CATEGORIES.filter((cat) => {
       const observations = digest.by_type[cat] || [];
       return observations.length > 0;
     }).length;
     const structuralCap =
-      structuralCategoryCount === 0
+      datingStructuralCount === 0
         ? 72
-        : structuralCategoryCount === 1
+        : datingStructuralCount === 1
           ? 80
-          : structuralCategoryCount < 4
-            ? 88
+          : datingStructuralCount === 2
+            ? 86
             : 94;
     pct = Math.min(pct, structuralCap);
 
@@ -5809,32 +5809,33 @@ if (missing.label_photo) {
   next.push("Maker's mark or label, if present");
 }
  
-    // Sufficiency summary — surfaces the structural-evidence reality
-    // so the user understands why confidence is what it is. When
-    // structural categories are sparse (0-1), the message explicitly
-    // notes that the dating side is moderate even if style/form are
-    // strong. Per stress-test fix #4 — addresses the appraiser
-    // observation that style confidence and dating confidence were
-    // being blended together too aggressively in the report.
+    // Sufficiency summary — surfaces the dating-structural-evidence reality
+    // so the user understands why confidence is what it is. When the
+    // photos don't capture dating-detail evidence (joinery, fasteners,
+    // toolmarks, hardware close-ups, underside), the message explicitly
+    // notes that the dating side is moderate even if style / form / label
+    // are strong. Per stress-test fix #4 refined — addresses the
+    // appraiser observation that style confidence and dating confidence
+    // were being blended together too aggressively.
     let sufficiencySummary: string;
-    if (structuralCategoryCount === 0) {
+    if (datingStructuralCount === 0) {
       sufficiencySummary = hasLabel
-        ? "Label evidence anchors the identification. Dating confidence remains moderate without structural evidence (joinery, fasteners, toolmarks, hardware close-ups, or underside)."
+        ? "Label evidence anchors the identification. Dating confidence remains moderate without detail-photo evidence (joinery, fasteners, toolmarks, hardware close-ups, or underside)."
         : hasForm
-          ? "Visible form and style evidence support a working identification. Dating confidence remains moderate until structural evidence is photographed (joinery, fasteners, underside)."
-          : "Evidence remains broad. More visible form, construction, or label detail would materially improve the result.";
-    } else if (structuralCategoryCount === 1) {
+          ? "Visible form and style evidence support a working identification. Dating confidence remains moderate until detail-photo evidence is captured (joinery, fasteners, hardware close-ups, underside)."
+          : "Evidence remains broad. More visible form, construction-detail, or label evidence would materially improve the result.";
+    } else if (datingStructuralCount === 1) {
       sufficiencySummary = hasLabel
-        ? "Label evidence anchors the identification; single structural-evidence category present. Additional structural detail would refine the dating envelope."
-        : "Working identification supported by one structural-evidence category; additional joinery, fastener, or hardware detail would refine the dating envelope.";
-    } else if (structuralCategoryCount < 4) {
+        ? "Label evidence anchors the identification; one dating-detail evidence category present. Additional joinery, fastener, or hardware detail would refine the dating envelope."
+        : "Working identification supported by one dating-detail evidence category. Additional joinery, fastener, or hardware close-ups would refine the dating envelope.";
+    } else if (datingStructuralCount === 2) {
       sufficiencySummary = hasLabel
-        ? "Label evidence plus multiple structural-evidence categories give the assessment a strong anchor."
-        : "Multiple structural-evidence categories support a working identification and dating envelope.";
+        ? "Label plus two dating-detail evidence categories give the assessment a strong anchor."
+        : "Two dating-detail evidence categories support a working identification and dating envelope.";
     } else {
       sufficiencySummary = hasLabel
-        ? "Rich evidence across label, structural, and material categories gives the assessment its strongest anchor."
-        : "Rich structural and material evidence supports both identification and dating with high confidence.";
+        ? "Rich evidence across label and multiple dating-detail categories gives the assessment its strongest anchor."
+        : "Multiple dating-detail evidence categories (joinery, fasteners, toolmarks, hardware, wood) support both identification and dating with high confidence.";
     }
 
     return {
