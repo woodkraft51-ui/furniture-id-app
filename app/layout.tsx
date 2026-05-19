@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Proof Sleuth — Antique Furniture ID & Dating",
@@ -64,6 +65,29 @@ export default function RootLayout({
               text-align: left;
             }
           }
+          .ps-footer {
+            margin-top: 48px;
+            padding: 20px 24px 28px;
+            border-top: 1px solid #e6dcc8;
+            text-align: center;
+            color: #594734;
+            font-size: 13px;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+          }
+          .ps-footer a {
+            color: #594734;
+            text-decoration: none;
+            border-bottom: 1px solid #b9956a;
+            padding-bottom: 1px;
+          }
+          .ps-footer a:hover {
+            color: #1a2e4e;
+          }
+          .ps-footer-sep {
+            display: inline-block;
+            margin: 0 10px;
+            color: #d9ccb5;
+          }
         `}</style>
         <header className="ps-header">
           <img
@@ -77,6 +101,17 @@ export default function RootLayout({
           </div>
         </header>
         {children}
+        <footer className="ps-footer">
+          <Link href="/about">About this app</Link>
+          <span className="ps-footer-sep">·</span>
+          <a
+            href="https://newcreationswoodcraft.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            New Creations Woodcraft
+          </a>
+        </footer>
       </body>
     </html>
   );

@@ -1635,6 +1635,102 @@ type ValuationShape = {
   >;
 };
 
+/**
+ * AppraiserReviewCTA — conditional call-to-action shown in the report
+ * when one or more triggers fire indicating that the piece may benefit
+ * from hands-on professional review beyond what automated photo
+ * analysis can resolve. Triggers are computed by appraiserReviewTriggers
+ * useMemo inside Page() and passed in.
+ *
+ * Trust-preserving framing: opens with "may merit" not "needs"; names
+ * specific WHY from the triggers; lists what hands-on review adds that
+ * photos can't capture (weight, joint integrity under stress, surface
+ * smell, period-correct restoration scope); positions Michael / NCW as
+ * the natural extension — not the paid tier of the app.
+ *
+ * Navy left-border (vs gold on the Field→Full upsell) visually
+ * distinguishes the two upsell types without breaking brand palette.
+ */
+function AppraiserReviewCTA({ triggers }: { triggers: { reason: string }[] }) {
+  if (!triggers || triggers.length === 0) return null;
+  const reasonText = triggers.map((t) => t.reason).join(" ");
+  return (
+    <SectionCard title="">
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #d9ccb5",
+          borderLeft: "3px solid #1a2e4e",
+          borderRadius: 8,
+          padding: "16px 18px",
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 700,
+            color: "#352719",
+            fontSize: 16,
+            marginBottom: 8,
+          }}
+        >
+          This piece may merit in-person review.
+        </div>
+        <div
+          style={{
+            fontSize: 14,
+            lineHeight: 1.55,
+            color: "#594734",
+            marginBottom: 14,
+          }}
+        >
+          {reasonText} A hands-on assessment can confirm details that photos
+          can&apos;t capture: weight, joint integrity under stress, surface smell
+          as a finish and age indicator, period-correct restoration scope,
+          and the tactile feel of the wood. New Creations Woodcraft offers
+          this service directly with Michael.
+        </div>
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            flexWrap: "wrap",
+            alignItems: "center",
+            fontSize: 14,
+          }}
+        >
+          <a
+            href="mailto:michael@newcreationswoodcraft.com"
+            style={{
+              color: "#1a2e4e",
+              textDecoration: "none",
+              fontWeight: 600,
+              borderBottom: "1px solid #b9956a",
+              paddingBottom: 1,
+            }}
+          >
+            michael@newcreationswoodcraft.com
+          </a>
+          <span style={{ color: "#d9ccb5" }}>·</span>
+          <a
+            href="https://newcreationswoodcraft.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#1a2e4e",
+              textDecoration: "none",
+              fontWeight: 600,
+              borderBottom: "1px solid #b9956a",
+              paddingBottom: 1,
+            }}
+          >
+            newcreationswoodcraft.com →
+          </a>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
 function ResaleValuationSection({ valuation, formLabel }: { valuation?: ValuationShape; formLabel?: string }) {
   if (!valuation || !valuation.platform_breakdown) {
     return <div style={emptyText}>No resale valuation was returned.</div>;
@@ -1811,6 +1907,104 @@ export default function Page() {
   }, [report]);
 
   const analysisMode = intake.analysis_mode;
+
+  /**
+   * Conditional appraiser-review CTA triggers. The CTA fires when the
+   * report surfaces evidence patterns that legitimately exceed what
+   * automated photo analysis can resolve — pieces that would benefit
+   * from hands-on inspection by Michael at New Creations Woodcraft.
+   *
+   * Three triggers, each independently defensible:
+   *   1. Engine flagged conflict_notes — multiple dating signals disagree
+   *   2. Value threshold ($1,500+) — economic justification for in-person
+   *   3. User-flagged complexity — known_alterations or condition_notes
+   *      contains substantive content (>20 chars)
+   *
+   * Multiple firing → reasons concat. None firing → CTA doesn't render.
+   * This protects user trust: the CTA only appears when there's a real
+   * reason the engine isn't enough.
+   *
+   * Computed inside the Page component because it needs access to the
+   * phase stage_outputs (p5, p6) and the fieldValue useMemo. Stage
+   * outputs are read inside the render later; we destructure here so
+   * the trigger logic is testable in isolation if extracted.
+   */
+  const appraiserReviewTriggers = useMemo(() => {
+    if (!report) return [] as { reason: string }[];
+
+    const triggers: { reason: string }[] = [];
+    const stageOutputs = report.stage_outputs || {};
+    const p5 = stageOutputs.p5 || null;
+    const p6 = stageOutputs.p6 || null;
+
+    // Trigger 1: engine-flagged conflicts
+    const conflictNotes = p5?.conflict_notes;
+    if (Array.isArray(conflictNotes) && conflictNotes.length > 0) {
+      triggers.push({
+        reason:
+          "The engine flagged multiple dating or attribution signals in your photos that disagree, which often requires hands-on inspection to resolve.",
+      });
+    }
+
+    // Trigger 2: value threshold ($1,500+)
+    let highValueDetected = false;
+    let highValueSource = "";
+    if (analysisMode === "field_scan") {
+      // fieldValue is computed via fieldValueBand earlier in the render;
+      // recompute here from the same inputs to avoid temporal-dependency
+      // on render order. fieldValueBand returns { low, high } numbers.
+      const p1 = stageOutputs.p1 || null;
+      const p2 = stageOutputs.p2 || null;
+      const p3 = stageOutputs.p3 || null;
+      const conflictCount = Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0;
+      const fv = fieldValueBand(
+        p3?.display_form || p3?.form || "Unknown",
+        p2?.range || "Unknown",
+        conflictCount,
+        p1?.confidence_cap
+      );
+      if (fv && typeof fv.high === "number" && fv.high >= 1500) {
+        highValueDetected = true;
+        highValueSource = "field-scan value range";
+      }
+    } else if (analysisMode === "full_analysis") {
+      // Parse the restored_retail range string ("$X – $Y") and check upper bound
+      const restoredRetail =
+        p6?.valuation?.platform_breakdown?.restored_retail?.range;
+      if (typeof restoredRetail === "string") {
+        const match = restoredRetail.match(/\$?([\d,]+)\s*[-–]\s*\$?([\d,]+)/);
+        if (match) {
+          const upper = parseInt(match[2].replace(/,/g, ""), 10);
+          if (!isNaN(upper) && upper >= 1500) {
+            highValueDetected = true;
+            highValueSource = "restored-retail valuation";
+          }
+        }
+      }
+    }
+    if (highValueDetected) {
+      triggers.push({
+        reason: `The estimated value range (per ${highValueSource}) puts this piece in a tier where in-person review is economically justified by the stakes involved.`,
+      });
+    }
+
+    // Trigger 3: user-flagged complexity in intake (substantive content)
+    const alterations = (intake.known_alterations || "").trim();
+    const condition = (intake.condition_notes || "").trim();
+    if (alterations.length > 20 || condition.length > 20) {
+      triggers.push({
+        reason:
+          "You noted alterations, missing parts, or condition concerns in your intake. These often benefit from physical inspection to assess restoration scope and originality.",
+      });
+    }
+
+    return triggers;
+  }, [
+    report,
+    analysisMode,
+    intake.known_alterations,
+    intake.condition_notes,
+  ]);
 
   const structuredMissingEvidence = useMemo(() => computeMissingEvidenceFromStructured(coreImages, groupImages), [coreImages, groupImages]);
   const fieldMissingEvidence = useMemo(() => computeMissingEvidenceFromImages(fieldPhotos), [fieldPhotos]);
@@ -2406,6 +2600,15 @@ const p7 = stageOutputs.p7 || null;
               <RunButton label="Re-Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} />
             </SectionCard>
 
+            {/* Conditional appraiser-review CTA. Fires only when triggers
+                surface evidence patterns beyond what automated photo
+                analysis can resolve. Trust-preserving: explains WHY this
+                piece, names what hands-on adds that photos can't capture,
+                and frames as "what could help" rather than "buy this." */}
+            {appraiserReviewTriggers.length > 0 && (
+              <AppraiserReviewCTA triggers={appraiserReviewTriggers} />
+            )}
+
             {/* Field → Full Analysis upsell. Always offered at the end of
                 a field-scan report. Photos migrate to structured slots
                 following the existing inferFieldImageType convention;
@@ -2575,6 +2778,15 @@ const p7 = stageOutputs.p7 || null;
               <TipsList items={p7?.selling_tips} />
             </SectionCard>
         </div>
+
+            {/* Conditional appraiser-review CTA — same triggers as the
+                field-scan report; placed at the end of full-analysis
+                as the "last word" after all engine output. Frames as
+                what an in-person review could add beyond what photo
+                analysis is capable of. */}
+            {appraiserReviewTriggers.length > 0 && (
+              <AppraiserReviewCTA triggers={appraiserReviewTriggers} />
+            )}
           </div>
         )}
       </div>
