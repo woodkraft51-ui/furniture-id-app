@@ -75,6 +75,44 @@ export type FinalStyleReconciliation = {
   source_id?: string;
 };
 
+/**
+ * Strip the "Academic" qualifier from a style-family display label.
+ *
+ * Stress-test fix #2 (2026-05-20). Two consecutive revival-chair scans
+ * surfaced the same pattern: commercial American revival pieces (French
+ * Provincial chair labeled "Academic French Louis XV Revival"; Colonial
+ * Revival Queen Anne chair labeled "Academic Colonial Revival" patterns)
+ * were getting the "Academic" qualifier despite not demonstrating the
+ * stylistic purity, carving sophistication, refined proportions, or
+ * formal execution that the label implies.
+ *
+ * Per appraiser direction: "Academic" should ONLY apply when carving
+ * depth, proportional refinement, period high-end maker marks, or
+ * other positive evidence of academic execution is present. The
+ * default behavior should be to NOT use "Academic" — most c.1900-1930
+ * American revival production was commercial, not academic.
+ *
+ * Until Fix #1 (commercial simplification suppression) lands with the
+ * positive-evidence detection that would let us conditionally restore
+ * "Academic" on pieces that demonstrate it, the safest default is to
+ * strip the qualifier entirely. Applied at label-display time only —
+ * the canonical style_family_id and family lookup are unchanged so
+ * engine reasoning still works against the original entries.
+ *
+ * Edge cases handled:
+ *   "Academic French Louis XVI Revival" → "French Louis XVI Revival"
+ *   "Academic / Museum Colonial Revival" → "Museum-aware Colonial Revival"
+ *   "Academic Colonial Revival Chippendale" → "Colonial Revival Chippendale"
+ *   "Academic Federal / Sheraton Revival" → "Federal / Sheraton Revival"
+ */
+function softenAcademicLabel(label: string | null | undefined): string {
+  if (!label) return label || "";
+  return label
+    .replace(/^Academic \/ Museum /, "Museum-aware ")
+    .replace(/^Academic /, "")
+    .trim();
+}
+
 function rangesOverlap(
   aFloor: number | null,
   aCeil: number | null,
@@ -165,10 +203,11 @@ export function reconcileFinalStyle(input: {
       finalDatingCeiling == null ||
       rangesOverlap(ntpFloor, ntpCeiling, finalDatingFloor, finalDatingCeiling);
     if (ntpOverlapsFinalDating) {
+      const softParticipants = bestIntersection.participants.map(softenAcademicLabel);
       return {
         final_style_label: ntp.name,
         kind: "named_transitional",
-        final_style_reason: `Two style vocabularies (${bestIntersection.participants.join(" + ")}) co-occur in the documented ${ntp.name} window.`,
+        final_style_reason: `Two style vocabularies (${softParticipants.join(" + ")}) co-occur in the documented ${ntp.name} window.`,
         source_id: ntp.id,
       };
     }
@@ -183,10 +222,11 @@ export function reconcileFinalStyle(input: {
   // be either pure original style. Use winner's vocabulary + reproduction
   // framing.
   if (hasImpossiblePair && styleAttribution) {
+    const softName = softenAcademicLabel(styleAttribution.name);
     return {
-      final_style_label: `${styleAttribution.name} vocabulary (reproduction)`,
+      final_style_label: `${softName} vocabulary (reproduction)`,
       kind: "impossible_pair",
-      final_style_reason: `Two historically-incompatible style families both fire (see p5 conflicts); the piece carries the vocabulary of ${styleAttribution.name} but cannot be original-period production.`,
+      final_style_reason: `Two historically-incompatible style families both fire (see p5 conflicts); the piece carries the vocabulary of ${softName} but cannot be original-period production.`,
     };
   }
 
@@ -234,10 +274,11 @@ export function reconcileFinalStyle(input: {
     finalDatingCeiling != null &&
     rangesOverlap(styleAttribution.date_floor, styleAttribution.date_ceiling, finalDatingFloor, finalDatingCeiling)
   ) {
+    const softName = softenAcademicLabel(styleAttribution.name);
     return {
-      final_style_label: styleAttribution.name,
+      final_style_label: softName,
       kind: "original_period",
-      final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls within the original ${styleAttribution.name} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}).`,
+      final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls within the original ${softName} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}).`,
     };
   }
 
@@ -249,10 +290,11 @@ export function reconcileFinalStyle(input: {
     finalDatingFloor != null &&
     finalDatingCeiling != null
   ) {
+    const softName = softenAcademicLabel(styleAttribution.name);
     return {
-      final_style_label: `${styleAttribution.name} vocabulary (post-${finalDatingFloor} reproduction)`,
+      final_style_label: `${softName} vocabulary (post-${finalDatingFloor} reproduction)`,
       kind: "reproduction",
-      final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls outside the original ${styleAttribution.name} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}) and no surfaced revival wave covers this dating envelope. The piece carries ${styleAttribution.name} vocabulary but is later production.`,
+      final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls outside the original ${softName} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}) and no surfaced revival wave covers this dating envelope. The piece carries ${softName} vocabulary but is later production.`,
     };
   }
 
@@ -284,12 +326,13 @@ export function reconcileFinalStyle(input: {
   }
 
   // Fallback: unresolved.
+  const softName = softenAcademicLabel(styleAttribution?.name);
   return {
-    final_style_label: styleAttribution?.name ?? styleContext ?? "Unresolved",
+    final_style_label: softName || styleContext || "Unresolved",
     kind: "unresolved",
     final_style_reason:
       styleAttribution
-        ? `Final dating unavailable; defaulting to attribution-time style label ${styleAttribution.name}.`
+        ? `Final dating unavailable; defaulting to attribution-time style label ${softName}.`
         : "No style attribution or context could be derived from the available evidence.",
   };
 }
