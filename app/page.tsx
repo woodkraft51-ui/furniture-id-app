@@ -2023,18 +2023,13 @@ const p7 = stageOutputs.p7 || null;
         </header>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <SectionCard title="Analysis Mode">
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <label style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: 12, border: "1px solid #d9ccb5", borderRadius: 10, background: intake.analysis_mode === "full_analysis" ? "#fff7eb" : "#fff", cursor: "pointer", flex: 1 }}>
-                <input type="radio" name="analysis_mode" checked={intake.analysis_mode === "full_analysis"} onChange={() => updateIntake("analysis_mode", "full_analysis" as any)} />
-                <div><div style={{ fontWeight: 700 }}>Full Analysis</div><div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>Deeper intake and fuller narrative output.</div></div>
-              </label>
-              <label style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: 12, border: "1px solid #d9ccb5", borderRadius: 10, background: intake.analysis_mode === "field_scan" ? "#fff7eb" : "#fff", cursor: "pointer", flex: 1 }}>
-                <input type="radio" name="analysis_mode" checked={intake.analysis_mode === "field_scan"} onChange={() => updateIntake("analysis_mode", "field_scan" as any)} />
-                <div><div style={{ fontWeight: 700 }}>Field Scan</div><div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>Faster intake with recommendation-first output.</div></div>
-              </label>
-            </div>
-          </SectionCard>
+          {/* Analysis Mode toggle removed: the landing screen (WelcomeLanding)
+              owns the initial choice and the "← Back to start" link above
+              owns the escape hatch. Keeping the toggle inline alongside
+              the landing made the choice feel presented twice — landing
+              implied "important decision," toggle implied "casual flip,"
+              and the dissonance undercut both. Now the page h1 declares
+              the mode; users who change their mind use Back to start. */}
 
           {analysisMode === "field_scan" ? (
             <>
