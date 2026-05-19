@@ -1593,7 +1593,36 @@ function UploadTooLargeNotice({ onAdjust, onSwitchToFull }: { onAdjust: () => vo
   );
 }
 
-function RunButton({ label, disabled, isRunning, onClick }: { label: string; disabled: boolean; isRunning: boolean; onClick: () => void }) {
+/**
+ * Friendly user-facing labels for each engine phase. Wired into
+ * RunButton via the currentPhase state. Replaces the generic
+ * "Analyzing..." spinner so the 35-60s wait feels purposeful and
+ * communicates the depth of work happening behind the scenes.
+ *
+ * Phase keys come from the engine's onPhase callbacks in runAllPhases
+ * (lib/engine.ts). Unknown phase keys fall back to "Working..." so
+ * the UI doesn't break if the engine adds a new phase before the
+ * label table is updated.
+ */
+const PHASE_LABELS: Record<string, string> = {
+  starting: "Preparing your photos...",
+  p0: "Reading photos and extracting evidence...",
+  p0_recovery: "Running deep extraction recovery...",
+  p1: "Checking evidence quality...",
+  p2: "Building dating envelope...",
+  p3: "Identifying form and style...",
+  p4: "Cross-checking signals...",
+  p5: "Flagging conflicts and cautions...",
+  p6: "Generating valuation and summary...",
+  p7: "Compiling negotiation and selling tips...",
+};
+
+function getPhaseStatusText(phase: string | null): string {
+  if (!phase) return "Analyzing...";
+  return PHASE_LABELS[phase] || "Working...";
+}
+
+function RunButton({ label, disabled, isRunning, onClick, currentPhase }: { label: string; disabled: boolean; isRunning: boolean; onClick: () => void; currentPhase?: string | null }) {
   return (
     <div style={{ marginTop: 14 }}>
       <div style={{ fontSize: 13, color: "#6b5c4f", marginBottom: 6 }}>Add more detail for a tighter result, or run it now.</div>
@@ -1603,7 +1632,7 @@ function RunButton({ label, disabled, isRunning, onClick }: { label: string; dis
         disabled={disabled}
         style={{ ...primaryButton, opacity: disabled || isRunning ? 0.7 : 1, cursor: disabled || isRunning ? "not-allowed" : "pointer" }}
       >
-        {isRunning ? "Analyzing..." : label}
+        {isRunning ? getPhaseStatusText(currentPhase ?? null) : label}
       </button>
     </div>
   );
@@ -1846,6 +1875,13 @@ export default function Page() {
   const [isRunning, setIsRunning] = useState(false);
   const [error, setError] = useState("");
   const [uploadTooLarge, setUploadTooLarge] = useState(false);
+
+  // Phase progress state — populated by the onPhase callback wired into
+  // API.analyzeCase. Replaces the generic "Analyzing..." spinner with
+  // phase-specific status so the 35-60s wait feels purposeful and
+  // signals the depth of work happening behind the scenes. Set to null
+  // before/after a run; set to a phase key while a run is in progress.
+  const [currentPhase, setCurrentPhase] = useState<string | null>(null);
 
   // Photo-example modal state. When set to a PHOTO_EXAMPLES key, the
   // ExampleModal renders with the matching illustration + checklist.
@@ -2095,12 +2131,19 @@ export default function Page() {
     }
 
     setIsRunning(true);
+    setCurrentPhase("starting");
     try {
       const created = API.createCase({ notes: intake.notes, analysis_mode: intake.analysis_mode });
       const caseId = created.case_id;
       setActiveCaseId(caseId);
       for (const img of allImages) API.addImage(caseId, img);
-      await API.analyzeCase(caseId, intake);
+      // Phase progress callback — fires once per phase as the engine
+      // moves through p0 → p7 (and p0_recovery if Phase 0 returned
+      // empty observations). currentPhase drives the RunButton's
+      // status text via PHASE_LABELS lookup.
+      await API.analyzeCase(caseId, intake, (phase: string) => {
+        setCurrentPhase(phase);
+      });
       setReport(API.getReport(caseId));
     } catch (e: any) {
       const msg = e?.message || "";
@@ -2114,6 +2157,7 @@ export default function Page() {
       }
     } finally {
       setIsRunning(false);
+      setCurrentPhase(null);
     }
   }
 
@@ -2331,7 +2375,7 @@ const p7 = stageOutputs.p7 || null;
                     ))}
                   </div>
                 </div>
-                <RunButton label="Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} />
+                <RunButton label="Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} currentPhase={currentPhase} />
                 {uploadTooLarge ? (
                   <UploadTooLargeNotice
                     onAdjust={() => setUploadTooLarge(false)}
@@ -2464,7 +2508,7 @@ const p7 = stageOutputs.p7 || null;
                     ))}
                   </div>
                 </div>
-                <RunButton label="Run Full Analysis" disabled={isRunning || !fullReady} isRunning={isRunning} onClick={runAnalysis} />
+                <RunButton label="Run Full Analysis" disabled={isRunning || !fullReady} isRunning={isRunning} onClick={runAnalysis} currentPhase={currentPhase} />
                 {error && <div style={errorStyle}>{error}</div>}
               </SectionCard>
             </>
@@ -2597,7 +2641,7 @@ const p7 = stageOutputs.p7 || null;
                 <label style={uploadOliveButton}>Add Construction Detail<input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => handleFieldRefinementUpload("joinery_closeup", e.target.files)} /></label>
                 <label style={uploadGoldButton}>Add Hardware Close-Up<input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => handleFieldRefinementUpload("hardware_closeup", e.target.files)} /></label>
               </div>
-              <RunButton label="Re-Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} />
+              <RunButton label="Re-Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} currentPhase={currentPhase} />
             </SectionCard>
 
             {/* Conditional appraiser-review CTA. Fires only when triggers
