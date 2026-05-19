@@ -703,6 +703,76 @@ bent_or_sprung_metal: {
   dateHint: "permanent metal deformation from use, damage, or stress; structural concern for tubular steel, wrought iron, and sheet-metal furniture",
   weight: 0.50,
 },
+
+// ─────────────────────────────────────────────────────────────────────
+// Wicker dating ladder — Batch 3 non-wood taxonomy expansion (2026-05-19).
+// Prior wicker vocabulary: woven_body, rattan_frame, cane_panels — all
+// generic and undated. These new clues add the major dating anchors
+// (Lloyd loom 1917+, Bar Harbor 1900-1920, Victorian curlicue 1880-1900,
+// mid-century streamlined 1945-1970) and weave-pattern signals that
+// appraisers use to date wicker furniture. Note: these clues route by
+// LLM text-pattern matching; a future prompt-expansion pass should
+// explicitly ask the LLM to observe "paper fiber vs natural reed",
+// "weave pattern density", and "ornament era" on wicker forms.
+// ─────────────────────────────────────────────────────────────────────
+
+// Material-and-era dating anchors
+lloyd_loom_paper_fiber: {
+  category: "materials",
+  dateHint: "post-1917 American hard-anchor; Marshall B. Lloyd patented Lloyd loom machinery in 1917, weaving twisted kraft paper around a wire core on automated looms. Construction is highly diagnostic and survives well — paper-fiber 'wicker' over a wire armature is visible at broken strands and at frame edges. Peak American production c. 1920-1950 (Lloyd Loom of Heywood-Wakefield); continues in present-day reproduction. A piece otherwise styled or attributed pre-1917 cannot be Lloyd loom in original construction.",
+  weight: 0.85,
+},
+bar_harbor_style_wicker: {
+  category: "style",
+  dateHint: "c. 1900-1920 American resort-wicker era; named for Maine resort town. Open airy weave, geometric forms, minimal curlicue ornament, often natural or white-painted finish. Distinct from heavy Victorian curlicue wicker (c. 1880-1900) and from Lloyd loom paper fiber (post-1917). Strong collector market for original-period Bar Harbor settees, chairs, and tables.",
+  weight: 0.72,
+},
+victorian_curlicue_wicker: {
+  category: "style",
+  dateHint: "c. 1880-1900 American Victorian wicker era; heavy ornament with scrolls, curlicues, hearts, fans, photo-frame insets, and densely decorated backs. Often natural finish, gilt accents, or stained dark. Distinct from later Bar Harbor open-weave (c. 1900-1920) and Lloyd loom paper fiber (post-1917). Heywood Bros., Wakefield Rattan, and merged Heywood-Wakefield are major makers; attribution requires label, mark, or catalog match.",
+  weight: 0.72,
+},
+mid_century_streamlined_wicker: {
+  category: "style",
+  dateHint: "c. 1945-1970 mid-century modern wicker and rattan production; lighter forms, simpler curves, often paired with steel or aluminum frames, often imported Filipino or Asian-Pacific work. Distinct from earlier Victorian, Bar Harbor, and Lloyd loom traditions. Compare papasan, peacock chair, and tropical-modern vocabularies.",
+  weight: 0.65,
+},
+
+// Weave-pattern signals (sub-diagnostic; combine with era/material above)
+wicker_weave_close: {
+  category: "construction",
+  dateHint: "tight close weave with minimal gaps between strands; common in higher-quality production across periods. Less air-flow, denser visual mass; often associated with formal parlor wicker, Lloyd loom paper fiber, or quality reed work.",
+  weight: 0.55,
+},
+wicker_weave_open: {
+  category: "construction",
+  dateHint: "open or airy weave with visible gaps between strands; common in Bar Harbor-era resort wicker (c. 1900-1920) and porch/sunroom furniture. Often paired with white-painted or natural finish.",
+  weight: 0.55,
+},
+wicker_weave_basket: {
+  category: "construction",
+  dateHint: "basket-weave pattern (alternating over-under in groups of two or more strands); often decorative panel insert on Victorian and early-20th-c. wicker. Distinct from simple over-under and from herringbone.",
+  weight: 0.50,
+},
+
+// Material identification (broader than Lloyd loom)
+paper_fiber_construction: {
+  category: "materials",
+  dateHint: "paper-fiber (twisted kraft paper) construction post-1900 industrial development; Lloyd loom paper fiber is the dominant subtype post-1917. Distinct from natural rattan, reed, and cane. Paper fiber appears as uniform extruded strands rather than the irregular tapered profile of natural plant fibers.",
+  weight: 0.78,
+},
+
+// Condition / restoration signals
+wicker_strand_breakage: {
+  category: "condition",
+  dateHint: "broken, missing, or unraveled wicker strands; structural condition signal; common on aged or heavily-used wicker. Repair difficulty depends on weave pattern and material (paper fiber harder to splice invisibly than natural reed).",
+  weight: 0.55,
+},
+wicker_paint_buildup: {
+  category: "condition",
+  dateHint: "multiple paint layers on wicker obscuring original finish, weave detail, and material identification; common on long-lived porch and sunroom pieces. Paint stratigraphy may help dating but original finish (natural, shellac, stain, original paint color) is often hidden.",
+  weight: 0.50,
+},
 };
 
 function clamp(n: number, min: number, max: number) {
