@@ -91,6 +91,65 @@ export default function RootLayout({
             margin: 0 10px;
             color: #d9ccb5;
           }
+
+          /* Print rules — invoked by the "Print / Save as PDF" button on
+             any report screen via window.print(). The button calls the
+             browser-native print dialog; on desktop the user picks
+             "Save as PDF" as the destination, on iOS Safari it surfaces
+             "Save to Files" with PDF as the format, on Android Chrome
+             same flow via "Save as PDF". No external library needed. */
+          @media print {
+            /* Hide every interactive / non-report element. The form,
+               upload buttons, run buttons, upsell cards, trace report,
+               back-to-start link, and layout footer all carry .no-print
+               so they vanish in print output. */
+            .no-print { display: none !important; }
+
+            /* Show elements that should ONLY appear in print (the
+               scan-metadata header injected at the top of the report
+               area to give the PDF context: scan ID, date, mode). */
+            .print-only { display: block !important; }
+
+            /* Default-hidden state for print-only elements (overridden
+               above when in print media). */
+
+            /* Preserve background colors and borders in print. Browsers
+               default to stripping these for ink/toner economy; for an
+               evidence-driven report the brand palette + colored borders
+               carry meaning (gold-left = upsell, navy-left = appraiser CTA,
+               cream = recommendation card). */
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
+            }
+
+            /* Body cleanup — solid background, no extra padding */
+            body { background: #fff !important; }
+
+            /* Page setup: letter-size with sensible margins */
+            @page {
+              size: letter;
+              margin: 0.55in 0.65in;
+            }
+
+            /* SectionCard page-break discipline: avoid splitting a single
+               card across pages where possible. Long sections (e.g., the
+               Analysis Summary narrative) may still split — that's fine. */
+            .section-card { page-break-inside: avoid; }
+
+            /* Keep brand header from being repeated unnecessarily;
+               browser will print it once at the top of page 1. */
+            .ps-header {
+              padding: 12px 16px !important;
+              border-bottom: 1px solid #1a2e4e !important;
+            }
+            .ps-header-logo { height: 50px !important; }
+          }
+
+          /* Print-only elements: hidden in screen view by default; the
+             @media print rule above flips them to display:block. */
+          .print-only { display: none; }
         `}</style>
         <header className="ps-header">
           <img
@@ -104,7 +163,7 @@ export default function RootLayout({
           </div>
         </header>
         {children}
-        <footer className="ps-footer">
+        <footer className="ps-footer no-print">
           <Link href="/about">About this app</Link>
           <span className="ps-footer-sep">·</span>
           <Link href="/scans">My Scans</Link>

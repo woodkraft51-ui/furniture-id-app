@@ -2366,10 +2366,13 @@ const p7 = stageOutputs.p7 || null;
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         {/* Back-to-landing link — small, low-weight, lives above the page h1
-            so power users can return to the two-path picker any time. */}
+            so power users can return to the two-path picker any time.
+            Hidden in print (the button belongs to the live app, not the
+            printed report). */}
         <button
           type="button"
           onClick={returnToLanding}
+          className="no-print"
           style={{
             background: "none",
             border: "none",
@@ -2386,7 +2389,7 @@ const p7 = stageOutputs.p7 || null;
         >
           ← Back to start
         </button>
-        <header style={{ marginBottom: 24 }}>
+        <header className="no-print" style={{ marginBottom: 24 }}>
           {analysisMode === "field_scan" ? (
             <>
               <h1 style={{ margin: 0, fontSize: 34, lineHeight: 1.15, color: "#352719" }}>Field Scan</h1>
@@ -2401,7 +2404,7 @@ const p7 = stageOutputs.p7 || null;
           )}
         </header>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <div className="no-print" style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           {/* Analysis Mode toggle removed: the landing screen (WelcomeLanding)
               owns the initial choice and the "← Back to start" link above
               owns the escape hatch. Keeping the toggle inline alongside
@@ -2613,6 +2616,91 @@ const p7 = stageOutputs.p7 || null;
           )}
         </div>
 
+        {/* Print / Save as PDF — small action bar above the report area
+            when a report exists. Calls window.print() which opens the
+            browser-native print dialog; user picks "Save as PDF" as the
+            destination on desktop, or "Save to Files" / "AirPrint" on
+            mobile. No external library. Hidden in print output itself
+            via .no-print so the button doesn't show on the printed page. */}
+        {report && (
+          <div
+            className="no-print"
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: 16,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== "undefined") window.print();
+              }}
+              style={{
+                background: "#fff",
+                color: "#1a2e4e",
+                border: "1px solid #b9956a",
+                padding: "8px 14px",
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                letterSpacing: "0.01em",
+              }}
+            >
+              Print / Save as PDF →
+            </button>
+          </div>
+        )}
+
+        {/* Print-only metadata header — appears at the top of the
+            printed report to give context for the saved PDF: scan ID,
+            mode, and date. Invisible on screen. Wrapped in .print-only
+            so it only surfaces when window.print() is invoked. */}
+        {report && (
+          <div
+            className="print-only"
+            style={{
+              marginTop: 12,
+              padding: "10px 0",
+              borderTop: "1px solid #d9ccb5",
+              borderBottom: "1px solid #d9ccb5",
+              fontFamily:
+                "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+              fontSize: 12,
+              color: "#594734",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: "#1a2e4e",
+                marginBottom: 4,
+              }}
+            >
+              {analysisMode === "field_scan"
+                ? "Field Scan Report"
+                : "Full Analysis Report"}
+            </div>
+            <div>
+              <strong>Case ID:</strong>{" "}
+              {activeCaseId || viewingSavedScanId || "—"}
+            </div>
+            <div>
+              <strong>Mode:</strong>{" "}
+              {analysisMode === "field_scan" ? "Field Scan" : "Full Analysis"}
+            </div>
+            <div>
+              <strong>Report{viewingSavedScanId ? " saved" : " generated"}:</strong>{" "}
+              {formatSavedScanTimestamp(
+                viewingSavedScanTimestamp || new Date().toISOString()
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Historical-view banner — shown when the report state was
             loaded from IndexedDB via ?view=case-XXX rather than from a
             fresh scan in this session. Signals that the user is looking
@@ -2644,6 +2732,7 @@ const p7 = stageOutputs.p7 || null;
             <button
               type="button"
               onClick={returnToLanding}
+              className="no-print"
               style={{
                 background: "none",
                 border: "1px solid #d9ccb5",
@@ -2802,8 +2891,11 @@ const p7 = stageOutputs.p7 || null;
                 a field-scan report. Photos migrate to structured slots
                 following the existing inferFieldImageType convention;
                 user can rearrange before submitting the full analysis.
-                Not shown when there are no photos to migrate (defensive). */}
+                Not shown when there are no photos to migrate (defensive).
+                Hidden in print — the upsell is interactive infrastructure,
+                not part of the captured report. */}
             {fieldPhotos.length > 0 && (
+              <div className="no-print">
               <SectionCard title="">
                 <div
                   style={{
@@ -2854,6 +2946,7 @@ const p7 = stageOutputs.p7 || null;
                   </button>
                 </div>
               </SectionCard>
+              </div>
             )}
           </div>
         )}
@@ -2981,8 +3074,13 @@ const p7 = stageOutputs.p7 || null;
                 Gated by DEBUG_TRACE constant at top of file so it can
                 be hidden with a single boolean flip when ready to ship.
                 Surfaces per-phase engine reasoning for verifying that
-                evidence captured at P0 is routed correctly downstream. */}
-            {DEBUG_TRACE && <TraceReport report={report} />}
+                evidence captured at P0 is routed correctly downstream.
+                Hidden in print (diagnostic noise on a paper readout). */}
+            {DEBUG_TRACE && (
+              <div className="no-print">
+                <TraceReport report={report} />
+              </div>
+            )}
           </div>
         )}
       </div>
