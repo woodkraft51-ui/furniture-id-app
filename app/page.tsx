@@ -3,6 +3,9 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { API } from "../lib/store";
 import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
+import WelcomeLanding from "./WelcomeLanding";
+
+const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
 
 // Viewport-aware sizing for the DatingOverlapViz mobile responsiveness.
 // React inline styles don't support @media; this hook tracks window width
@@ -1735,6 +1738,43 @@ export default function Page() {
   const [error, setError] = useState("");
   const [uploadTooLarge, setUploadTooLarge] = useState(false);
 
+  // First-visit landing screen. null = pre-hydration / unknown; true = show
+  // landing; false = user has dismissed previously. Layout still renders
+  // logo header during the pre-hydration moment so the page never looks
+  // broken. Once known, landing shows on first visit and is dismissed when
+  // the user picks a mode (persisted to localStorage).
+  const [showLanding, setShowLanding] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const dismissed = window.localStorage.getItem(LANDING_DISMISSED_KEY) === "true";
+      setShowLanding(!dismissed);
+    } catch {
+      // localStorage unavailable (private mode, etc.) — default to showing
+      setShowLanding(true);
+    }
+  }, []);
+
+  const dismissLandingWithMode = (mode: "full_analysis" | "field_scan") => {
+    setIntake((prev) => ({ ...prev, analysis_mode: mode }));
+    setShowLanding(false);
+    try {
+      window.localStorage.setItem(LANDING_DISMISSED_KEY, "true");
+    } catch {
+      // ignore
+    }
+  };
+
+  const returnToLanding = () => {
+    setShowLanding(true);
+    try {
+      window.localStorage.removeItem(LANDING_DISMISSED_KEY);
+    } catch {
+      // ignore
+    }
+  };
+
   const analysisMode = intake.analysis_mode;
 
   const structuredMissingEvidence = useMemo(() => computeMissingEvidenceFromStructured(coreImages, groupImages), [coreImages, groupImages]);
@@ -1908,9 +1948,47 @@ const p7 = stageOutputs.p7 || null;
   const fieldReady = fieldPhotos.length >= 2;
   const fullReady = Boolean(coreImages.overall_front && coreImages.overall_side && allImages.length >= 2);
 
+  // Pre-hydration: render nothing in the page body. Layout header (logo +
+  // tagline + studio attribution) still renders, so the page is never blank.
+  if (showLanding === null) {
+    return <main style={{ minHeight: "60vh", background: "#f6f1e8" }} />;
+  }
+
+  // First-visit (or explicit return-to-landing): show the two-path landing
+  // screen instead of the intake form. Selecting a card dismisses the
+  // landing and lands the user on the form pre-set to that mode.
+  if (showLanding) {
+    return (
+      <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
+        <WelcomeLanding onSelectMode={dismissLandingWithMode} />
+      </main>
+    );
+  }
+
   return (
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
+        {/* Back-to-landing link — small, low-weight, lives above the page h1
+            so power users can return to the two-path picker any time. */}
+        <button
+          type="button"
+          onClick={returnToLanding}
+          style={{
+            background: "none",
+            border: "none",
+            padding: "4px 0",
+            marginBottom: 12,
+            cursor: "pointer",
+            color: "#594734",
+            fontSize: 13,
+            fontFamily: "inherit",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          ← Back to start
+        </button>
         <header style={{ marginBottom: 24 }}>
           {analysisMode === "field_scan" ? (
             <>
