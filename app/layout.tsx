@@ -107,6 +107,8 @@ export default function RootLayout({
         <footer className="ps-footer">
           <Link href="/about">About this app</Link>
           <span className="ps-footer-sep">·</span>
+          <Link href="/scans">My Scans</Link>
+          <span className="ps-footer-sep">·</span>
           <a
             href="https://newcreationswoodcraft.com"
             target="_blank"

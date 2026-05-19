@@ -212,6 +212,28 @@ function bandColor(band?: string) {
   return "#7a2626";
 }
 
+/** Format an ISO timestamp for the "Viewing saved scan from..." banner.
+ *  Returns the original string if parsing fails — defensive against
+ *  unexpected persisted_at values. */
+function formatSavedScanTimestamp(iso: string): string {
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const datePart = d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    const timePart = d.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `${datePart} at ${timePart}`;
+  } catch {
+    return iso;
+  }
+}
+
 function inferFieldImageType(index: number): string {
   if (index === 0) return "overall_front";
   if (index === 1) return "overall_side";
@@ -1934,12 +1956,68 @@ export default function Page() {
 
   const returnToLanding = () => {
     setShowLanding(true);
+    // Return-to-landing also exits historical-scan view if active.
+    setViewingSavedScanId(null);
+    setViewingSavedScanTimestamp(null);
     try {
       window.localStorage.removeItem(LANDING_DISMISSED_KEY);
     } catch {
       // ignore
     }
   };
+
+  /**
+   * Stage 3 of persistence rollout — view a saved scan via URL query
+   * param. When the page loads with ?view=case-XXXX:
+   *   1. Look up the case in IndexedDB via API.loadSavedCase()
+   *      (which also hydrates the in-memory caseStore so subsequent
+   *      getReport/getObservations calls work as if the case was
+   *      created in this session)
+   *   2. Set the report state to the loaded case
+   *   3. Hide the landing screen
+   *   4. Strip the ?view= param from the URL via history.replaceState
+   *      so a page refresh doesn't re-trigger the load (and the URL
+   *      stays clean)
+   *
+   * State: viewingSavedScanId is non-null only while a historical scan
+   * is being displayed. Used by the "Viewing saved scan from {date}"
+   * banner above the report. Reset to null when the user starts a new
+   * scan or navigates back to the landing.
+   */
+  const [viewingSavedScanId, setViewingSavedScanId] = useState<string | null>(null);
+  const [viewingSavedScanTimestamp, setViewingSavedScanTimestamp] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const viewId = params.get("view");
+    if (!viewId) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const loaded = await API.loadSavedCase(viewId);
+        if (cancelled || !loaded) return;
+        setReport(API.getReport(viewId));
+        setShowLanding(false);
+        setViewingSavedScanId(viewId);
+        setViewingSavedScanTimestamp(loaded?.persisted_at || null);
+        // Strip ?view= from URL so a refresh doesn't re-trigger
+        const url = new URL(window.location.href);
+        url.searchParams.delete("view");
+        window.history.replaceState({}, "", url.toString());
+        // Scroll to top so user lands at the report header, not mid-form
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (e) {
+        if (cancelled) return;
+        console.warn("[page] Failed to load saved scan", e);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /**
    * Inconclusive scan detection: when the engine's deep-extraction
@@ -2148,6 +2226,10 @@ export default function Page() {
 
     setIsRunning(true);
     setCurrentPhase("starting");
+    // Starting a new scan clears any historical-view state — the new
+    // report should not be presented as a saved-scan view.
+    setViewingSavedScanId(null);
+    setViewingSavedScanTimestamp(null);
     try {
       const created = API.createCase({ notes: intake.notes, analysis_mode: intake.analysis_mode });
       const caseId = created.case_id;
@@ -2530,6 +2612,53 @@ const p7 = stageOutputs.p7 || null;
             </>
           )}
         </div>
+
+        {/* Historical-view banner — shown when the report state was
+            loaded from IndexedDB via ?view=case-XXX rather than from a
+            fresh scan in this session. Signals that the user is looking
+            at saved historical output, not at a just-run analysis. */}
+        {report && viewingSavedScanId && (
+          <div
+            style={{
+              marginTop: 20,
+              padding: "12px 16px",
+              background: "#f5f0e8",
+              border: "1px solid #d9ccb5",
+              borderLeft: "3px solid #1a2e4e",
+              borderRadius: 8,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ fontSize: 13, color: "#594734", lineHeight: 1.5 }}>
+              <strong style={{ color: "#1a2e4e" }}>Viewing saved scan</strong>
+              {viewingSavedScanTimestamp && (
+                <> from {formatSavedScanTimestamp(viewingSavedScanTimestamp)}</>
+              )}
+              {" · "}
+              <span style={{ color: "#8a7c6a" }}>{viewingSavedScanId}</span>
+            </div>
+            <button
+              type="button"
+              onClick={returnToLanding}
+              style={{
+                background: "none",
+                border: "1px solid #d9ccb5",
+                color: "#594734",
+                padding: "5px 12px",
+                borderRadius: 6,
+                fontSize: 12,
+                cursor: "pointer",
+                fontFamily: "inherit",
+              }}
+            >
+              Start a new scan →
+            </button>
+          </div>
+        )}
 
         {report && isInconclusiveScan && (
           <div
