@@ -10,7 +10,10 @@
 
 ### 1. Commercial simplification suppression (HIGHEST PRIORITY)
 
-**Surfaced by:** French Provincial Revival upholstered armchair scan, 2026-05-20.
+**Surfaced by:**
+- French Provincial Revival upholstered armchair scan, 2026-05-20 (labeled "Academic French Louis XV Revival")
+- Colonial Revival / Queen Anne channel-back chair scan, 2026-05-20 (labeled "Colonial Revival Queen Anne Upholstered armchair" at 95% confidence — far more accurate than the prior Louis XV attribution, but still over-rewards cabriole legs + rolled arms without weighing the simplified / mass-market production character)
+- *Pattern strengthening across multiple scans — engine consistently over-rewards style cues vs commercial-production character on interwar American upholstered revival pieces*
 
 **Issue:** Engine has no logic to recognize when a piece displays revival STYLING cues but also shows commercial-production CHARACTER (softened carving, simplified shaping, broader / relaxed proportions, mass-market construction, reduced sophistication). When these co-occur, the engine should suppress confidence in "academic" formal style labels and push toward "Provincial Revival" / "Commercial Revival" / "Factory Interpretation" / "Style-Influenced" framing.
 
@@ -70,9 +73,12 @@
 
 ### 4. Confidence cap too high when structural unknowns exist
 
-**Surfaced by:** French Provincial Revival upholstered armchair scan (95% confidence cap with major unknowns: no underside, no joinery visibility, no fastener evidence, no rail structure).
+**Surfaced by:**
+- French Provincial Revival upholstered armchair scan (95% confidence cap with major unknowns: no underside, no joinery visibility, no fastener evidence, no rail structure)
+- Colonial Revival / Queen Anne channel-back chair scan, 2026-05-20 (95% cap again with no underside, no seat support, no spring, no internal frame evidence visible — engine still blending style confidence and date confidence)
+- *Pattern strengthening — same issue across multiple revival scans*
 
-**Issue:** `Phase1Gate.confidence_cap_pct` currently calculates from observation count + clue authority. Doesn't account for what's MISSING — when structural-evidence layers (joinery, fasteners, toolmarks, wood-evidence) have 0 contributing clues, the cap should drop regardless of style cap.
+**Issue:** `Phase1Gate.confidence_cap_pct` currently calculates from observation count + clue authority. Doesn't account for what's MISSING — when structural-evidence layers (joinery, fasteners, toolmarks, wood-evidence) have 0 contributing clues, the cap should drop regardless of style cap. Reports should also surface the style-vs-date confidence distinction more clearly ("High confidence in style family · Moderate confidence in production date").
 
 **Code location:**
 - `lib/engine.ts` — `p1()` function, around the `confidence_cap_pct` calculation
@@ -181,6 +187,27 @@
 3. Possibly: ensemble or "co-primary" treatment for closely-tied attributions
 
 **Scope:** Medium (~2 hours). Calibrate against multiple stress-test scans.
+
+---
+
+### 10. Adjacent revival-family bleed / expansive alternatives
+
+**Surfaced by:** Colonial Revival / Queen Anne channel-back chair scan, 2026-05-20.
+
+**Issue:** Engine surfaces too many adjacent revival families with too-low signals. The chair report referenced Queen Anne, Colonial Revival, Spanish Colonial Revival, AND Mediterranean Revival across the attribution and waves sections. While interwar American upholstered furniture genuinely borrowed broadly from multiple revival vocabularies, the engine is too eager to surface neighboring families that don't have distinct supporting evidence. Result: report reads like a cluster of stylistic possibilities rather than a disciplined evidence-first conclusion.
+
+Distinct from #9 (which is about picking the correct primary). This issue is about suppressing the *adjacent alternatives* that don't have meaningful signal — even when the primary is correct.
+
+**Code location:**
+- `lib/engineStyleEvaluator.ts` — alternative-attribution surfacing threshold
+- `lib/engineStyleIntersection.ts` — wave-aggregator qualifying confidence floor
+
+**Proposed approach:**
+1. Raise the qualifying-confidence floor for surfacing alternative style families: only surface alternatives that have meaningfully high signal (e.g., confidence ≥ 0.55), not all weak matches
+2. Same for wave-level alternatives — currently waves with 1 matched_signal are surfaced; consider requiring 2+ matched signals or a confidence floor
+3. Consider distance / compatibility filter: when primary attribution is e.g. "Colonial Revival Queen Anne," suppress geographically/temporally distant alternatives (Spanish Colonial, Mediterranean) unless they have clearly distinct structural or ornamental evidence
+
+**Scope:** Small-medium (~1.5 hours). Calibrate threshold values against accumulated stress-test scans.
 
 ---
 
