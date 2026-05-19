@@ -480,6 +480,46 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // Beds
   "Iron bed frame": "form_bedstead",
   "Brass bed or brass-frame furniture": "form_bedstead",
+  // NOTE: ↑ Above two routes preserved per appraiser directive (do not
+  // modify existing without approval). Both should ideally redirect to
+  // form_iron_bed (added 2026-05-19) since iron/brass beds are now a
+  // peer canonical with their own metal-frame dating evidence pathway.
+  // Flagged for review — switching these to form_iron_bed would route
+  // the bare alias hits to the correct canonical.
+
+  // Iron bed routes — Batch 2 non-wood taxonomy expansion (2026-05-19)
+  "Iron bed": "form_iron_bed",
+  "Iron bedstead": "form_iron_bed",
+  "Metal bed": "form_iron_bed",
+  "Metal bedstead": "form_iron_bed",
+  "Brass bed": "form_iron_bed",
+  "Brass bedstead": "form_iron_bed",
+  "Victorian brass bed": "form_iron_bed", // subtype_iron_bed_victorian_brass
+  "Antique brass bed": "form_iron_bed",
+  "Antique iron bed": "form_iron_bed",
+  "Cast iron bed": "form_iron_bed", // subtype_iron_bed_painted_iron
+  "Cast-iron bed": "form_iron_bed",
+  "Wrought iron bed": "form_iron_bed",
+  "Wrought-iron bed": "form_iron_bed",
+  "Painted iron bed": "form_iron_bed", // subtype_iron_bed_painted_iron
+  "Japanned iron bed": "form_iron_bed", // subtype_iron_bed_painted_iron (japanned finish c. 1850-1910)
+  "Adirondack iron bed": "form_iron_bed", // subtype_iron_bed_adirondack_or_camp
+  "Camp bed": "form_iron_bed", // subtype_iron_bed_adirondack_or_camp (boundary form with military/folding camp beds)
+  "Cottage iron bed": "form_iron_bed", // subtype_iron_bed_adirondack_or_camp
+  "Farmhouse iron bed": "form_iron_bed",
+  "Tubular steel bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional
+  "Tubular-steel bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional
+  "Hospital bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional (historic; modern medical equipment out of scope)
+  "Sanatorium bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional
+  "Dormitory bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional
+  "Institutional metal bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional
+  "Cast-iron daybed": "form_iron_bed", // subtype_iron_bed_cast_iron_daybed (boundary form with form_daybed)
+  "Iron fainting couch": "form_iron_bed", // subtype_iron_bed_cast_iron_daybed
+  // Note: "Metal bed frame" intentionally NOT remapped — the existing
+  // CLUE_TO_CANONICAL alias routes to form_bedstead and is preserved
+  // per appraiser directive. Resolve at scoreForms via metal-frame
+  // construction evidence when present.
+
 
   // Seating — form_id resolution depends on style attribution (Block 2)
   "Toledo-style mid-century industrial task chair": NO_MATCH, // form_office_chair / form_task_chair not yet authored
