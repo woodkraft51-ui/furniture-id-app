@@ -1233,7 +1233,51 @@ if (t.includes("formica")) return "formica_surface";
 
 if (t.includes("plastic")) return "molded_plastic";
 if (t.includes("acrylic") || t.includes("lucite")) return "acrylic_clear";
- 
+
+// ─────────────────────────────────────────────────────────────────────
+// Non-wood material/joinery/condition text-pattern fallbacks
+// (Batch 1-3 non-wood taxonomy follow-up — text-pattern detection for
+// LLM observations that don't emit clue keys explicitly. Most specific
+// patterns first to avoid bleeding into broader matches.)
+// ─────────────────────────────────────────────────────────────────────
+
+// Metal joinery — most specific (MIG/TIG / spot weld) before broader (welded / forged)
+if (!isNegated("mig") && includesAny(t, ["mig weld", "tig weld", "gas-shielded weld", "gas shielded weld", "stacked dime", "stacked-dime"])) return "mig_tig_welded_joint";
+if (!isNegated("spot weld") && includesAny(t, ["spot weld", "spot-weld", "resistance weld", "weld dimple"])) return "spot_welded_joint";
+if (!isNegated("rivet") && includesAny(t, ["rivet head", "domed rivet", "riveted joint", "riveted seam", "riveted construction", "peened rivet"])) return "riveted_metal_joint";
+if (!isNegated("braze") && includesAny(t, ["brazed joint", "brazed seam", "brass infill", "brass fillet", "brazing"])) return "brazed_metal_joint";
+if (!isNegated("solder") && includesAny(t, ["soldered joint", "soldered seam", "solder line", "soft solder"])) return "soldered_metal_joint";
+if (!isNegated("forged") && includesAny(t, ["forge weld", "hand-forged joint", "hand forged joint", "blacksmith joint", "hammer-formed", "hammer forged"])) return "hand_forged_metal_joint";
+if (!isNegated("crimped") && includesAny(t, ["crimped seam", "folded seam", "lock seam", "pittsburgh seam", "grooved seam"])) return "crimped_folded_seam";
+if (!isNegated("wire wrap") && includesAny(t, ["wire-wrapped", "wire wrapped joint", "wrapped joint", "wire banding"])) return "wire_wrapped_metal_joint";
+
+// Metal wear / condition
+if (!isNegated("rust") && includesAny(t, ["rust pitting", "pitted rust", "rust pits", "pitted surface", "rusty pits"])) return "rust_pitting";
+if (!isNegated("plating") && includesAny(t, ["plating loss", "plating wear", "plating worn", "plated worn through", "exposed base metal", "exposed pot metal", "chrome flaking", "nickel flaking", "brass plating wear"])) return "plating_loss";
+if (!isNegated("corrosion") && includesAny(t, ["joint corrosion", "corroded joint", "corrosion at joint", "galvanic corrosion"])) return "joint_corrosion";
+if (!isNegated("weld repair") && includesAny(t, ["weld repair", "later weld", "repair weld", "modern weld over"])) return "weld_repair_visible";
+if (!isNegated("powder coat") && includesAny(t, ["powder coat", "powder-coat", "powder coated", "modern powder coating"])) return "powder_coat_overspray";
+if (!isNegated("bent") && includesAny(t, ["bent metal", "sprung metal", "bent frame", "deformed tubing", "warped tubing"])) return "bent_or_sprung_metal";
+
+// Wicker era and material — most specific first
+if (!isNegated("lloyd loom") && includesAny(t, ["lloyd loom", "lloyd-loom", "paper fiber", "paper-fiber", "twisted paper", "kraft paper wicker", "machine-woven paper"])) return "lloyd_loom_paper_fiber";
+if (!isNegated("bar harbor") && includesAny(t, ["bar harbor", "bar-harbor", "resort wicker", "porch wicker", "sunroom wicker"])) return "bar_harbor_style_wicker";
+if (!isNegated("victorian wicker") && includesAny(t, ["victorian wicker", "curlicue wicker", "wicker curlicue", "ornate wicker", "scrolled wicker", "wicker scrolls"])) return "victorian_curlicue_wicker";
+if (!isNegated("mid-century wicker") && includesAny(t, ["mid-century wicker", "mid century wicker", "modernist wicker", "streamlined wicker", "filipino rattan", "papasan style"])) return "mid_century_streamlined_wicker";
+
+// Wicker weave patterns
+if (!isNegated("herringbone") && includesAny(t, ["herringbone weave", "herringbone wicker", "diagonal weave"])) return "wicker_weave_basket";
+if (!isNegated("basket weave") && includesAny(t, ["basket weave", "basket-weave", "alternating over-under", "groups of two strands"])) return "wicker_weave_basket";
+if (!isNegated("close weave") && includesAny(t, ["close weave", "tight weave", "dense weave", "tight wicker"])) return "wicker_weave_close";
+if (!isNegated("open weave") && includesAny(t, ["open weave", "open wicker", "airy weave", "loose weave"])) return "wicker_weave_open";
+
+// Paper fiber (broader than Lloyd loom — check AFTER lloyd_loom match)
+if (!isNegated("paper fiber") && includesAny(t, ["paper construction", "kraft paper construction", "paper-fiber furniture"])) return "paper_fiber_construction";
+
+// Wicker condition
+if (!isNegated("strand") && includesAny(t, ["broken strands", "missing strands", "unraveled wicker", "broken wicker", "wicker damage"])) return "wicker_strand_breakage";
+if (!isNegated("paint buildup") && includesAny(t, ["paint buildup", "multiple paint layers", "thick paint on wicker", "painted-over wicker"])) return "wicker_paint_buildup";
+
   return null;
 }
 function descriptionFromObservation(o: any): string {
@@ -4903,6 +4947,56 @@ hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_
 
 Preferred upholstery-evidence keys (Block 12 — use whenever the piece has visible upholstery):
 coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, marshall_pocket_coil, no_spring_seat, jute_webbing, elastic_webbing, horsehair_stuffing, cotton_batting, foam_padding, polyurethane_foam, feather_down_fill, button_tufting, nailhead_trim, hand_tacks, upholstery_staple_construction, velvet_cover, damask_cover, haircloth_cover, leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover, jacquard_cover.
+
+Preferred non-wood material, joinery, and condition keys (Batch 1-3 non-wood taxonomy — use whenever the piece is primarily metal, wicker, or mixed-material rather than wood):
+
+Metal joining methods (emit whichever is visible at frame intersections, tube junctions, or seam lines):
+- hand_forged_metal_joint — visible hammer marks at the joint, irregular forge fusion line, slight bulge or upset where pieces meet, forge scale on adjacent surfaces. Pre-1900 wrought-iron dominant.
+- riveted_metal_joint — domed, flush, countersunk, or decorative rivet heads visible at joints; repeating rivet pattern along seams or at structural junctions. c. 1850-1940 industrial.
+- brazed_metal_joint — thin brass-colored infill line at lap or butt seam; brass fillet at the joint corner; color contrast between brass infill and parent metal. Especially diagnostic on brass beds and brass lighting.
+- soldered_metal_joint — dull silver or gray solder line at lap or butt seam; small soft bead or fillet. Common in tinware, pewter, lightweight brass, lighting bodies.
+- welded_joint — visible weld bead with rippled scallop or fish-scale pattern (oxyacetylene) or coarser stick-weld pattern (arc); heat-discoloration zone around the joint. Post-1910 widespread.
+- spot_welded_joint — small circular dimples or discolored spots at regular intervals along an overlapped sheet-metal seam, typically 1/4-1/2 inch diameter spaced 1-3 inches apart. Post-1925 industrial.
+- mig_tig_welded_joint — clean uniform weld bead with fine ripple (TIG: stacked-dime appearance; MIG: smoother continuous bead); minimal spatter; minimal heat-discoloration zone. Post-1948 / TIG post-1941. PRIMARY REPRODUCTION-DETECTION SIGNAL on pieces styled as 19th-c. wrought iron or Victorian brass.
+- crimped_folded_seam — raised, folded, or grooved seam visible along sheet-metal joint with no solder/braze/weld/rivets. Post-1850 industrial sheet-metal.
+- wire_wrapped_metal_joint — visible wire wrap, banding, or coil at the joint; common in wicker-and-iron hybrid construction and decorative lighting bands.
+
+Metal materials (emit whenever metal frame components are visible):
+- metal_frame, wrought_iron, cast_iron, brass_frame, tubular_steel, chrome_frame, painted_metal_finish.
+
+Metal wear and condition signals (emit when visible — important for restoration assessment and reproduction detection):
+- rust_pitting — active iron or steel oxidation with surface pitting.
+- plating_loss — chrome, nickel, or brass plating wear-through to base metal. Note: thinner plating wearing through to steel is a period-brass-bed signal c. 1880-1920; uniform thick plating without wear-through is a modern-reproduction signal.
+- joint_corrosion — corrosion concentrated at metal joints (galvanic, crevice, or stress).
+- weld_repair_visible — a modern weld over an original joint of a different type; record the weld as restoration evidence and preserve the original joining method as the dating signal.
+- powder_coat_overspray — modern powder-coat finish (post-1960s) covering an earlier metal piece; obscures original finish and surface wear.
+- bent_or_sprung_metal — permanent deformation from use or stress.
+
+Wicker era / style dating anchors (emit when wicker, rattan, reed, or paper-fiber construction is visible):
+- lloyd_loom_paper_fiber — uniform twisted-paper strands wrapped around a wire core; visible at broken strands and frame edges. Post-1917 HARD anchor (Marshall B. Lloyd 1917 patent; Heywood-Wakefield production). A piece otherwise styled or attributed pre-1917 cannot be Lloyd loom in original construction.
+- bar_harbor_style_wicker — open airy weave, geometric forms, minimal curlicue ornament, often white-painted or natural finish. c. 1900-1920 American resort wicker era.
+- victorian_curlicue_wicker — heavy ornament with scrolls, curlicues, hearts, fans, photo-frame insets, densely decorated backs. c. 1880-1900 Victorian.
+- mid_century_streamlined_wicker — lighter forms, simpler curves, often paired with steel or aluminum frames; often imported Filipino or Asian-Pacific work. c. 1945-1970.
+- paper_fiber_construction — broader category that includes Lloyd loom paper fiber; uniform extruded paper strands vs. the irregular tapered profile of natural plant fibers.
+
+Wicker weave-pattern signals (sub-diagnostic; combine with era/material anchors above):
+- wicker_weave_close — tight close weave with minimal gaps between strands; quality/formal production.
+- wicker_weave_open — open or airy weave with visible gaps between strands; Bar Harbor era signal.
+- wicker_weave_basket — basket-weave pattern (alternating over-under in groups of two or more strands).
+
+Wicker materials (existing keys; emit whenever visible):
+- woven_body, rattan_frame, cane_panels.
+
+Wicker condition signals:
+- wicker_strand_breakage — broken, missing, or unraveled strands.
+- wicker_paint_buildup — multiple paint layers obscuring original finish, weave detail, and material identification.
+
+Critical observation discipline for non-wood pieces:
+1. ALWAYS describe joining method visible at frame intersections — it is often the strongest dating signal on metal furniture.
+2. Distinguish reproductions: MIG/TIG-clean bead on Victorian-styled iron or brass = post-1948 reproduction; uniform thick brass plating with no wear-through = often modern reproduction; powder-coat finish on a piece styled pre-1960s = refinish or reproduction.
+3. Preserve original joining method as the dating signal even if later weld repair is present — record the repair separately as weld_repair_visible.
+4. On wicker: distinguish paper fiber (uniform extruded strands, post-1917) from natural reed/rattan (irregular tapered plant fibers). This single distinction often controls dating.
+5. Report era-anchor markers (lloyd_loom_paper_fiber, bar_harbor_style_wicker, victorian_curlicue_wicker) even when uncertain — the engine will weigh them appropriately.
 
 ${UPHOLSTERY_CANONICAL_APPENDIX}
 
