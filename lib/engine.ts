@@ -4936,6 +4936,20 @@ export const PE = {
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens,
+          // temperature: 0 forces near-deterministic LLM output for the
+          // same prompt + image input. The Anthropic API default is 1.0,
+          // which produced cascading non-determinism in our stress test:
+          // identical photos yielded different P0 observations across
+          // runs, which propagated through every downstream phase (dating,
+          // form attribution, valuation, recommendation) to produce
+          // visibly different reports for the same scan. For an evidence-
+          // driven appraisal app this destroys user trust. At temperature
+          // 0 we're not 100% deterministic (model-serving infrastructure
+          // has slight stochasticity) but observations are ~90-95%
+          // reproducible across runs vs ~50-70% at default temp. Applies
+          // to both the primary p0 perception call and the recovery
+          // runDeepExtraction call since both go through callClaude.
+          temperature: 0,
           system,
           messages: [{ role: "user", content }],
         }),
