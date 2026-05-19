@@ -5976,7 +5976,57 @@ if (missing.label_photo) {
     // frame styles.
     const styleRanked = attributeStyle(frameDigest.clue_keys || [], observationDescriptions);
     const style_attribution = styleRanked[0] ?? null;
-    const style_alternatives = styleRanked.slice(1, 4);
+
+    // Stress-test fix #10 (2026-05-20): suppress adjacent revival-family
+    // bleed in surfaced alternatives.
+    //
+    // Issue surfaced by the Colonial Revival Queen Anne chair scan: the
+    // engine surfaced "Spanish Colonial Revival / Mission Revival" as an
+    // alternative because it matched the same two generic tokens
+    // ("colonial", "revival") that Colonial Revival matched. Same matched
+    // terms, same confidence — but Spanish Colonial has no distinct
+    // identifying evidence (no "spanish", no "mission" tokens fired).
+    // Reports read as a cluster of stylistic possibilities rather than
+    // disciplined evidence-first conclusions.
+    //
+    // Two-part filter applied before slicing to 3:
+    //
+    //   1. Confidence floor (0.55) — alternatives below this threshold
+    //      represent weak matches that add noise without information.
+    //      The wave search already uses 0.4 as its floor; alternatives
+    //      surfaced in the user-facing report deserve a higher bar.
+    //
+    //   2. Matched-term distinctness — alternatives whose matched_terms
+    //      are entirely subsumed by terms already seen in the primary
+    //      attribution or in higher-confidence alternatives are
+    //      suppressed. The alternative must contribute at least one
+    //      DISTINCT matched term to be surfaced. This filters the
+    //      Spanish-Colonial-Revival-piggybacking-on-Colonial-Revival
+    //      case directly.
+    //
+    // Both filters apply only to user-facing alternative surfacing.
+    // Internal logic (cousin contrasts, style-wave seeding, etc.) that
+    // operates on the full styleRanked list is unaffected.
+    const ALT_CONFIDENCE_FLOOR = 0.55;
+    const seenMatchedTerms = new Set<string>();
+    if (style_attribution && Array.isArray((style_attribution as any).matched_terms)) {
+      for (const t of (style_attribution as any).matched_terms as string[]) {
+        seenMatchedTerms.add(t.toLowerCase());
+      }
+    }
+    const style_alternatives: StyleAttribution[] = [];
+    for (const alt of styleRanked.slice(1)) {
+      if (style_alternatives.length >= 3) break;
+      if ((alt.confidence ?? 0) < ALT_CONFIDENCE_FLOOR) continue;
+      const altTerms = Array.isArray((alt as any).matched_terms)
+        ? ((alt as any).matched_terms as string[]).map((t) => t.toLowerCase())
+        : [];
+      const hasDistinctTerm =
+        altTerms.length === 0 || altTerms.some((t) => !seenMatchedTerms.has(t));
+      if (!hasDistinctTerm) continue;
+      style_alternatives.push(alt);
+      for (const t of altTerms) seenMatchedTerms.add(t);
+    }
 
     // Block 9: controlled style-supporting evidence. Pulls forward undated
     // observations whose clues are categorically aligned with the surfaced
