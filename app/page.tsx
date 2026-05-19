@@ -4,8 +4,21 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { API } from "../lib/store";
 import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
 import WelcomeLanding from "./WelcomeLanding";
+import ExampleModal from "./ExampleModal";
+import GuidanceMessages from "./GuidanceMessages";
+import { PHOTO_EXAMPLES } from "../lib/intake";
 
 const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
+
+// CORE_SLOTS key → PHOTO_EXAMPLES key. Slots without an entry render
+// without a "View example" link. GROUP_SLOTS map by their `key` (not
+// image_type) — currently only "construction" has an example.
+const EXAMPLE_KEY_FOR_SLOT: Record<string, string> = {
+  overall_front: "overall_front",
+  overall_side: "overall_side",
+  underside: "underside",
+  construction: "construction",
+};
 
 // Viewport-aware sizing for the DatingOverlapViz mobile responsiveness.
 // React inline styles don't support @media; this hook tracks window width
@@ -1738,6 +1751,11 @@ export default function Page() {
   const [error, setError] = useState("");
   const [uploadTooLarge, setUploadTooLarge] = useState(false);
 
+  // Photo-example modal state. When set to a PHOTO_EXAMPLES key, the
+  // ExampleModal renders with the matching illustration + checklist.
+  // Wired into "View example" links rendered next to photo slots.
+  const [openExampleKey, setOpenExampleKey] = useState<string | null>(null);
+
   // First-visit landing screen. null = pre-hydration / unknown; true = show
   // landing; false = user has dismissed previously. Layout still renders
   // logo header during the pre-hydration moment so the page never looks
@@ -2098,12 +2116,27 @@ const p7 = stageOutputs.p7 || null;
                 <div style={{ display: "grid", gap: 14 }}>
                   {CORE_SLOTS.map((slot) => {
                     const current = coreImages[slot.key];
+                    const exampleKey = EXAMPLE_KEY_FOR_SLOT[slot.key];
                     return (
                       <div key={slot.key} style={{ border: "1px solid #e2d7c3", borderRadius: 10, padding: 12, background: "#fff" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "start" }}>
                           <div>
                             <div style={{ fontWeight: 700, color: "#3d2d1f" }}>{slot.label} {slot.required ? "*" : ""}</div>
-                            <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>{slot.desc}</div>
+                            <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
+                              {slot.desc}
+                              {exampleKey && (
+                                <>
+                                  {" "}
+                                  <button
+                                    type="button"
+                                    onClick={() => setOpenExampleKey(exampleKey)}
+                                    style={viewExampleLinkStyle}
+                                  >
+                                    View example →
+                                  </button>
+                                </>
+                              )}
+                            </div>
                             {current && (
                               <div style={{ marginTop: 8, fontSize: 14, fontWeight: 600, color: "#5d4932" }}>
                                 <span style={{ color: "#46603e", marginRight: 6 }}>✓</span>
@@ -2127,10 +2160,25 @@ const p7 = stageOutputs.p7 || null;
                 <div style={{ display: "grid", gap: 14 }}>
                   {GROUP_SLOTS.map((group) => {
                     const items = groupImages[group.key] || [];
+                    const exampleKey = EXAMPLE_KEY_FOR_SLOT[group.key];
                     return (
                       <div key={group.key} style={{ border: "1px solid #e2d7c3", borderRadius: 10, padding: 12, background: "#fff" }}>
                         <div style={{ fontWeight: 700, color: "#3d2d1f" }}>{group.label}</div>
-                        <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>{group.helper}</div>
+                        <div style={{ fontSize: 13, color: "#6a5845", marginTop: 4 }}>
+                          {group.helper}
+                          {exampleKey && (
+                            <>
+                              {" "}
+                              <button
+                                type="button"
+                                onClick={() => setOpenExampleKey(exampleKey)}
+                                style={viewExampleLinkStyle}
+                              >
+                                View example →
+                              </button>
+                            </>
+                          )}
+                        </div>
                         <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
                           <label style={uploadBrownButtonSmall}>Upload Photo(s)<input type="file" accept="image/*" multiple style={{ display: "none" }} onChange={(e) => handleGroupUpload(group.key, group.image_type, e.target.files)} /></label>
                           <label style={uploadTanButtonSmall}>Take Photo<input type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => handleGroupUpload(group.key, group.image_type, e.target.files)} /></label>
@@ -2149,6 +2197,10 @@ const p7 = stageOutputs.p7 || null;
                     );
                   })}
                 </div>
+                <GuidanceMessages
+                  missing={structuredMissingEvidence}
+                  totalPhotos={totalPhotos}
+                />
               </SectionCard>
 
               <SectionCard title="3. Intake Details">
@@ -2400,6 +2452,12 @@ const p7 = stageOutputs.p7 || null;
           </div>
         )}
       </div>
+      {openExampleKey && (
+        <ExampleModal
+          exampleKey={openExampleKey}
+          onClose={() => setOpenExampleKey(null)}
+        />
+      )}
     </main>
   );
 }
@@ -2415,6 +2473,20 @@ const uploadBrownButtonSmall: React.CSSProperties = { ...uploadBrownButton, padd
 const uploadTanButtonSmall: React.CSSProperties = { ...uploadTanButton, padding: "9px 12px", fontSize: 13, fontWeight: 600 };
 const smallRemoveButton: React.CSSProperties = { border: "1px solid #cebda4", background: "#fff8ee", color: "#6f4428", borderRadius: 8, padding: "9px 12px", cursor: "pointer", fontSize: 13 };
 const tinyRemoveButton: React.CSSProperties = { border: "1px solid #cebda4", background: "#fff8ee", color: "#6f4428", borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 12 };
+// Subtle text link rendered inline within a photo slot's description
+// when a PHOTO_EXAMPLES entry exists for that slot. Opens ExampleModal.
+const viewExampleLinkStyle: React.CSSProperties = {
+  background: "none",
+  border: "none",
+  padding: 0,
+  color: "#b9956a",
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: "pointer",
+  textDecoration: "underline",
+  textUnderlineOffset: "2px",
+  fontFamily: "inherit",
+};
 const listStyle: React.CSSProperties = { margin: "8px 0 0", paddingLeft: 18, fontSize: 14, lineHeight: 1.6, color: "#574634" };
 const subheadStyle: React.CSSProperties = { marginTop: 14, marginBottom: 6, fontSize: 14, fontWeight: 700, color: "#3d2d1f" };
 const metaRowStyle: React.CSSProperties = { display: "flex", justifyContent: "space-between", gap: 12, fontSize: 14, color: "#4f3f30" };
