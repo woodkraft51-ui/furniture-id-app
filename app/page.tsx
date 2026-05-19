@@ -2224,6 +2224,43 @@ export default function Page() {
       }
     }
 
+    // Pre-upload payload guard. Without this, large photo sets silently
+    // fail at the Vercel platform layer (4.5MB cap on serverless function
+    // payloads) — the proxy at /api/analyze returns 413 but in
+    // full-analysis mode there was no UI to surface that error, so the
+    // button reverted to "Run Full Analysis" with no indication of what
+    // went wrong. Catching it client-side BEFORE the call means a clear
+    // message instead of a silent failure.
+    //
+    // Estimate payload size by summing data_url string lengths. data_urls
+    // are base64-encoded (1 char ≈ 1 byte payload) plus a small prefix.
+    // 4 MB threshold leaves ~500KB margin under Vercel's 4.5MB cap for
+    // system prompt + intake metadata + JSON structure overhead.
+    const PAYLOAD_BYTE_LIMIT = 4_000_000;
+    const totalDataUrlBytes = allImages.reduce((sum, img) => {
+      const url = (img && (img as any).data_url) ? String((img as any).data_url) : "";
+      return sum + url.length;
+    }, 0);
+
+    if (totalDataUrlBytes > PAYLOAD_BYTE_LIMIT) {
+      const mb = (totalDataUrlBytes / 1_000_000).toFixed(1);
+      setError(
+        `Photos total ${mb} MB after compression, which exceeds the ${(PAYLOAD_BYTE_LIMIT / 1_000_000).toFixed(1)} MB per-scan upload limit. Try removing the lowest-detail photos (cropped close-ups beat wide shots for the engine) or running with fewer images.`
+      );
+      return;
+    }
+
+    // Soft count cap: more than 8 photos rarely improves analysis and
+    // routinely pushes payloads over the platform limit. Suggest pruning
+    // before attempting.
+    const PHOTO_COUNT_SOFT_CAP = 8;
+    if (allImages.length > PHOTO_COUNT_SOFT_CAP) {
+      setError(
+        `${allImages.length} photos is more than the engine can effectively use. Reduce to ${PHOTO_COUNT_SOFT_CAP} or fewer — choose your highest-detail shots (joinery close-ups, label, underside) over wide angle views. Fewer good photos beat more redundant ones.`
+      );
+      return;
+    }
+
     setIsRunning(true);
     setCurrentPhase("starting");
     // Starting a new scan clears any historical-view state — the new
@@ -2249,6 +2286,19 @@ export default function Page() {
         e?.name === "PayloadTooLargeError" ||
         /\b413\b|payload too large|request entity too large/i.test(msg);
       if (is413) {
+        // Field-scan path: UploadTooLargeNotice renders below the Run
+        // button with "Switch to Full Analysis" CTA. Full-analysis path:
+        // no such CTA available (they're already on full), so surface
+        // the error via setError so the existing inline error display
+        // in the full-analysis Run button section shows a clear message.
+        // Pre-upload validation (above) should normally catch this BEFORE
+        // the API call; this catch handles edge cases where the platform
+        // 413s on a payload that slipped just past our client estimate.
+        if (analysisMode === "full_analysis") {
+          setError(
+            "Photos are too large to scan in a single Full Analysis. Try removing the lowest-detail photos, or use the highest-detail close-ups (joinery, label, underside) — fewer good photos beat more redundant ones."
+          );
+        }
         setUploadTooLarge(true);
       } else {
         setError(msg || "Analysis failed.");
