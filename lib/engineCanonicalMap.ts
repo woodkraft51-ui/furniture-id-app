@@ -88,6 +88,31 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   multiple_drawer_case: "form_chest_of_drawers",
   metal_bed_frame: "form_iron_bed",
 
+  // ── CLOCK CLUE ROUTES (stress-test fix #4, 2026-05-20) ────────────────────
+  // form_shelf_clock + form_tall_case_clock + form_wall_clock canonicals
+  // already exist in forms.ts (user-authored); the gap was that NO clue
+  // keys routed to them, so the LLM emitting rich clock observations
+  // (arched_glazed_dial_door, turned_spindle_gallery, etc.) had nowhere
+  // for that evidence to land — the engine returned "Unclassified
+  // furniture" on clocks. These routes wire the common clock clue keys
+  // to form_shelf_clock as the umbrella canonical (covers mantel /
+  // shelf / kitchen / gingerbread / Victorian / Eastlake / steeple /
+  // beehive / round-top / black mantel / tambour / novelty subtypes).
+  // Tall case clocks and wall clocks have distinctive clue keys (longcase
+  // chamber, hood, weight drop, hanging hardware) — those would route
+  // to their dedicated forms when LLM emits them; current LLM observation
+  // patterns center on shelf-clock evidence per the stress-test scans.
+  metal_clock_form: "form_shelf_clock",
+  clock_case_form: "form_shelf_clock",
+  arched_glazed_dial_door: "form_shelf_clock",
+  turned_spindle_gallery: "form_shelf_clock",
+  scrolled_side_corbels: "form_shelf_clock",
+  reverse_painted_lower_tablet: "form_shelf_clock",
+  winding_arbors: "form_shelf_clock",
+  striking_mechanism: "form_shelf_clock",
+  pendulum_bob_cast: "form_shelf_clock",
+  brass_dial_bezel: "form_shelf_clock",
+
   // ── MAKER LABELS (delete from CLUE_LIBRARY; route to makerMarks.ts) ───────
   maker_label: NO_MATCH, // generic; specific label captured via makerMarks lookup
   roos_label: NO_MATCH, // specific maker; lives in makerMarks.ts MAKER_ENTRIES
@@ -521,6 +546,59 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // Seating-suppression guard at engine.ts:3106-3115 continues to prevent
   // chair-form pieces from mis-routing when the LLM over-emits
   // metal_bed_frame on any iron/steel-framed furniture.
+
+  // Clock routes — stress-test fix #4 (2026-05-20). form_shelf_clock,
+  // form_tall_case_clock, and form_wall_clock canonicals already existed
+  // in forms.ts; these aliases let LLM-emitted form labels reach them.
+  "Mantel clock": "form_shelf_clock", // subtype_shelf_clock_mantel_clock
+  "Mantle clock": "form_shelf_clock",
+  "Shelf clock": "form_shelf_clock",
+  "Kitchen clock": "form_shelf_clock", // subtype_shelf_clock_gingerbread
+  "Parlor clock": "form_shelf_clock",
+  "Gingerbread clock": "form_shelf_clock", // subtype_shelf_clock_gingerbread
+  "Victorian shelf clock": "form_shelf_clock",
+  "Victorian mantel clock": "form_shelf_clock",
+  "Victorian gingerbread clock": "form_shelf_clock", // subtype_shelf_clock_gingerbread
+  "Victorian kitchen clock": "form_shelf_clock", // subtype_shelf_clock_gingerbread
+  "Eastlake mantel clock": "form_shelf_clock", // subtype_shelf_clock_eastlake
+  "Eastlake shelf clock": "form_shelf_clock", // subtype_shelf_clock_eastlake
+  "Steeple clock": "form_shelf_clock", // subtype_shelf_clock_steeple
+  "Beehive clock": "form_shelf_clock", // subtype_shelf_clock_beehive
+  "Round-top mantel clock": "form_shelf_clock", // subtype_shelf_clock_round_top
+  "Round-top shelf clock": "form_shelf_clock", // subtype_shelf_clock_round_top
+  "Arch-top mantel clock": "form_shelf_clock", // subtype_shelf_clock_round_top
+  "Black mantel clock": "form_shelf_clock", // subtype_shelf_clock_black_mantel
+  "Tambour clock": "form_shelf_clock", // subtype_shelf_clock_tambour_clock
+  "Tambour mantel clock": "form_shelf_clock", // subtype_shelf_clock_tambour_clock
+  "Connecticut shelf clock": "form_shelf_clock",
+  "American shelf clock": "form_shelf_clock",
+  "American mantel clock": "form_shelf_clock",
+  "Antique mantel clock": "form_shelf_clock",
+  "Antique shelf clock": "form_shelf_clock",
+  "Seth Thomas mantel clock": "form_shelf_clock",
+  "Ansonia mantel clock": "form_shelf_clock",
+  "Waterbury mantel clock": "form_shelf_clock",
+  "New Haven mantel clock": "form_shelf_clock",
+  "Welch shelf clock": "form_shelf_clock",
+  "Gilbert clock": "form_shelf_clock",
+  "Ingraham clock": "form_shelf_clock",
+  "Sessions clock": "form_shelf_clock",
+  // Tall case clock + wall clock aliases route to their existing forms
+  "Tall case clock": "form_tall_case_clock",
+  "Grandfather clock": "form_tall_case_clock", // subtype grandfather
+  "Grandmother clock": "form_tall_case_clock", // subtype grandmother
+  "Granddaughter clock": "form_tall_case_clock", // subtype granddaughter
+  "Longcase clock": "form_tall_case_clock",
+  "Wall clock": "form_wall_clock",
+  "Banjo clock": "form_wall_clock",
+  "Schoolhouse clock": "form_wall_clock",
+  "Regulator clock": "form_wall_clock",
+  "Gallery clock": "form_wall_clock",
+  "Calendar clock": "form_wall_clock",
+  // Generic "Clock" — fallback to shelf_clock since mantel/shelf dominates
+  // American antique production volume
+  "Clock": "form_shelf_clock",
+  "Antique clock": "form_shelf_clock",
 
 
   // Seating — form_id resolution depends on style attribution (Block 2)

@@ -19129,6 +19129,99 @@ export const FORMS: FormEntry[] = [
           "Decorative or thematic shelf clock emphasizing unusual shapes, whimsical presentation, or novelty visual themes over traditional case conventions. Nontraditional case shapes, figural or thematic decoration, miniature-object simulation common. Especially associated with 20th century American mass-market decorative production. Emergence: c. late 19th century. Expanded popularity: 20th century-present.",
         ],
       },
+      // Detailed Victorian sub-style subtypes added 2026-05-20 during the
+      // stress-test fix sweep. The existing mantel_clock / tambour_clock /
+      // novelty_clock subtypes covered broad case-style categories; these
+      // additions provide the finer-grained Victorian shelf-clock
+      // identification (gingerbread, Eastlake, steeple, beehive, round-top,
+      // black mantel) that the engine needs to land specific attributions
+      // when the LLM emits style-specific clue keys (turned_spindle_gallery,
+      // scrolled_side_corbels, reverse_painted_lower_tablet, etc.).
+      // These coexist as PEER subtypes alongside the broader mantel_clock
+      // subtype rather than replacing it — Victorian black mantel clocks
+      // belong cleanly to subtype_shelf_clock_black_mantel; the broader
+      // mantel_clock subtype continues to cover non-Victorian architectural
+      // and formal mantel-clock cases (Federal, Greek Revival, Art Deco
+      // architectural mantel clocks, mid-century).
+      {
+        id: "subtype_shelf_clock_gingerbread",
+        name: "Victorian gingerbread / kitchen clock",
+        date_floor: 1875,
+        date_ceiling: 1900,
+        distinguishing_attributes: [
+          "Walnut, oak, or ash case with pressed or applied gingerbread ornament — open spindle gallery at top with finials, scrolled side corbels flanking the dial, decorative carved or pressed ornament on the lower case",
+          "Arched glass dial door over paper dial with Roman numerals; lower glass tablet typically reverse-painted with floral, geometric, or figural decoration",
+          "8-day time-and-strike movement (2 winding arbors); pendulum visible behind the lower tablet",
+          "Strong production c. 1875-1900 by all major Connecticut makers (Seth Thomas, Ansonia, Waterbury, New Haven Clock Co., Welch, Gilbert, Ingraham)",
+          "Most common surviving American Victorian shelf clock — heavy production volume means moderate collector market value (typically $50-400 depending on condition, maker, and originality)",
+          "Also commonly called: kitchen clock, parlor clock, Victorian shelf clock, Connecticut shelf clock",
+        ],
+      },
+      {
+        id: "subtype_shelf_clock_eastlake",
+        name: "Eastlake mantel clock",
+        date_floor: 1875,
+        date_ceiling: 1895,
+        distinguishing_attributes: [
+          "Walnut case with INCISED geometric ornament — straight-line geometric carving (diamond, lozenge, sunburst, herringbone) rather than gingerbread pressed ornament",
+          "Rectangular or stepped pediment top (vs gingerbread's open spindle gallery)",
+          "Arched glass dial door, paper dial, lower glass tablet (often more geometric/less floral than gingerbread), 8-day time-and-strike",
+          "Aesthetic Movement / Charles Eastlake design principles applied to American factory production; peak c. 1875-1895",
+          "Often confused with gingerbread; the key discriminator is INCISED geometric ornament (Eastlake) vs PRESSED/APPLIED ornament (gingerbread). Many clocks have both styles overlapping; appraisers often call these 'Victorian shelf clock' generically",
+        ],
+      },
+      {
+        id: "subtype_shelf_clock_steeple",
+        name: "Steeple clock",
+        date_floor: 1845,
+        date_ceiling: 1875,
+        distinguishing_attributes: [
+          "Tall, narrow case with peaked/triangular pediment and two slender pilaster columns flanking the dial — silhouette resembling a Gothic Revival church steeple",
+          "Mahogany, rosewood, or walnut case; veneered or solid",
+          "Round or arched dial; pendulum visible behind lower glass tablet (often with mirror or reverse-painted decoration)",
+          "Originated by Elias Ingraham c. 1845; major production by Connecticut makers through c. 1875",
+          "Steeple clocks predate the gingerbread/Eastlake styles and represent the earliest American shelf clock case-style mass production",
+        ],
+      },
+      {
+        id: "subtype_shelf_clock_beehive",
+        name: "Beehive clock",
+        date_floor: 1860,
+        date_ceiling: 1880,
+        distinguishing_attributes: [
+          "Distinctive rounded-arch (gothic-arch) case profile — flat front, top of case forms a smooth pointed-arch silhouette resembling a beehive",
+          "Mahogany, rosewood, walnut case; veneered common",
+          "Small scale — typically 12-18 inches tall (smaller than steeple or gingerbread clocks)",
+          "Often 30-hour or 8-day movement; pendulum visible behind lower glass tablet",
+          "Production peak c. 1860-1880; declining by 1885 as gingerbread/Eastlake styles dominated",
+        ],
+      },
+      {
+        id: "subtype_shelf_clock_round_top",
+        name: "Round-top / arch-top shelf clock",
+        date_floor: 1870,
+        date_ceiling: 1910,
+        distinguishing_attributes: [
+          "Case with rounded-arch top profile (smooth dome or rounded-arch silhouette) over the dial; vs gingerbread's spindle gallery or Eastlake's stepped pediment",
+          "Walnut or oak case; sometimes ebonized; restrained ornament compared to gingerbread",
+          "Arched glass dial door; lower glass tablet (sometimes plain, sometimes lightly decorated)",
+          "Common across all major Connecticut makers c. 1870-1910",
+          "Slightly more formal/restrained appearance than gingerbread; often confused with arch-top wall clocks (discriminator: shelf clocks have a stable horizontal base for surface placement; wall clocks have hanging hardware and no flat base)",
+        ],
+      },
+      {
+        id: "subtype_shelf_clock_black_mantel",
+        name: "Black mantel clock",
+        date_floor: 1880,
+        date_ceiling: 1920,
+        distinguishing_attributes: [
+          "Formal parlor clock with case of cast iron, slate, marbleized enameled wood, or black-painted hardwood — silhouette resembling Egyptian Revival, Greek Revival, or classical architectural forms (column-flanked dial, pediment, base)",
+          "Strong Victorian formal-parlor association c. 1880-1920; often paired with garniture (matching pair of urns or candelabras)",
+          "8-day time-and-strike movement; some examples have visible mercury or gridiron pendulums (decorative rather than functional compensation)",
+          "Heavy weight (often 15-40 lbs) due to cast-iron or slate construction",
+          "Major American makers (Ansonia especially prolific in this style) plus French imports (Japy Frères, Marti, Vincenti)",
+        ],
+      },
     ],
     dimensional_thresholds: {
       height_min: 8,

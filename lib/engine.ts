@@ -706,6 +706,70 @@ fallback_form: {
 },
 
 // ─────────────────────────────────────────────────────────────────────
+// Clock-specific clues — stress-test fix #4 (2026-05-20). Without these,
+// rich clock observations (winding arbors, brass dial bezel, pendulum
+// styles, decorative tablet) collected at P0 contributed 0 to the dating
+// envelope ("present but undated"). Each entry pairs a category (form
+// for case-shape clues; hardware for fittings; style for ornament) with
+// a dateHint string that the engine reads into the layer-by-layer
+// dating overlap. Weights calibrated to authority — case-form clues
+// (arched_glazed_dial_door, turned_spindle_gallery) carry higher weight
+// because the case style narrowly dates Victorian shelf clock production;
+// hardware clues are broader and lower-weight.
+// ─────────────────────────────────────────────────────────────────────
+
+metal_clock_form: {
+  category: "form",
+  dateHint: "clock case form; mantel, shelf, kitchen, or parlor clock — broad American production c. 1820-1940 (Connecticut clock industry dominance)",
+  weight: 0.78,
+},
+clock_case_form: {
+  category: "form",
+  dateHint: "clock case form; surface-set shelf/mantel clock — broad American production c. 1820-1940",
+  weight: 0.78,
+},
+arched_glazed_dial_door: {
+  category: "form",
+  dateHint: "arched glass dial door on a shelf clock case; characteristic of American round-top and arch-top mantel clock production c. 1870-1910",
+  weight: 0.72,
+},
+turned_spindle_gallery: {
+  category: "style",
+  dateHint: "turned-spindle gallery at the top of a shelf clock case; characteristic of Victorian American gingerbread/kitchen clock production c. 1875-1900",
+  weight: 0.75,
+},
+scrolled_side_corbels: {
+  category: "style",
+  dateHint: "scrolled or ribbon-carved corbel brackets flanking the dial of a shelf clock; characteristic of Victorian American shelf clock production c. 1870-1900",
+  weight: 0.70,
+},
+reverse_painted_lower_tablet: {
+  category: "style",
+  dateHint: "reverse-painted decorative glass tablet covering the pendulum window of a shelf clock; characteristic of American Victorian production c. 1850-1900",
+  weight: 0.72,
+},
+winding_arbors: {
+  category: "hardware",
+  dateHint: "winding arbors on a clock dial (8-day time-and-strike spring movement = 2 arbors); American spring-driven shelf clock production c. 1840-present",
+  weight: 0.55,
+},
+striking_mechanism: {
+  category: "function",
+  dateHint: "mechanical striking train in a clock; broad pre-1970 American mechanical clock production",
+  weight: 0.50,
+},
+pendulum_bob_cast: {
+  category: "hardware",
+  dateHint: "decorative cast brass pendulum bob visible behind glass tablet; American Victorian shelf clock production c. 1860-1910",
+  weight: 0.60,
+},
+brass_dial_bezel: {
+  category: "hardware",
+  dateHint: "brass dial bezel/surround on a clock dial; typical of American mantel clock production c. 1860-1920",
+  weight: 0.58,
+},
+
+// ─────────────────────────────────────────────────────────────────────
 // Wicker dating ladder — Batch 3 non-wood taxonomy expansion (2026-05-19).
 // Prior wicker vocabulary: woven_body, rattan_frame, cane_panels — all
 // generic and undated. These new clues add the major dating anchors
@@ -5302,7 +5366,10 @@ Important reasoning rules:
 - Multiple keys may apply to a single piece — emit each as a separate observation.
 
 Preferred form-signal keys:
-seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, lane_label, maker_label.
+seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, clock_case_form, roos_label, lane_label, maker_label.
+
+Preferred clock-evidence keys (use whenever the piece is a clock — mantel, shelf, kitchen, parlor, tall case, or wall clock):
+clock_case_form (any clock case), arched_glazed_dial_door (round-top/arch-top mantel clock, c. 1870-1910), turned_spindle_gallery (Victorian gingerbread, c. 1875-1900), scrolled_side_corbels (Victorian shelf clock ornament, c. 1870-1900), reverse_painted_lower_tablet (American Victorian shelf clock, c. 1850-1900), winding_arbors (2 = 8-day time-and-strike, 1 = time-only, 3 = time-strike-chime), striking_mechanism (mechanical strike train), pendulum_bob_cast (decorative cast brass pendulum bob, c. 1860-1910), brass_dial_bezel (American mantel clock, c. 1860-1920), roman_numeral_dial (Roman numerals on paper/enamel dial, pre-1920 dominant), metal_hands (steel or blued-steel clock hands).
 
 Preferred evidence-library keys (use whenever the evidence is visible):
 hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_joint, frame_and_panel_sides, solid_plank_back, hand_forged_nail, cut_nail, wire_nail, phillips_screw, staple_fastener, slotted_screw, pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter, shellac_crazing, shellac_intact, polyurethane, lacquer_finish, painted_metal_finish, refinished_surface, porcelain_caster, modern_caster, decorative_bail_pull, round_wood_knob, modern_concealed_hinge, swivel_mechanism, height_adjustment_mechanism, stamped_metal_bracket, lock_escutcheons, plywood_structural, plywood_drawer_bottom, bent_molded_plywood, cedar_lining, thick_veneer, solid_wood_construction, sheet_back_panel.
