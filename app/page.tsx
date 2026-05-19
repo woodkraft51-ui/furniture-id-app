@@ -2797,7 +2797,13 @@ const p7 = stageOutputs.p7 || null;
                     Why this label: {p3.final_style.final_style_reason}
                   </div>
                 )}
-                {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && <><div style={subheadStyle}>Alternate possibilities</div><ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
+                {/* "Alternate possibilities" removed per appraiser direction:
+                    when primary confidence is high the alternates undermine
+                    authority; when primary confidence is low a list of also-rans
+                    doesn't help the user decide. Either case the section hurt
+                    more than it helped. p3.alternatives still computed by the
+                    engine (used by other downstream logic / cousin contrasts)
+                    but no longer rendered in the report. */}
               </SectionCard>
               <SectionCard title="Broad Date Lane">
   {/* Frame date */}
@@ -2964,7 +2970,13 @@ const p7 = stageOutputs.p7 || null;
                     Why this label: {p3.final_style.final_style_reason}
                   </div>
                 )}
-                {Array.isArray(p3?.alternatives) && p3.alternatives.length > 0 && <><div style={subheadStyle}>Alternate possibilities</div><ul style={listStyle}>{p3.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
+                {/* "Alternate possibilities" removed per appraiser direction:
+                    when primary confidence is high the alternates undermine
+                    authority; when primary confidence is low a list of also-rans
+                    doesn't help the user decide. Either case the section hurt
+                    more than it helped. p3.alternatives still computed by the
+                    engine (used by other downstream logic / cousin contrasts)
+                    but no longer rendered in the report. */}
               </SectionCard>
               <SectionCard title="Dating Analysis (Frame)">
                 <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
