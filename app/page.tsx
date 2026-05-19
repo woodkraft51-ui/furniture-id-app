@@ -1793,6 +1793,23 @@ export default function Page() {
     }
   };
 
+  /**
+   * Inconclusive scan detection: when the engine's deep-extraction
+   * recovery also fails (Phase 0 returned nothing and the recovery pass
+   * couldn't extract anything either), the engine emits a fallback_form
+   * clue as a last-resort placeholder. The presence of that clue marks
+   * the scan as inconclusive — the report didn't produce confident
+   * results. Future subscription/quota system should read this signal
+   * (or report.observations directly) to avoid counting failed scans
+   * against user limits.
+   */
+  const isInconclusiveScan = useMemo(() => {
+    if (!report?.observations) return false;
+    return report.observations.some(
+      (o: any) => o?.clue === "fallback_form"
+    );
+  }, [report]);
+
   const analysisMode = intake.analysis_mode;
 
   const structuredMissingEvidence = useMemo(() => computeMissingEvidenceFromStructured(coreImages, groupImages), [coreImages, groupImages]);
@@ -1906,6 +1923,28 @@ export default function Page() {
     }
   }
 
+  /**
+   * Migrate field-scan photos into structured full-analysis slots and
+   * switch the form to Full Analysis mode.
+   *
+   * Wired into two contexts:
+   *   1. UploadTooLargeNotice — when a field scan payload exceeds size
+   *      limits, user can convert to full analysis (which subdivides
+   *      the upload across structured slots).
+   *   2. Field → Full upsell card at the end of a field-scan report —
+   *      "Want the complete case file?" recommendation.
+   *
+   * Photo mapping follows the existing inferFieldImageType convention:
+   *   - fieldPhotos[0] → coreImages.overall_front
+   *   - fieldPhotos[1] → coreImages.overall_side
+   *   - fieldPhotos[2..] → groupImages.construction (joinery_closeup)
+   *
+   * Side effects:
+   *   - Clears any active report (post-report context — user is
+   *     starting fresh in full-analysis mode)
+   *   - Scrolls to top so user lands at the form header rather than
+   *     at the bottom of the dismissed report
+   */
   function switchToFullAnalysisWithPhotos() {
     const photos = fieldPhotos;
     const nextCore: CoreImageMap = {
@@ -1925,7 +1964,11 @@ export default function Page() {
     setFieldPhotos([]);
     setUploadTooLarge(false);
     setError("");
+    setReport(null);
     updateIntake("analysis_mode", "full_analysis" as any);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }
 
   function resetAll() {
@@ -2234,6 +2277,36 @@ const p7 = stageOutputs.p7 || null;
           )}
         </div>
 
+        {report && isInconclusiveScan && (
+          <div
+            style={{
+              marginTop: 20,
+              padding: "16px 18px",
+              background: "#fffaf0",
+              border: "1px solid #d9ccb5",
+              borderLeft: "3px solid #b9956a",
+              borderRadius: 8,
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 700,
+                color: "#1a2e4e",
+                fontSize: 14,
+                marginBottom: 6,
+              }}
+            >
+              This scan didn't produce confident results.
+            </div>
+            <div style={{ fontSize: 13, color: "#594734", lineHeight: 1.55 }}>
+              The photos didn't yield enough structured evidence for a confident reading. Try re-shooting with better lighting, focus, or angle — or add a different combination of photos (underside, joinery close-up, or maker label).
+            </div>
+            {/* TODO: when subscription/quota system lands, surface the
+                quota-exemption message here:
+                "Inconclusive scans don't count toward your scan quota." */}
+          </div>
+        )}
+
         {report && analysisMode === "field_scan" && p2 && p3 && fieldValue && fieldRecommendation && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
             <SectionCard title="Field Scan Result">
@@ -2332,6 +2405,64 @@ const p7 = stageOutputs.p7 || null;
               </div>
               <RunButton label="Re-Run Field Scan" disabled={isRunning || !fieldReady} isRunning={isRunning} onClick={runAnalysis} />
             </SectionCard>
+
+            {/* Field → Full Analysis upsell. Always offered at the end of
+                a field-scan report. Photos migrate to structured slots
+                following the existing inferFieldImageType convention;
+                user can rearrange before submitting the full analysis.
+                Not shown when there are no photos to migrate (defensive). */}
+            {fieldPhotos.length > 0 && (
+              <SectionCard title="">
+                <div
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #d9ccb5",
+                    borderLeft: "3px solid #b9956a",
+                    borderRadius: 8,
+                    padding: "16px 18px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      color: "#352719",
+                      fontSize: 16,
+                      marginBottom: 6,
+                    }}
+                  >
+                    Want the complete case file?
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      lineHeight: 1.55,
+                      color: "#594734",
+                      marginBottom: 14,
+                    }}
+                  >
+                    Full Analysis returns construction-by-construction dating evidence, maker attribution where supported, and a defensible valuation framework. Your photos carry over — you can add an underside, label close-up, or hardware photos for richer results.
+                  </div>
+                  <button
+                    type="button"
+                    onClick={switchToFullAnalysisWithPhotos}
+                    style={{
+                      background: "#1a2e4e",
+                      color: "#fff",
+                      border: "none",
+                      padding: "10px 18px",
+                      borderRadius: 8,
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      letterSpacing: "0.01em",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    Start a Full Analysis →
+                  </button>
+                </div>
+              </SectionCard>
+            )}
           </div>
         )}
 
