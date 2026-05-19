@@ -622,6 +622,87 @@ overhanging_top: {
   dateHint: "overhanging cornice or top board supports Empire or transitional case-furniture form",
   weight: 0.58,
 },
+
+// ─────────────────────────────────────────────────────────────────────
+// Metal joinery and metal wear/condition clues — Batch 1 non-wood
+// taxonomy expansion (authored 2026-05-19). Parallel canonical entries
+// in lib/constraints/joinery.ts under joinery_category_metal_joining.
+// Welded_joint already existed above (line ~396); these add the rest
+// of the metal-joining vocabulary and metal-specific wear signals.
+// ─────────────────────────────────────────────────────────────────────
+
+hand_forged_metal_joint: {
+  category: "joinery",
+  dateHint: "pre-1900 dominant for American wrought-iron furniture; post-1900 hand-forged work is usually artisan/revival",
+  weight: 0.78,
+},
+riveted_metal_joint: {
+  category: "joinery",
+  dateHint: "c. 1850-1940 industrial dominance for sheet steel, wrought iron, and brass furniture; continues in industrial-style production",
+  weight: 0.72,
+},
+brazed_metal_joint: {
+  category: "joinery",
+  dateHint: "late-19th-c. to present; especially diagnostic for brass beds, brass lighting bodies, gas fixtures, and decorative metalwork",
+  weight: 0.70,
+},
+soldered_metal_joint: {
+  category: "joinery",
+  dateHint: "spans all periods; especially common in tinware, pewter, lightweight brass, and lighting bodies",
+  weight: 0.55,
+},
+spot_welded_joint: {
+  category: "joinery",
+  dateHint: "post-1925 industrial; dominant c. 1930-present for tubular-steel chairs, metal lawn furniture, sheet-steel cabinets, and lighting bodies",
+  weight: 0.75,
+},
+mig_tig_welded_joint: {
+  category: "joinery",
+  dateHint: "post-1948 (MIG) / post-1941 (TIG); widespread c. 1960-present; primary reproduction-detection signal for wrought-iron and Victorian-revival metalwork",
+  weight: 0.80,
+},
+crimped_folded_seam: {
+  category: "joinery",
+  dateHint: "industrial sheet-metal lock seams widespread post-1850; common in tinware lighting, mid-20th-c. metal kitchen cabinets, stamped-metal lawn furniture",
+  weight: 0.62,
+},
+wire_wrapped_metal_joint: {
+  category: "joinery",
+  dateHint: "spans all periods; especially common in wicker-and-iron c. 1880-1930, decorative lighting bands, and rattan-metal hybrid furniture",
+  weight: 0.50,
+},
+
+// Metal wear and condition signals — independent of joining method
+rust_pitting: {
+  category: "condition",
+  dateHint: "active iron or steel oxidation; structural-integrity concern; finish-failure restoration signal",
+  weight: 0.55,
+},
+plating_loss: {
+  category: "condition",
+  dateHint: "chrome, nickel, or brass plating wear/loss; common on tubular-steel, chrome-frame, and plated brass furniture; restoration or refinishing common",
+  weight: 0.55,
+},
+joint_corrosion: {
+  category: "condition",
+  dateHint: "corrosion concentrated at metal joints (galvanic, crevice, or stress corrosion); structural-integrity concern at the weakest geometry",
+  weight: 0.60,
+},
+weld_repair_visible: {
+  category: "condition",
+  dateHint: "modern weld over an original joint indicates later repair; preserve original joining method as the dating signal and record the weld as restoration evidence",
+  weight: 0.60,
+},
+powder_coat_overspray: {
+  category: "finish",
+  dateHint: "powder-coat finish post-1960s; modern refinish over earlier metal pieces is common and obscures original finish, plating, and surface wear",
+  weight: 0.55,
+},
+bent_or_sprung_metal: {
+  category: "condition",
+  dateHint: "permanent metal deformation from use, damage, or stress; structural concern for tubular steel, wrought iron, and sheet-metal furniture",
+  weight: 0.50,
+},
 };
 
 function clamp(n: number, min: number, max: number) {
