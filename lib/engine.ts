@@ -125,24 +125,6 @@ function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
   return fromInline;
 }
 
-export type RuntimeMode = "mock" | "live";
-export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
- 
-export const RUNTIME_MODE: RuntimeMode = "live";
-
-export function getRuntimeProbe() {
-  return {
-    engine_mode: "LIVE" as EngineMode,
-    runtime_mode: "live" as RuntimeMode,
-    full_analysis_mode: "live" as RuntimeMode,
-    evidence_adapter_mode: "live" as RuntimeMode,
-    live_llm_enabled: true,
-    live_field_scan: true,
-    backend_endpoint: "/api/analyze",
-    simulation_reason: "NCW PE engine active. Phase 0 scans images once; later phases reason from stored evidence.",
-  };
-}
- 
 type Observation = {
   type: string;
   clue?: string | null;
@@ -702,6 +684,18 @@ bent_or_sprung_metal: {
   category: "condition",
   dateHint: "permanent metal deformation from use, damage, or stress; structural concern for tubular steel, wrought iron, and sheet-metal furniture",
   weight: 0.50,
+},
+
+// Engine signaling clue — not appraisal evidence. Emitted by runAllPhases
+// only when BOTH the initial p0 scan AND the deep-extraction recovery pass
+// return zero observations. Acts as a "no structured evidence available"
+// marker that downstream consumers can use to suppress confident form
+// claims and surface a re-shoot message to the user. Weight 0 so it never
+// contributes to dating or form scoring.
+fallback_form: {
+  category: "signal",
+  dateHint: "no structured observations recovered; engine should suppress confident claims and request better photos",
+  weight: 0,
 },
 
 // ─────────────────────────────────────────────────────────────────────
@@ -4572,7 +4566,8 @@ export const PE = {
   async callClaude(
     system: string,
     content: any[],
-    mode: "field_scan" | "full_analysis"
+    mode: "field_scan" | "full_analysis",
+    maxTokensOverride?: number
   ): Promise<ClaudeResult> {
     try {
       // Block 11: raised from 8000/4000 to remove output-truncation risk on
@@ -4581,7 +4576,10 @@ export const PE = {
        // 8000-token ceiling was clipping rich-piece scans. Sonnet 4.6 ceiling
        // is 64000 — 16000 leaves substantial headroom. Cost impact metered
        // and captured for subscription-pricing review in P4-11 backlog.
-       const max_tokens = mode === "full_analysis" ? 16000 : 8000;
+       // Optional maxTokensOverride parameter added for recovery / deep-
+       // extraction passes that need additional headroom; defaults to the
+       // mode-based ceiling when omitted.
+       const max_tokens = maxTokensOverride ?? (mode === "full_analysis" ? 16000 : 8000);
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
@@ -5140,6 +5138,123 @@ debug: {
 };
     onPhase?.("p0", res);
     return res;
+  },
+
+  /**
+   * Deep-extraction recovery pass. Triggered by runAllPhases when the
+   * primary p0() scan returns zero structured observations. Re-prompts
+   * the LLM with a permissive "describe everything" instruction and an
+   * extended token budget (24000 vs the 16000 full-analysis default) to
+   * recover observations from photos that the structured-schema first
+   * pass couldn't extract. Returns observations + perception in the same
+   * shape as p0() for drop-in substitution. Recovery typically takes
+   * 25-40 seconds; only fires on the rare empty-observations case (est.
+   * 1-3% of scans in steady state, higher during prompt-development).
+   */
+  async runDeepExtraction(
+    images: any[],
+    intake: any
+  ): Promise<{
+    observations: Observation[];
+    perception: Perception;
+    recovered: boolean;
+    recovery_reason: string;
+    raw: string | null;
+  }> {
+    const recoverySystem = `You are an expert American furniture appraiser performing a RECOVERY extraction pass. The initial structured-schema scan of these photos returned zero usable observations. This second pass is designed to capture ANY visible evidence, even when uncertain or partial.
+
+INSTRUCTIONS:
+
+1. Look at every photo in careful detail. Do not skip any image. For each photo, scan systematically: overall form → primary materials → joinery visible at corners and intersections → hardware (knobs, pulls, hinges, casters) → fasteners (nail or screw heads) → finish character → wear and condition → any visible marks, labels, stamps, or text.
+
+2. Be permissive about uncertainty. An observation with confidence 20 and a partial description is far more valuable than no observations at all. Use low confidence (20-40) freely for uncertain observations. Use higher confidence (60-90) only for clear and unambiguous evidence.
+
+3. Return a JSON object with this exact structure:
+
+{
+  "perception": {
+    "labels": [],
+    "maker_names": [],
+    "materials": [],
+    "forms": [],
+    "functional_features": [],
+    "style_cues": [],
+    "construction_cues": [],
+    "condition_cues": [],
+    "visible_text": []
+  },
+  "observations": [
+    {
+      "type": "<form|material|joinery|fastener|hardware|finish|toolmark|wood|label|condition|style|context>",
+      "clue": "<one of the canonical clue keys below, or null if uncertain>",
+      "description": "<plain-language description of what you see — be specific about what photo and what part of the piece>",
+      "confidence": <number 0-100>,
+      "source_image": "<image identifier or 'unknown'>",
+      "hard_negative": false,
+      "low_confidence_flag": <true if confidence < 50, otherwise false>
+    }
+  ]
+}
+
+4. CRITICAL: Return AT LEAST ONE observation. If you can see furniture at all — any form, any material, any construction detail — emit observations for what you see.
+
+5. Common clue keys to use when applicable (otherwise leave clue null and put the detail in description):
+   - Form: seating_surface, backrest_present, drawer_present, door_present, mirror_present, metal_bed_frame, armchair_form, cabriole_leg, secondary_surface, writing_surface, pedestal_column, open_shelving
+   - Material: solid_wood_construction, plywood_structural, metal_frame, wrought_iron, cast_iron, brass_frame, tubular_steel, chrome_frame, glass_top, marble_top, laminate_surface, formica_surface, woven_body, rattan_frame, cane_panels, paper_fiber_construction, lloyd_loom_paper_fiber
+   - Joinery: hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_joint, riveted_metal_joint, brazed_metal_joint, soldered_metal_joint, mig_tig_welded_joint, spot_welded_joint, hand_forged_metal_joint
+   - Fastener: hand_forged_nail, cut_nail, wire_nail, slotted_screw, phillips_screw, staple_fastener
+   - Hardware: porcelain_caster, modern_caster, decorative_bail_pull, round_wood_knob, modern_concealed_hinge, swivel_mechanism, lock_escutcheons
+   - Finish: shellac_crazing, shellac_intact, polyurethane, lacquer_finish, painted_metal_finish, refinished_surface
+   - Toolmark: pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter
+   - Condition: rust_pitting, plating_loss, joint_corrosion, wicker_strand_breakage, weld_repair_visible
+   - Label: maker_label, roos_label, lane_label
+
+6. If the photos genuinely show no furniture (entirely blank, dark beyond recovery, or non-furniture content), emit one observation: {"type": "context", "clue": null, "description": "Photos do not show recognizable furniture content. [Brief description of what is visible instead.]", "confidence": 80, "source_image": "unknown", "hard_negative": false, "low_confidence_flag": false}
+
+Begin recovery extraction now. Do not return the empty observations array under any circumstances.`;
+
+    const result = await this.callClaude(
+      recoverySystem,
+      [
+        ...this.imgs(images),
+        { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
+      ],
+      "full_analysis",
+      24000
+    );
+
+    const parsed = result.ok
+      ? result.parsed
+      : result.error && (result.error as any).raw
+        ? parseModelJson(String((result.error as any).raw).replace(/^json\s*/i, ""))
+        : null;
+
+    const observations = parsed ? normalizeObservationsFromParsed(parsed) : [];
+    const perception = parsed
+      ? normalizePerception(parsed, observations)
+      : {
+          labels: [],
+          maker_names: [],
+          materials: [],
+          forms: [],
+          functional_features: [],
+          style_cues: [],
+          construction_cues: [],
+          condition_cues: [],
+          visible_text: [],
+        } as Perception;
+
+    return {
+      observations,
+      perception,
+      recovered: observations.length > 0,
+      recovery_reason: result.ok
+        ? "p0_returned_empty"
+        : (result.error && (result.error as any).type) === "no_valid_json"
+          ? "p0_callClaude_no_valid_json"
+          : "p0_callClaude_failed",
+      raw: result.ok ? result.raw || null : ((result.error as any)?.raw || null),
+    };
   },
 
   p1(caseData: any, intake: any, digest: EvidenceDigest, images: any[]): Phase1Gate {
@@ -5863,17 +5978,50 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
   // (P0 debug logs removed in Block 0.55; re-instrument as needed)
 
   if (!p0.observations || p0.observations.length === 0) {
-    p0.observations = [
-      {
-        type: "form",
-        clue: "fallback_form",
-        description: "Furniture is visible, but Phase 0 did not return structured observations.",
-        confidence: 20,
-        source_image: "fallback",
-        hard_negative: false,
-        low_confidence_flag: true,
-      },
-    ];
+    // Recovery pass: deep-extraction re-prompt with permissive instructions
+    // and extended token budget. Fires only when the primary p0() scan
+    // returned zero observations (est. 1-3% steady-state, higher during
+    // prompt development). Adds ~25-40 seconds when triggered; only paid
+    // when needed. Prior behavior emitted a single fallback_form placeholder
+    // observation that downstream scoreForms never consumed — silent dead end.
+    const recovery = await this.runDeepExtraction(images, intake);
+    stage_outputs.p0_recovery = recovery;
+    onPhase?.("p0_recovery", recovery);
+
+    if (recovery.recovered) {
+      p0.observations = recovery.observations;
+      p0.perception = recovery.perception;
+      p0.note = "Phase 0 used deep-extraction recovery after initial pass returned no observations.";
+      (p0 as any).recovery_metadata = {
+        recovered: true,
+        recovery_reason: recovery.recovery_reason,
+        observation_count: recovery.observations.length,
+        triggered_at: new Date().toISOString(),
+      };
+    } else {
+      // Recovery also returned nothing — true last-resort placeholder.
+      // Downstream consumers should treat fallback_form as a signal to
+      // suppress confident form claims and surface a "photos didn't yield
+      // structured observations, please re-shoot with better lighting/angle"
+      // message rather than emit guesses.
+      p0.observations = [
+        {
+          type: "form",
+          clue: "fallback_form",
+          description: "Furniture is visible, but neither the initial extraction nor the deep-recovery pass returned structured observations. Try photos with better lighting, focus, or angle.",
+          confidence: 20,
+          source_image: "fallback",
+          hard_negative: false,
+          low_confidence_flag: true,
+        },
+      ];
+      (p0 as any).recovery_metadata = {
+        recovered: false,
+        recovery_reason: recovery.recovery_reason,
+        observation_count: 0,
+        triggered_at: new Date().toISOString(),
+      };
+    }
   }
 
   p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
