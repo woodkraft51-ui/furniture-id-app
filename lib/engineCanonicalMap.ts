@@ -86,7 +86,7 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   gateleg_support: NO_MATCH, // form_gateleg_desk exists but is for desk form; table version not present
   lift_lid: "form_blanket_chest",
   multiple_drawer_case: "form_chest_of_drawers",
-  metal_bed_frame: "form_bedstead",
+  metal_bed_frame: "form_iron_bed",
 
   // ── MAKER LABELS (delete from CLUE_LIBRARY; route to makerMarks.ts) ───────
   maker_label: NO_MATCH, // generic; specific label captured via makerMarks lookup
@@ -478,14 +478,15 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Bookcase / open shelving unit": "form_bookcase",
 
   // Beds
-  "Iron bed frame": "form_bedstead",
-  "Brass bed or brass-frame furniture": "form_bedstead",
-  // NOTE: ↑ Above two routes preserved per appraiser directive (do not
-  // modify existing without approval). Both should ideally redirect to
-  // form_iron_bed (added 2026-05-19) since iron/brass beds are now a
-  // peer canonical with their own metal-frame dating evidence pathway.
-  // Flagged for review — switching these to form_iron_bed would route
-  // the bare alias hits to the correct canonical.
+  "Iron bed frame": "form_iron_bed",
+  "Brass bed or brass-frame furniture": "form_iron_bed",
+  // NOTE: ↑ Redirected from form_bedstead → form_iron_bed on appraiser
+  // approval (2026-05-19). Iron and brass beds are structurally distinct
+  // from wooden bedsteads (metal frame, brazed/riveted/welded joinery,
+  // japanned/plated/powder-coat finish) and route to the dedicated
+  // form_iron_bed canonical with its metal-frame dating evidence pathway.
+  // form_bedstead retains all wooden-bed routes (Bedstead, four-poster,
+  // sleigh bed, etc.).
 
   // Iron bed routes — Batch 2 non-wood taxonomy expansion (2026-05-19)
   "Iron bed": "form_iron_bed",
@@ -515,10 +516,11 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Institutional metal bed": "form_iron_bed", // subtype_iron_bed_tubular_steel_institutional
   "Cast-iron daybed": "form_iron_bed", // subtype_iron_bed_cast_iron_daybed (boundary form with form_daybed)
   "Iron fainting couch": "form_iron_bed", // subtype_iron_bed_cast_iron_daybed
-  // Note: "Metal bed frame" intentionally NOT remapped — the existing
-  // CLUE_TO_CANONICAL alias routes to form_bedstead and is preserved
-  // per appraiser directive. Resolve at scoreForms via metal-frame
-  // construction evidence when present.
+  // Note: the CLUE_TO_CANONICAL metal_bed_frame alias was redirected to
+  // form_iron_bed on 2026-05-19 (line 89 above) on appraiser approval.
+  // Seating-suppression guard at engine.ts:3106-3115 continues to prevent
+  // chair-form pieces from mis-routing when the LLM over-emits
+  // metal_bed_frame on any iron/steel-framed furniture.
 
 
   // Seating — form_id resolution depends on style attribution (Block 2)
