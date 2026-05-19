@@ -6,9 +6,25 @@ import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib
 import WelcomeLanding from "./WelcomeLanding";
 import ExampleModal from "./ExampleModal";
 import GuidanceMessages from "./GuidanceMessages";
+import TraceReport from "./TraceReport";
 import { PHOTO_EXAMPLES } from "../lib/intake";
 
 const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
+
+/**
+ * Debug trace gate. Set to true during app validation to show the
+ * Engine Trace diagnostic at the bottom of full-analysis reports;
+ * set to false before launch to hide it. Single boolean — flip once
+ * to enable or disable across the whole app.
+ *
+ * The trace surfaces per-phase visibility into engine reasoning:
+ * P0 observations, Block 14 frame/upholstery split, P3 form +
+ * style attribution, P4 weighted clues by category, dating overlap
+ * per-layer evidence sources, P5 conflicts + resolutions, P2 frame
+ * dating + upholstery layer, P1 gate. Used to verify that evidence
+ * captured at Phase 0 is being routed correctly downstream.
+ */
+const DEBUG_TRACE = true;
 
 // CORE_SLOTS key → PHOTO_EXAMPLES key. Slots without an entry render
 // without a "View example" link. GROUP_SLOTS map by their `key` (not
@@ -2831,6 +2847,13 @@ const p7 = stageOutputs.p7 || null;
             {appraiserReviewTriggers.length > 0 && (
               <AppraiserReviewCTA triggers={appraiserReviewTriggers} />
             )}
+
+            {/* Engine Trace diagnostic — pre-launch validation infra.
+                Gated by DEBUG_TRACE constant at top of file so it can
+                be hidden with a single boolean flip when ready to ship.
+                Surfaces per-phase engine reasoning for verifying that
+                evidence captured at P0 is routed correctly downstream. */}
+            {DEBUG_TRACE && <TraceReport report={report} />}
           </div>
         )}
       </div>
