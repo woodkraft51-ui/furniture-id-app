@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import packageJson from "../package.json";
+
+const APP_VERSION = packageJson.version;
 
 export const metadata: Metadata = {
   title: "Proof Sleuth — Antique Furniture ID & Dating",
@@ -111,6 +114,12 @@ export default function RootLayout({
           >
             New Creations Woodcraft
           </a>
+          <span className="ps-footer-sep">·</span>
+          {/* Engine version surfaced so power users (and stress-test
+              evaluators) can correlate a given scan output to a specific
+              app/engine state. Tied to package.json version so it
+              auto-updates on version bumps. */}
+          <span style={{ color: "#a08866", fontSize: 12 }}>v{APP_VERSION}</span>
         </footer>
       </body>
     </html>
