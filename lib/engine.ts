@@ -1,5 +1,5 @@
 import { API } from "./store";
-import { MAKER_MARKS } from "./constraints/makerMarks";
+import { MAKER_MARKS, MAKER_ENTRIES } from "./constraints/makerMarks";
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
 import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
 
@@ -3588,10 +3588,15 @@ const materialDateGuard = (() => {
     );
   }
 
+  // Path 1+2 minimum-viable wiring (Block 23a follow-up): lookup now spans
+  // both canonical MAKER_ENTRIES (77) and legacy MAKER_MARKS (25) via
+  // findMakerMarkById, returning a normalized NormalizedMakerMark shape.
+  // Downstream code below (mark.maker, mark.mark_type, mark.date_range,
+  // mark.dating_authority) consumes the normalized shape unchanged.
   const makerMarkObservation = (digest.observations || [])
     .filter((o) => o.type === "label" && o.clue)
     .map((o) => {
-      const mark = MAKER_MARKS.find((m) => m.id === o.clue);
+      const mark = findMakerMarkById(String(o.clue));
       return mark ? { observation: o, mark } : null;
     })
     .filter(Boolean)[0] as any;
@@ -4537,6 +4542,104 @@ function buildDecisionGuidance(args: {
     contradiction_guard: "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths.",
   };
 }
+/**
+ * Normalized maker-mark shape used by engine.ts downstream paths
+ * (matchMakerMarks + dating-anchor lookup at the maker-mark branch in
+ * computeDatingEnvelope). Both the legacy 25-entry MAKER_MARKS array and
+ * the new 77-entry MAKER_ENTRIES library adapt to this shape so downstream
+ * code stays unchanged. Field shape mirrors the legacy schema verbatim
+ * because consumers were written against it.
+ */
+type NormalizedMakerMark = {
+  id: string;
+  maker: string;
+  mark_text_patterns: string[];
+  mark_type: string;
+  date_range: string;
+  confidence_weight: number; // 0–1 scale
+  dating_authority: "high" | "moderate" | "low";
+  source_library: "legacy" | "canonical"; // diagnostic — which array supplied the entry
+};
+
+/**
+ * Adapter — translates a MakerMarkEntry (new canonical) or a
+ * MakerMarkEntry_Legacy (legacy) into the NormalizedMakerMark shape.
+ * Per Block 23a + path 1/2 minimum-viable wiring: enables downstream
+ * consumption of all 77 canonical maker entries without changing the
+ * legacy 25-entry array or any downstream consumer code.
+ *
+ * Field translation rules (canonical → normalized):
+ *  - maker_name → maker
+ *  - known_mark_types[0] → mark_type (first declared type)
+ *  - period_associations[0] → date_range (period_label preferred; else
+ *    "{date_floor}–{date_ceiling}" or "{date_floor}–present")
+ *  - positive_authority → dating_authority + confidence_weight
+ *    (8 or 9 → high / 0.8–0.9; 6 or 7 → moderate / 0.6–0.7; else low)
+ */
+function normalizeMakerMark(entry: any): NormalizedMakerMark {
+  // Legacy entries have a 'maker' field; canonical entries have 'maker_name'.
+  if (typeof entry?.maker === "string" && typeof entry?.maker_name === "undefined") {
+    return {
+      id: entry.id,
+      maker: entry.maker,
+      mark_text_patterns: entry.mark_text_patterns || [],
+      mark_type: entry.mark_type || "unknown",
+      date_range: entry.date_range || "uncertain",
+      confidence_weight: typeof entry.confidence_weight === "number" ? entry.confidence_weight : 0.5,
+      dating_authority: entry.dating_authority || "moderate",
+      source_library: "legacy",
+    };
+  }
+
+  // Canonical MakerMarkEntry — derive legacy fields from new schema.
+  const firstPeriod = Array.isArray(entry?.period_associations) && entry.period_associations.length > 0
+    ? entry.period_associations[0]
+    : null;
+  const date_range = firstPeriod
+    ? (firstPeriod.period_label && firstPeriod.period_label.trim()
+        ? firstPeriod.period_label
+        : typeof firstPeriod.date_floor === "number" && typeof firstPeriod.date_ceiling === "number"
+          ? `${firstPeriod.date_floor}–${firstPeriod.date_ceiling}`
+          : typeof firstPeriod.date_floor === "number"
+            ? `${firstPeriod.date_floor}–present`
+            : "uncertain")
+    : "uncertain";
+
+  const auth = typeof entry?.positive_authority === "number" ? entry.positive_authority : 7;
+  const dating_authority: "high" | "moderate" | "low" =
+    auth >= 8 ? "high" : auth >= 6 ? "moderate" : "low";
+  const confidence_weight = Math.max(0.5, Math.min(0.95, auth / 10));
+
+  return {
+    id: entry.id,
+    maker: entry.maker_name || "Unknown maker",
+    mark_text_patterns: Array.isArray(entry.mark_text_patterns) ? entry.mark_text_patterns : [],
+    mark_type: Array.isArray(entry.known_mark_types) && entry.known_mark_types.length > 0
+      ? String(entry.known_mark_types[0])
+      : "unknown",
+    date_range,
+    confidence_weight,
+    dating_authority,
+    source_library: "canonical",
+  };
+}
+
+/**
+ * Look up a maker entry by id across both libraries. Returns normalized
+ * shape or null. Canonical (new) library is checked first so new entries
+ * take precedence when ids overlap (none currently do — legacy ids start
+ * with 'globe_wernicke_', 'hitchcock_', etc.; new ids start with
+ * 'maker_mark_' — but the precedence rule is explicit for safety).
+ */
+function findMakerMarkById(id: string): NormalizedMakerMark | null {
+  if (!id) return null;
+  const canonical = MAKER_ENTRIES.find((e) => e.id === id);
+  if (canonical) return normalizeMakerMark(canonical);
+  const legacy = MAKER_MARKS.find((m) => m.id === id);
+  if (legacy) return normalizeMakerMark(legacy);
+  return null;
+}
+
 function matchMakerMarks(rawText: string, observations: any[] = []) {
   const text = String(rawText || "").toLowerCase();
   if (!text) return [];
@@ -4548,11 +4651,44 @@ function matchMakerMarks(rawText: string, observations: any[] = []) {
   );
 
   if (!hasValidLabelEvidence) return [];
-  return MAKER_MARKS.filter((mark) =>
-    mark.mark_text_patterns.some((pattern) =>
-      text.includes(String(pattern).toLowerCase())
+
+  // Path 1+2 minimum-viable wiring (Block 23a follow-up): scan BOTH the
+  // canonical 77-entry MAKER_ENTRIES library and the legacy 25-entry
+  // MAKER_MARKS array. Canonical first so new entries take precedence when
+  // a maker_name collision exists; legacy fallback ensures any maker still
+  // only present in the old shim continues working.
+  const canonicalMatches: NormalizedMakerMark[] = MAKER_ENTRIES
+    .filter((entry) =>
+      Array.isArray((entry as any).mark_text_patterns) &&
+      (entry as any).mark_text_patterns.some((pattern: any) =>
+        text.includes(String(pattern).toLowerCase())
+      )
     )
-  ).map((mark) => ({
+    .map((entry) => normalizeMakerMark(entry));
+
+  const legacyMatches: NormalizedMakerMark[] = MAKER_MARKS
+    .filter((mark) =>
+      mark.mark_text_patterns.some((pattern) =>
+        text.includes(String(pattern).toLowerCase())
+      )
+    )
+    .map((mark) => normalizeMakerMark(mark));
+
+  // Dedupe by maker name (case-insensitive). Canonical entries already in
+  // the list take precedence; legacy duplicates are skipped. Both arrays
+  // intentionally retain entries with the same maker_name across multiple
+  // mark types or label eras (e.g., Globe-Wernicke paper label early vs
+  // stamped mark late) — those get distinct ids and are NOT deduped here.
+  const seenMakers = new Set<string>();
+  const combined: NormalizedMakerMark[] = [];
+  for (const m of [...canonicalMatches, ...legacyMatches]) {
+    const dedupeKey = `${m.maker.toLowerCase()}::${m.id}`;
+    if (seenMakers.has(dedupeKey)) continue;
+    seenMakers.add(dedupeKey);
+    combined.push(m);
+  }
+
+  return combined.map((mark) => ({
     type: "label",
     clue: mark.id,
     description: `Detected maker mark: ${mark.maker}. Mark type: ${mark.mark_type}. Dating reference: ${mark.date_range}.`,
