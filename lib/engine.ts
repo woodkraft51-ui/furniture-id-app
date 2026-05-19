@@ -1,5 +1,12 @@
 import { API } from "./store";
 import { MAKER_MARKS, MAKER_ENTRIES } from "./constraints/makerMarks";
+// Note: MAKER_ATTRIBUTION_REASONING_RULES is the canonical source of truth
+// for the rules implemented inline in applyMakerAttributionRules + the
+// Confidence Ladder (Rule #7) inside makerConfidenceLadderTier. Rule
+// statements are hardcoded rather than runtime-read for tight binding;
+// changes to canonical rule_statement prose require both the canonical
+// edit and a code edit (intentional — the rule prose is appraiser-canon
+// and code edits should track canonical changes deliberately).
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
 import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
 
@@ -3606,21 +3613,42 @@ const materialDateGuard = (() => {
     makerMarkObservation.observation.confidence >= 70 &&
     makerMarkObservation.mark.dating_authority !== "low"
   ) {
+    // Path 3 wiring: enrich support and limitations with canonical
+    // attribution_confidence_rule and false_positive_warnings (canonical
+    // entries only; legacy entries leave these undefined). Surface
+    // Confidence Ladder tier (Rule #7) explicitly so report prose
+    // declares the tier and basis rather than asserting unframed.
+    const mk = makerMarkObservation.mark as NormalizedMakerMark;
+    const ladder = makerConfidenceLadderTier(mk, false);
+
+    const enrichedSupport: string[] = [
+      `Maker mark detected: ${mk.maker}.`,
+      `Mark type: ${mk.mark_type}.`,
+      `Dating reference: ${mk.date_range}.`,
+      `Confidence tier (per Maker Mark Attribution Confidence Ladder): ${ladder.tier} — ${ladder.basis}`,
+    ];
+    if (mk.region) {
+      enrichedSupport.push(`Region: ${mk.region}.`);
+    }
+    if (mk.attribution_confidence_rule) {
+      enrichedSupport.push(`Attribution discipline: ${mk.attribution_confidence_rule}`);
+    }
+    enrichedSupport.push(...support);
+
+    const enrichedLimitations: string[] = [
+      "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
+    ];
+    if (mk.false_positive_warnings && mk.false_positive_warnings.length > 0) {
+      enrichedLimitations.push(
+        `False-positive warnings for ${mk.maker}: ${mk.false_positive_warnings.join(" ")}`
+      );
+    }
+
     return {
-      range: makerMarkObservation.mark.date_range,
-      confidence:
-        makerMarkObservation.mark.dating_authority === "high"
-          ? "High"
-          : "Moderate",
-      support: [
-        `Maker mark detected: ${makerMarkObservation.mark.maker}.`,
-        `Mark type: ${makerMarkObservation.mark.mark_type}.`,
-        `Dating reference: ${makerMarkObservation.mark.date_range}.`,
-        ...support,
-      ],
-      limitations: [
-        "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
-      ],
+      range: mk.date_range,
+      confidence: ladder.tier === "HIGH" ? "High" : ladder.tier === "MEDIUM" ? "Moderate" : "Low",
+      support: enrichedSupport,
+      limitations: enrichedLimitations,
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
@@ -4559,6 +4587,12 @@ type NormalizedMakerMark = {
   confidence_weight: number; // 0–1 scale
   dating_authority: "high" | "moderate" | "low";
   source_library: "legacy" | "canonical"; // diagnostic — which array supplied the entry
+
+  // Path 3 (reasoning-rules wiring): rich-field passthrough from canonical
+  // entries. Legacy entries leave these undefined.
+  region?: string;
+  false_positive_warnings?: string[];
+  attribution_confidence_rule?: string;
 };
 
 /**
@@ -4621,6 +4655,13 @@ function normalizeMakerMark(entry: any): NormalizedMakerMark {
     confidence_weight,
     dating_authority,
     source_library: "canonical",
+    region: typeof entry.region === "string" ? entry.region : undefined,
+    false_positive_warnings: Array.isArray(entry.false_positive_warnings) && entry.false_positive_warnings.length > 0
+      ? entry.false_positive_warnings.slice()
+      : undefined,
+    attribution_confidence_rule: typeof entry.attribution_confidence_rule === "string" && entry.attribution_confidence_rule.trim().length > 0
+      ? entry.attribution_confidence_rule
+      : undefined,
   };
 }
 
@@ -4640,6 +4681,156 @@ function findMakerMarkById(id: string): NormalizedMakerMark | null {
   return null;
 }
 
+/**
+ * Returns the first pattern (verbatim from mark_text_patterns) that
+ * appears as substring in the raw text. Used by matchMakerMarks to know
+ * WHICH pattern fired so attribution rules can introspect the match.
+ */
+function findMatchingPattern(text: string, patterns: string[]): string | null {
+  const lowerText = String(text || "").toLowerCase();
+  for (const pattern of patterns || []) {
+    const p = String(pattern || "");
+    if (!p) continue;
+    if (lowerText.includes(p.toLowerCase())) return p;
+  }
+  return null;
+}
+
+/**
+ * Heuristic: does this string look like initials, monogram, or 2-3 character
+ * abbreviation? Per Universal Rule #2 (Initials Are Not Enough). Examples
+ * that match: "GW", "G.W.", "G W", "B&G", "JHB". Examples that don't:
+ * "Globe-Wernicke", "Berkey & Gay", "Lane Co".
+ */
+function looksLikeInitials(s: string): boolean {
+  const trimmed = String(s || "").trim();
+  if (trimmed.length === 0) return false;
+  if (trimmed.length > 6) return false;
+  // Strip common punctuation and whitespace, then count alphanumeric chars
+  const stripped = trimmed.replace(/[.\s&\-_/\\]/g, "");
+  if (stripped.length === 0) return false;
+  if (stripped.length > 4) return false;
+  // Should be all letters (initials) — digits suggest serial/model, not initials
+  if (!/^[A-Za-z]+$/.test(stripped)) return false;
+  return true;
+}
+
+/**
+ * Path 3 wiring — MAKER_ATTRIBUTION_REASONING_RULES applied to a text
+ * match. Implements the two most concrete universal rules:
+ *
+ *   - Universal Rule #2 (Initials Are Not Enough) — demotes any match
+ *     where the matched pattern is initials-like (≤4 letters, no full
+ *     word) to LOW confidence with explicit caveat
+ *   - Globe-Wernicke Attribution Correction (Rule #8) — operationalized
+ *     specific case of Rule #2 for Globe-Wernicke; if the entry is the
+ *     Globe-Wernicke canonical AND the match is initials-only ("GW",
+ *     "G.W.", "G W"), apply the Globe-Wernicke-specific caveat from the
+ *     seed rule_statement
+ *
+ * Other Universal Rules (City Not Maker, Association Not Single, Retail
+ * Not Maker, Line Name Not Maker) require static pattern lists that are
+ * not yet authored in the canonical library; left as pass-through for
+ * Path 4 data-authoring task. Per-entry false_positive_warnings carry
+ * maker-specific operationalizations meanwhile.
+ *
+ * Returns the demotion outcome: a new mark with adjusted confidence/
+ * authority, plus a caveat string and rule_name for traceability.
+ */
+type AttributionGuardResult = {
+  mark: NormalizedMakerMark;
+  rule_applied: string | null;
+  caveat: string | null;
+  attribution_suppressed: boolean;
+};
+
+function applyMakerAttributionRules(
+  matchedPattern: string,
+  mark: NormalizedMakerMark
+): AttributionGuardResult {
+  const trimmed = String(matchedPattern || "").trim();
+
+  // Rule #8 — Globe-Wernicke specific correction (most specific, check first)
+  if (
+    mark.id.includes("globe_wernicke") &&
+    looksLikeInitials(trimmed)
+  ) {
+    return {
+      mark: {
+        ...mark,
+        confidence_weight: 0.25,
+        dating_authority: "low",
+      },
+      rule_applied: "Globe-Wernicke Attribution Correction",
+      caveat: `Detected initials "${trimmed}" alone are insufficient for Globe-Wernicke attribution. Initials may appear as monogram, owner mark, drawer chalk mark, shipping mark, or retailer code. Globe-Wernicke attribution requires full Globe-Wernicke wording, a recognized label or tag, or maker-specific sectional bookcase evidence (sectional stacking system, distinctive hardware, characteristic placement).`,
+      attribution_suppressed: true,
+    };
+  }
+
+  // Rule #2 — Universal Initials Not Enough (general case)
+  if (looksLikeInitials(trimmed)) {
+    return {
+      mark: {
+        ...mark,
+        confidence_weight: Math.min(mark.confidence_weight, 0.3),
+        dating_authority: "low",
+      },
+      rule_applied: "Universal Rule: Initials Are Not Enough",
+      caveat: `Detected initials "${trimmed}" alone do not establish ${mark.maker} attribution. Initials may identify a maker only when they appear within a known maker-specific device, label, stencil, burn mark, paper tag, or model-code format. Surface as low-confidence pending full maker name, branded device, or supporting construction-and-form evidence.`,
+      attribution_suppressed: true,
+    };
+  }
+
+  // Pass-through: match is substantive (full name, known device, or
+  // characteristic wording). Confidence and authority preserved from
+  // the canonical entry's positive_authority calibration.
+  return {
+    mark,
+    rule_applied: null,
+    caveat: null,
+    attribution_suppressed: false,
+  };
+}
+
+/**
+ * Confidence Ladder (Rule #7) — maps a NormalizedMakerMark + match
+ * substantiveness to one of four tiers: HIGH / MEDIUM / LOW / CONFLICT.
+ * Per seed app-safe maker mark confidence ladder. Returns the tier
+ * label + a one-line evidence basis citation suitable for report prose.
+ *
+ * Conflict tier is reserved for downstream callers that have access to
+ * construction/material evidence and can detect mark-vs-construction
+ * mismatches; this function returns HIGH/MEDIUM/LOW based on the mark
+ * alone. Conflict detection lives in computeDatingEnvelope.
+ */
+function makerConfidenceLadderTier(
+  mark: NormalizedMakerMark,
+  attributionSuppressed: boolean
+): { tier: "HIGH" | "MEDIUM" | "LOW"; basis: string } {
+  if (attributionSuppressed) {
+    return {
+      tier: "LOW",
+      basis: "Attribution rule applied; initials/partial match alone is insufficient for confident attribution.",
+    };
+  }
+  if (mark.dating_authority === "high" && mark.confidence_weight >= 0.85) {
+    return {
+      tier: "HIGH",
+      basis: "Full maker name or known maker-specific device matched; date range derived from canonical period associations.",
+    };
+  }
+  if (mark.dating_authority === "high" || mark.confidence_weight >= 0.7) {
+    return {
+      tier: "MEDIUM",
+      basis: "Partial label match or moderate-confidence canonical entry; full attribution requires additional construction or form evidence.",
+    };
+  }
+  return {
+    tier: "LOW",
+    basis: "Weak or ambiguous match; treat as candidate evidence pending confirmation.",
+  };
+}
+
 function matchMakerMarks(rawText: string, observations: any[] = []) {
   const text = String(rawText || "").toLowerCase();
   if (!text) return [];
@@ -4657,46 +4848,69 @@ function matchMakerMarks(rawText: string, observations: any[] = []) {
   // MAKER_MARKS array. Canonical first so new entries take precedence when
   // a maker_name collision exists; legacy fallback ensures any maker still
   // only present in the old shim continues working.
-  const canonicalMatches: NormalizedMakerMark[] = MAKER_ENTRIES
-    .filter((entry) =>
-      Array.isArray((entry as any).mark_text_patterns) &&
-      (entry as any).mark_text_patterns.some((pattern: any) =>
-        text.includes(String(pattern).toLowerCase())
-      )
-    )
-    .map((entry) => normalizeMakerMark(entry));
+  //
+  // Path 3 (reasoning-rules wiring): for each match we now track WHICH
+  // pattern fired (via findMatchingPattern) so applyMakerAttributionRules
+  // can introspect the match and demote/qualify low-specificity matches
+  // per Universal Rule #2 (Initials Are Not Enough) and Rule #8
+  // (Globe-Wernicke Correction).
+  type Matched = { mark: NormalizedMakerMark; matched_pattern: string };
 
-  const legacyMatches: NormalizedMakerMark[] = MAKER_MARKS
-    .filter((mark) =>
-      mark.mark_text_patterns.some((pattern) =>
-        text.includes(String(pattern).toLowerCase())
-      )
-    )
-    .map((mark) => normalizeMakerMark(mark));
+  const canonicalMatches: Matched[] = [];
+  for (const entry of MAKER_ENTRIES) {
+    const patterns = Array.isArray((entry as any).mark_text_patterns)
+      ? ((entry as any).mark_text_patterns as string[])
+      : [];
+    const matched = findMatchingPattern(text, patterns);
+    if (matched) {
+      canonicalMatches.push({ mark: normalizeMakerMark(entry), matched_pattern: matched });
+    }
+  }
 
-  // Dedupe by maker name (case-insensitive). Canonical entries already in
-  // the list take precedence; legacy duplicates are skipped. Both arrays
-  // intentionally retain entries with the same maker_name across multiple
-  // mark types or label eras (e.g., Globe-Wernicke paper label early vs
-  // stamped mark late) — those get distinct ids and are NOT deduped here.
+  const legacyMatches: Matched[] = [];
+  for (const legacy of MAKER_MARKS) {
+    const matched = findMatchingPattern(text, legacy.mark_text_patterns);
+    if (matched) {
+      legacyMatches.push({ mark: normalizeMakerMark(legacy), matched_pattern: matched });
+    }
+  }
+
+  // Dedupe by maker+id combo (canonical first; legacy duplicates skipped
+  // when same id appears in both, which currently it never does — legacy
+  // ids start with maker name, canonical ids start with 'maker_mark_').
   const seenMakers = new Set<string>();
-  const combined: NormalizedMakerMark[] = [];
+  const combined: Matched[] = [];
   for (const m of [...canonicalMatches, ...legacyMatches]) {
-    const dedupeKey = `${m.maker.toLowerCase()}::${m.id}`;
+    const dedupeKey = `${m.mark.maker.toLowerCase()}::${m.mark.id}`;
     if (seenMakers.has(dedupeKey)) continue;
     seenMakers.add(dedupeKey);
     combined.push(m);
   }
 
-  return combined.map((mark) => ({
-    type: "label",
-    clue: mark.id,
-    description: `Detected maker mark: ${mark.maker}. Mark type: ${mark.mark_type}. Dating reference: ${mark.date_range}.`,
-    confidence: Math.round(mark.confidence_weight * 100),
-    source_image: "phase0_visible_text",
-    hard_negative: false,
-    low_confidence_flag: mark.confidence_weight < 0.7,
-  }));
+  return combined.map(({ mark, matched_pattern }) => {
+    // Path 3: apply attribution rules to the matched pattern
+    const guarded = applyMakerAttributionRules(matched_pattern, mark);
+    const finalMark = guarded.mark;
+    const ladder = makerConfidenceLadderTier(finalMark, guarded.attribution_suppressed);
+
+    // Description differs by suppression state. Suppressed attributions
+    // surface as candidate evidence with the rule caveat rather than as
+    // "Detected maker mark." This prevents the report from confidently
+    // attributing on initials-alone matches.
+    const description = guarded.attribution_suppressed && guarded.caveat
+      ? `Possible ${finalMark.maker} match (low confidence; ${ladder.tier} per Confidence Ladder). ${guarded.caveat}`
+      : `Detected maker mark: ${finalMark.maker}. Mark type: ${finalMark.mark_type}. Dating reference: ${finalMark.date_range}. Confidence tier: ${ladder.tier}.`;
+
+    return {
+      type: "label",
+      clue: finalMark.id,
+      description,
+      confidence: Math.round(finalMark.confidence_weight * 100),
+      source_image: "phase0_visible_text",
+      hard_negative: false,
+      low_confidence_flag: finalMark.confidence_weight < 0.7,
+    };
+  });
 }
 export const PE = {
   async callClaude(
