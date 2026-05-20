@@ -1796,7 +1796,20 @@ if (
     add("mirror_present", "Mirror is visible.", 72);
   }
 
-  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) {
+  // Metal-frame bed cue. A headboard/footboard ALONE does not imply metal —
+  // wooden bedsteads have them too — so require explicit metal-bed language, or
+  // a head/footboard accompanied by a metal material word. Wooden beds route to
+  // form_bedstead via the scoreForms wooden-bedstead block instead of being
+  // mis-flagged as iron beds here.
+  const metalBedLanguage = includesAny(text, [
+    "iron bed", "brass bed", "metal bed", "metal bedstead", "iron bedstead",
+    "cast-iron bed", "cast iron bed", "wrought-iron bed", "wrought iron bed",
+    "tubular steel bed", "tubular-steel bed", "steel bed",
+  ]);
+  const headFootWithMetal =
+    includesAny(text, ["headboard", "footboard"]) &&
+    includesAny(text, ["iron", "brass", "metal", "steel", "wrought", "tubular", "japanned", "chrome", "nickel-plated"]);
+  if (metalBedLanguage || headFootWithMetal) {
     add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
   }
 
@@ -4053,6 +4066,66 @@ if (
       add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
     }
   }
+
+  // Wooden bedstead cluster (form_bedstead). Per the iron/wood split (appraiser
+  // decision 2026-05-19), metal-frame beds route to form_iron_bed (handled
+  // above) and wooden beds route here. Gated against three collisions:
+  //   - metal cues  → stay on form_iron_bed
+  //   - "daybed"    → stay on form_daybed (side-facing lounge bed)
+  //   - seating     → a bed is not a chair/settee
+  // Subtypes checked most-specific-first so substrings don't steal (e.g.
+  // "half-tester bed" contains "tester bed"; "sleigh daybed" — routed to
+  // form_daybed — does not contain "sleigh bed").
+  const metalBedCue =
+    clues.has("metal_bed_frame") ||
+    hasAny("tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame") ||
+    includesAny(text, [
+      "iron bed", "brass bed", "metal bed", "metal bedstead", "iron bedstead",
+      "cast-iron bed", "cast iron bed", "wrought-iron bed", "wrought iron bed",
+      "tubular steel bed", "tubular-steel bed", "steel bed frame",
+    ]);
+  const daybedCue = includesAny(text, ["daybed", "day bed", "studio couch", "couch bed", "day couch"]);
+  const bedSeatingPresent =
+    clues.has("seating_surface") || clues.has("seating_present") ||
+    clues.has("backrest_present") || clues.has("armchair_form");
+
+  const halfTesterBed = includesAny(text, ["half-tester", "half tester"]);
+  const testerBed = includesAny(text, ["tester bed", "canopy bed", "full tester", "full-tester"]);
+  const fourPosterBed = includesAny(text, ["four-poster", "four poster", "poster bed", "pencil-post bed", "pencil post bed"]);
+  const sleighBed = includesAny(text, ["sleigh bed"]);
+  const spoolBed = includesAny(text, ["spool bed", "jenny lind"]);
+  const ropeBed = includesAny(text, ["rope bed"]);
+  const cannonballBed = includesAny(text, ["cannonball bed", "cannon-ball bed"]);
+  const lowPostBed = includesAny(text, ["low-post bed", "low post bed"]);
+  const panelBed = includesAny(text, ["panel bed"]);
+  const genericWoodBed = includesAny(text, [
+    "bedstead", "wooden bed", "wood bed", "wood-frame bed", "wood frame bed", "wooden bedframe",
+  ]);
+
+  if (!lampSignal && !metalBedCue && !daybedCue && !bedSeatingPresent) {
+    if (halfTesterBed) {
+      add("Half-tester bed", 100, "Wooden bed with a partial overhead tester projecting over the head end.");
+    } else if (testerBed) {
+      add("Tester bed", 100, "Wooden four-post bed with a full overhead canopy/tester structure.");
+    } else if (fourPosterBed) {
+      add("Four-poster bed", 100, "Wooden bed with four tall corner posts (no overhead tester).");
+    } else if (sleighBed) {
+      add("Sleigh bed", 100, "Wooden bed with head and foot scrolled outward in a sleigh silhouette.");
+    } else if (spoolBed) {
+      add("Spool bed", 100, "Wooden bed with turned spool/bobbin-like posts and rails (Jenny Lind).");
+    } else if (ropeBed) {
+      add("Rope bed", 100, "Wooden bed with a rope-laced mattress-support system through rail holes.");
+    } else if (cannonballBed) {
+      add("Cannonball bed", 98, "Wooden bed with rounded cannonball finials topping the posts.");
+    } else if (lowPostBed) {
+      add("Low-post bed", 98, "Wooden bed with short corner posts and restrained vertical emphasis.");
+    } else if (panelBed) {
+      add("Panel bed", 96, "Wooden bed with panel-and-frame headboard/footboard (common in factory suites).");
+    } else if (genericWoodBed) {
+      add("Bedstead", 92, "Wooden sleeping-support frame (headboard and/or footboard plus rails).");
+    }
+  }
+
      // Non-wood and mixed-material form families. Gated on !lampSignal so a lamp's
      // metal/brass base does not register as bed/metal furniture (#14).
   if (!lampSignal && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {

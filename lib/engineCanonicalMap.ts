@@ -575,8 +575,19 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // from wooden bedsteads (metal frame, brazed/riveted/welded joinery,
   // japanned/plated/powder-coat finish) and route to the dedicated
   // form_iron_bed canonical with its metal-frame dating evidence pathway.
-  // form_bedstead retains all wooden-bed routes (Bedstead, four-poster,
-  // sleigh bed, etc.).
+  // form_bedstead — wooden-bed routes (the iron/brass split sent metal beds to
+  // form_iron_bed above; wooden beds route here). Emitted by the scoreForms
+  // wooden-bedstead block (gated against metal/daybed/seating collisions).
+  "Bedstead": "form_bedstead",
+  "Four-poster bed": "form_bedstead", // subtype_four_poster_bed
+  "Tester bed": "form_bedstead", // subtype_tester_bed (canopy bed)
+  "Half-tester bed": "form_bedstead", // subtype_half_tester_bed
+  "Low-post bed": "form_bedstead", // subtype_low_post_bed
+  "Rope bed": "form_bedstead", // subtype_rope_bed
+  "Sleigh bed": "form_bedstead", // subtype_sleigh_bed (NB: "Sleigh daybed" → form_daybed)
+  "Spool bed": "form_bedstead", // subtype_spool_bed (Jenny Lind)
+  "Cannonball bed": "form_bedstead", // cannonball-finial poster variant
+  "Panel bed": "form_bedstead", // subtype_panel_bed
 
   // Iron bed routes — Batch 2 non-wood taxonomy expansion (2026-05-19)
   "Iron bed": "form_iron_bed",

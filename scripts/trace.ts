@@ -722,6 +722,16 @@ const mkTable = (id: string, wood: string, raw_text: string, extraObs: Array<{ c
     observations: extraObs.map((o) => obs(o.clue, o.description, 82)),
   },
 });
+const mkBed = (id: string, wood: string, raw_text: string,
+  obDesc = "Headboard, footboard, and side rails forming a sleeping-support frame"): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "bed" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: [obs("bed_frame_structure", obDesc, 82)],
+  },
+});
 // Escritoire must beat the generic drop-front Secretary route (cabinet-like
 // fall-front, no bookcase) — deskFormDominant suppresses the Secretary emit.
 const ESCRITOIRE_FIXTURE = mkDesk("escritoire", "oak",
@@ -936,6 +946,30 @@ const FIXTURES: Record<string, Fixture> = {
   transitional_rococo_renaissance: TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE,
   chippendale_art_deco_fantasy: CHIPPENDALE_ART_DECO_FANTASY_FIXTURE,
   centennial_colonial_revival_chippendale: CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE,
+  // ── Case pieces: bedsteads cluster (form_bedstead, wooden beds) ──
+  four_poster_bed: mkBed("four-poster-bed", "mahogany",
+    "Federal four-poster bed: a wooden bed with four tall turned mahogany corner posts and a headboard, with no overhead canopy."),
+  tester_bed: mkBed("tester-bed", "mahogany",
+    "Tester bed: a wooden four-post canopy bed with a full overhead tester frame connecting the tall posts."),
+  half_tester_bed: mkBed("half-tester-bed", "walnut",
+    "Victorian half-tester bed: a wooden bed with a partial overhead tester projecting forward over the head end only."),
+  sleigh_bed: mkBed("sleigh-bed", "walnut",
+    "American Empire sleigh bed: a wooden bed with the head and foot boards scrolled outward in a sleigh silhouette."),
+  spool_bed: mkBed("spool-bed", "birch",
+    "Jenny Lind spool bed: a wooden bed with turned spool-and-bobbin posts and rails."),
+  rope_bed: mkBed("rope-bed", "maple",
+    "Early American rope bed: a low wooden bedstead with rope laced through holes in the side rails as mattress support."),
+  low_post_bed: mkBed("low-post-bed", "cherry",
+    "Country low-post bed: a wooden bedstead with short turned corner posts and a simple headboard."),
+  panel_bed: mkBed("panel-bed", "walnut",
+    "Mid-century panel bed: a wooden bed with a panel-and-frame headboard and footboard from a coordinated bedroom suite."),
+  bedstead_generic: mkBed("bedstead-generic", "oak",
+    "Antique wooden bedstead: a headboard, footboard, and side rails forming a wooden sleeping-support frame."),
+  // Controls — must NOT route to form_bedstead.
+  iron_bed_control: mkBed("iron-bed-control", "",
+    "Victorian cast-iron and brass bed: a metal bedstead with cast-iron headboard scrollwork, brass knobs, and tubular side rails."),
+  daybed_control: mkBed("daybed-control", "walnut",
+    "Wooden daybed: a side-facing lounge daybed with a backrest along one long edge, configured for both rest and seated use."),
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {
