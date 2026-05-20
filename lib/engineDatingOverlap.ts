@@ -195,6 +195,13 @@ export function refineDatingFromConvergence(
   // that pre-dates one of its own hard-negative observations. Clamp the
   // zone's floor up to the maximum post-floor; if that pushes floor past
   // ceiling, slide the ceiling up by the original zone width.
+  // Open-ended post-YYYY floors carry no upper bound, so when one lands on OR
+  // past the zone ceiling we slide the ceiling forward rather than collapsing
+  // the range. Preserve the original zone width as the post-floor span, with a
+  // minimum so a hard floor that meets the ceiling exactly can't produce a
+  // degenerate single-year range — e.g. phillips post-1935 on a 1900-1935 zone
+  // previously yielded "c. 1935-1935".
+  const MIN_OPEN_FLOOR_SPAN = 25;
   let zFloor = best.date_floor;
   let zCeiling = best.date_ceiling;
   let hardFloorClamped = false;
@@ -206,7 +213,7 @@ export function refineDatingFromConvergence(
     if (l.date_floor != null && l.date_ceiling == null && l.date_floor > zFloor) {
       const width = zCeiling - zFloor;
       zFloor = l.date_floor;
-      if (zFloor > zCeiling) zCeiling = zFloor + width;
+      if (zFloor >= zCeiling) zCeiling = zFloor + Math.max(width, MIN_OPEN_FLOOR_SPAN);
       hardFloorClamped = true;
     }
   }
