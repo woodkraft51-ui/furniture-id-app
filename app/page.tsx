@@ -375,8 +375,12 @@ function evidenceMeaning(text: string): string {
     return "This confirms the piece was designed for sitting, which immediately narrows the form away from cabinets or tables.";
   }
 
-  if (t.includes("secondary surface") || t.includes("writing surface")) {
-    return "This indicates a functional surface, supporting a writing bench or telephone bench rather than a simple chair.";
+  if (t.includes("writing surface") || t.includes("writing or work surface") || t.includes("writing/work surface")) {
+    return "This indicates a dedicated writing or work surface, consistent with a desk, secretary, or writing table.";
+  }
+
+  if (t.includes("secondary surface") || t.includes("raised surface")) {
+    return "This indicates a secondary raised surface beside a seat, consistent with a writing bench or telephone bench.";
   }
 
   if (t.includes("spindle")) {

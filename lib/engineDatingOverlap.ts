@@ -157,23 +157,32 @@ export function refineDatingFromConvergence(
   // Synthetic-intersection containment. A synthetic style intersection zone
   // (authority_sum ≥ FLOOR, injected from two style families'/waves' production
   // windows agreeing) is given dominating authority so it can refine a genuine
-  // transitional reading. But a COINCIDENTAL overlap of two revival waves must
-  // not OVERRIDE genuine construction/material evidence that points elsewhere —
-  // e.g. two revival waves intersecting c. 1900–1910 should not outvote a
-  // wood + finish + style convergence at c. 1815–1860 on a piece with thick
-  // hand-sawn veneer. When the top zone is synthetic but a genuine multi-layer
-  // evidence zone exists that does NOT overlap it, the real evidence wins. When
-  // they DO overlap, the piece really does sit in the intersection window and
-  // the synthetic refinement is kept.
+  // transitional reading. But a COINCIDENTAL overlap must not OVERRIDE genuine
+  // construction/material evidence that points elsewhere.
+  //
+  // Compare the synthetic against the STRONGEST genuine evidence zone (qualifying
+  // is sorted by authority desc, so the first non-synthetic ≥3-layer zone is the
+  // strongest). Only let real evidence displace the synthetic when that strongest
+  // genuine zone DISAGREES (is disjoint). When they overlap, the synthetic is a
+  // legitimate tightening and is kept.
+  //
+  // CRITICAL: do NOT switch to just any disjoint genuine zone. A weaker, LATER
+  // genuine zone (e.g. wood+finish+style_wave at 1900–1910, driven by revival
+  // waves) must not displace a synthetic that already agrees with the dominant
+  // EARLY evidence (e.g. wood+finish+style at 1815–1860). The earlier prior
+  // implementation used `.find(disjoint)`, which grabbed the late zone and
+  // reported 1900–1910 on a piece whose strongest evidence sat at 1815–1860.
   const isSynthetic = (z: ConvergenceZone) =>
     z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR;
   const overlapsZone = (a: ConvergenceZone, b: ConvergenceZone) =>
     a.date_ceiling >= b.date_floor && b.date_ceiling >= a.date_floor;
   if (isSynthetic(best)) {
-    const genuineDisjoint = qualifying.find(
-      (z) => !isSynthetic(z) && z.layer_count >= 3 && !overlapsZone(z, best)
+    const strongestGenuine = qualifying.find(
+      (z) => !isSynthetic(z) && z.layer_count >= 3
     );
-    if (genuineDisjoint) best = genuineDisjoint;
+    if (strongestGenuine && !overlapsZone(strongestGenuine, best)) {
+      best = strongestGenuine;
+    }
   }
 
   // Hard-negative post-floor enforcement. Open-ended post-YYYY layer

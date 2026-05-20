@@ -1786,7 +1786,12 @@ if (
 
   if (
     text.includes("mirror") &&
-    !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"])
+    !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"]) &&
+    // "mirror-image" / "mirror-matched" describe BOOKMATCHED VENEER GRAIN, not a
+    // mirror. Bare substring matching on "mirror" otherwise fabricates a
+    // mirror_present clue on flame/crotch veneer pieces ("bilateral mirror-image
+    // bookmatched walnut"). Exclude the veneer-grain phrasings.
+    !includesAny(text, ["mirror-image", "mirror image", "mirror-matched", "mirror matched", "mirror match", "mirrored grain", "mirrored figure"])
   ) {
     add("mirror_present", "Mirror is visible.", 72);
   }
