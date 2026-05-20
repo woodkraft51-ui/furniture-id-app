@@ -176,6 +176,26 @@ export function reconcileFinalStyle(input: {
     hasModernHardNegative = false,
   } = input;
 
+  // Fix B (original-over-revival): when the final dating FLOOR sits within the
+  // attribution's original-period window and no modern-construction hard
+  // negative is present, the piece is anchored in its original period — a
+  // revival wave it merely clips at the late edge must NOT override that read.
+  // Without this guard a 19th-c. Biedermeier piece whose evidence converges on
+  // 1815–1910 gets labeled "Biedermeier Revival" only because the 1900–1910
+  // tail of that range touches the 1900–1920 revival wave. When true, Rule 3
+  // (revival) is skipped so reconciliation falls through to Rule 4
+  // (original_period). A modern hard negative (plywood, phillips, staples)
+  // disables the guard — then a date past the period genuinely is a
+  // revival/reproduction.
+  const anchoredInOriginalPeriod =
+    !hasModernHardNegative &&
+    styleAttribution != null &&
+    styleAttribution.date_floor != null &&
+    styleAttribution.date_ceiling != null &&
+    finalDatingFloor != null &&
+    finalDatingFloor >= styleAttribution.date_floor &&
+    finalDatingFloor <= styleAttribution.date_ceiling;
+
   // Rule 1: Named transitional period takes precedence (highest-resolution
   // appraiser-voice identification available) — BUT only when the named
   // period's date range actually overlaps the final dating envelope.
@@ -241,8 +261,9 @@ export function reconcileFinalStyle(input: {
 
   // Rule 3: Surfaced wave whose date range overlaps final dating AND
   // matches the winning attribution's parent style family. Prefer the
-  // wave with the widest overlap to the final dating.
-  if (styleAttribution && finalDatingFloor != null && finalDatingCeiling != null) {
+  // wave with the widest overlap to the final dating. Skipped when the piece
+  // is anchored in its original period (Fix B above).
+  if (!anchoredInOriginalPeriod && styleAttribution && finalDatingFloor != null && finalDatingCeiling != null) {
     const matchingWaves = styleWaves
       .filter(
         (w) =>

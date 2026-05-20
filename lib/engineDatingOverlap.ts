@@ -80,15 +80,19 @@ export type RefinedDating = {
  * Feature-flagged for easy disable.
  *
  * Override rule:
- * - Convergence zone must have ≥3 layers agreeing
- * - Width ≤60 years (anything wider is no improvement over current behavior)
+ * - Convergence zone must have ≥3 layers agreeing (or be a synthetic
+ *   style-intersection zone)
+ * - Width within a generous absolute sanity cap (ABSOLUTE_WIDTH_CAP); wide
+ *   evidence-rich zones are allowed rather than discarded in favor of a worse
+ *   broad fallback
  * - Convergence range must be TIGHTER than current p2 range (smaller width)
  *   OR p2 has no parseable numeric range
  *
- * When override fires, confidence bumps based on convergence layer count:
- *   3 layers → Moderate
- *   4 layers → Moderate
- *   5+ layers → High
+ * When override fires, confidence scales with width AND layer count:
+ *   width ≤60, 5+ layers → High
+ *   width ≤60          → Moderate
+ *   width ≤110, 4+ layers → Moderate
+ *   otherwise          → Low
  */
 export const CONVERGENCE_OVERRIDE_ENABLED = true; // Block 7b3 feature flag
 
@@ -126,9 +130,17 @@ export function refineDatingFromConvergence(
   // same era, which is stronger evidence than three weak layers happening
   // to overlap.
   const SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR = 20;
+  // Generous absolute sanity cap. The OLD behavior hard-rejected any zone wider
+  // than 60y, which threw away legitimate evidence-rich convergences (e.g. a
+  // 4-layer wood+finish+style+style_wave zone at 1815–1910) and fell back to
+  // p2's broad no-anchor default (often "late 19th–20th c." → 1900–2000). That
+  // reported a WORSE date than the engine's own convergence. We now accept wide
+  // zones and rely on the relative-width check below (override only when tighter
+  // than p2) plus width-scaled confidence. The cap only blocks absurd spans.
+  const ABSOLUTE_WIDTH_CAP = 160;
   const qualifying = overlap.convergence_zones
     .filter((z) => {
-      const widthOk = (z.date_ceiling - z.date_floor) <= 60;
+      const widthOk = (z.date_ceiling - z.date_floor) <= ABSOLUTE_WIDTH_CAP;
       if (!widthOk) return false;
       const isSyntheticIntersection = z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR;
       return isSyntheticIntersection || z.layer_count >= 3;
@@ -199,8 +211,17 @@ export function refineDatingFromConvergence(
   // Only override when convergence is strictly tighter (not equal)
   if (convergenceWidth >= originalWidth) return fallback;
 
-  const confidence: "High" | "Moderate" | "Low" =
-    best.layer_count >= 5 ? "High" : "Moderate";
+  // Confidence scales with BOTH layer count and width. A wide convergence is a
+  // real improvement over a broad fallback but shouldn't be reported with the
+  // same confidence as a tight one — so wide zones step down to Low/Moderate.
+  let confidence: "High" | "Moderate" | "Low";
+  if (convergenceWidth <= 60) {
+    confidence = best.layer_count >= 5 ? "High" : "Moderate";
+  } else if (convergenceWidth <= 110) {
+    confidence = best.layer_count >= 4 ? "Moderate" : "Low";
+  } else {
+    confidence = "Low";
+  }
 
   return {
     range: `c. ${zFloor}–${zCeiling}`,
