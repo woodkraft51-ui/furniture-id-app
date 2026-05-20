@@ -843,6 +843,48 @@ const BUREAU_PLAT_FIXTURE = mkDesk("bureau-plat", "mahogany",
 const KIDNEY_FIXTURE = mkDesk("kidney", "walnut",
   "Victorian kidney desk: a kidney-shaped writing desk with a leather top and curved drawer pedestals.");
 
+// Victorian Eastlake side chair whose visible "dowels" are pegged/drawbored
+// mortise-and-tenon, not modern machine doweling. dowel_joinery's old
+// "post-1900" hard floor falsely late-dated this plainly-Victorian chair;
+// dowel joinery should no longer anchor the date on its own.
+const VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-victorian-chair-pegged-dowel" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "chair" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Walnut Eastlake side chair, incised crest, shellac finish, needlepoint drop-in seat, pegged mortise-and-tenon back posts" },
+    observations: [
+      obs("victorian_eastlake_pattern", "Incised geometric carving consistent with Eastlake aesthetic c. 1870-1890", 58),
+      obs("mortise_and_tenon", "Pegged mortise-and-tenon joints at back posts", 75),
+      obs("dowel_joinery", "Small round peg/dowel ends visible on back stile posts, consistent with drawbored or pegged mortise-and-tenon joinery", 70),
+      obs("turned_legs", "Front legs lathe-turned with ring details", 82),
+      obs("walnut_primary_wood", "Warm medium-brown diffuse-porous wood consistent with walnut", 78),
+      obs("shellac_crazing", "Fine network crazing in an aged shellac finish on the crest rail", 54),
+      obs("needlepoint_cover", "Drop-in seat pad covered in hand-stitched needlepoint", 50),
+      obs("no_spring_seat", "Flat drop-in pad without spring lift", 45),
+    ],
+  },
+};
+
+// Renaissance Revival carved armchair with barley/spiral-twist arm columns.
+// barley_twist's old "Jacobean Revival c. 1890-1935" hint conflicted with the
+// 1860-1900 Renaissance Revival reading and stretched the style envelope;
+// spiral-twist turning spans many revival periods and shouldn't date on its own.
+const RR_BARLEY_TWIST_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-rr-barley-twist" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "chair" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Heavily carved walnut Renaissance Revival armchair with spiral-twist columnar arm supports" },
+    observations: [
+      obs("renaissance_revival_baroque_revival_style", "Carved spiral-twist columns, acanthus carving, claw feet consistent with Renaissance/Baroque Revival c. 1860-1900", 60),
+      obs("barley_twist", "Arm support columns exhibit barley-twist/spiral-twist turning with acanthus carving", 52),
+      obs("carved_columnar_supports", "Heavily carved columnar arm supports with turned ring capitals", 52),
+      obs("dark_hardwood_frame", "Very dark brown near-black high-polish carved hardwood frame", 75),
+    ],
+  },
+};
+
 // Eastlake side chair whose observations include self-negating descriptions:
 // the LLM emits nailhead_trim and spindle_back keys but its own prose says the
 // nailhead trim is NOT present (gimp instead) and the back is NOT true spindles
@@ -895,6 +937,8 @@ const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
 
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
+  rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
   eastlake_negations: EASTLAKE_NEGATION_FIXTURE,
   colonial_revival_footstool_phillips: COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
