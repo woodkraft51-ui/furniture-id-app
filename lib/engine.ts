@@ -3247,13 +3247,21 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "teacher's desk", "teachers desk", "teacher desk", "schoolmaster",
     "schoolmistress", "instructor's desk", "instructor desk", "classroom pedestal",
   ]);
-  const instLectern = includesAny(text, [
+  // Standing/speaking lecterns are form_lectern (a stand, not a desk); release
+  // them from the writing-lectern desk cue so they route to form_lectern.
+  const instLectern = !includesAny(text, [
+    "standing lectern", "floor lectern", "speaker's lectern", "speakers lectern",
+    "speaking lectern", "church lectern", "presentation lectern", "acrylic lectern",
+    "conductor's lectern", "fixed lectern",
+  ]) && includesAny(text, [
     "lectern", "writing lectern", "ecclesiastical desk", "vestry desk",
     "sacristy desk", "scriptorium", "manuscript desk", "monastic writing",
     "monk's writing", "registry desk", "sign-in desk", "guest book desk",
     "guestbook desk", "marriage registry", "reading slope",
   ]);
-  const instTransactionStrong = includesAny(text, [
+  // A caged teller station / wicket is a bank FIXTURE (form_bank_fixture), not a
+  // counter desk; release those two from the transaction-desk "teller" cue.
+  const instTransactionStrong = !includesAny(text, ["teller cage", "teller wicket"]) && includesAny(text, [
     "teller", "cashier", "checkout desk", "register desk", "point of sale",
     "sales counter", "host stand", "maître d", "maitre d", "help desk",
     "support desk", "information desk", "returns desk", "customer service desk",
@@ -3766,7 +3774,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   // Seated dining height: kitchen (utility/farmhouse) and breakfast (nook/
   // dinette) split off their cues; dining is the dominant fallback.
   const kitchenTable = includesAny(text, [
-    "kitchen table", "kitchen dining", "kitchen utility", "farmhouse table", "farm table",
+    "kitchen table", "kitchen dining", "kitchen utility table", "farmhouse table", "farm table",
     "farm kitchen", "enamel table", "enamel-top", "porcelain top table", "hoosier table",
     "formica table", "laminate kitchen", "baking table", "bread table", "utility table",
   ]);
@@ -3970,6 +3978,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   const dresserExclude = includesAny(text, [
     "welsh dresser", "welsh-dresser", "kitchen dresser", "pewter dresser",
     "country dresser", "pine dresser", "farmhouse dresser", "plate rack dresser",
+    "hairdresser", "hair dresser", // "hairdresser" contains "dresser" as a substring
   ]);
   const dresserForm = !dresserExclude && includesAny(text, [
     "dresser", "bedroom bureau", "bureau dresser", "double dresser", "triple dresser",
@@ -4044,7 +4053,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "buffet and hutch", "country hutch", "display hutch", "cupboard hutch",
   ]);
   const chinaCabinetForm = includesAny(text, ["china cabinet", "china closet", "china display"]);
-  const curioForm = includesAny(text, ["curio cabinet", "curio"]);
+  const curioForm = includesAny(text, ["curio cabinet", "curio"]) && !includesAny(text, ["curiosities", "cabinet of curiosities"]);
   const buffetForm = includesAny(text, ["buffet", "dining cabinet"]);
   const serverForm = includesAny(text, ["serving table", "serving board", "serving cabinet", "dining server"]) ||
     (/\bserver\b/.test(text) && !includesAny(text, ["server rack", "rack server", "network server", "file server", "web server", "blade server", "server equipment", "server cabinet"]));
@@ -4272,6 +4281,103 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Musical instrument furniture", 90, "Furniture built around a musical instrument (sheet-music cabinet, instrument storage).");
   } else if (basketForm) {
     add("Basket", 95, "Woven basket form (wicker, splint, sewing, picnic, or market basket).");
+  }
+
+  // Industrial / professional / institutional cluster. Concrete forms get
+  // distinctive cues; the abstract catch-alls (built-in/shelving/rack/env/
+  // workstation/kitchen-utility/beverage/hospitality/educational/industrial-
+  // station) get minimal guarded cues and lower scores so concrete forms win.
+  // Collision notes: rack/shelving use ONLY qualified terms so they don't fire
+  // on bare "rack"/"shelving" (coat/hat/equipment rack and bookcase open-shelving
+  // are handled earlier); standing lecterns + teller cages were released from the
+  // institutional-desk cues above; package/delivery lockers stay form_package_station.
+  const drySinkForm = includesAny(text, ["dry sink"]);
+  const barberStationForm = includesAny(text, ["barber station", "barber chair", "barber counter", "barbershop", "barber's workstation", "barber workstation"]);
+  const salonStationForm = includesAny(text, ["salon station", "styling station", "hairdresser station", "beauty salon station", "salon chair", "beauty station"]);
+  const timeClockForm = includesAny(text, ["time clock", "punch clock", "attendance station", "time stamp clock", "factory time clock", "bundy clock"]);
+  const cabinetCuriositiesForm = includesAny(text, ["cabinet of curiosities", "wunderkammer", "curiosity cabinet", "specimen cabinet"]);
+  const easelForm = includesAny(text, ["easel", "artist's easel", "artists easel", "studio easel", "display easel", "tripod easel"]);
+  const musicStandForm = includesAny(text, ["music stand", "sheet music stand", "orchestra stand", "conductor's stand", "folding music stand"]);
+  const pulpitForm = includesAny(text, ["pulpit", "preaching pulpit", "wineglass pulpit", "wine-glass pulpit"]);
+  const lecternForm = includesAny(text, ["standing lectern", "floor lectern", "speaker's lectern", "speakers lectern", "speaking lectern", "church lectern", "presentation lectern", "acrylic lectern", "conductor's lectern", "fixed lectern"]);
+  const podiumForm = includesAny(text, ["podium", "speaker's podium", "speakers podium", "presentation podium", "conductor's podium", "winner's podium", "award podium"]);
+  const churchFurnishingForm = includesAny(text, ["altar", "baptismal font", "communion table", "prie-dieu", "prie dieu", "kneeler", "credence table", "church furnishing", "tabernacle stand", "sanctuary furniture"]);
+  const showcaseForm = includesAny(text, ["showcase", "display case", "glass display case", "jewelry showcase", "jewelry case", "store display case", "museum display case", "glass showcase"]);
+  const kioskForm = includesAny(text, ["kiosk", "information kiosk", "mall kiosk", "newsstand", "ticket kiosk", "retail kiosk"]);
+  const bankFixtureForm = includesAny(text, ["bank fixture", "teller cage", "teller wicket", "safe deposit box unit", "bank vault gate", "banking wicket"]);
+  const utilityCartForm = includesAny(text, ["utility cart", "serving cart", "tea cart", "tea trolley", "bar cart", "drinks trolley", "kitchen cart", "rolling cart", "service trolley", "hostess cart", "microwave cart"]);
+  const lockerForm = includesAny(text, ["locker", "gym locker", "school locker", "employee locker", "storage locker", "metal locker", "locker unit"]);
+  const scientificStandForm = includesAny(text, ["scientific stand", "laboratory stand", "microscope stand", "telescope stand", "lab stand", "specimen stand", "retort stand"]);
+  const safetyFixtureForm = includesAny(text, ["safety fixture", "fire extinguisher cabinet", "first aid cabinet", "eyewash station", "fire hose cabinet", "aed cabinet", "safety cabinet"]);
+  const retailFixtureForm = includesAny(text, ["retail fixture", "store fixture", "gondola shelving", "gondola unit", "slatwall", "slat wall", "merchandising fixture", "display gondola", "point-of-purchase display", "pegboard display"]);
+  const shelvingSystemForm = includesAny(text, ["shelving system", "industrial shelving", "metal shelving", "wire shelving", "storage shelving", "boltless shelving", "rivet shelving", "warehouse shelving", "modular shelving"]);
+  const rackForm = includesAny(text, ["display rack", "storage rack", "utility rack", "wire rack", "metal rack", "warehouse rack", "pallet rack", "dunnage rack", "drying rack", "luggage rack", "wine rack"]);
+  const builtInStorageForm = includesAny(text, ["built-in storage", "built-in cabinetry", "fitted storage", "fitted cabinetry", "architectural built-in"]);
+  const envUtilityForm = includesAny(text, ["radiator cover", "radiator cabinet", "humidifier cabinet", "hvac cabinet", "heater cover", "register cover", "environmental utility"]);
+  const workstationAccessoryForm = includesAny(text, ["workstation accessory", "monitor stand", "monitor riser", "keyboard tray", "cpu holder", "monitor arm"]);
+  const kitchenUtilityUnitForm = includesAny(text, ["kitchen utility unit", "kitchen work unit", "utility prep unit"]);
+  const beverageServiceForm = includesAny(text, ["beverage station", "coffee station", "beverage service", "drink station", "beverage counter"]);
+  const hospitalityFixtureForm = includesAny(text, ["hospitality fixture", "hotel fixture", "hospitality station", "hotel luggage stand"]);
+  const educationalFixtureForm = includesAny(text, ["educational fixture", "classroom fixture", "interactive whiteboard stand"]);
+  const industrialStationForm = includesAny(text, ["industrial station", "assembly station", "packing station", "industrial work station"]);
+  if (drySinkForm) {
+    add("Dry sink", 96, "Country cabinet with a recessed well top for a water basin (pre-plumbing washing).");
+  } else if (barberStationForm) {
+    add("Barber station", 96, "Barber's service station/counter (mirror, drawers, tool storage; barber chair context).");
+  } else if (salonStationForm) {
+    add("Salon station", 96, "Hairdresser/beauty styling station (mirror, drawers, tool storage).");
+  } else if (timeClockForm) {
+    add("Time clock station", 96, "Workplace time/attendance clock station (punch/bundy clock and card rack).");
+  } else if (cabinetCuriositiesForm) {
+    add("Cabinet of curiosities", 96, "Specimen/curiosity display cabinet (wunderkammer).");
+  } else if (easelForm) {
+    add("Easel", 96, "Standing frame for supporting a canvas, artwork, or display board.");
+  } else if (musicStandForm) {
+    add("Music stand", 95, "Adjustable stand holding sheet music for a player or conductor.");
+  } else if (pulpitForm) {
+    add("Pulpit", 96, "Elevated enclosed preaching stand in a church.");
+  } else if (lecternForm) {
+    add("Lectern", 95, "Standing speaking lectern with a sloped reading top (not a writing desk).");
+  } else if (podiumForm) {
+    add("Podium", 94, "Raised speaker's stand/platform for presentations or ceremonies.");
+  } else if (churchFurnishingForm) {
+    add("Church furnishing", 94, "Ecclesiastical furniture (altar, font, communion/credence table, kneeler/prie-dieu).");
+  } else if (showcaseForm) {
+    add("Showcase", 94, "Glazed retail/museum display case for presenting merchandise or objects.");
+  } else if (kioskForm) {
+    add("Kiosk", 95, "Freestanding small-footprint retail/information booth or stand.");
+  } else if (bankFixtureForm) {
+    add("Bank fixture", 92, "Banking-hall fixture (teller cage/wicket, safe-deposit unit) rather than a counter desk.");
+  } else if (utilityCartForm) {
+    add("Utility cart", 94, "Wheeled service/utility cart or trolley (tea cart, bar cart, kitchen cart).");
+  } else if (lockerForm) {
+    add("Locker", 94, "Compartmented metal/wood locker unit for personal storage (gym/school/employee).");
+  } else if (scientificStandForm) {
+    add("Scientific stand", 94, "Laboratory/optical instrument stand (microscope, telescope, retort, specimen).");
+  } else if (safetyFixtureForm) {
+    add("Safety fixture", 94, "Safety-equipment fixture (fire extinguisher / first-aid / eyewash / hose / AED cabinet).");
+  } else if (retailFixtureForm) {
+    add("Retail fixture", 92, "Store merchandising fixture (gondola, slatwall, pegboard, point-of-purchase display).");
+  } else if (shelvingSystemForm) {
+    add("Shelving system", 92, "Industrial/utility shelving system (boltless/rivet, wire, or metal shelving).");
+  } else if (rackForm) {
+    add("Rack", 92, "Open utility/storage rack (display, pallet, wire, drying, luggage, or wine rack).");
+  } else if (builtInStorageForm) {
+    add("Built-in storage", 90, "Architectural built-in cabinetry/storage fitted to the structure.");
+  } else if (envUtilityForm) {
+    add("Environmental utility form", 90, "Furniture concealing an environmental utility (radiator cover, humidifier/HVAC cabinet).");
+  } else if (workstationAccessoryForm) {
+    add("Workstation accessory", 90, "Desktop/workstation accessory (monitor stand/riser, keyboard tray, CPU holder).");
+  } else if (kitchenUtilityUnitForm) {
+    add("Kitchen utility unit", 90, "Kitchen/work utility prep unit (not a full kitchen cabinet or Hoosier).");
+  } else if (beverageServiceForm) {
+    add("Beverage service form", 88, "Beverage/coffee service station or counter.");
+  } else if (hospitalityFixtureForm) {
+    add("Hospitality fixture", 88, "Hotel/hospitality service fixture.");
+  } else if (educationalFixtureForm) {
+    add("Educational fixture", 88, "Classroom/educational fixture (not a school desk).");
+  } else if (industrialStationForm) {
+    add("Industrial station", 88, "Factory/industrial work or assembly/packing station.");
   }
  // Industrial / Toledo-style task chair
 if (
