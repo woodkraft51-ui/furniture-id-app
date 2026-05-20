@@ -843,6 +843,28 @@ const BUREAU_PLAT_FIXTURE = mkDesk("bureau-plat", "mahogany",
 const KIDNEY_FIXTURE = mkDesk("kidney", "walnut",
   "Victorian kidney desk: a kidney-shaped writing desk with a leather top and curved drawer pedestals.");
 
+// Eastlake side chair whose observations include self-negating descriptions:
+// the LLM emits nailhead_trim and spindle_back keys but its own prose says the
+// nailhead trim is NOT present (gimp instead) and the back is NOT true spindles
+// (flat slats). Both clues must be dropped from clue_keys (not routed or
+// surfaced as supporting evidence / labels).
+const EASTLAKE_NEGATION_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-eastlake-negations" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "chair" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Eastlake side chair with incised crest, reeded stiles, needlepoint drop-in seat with gimp trim" },
+    observations: [
+      obs("style_cues", "Incised geometric fan/sunburst crest and reeded stiles consistent with Eastlake aesthetic c. 1870-1895", 58),
+      obs("turned_legs", "Front legs lathe-turned with ring and bobbin details", 82),
+      obs("mortise_and_tenon", "Pegged mortise-and-tenon at back posts", 75),
+      obs("needlepoint_cover", "Drop-in seat pad covered in hand-stitched needlepoint", 50),
+      obs("nailhead_trim", "No decorative nailhead trim visible; instead a gimp/braid trim finishes the needlepoint seat pad edges", 50),
+      obs("spindle_back", "Vertical back slats with arched cutout bases; not true turned spindles but flat slat construction", 52),
+    ],
+  },
+};
+
 // Colonial Revival needlepoint footstool with modern bracket-mounted
 // construction. Reproduces the hard-negative range-collapse bug: a phillips
 // screw (open-ended post-1935 floor, hard negative) lands exactly on the
@@ -873,6 +895,7 @@ const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
 
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  eastlake_negations: EASTLAKE_NEGATION_FIXTURE,
   colonial_revival_footstool_phillips: COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
   tambour_desk: TAMBOUR_DESK_FIXTURE,
