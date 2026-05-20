@@ -7233,8 +7233,11 @@ Begin recovery extraction now. Do not return the empty observations array under 
   p1(caseData: any, intake: any, digest: EvidenceDigest, images: any[]): Phase1Gate {
     const missing = computeMissingEvidence(images);
     const count = digest.observation_count;
+    // fallback_form is the engine's "extraction returned nothing" sentinel, not
+    // real evidence — it must not count as form/identification evidence here.
+    const evidenceEmpty = digest.clue_keys.includes("fallback_form") || count === 0;
     const hasLabel = digest.clue_keys.some((k) => k.includes("label"));
-    const hasForm = (digest.by_type.form || []).length > 0;
+    const hasForm = (digest.by_type.form || []).some((o: any) => o.clue !== "fallback_form");
     const hasConstruction = ["construction", "joinery", "toolmarks", "fasteners", "materials"].some((t) => (digest.by_type[t] || []).length > 0);
 
     let pct = 40;
@@ -7362,7 +7365,9 @@ if (missing.label_photo) {
     // appraiser observation that style confidence and dating confidence
     // were being blended together too aggressively.
     let sufficiencySummary: string;
-    if (datingStructuralCount === 0) {
+    if (evidenceEmpty) {
+      sufficiencySummary = "The photos did not yield usable structured evidence, so no identification, dating, or valuation could be supported. Re-shoot with better lighting, focus, and angle — clear full-form shots plus close-ups of joinery, any maker's mark or label, and the underside.";
+    } else if (datingStructuralCount === 0) {
       sufficiencySummary = hasLabel
         ? "Label evidence anchors the identification. Dating confidence remains moderate without detail-photo evidence (joinery, fasteners, toolmarks, hardware close-ups, or underside)."
         : hasForm
@@ -7990,15 +7995,24 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
 },
 
  p6(gate: Phase1Gate, dating: Phase2Result, form: Phase3Result, weighting: Phase4Result, conflict: Phase5Result, digest?: EvidenceDigest): Phase6Result {
-  const vb = valueBand(
-    form.display_form || form.form || "Unknown",
-    dating.range || "",
-    digest
-  );
+  // Gate valuation on evidence sufficiency. Without this, a scan that yielded
+  // no usable observations (only the fallback_form sentinel) still produced
+  // confident dollar ranges and a sellability score — anchoring on nothing.
+  const insufficientForValuation =
+    (digest?.clue_keys?.includes("fallback_form") ?? false) ||
+    (digest?.observation_count ?? 0) === 0;
+
+  const vb = insufficientForValuation
+    ? null
+    : valueBand(
+        form.display_form || form.form || "Unknown",
+        dating.range || "",
+        digest
+      );
 
   const moneyRange = (range: number[]) => `$${range[0]} – $${range[1]}`;
 
-  const valuationBreakdown = {
+  const valuationBreakdown = vb && {
     dealer_buy: {
       label: "Dealer Buy / Trade-In",
       range: moneyRange(vb.dealer_buy),
@@ -8069,13 +8083,18 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     ],
     more_evidence_needed: gate.next_best_evidence || [],
     summary: `Evidence-first result: ${form.display_form || form.form}. Dating: ${dating.range}. ${conflict.summary || gate.evidence_sufficiency_summary}`,
-    valuation: {
-      ...vb,
-      display: valuationBreakdown.marketplace.range,
-      low: vb.marketplace[0],
-      high: vb.marketplace[1],
-      platform_breakdown: valuationBreakdown,
-    },
+    valuation: vb
+      ? {
+          ...vb,
+          display: valuationBreakdown.marketplace.range,
+          low: vb.marketplace[0],
+          high: vb.marketplace[1],
+          platform_breakdown: valuationBreakdown,
+        }
+      : {
+          insufficient_evidence: true,
+          note: "Not enough evidence to estimate value. The photos didn't yield usable identification or construction detail — re-shoot with clearer, well-lit photos (full form plus close-ups of joinery, any maker's mark, and the underside) for a valuation.",
+        },
     dating_overlap,
   };
 },
