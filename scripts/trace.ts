@@ -935,6 +935,25 @@ const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
   },
 };
 
+// Slant-front desk with active insect/rot damage at a drawer joint. Structural
+// condition damage like this should dampen sellability and the valuation lanes
+// (restoration cost, resale confidence) — previously valueBand only penalized
+// finish loss / scratches / missing-broken-loose, so insect/rot slipped through.
+const DESK_INSECT_DAMAGE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-desk-insect-damage" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk, fitted interior, one drawer; drawer-corner joint shows crumbling powdery darkened wood consistent with insect damage / wood rot" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drawer_present", "One full-width exterior drawer below the fall front", 68),
+      obs("solid_wood_construction", "Case sides and drawer sides read as solid wood", 84),
+      obs("insect_damage_drawer_corner", "Drawer corner joint shows crumbling, powdery, darkened wood consistent with old insect damage (powder post beetle) or advanced wood rot at the dovetail end grain", 54),
+    ],
+  },
+};
+
 // Slant-front desk whose drawer-corner dovetails were emitted by the LLM as
 // BOTH hand_cut_dovetails ("pre-1860") and machine_dovetails ("post-1860") —
 // a hedge of the same feature. Those contradictory directional bounds used to
@@ -1003,6 +1022,7 @@ const QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE: Fixture = {
 
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
   desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,
   queen_anne_revival_no_dating: QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE,
   hedged_dovetail_desk: HEDGED_DOVETAIL_DESK_FIXTURE,
