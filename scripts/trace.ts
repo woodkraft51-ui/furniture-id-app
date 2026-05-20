@@ -163,13 +163,1140 @@ const MCM_PLASTIC_CHAIR_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 6: Colonial Revival tub/lounge chair misdiagnosed as a telephone
+// bench + Louis XVI + MCM. Synthesized from a real diagnostic trace
+// (May 2026) that surfaced four engine bugs simultaneously:
+//   - Form: telephone_stand winning over armchair (composite-pattern
+//     threshold fired on seating + secondary_surface alone)
+//   - Form subtype: telephone_cabinet at confidence 1.0 with
+//     matched_attributes: [] (subtype scoring did not require ≥1 match)
+//   - Style: Louis XVI / French Neoclassical (1770–1830) winning over
+//     Colonial Revival because "revival" was stopword-filtered and the
+//     `neoclassical` token anchored to the original-period family
+//   - Style waves: MCM waves firing on a false CNC-derived date hint
+//     because the 2-of-N gate effectively required only one of
+//     {date overlap, design signal} (Layer 1 was pushed unconditionally)
+//   - Dating overlap: reversed envelopes (e.g., finish 1880–1830)
+//     flowing through parseRangeToNumeric without normalization
+// Expected post-fix behavior:
+//   - form attribution = form_armchair (telephone-bench vetoed by armchair_form)
+//   - colonial_revival_pattern synthesized; Louis XVI penalized
+//   - no MCM waves with empty matched signals
+//   - shellac_intact envelope normalized to 1830–1880, not 1880–1830
+const COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-colonial-revival-lounge-chair-misdiagnosed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "walnut",
+    user_category_guess: "chair",
+    condition_notes:
+      "tufted velvet upholstery; cane side panels; tapered front legs with block corners; decorative rosette applique blocks at arm terminals; possible incised maker mark near back rail; OCR picked up 'CNC' text on a faded paper label",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Walnut tub/barrel-back armchair with full upholstery, button-tufted velvet seat and back, cane-paneled sides, square tapered front legs with block-corner detail and decorative rosette applique. Possible incised maker mark partially legible. Faded paper label includes the letters 'CNC'.",
+    },
+    observations: [
+      obs("seating_surface", "Loose tufted seat cushion present within a framed wooden seat platform; clearly a seating form", 95),
+      obs("backrest_present", "Upholstered backrest present", 95),
+      obs("armchair_form", "Full upholstered arms continuing to flared arm terminals; classic armchair form", 92),
+      obs("barrel_tub_back", "Curved continuous barrel/tub back rail wraps from one arm around through back", 90),
+      obs("cane_panel_sides", "Both side panels feature woven cane in open hexagonal weave; machine-pressed sheet cane appearance", 85),
+      obs("pressed_sheet_cane", "Machine-pressed sheet cane with regular geometric repeat", 85),
+      obs("tapered_legs", "Square-section tapered front legs with incised panel carving near top", 88),
+      obs("block_corner_detail", "Block-corner detail at the junction of arm and leg", 82),
+      obs("decorative_rosette_applique", "Carved rosette applique blocks at arm terminals", 84),
+      obs("neoclassical_revival_cues", "Tapered legs + rosette applique + block corners read as neoclassical revival vocabulary", 80),
+      obs("possible_maker_mark_incised", "Possible incised maker mark partially legible near back rail", 60),
+      obs("velvet_cover", "Velvet upholstery cover on seat, back, and arms", 90),
+      obs("button_tufting", "Button-tufted back and seat cushion", 88),
+      obs("foam_padding", "Foam padding under velvet cover (modern foam compression)", 75),
+      obs("arm_upholstery", "Full upholstered arms", 92),
+      obs("wood_species_walnut_group", "Visible frame wood reads as walnut group", 80),
+      obs("shellac_intact", "Shellac finish appears intact on exposed wood", 70),
+      obs("wear_at_arm_terminals", "Wear and minor abrasion at arm terminals consistent with use", 70),
+      obs("fully_upholstered", "Frame is fully upholstered; seat, back, and arms covered", 92),
+      // The "secondary_surface" observation is what triggered telephone-bench
+      // misrouting pre-fix: a small side-attached writing/holding surface was
+      // perceived in-frame on the lounge chair photo.
+      obs("secondary_surface", "Small flat surface visible adjacent to one arm", 55),
+    ],
+  },
+};
+
+// Fixture 7: Golden Oak dresser misdiagnosed as American Classical / Empire
+// c. 1845–1850. Synthesized from a real diagnostic trace (May 2026) where:
+//   - Form correctly read as form_chest_of_drawers
+//   - Style attribution incorrectly anchored to style_family_american_classical
+//     (0.83 confidence, matched only on the single token "empire" from
+//     `empire_transitional_style`)
+//   - 10 style waves surfaced across american_classical/rococo_revival/
+//     contemporary_transitional families with empty matched_signals (Layer 1
+//     + Layer 2 passed the gate without Layer 3 because attribution ≥0.6)
+//   - Style_wave dating layer polluted to 1845–2025
+//   - Convergence picked the 1845–1850 zone (hardware + style + style_wave =
+//     3 layers, narrowest) over the 1890–1900 zone (form + hardware +
+//     style_wave = 3 layers, wider) despite hardware being all replacement-
+//     risk porcelain casters and round wood knobs
+//   - round_wood_knob dated as "post-1750" because the canonical period_associations
+//     first entry is open-ended ("Continuous use" from 1750); the curated peak
+//     "Especially common 1820-1910" was ignored by the first-wins rule
+//   - golden_oak_era_possible LLM clue had zero references in the engine
+// Expected post-fix behavior:
+//   - form = form_chest_of_drawers (unchanged — was already correct)
+//   - style attribution NOT american_classical, OR confidence sharply reduced
+//   - style_family_golden_oak_era now in the alternates / structural pattern set
+//   - No 10-wave proliferation; only design-signal-matching waves surface
+//   - working range pulled toward c. 1890–1915 (Golden Oak peak), not 1845–1850
+//   - round_wood_knob dateHint reads as "c. 1820–1910" (peak), not "post-1750"
+const GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-golden-oak-dresser-misdiagnosed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "oak",
+    user_category_guess: "dresser",
+    has_drawers: true,
+    condition_notes:
+      "oak chest of drawers; flat-sawn cathedral grain on drawer fronts and case sides; two over four drawer layout with curved/rounded upper drawers; round wood knobs throughout; lock escutcheons on lower drawers; porcelain casters at base; horizontal plank back; wood-on-wood drawer runners; bracket feet with scrolled profile; flat overhanging top",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Oak chest of drawers / dresser with bold flat-sawn cathedral grain across drawer fronts, case sides, and top; ring-porous pore structure consistent with red oak (no visible ray fleck — flat-sawn rather than quarter-sawn). Two over four drawer configuration: upper row of two small side-by-side drawers with a curved/rounded drawer rail below them; lower rows are full-width graduated drawers. Round wood knobs throughout; lock escutcheons on lower drawers. Porcelain casters at base. Bracket feet with a scrolled profile. Flat overhanging top. Horizontal plank back constructed from multiple solid wood boards with visible seam lines. Drawer interiors show solid single-board drawer bottoms in pale secondary wood (pine/poplar). Drawer sides show wear consistent with wood-on-wood drawer runners. No hand-cut dovetails visible at case corners (rabbet or butt joint construction). Honey-amber Golden Oak era finish.",
+    },
+    observations: [
+      obs("multiple_drawer_case", "Two-over-four drawer configuration; chest-of-drawers form", 92),
+      obs("drawer_present", "Multiple drawers present", 95),
+      obs("two_over_four_drawer_configuration", "Top row of two small drawers; lower rows full-width graduated", 88),
+      obs("curved_drawer_rail", "Curved/rounded drawer rail divides upper drawers from lower stack", 80),
+      obs("scrolled_bracket_feet", "Bracket feet with shallow scrolled profile at base", 78),
+      obs("flat_top_overhanging", "Flat top with broad overhang on all three sides", 75),
+      obs("wood_species_oak", "Primary wood reads as oak (ring-porous open grain)", 90),
+      obs("flat_sawn_oak_grain", "Bold cathedral flat-sawn oak grain across fronts, sides, and top; no ray fleck (not quarter-sawn)", 88),
+      obs("golden_oak_era_possible", "Honey-amber finish + flat-sawn oak + factory-era proportions read as Golden Oak Era production", 82),
+      obs("empire_transitional_style", "Curved upper drawer rail + overhanging top read as transitional late-Empire decorative vocabulary on a factory case", 60),
+      obs("solid_wood_construction", "Drawer fronts, sides, and bottoms read as solid wood throughout; no plywood lamination at edges", 85),
+      obs("solid_plank_back", "Back panel constructed from multiple horizontal solid wood boards with visible seam lines (pre-plywood method)", 82),
+      obs("back_panel_horizontal_boards", "Horizontal plank back, multiple boards", 82),
+      obs("frame_and_panel_sides", "Side construction shows central floating panel framed by stiles and rails", 80),
+      obs("drawer_side_secondary_wood", "Drawer sides in a lighter secondary wood (pine/poplar), distinct from oak drawer fronts", 80),
+      obs("secondary_wood_drawer_bottom", "Drawer bottoms in pale secondary wood (pine/poplar)", 80),
+      obs("drawer_kicker_runner_system", "Wood-on-wood drawer runner/kicker system; no metal slides", 80),
+      obs("case_corner_joinery", "Case side meets top board with rabbet or butt joint at corners; no visible hand-cut dovetail tails", 70),
+      obs("round_wood_knob", "Round turned wood knobs on all drawers", 85),
+      obs("lock_escutcheons", "Lock escutcheons visible on lower drawers", 75),
+      obs("porcelain_caster", "Porcelain casters at base (likely replacement; one shows mismatched chip)", 70),
+      obs("finish_worn_not_refinished", "Honey-amber finish appears original; wear consistent with age, not refinishing", 70),
+      obs("age_darkening_patina", "Even age-darkening across exposed oak surfaces", 70),
+      obs("structural_integrity", "Case structurally tight; no significant racking or repair evidence", 75),
+      obs("cabriole_leg", "No cabriole legs visible — bracket feet only (negative observation captured by the LLM as a style-vocabulary contrast cue)", 30),
+    ],
+  },
+};
+
+// Fixture 8: Transitional Victorian eclectic piece carrying BOTH Rococo
+// Revival vocabulary (serpentine curves, scroll/floral carving, naturalistic
+// motifs) AND Renaissance Revival vocabulary (architectural mass, pediment
+// top, burled panels, incised medallions). Exercises the new
+// engineStyleIntersection logic (May 2026 session): when two style
+// attributions surface with overlapping date envelopes, the intersection
+// (here c. 1860–1870 — the high Rococo Revival 1845-1870 ∩ Renaissance
+// Revival 1860-1885 overlap) is the most likely production window and
+// becomes a confirmation signal rather than a "competing attributions"
+// conflict. Most real Victorian pieces are transitional like this.
+const TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-transitional-rococo-renaissance" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "walnut",
+    user_category_guess: "parlor table",
+    condition_notes:
+      "Mid-Victorian walnut parlor table with serpentine front and scrolled apron; burled walnut panels with incised medallions; small architectural pediment with central rosette; marble top removed; cabriole-like front legs with carved floral/grape clusters at knees",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Mid-Victorian walnut parlor table mixing rococo revival and renaissance revival vocabularies. Serpentine front rail with scrolled apron and floral/grape naturalistic carving at the knees of the cabriole-like front legs (rococo revival vocabulary). Burled walnut panels on the apron framed by incised renaissance medallions and a small architectural pediment with central rosette (renaissance revival vocabulary). Marble top removed (rectangular shadow visible on the carcass top). Walnut throughout the show surfaces; pine secondary. Machine-cut dovetails on the apron joinery. Shellac finish.",
+    },
+    observations: [
+      // Rococo Revival vocabulary — fires rococo_revival_pattern + token "rococo"
+      obs("scroll_carving", "Scrolled apron with bold S-scroll motifs on the front rail", 85),
+      obs("floral_carving", "Carved floral and grape clusters at the knees of the cabriole front legs", 88),
+      obs("serpentine_front", "Pronounced serpentine front rail with curved corner returns", 88),
+      obs("cabriole_leg", "Cabriole-like front legs with carved floral knees, classic rococo revival vocabulary", 82),
+      obs("naturalistic_victorian_carving", "Naturalistic rococo revival carving program — leaves, grapes, scrolls in continuous flow across the apron", 80),
+      // Renaissance Revival vocabulary — token "renaissance" + architectural-mass cues
+      obs("renaissance_revival_pediment", "Small architectural renaissance pediment over center of apron with central carved rosette", 82),
+      obs("burled_walnut_panels", "Burled walnut decorative panels framed by incised renaissance medallions", 85),
+      obs("incised_medallion", "Incised renaissance-style medallion carving framing the burled panels", 80),
+      obs("architectural_mass", "Architectural mass + pediment treatment characteristic of renaissance revival case furniture", 75),
+      obs("marble_top_evidence", "Rectangular shadow on carcass top indicates a removed marble top (renaissance revival convention)", 70),
+      // Construction / material / fasteners — lands in the 1860s-1880s window
+      obs("wood_species_walnut_group", "Walnut throughout the show surfaces; characteristic mid-Victorian primary wood", 90),
+      obs("machine_dovetails", "Machine-cut dovetails on apron drawer joinery", 88),
+      obs("mortise_and_tenon", "Mortise-and-tenon apron-to-leg joinery", 82),
+      obs("cut_nail", "Square tapered cut nails on secondary surfaces", 78),
+      obs("shellac_intact", "Shellac finish appears intact on exposed walnut", 70),
+      obs("drawer_present", "Single apron drawer", 80),
+      obs("secondary_wood_drawer_bottom", "Pine secondary wood on drawer bottom and dust panel", 75),
+    ],
+  },
+};
+
+// Fixture 9: 1980s-90s decorator's fantasy reproduction carrying BOTH
+// Chippendale vocabulary (cabriole legs, claw-and-ball feet, pierced
+// splat, shell carving) AND Art Deco vocabulary (waterfall edges, stepped
+// profile, chrome hardware, geometric veneer). This is an "impossible"
+// historical pairing per lib/constraints/styleCompatibility.ts —
+// original Chippendale ends c. 1785 and Art Deco begins c. 1925, so any
+// piece carrying both vocabularies is reproduction, decorator's mix,
+// fantasy, or LLM mis-read. Exercises detectImpossiblePairs() and the
+// p5 reproduction-signal conflict surfacing.
+const CHIPPENDALE_ART_DECO_FANTASY_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-chippendale-art-deco-fantasy" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "mahogany",
+    user_category_guess: "side chair",
+    condition_notes:
+      "1980s-90s decorator-styled side chair mixing Chippendale leg/splat vocabulary with Art Deco waterfall edges and chrome trim; phillips screws throughout; mahogany veneer over plywood substrate",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Side chair with mixed-vocabulary fantasy design. Chippendale-style cabriole legs with claw-and-ball feet at front; pierced Chippendale splat with carved shell motif at the crest. But the apron carries a waterfall edge with stepped profile, the front rail has chrome trim, and the underside shows phillips screws securing plywood drawer slip rails. Geometric veneer pattern on the apron face. Reads as an 1980s or 1990s decorator's Chippendale-Deco fantasy piece, not original-period production.",
+    },
+    observations: [
+      // Chippendale vocabulary — fires style_family_chippendale via token matches
+      obs("cabriole_leg", "Chippendale-style cabriole legs at the front of the chair", 88),
+      obs("claw_or_pad_foot", "Carved claw-and-ball feet on the front Chippendale legs", 85),
+      obs("shell_carving", "Carved shell motif at the crest rail, Chippendale vocabulary", 82),
+      obs("pierced_splat", "Pierced Chippendale-style center splat with C-scroll fretwork", 85),
+      obs("chippendale_pattern", "Overall splat + cabriole + claw-foot + shell program reads as Chippendale-style", 80),
+      // Art Deco vocabulary — fires art_deco_pattern detector + token matches
+      obs("waterfall_edge", "Apron carries a pronounced waterfall edge profile", 80),
+      obs("stepped_profile", "Stepped geometric profile at the front rail of the apron", 78),
+      obs("chrome_hardware", "Chrome trim band on the front rail and chrome accent at the leg-to-rail junction", 85),
+      obs("geometric_veneer", "Geometric Art Deco veneer pattern across the apron face", 75),
+      // Construction giveaways for reproduction-era production
+      obs("phillips_screw", "Phillips-head screws securing plywood slip rails under the seat", 95),
+      obs("plywood_structural", "Plywood substrate visible at the seat underside, mahogany veneer over plywood", 90),
+      obs("wood_species_mahogany_group", "Mahogany veneer on show surfaces", 80),
+      obs("machine_dovetails", "Machine-cut joinery on apron-to-leg connections", 82),
+    ],
+  },
+};
+
+// Fixture 10: Centennial Colonial Revival Chippendale chest of drawers
+// c. 1900. Colonial Revival × Chippendale is explicitly "stacked_revival"
+// per the canonical compatibility matrix (Chippendale Revival is one of
+// the most common Colonial Revival vocabularies, especially in mahogany
+// dining and case furniture). Exercises:
+//   - both attributions surfacing above the 0.5 confidence floor
+//   - engine flagging Chippendale alternative in
+//     p3.stacked_revival_partner_ids
+//   - intersection logic SUPPRESSING the transitional convergence
+//     framing (no best_style_intersection)
+//   - p5 NOT surfacing "transitional convergence" prose for this pair
+//   - chart's partner Style row suppressed (verified via the engine-side
+//     suppressed_partner_ids list that drives the chart filter)
+const CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-centennial-colonial-revival-chippendale" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "mahogany",
+    user_category_guess: "chest of drawers",
+    has_drawers: true,
+    condition_notes:
+      "Centennial-era academic Colonial Revival Chippendale chest of drawers, c. 1900. Mahogany show surfaces; cabriole legs with ball-and-claw feet; carved shell motif on the apron; pierced cresting; machine-cut dovetails on drawer construction.",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Academic Centennial Colonial Revival Chippendale chest of drawers c. 1900. Mahogany show wood with carved Chippendale-style shell motif at the apron, cabriole legs terminating in ball-and-claw feet, and pierced Chippendale fretwork at the cresting. Machine-cut dovetails throughout the drawer construction (no hand-cut joinery). Solid plank back panel. Standard Centennial-era academic Colonial Revival production — revives Chippendale vocabulary at scale through Grand Rapids-style factory methods.",
+    },
+    observations: [
+      // Form / structure
+      obs("multiple_drawer_case", "Chest of drawers with four full-width graduated drawers", 92),
+      obs("drawer_present", "Multiple drawers visible", 95),
+      obs("symmetrical_case_form", "Symmetrical case form characteristic of Colonial Revival case furniture", 80),
+      // Chippendale vocabulary
+      obs("cabriole_leg", "Cabriole legs with C-curve at front of case", 88),
+      obs("claw_or_pad_foot", "Ball-and-claw feet on front cabriole legs, classic Chippendale vocabulary", 85),
+      obs("shell_carving", "Carved shell motif at the apron, Chippendale shell carving program", 82),
+      obs("pierced_splat", "Pierced Chippendale fretwork at the cresting above the top drawer", 78),
+      // chippendale_pattern routes via STRUCTURAL_PATTERN_FAMILY to
+      // style_family_chippendale so the family enters structuralFamiliesPresent
+      // alongside Colonial Revival (via colonial_revival_cues), preventing the
+      // 30% competitive suppression that would otherwise drop Chippendale below
+      // the single-token confidence floor.
+      obs("chippendale_pattern", "Overall splat + cabriole + claw-foot + shell program reads as Chippendale-style", 80),
+      // Colonial Revival markers — Centennial-era academic production
+      obs("centennial_colonial_revival_pattern", "Academic Centennial Colonial Revival production reviving Chippendale vocabulary at scale", 80),
+      obs("colonial_revival_cues", "Restrained classical shaping and factory-era proportions consistent with Colonial Revival reuse of Chippendale", 78),
+      // Construction giveaways for post-1876 production
+      obs("machine_dovetails", "Machine-cut dovetails throughout drawer construction; no hand-cut joinery visible", 90),
+      obs("wood_species_mahogany_group", "Mahogany show wood across drawer fronts, sides, and case", 85),
+      obs("solid_plank_back", "Solid plank back panel", 78),
+      obs("secondary_wood_drawer_bottom", "Pale secondary wood (pine/poplar) on drawer bottoms", 75),
+    ],
+  },
+};
+
+// Fixture: roll-top desk — exercises the cover-mechanism cluster wiring.
+// Slatted/S-roll rolling cover with no "cylinder" language must route to the
+// newly-reachable form_roll_top_desk (not the rigid cylinder desk), and the
+// interior pigeonholes must be suppressed as a sub-feature (deskFormDominant).
+const ROLL_TOP_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-roll-top-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Quarter-sawn oak roll-top desk with an S-roll slatted tambour cover that retracts into a curved housing; fitted interior of pigeonholes and small drawers; double-pedestal kneehole base.",
+    },
+    observations: [
+      obs("writing_surface", "Fixed writing surface revealed when the slatted cover retracts", 85),
+      obs("pigeonholes", "Fitted interior of pigeonholes and small drawers", 80),
+    ],
+  },
+};
+
+// Fixture: tambour desk — sliding tambour, smaller/ladies' scale, no slat/roll
+// or cylinder language → form_tambour_desk.
+const TAMBOUR_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-tambour-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Small mahogany tambour writing desk; sliding tambour shutters close over a fitted interior; ladies' scale on tapered legs.",
+    },
+    observations: [obs("writing_surface", "Writing surface behind sliding tambour shutters", 82)],
+  },
+};
+
+// Fixture: Wooton desk — cabinet-office secretary with hinged outer doors;
+// explicit Wooton naming → form_wooton_desk.
+const WOOTON_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-wooton-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Wooton patent cabinet office secretary desk; rotary type with a fitted pigeonhole interior enclosed behind two hinged outer doors.",
+    },
+    observations: [obs("pigeonholes", "Fitted pigeonhole interior behind hinged outer doors", 80)],
+  },
+};
+
+// Control fixture: rigid cylinder desk — confirms the cover-cluster wiring does
+// NOT regress existing cylinder routing (form_cylinder_desk stays the pick).
+const CYLINDER_DESK_CONTROL_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-cylinder-desk-control" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Bureau à cylindre with a rigid curved cylinder cover (cylinder closure) over a fitted writing interior and kneehole base.",
+    },
+    observations: [
+      obs("cylinder_roll", "Rigid curved cylinder closure", 88),
+      obs("pigeonholes", "Interior letter slots and pigeonholes", 78),
+    ],
+  },
+};
+
+// Institutional / public-task desk cluster fixtures. Each gates on its
+// authored distinctive language; the chain must keep cousins separate
+// (clerk's vs standing; school vs teacher's; reception vs transaction).
+const SCHOOL_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-school-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Cast-iron and oak one-room schoolhouse desk; lift-lid school desk with an attached-seat sled base and a tablet-arm writing surface.",
+    },
+    observations: [obs("writing_surface", "Hinged lift-lid student writing surface", 80)],
+  },
+};
+const CLERK_VS_STANDING_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-clerks-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // "standing ledger desk" deliberately mixes posture + occupational
+      // language; the chain must pick clerk's (occupational wins).
+      raw_text:
+        "Tall sloped standing ledger desk from a counting-house; high bookkeeper's desk with a slanted ledger surface used with a stool.",
+    },
+    observations: [obs("writing_surface", "Sloped ledger writing surface", 80)],
+  },
+};
+const RECEPTION_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-reception-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Hotel lobby reception desk / front desk with a raised transaction counter and concierge check-in station.",
+    },
+    observations: [obs("writing_surface", "Raised counter work surface", 78)],
+  },
+};
+const TRANSACTION_COUNTER_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-transaction-counter-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Bank teller counter desk / cashier checkout station with a transaction surface and register well.",
+    },
+    observations: [obs("writing_surface", "Teller transaction surface", 78)],
+  },
+};
+
+// Seated pedestal / knee + multi-user cluster fixtures.
+// Davenport must beat the sofa "Davenport" (map sends bare "Davenport" to
+// form_sofa) via desk-context cues; partner's must beat executive when the
+// piece is two-sided; pedestal is the metal-tanker catch-all; kneehole must
+// beat pedestal when the central opening is the emphasis.
+const DAVENPORT_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-davenport-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Compact Victorian Davenport desk; small ship captain's writing desk with a sloped lift-top writing surface over a bank of side drawers.",
+    },
+    observations: [obs("writing_surface", "Sloped lift-top writing surface", 80)],
+  },
+};
+const PARTNERS_EXECUTIVE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-partners-executive-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // "executive partner's desk" appears in BOTH executive and partner's
+      // aliases; two-sided access must win (partner's), per cousin contrast.
+      raw_text:
+        "Large executive partner's desk; double-sided pedestal desk finished on both faces for two users seated face-to-face.",
+    },
+    observations: [obs("writing_surface", "Leather-inset writing surface on both sides", 80)],
+  },
+};
+const PEDESTAL_TANKER_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-pedestal-tanker-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // Steel piece -> blocksTraditionalWoodForms; "Pedestal desk" label must
+      // still emit (not in the blocked-traditional substring list).
+      raw_text:
+        "Mid-century gray steel government tanker desk; double-pedestal office desk with stamped-steel drawer banks and a linoleum top.",
+    },
+    observations: [obs("metal_frame", "Stamped sheet-steel case and pedestals", 85)],
+  },
+};
+const KNEEHOLE_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-kneehole-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Georgian kneehole desk; compact kneehole writing desk with a recessed central knee opening flanked by short drawer stacks.",
+    },
+    observations: [obs("writing_surface", "Flat writing top over a central kneehole recess", 80)],
+  },
+};
+
+// Office-equipment cluster fixtures. Typewriter must beat computer (drop-well
+// vs keyboard/monitor); an "Executive L-desk" must route to L-shaped (config
+// beats the executive tier); modular/cubicle systems are their own form.
+const TYPEWRITER_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-typewriter-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Early-20th-century secretarial typewriter desk with a spring-loaded drop-well that lifts the machine platform up to the work surface.",
+    },
+    observations: [obs("writing_surface", "Work surface beside a typewriter drop well", 80)],
+  },
+};
+const COMPUTER_GAMING_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-computer-gaming-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Black laminate multi-monitor RGB gaming desk / computer desk with a sliding keyboard tray, monitor shelf, and cable management grommets.",
+    },
+    observations: [obs("laminate_surface", "Black laminate work surface with cable grommets", 80)],
+  },
+};
+const L_SHAPED_EXECUTIVE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-l-shaped-executive-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // "Executive L-desk" is in both alias lists; the L configuration wins.
+      raw_text:
+        "Executive L-desk: a walnut-veneer office desk with a single perpendicular return forming an L-shaped configuration.",
+    },
+    observations: [obs("writing_surface", "Main work surface with one perpendicular return", 80)],
+  },
+};
+const MODULAR_CUBICLE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-modular-cubicle-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Herman Miller Action Office panel-based cubicle workstation; modular systems-furniture desk with hang-on work surfaces and partition panels.",
+    },
+    observations: [obs("laminate_surface", "Hang-on laminate work surface on partition panels", 80)],
+  },
+};
+
+// Fall/slope-front + open writing-surface cluster fixtures.
+const mkDesk = (id: string, wood: string, raw_text: string, ob = "writing_surface", obDesc = "Writing surface"): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: [obs(ob, obDesc, 80)],
+  },
+});
+const mkTable = (id: string, wood: string, raw_text: string, extraObs: Array<{ clue: string; description: string }> = []): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "table" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: extraObs.map((o) => obs(o.clue, o.description, 82)),
+  },
+});
+const mkBed = (id: string, wood: string, raw_text: string,
+  obDesc = "Headboard, footboard, and side rails forming a sleeping-support frame"): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "bed" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: [obs("bed_frame_structure", obDesc, 82)],
+  },
+});
+const mkCase = (id: string, wood: string, raw_text: string,
+  obDesc = "Cabinet or cupboard storage form", obClue = "cabinet_form"): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "cabinet" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: [obs(obClue, obDesc, 82)],
+  },
+});
+// Escritoire must beat the generic drop-front Secretary route (cabinet-like
+// fall-front, no bookcase) — deskFormDominant suppresses the Secretary emit.
+const ESCRITOIRE_FIXTURE = mkDesk("escritoire", "oak",
+  "Cabinet escritoire: a tall cabinet-like fall-front writing desk with a vertical fall lid over a fitted pigeonhole interior, no bookcase top.",
+  "pigeonholes", "Fitted pigeonhole interior behind the fall");
+const ABATTANT_FIXTURE = mkDesk("abattant", "mahogany",
+  "Secrétaire à abattant: a tall French cabinet desk with a flat vertical fall front that drops to form the writing surface over interior drawers.",
+  "pigeonholes", "Interior drawers and pigeonholes behind the abattant fall");
+const GRADINS_FIXTURE = mkDesk("gradins", "walnut",
+  "Bureau à gradins: a writing desk with a stepped tiered superstructure of small drawers (gradins) and a gallery across the back of the work surface.");
+// Control: a true bookcase-topped drop-front secretary must STILL route to the
+// Secretary form (no fall-front-family term present).
+const SECRETARY_DROP_FRONT_CONTROL_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-secretary-drop-front-control" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Drop-front secretary desk with a glazed bookcase top over a slant writing surface and a chest of drawers below.",
+    },
+    observations: [
+      obs("drop_front_desk", "Hinged drop-front writing surface", 88),
+      obs("pigeonholes", "Interior pigeonholes", 78),
+    ],
+  },
+};
+const BONHEUR_FIXTURE = mkDesk("bonheur-du-jour", "satinwood",
+  "Bonheur du jour: a small ladies' writing table with a raised cabinet superstructure of small drawers and a leather-inset writing slide.");
+const CARLTON_FIXTURE = mkDesk("carlton-house", "mahogany",
+  "Carlton House desk: a writing desk with a curved-back bank of small drawers and pigeonholes wrapping a U-shaped leather-topped writing surface.");
+const BUREAU_PLAT_FIXTURE = mkDesk("bureau-plat", "mahogany",
+  "Bureau plat: a flat-top French writing table / formal writing desk with a leather-inset open work surface and three frieze drawers, gilt-bronze mounts.");
+const KIDNEY_FIXTURE = mkDesk("kidney", "walnut",
+  "Victorian kidney desk: a kidney-shaped writing desk with a leather top and curved drawer pedestals.");
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  roll_top_desk: ROLL_TOP_DESK_FIXTURE,
+  tambour_desk: TAMBOUR_DESK_FIXTURE,
+  wooton_desk: WOOTON_DESK_FIXTURE,
+  cylinder_desk_control: CYLINDER_DESK_CONTROL_FIXTURE,
+  school_desk: SCHOOL_DESK_FIXTURE,
+  clerks_desk: CLERK_VS_STANDING_FIXTURE,
+  reception_desk: RECEPTION_DESK_FIXTURE,
+  transaction_counter_desk: TRANSACTION_COUNTER_FIXTURE,
+  davenport_desk: DAVENPORT_DESK_FIXTURE,
+  partners_executive_desk: PARTNERS_EXECUTIVE_FIXTURE,
+  pedestal_tanker_desk: PEDESTAL_TANKER_FIXTURE,
+  kneehole_desk: KNEEHOLE_DESK_FIXTURE,
+  typewriter_desk: TYPEWRITER_DESK_FIXTURE,
+  computer_gaming_desk: COMPUTER_GAMING_FIXTURE,
+  l_shaped_executive_desk: L_SHAPED_EXECUTIVE_FIXTURE,
+  modular_cubicle_desk: MODULAR_CUBICLE_FIXTURE,
+  escritoire_desk: ESCRITOIRE_FIXTURE,
+  abattant_desk: ABATTANT_FIXTURE,
+  gradins_desk: GRADINS_FIXTURE,
+  secretary_drop_front_control: SECRETARY_DROP_FRONT_CONTROL_FIXTURE,
+  bonheur_du_jour_desk: BONHEUR_FIXTURE,
+  carlton_house_desk: CARLTON_FIXTURE,
+  bureau_plat_desk: BUREAU_PLAT_FIXTURE,
+  kidney_desk: KIDNEY_FIXTURE,
+  murphy_desk: mkDesk("murphy", "birch",
+    "Murphy desk: a fold-down wall desk that folds away into a wall-bed cabinet system, with a hinged work surface."),
+  built_in_desk: mkDesk("built-in", "oak",
+    "Custom built-in desk: an alcove millwork desk permanently installed as architectural cabinetry under a stair, matching the room's built-in bookcases."),
+  hutch_desk: mkDesk("hutch", "maple",
+    "Student hutch desk: a desk with an added open upper hutch of shelves and cubbies above the work surface."),
+  armoire_desk: mkDesk("armoire", "cherry",
+    "Computer armoire desk: a tall freestanding wardrobe-like cabinet that encloses a fold-away desk work surface behind doors (hideaway desk)."),
+  wall_unit_desk: mkDesk("wall-unit", "walnut",
+    "Home office wall unit desk: a wall system combining a library bookcase wall unit with substantial cabinet storage and an integrated work surface."),
+  wall_desk: mkDesk("wall", "pine",
+    "Floating wall desk: a compact wall-mounted writing surface, wall-hung and removable, with no floor support."),
+  writing_box: mkDesk("writing-box", "rosewood",
+    "Georgian writing box / writing slope: a portable case with a hinged leather-lined sloped writing surface, ink wells, and pen channels (a lap desk)."),
+  field_desk: mkDesk("field", "oak",
+    "Officer's campaign field desk: a portable folding knockdown military field desk with brass-bound corners and carrying handles for mobile work."),
+  artists_desk: mkDesk("artists", "pine",
+    "Tilting artist's desk: a drawing / drafting desk with an adjustable tilting work surface and a pencil ledge."),
+  workbench_desk: mkDesk("workbench", "maple",
+    "Jeweler's workbench desk: a heavy watchmaker's workbench desk with a tool-storage drawer bank and a durable work surface.",
+    "metal_frame", "Steel-edged durable work surface"),
+  tabletop_desk: mkDesk("tabletop", "walnut",
+    "Tabletop desk: a small tabletop writing cabinet / tabletop secrétaire organizer meant to rest on a larger table."),
+  laboratory_desk: mkDesk("laboratory", "oak",
+    "Laboratory desk: a science research lab work desk / technician's desk with a chemical-resistant top and equipment shelf."),
+  piano_desk: mkDesk("piano", "mahogany",
+    "Upright piano conversion desk: a writing desk repurposed from a reclaimed piano case, keyboard area rebuilt as a work surface."),
+  organ_desk: mkDesk("organ", "walnut",
+    "Pump organ conversion desk: a reed organ case repurposed as a writing desk, stops and bellows removed."),
+  sewing_machine_desk: mkDesk("sewing-machine", "oak",
+    "Singer treadle-base sewing machine desk: a cabinet-form sewing machine desk converted to writing use on its original treadle base."),
+  treadle_desk: mkDesk("treadle", "",
+    "Industrial treadle base desk: a reclaimed cast-iron treadle base conversion fitted with a plank top as a desk.",
+    "cast_iron", "Cast-iron treadle base"),
+  telephone_desk: mkDesk("telephone", "oak",
+    "Telephone desk: a small writing desk with a telephone shelf and a directory-compartment, no seat (a phone desk, not a gossip bench)."),
+  drop_leaf_desk: mkDesk("drop-leaf", "cherry",
+    "Compact drop-leaf writing desk: a writing desk with hinged drop leaves that extend the work surface."),
+  gateleg_desk: mkDesk("gateleg", "oak",
+    "William and Mary gateleg writing desk: a writing desk with swing-leg gate-leg supports under drop leaves."),
+  converted_dressing_table_desk: mkDesk("converted-dressing-table", "walnut",
+    "Converted vanity desk: a dressing table repurposed as a kneehole writing desk, mirror removed (dressing table desk)."),
+  converted_industrial_desk: mkDesk("converted-industrial", "",
+    "Reclaimed industrial desk: a factory cart converted into a writing desk - a machine base desk with a reclaimed butcher-block work surface.",
+    "metal_frame", "Reclaimed steel factory-cart base"),
+  converted_cabinet_desk: mkDesk("converted-cabinet", "pine",
+    "Converted armoire desk: a wardrobe cabinet converted / repurposed into a desk with an added writing surface."),
+  // Guard test: a converted workbench must route to converted-industrial, not
+  // the purpose-built workbench-desk form (convertedSource yields the gate).
+  converted_workbench_guard: mkDesk("converted-workbench", "",
+    "Converted workbench desk: a reclaimed industrial workbench repurposed into an office desk with an added writing surface.",
+    "metal_frame", "Reclaimed steel workbench base"),
+  // ── Tables: shape/structure-defined cluster ──
+  demilune_table: mkTable("demilune", "mahogany",
+    "Federal demilune table: a half-moon semicircular console table with satinwood inlay, flat against the wall."),
+  piecrust_table: mkTable("piecrust", "mahogany",
+    "Chippendale piecrust tilt-top tea table: a round mahogany top with a carved scalloped pie-crust raised edge on a birdcage tripod base.",
+    [{ clue: "pedestal_column", description: "Tripod birdcage pedestal" }]),
+  tilt_top_table: mkTable("tilt-top", "walnut",
+    "Tripod tilt-top tea table: a round top that tips to vertical on a birdcage over a turned pedestal tripod.",
+    [{ clue: "pedestal_column", description: "Turned pedestal tripod" }]),
+  drum_table: mkTable("drum", "mahogany",
+    "Regency drum table: a round leather-topped drum table with frieze drawers over a central pedestal and splayed legs.",
+    [{ clue: "pedestal_column", description: "Central pedestal" }]),
+  pembroke_table: mkTable("pembroke", "mahogany",
+    "Sheraton Pembroke table: a small drop-leaf table with two short hinged leaves and a single apron drawer on tapered legs.",
+    [{ clue: "drop_leaf_hinged", description: "Short hinged drop leaves" }]),
+  sutherland_table: mkTable("sutherland", "walnut",
+    "Victorian Sutherland table: a very narrow gateleg drop-leaf table with a thin closed footprint and swing-leg supports.",
+    [{ clue: "gateleg_support", description: "Swing gate-leg supports" }, { clue: "drop_leaf_hinged", description: "Drop leaves" }]),
+  trestle_table: mkTable("trestle", "oak",
+    "Jacobean refectory trestle table: a long oak top on two trestle end supports joined by a stretcher."),
+  nesting_tables: mkTable("nesting", "teak",
+    "Mid-century nest of tables: a set of three graduated nesting tables that stack beneath one another."),
+  etagere_table: mkTable("etagere", "brass",
+    "Brass and glass etagere table: a tiered display table with three open glass shelves."),
+  lowboy_table: mkTable("lowboy", "walnut",
+    "Queen Anne lowboy: a low table-height case with a row of apron drawers raised on four cabriole legs."),
+  // Pedestal-column split.
+  candle_stand: mkTable("candle-stand", "cherry",
+    "Federal candle stand: a small tripod candle stand with a round dished top on a turned column sized to hold a single candle.",
+    [{ clue: "pedestal_column", description: "Turned column on tripod" }]),
+  plant_stand: mkTable("plant-stand", "oak",
+    "Victorian plant stand / fern stand: a tall narrow pedestal stand sized to display a single potted plant or jardinière.",
+    [{ clue: "pedestal_column", description: "Tall narrow pedestal" }]),
+  pedestal_table_split: mkTable("pedestal-table", "mahogany",
+    "Pedestal dining table: a large round table top carried on a central pedestal column with splayed legs (tulip pedestal base).",
+    [{ clue: "pedestal_column", description: "Central pedestal column" }]),
+  round_pedestal_drum_control: mkTable("round-pedestal-drum", "mahogany",
+    "Round pedestal table with a leather top and frieze drawers.",
+    [{ clue: "pedestal_column", description: "Central pedestal" }]),
+  // Height-defined cluster (round-up-to-dominant).
+  coffee_table: mkTable("coffee", "teak",
+    "Mid-century teak coffee table: a long low table placed in front of the sofa for drinks and books."),
+  cocktail_table: mkTable("cocktail", "brass",
+    "Hollywood Regency cocktail table: a low glass-and-brass cocktail table with a mirrored tray top."),
+  pub_table: mkTable("pub", "oak",
+    "Pub table: a tall bar-height tavern table for use standing or on stools."),
+  bistro_table: mkTable("bistro", "iron",
+    "Parisian sidewalk café table: a small round counter-height bistro table with a cast-iron base and marble top."),
+  kitchen_table: mkTable("kitchen", "pine",
+    "1950s enamel-top kitchen table: a porcelain enamel-top farmhouse kitchen utility table."),
+  breakfast_table: mkTable("breakfast", "maple",
+    "Breakfast nook table: a small chrome dinette breakfast table for an apartment kitchen nook."),
+  dining_table: mkTable("dining", "mahogany",
+    "Formal dining room table: a large mahogany seated dining table for eight."),
+  // Work-table cluster.
+  drafting_table: mkTable("drafting", "oak",
+    "Architect's drafting table: a large tilting drafting table / drawing table with an adjustable angled top and a pencil trough."),
+  sewing_table: mkTable("sewing", "walnut",
+    "Victorian sewing table: a small needlework table with a fitted sewing-supply drawer and a hinged work surface."),
+  library_table: mkTable("library", "oak",
+    "Arts and Crafts library table: a substantial oak reading/writing library table with two frieze drawers and a lower shelf."),
+  writing_table: mkTable("writing", "mahogany",
+    "Sheraton writing table: a seated writing table with a leather-inset open work surface and tapered legs."),
+  work_table: mkTable("work", "pine",
+    "Primitive work table: a task-oriented domestic work table with a scrubbed plank top."),
+  // Placement / decorative cluster.
+  game_table: mkTable("game", "mahogany",
+    "Federal card table: a fold-over game table with a baize playing surface and a swing leg."),
+  tea_table: mkTable("tea", "mahogany",
+    "Queen Anne tea table: a small rectangular tea table with a dished tray top for serving tea."),
+  tray_table: mkTable("tray", "walnut",
+    "Folding tray table: a lightweight TV tray table with a removable tray-like top on an X-base."),
+  ottoman_table: mkTable("ottoman", "",
+    "Upholstered ottoman table: a large tufted cocktail ottoman that doubles as a coffee table.",
+    [{ clue: "fully_upholstered", description: "Tufted upholstered top" }]),
+  pier_table: mkTable("pier", "giltwood",
+    "Empire pier table: a marble-topped pier table set between two windows over a mirrored plinth base."),
+  sofa_table: mkTable("sofa", "walnut",
+    "Sofa table: a long narrow table designed to stand behind a sofa, with two frieze drawers."),
+  console_table: mkTable("console", "giltwood",
+    "Hall console table: a narrow wall-mounted console table against the entry wall."),
+  parlor_table: mkTable("parlor", "walnut",
+    "Victorian marble-top parlor table: an Eastlake parlour table with a white marble top and incised decoration."),
+  center_table: mkTable("center", "rosewood",
+    "Rococo Revival center table: a room-centered marble-topped center table for the drawing room."),
+  occasional_table: mkTable("occasional", "brass",
+    "Occasional accent table: a small decorative martini drink table beside the armchair."),
+  side_table: mkTable("side", "oak",
+    "Side table / end table: a small auxiliary table placed beside the sofa."),
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
   pre_1860_piece: PRE_1860_PIECE_FIXTURE,
   mcm_plastic_chair: MCM_PLASTIC_CHAIR_FIXTURE,
+  colonial_revival_lounge_chair: COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE,
+  golden_oak_dresser: GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE,
+  transitional_rococo_renaissance: TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE,
+  chippendale_art_deco_fantasy: CHIPPENDALE_ART_DECO_FANTASY_FIXTURE,
+  centennial_colonial_revival_chippendale: CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE,
+  // ── Case pieces: bedsteads cluster (form_bedstead, wooden beds) ──
+  four_poster_bed: mkBed("four-poster-bed", "mahogany",
+    "Federal four-poster bed: a wooden bed with four tall turned mahogany corner posts and a headboard, with no overhead canopy."),
+  tester_bed: mkBed("tester-bed", "mahogany",
+    "Tester bed: a wooden four-post canopy bed with a full overhead tester frame connecting the tall posts."),
+  half_tester_bed: mkBed("half-tester-bed", "walnut",
+    "Victorian half-tester bed: a wooden bed with a partial overhead tester projecting forward over the head end only."),
+  sleigh_bed: mkBed("sleigh-bed", "walnut",
+    "American Empire sleigh bed: a wooden bed with the head and foot boards scrolled outward in a sleigh silhouette."),
+  spool_bed: mkBed("spool-bed", "birch",
+    "Jenny Lind spool bed: a wooden bed with turned spool-and-bobbin posts and rails."),
+  rope_bed: mkBed("rope-bed", "maple",
+    "Early American rope bed: a low wooden bedstead with rope laced through holes in the side rails as mattress support."),
+  low_post_bed: mkBed("low-post-bed", "cherry",
+    "Country low-post bed: a wooden bedstead with short turned corner posts and a simple headboard."),
+  panel_bed: mkBed("panel-bed", "walnut",
+    "Mid-century panel bed: a wooden bed with a panel-and-frame headboard and footboard from a coordinated bedroom suite."),
+  bedstead_generic: mkBed("bedstead-generic", "oak",
+    "Antique wooden bedstead: a headboard, footboard, and side rails forming a wooden sleeping-support frame."),
+  // Controls — must NOT route to form_bedstead.
+  iron_bed_control: mkBed("iron-bed-control", "",
+    "Victorian cast-iron and brass bed: a metal bedstead with cast-iron headboard scrollwork, brass knobs, and tubular side rails."),
+  daybed_control: mkBed("daybed-control", "walnut",
+    "Wooden daybed: a side-facing lounge daybed with a backrest along one long edge, configured for both rest and seated use."),
+  // ── Case pieces: Hoosier / kitchen-storage cluster (family_general_storage_specialty) ──
+  hoosier_cabinet: mkCase("hoosier-cabinet", "oak",
+    "Sellers Hoosier cabinet: a freestanding kitchen workstation cabinet with an integrated flour bin and sifter, a pull-out enamel work surface, and a tambour upper."),
+  kitchen_cabinet: mkCase("kitchen-cabinet", "oak",
+    "Freestanding kitchen cabinet: a painted farmhouse pantry and dry goods cabinet with shelves and cupboard doors and a plain work shelf, without special workstation fittings."),
+  step_back_cupboard: mkCase("step-back-cupboard", "pine",
+    "Step-back cupboard: a two-piece country cupboard with a shallower glazed upper section set back from a deeper lower base."),
+  pie_safe: mkCase("pie-safe", "poplar",
+    "Primitive pie safe: a ventilated food-storage safe on tall legs with punched-tin pierced star-pattern door panels."),
+  jelly_cupboard: mkCase("jelly-cupboard", "pine",
+    "Tall narrow jelly cupboard: a country preserve-storage cupboard with two doors over a single drawer."),
+  jam_cupboard: mkCase("jam-cupboard", "pine",
+    "Country jam cupboard: a plain pantry preserve cupboard with simple doors for jars and crocks."),
+  dough_box: mkCase("dough-box", "pine",
+    "Primitive dough box: a farmhouse kneading trough with a lift-off lid on a splay-leg base."),
+  // Control — dining-display cabinet must NOT route to a kitchen-storage form.
+  china_cabinet_control: mkCase("china-cabinet-control", "mahogany",
+    "Glazed china cabinet: a formal dining-room china display cabinet with glazed doors and mirrored back."),
+  // ── Case pieces: bedroom clothing-storage cluster ──
+  dresser: mkCase("dresser", "walnut",
+    "Victorian bedroom dresser: a low wide chest of drawers with a tall attached swing mirror and a broad grooming top, in a multi-column drawer bank."),
+  low_chest: mkCase("low-chest", "cherry",
+    "Bachelor's chest: a small low chest of drawers at bedside scale, shorter and more compact than a standard chest."),
+  highboy: mkCase("highboy", "maple",
+    "Queen Anne highboy: a tall two-part high chest of drawers raised on cabriole legs (a high chest on frame)."),
+  chifforobe: mkCase("chifforobe", "oak",
+    "Chifforobe: a combination wardrobe with a clothes-hanging compartment beside a bank of drawers."),
+  wardrobe: mkCase("wardrobe", "walnut",
+    "Knockdown wardrobe: a freestanding clothes-hanging wardrobe cabinet with a single mirrored door and a hanging rail."),
+  armoire: mkCase("armoire", "oak",
+    "French armoire: a large French wardrobe and clothes cabinet with two tall paneled doors."),
+  washstand: mkCase("washstand", "walnut",
+    "Victorian washstand: a marble-top basin stand with a tile backsplash and a towel bar for a wash pitcher and basin."),
+  nightstand: mkCase("nightstand", "mahogany",
+    "Bedside nightstand: a small bedside cabinet with one drawer and a cupboard, sized to sit beside a bed."),
+  dressing_table: mkCase("dressing-table", "satinwood",
+    "Dressing table: a kneehole vanity and dressing table with a triptych mirror and a matching stool."),
+  trunk: mkCase("trunk", "",
+    "Steamer trunk: a domed-top travel trunk with leather straps, metal banding, and a fitted interior tray."),
+  // Controls.
+  chest_of_drawers_control: mkCase("chest-of-drawers-control", "mahogany",
+    "Tall chest of drawers: a narrow single-column stack of five graduated drawers, taller than wide, with no mirror.",
+    "Stacked single-column drawers", "multiple_drawer_case"),
+  armoire_desk_control: mkCase("armoire-desk-control", "cherry",
+    "Computer armoire desk: a tall wardrobe-like cabinet that encloses a fold-away desk work surface behind doors."),
+  welsh_dresser_control: mkCase("welsh-dresser-control", "oak",
+    "Welsh dresser: a tall open-rack pewter and plate dresser with an open upper shelf rack over a base of drawers and cupboards."),
+  // ── Case pieces: dining / display service-storage cluster ──
+  china_cabinet: mkCase("china-cabinet", "mahogany",
+    "China cabinet: a glazed dining-room china closet with mullioned glass doors and interior shelving for displaying china and serveware."),
+  hutch: mkCase("hutch", "oak",
+    "Dining hutch: a two-part china hutch with a glazed display upper section set on a closed buffet base of drawers and cupboards."),
+  breakfront: mkCase("breakfront", "mahogany",
+    "Breakfront: a large Georgian breakfront cabinet whose projecting center section steps forward of the two flanking glazed sections."),
+  corner_cabinet: mkCase("corner-cabinet", "pine",
+    "Corner cupboard: a triangular built-in-style corner cabinet with a glazed upper and paneled lower, made to fit into a room corner."),
+  huntboard: mkCase("huntboard", "walnut",
+    "Southern huntboard: a tall stand-up-height sideboard-family service board on long legs, higher than a normal dining sideboard."),
+  credenza: mkCase("credenza", "walnut",
+    "Mid-century credenza: a long low storage credenza with sliding doors and a continuous low top, used for dining-room and living-room service and media storage."),
+  curio: mkCase("curio", "cherry",
+    "Curio cabinet: a tall glass-sided display-only curio for collectibles, with mirrored back and glass shelves, no service-storage base."),
+  cellarette: mkCase("cellarette", "mahogany",
+    "Cellarette: a small lidded liquor and bottle storage case (a tantalus / wine cooler) on a stand, for decanters and wine bottles."),
+  sideboard: mkCase("sideboard", "mahogany",
+    "Sideboard: a long low dining-room sideboard with a bank of drawers and flanking cupboards for linens, flatware, and serveware."),
+  buffet: mkCase("buffet", "oak",
+    "Dining buffet: a long low buffet serving cabinet with drawers over cupboard doors, part of a dining suite."),
+  server: mkCase("server", "mahogany",
+    "Dining server: a small auxiliary serving cabinet (a server) with a drawer and a shelf for staging food and serveware beside the table."),
+  // Controls.
+  hutch_desk_control: mkCase("hutch-desk-control", "oak",
+    "Computer hutch desk: a writing desk with an added hutch top of shelves and a pull-out keyboard tray."),
+  credenza_desk_control: mkCase("credenza-desk-control", "walnut",
+    "Executive credenza desk: a low office credenza with a work surface and keyboard return behind the main desk."),
+  open_hutch_control: mkCase("open-hutch-control", "pine",
+    "Open hutch: a country pine kitchen dresser with an OPEN plate-rack upper shelf over a base of drawers and cupboards."),
+  // ── Entry / support hall pieces ──
+  hall_tree: mkCase("hall-tree", "oak",
+    "Hall tree: a tall oak hall stand with coat hooks, a beveled mirror, an umbrella drip pan, and a lift-seat bench."),
+  coat_rack: mkCase("coat-rack", "walnut",
+    "Coat rack: a freestanding entry coat rack with a ring of hooks and a round weighted base."),
+  hat_rack: mkCase("hat-rack", "maple",
+    "Hat rack: a standing hat rack with curved pegs for hats."),
+  umbrella_stand: mkCase("umbrella-stand", "",
+    "Umbrella stand: a cast-iron umbrella and walking stick stand with a drip tray."),
+  valet_stand: mkCase("valet-stand", "mahogany",
+    "Valet stand: a wooden gentleman's valet (suit stand) with a jacket rail, a trouser bar, and a tray for pocket items."),
+  smoking_stand: mkCase("smoking-stand", "walnut",
+    "Smoking stand: a small floor tobacco/pipe stand with a humidor compartment and an ashtray."),
+  pedestal: mkCase("pedestal", "marble",
+    "Display pedestal: a fluted marble sculpture pedestal for elevating a bust or statue."),
+  aquarium_stand: mkCase("aquarium-stand", "oak",
+    "Aquarium stand: a reinforced fish tank stand built to hold a 75-gallon aquarium."),
+  screen: mkCase("screen", "",
+    "Folding screen: a four-panel folding screen / room divider with painted silk panels."),
+  mirror: mkCase("mirror", "giltwood",
+    "Cheval mirror: a freestanding full-length cheval mirror in a swinging frame on trestle feet."),
+  telephone_stand: mkCase("telephone-stand", "oak",
+    "Telephone stand: a small telephone table with a seat and a shelf (a gossip bench)."),
+  charging_station: mkCase("charging-station", "bamboo",
+    "Charging station: a bamboo multi-device charging station with slots and a USB charging hub."),
+  package_station: mkCase("package-station", "",
+    "Package station: an outdoor smart parcel station / delivery locker for received packages."),
+  box: mkCase("box", "rosewood",
+    "Keepsake box: a small inlaid decorative keepsake and document box with a hinged lid."),
+  hammock_stand: mkCase("hammock-stand", "",
+    "Hammock stand: a freestanding steel hammock frame / hammock stand for indoor use."),
+  funeral_bier: mkCase("funeral-bier", "oak",
+    "Funeral bier: a wheeled coffin stand / casket bier used to support a casket."),
+  toy_storage: mkCase("toy-storage", "pine",
+    "Toy storage: a child's painted toy chest / toy box for a nursery."),
+  bench_utility: mkCase("bench-utility", "pine",
+    "Mudroom bench: a storage bench / mudroom bench with cubbies, hooks, and a lift-lid seat for gear."),
+  entry_organizer: mkCase("entry-organizer", "oak",
+    "Entry organizer: a mudroom entryway organizer with shoe cubbies, a mail organizer, and key hooks."),
+  pet_utility: mkCase("pet-utility", "oak",
+    "Pet furniture: a concealed dog crate cabinet / pet feeding station with a feeder drawer."),
+  // Controls.
+  plant_stand_control: mkCase("plant-stand-control", "mahogany",
+    "Plant stand: a tall mahogany plant stand to display a potted fern or jardiniere."),
+  pedestal_table_control: mkCase("pedestal-table-control", "walnut",
+    "Pedestal table: a round tilt-top table on a single turned pedestal base with tripod feet."),
+  writing_box_control: mkCase("writing-box-control", "mahogany",
+    "Writing box: a portable mahogany lap writing slope box that opens to a felt writing surface."),
+  // ── Lighting fixtures ──
+  torchere: mkCase("torchere", "iron",
+    "Torchère: a tall wrought-iron floor torchère / floor uplighter holding a single upward-facing light."),
+  candlestick: mkCase("candlestick", "brass",
+    "Candlestick: a brass push-up candlestick (a single taper holder) for one candle."),
+  argand_lamp: mkCase("argand-lamp", "brass",
+    "Argand lamp: a brass argand lamp with a circular wick burner and a side oil font."),
+  betty_lamp: mkCase("betty-lamp", "iron",
+    "Betty lamp: an early iron betty lamp / grease lamp with a hinged lid and a rat-tail hanger."),
+  student_lamp: mkCase("student-lamp", "brass",
+    "Student lamp: an adjustable brass student lamp with a green shade and a side kerosene font (a banker's lamp form)."),
+  candelabrum: mkCase("candelabrum", "silver",
+    "Candelabrum: a five-light branched silver candelabrum (a girandole) with multiple candle arms."),
+  wall_lighting_form: mkCase("wall-lighting-form", "brass",
+    "Picture light: a slim brass picture light with an adjustable arm, a wall washer mounted above framed artwork."),
+  chandelier: mkCase("chandelier", "brass",
+    "Chandelier: a multi-arm crystal chandelier (a gasolier converted to electric) with eight candle arms."),
+  pendant_light: mkCase("pendant-light", "brass",
+    "Pendant light: a single schoolhouse pendant light hanging from the ceiling on a brass rod."),
+  lantern_hanging: mkCase("lantern-hanging", "tin",
+    "Hanging lantern: a pierced-tin hanging hall lantern suspended from a ceiling chain."),
+  billiard_light: mkCase("billiard-light", "brass",
+    "Billiard light: a long three-shade billiard light / pool table light hung over a pool table."),
+  sconce: mkCase("sconce", "brass",
+    "Sconce: a pair of two-arm electric wall sconces with mirror-backs."),
+  gas_bracket: mkCase("gas-bracket", "brass",
+    "Gas bracket: a brass swing-arm gas wall bracket (a gaslight bracket) later converted to electric."),
+  hanging_lighting_form: mkCase("hanging-lighting-form", "glass",
+    "Hanging lighting fixture: a modern flush-mount ceiling light / semi-flush ceiling fixture."),
+  // Controls.
+  floor_lamp_control: mkCase("floor-lamp-control", "brass",
+    "Floor lamp: a tall floor-standing lamp with a fabric drum shade on a weighted base."),
+  candle_stand_control: mkCase("candle-stand-control", "mahogany",
+    "Candle stand: a small mahogany tripod candle-stand table sized to hold a single candle."),
+  oil_lamp_control: mkCase("oil-lamp-control", "glass",
+    "Oil lamp: a clear glass font oil lamp with a brass burner and a glass chimney."),
+  // ── Clocks + musical/mechanical + misc ──
+  tall_case_clock: mkCase("tall-case-clock", "oak",
+    "Tall case clock: a weight-driven longcase grandfather clock with a tall hood, waist, and base."),
+  wall_clock: mkCase("wall-clock", "walnut",
+    "Wall clock: a Victorian regulator wall clock hung on the wall with a long pendulum."),
+  shelf_clock: mkCase("shelf-clock", "walnut",
+    "Shelf clock: a Victorian gingerbread mantel/shelf clock with pressed-oak case and a steeple top."),
+  schoolhouse_clock: mkCase("schoolhouse-clock", "oak",
+    "Schoolhouse clock: a round oak schoolhouse clock with a short drop pendulum box, hung on the wall."),
+  jukebox: mkCase("jukebox", "",
+    "Jukebox: a 1950s coin-operated music machine with illuminated arches and a record-selection mechanism."),
+  pinball_machine: mkCase("pinball-machine", "",
+    "Pinball machine: an electromechanical coin-operated pinball game with a backglass and a playfield."),
+  arcade_cabinet: mkCase("arcade-cabinet", "",
+    "Arcade cabinet: an upright video game arcade cabinet with a coin door, joystick, and CRT monitor."),
+  vending_machine: mkCase("vending-machine", "",
+    "Vending machine: a coin-operated soda machine / snack machine dispensing bottles."),
+  spinning_wheel: mkCase("spinning-wheel", "maple",
+    "Spinning wheel: a Saxony flax spinning wheel with a treadle, a drive wheel, and a flyer."),
+  loom: mkCase("loom", "maple",
+    "Loom: a four-harness floor weaving loom with treadles, heddles, and a beater."),
+  pump_organ_cabinet: mkCase("pump-organ", "walnut",
+    "Pump organ cabinet: a Victorian reed parlor organ (harmonium) in an ornate walnut cabinet with foot bellows."),
+  icebox: mkCase("icebox", "oak",
+    "Icebox: a golden-oak zinc-lined icebox with a top ice compartment and brass latches."),
+  sewing_machine_cabinet: mkCase("sewing-machine-cabinet", "oak",
+    "Sewing machine cabinet: a Singer treadle sewing machine in its oak cabinet on a cast-iron treadle base."),
+  media_console: mkCase("media-console", "walnut",
+    "Media console: a mid-century stereo console / record player console with a radio and built-in speakers."),
+  media_wall: mkCase("media-wall", "oak",
+    "Media wall: a large entertainment center wall unit with a TV bay and flanking media shelving."),
+  media_storage_unit: mkCase("media-storage-unit", "oak",
+    "Media storage unit: a tall CD tower / DVD storage rack holding disc media."),
+  equipment_rack: mkCase("equipment-rack", "",
+    "Equipment rack: a 19-inch audio/server equipment rack with rails for stereo and network gear."),
+  interactive_console: mkCase("interactive-console", "",
+    "Interactive console: a gaming console / VR station with a control interface and screen mounts."),
+  musical_instrument_furniture: mkCase("musical-instrument-furniture", "walnut",
+    "Music cabinet: a Victorian sheet-music cabinet with shallow drawers for storing sheet music."),
+  basket: mkCase("basket", "",
+    "Basket: a woven splint market basket with a bentwood handle (wicker gathering basket)."),
+  // Controls.
+  sewing_machine_desk_control: mkCase("sewing-machine-desk-control", "oak",
+    "Converted sewing desk: a treadle sewing machine base converted into a writing desk with a new wood top."),
+  organ_desk_control: mkCase("organ-desk-control", "oak",
+    "Organ desk: a desk built into a former reed-organ case, with a writing surface where the keyboard was."),
+  // ── Named seating types ──
+  side_chair: mkCase("side-chair", "walnut",
+    "Side chair: an armless balloon-back dining side chair with a caned seat."),
+  slipper_chair: mkCase("slipper-chair", "walnut",
+    "Slipper chair: a low armless tufted Victorian slipper chair for the bedroom."),
+  bar_chair: mkCase("bar-chair", "oak",
+    "Bar chair: a swivel bar stool with a foot ring and a low back at counter height."),
+  folding_chair: mkCase("folding-chair", "oak",
+    "Folding chair: a wooden folding camp chair / director's chair that collapses flat."),
+  ladderback_chair: mkCase("ladderback-chair", "maple",
+    "Ladderback chair: a country ladder-back chair with three horizontal slat rails and a rush seat."),
+  windsor_chair: mkCase("windsor-chair", "maple",
+    "Windsor chair: a sack-back Windsor chair with turned spindles and a solid saddle seat."),
+  rocking_chair: mkCase("rocking-chair", "maple",
+    "Rocking chair: a Boston rocker / pressed-back rocking chair on curved rockers."),
+  milking_stool: mkCase("milking-stool", "pine",
+    "Milking stool: a low three-legged milking stool / dairy stool."),
+  ottoman_footstool: mkCase("ottoman-footstool", "walnut",
+    "Footstool: an upholstered footstool / hassock used to rest the feet."),
+  pew: mkCase("pew", "oak",
+    "Pew: a salvaged oak church pew with a Gothic Revival end panel and a hymnal rack."),
+  chaise_longue: mkCase("chaise-longue", "walnut",
+    "Chaise longue: a Victorian fainting couch / récamier with one raised end."),
+  daybed: mkCase("daybed", "iron",
+    "Daybed: an iron daybed / studio couch with a trundle, used as seating and a guest bed."),
+  morris_chair: mkCase("morris-chair", "oak",
+    "Morris chair: a quartersawn oak Morris chair with an adjustable-back peg mechanism and bow arms."),
+  bean_bag_chair: mkCase("bean-bag-chair", "",
+    "Bean bag chair: an oversized vinyl bean bag chair filled with foam pellets."),
+  papasan_chair: mkCase("papasan-chair", "rattan",
+    "Papasan chair: a round rattan papasan chair with a bowl cushion."),
+  butterfly_chair: mkCase("butterfly-chair", "",
+    "Butterfly chair: a leather sling butterfly chair (BKF / Hardoy) on an X-frame."),
+  adirondack_chair: mkCase("adirondack-chair", "cedar",
+    "Adirondack chair: a cedar Adirondack chair with wide flat arms and a slatted fan back."),
+  porch_lawn_glider: mkCase("porch-lawn-glider", "",
+    "Porch glider: a metal lawn glider bench that glides on a pivoting frame."),
+  theater_auditorium_seat: mkCase("theater-auditorium-seat", "",
+    "Theater seat: a salvaged row of folding cast-iron theater seats with tip-up cinema seats."),
+  // Controls.
+  morris_rocker_control: mkCase("morris-rocker-control", "oak",
+    "Morris rocker: an oak Morris chair mounted on a rocking base with an adjustable reclining back."),
+  rocking_adirondack_control: mkCase("rocking-adirondack-control", "cedar",
+    "Rocking Adirondack: a cedar Adirondack chair mounted on curved rockers."),
+  ottoman_table_control: mkCase("ottoman-table-control", "walnut",
+    "Ottoman coffee table: an upholstered ottoman table with a hard tray top, used as a coffee table."),
+  // ── Industrial / professional / institutional ──
+  dry_sink: mkCase("dry-sink", "pine",
+    "Dry sink: a country pine dry sink with a recessed zinc-lined well top over a cupboard base."),
+  barber_station: mkCase("barber-station", "oak",
+    "Barber station: a traditional barber station with a mirror, a marble counter, and tool drawers behind the barber chair."),
+  salon_station: mkCase("salon-station", "walnut",
+    "Salon station: a modern hairdresser styling station with a mirror, a tool panel, and a drawer tower."),
+  time_clock_station: mkCase("time-clock-station", "oak",
+    "Time clock station: a factory punch clock / bundy clock mounted over a time-card rack."),
+  cabinet_of_curiosities: mkCase("cabinet-of-curiosities", "mahogany",
+    "Cabinet of curiosities: a glazed specimen cabinet (a wunderkammer) with many small drawers for natural-history specimens."),
+  easel: mkCase("easel", "oak",
+    "Easel: a large studio artist's easel / tripod easel for supporting a canvas."),
+  music_stand: mkCase("music-stand", "brass",
+    "Music stand: an adjustable folding sheet music stand with a tilting rack."),
+  pulpit: mkCase("pulpit", "oak",
+    "Pulpit: a carved oak wineglass pulpit, an elevated enclosed preaching stand."),
+  lectern: mkCase("lectern", "oak",
+    "Lectern: a standing church lectern with a sloped reading top on a pedestal."),
+  podium: mkCase("podium", "walnut",
+    "Podium: a presentation podium / speaker's podium with a slanted top and a modesty front."),
+  church_furnishing: mkCase("church-furnishing", "oak",
+    "Church furnishing: a carved oak altar and communion table with a kneeler (prie-dieu)."),
+  showcase: mkCase("showcase", "oak",
+    "Showcase: a glass store display case / jewelry showcase with sliding rear doors and a mirrored back."),
+  kiosk: mkCase("kiosk", "",
+    "Kiosk: a freestanding mall information kiosk / retail kiosk with a service counter."),
+  bank_fixture: mkCase("bank-fixture", "bronze",
+    "Bank fixture: a brass teller cage / teller wicket with a marble counter and a grille."),
+  utility_cart: mkCase("utility-cart", "chrome",
+    "Utility cart: a wheeled stainless serving cart / tea trolley with two shelves."),
+  locker: mkCase("locker", "steel",
+    "Locker: a bank of steel gym lockers / employee lockers with ventilation louvers and latches."),
+  scientific_stand: mkCase("scientific-stand", "brass",
+    "Scientific stand: a cast-iron laboratory microscope stand / retort stand with an adjustable arm."),
+  safety_fixture: mkCase("safety-fixture", "steel",
+    "Safety fixture: a recessed fire extinguisher cabinet / first aid cabinet with a glass front."),
+  retail_fixture: mkCase("retail-fixture", "steel",
+    "Retail fixture: a store gondola shelving unit / slatwall merchandising fixture."),
+  shelving_system: mkCase("shelving-system", "steel",
+    "Shelving system: a boltless rivet industrial shelving system with wire shelving decks."),
+  rack: mkCase("rack", "steel",
+    "Rack: a heavy steel pallet rack / warehouse storage rack with adjustable beams."),
+  built_in_storage: mkCase("built-in-storage", "oak",
+    "Built-in storage: architectural built-in cabinetry fitted into an alcove (built-in storage)."),
+  environmental_utility_form: mkCase("environmental-utility-form", "oak",
+    "Environmental utility form: a wooden radiator cover / radiator cabinet with a pierced grille front."),
+  workstation_accessory: mkCase("workstation-accessory", "oak",
+    "Workstation accessory: a desktop monitor stand / monitor riser that lifts the screen above the desktop."),
+  kitchen_utility_unit: mkCase("kitchen-utility-unit", "steel",
+    "Kitchen utility unit: a freestanding stainless kitchen utility unit on casters with a lower wire shelf."),
+  beverage_service_form: mkCase("beverage-service-form", "oak",
+    "Beverage service form: a hotel coffee station / beverage station counter with a dispenser shelf."),
+  hospitality_fixture: mkCase("hospitality-fixture", "oak",
+    "Hospitality fixture: a hotel lobby hospitality fixture / hotel luggage stand."),
+  educational_fixture: mkCase("educational-fixture", "oak",
+    "Educational fixture: a classroom fixture / interactive whiteboard stand for a lecture room."),
+  industrial_station: mkCase("industrial-station", "steel",
+    "Industrial station: a factory assembly station / packing station with a steel work surface."),
+  // Controls.
+  lectern_desk_control: mkCase("lectern-desk-control", "oak",
+    "Writing lectern: a sloped writing lectern / registry desk for signing a guest book."),
+  teller_window_control: mkCase("teller-window-control", "oak",
+    "Teller window: a bank teller counter and checkout desk for customer transactions."),
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {

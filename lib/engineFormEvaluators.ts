@@ -40,12 +40,53 @@ export type SubtypeAssignment = {
 
 const SUBTYPE_CONFIDENCE_FLOOR = 0.65; // Q4 lock
 
+// Stress-test fix #13 (2026-05-20): generic-token stop-list.
+// evaluateSubtype matched a subtype attribute on ANY ≥4-char token
+// appearing in the observation haystack. Generic furniture words
+// ("armchair", "seat", "table", "chair") appear in nearly every
+// chair/table observation, so a subtype whose only overlap with the
+// evidence was a generic word still scored a match — e.g. the dining-
+// armchair subtype matched on "armchair" + "seat" and was assigned to
+// a lounge parlor settee at confidence 1.0, despite zero dining-table
+// context and an explicit lounge_chair_form posture observation.
+//
+// Fix: require a subtype attribute to share at least one DISTINCTIVE
+// token (not in this stop-list) with the observation haystack before
+// it counts as matched. The dining subtype's distinctive token is
+// "dining" — absent from a parlor-settee haystack, so the subtype no
+// longer matches. Distinctive tokens (gingerbread, spindle, brass,
+// tubing, fluted, etc.) are unaffected.
+const GENERIC_SUBTYPE_TOKENS = new Set<string>([
+  // Furniture-universal nouns
+  "chair", "chairs", "armchair", "armchairs", "seat", "seats", "seating",
+  "seated", "table", "tables", "wood", "wooden", "hardwood", "softwood",
+  "legs", "foot", "feet", "back", "backs", "front", "fronts", "side",
+  "sides", "frame", "frames", "form", "forms", "piece", "pieces",
+  "cushion", "cushions", "panel", "panels", "surface", "surfaces",
+  "rail", "rails", "support", "supports", "edge", "edges", "case",
+  "cabinet", "drawer", "drawers", "door", "doors", "leg",
+  // Common descriptive adjectives / connectives that carry no
+  // subtype-discriminative power
+  "used", "with", "this", "that", "usually", "often", "common",
+  "commonly", "typical", "typically", "height", "depth", "width",
+  "inch", "inches", "style", "styles", "period", "antique",
+  "furniture", "made", "appears", "appear", "consistent", "head",
+  "top", "bottom", "overall", "design", "decorative", "ornament",
+  "ornamental", "finish", "finished", "visible", "upholstered",
+  "upholstery", "carved", "carving", "construction", "across",
+  "between", "along", "from", "into", "onto", "over", "under",
+  "above", "below", "where", "when", "while", "which", "their",
+  "than", "then", "have", "been", "were", "they", "them",
+]);
+
 /**
  * Pick the best subtype for the given form_id given observation descriptions.
  * Returns null when no subtype reaches the SUBTYPE_CONFIDENCE_FLOOR.
  *
- * Scoring: simple keyword presence in observation descriptions against each
- * subtype's distinguishing_attributes. Confidence = matched / total attrs.
+ * Scoring: keyword presence in observation descriptions against each
+ * subtype's distinguishing_attributes. An attribute counts as matched only
+ * when it shares a DISTINCTIVE (non-generic) ≥4-char token with the
+ * observation haystack. Confidence = matched / total attrs.
  */
 export function evaluateSubtype(
   form_id: string | null,
@@ -59,29 +100,65 @@ export function evaluateSubtype(
     .map((d) => String(d).toLowerCase())
     .join(" | ");
 
-  let best: SubtypeAssignment | null = null;
+  // Functional-evidence guard (#16): functional identity outranks fuel/styling
+  // resemblance. When evidence confirms ELECTRIC function and shows no
+  // conversion-from-fuel language, fuel-burning subtypes (oil, kerosene, gas,
+  // candle, hurricane-flame) are eliminated — a fuel word appearing in NEGATING
+  // prose ("electric rather than oil/kerosene function") must never pull the
+  // subtype toward a fuel lamp. Scoped to lighting forms.
+  const electricConfirmed = /\b(?:electric|socket|wired|pull-chain|keyless|e26|medium-base|medium base)\b/.test(haystack);
+  const conversionEvidence = /\b(?:converted|electrified|conversion|originally (?:kerosene|oil|gas)|formerly (?:kerosene|oil|gas))\b/.test(haystack);
+  const isFuelSubtype = (st: { name?: string; distinguishing_attributes?: string[] }) =>
+    /\b(?:kerosene|whale oil|lard oil|camphene|burning fluid|fluid lamp|gas lamp|candle|hurricane|wick|burner|chimney|fuel font|fuel fount)\b/.test(
+      `${st.name ?? ""} ${(st.distinguishing_attributes ?? []).join(" ")}`.toLowerCase()
+    );
+
+  const candidates: SubtypeAssignment[] = [];
   for (const st of form.subtypes) {
     const attrs = (st.distinguishing_attributes ?? []) as string[];
     if (!attrs.length) continue;
+    if (electricConfirmed && !conversionEvidence && isFuelSubtype(st)) continue;
     const matched: string[] = [];
     for (const attr of attrs) {
-      // Tokenize attribute and require at least one ≥4-char content word match.
-      const tokens = String(attr).toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length >= 4);
+      // Tokenize attribute and require at least one DISTINCTIVE (non-generic)
+      // ≥4-char content-word match. Generic furniture tokens (armchair, seat,
+      // table, etc.) are filtered out so a subtype can't match on words that
+      // appear in nearly every observation — see GENERIC_SUBTYPE_TOKENS and
+      // stress-test fix #13.
+      const tokens = String(attr)
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter((t) => t.length >= 4 && !GENERIC_SUBTYPE_TOKENS.has(t));
       if (tokens.some((t) => haystack.includes(t))) {
         matched.push(attr);
       }
     }
     const confidence = matched.length / attrs.length;
-    if (confidence >= SUBTYPE_CONFIDENCE_FLOOR && (!best || confidence > best.confidence)) {
-      best = {
+    // Require at least one actual attribute match. Without this, a subtype
+    // whose attrs all fail token-matching would still surface (e.g. the
+    // telephone_cabinet subtype was assigned confidence 1.0 with
+    // matched_attributes: [] when the form scoring fired on unrelated
+    // composite-pattern evidence).
+    if (matched.length > 0 && confidence >= SUBTYPE_CONFIDENCE_FLOOR) {
+      candidates.push({
         subtype_id: st.id,
         subtype_name: st.name,
         confidence: Number(confidence.toFixed(2)),
         matched_attributes: matched,
-      };
+      });
     }
   }
-  return best;
+
+  if (!candidates.length) return null;
+  const maxConfidence = Math.max(...candidates.map((c) => c.confidence));
+  const top = candidates.filter((c) => c.confidence === maxConfidence);
+  // Ambiguity guard (#16): when ≥2 subtypes tie at the top confidence the
+  // evidence cannot distinguish them (commonly because they matched only on
+  // tokens ubiquitous to the form — glass, brass, electric for lamps). Forcing
+  // an arbitrary first-listed pick over-classifies; return null so the broader,
+  // evidence-safer form-level identity stands.
+  if (top.length > 1) return null;
+  return top[0];
 }
 
 // ── B4 Anti-back-classification evaluator ────────────────────────────────
@@ -184,6 +261,27 @@ export function getFormDatingBoundaries(
 }
 
 /**
+ * The form's canonical production envelope (date_floor / date_ceiling) from the
+ * catalog entry. Distinct from the evidence-derived dating an analysis produces:
+ * this is the form's documented production window, used as the "form" row in the
+ * dating-overlap chart. Feeding the catalog span here — rather than re-injecting
+ * the analysis's own computed date — keeps the form layer from becoming a
+ * circular echo of the conclusion it's supposed to help support. A null ceiling
+ * means an open-ended ("to present") form.
+ */
+export function getFormDatingEnvelope(
+  form_id: string | null
+): { date_floor: number | null; date_ceiling: number | null } {
+  if (!form_id) return { date_floor: null, date_ceiling: null };
+  const form = getForm(form_id);
+  if (!form) return { date_floor: null, date_ceiling: null };
+  return {
+    date_floor: form.date_floor ?? null,
+    date_ceiling: form.date_ceiling ?? null,
+  };
+}
+
+/**
  * B1 stub. Implementation deferred — current fixtures don't populate intake
  * dimensions; evaluator becomes useful once real user submissions land.
  */
@@ -215,15 +313,90 @@ export function evaluateDimensional(
 }
 
 /**
- * B3 stub. Implementation deferred per D-PH3-2 — start with string matching
- * if cousin contrast quality is needed; defer to follow-on if quality bad.
- * Current return: no-op (null).
+ * Single cousin-contrast match returned by evaluateCousinContrast.
+ * Surfaces in p3.cousin_contrasts and is consumed by the report-rendering
+ * layer to explain "why this form, not that one" calls when the engine has
+ * close alternatives. Does NOT influence scoring decisions.
+ */
+export type CousinContrastMatch = {
+  vs_form_id: string;
+  vs_form_name: string;
+  contrast_text: string;
+};
+
+/**
+ * B3 implementation per D-PH3-2 lean: string matching from the picked form's
+ * cousin_form_contrasts against the names and form_ids of the alternative
+ * forms scored by p3. Returns matched contrasts for surfacing in the report.
+ *
+ * Matching is intentionally permissive: each cousin_form_contrasts entry is
+ * scanned for case-insensitive substring presence of any alternative form's
+ * `name` (e.g., "pedestal table") or `id` (e.g., "form_pedestal_table"). When
+ * an alternative form name appears in a contrast string, that contrast is
+ * recorded as applying to that alternative.
+ *
+ * Quality is dependent on appraiser-authored prose. If a piece's picked form
+ * has rich cousin_form_contrasts naming its actual alternates, matches will
+ * surface. If the prose names cousin forms the engine didn't score as
+ * alternates, no match — that's fine; the contrasts remain as authoring
+ * documentation.
+ *
+ * NOT engine-consumed by scoreForms — this is post-processing for report
+ * explanation. Per the D-PH3-2 lean wiring decision: if string-matching
+ * quality proves insufficient in practice, escalate to structured
+ * disambiguation (medium or heavy paths from the 2d discussion).
  */
 export function evaluateCousinContrast(
-  _form_id: string | null,
-  _observationDescriptions: string[]
-): null {
-  return null;
+  form_id: string | null,
+  alternative_form_ids: string[],
+): CousinContrastMatch[] {
+  if (!form_id) return [];
+  const form = getForm(form_id);
+  const contrasts = (form?.cousin_form_contrasts ?? []) as string[];
+  if (!contrasts.length || !alternative_form_ids.length) return [];
+
+  // Defensive: filter out the picked form's own id from alternatives.
+  // p3's alternative_form_ids construction (engine.ts:5000) has a known
+  // edge case where the picked form can appear in the alternatives list
+  // (the `.filter((r) => r !== bestForm)` doesn't always exclude it).
+  // Without this guard, cousin contrasts would self-match.
+  const altIds = alternative_form_ids.filter((id) => id !== form_id);
+  if (!altIds.length) return [];
+
+  // Build lookup of alternative forms with both name and id for matching.
+  const alternatives = altIds
+    .map((id) => {
+      const f = getForm(id);
+      return f ? { id, name: f.name.toLowerCase(), display_name: f.name } : null;
+    })
+    .filter((x): x is { id: string; name: string; display_name: string } => x !== null);
+
+  if (!alternatives.length) return [];
+
+  const matches: CousinContrastMatch[] = [];
+  const seen = new Set<string>(); // dedup by (vs_form_id + contrast_text)
+
+  for (const contrast of contrasts) {
+    const haystack = contrast.toLowerCase();
+    for (const alt of alternatives) {
+      // Match against either the form name (e.g., "pedestal table") or the
+      // form_id (e.g., "form_pedestal_table"). Form_id matching catches
+      // appraiser prose that uses explicit form_X references.
+      if (haystack.includes(alt.name) || haystack.includes(alt.id)) {
+        const key = `${alt.id}|${contrast}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          matches.push({
+            vs_form_id: alt.id,
+            vs_form_name: alt.display_name,
+            contrast_text: contrast,
+          });
+        }
+      }
+    }
+  }
+
+  return matches;
 }
 
 /**

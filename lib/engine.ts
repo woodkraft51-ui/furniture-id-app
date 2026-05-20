@@ -1,5 +1,12 @@
 import { API } from "./store";
-import { MAKER_MARKS } from "./constraints/makerMarks";
+import { MAKER_MARKS, MAKER_ENTRIES } from "./constraints/makerMarks";
+// Note: MAKER_ATTRIBUTION_REASONING_RULES is the canonical source of truth
+// for the rules implemented inline in applyMakerAttributionRules + the
+// Confidence Ladder (Rule #7) inside makerConfidenceLadderTier. Rule
+// statements are hardcoded rather than runtime-read for tight binding;
+// changes to canonical rule_statement prose require both the canonical
+// edit and a code edit (intentional — the rule prose is appraiser-canon
+// and code edits should track canonical changes deliberately).
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
 import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
 
@@ -59,14 +66,20 @@ import {
   evaluateAntiBackClassification,
   evaluateDimensional,
   evaluateHybridForm,
+  evaluateCousinContrast,
   getCommonAliasesForDisplay,
   getFormDatingBoundaries,
+  getFormDatingEnvelope,
   type SubtypeAssignment,
   type AntiBackViolation,
   type HybridAnnotation,
+  type CousinContrastMatch,
 } from "./engineFormEvaluators";
 import { attributeStyle, aggregateStyleWaves, collectStyleSupportingEvidence, type StyleAttribution, type StyleWaveAttribution, type StyleSupportingObservation } from "./engineStyleEvaluator";
 import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData } from "./engineDatingOverlap";
+import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
+import { findStyleCompatibility } from "./constraints/styleCompatibility";
+import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -120,24 +133,6 @@ function getClueMeta(clueKey: string | null | undefined): ClueMeta | undefined {
   return fromInline;
 }
 
-export type RuntimeMode = "mock" | "live";
-export type EngineMode = "LIVE" | "SIMULATED_FALLBACK";
- 
-export const RUNTIME_MODE: RuntimeMode = "live";
-
-export function getRuntimeProbe() {
-  return {
-    engine_mode: "LIVE" as EngineMode,
-    runtime_mode: "live" as RuntimeMode,
-    full_analysis_mode: "live" as RuntimeMode,
-    evidence_adapter_mode: "live" as RuntimeMode,
-    live_llm_enabled: true,
-    live_field_scan: true,
-    backend_endpoint: "/api/analyze",
-    simulation_reason: "NCW PE engine active. Phase 0 scans images once; later phases reason from stored evidence.",
-  };
-}
- 
 type Observation = {
   type: string;
   clue?: string | null;
@@ -146,6 +141,12 @@ type Observation = {
   source_image?: string | null;
   hard_negative?: boolean;
   low_confidence_flag?: boolean;
+  // True when the description self-negates its own clue subject ("Object is a
+  // table lamp, not a clock case"). Such a clue is a REJECTED CANDIDATE: it must
+  // not contribute positive evidence to clue_keys or weighting. Distinct from
+  // hard_negative, which marks a PRESENT clue that is an age/authenticity red
+  // flag (phillips_screw, plywood_structural).
+  negated?: boolean;
 };
 
 type EvidenceDigest = {
@@ -232,8 +233,39 @@ type Phase3Result = {
   style_alternatives?: StyleAttribution[]; // up to 3 lower-confidence attributions
   // Block 2b: style-wave aggregator output (≥2-of-N rule per D-PH3-9)
   style_waves?: StyleWaveAttribution[];
+  // Transitional-piece reasoning: date-envelope intersections across
+  // competing style attributions and across surfaced waves from different
+  // parent families. Captures the "Rococo Revival + Renaissance Revival
+  // both fire → both were in production c. 1865–1885 → that's the
+  // transitional window" diagnostic. best_style_intersection is the
+  // tightest qualifying intersection; consumed by p5 (transitional
+  // framing) and by the dating-overlap chart (multi-Style-row + overlap
+  // highlight band).
+  style_intersections?: StyleIntersection[];
+  best_style_intersection?: StyleIntersection | null;
+  // Alternatives whose canonical compatibility with the winning attribution
+  // is "stacked_revival" (e.g., Colonial Revival × Chippendale on a post-
+  // 1876 piece). Listed here so the chart can SUPPRESS the partner Style
+  // row for these — co-attribution is expected umbrella behavior, not a
+  // transitional moment worth a second row. p5 also uses this list to skip
+  // generic "competing attribution" framing for these pairs.
+  stacked_revival_partner_ids?: string[];
+  // Post-final-assessment style refinement: after convergence refines the
+  // final dating envelope, reconcileFinalStyle() picks the appraiser-voice
+  // label that the date actually supports (revival wave name when dates
+  // match a wave, named transitional period when applicable, reproduction
+  // framing when dates fall outside all known windows). Surfaces in
+  // display_form and the report's "Style identification" line instead of
+  // the bare attribution-time label.
+  final_style?: FinalStyleReconciliation;
   // Block 4 B5: hybrid form annotation from FormEntry.secondary_form_associations
   hybrid?: HybridAnnotation | null;
+  // Parking-lot 2d: cousin contrasts from the picked form that name the
+  // p3-scored alternative forms. Lean wiring per D-PH3-2 lean: string
+  // matching from cousin_form_contrasts prose against alternative form
+  // names/ids. Surfaces in the report to explain "why this form, not
+  // that one" calls. Does NOT influence scoring decisions.
+  cousin_contrasts?: CousinContrastMatch[];
   // Block 9: undated observations categorically aligned with the style
   // attribution. Surfaced in the report as supporting context — does NOT
   // contribute to dating-overlap layers to avoid double-counting.
@@ -304,6 +336,19 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   barley_twist: { category: "style", dateHint: "Jacobean Revival c. 1890–1935", weight: 0.78 },
   heavy_carving: { category: "style", weight: 0.65 },
   spindle_gallery: { category: "style", weight: 0.62 },
+
+  // Golden Oak Era / late-Victorian factory oak vocabulary. These keys are
+  // emitted by the LLM on oak-era dressers, sideboards, and case goods.
+  // `golden_oak_era_possible` is now a materials/wood-layer anchor (not a
+  // style cue) — per appraiser direction it lives in the wood HCL as an oak
+  // variant, NOT as a style family. dateHint resolves from canonical via
+  // engineCanonicalMap (wood_variant_evidence_golden_oak_era → peak 1890–1915);
+  // category=materials routes the dating signal into the wood layer of the
+  // dating overlap, where it converges with form/construction evidence.
+  golden_oak_era_possible: { category: "materials", weight: 0.65 },
+  flat_top_overhanging: { category: "form", dateHint: "c. 1800–1930", weight: 0.5 },
+  empire_transitional_style: { category: "style", dateHint: "c. 1840–1880", weight: 0.5 },
+  scrolled_bracket_feet: { category: "form", dateHint: "c. 1880–1930", weight: 0.55 },
 
   drop_leaf_hinged: { category: "construction", formHint: "Drop-leaf table", dateHint: "1720–1930", weight: 0.9 },
   gateleg_support: { category: "construction", formHint: "Gateleg table", dateHint: "1680–1800; revival 1880–1930", weight: 0.92 },
@@ -573,6 +618,233 @@ overhanging_top: {
   dateHint: "overhanging cornice or top board supports Empire or transitional case-furniture form",
   weight: 0.58,
 },
+
+// ─────────────────────────────────────────────────────────────────────
+// Metal joinery and metal wear/condition clues — Batch 1 non-wood
+// taxonomy expansion (authored 2026-05-19). Parallel canonical entries
+// in lib/constraints/joinery.ts under joinery_category_metal_joining.
+// Welded_joint already existed above (line ~396); these add the rest
+// of the metal-joining vocabulary and metal-specific wear signals.
+// ─────────────────────────────────────────────────────────────────────
+
+hand_forged_metal_joint: {
+  category: "joinery",
+  dateHint: "pre-1900 dominant for American wrought-iron furniture; post-1900 hand-forged work is usually artisan/revival",
+  weight: 0.78,
+},
+riveted_metal_joint: {
+  category: "joinery",
+  dateHint: "c. 1850-1940 industrial dominance for sheet steel, wrought iron, and brass furniture; continues in industrial-style production",
+  weight: 0.72,
+},
+brazed_metal_joint: {
+  category: "joinery",
+  dateHint: "late-19th-c. to present; especially diagnostic for brass beds, brass lighting bodies, gas fixtures, and decorative metalwork",
+  weight: 0.70,
+},
+soldered_metal_joint: {
+  category: "joinery",
+  dateHint: "spans all periods; especially common in tinware, pewter, lightweight brass, and lighting bodies",
+  weight: 0.55,
+},
+spot_welded_joint: {
+  category: "joinery",
+  dateHint: "post-1925 industrial; dominant c. 1930-present for tubular-steel chairs, metal lawn furniture, sheet-steel cabinets, and lighting bodies",
+  weight: 0.75,
+},
+mig_tig_welded_joint: {
+  category: "joinery",
+  dateHint: "post-1948 (MIG) / post-1941 (TIG); widespread c. 1960-present; primary reproduction-detection signal for wrought-iron and Victorian-revival metalwork",
+  weight: 0.80,
+},
+crimped_folded_seam: {
+  category: "joinery",
+  dateHint: "industrial sheet-metal lock seams widespread post-1850; common in tinware lighting, mid-20th-c. metal kitchen cabinets, stamped-metal lawn furniture",
+  weight: 0.62,
+},
+wire_wrapped_metal_joint: {
+  category: "joinery",
+  dateHint: "spans all periods; especially common in wicker-and-iron c. 1880-1930, decorative lighting bands, and rattan-metal hybrid furniture",
+  weight: 0.50,
+},
+
+// Metal wear and condition signals — independent of joining method
+rust_pitting: {
+  category: "condition",
+  dateHint: "active iron or steel oxidation; structural-integrity concern; finish-failure restoration signal",
+  weight: 0.55,
+},
+plating_loss: {
+  category: "condition",
+  dateHint: "chrome, nickel, or brass plating wear/loss; common on tubular-steel, chrome-frame, and plated brass furniture; restoration or refinishing common",
+  weight: 0.55,
+},
+joint_corrosion: {
+  category: "condition",
+  dateHint: "corrosion concentrated at metal joints (galvanic, crevice, or stress corrosion); structural-integrity concern at the weakest geometry",
+  weight: 0.60,
+},
+weld_repair_visible: {
+  category: "condition",
+  dateHint: "modern weld over an original joint indicates later repair; preserve original joining method as the dating signal and record the weld as restoration evidence",
+  weight: 0.60,
+},
+powder_coat_overspray: {
+  category: "finish",
+  dateHint: "powder-coat finish post-1960s; modern refinish over earlier metal pieces is common and obscures original finish, plating, and surface wear",
+  weight: 0.55,
+},
+bent_or_sprung_metal: {
+  category: "condition",
+  dateHint: "permanent metal deformation from use, damage, or stress; structural concern for tubular steel, wrought iron, and sheet-metal furniture",
+  weight: 0.50,
+},
+
+// Engine signaling clue — not appraisal evidence. Emitted by runAllPhases
+// only when BOTH the initial p0 scan AND the deep-extraction recovery pass
+// return zero observations. Acts as a "no structured evidence available"
+// marker that downstream consumers can use to suppress confident form
+// claims and surface a re-shoot message to the user. Weight 0 so it never
+// contributes to dating or form scoring.
+fallback_form: {
+  category: "signal",
+  dateHint: "no structured observations recovered; engine should suppress confident claims and request better photos",
+  weight: 0,
+},
+
+// ─────────────────────────────────────────────────────────────────────
+// Clock-specific clues — stress-test fix #4 (2026-05-20). Without these,
+// rich clock observations (winding arbors, brass dial bezel, pendulum
+// styles, decorative tablet) collected at P0 contributed 0 to the dating
+// envelope ("present but undated"). Each entry pairs a category (form
+// for case-shape clues; hardware for fittings; style for ornament) with
+// a dateHint string that the engine reads into the layer-by-layer
+// dating overlap. Weights calibrated to authority — case-form clues
+// (arched_glazed_dial_door, turned_spindle_gallery) carry higher weight
+// because the case style narrowly dates Victorian shelf clock production;
+// hardware clues are broader and lower-weight.
+// ─────────────────────────────────────────────────────────────────────
+
+metal_clock_form: {
+  category: "form",
+  dateHint: "clock case form; mantel, shelf, kitchen, or parlor clock — broad American production c. 1820-1940 (Connecticut clock industry dominance)",
+  weight: 0.78,
+},
+clock_case_form: {
+  category: "form",
+  dateHint: "clock case form; surface-set shelf/mantel clock — broad American production c. 1820-1940",
+  weight: 0.78,
+},
+arched_glazed_dial_door: {
+  category: "form",
+  dateHint: "arched glass dial door on a shelf clock case; characteristic of American round-top and arch-top mantel clock production c. 1870-1910",
+  weight: 0.72,
+},
+turned_spindle_gallery: {
+  category: "style",
+  dateHint: "turned-spindle gallery at the top of a shelf clock case; characteristic of Victorian American gingerbread/kitchen clock production c. 1875-1900",
+  weight: 0.75,
+},
+scrolled_side_corbels: {
+  category: "style",
+  dateHint: "scrolled or ribbon-carved corbel brackets flanking the dial of a shelf clock; characteristic of Victorian American shelf clock production c. 1870-1900",
+  weight: 0.70,
+},
+reverse_painted_lower_tablet: {
+  category: "style",
+  dateHint: "reverse-painted decorative glass tablet covering the pendulum window of a shelf clock; characteristic of American Victorian production c. 1850-1900",
+  weight: 0.72,
+},
+winding_arbors: {
+  category: "hardware",
+  dateHint: "winding arbors on a clock dial (8-day time-and-strike spring movement = 2 arbors); American spring-driven shelf clock production c. 1840-present",
+  weight: 0.55,
+},
+striking_mechanism: {
+  category: "function",
+  dateHint: "mechanical striking train in a clock; broad pre-1970 American mechanical clock production",
+  weight: 0.50,
+},
+pendulum_bob_cast: {
+  category: "hardware",
+  dateHint: "decorative cast brass pendulum bob visible behind glass tablet; American Victorian shelf clock production c. 1860-1910",
+  weight: 0.60,
+},
+brass_dial_bezel: {
+  category: "hardware",
+  dateHint: "brass dial bezel/surround on a clock dial; typical of American mantel clock production c. 1860-1920",
+  weight: 0.58,
+},
+
+// ─────────────────────────────────────────────────────────────────────
+// Wicker dating ladder — Batch 3 non-wood taxonomy expansion (2026-05-19).
+// Prior wicker vocabulary: woven_body, rattan_frame, cane_panels — all
+// generic and undated. These new clues add the major dating anchors
+// (Lloyd loom 1917+, Bar Harbor 1900-1920, Victorian curlicue 1880-1900,
+// mid-century streamlined 1945-1970) and weave-pattern signals that
+// appraisers use to date wicker furniture. Note: these clues route by
+// LLM text-pattern matching; a future prompt-expansion pass should
+// explicitly ask the LLM to observe "paper fiber vs natural reed",
+// "weave pattern density", and "ornament era" on wicker forms.
+// ─────────────────────────────────────────────────────────────────────
+
+// Material-and-era dating anchors
+lloyd_loom_paper_fiber: {
+  category: "materials",
+  dateHint: "post-1917 American hard-anchor; Marshall B. Lloyd patented Lloyd loom machinery in 1917, weaving twisted kraft paper around a wire core on automated looms. Construction is highly diagnostic and survives well — paper-fiber 'wicker' over a wire armature is visible at broken strands and at frame edges. Peak American production c. 1920-1950 (Lloyd Loom of Heywood-Wakefield); continues in present-day reproduction. A piece otherwise styled or attributed pre-1917 cannot be Lloyd loom in original construction.",
+  weight: 0.85,
+},
+bar_harbor_style_wicker: {
+  category: "style",
+  dateHint: "c. 1900-1920 American resort-wicker era; named for Maine resort town. Open airy weave, geometric forms, minimal curlicue ornament, often natural or white-painted finish. Distinct from heavy Victorian curlicue wicker (c. 1880-1900) and from Lloyd loom paper fiber (post-1917). Strong collector market for original-period Bar Harbor settees, chairs, and tables.",
+  weight: 0.72,
+},
+victorian_curlicue_wicker: {
+  category: "style",
+  dateHint: "c. 1880-1900 American Victorian wicker era; heavy ornament with scrolls, curlicues, hearts, fans, photo-frame insets, and densely decorated backs. Often natural finish, gilt accents, or stained dark. Distinct from later Bar Harbor open-weave (c. 1900-1920) and Lloyd loom paper fiber (post-1917). Heywood Bros., Wakefield Rattan, and merged Heywood-Wakefield are major makers; attribution requires label, mark, or catalog match.",
+  weight: 0.72,
+},
+mid_century_streamlined_wicker: {
+  category: "style",
+  dateHint: "c. 1945-1970 mid-century modern wicker and rattan production; lighter forms, simpler curves, often paired with steel or aluminum frames, often imported Filipino or Asian-Pacific work. Distinct from earlier Victorian, Bar Harbor, and Lloyd loom traditions. Compare papasan, peacock chair, and tropical-modern vocabularies.",
+  weight: 0.65,
+},
+
+// Weave-pattern signals (sub-diagnostic; combine with era/material above)
+wicker_weave_close: {
+  category: "construction",
+  dateHint: "tight close weave with minimal gaps between strands; common in higher-quality production across periods. Less air-flow, denser visual mass; often associated with formal parlor wicker, Lloyd loom paper fiber, or quality reed work.",
+  weight: 0.55,
+},
+wicker_weave_open: {
+  category: "construction",
+  dateHint: "open or airy weave with visible gaps between strands; common in Bar Harbor-era resort wicker (c. 1900-1920) and porch/sunroom furniture. Often paired with white-painted or natural finish.",
+  weight: 0.55,
+},
+wicker_weave_basket: {
+  category: "construction",
+  dateHint: "basket-weave pattern (alternating over-under in groups of two or more strands); often decorative panel insert on Victorian and early-20th-c. wicker. Distinct from simple over-under and from herringbone.",
+  weight: 0.50,
+},
+
+// Material identification (broader than Lloyd loom)
+paper_fiber_construction: {
+  category: "materials",
+  dateHint: "paper-fiber (twisted kraft paper) construction post-1900 industrial development; Lloyd loom paper fiber is the dominant subtype post-1917. Distinct from natural rattan, reed, and cane. Paper fiber appears as uniform extruded strands rather than the irregular tapered profile of natural plant fibers.",
+  weight: 0.78,
+},
+
+// Condition / restoration signals
+wicker_strand_breakage: {
+  category: "condition",
+  dateHint: "broken, missing, or unraveled wicker strands; structural condition signal; common on aged or heavily-used wicker. Repair difficulty depends on weave pattern and material (paper fiber harder to splice invisibly than natural reed).",
+  weight: 0.55,
+},
+wicker_paint_buildup: {
+  category: "condition",
+  dateHint: "multiple paint layers on wicker obscuring original finish, weave detail, and material identification; common on long-lived porch and sunroom pieces. Paint stratigraphy may help dating but original finish (natural, shellac, stain, original paint color) is often hidden.",
+  weight: 0.50,
+},
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -714,6 +986,14 @@ function normalizePhase0Clue(raw: any): string | null {
 
   return key;
 }
+
+  // scrolled_bracket_feet is a decorative late-Victorian / Golden Oak /
+  // Colonial Revival foot treatment, NOT an Empire scroll foot. Keep it
+  // distinct so it does not collapse into american_empire_style and anchor
+  // an Empire (c. 1810–1850) attribution on a factory-era oak dresser.
+  if (key === "scrolled_bracket_feet") {
+    return "scrolled_bracket_feet";
+  }
 
   if (
     key === "empire_style_feet" ||
@@ -1025,7 +1305,51 @@ if (t.includes("formica")) return "formica_surface";
 
 if (t.includes("plastic")) return "molded_plastic";
 if (t.includes("acrylic") || t.includes("lucite")) return "acrylic_clear";
- 
+
+// ─────────────────────────────────────────────────────────────────────
+// Non-wood material/joinery/condition text-pattern fallbacks
+// (Batch 1-3 non-wood taxonomy follow-up — text-pattern detection for
+// LLM observations that don't emit clue keys explicitly. Most specific
+// patterns first to avoid bleeding into broader matches.)
+// ─────────────────────────────────────────────────────────────────────
+
+// Metal joinery — most specific (MIG/TIG / spot weld) before broader (welded / forged)
+if (!isNegated("mig") && includesAny(t, ["mig weld", "tig weld", "gas-shielded weld", "gas shielded weld", "stacked dime", "stacked-dime"])) return "mig_tig_welded_joint";
+if (!isNegated("spot weld") && includesAny(t, ["spot weld", "spot-weld", "resistance weld", "weld dimple"])) return "spot_welded_joint";
+if (!isNegated("rivet") && includesAny(t, ["rivet head", "domed rivet", "riveted joint", "riveted seam", "riveted construction", "peened rivet"])) return "riveted_metal_joint";
+if (!isNegated("braze") && includesAny(t, ["brazed joint", "brazed seam", "brass infill", "brass fillet", "brazing"])) return "brazed_metal_joint";
+if (!isNegated("solder") && includesAny(t, ["soldered joint", "soldered seam", "solder line", "soft solder"])) return "soldered_metal_joint";
+if (!isNegated("forged") && includesAny(t, ["forge weld", "hand-forged joint", "hand forged joint", "blacksmith joint", "hammer-formed", "hammer forged"])) return "hand_forged_metal_joint";
+if (!isNegated("crimped") && includesAny(t, ["crimped seam", "folded seam", "lock seam", "pittsburgh seam", "grooved seam"])) return "crimped_folded_seam";
+if (!isNegated("wire wrap") && includesAny(t, ["wire-wrapped", "wire wrapped joint", "wrapped joint", "wire banding"])) return "wire_wrapped_metal_joint";
+
+// Metal wear / condition
+if (!isNegated("rust") && includesAny(t, ["rust pitting", "pitted rust", "rust pits", "pitted surface", "rusty pits"])) return "rust_pitting";
+if (!isNegated("plating") && includesAny(t, ["plating loss", "plating wear", "plating worn", "plated worn through", "exposed base metal", "exposed pot metal", "chrome flaking", "nickel flaking", "brass plating wear"])) return "plating_loss";
+if (!isNegated("corrosion") && includesAny(t, ["joint corrosion", "corroded joint", "corrosion at joint", "galvanic corrosion"])) return "joint_corrosion";
+if (!isNegated("weld repair") && includesAny(t, ["weld repair", "later weld", "repair weld", "modern weld over"])) return "weld_repair_visible";
+if (!isNegated("powder coat") && includesAny(t, ["powder coat", "powder-coat", "powder coated", "modern powder coating"])) return "powder_coat_overspray";
+if (!isNegated("bent") && includesAny(t, ["bent metal", "sprung metal", "bent frame", "deformed tubing", "warped tubing"])) return "bent_or_sprung_metal";
+
+// Wicker era and material — most specific first
+if (!isNegated("lloyd loom") && includesAny(t, ["lloyd loom", "lloyd-loom", "paper fiber", "paper-fiber", "twisted paper", "kraft paper wicker", "machine-woven paper"])) return "lloyd_loom_paper_fiber";
+if (!isNegated("bar harbor") && includesAny(t, ["bar harbor", "bar-harbor", "resort wicker", "porch wicker", "sunroom wicker"])) return "bar_harbor_style_wicker";
+if (!isNegated("victorian wicker") && includesAny(t, ["victorian wicker", "curlicue wicker", "wicker curlicue", "ornate wicker", "scrolled wicker", "wicker scrolls"])) return "victorian_curlicue_wicker";
+if (!isNegated("mid-century wicker") && includesAny(t, ["mid-century wicker", "mid century wicker", "modernist wicker", "streamlined wicker", "filipino rattan", "papasan style"])) return "mid_century_streamlined_wicker";
+
+// Wicker weave patterns
+if (!isNegated("herringbone") && includesAny(t, ["herringbone weave", "herringbone wicker", "diagonal weave"])) return "wicker_weave_basket";
+if (!isNegated("basket weave") && includesAny(t, ["basket weave", "basket-weave", "alternating over-under", "groups of two strands"])) return "wicker_weave_basket";
+if (!isNegated("close weave") && includesAny(t, ["close weave", "tight weave", "dense weave", "tight wicker"])) return "wicker_weave_close";
+if (!isNegated("open weave") && includesAny(t, ["open weave", "open wicker", "airy weave", "loose weave"])) return "wicker_weave_open";
+
+// Paper fiber (broader than Lloyd loom — check AFTER lloyd_loom match)
+if (!isNegated("paper fiber") && includesAny(t, ["paper construction", "kraft paper construction", "paper-fiber furniture"])) return "paper_fiber_construction";
+
+// Wicker condition
+if (!isNegated("strand") && includesAny(t, ["broken strands", "missing strands", "unraveled wicker", "broken wicker", "wicker damage"])) return "wicker_strand_breakage";
+if (!isNegated("paint buildup") && includesAny(t, ["paint buildup", "multiple paint layers", "thick paint on wicker", "painted-over wicker"])) return "wicker_paint_buildup";
+
   return null;
 }
 function descriptionFromObservation(o: any): string {
@@ -1128,6 +1452,47 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
       };
     });
 }
+// Derive the subject term(s) a clue key refers to, for self-negation detection.
+// "clock_case_form" -> ["clock case", "clock"]; "lamp_form" -> ["lamp"].
+const NEGATION_STRIP_SUFFIXES = ["_form", "_present", "_visible", "_construction", "_evidence", "_feature", "_detail"];
+function clueSubjectTerms(clue?: string | null): string[] {
+  if (!clue) return [];
+  let base = clue.toLowerCase();
+  for (const sfx of NEGATION_STRIP_SUFFIXES) {
+    if (base.endsWith(sfx)) {
+      base = base.slice(0, -sfx.length);
+      break;
+    }
+  }
+  const phrase = base.replace(/_/g, " ").trim();
+  if (!phrase) return [];
+  const terms = [phrase];
+  const head = phrase.split(" ")[0];
+  if (head && head.length >= 4 && head !== phrase) terms.push(head); // head noun: clock_case -> "clock"
+  return terms;
+}
+
+// True when a description rejects its OWN clue subject ("...not a clock case",
+// "rather than a clock", "no clock case"). Matching against the clue's own
+// subject term — not bare "not"/"no" — keeps positive clues whose prose merely
+// contrasts a different thing ("Cabriole legs, not straight") from being dropped.
+function descriptionNegatesClue(clue: string | null | undefined, description: string): boolean {
+  const terms = clueSubjectTerms(clue);
+  if (!terms.length || !description) return false;
+  const text = ` ${description.toLowerCase()} `;
+  for (const t of terms) {
+    const esc = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const patterns = [
+      new RegExp(`\\bnot (?:a |an |the )?${esc}\\b`),
+      new RegExp(`\\b(?:rather than|instead of|as opposed to) (?:a |an |the )?${esc}\\b`),
+      new RegExp(`\\bno ${esc}\\b`),
+      new RegExp(`\\b${esc} (?:is |are )?(?:not present|absent|missing)\\b`),
+    ];
+    if (patterns.some((re) => re.test(text))) return true;
+  }
+  return false;
+}
+
 function normalizeObservationsFromParsed(parsed: any): Observation[] {
   const direct = Array.isArray(parsed?.observations) ? parsed.observations : [];
   const out: Observation[] = [];
@@ -1167,6 +1532,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
   raw?.value !== false &&
   String(raw?.value).toLowerCase() !== "false"
 ),
+      negated: descriptionNegatesClue(clue, description),
       low_confidence_flag:
         typeof raw?.confidence === "number" ? raw.confidence < 45 : true,
     });
@@ -1420,12 +1786,30 @@ if (
 
   if (
     text.includes("mirror") &&
-    !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"])
+    !includesAny(text, ["no mirror", "mirror not", "no attached mirror", "no mirror or bonnet"]) &&
+    // "mirror-image" / "mirror-matched" describe BOOKMATCHED VENEER GRAIN, not a
+    // mirror. Bare substring matching on "mirror" otherwise fabricates a
+    // mirror_present clue on flame/crotch veneer pieces ("bilateral mirror-image
+    // bookmatched walnut"). Exclude the veneer-grain phrasings.
+    !includesAny(text, ["mirror-image", "mirror image", "mirror-matched", "mirror matched", "mirror match", "mirrored grain", "mirrored figure"])
   ) {
     add("mirror_present", "Mirror is visible.", 72);
   }
 
-  if (includesAny(text, ["iron bed", "metal bed", "headboard", "footboard"])) {
+  // Metal-frame bed cue. A headboard/footboard ALONE does not imply metal —
+  // wooden bedsteads have them too — so require explicit metal-bed language, or
+  // a head/footboard accompanied by a metal material word. Wooden beds route to
+  // form_bedstead via the scoreForms wooden-bedstead block instead of being
+  // mis-flagged as iron beds here.
+  const metalBedLanguage = includesAny(text, [
+    "iron bed", "brass bed", "metal bed", "metal bedstead", "iron bedstead",
+    "cast-iron bed", "cast iron bed", "wrought-iron bed", "wrought iron bed",
+    "tubular steel bed", "tubular-steel bed", "steel bed",
+  ]);
+  const headFootWithMetal =
+    includesAny(text, ["headboard", "footboard"]) &&
+    includesAny(text, ["iron", "brass", "metal", "steel", "wrought", "tubular", "japanned", "chrome", "nickel-plated"]);
+  if (metalBedLanguage || headFootWithMetal) {
     add("metal_bed_frame", "Iron or metal bed frame is visible.", 88);
   }
 
@@ -1658,6 +2042,224 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     low_confidence_flag: false,
   });
 }
+
+  // =========================
+  // LOUNGE-CHAIR FORM SYNTHESIZERS
+  // Posture-based seating identity (deeper seat, lower seat height, more
+  // reclined back, often fully upholstered) — distinct from arm-based
+  // armchair_form per form_armchair.cousin_form_contrasts architectural
+  // decision. Emits lounge_chair_form + club_chair_form + barrel_tub_back
+  // so the armchairVeto at engine.ts:2504 (which blocks telephone-bench
+  // mis-routing when seating + secondary_surface co-occur on an
+  // upholstered lounge form) becomes reachable from textual perception
+  // evidence in addition to direct LLM-emitted clues.
+  // Canonical: lib/constraints/forms.ts form_lounge_chair (7 subtypes).
+  // =========================
+
+  const hasBarrelTubCues =
+    hasClue("barrel_tub_back") ||
+    hasText(
+      "barrel back",
+      "barrel-back",
+      "tub back",
+      "tub-back",
+      "tub chair",
+      "barrel chair",
+      "cylindrical back",
+      "wrap-around back",
+      "wraparound back",
+    );
+
+  const hasClubCues =
+    hasText(
+      "club chair",
+      "leather club",
+      "smoking chair",
+      "library club",
+      "gentleman's chair",
+    );
+
+  const hasDeepLoungeCues =
+    hasClue("fully_upholstered") &&
+    (hasClue("button_tufting") ||
+      hasClue("velvet_cover") ||
+      hasClue("arm_upholstery") ||
+      hasText(
+        "rolled arms",
+        "deep seat",
+        "low seat",
+        "reclined back",
+        "overstuffed",
+        "deep cushion",
+        "loose cushion",
+        "lounge chair",
+        "easy chair",
+      ));
+
+  if (
+    !hasClue("barrel_tub_back") &&
+    hasBarrelTubCues &&
+    (hasClue("seating_surface") ||
+      hasClue("armchair_form") ||
+      hasClue("backrest_present"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "barrel_tub_back",
+      description:
+        "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction.",
+      confidence: 76,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  if (
+    !hasClue("lounge_chair_form") &&
+    (hasDeepLoungeCues ||
+      (hasBarrelTubCues &&
+        (hasClue("seating_surface") || hasClue("armchair_form"))) ||
+      hasText(
+        "lounge chair",
+        "easy chair",
+        "bergère",
+        "bergere",
+        "barrel chair",
+        "tub chair",
+      ) ||
+      hasClubCues)
+  ) {
+    out.push({
+      type: "form",
+      clue: "lounge_chair_form",
+      description:
+        "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair.",
+      confidence: 78,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  if (
+    !hasClue("club_chair_form") &&
+    hasClubCues &&
+    (hasClue("fully_upholstered") ||
+      hasClue("armchair_form") ||
+      hasText("leather", "deep cushion", "rolled arms"))
+  ) {
+    out.push({
+      type: "form",
+      clue: "club_chair_form",
+      description:
+        "Club-chair vocabulary with deep upholstery indicates club chair variant. Canonical: form_lounge_chair / subtype_lounge_club.",
+      confidence: 76,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // =========================
+  // WING-CHAIR FORM SYNTHESIZER
+  // Structural wings extending forward from the upper back — distinct
+  // from armchair (arm-based) and lounge chair (posture-based) per the
+  // wing-as-structural-feature decision documented in form_wing_chair,
+  // form_armchair, and form_lounge_chair cousin_form_contrasts. Emits
+  // wingback_form so the armchairVeto at engine.ts:2504 (telephone-bench
+  // mis-routing block) becomes reachable on wing chairs as well as
+  // standard upholstered seating.
+  // Canonical: lib/constraints/forms.ts form_wing_chair (8 subtypes).
+  // =========================
+
+  const hasWingCues =
+    hasText(
+      "wing chair",
+      "wing chairs",
+      "wingback",
+      "wing-back",
+      "wing back",
+      "side wings",
+      "draft wings",
+      "fireside wing",
+      "queen anne wing",
+      "chippendale wing",
+      "federal wing",
+      "wing recliner",
+      "wing-back club",
+    );
+
+  if (
+    !hasClue("wingback_form") &&
+    hasWingCues &&
+    (hasClue("seating_surface") ||
+      hasClue("armchair_form") ||
+      hasClue("backrest_present"))
+  ) {
+    out.push({
+      type: "form",
+      clue: "wingback_form",
+      description:
+        "Structural side wings extending forward from upper back indicate wing-chair form. Canonical: form_wing_chair.",
+      confidence: 80,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // =========================
+  // SLIPPER-CHAIR FORM SYNTHESIZER
+  // Armless + low-seated + small-scale + upholstered coincident triplet —
+  // distinct from side_chair (typically upright, often exposed wood),
+  // armchair (has arms), lounge_chair (larger-scale, typically arm-bearing),
+  // and wing_chair (has wings) per the structural-triplet decision
+  // documented in form_slipper_chair.cousin_form_contrasts. Emits
+  // slipper_chair_form so the armchairVeto at engine.ts:2504 covers
+  // vanity-slipper-chair-near-vanity telephone-bench mis-routing scenarios
+  // (a vanity slipper chair photographed next to its paired vanity could
+  // otherwise fire the seating + secondary_surface composite-pattern
+  // threshold and mis-route to telephone bench).
+  // Canonical: lib/constraints/forms.ts form_slipper_chair (8 subtypes).
+  // =========================
+
+  const hasSlipperCues =
+    hasText(
+      "slipper chair",
+      "slipper chairs",
+      "boudoir chair",
+      "boudoir slipper",
+      "bedroom chair",
+      "dressing chair",
+      "vanity chair",
+      "vanity slipper",
+      "armless upholstered chair",
+      "armless slipper",
+      "low upholstered chair",
+      "low armless chair",
+      "lady's chair",
+      "ladies chair",
+    );
+
+  if (
+    !hasClue("slipper_chair_form") &&
+    hasSlipperCues &&
+    (hasClue("seating_surface") || hasClue("backrest_present")) &&
+    !hasClue("armchair_form")
+  ) {
+    out.push({
+      type: "form",
+      clue: "slipper_chair_form",
+      description:
+        "Armless, low-seated, small-scale upholstered seating with bedroom / boudoir / dressing-room vocabulary indicates slipper-chair form. Canonical: form_slipper_chair.",
+      confidence: 78,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
   // =========================
   // WOOD-FRAME DEPENDENT STYLES
   // =========================
@@ -1788,6 +2390,86 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
     });
   }
 
+  // LLM-emitted `*_revival_cues` clues synthesize a colonial_revival_pattern
+  // so the structural-pattern penalty pulls attribution away from original-
+  // period families (Louis XVI 1770–1830, Federal, etc.) toward the post-
+  // 1876 Colonial Revival umbrella.
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    (hasClue("neoclassical_revival_cues") || hasClue("colonial_revival_cues"))
+  ) {
+    out.push({
+      type: "structure",
+      clue: "colonial_revival_pattern",
+      description:
+        "Revival-marker cues (neoclassical/colonial *_revival_*) indicate Colonial Revival umbrella, not original-period attribution.",
+      confidence: 80,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
+  // Golden Oak Era detector. Factory-era oak case goods (dressers, sideboards,
+  // washstands, hall trees, desks) commonly read as oak + flat-sawn grain +
+  // multiple-drawer case + late-Victorian hardware (round wood knobs, lock
+  // escutcheons, porcelain casters) with no hand-cut joinery. Without this
+  // detector, the original Empire/American Classical alias tokens (e.g.,
+  // "empire" in empire_transitional_style) over-anchor pre-1860 attribution
+  // on what is plainly 1890–1915 factory production. Per appraiser direction,
+  // Golden Oak Era is NOT a style — it is a vernacular dating/material/
+  // market-era marker. The synthesized clue routes via canonical map to
+  // the wood-evidence layer (wood_variant_evidence_golden_oak_era) for
+  // dating contribution, and via STRUCTURAL_PATTERN_FAMILY to
+  // style_family_colonial_revival (the broadest post-1876 umbrella) for
+  // competitive suppression of pre-1876 family attributions — without
+  // claiming Golden Oak Era is itself a style.
+  const oakSpecies =
+    hasClue("wood_species_oak") ||
+    hasClue("oak_primary") ||
+    hasClue("wood_species_oak_group") ||
+    hasText("oak");
+  const oakGrain =
+    hasClue("flat_sawn_oak_grain") ||
+    hasClue("quarter_sawn_oak") ||
+    hasClue("golden_oak_era_possible") ||
+    hasText("flat-sawn oak", "quarter-sawn oak", "cathedral grain", "golden oak");
+  const caseForm =
+    hasClue("multiple_drawer_case") ||
+    hasClue("drawer_present") ||
+    hasText("chest of drawers", "dresser", "sideboard", "washstand");
+  const factoryEraHardware =
+    hasClue("round_wood_knob") ||
+    hasClue("lock_escutcheons") ||
+    hasClue("porcelain_caster");
+  if (
+    !blocksTraditionalWoodFrameStyles &&
+    oakSpecies &&
+    oakGrain &&
+    caseForm &&
+    factoryEraHardware &&
+    !hasClue("hand_cut_dovetails") &&
+    !hasClue("hand_forged_nail") &&
+    !hasClue("pit_saw_marks")
+  ) {
+    out.push({
+      // Materials-layer signal (not structure): Golden Oak Era is a wood +
+      // finish + market-era anchor authored as an oak variant in
+      // woodIdentification.ts (wood_variant_golden_oak_era) with paired
+      // evidence in woodEvidence.ts. The dateHint resolves from canonical
+      // (peak 1890–1915) via engineCanonicalMap; category routes the signal
+      // into the wood layer of the dating overlap.
+      type: "materials",
+      clue: "golden_oak_structural_pattern",
+      description:
+        "Oak primary wood, flat-sawn or quarter-sawn oak grain, multiple-drawer case, and factory-era hardware (round wood knobs / lock escutcheons / porcelain casters) with no hand-cut joinery indicate Golden Oak Era factory production (c. 1890–1915 peak).",
+      confidence: 82,
+      source_image: "derived",
+      hard_negative: false,
+      low_confidence_flag: false,
+    });
+  }
+
   // =========================
   // MATERIAL-AGNOSTIC (DO NOT BLOCK)
   // =========================
@@ -1847,14 +2529,49 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
 }
 
  
+// The p0 perception prompt emits observation types in the singular
+// (material / fastener / toolmark / wood), but every downstream scoring and
+// dating table — AUTHORITY_RANK, the dating-overlap CATEGORY_TO_LAYER map,
+// CLUE_LIBRARY categories, the structural-evidence gates — keys on the plural
+// canonical form. Left unreconciled, any LLM-emitted construction or material
+// observation (the strongest age anchors) falls through to the default
+// authority of 2 AND never reaches its dating-overlap layer, silently
+// discarding genuine-age evidence. Normalize once at ingestion so every
+// consumer sees the canonical vocabulary. (wood collapses into materials —
+// the "wood" dating layer is keyed by the "materials" category.)
+const OBSERVATION_TYPE_ALIASES: Record<string, string> = {
+  material: "materials",
+  fastener: "fasteners",
+  toolmark: "toolmarks",
+  wood: "materials",
+};
+function canonicalObservationType(t: string | null | undefined): string {
+  const key = String(t || "context").toLowerCase().trim();
+  return OBSERVATION_TYPE_ALIASES[key] ?? key;
+}
+
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
+  // Normalize emitted types to the canonical vocabulary before anything reads
+  // them (see OBSERVATION_TYPE_ALIASES). Mutating here means by_type, p4
+  // weighting, and the dating overlap all agree downstream.
+  observations.forEach((o) => {
+    o.type = canonicalObservationType(o.type);
+  });
   const by_type: Record<string, Observation[]> = {};
   observations.forEach((o) => {
     if (!by_type[o.type]) by_type[o.type] = [];
     by_type[o.type].push(o);
   });
 
-  const clue_keys = uniq(observations.map((o) => normalizeClueKey(o.clue)).filter(Boolean) as string[]);
+  // Rejected candidates (negated) never enter clue_keys — they must not route
+  // forms or contribute positive evidence to any clue_keys consumer (scoreForms,
+  // material classification, dating, style).
+  const clue_keys = uniq(
+    observations
+      .filter((o) => !o.negated)
+      .map((o) => normalizeClueKey(o.clue))
+      .filter(Boolean) as string[]
+  );
   const hard_negatives = uniq(observations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
   const strongest_observations = [...observations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
 
@@ -2283,7 +3000,9 @@ export type ScoredForm = {
 
 function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  // Rejected-candidate prose ("...not a clock case") must not drive text-based
+  // form matching either — exclude negated observations from the haystack (#15).
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
@@ -2369,11 +3088,31 @@ const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
     benchSupport.push("desk or secretary features");
   }
 
+  // Armchair / lounge / upholstered-seating evidence vetoes telephone-bench
+  // routing. Previously a piece with `armchair_form` + `barrel_tub_back` +
+  // `secondary_surface` (e.g., a tub chair with a side table feature
+  // perceived in-frame) was scored as a telephone bench because the
+  // composite-pattern threshold (65) fires on seating + secondary_surface
+  // alone — even though full upholstery, tufting, and barrel/tub forms are
+  // structurally incompatible with telephone-bench identity.
+  const armchairVeto = hasAny(
+    "armchair_form",
+    "barrel_tub_back",
+    "fully_upholstered",
+    "button_tufting",
+    "wingback_form",
+    "lounge_chair_form",
+    "club_chair_form",
+    "slipper_chair_form",
+  );
+
   const hasTelephoneBenchEvidence =
-  clues.has("telephone_shelf") ||
-  (
-    hasAny("seating_surface", "seating_present") &&
-    hasAny("secondary_surface")
+  !armchairVeto && (
+    clues.has("telephone_shelf") ||
+    (
+      hasAny("seating_surface", "seating_present") &&
+      hasAny("secondary_surface")
+    )
   );
 
 if (benchScore >= 65 && hasTelephoneBenchEvidence) {
@@ -2403,7 +3142,54 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   // even when cylinder was clearly the dominant structural form.
   const cylinderActive = clues.has("cylinder_roll");
   const slantActive = clues.has("slant_front");
-  const deskFormDominant = cylinderActive || slantActive;
+  // Cover-mechanism desk cluster, distinct from the rigid-cover cylinder desk.
+  // Per each form's cousin_form_contrasts: cylinder = rigid curved cover;
+  // Wooton = cabinet-office interior enclosed by outer doors; roll-top =
+  // flexible slatted (S-roll/C-roll) rolling cover, typically a larger office
+  // desk; tambour = sliding tambour, usually smaller or cabinet-fronted.
+  // Gated on !cylinderActive so pieces the resolver already read as a rigid
+  // cylinder stay routed to form_cylinder_desk; these branches only add the
+  // previously-unreachable slatted/tambour/Wooton identities. Round-up
+  // discipline: emit the cover-cluster identity and let the post-selection
+  // subtype evaluator descend to S-roll/C-roll/grade variants only when
+  // evidence clears its 0.65 confidence floor.
+  const wootonNamed = includesAny(text, ["wooton", "wootton"]);
+  const rollTopCover =
+    !cylinderActive &&
+    includesAny(text, [
+      "roll-top", "roll top", "rolltop", "s-roll", "c-roll",
+      "slatted cover", "slatted tambour", "tambour slat", "rolling slat",
+    ]);
+  const tambourCover =
+    !cylinderActive &&
+    !rollTopCover &&
+    includesAny(text, ["tambour"]);
+  const coverClusterActive = wootonNamed || rollTopCover || tambourCover;
+  // Fall/slope-front writing-desk family (vertical or hinged fall front; cousins
+  // of the slant-front and bookcase-topped secretary). Per fall_front_desk's
+  // cousin_form_contrasts: secretary combines a desk WITH bookcase/chest storage;
+  // escritoire is more cabinet-like (no bookcase); secrétaire à abattant is a
+  // tall French cabinet with a vertical fall; bureau à gradins adds desk-born
+  // tiers/galleries (vs. a hutch desk's larger upper storage). Folded into
+  // deskFormDominant so a specifically-named fall-front identity suppresses the
+  // generic drop-front/pigeonhole Secretary emission (those are sub-features
+  // here). Bare "drop-front" is intentionally left to the Secretary route as
+  // the broad round-up identity for the American market.
+  const abattantDesk = includesAny(text, [
+    "secrétaire à abattant", "secretaire a abattant", "abattant",
+    "tall fall-front secretary", "drop-front cabinet secretary", "french fall-front cabinet",
+  ]);
+  const gradinsDesk = includesAny(text, [
+    "bureau à gradins", "bureau a gradins", "gradins",
+    "writing desk with superstructure", "gallery writing desk", "tiered writing desk",
+  ]);
+  const escritoireDesk = includesAny(text, ["escritoire"]);
+  const fallFrontDesk = includesAny(text, [
+    "fall-front", "fall front", "fall-lid", "fall lid",
+    "folding-front", "wall-mounted fall-front", "compact fall-front",
+  ]);
+  const fallFrontFamilyActive = abattantDesk || gradinsDesk || escritoireDesk || fallFrontDesk;
+  const deskFormDominant = cylinderActive || slantActive || coverClusterActive || fallFrontFamilyActive;
   if (clues.has("drop_front_desk") && !deskFormDominant) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
   if (clues.has("pigeonholes") && !deskFormDominant) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
   if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
@@ -2416,25 +3202,645 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       "Cylinder roll-top closure, writing surface, interior compartments, and kneehole desk configuration support a cylinder desk reading."
     );
   }
+  if (wootonNamed) {
+    add("Wooton desk", 122, "Cabinet-office desk with outer doors enclosing a fitted interior (Wooton patent type).");
+  } else if (rollTopCover) {
+    add("Roll-top desk", 110, "Flexible slatted (S-roll/C-roll) rolling cover over a fitted writing interior.");
+  } else if (tambourCover) {
+    add("Tambour desk", 100, "Sliding tambour closure over a fitted writing interior.");
+  }
+  // Fall/slope-front family emit (most specific French cabinet forms first).
+  if (abattantDesk) {
+    add("Secrétaire à abattant", 105, "Tall French cabinet desk with a vertical fall front over a fitted interior.");
+  } else if (gradinsDesk) {
+    add("Bureau à gradins", 102, "Writing desk with a stepped superstructure of small drawers or a gallery.");
+  } else if (escritoireDesk) {
+    add("Escritoire", 100, "Cabinet-like fall-front writing desk without a bookcase top.");
+  } else if (fallFrontDesk) {
+    add("Fall-front desk", 98, "Hinged vertical fall-front writing surface over a fitted interior.");
+  }
+
+  // Institutional / public-task desk cluster.
+  // These seven forms share identical group-level distinguishing_features, so
+  // discrimination is driven by each form's authored common_aliases and the
+  // cluster's cousin_form_contrasts: clerk's = occupational (ledger / counting-
+  // house) vs. standing = posture/height-based; school = student + classroom
+  // hardware vs. teacher's = schoolmaster/instructor; reception = greeting /
+  // check-in vs. transaction counter = exchange / payment / service. Evaluated
+  // as a single priority chain (one institutional identity per piece, per the
+  // round-up discipline): strong distinctive terms first, with the generic
+  // "counter desk" / "service desk" left as the transaction-counter catch
+  // since those aliases live on form_transaction_counter_desk.
+  // "schoolhouse" also names a pendant-light style and a wall-clock style;
+  // exclude those so a schoolhouse light/pendant routes to form_pendant_light
+  // and a schoolhouse clock routes to form_wall_clock, not a desk.
+  const instSchool = !includesAny(text, [
+    "schoolhouse light", "schoolhouse pendant", "schoolhouse globe",
+    "schoolhouse fixture", "schoolhouse shade", "schoolhouse lamp", "schoolhouse clock",
+  ]) && includesAny(text, [
+    "school desk", "student desk", "schoolhouse", "schoolchild", "pupil desk",
+    "attached-seat", "attached seat school", "sled-base", "lift-lid school",
+    "tablet-arm desk", "tablet arm desk", "classroom desk", "combo desk",
+    "one-room schoolhouse", "dorm desk", "homework desk",
+  ]);
+  const instTeacher = includesAny(text, [
+    "teacher's desk", "teachers desk", "teacher desk", "schoolmaster",
+    "schoolmistress", "instructor's desk", "instructor desk", "classroom pedestal",
+  ]);
+  // Standing/speaking lecterns are form_lectern (a stand, not a desk); release
+  // them from the writing-lectern desk cue so they route to form_lectern.
+  const instLectern = !includesAny(text, [
+    "standing lectern", "floor lectern", "speaker's lectern", "speakers lectern",
+    "speaking lectern", "church lectern", "presentation lectern", "acrylic lectern",
+    "conductor's lectern", "fixed lectern",
+  ]) && includesAny(text, [
+    "lectern", "writing lectern", "ecclesiastical desk", "vestry desk",
+    "sacristy desk", "scriptorium", "manuscript desk", "monastic writing",
+    "monk's writing", "registry desk", "sign-in desk", "guest book desk",
+    "guestbook desk", "marriage registry", "reading slope",
+  ]);
+  // A caged teller station / wicket is a bank FIXTURE (form_bank_fixture), not a
+  // counter desk; release those two from the transaction-desk "teller" cue.
+  const instTransactionStrong = !includesAny(text, ["teller cage", "teller wicket"]) && includesAny(text, [
+    "teller", "cashier", "checkout desk", "register desk", "point of sale",
+    "sales counter", "host stand", "maître d", "maitre d", "help desk",
+    "support desk", "information desk", "returns desk", "customer service desk",
+  ]);
+  const instReception = includesAny(text, [
+    "reception desk", "reception counter", "front desk", "check-in desk",
+    "check in desk", "concierge", "nurse station", "nurses station",
+    "security desk", "guard desk", "lobby security", "checkpoint desk",
+    "welcome desk",
+  ]);
+  const instClerk = includesAny(text, [
+    "clerk's desk", "clerks desk", "counting-house", "counting house",
+    "ledger desk", "bookkeeper", "accountant's desk", "accountant desk",
+    "mail-sorting", "mail sorting desk", "sorting desk", "postal desk",
+    "post office clerk", "bank clerk", "store clerk",
+  ]);
+  const instStanding = includesAny(text, [
+    "standing desk", "stand-up desk", "sit-stand", "sit stand",
+    "height-adjustable desk", "height adjustable desk", "crank-adjustable desk",
+    "electric height", "adjustable standing", "high writing desk",
+    "high office desk", "wheelchair-accessible desk",
+  ]);
+  const instTransactionGeneric = includesAny(text, [
+    "transaction desk", "counter desk", "service desk", "order desk",
+    "catalog order", "showroom desk", "retail desk",
+  ]);
+  if (instSchool) {
+    add("School desk", 105, "Student/classroom desk with institutional hardware (attached seat, lift-lid, or tablet arm).");
+  } else if (instTeacher) {
+    add("Teacher's desk", 102, "Classroom instructor's desk (schoolmaster/teacher form).");
+  } else if (instLectern) {
+    add("Lectern desk", 100, "Sloped reading/writing lectern or registry desk.");
+  } else if (instTransactionStrong) {
+    add("Transaction counter desk", 100, "Public-facing counter prioritizing exchange, payment, or service (teller, cashier, checkout, or help desk).");
+  } else if (instReception) {
+    add("Reception desk", 98, "Greeting / check-in counter (front desk, concierge, or reception station).");
+  } else if (instClerk) {
+    add("Clerk's desk", 100, "Occupational ledger / counting-house desk (bookkeeper, accountant, or sorting clerk).");
+  } else if (instStanding) {
+    add("Standing desk", 95, "Stand-height or sit-stand / height-adjustable work desk (posture-based form).");
+  } else if (instTransactionGeneric) {
+    add("Transaction counter desk", 92, "Service / counter desk for public transactions.");
+  }
+
+  // Seated pedestal / knee desk cluster + multi-user pair. Discriminated by the
+  // cluster's cousin_form_contrasts: partner's = two-sided / bilateral access
+  // (overrides pedestal/executive); benching = system-based open-plan multi-user
+  // run; Davenport = compact side-drawer sloped desk; credenza desk = low cabinet
+  // with work-surface/office function; executive = larger scale / suite context;
+  // kneehole = central user opening; pedestal = drawer-support structure and the
+  // cluster's broad catch-all (40 aliases: tanker, banker's, legal, government,
+  // industrial single-user office desks). Gated on !deskFormDominant so the
+  // pedestals + kneehole intrinsic to a roll-top/cylinder/slant desk are not
+  // re-emitted here as independent evidence. One identity per piece (round-up).
+  const davenportDesk =
+    includesAny(text, [
+      "davenport desk", "captain davenport", "ship captain's desk",
+      "side-drawer davenport", "lift-top davenport", "campaign davenport",
+    ]) ||
+    (text.includes("davenport") &&
+      includesAny(text, ["writing", "side drawer", "side-drawer", "sloped", "slope", "lift-top", "lift top", "desk"]) &&
+      !includesAny(text, ["sofa", "settee", "couch", "loveseat", "sleeper"]));
+  const partnersDesk = includesAny(text, [
+    "partner's desk", "partners desk", "partner desk", "double-sided desk",
+    "two-sided desk", "two-person desk", "double desk", "face-to-face desk",
+    "opposed work desk", "partner workstation", "double writing table",
+  ]);
+  // Qualified bench-desk alias forms only (never bare "bench desk", which is a
+  // substring of "workbench desk" -> would steal the workbench-desk form).
+  const benchingDesk = includesAny(text, [
+    "benching", "office benching", "shared bench desk", "linear bench desk",
+    "open-plan bench desk", "open plan bench desk", "team bench desk",
+    "hot-desk", "hot desk", "side-by-side desk", "bench-style shared",
+  ]);
+  const credenzaDesk =
+    includesAny(text, [
+      "credenza desk", "desk credenza", "office credenza desk",
+      "computer credenza", "storage credenza desk", "wall credenza desk",
+      "executive credenza desk",
+    ]) ||
+    (text.includes("credenza") && includesAny(text, ["desk", "work surface", "keyboard", "office work"]));
+  // "executive l-desk" / "executive u-desk" are intentionally NOT gated here:
+  // they appear in both the executive and the L/U alias lists, and the L/U
+  // configuration is the more specific structural identity, so they fall
+  // through to the office-equipment chain below.
+  const executiveDesk = includesAny(text, [
+    "executive desk", "executive pedestal", "executive suite desk",
+    "executive return", "desk suite", "office suite desk",
+    "executive bow-front", "managerial desk",
+  ]);
+  const kneeholeDesk = includesAny(text, [
+    "kneehole desk", "knee-hole desk", "flat-top kneehole", "compact kneehole",
+    "domestic kneehole", "georgian kneehole", "queen anne kneehole",
+    "chippendale kneehole", "federal kneehole", "victorian kneehole",
+    "kneehole writing", "central kneehole", "kneehole recess", "kneehole opening",
+  ]);
+  const pedestalDesk = includesAny(text, [
+    "pedestal desk", "twin-pedestal", "twin pedestal", "double-pedestal desk",
+    "single-pedestal desk", "return-pedestal", "tanker desk", "banker's desk",
+    "bank officer", "lawyer's desk", "attorney's desk", "barrister's desk",
+    "bureau desk", "kneehole bureau", "government desk", "civil service desk",
+    "administrative pedestal", "foreman's desk", "factory office desk",
+    "industrial pedestal", "law office pedestal", "legal desk",
+    "bureau writing desk", "bureau cabinet desk",
+  ]);
+  if (!deskFormDominant) {
+    if (partnersDesk) {
+      add("Partner's desk", 100, "Two-sided / bilateral-access desk for two facing users.");
+    } else if (benchingDesk) {
+      add("Benching desk", 95, "System-based open-plan multi-user bench desking.");
+    } else if (davenportDesk) {
+      add("Davenport desk", 100, "Compact desk with a sloped/lift top and characteristic side drawers.");
+    } else if (credenzaDesk) {
+      add("Credenza desk", 92, "Low credenza-style cabinet with a work-surface / office function.");
+    } else if (executiveDesk) {
+      add("Executive desk", 98, "Large pedestal/suite desk with managerial scale or office-suite context.");
+    } else if (kneeholeDesk) {
+      add("Kneehole desk", 94, "Desk emphasizing a central knee opening flanked by drawers.");
+    } else if (pedestalDesk) {
+      add("Pedestal desk", 88, "Seated single-user desk built on drawer pedestals (incl. tanker, banker's, legal, government, industrial office desks).");
+    }
+  }
+
+  // Office-equipment / machine-support desk cluster. Per the cluster's
+  // cousin_form_contrasts: typewriter = drop-well / machine platform; computer
+  // = keyboard / monitor / tower / cable support (gaming/esports/streaming are
+  // computer-desk subtypes); modular workstation = component / panel / cubicle
+  // systems furniture; L = one return, U = wraps three sides with a bridge.
+  // Configuration (L/U) is checked before the generic computer catch so a
+  // "computer L-desk" routes to the L form. !deskFormDominant-gated for
+  // consistency with the other desk clusters.
+  const typewriterDesk = includesAny(text, [
+    "typewriter desk", "drop-well typewriter", "drop well typewriter",
+    "machine-platform typewriter", "lift-top typewriter", "secretarial typewriter",
+  ]);
+  const modularWorkstation = includesAny(text, [
+    "modular workstation", "modular office desk", "systems furniture",
+    "systems desk", "action office", "herman miller systems",
+    "steelcase systems", "panel-based workstation", "cubicle desk",
+    "cubicle workstation", "open-plan workstation", "office cubicle",
+  ]);
+  const uShapedDesk = includesAny(text, [
+    "u-shaped desk", "u-desk", "u-configuration", "bridge-and-credenza",
+  ]);
+  const lShapedDesk = includesAny(text, [
+    "l-shaped desk", "l-desk", "l-configuration", "corner l-desk",
+  ]);
+  const computerDesk = includesAny(text, [
+    "computer desk", "keyboard tray", "keyboard-tray", "monitor shelf",
+    "monitor-shelf", "tower cabinet", "tower-cabinet", "pc desk", "gaming desk",
+    "esports", "streaming desk", "rgb gaming", "multi-monitor", "laptop workstation",
+    "laptop desk", "computer workstation",
+  ]);
+  if (!deskFormDominant) {
+    if (typewriterDesk) {
+      add("Typewriter desk", 100, "Desk with a drop well, lift platform, or machine shelf sized for a typewriter.");
+    } else if (modularWorkstation) {
+      add("Modular workstation desk", 96, "Component / panel-based systems-furniture workstation or cubicle.");
+    } else if (uShapedDesk) {
+      add("U-shaped desk", 96, "Desk that wraps the user on three sides with a bridge and credenza return.");
+    } else if (lShapedDesk) {
+      add("L-shaped desk", 96, "Desk with a single perpendicular return forming an L.");
+    } else if (computerDesk) {
+      add("Computer desk", 92, "Desk with keyboard tray, monitor shelf, tower cabinet, or cable management for computer equipment (incl. gaming/streaming).");
+    }
+  }
+
+  // Open writing-surface desk cluster: writing surface visible when not in use,
+  // no enclosing cover (distinct from the fall-front / cover families above).
+  // Distinctive named forms with little cross-overlap. !deskFormDominant-gated.
+  const bonheurDuJour = includesAny(text, [
+    "bonheur du jour", "bonheur-du-jour", "writing table with cabinet",
+    "cabinet writing table", "small secretary table",
+  ]);
+  const carltonHouse = includesAny(text, ["carlton house", "curved-back writing desk"]);
+  const bureauPlat = includesAny(text, [
+    "bureau plat", "flat-top writing desk", "formal writing table", "french writing table",
+  ]);
+  const kidneyDesk = includesAny(text, [
+    "kidney desk", "kidney-shaped writing", "kidney shaped writing",
+    "ladies' kidney", "leather-top kidney",
+  ]);
+  if (!deskFormDominant) {
+    if (bonheurDuJour) {
+      add("Bonheur du jour", 100, "Small ladies' writing table with a raised cabinet superstructure.");
+    } else if (carltonHouse) {
+      add("Carlton House desk", 100, "Writing desk with a curved bank of drawers and pigeonholes wrapping a U-shaped top.");
+    } else if (bureauPlat) {
+      add("Bureau plat", 98, "Flat-top French writing table/desk with an open work surface.");
+    } else if (kidneyDesk) {
+      add("Kidney desk", 98, "Kidney/curved-outline writing desk, usually leather-topped.");
+    }
+  }
+
+  // Conversion flag: a non-desk source object repurposed AS a desk. Per the
+  // convertible cluster's cousin_form_contrasts, an explicit conversion should
+  // be classified as the converted form rather than the purpose-built cousin,
+  // so the armoire-desk and workbench-desk gates below yield to it ("converted
+  // armoire desk" -> converted_cabinet_desk; "converted workbench desk" ->
+  // converted_industrial_desk).
+  const convertedSource = includesAny(text, [
+    "converted", "conversion", "reclaimed", "repurposed", "upcycled",
+  ]);
+
+  // Cabinet-integrated + architectural built-in desk clusters. Per the
+  // cousin_form_contrasts: Murphy folds away / integrates with a wall-bed or
+  // cabinet system; wall unit is a wall system with substantial cabinet storage
+  // plus a work surface; built-in is permanently installed in architectural
+  // cabinetry/millwork (vs. a removable wall desk); wall desk is simply mounted;
+  // hutch adds open upper storage (vs. a secretary's concealed fitted interior);
+  // armoire is a tall freestanding wardrobe-like enclosure and the broad
+  // "cabinet desk" catch. Ordered most-specific-architectural first;
+  // !deskFormDominant-gated.
+  // Murphy is defined by wall-bed / wall integration, NOT folding alone (an
+  // armoire desk also folds away — "Folding armoire desk" is an armoire alias),
+  // so the gate requires wall/wall-bed/Murphy context rather than bare "fold".
+  const murphyDesk = includesAny(text, [
+    "murphy desk", "fold-down wall desk", "fold down wall desk", "wall-bed desk",
+    "wall bed desk", "cabinet murphy desk",
+  ]);
+  const wallUnitDesk = includesAny(text, [
+    "wall unit desk", "wall system desk", "wall-spanning desk", "wall unit with desk",
+    "entertainment center desk", "library wall unit desk",
+  ]);
+  const builtInDesk = includesAny(text, [
+    "built-in desk", "built in desk", "architectural desk", "millwork desk",
+    "alcove built-in", "window-seat built-in", "under-stair built-in",
+    "kitchen office built-in", "bookcase-integrated built-in", "built-in writing",
+  ]);
+  const wallDesk = includesAny(text, [
+    "wall desk", "floating wall desk", "wall-mounted desk", "wall mounted desk",
+    "wall-mounted writing", "wall-hung writing", "hanging writing cupboard",
+    "wall-mounted writing cupboard", "compact wall desk",
+  ]);
+  const hutchDesk = includesAny(text, [
+    "hutch desk", "desk with hutch", "computer hutch", "student hutch",
+    "executive hutch", "secretary hutch", "hutch top",
+  ]);
+  const armoireDesk = !convertedSource && includesAny(text, [
+    "armoire desk", "computer armoire", "secretary armoire", "hideaway desk",
+    "wardrobe desk", "cabinet workstation", "closet desk", "cabinet hideaway",
+    "armoire hideaway", "concealed desk", "enclosed cabinet desk",
+    "office cabinet desk", "standing cabinet desk", "locking cabinet desk",
+    "desk cabinet", "storage cabinet desk", "cabinet desk",
+  ]);
+  if (!deskFormDominant) {
+    if (murphyDesk) {
+      add("Murphy desk", 98, "Fold-away desk integrated with a wall-bed or cabinet system.");
+    } else if (wallUnitDesk) {
+      add("Wall unit desk", 96, "Wall system combining substantial cabinet storage with a usable work surface.");
+    } else if (builtInDesk) {
+      add("Built-in desk", 96, "Desk permanently installed as part of architectural cabinetry or millwork.");
+    } else if (wallDesk) {
+      add("Wall desk", 94, "Wall-mounted (removable) writing desk or writing cupboard.");
+    } else if (hutchDesk) {
+      add("Hutch desk", 95, "Desk with an added open upper hutch storage unit.");
+    } else if (armoireDesk) {
+      add("Armoire desk", 95, "Tall freestanding wardrobe-like cabinet enclosing a fold-away desk interior.");
+    }
+  }
+
+  // Task-specific + portable desk clusters. Per field_desk's cousin_form_
+  // contrasts: a writing box is a portable case-like object; a tabletop desk is
+  // an organizer/cabinet meant to sit on other furniture; a field desk implies
+  // mobile work use (campaign/military/naval/expedition). Task-specific work
+  // desks (artist's drawing/drafting, laboratory, workbench) are gated on their
+  // trade language. Workbench avoids the bare "industrial desk" / "service
+  // desk" / "bench desk" terms (those collide with the convertible-industrial,
+  // transaction, and benching forms). !deskFormDominant-gated.
+  const writingBoxDesk = includesAny(text, [
+    "writing box", "writing slope", "lap desk", "lap laptop desk", "portable writing slope",
+  ]);
+  const fieldDesk = includesAny(text, [
+    "field desk", "campaign desk", "campaign writing table", "folding field",
+    "knockdown campaign", "officer's campaign", "field officer", "army field desk",
+    "navy writing desk", "naval desk", "expedition desk", "explorer's desk",
+    "survey expedition", "colonial expedition", "barracks desk", "shipboard desk",
+    "marine writing desk", "military desk",
+  ]);
+  const tabletopDesk = includesAny(text, [
+    "tabletop desk", "table-top desk", "tabletop writing cabinet",
+    "tabletop secrétaire", "tabletop secretaire",
+  ]);
+  const artistDesk = includesAny(text, [
+    "artist's desk", "artists desk", "drawing desk", "drafting table desk",
+    "illustrator", "tilting artist", "art table desk", "studio desk",
+  ]);
+  const laboratoryDesk = includesAny(text, [
+    "laboratory desk", "science desk", "lab work desk", "lab desk",
+    "research desk", "technician's desk", "technician desk",
+  ]);
+  const workbenchDesk = !convertedSource && includesAny(text, [
+    "workbench desk", "workbench", "industrial work desk", "maker desk",
+    "craft workbench", "jeweler's desk", "jeweler desk", "watchmaker",
+    "precision work desk", "craftsperson", "machinist", "mechanic's desk",
+    "garage desk", "parts desk", "tool desk", "tool-storage desk", "shop desk",
+    "workshop desk", "factory desk", "maintenance desk",
+  ]);
+  if (!deskFormDominant) {
+    if (writingBoxDesk) {
+      add("Writing box", 100, "Portable case-like writing box / slope with a fitted interior (incl. lap desks).");
+    } else if (fieldDesk) {
+      add("Field desk", 100, "Portable folding/knockdown campaign or military field desk for mobile work.");
+    } else if (tabletopDesk) {
+      add("Tabletop desk", 98, "Writing cabinet/organizer meant to rest on another piece of furniture.");
+    } else if (artistDesk) {
+      add("Artist's desk", 98, "Drawing/drafting desk with an adjustable or tilting work surface.");
+    } else if (laboratoryDesk) {
+      add("Laboratory desk", 96, "Science/research/technician work desk with durable task surfaces.");
+    } else if (workbenchDesk) {
+      add("Workbench desk", 96, "Heavy utilitarian trade/workshop desk (jeweler, watchmaker, machinist, shop, factory).");
+    }
+  }
+
+  // Convertible / repurposed desk cluster: a source object (instrument, sewing
+  // or treadle machine, leaf table, cabinet, dressing table, industrial piece)
+  // serving desk function, plus the telephone desk. Per the cousin_form_
+  // contrasts, classify the conversion only when desk/writing function is
+  // evident; otherwise the base table/instrument form (already reachable) keeps
+  // its route. Gated on explicit conversion/desk language so a plain drop-leaf
+  // or gateleg table, or a telephone bench, is NOT pulled in here. Order keeps
+  // qualified forms ahead of the broad "converted cabinet" catch; sewing is
+  // checked before treadle so a "treadle-base sewing machine desk" routes to
+  // the sewing form. !deskFormDominant-gated.
+  const pianoDesk = includesAny(text, [
+    "piano desk", "piano conversion", "reclaimed-piano desk", "piano case desk",
+    "repurposed piano desk",
+  ]);
+  const organDesk = includesAny(text, [
+    "organ desk", "organ conversion", "pump organ desk", "reed organ desk",
+    "parlor organ desk", "organ case desk", "repurposed organ desk",
+  ]);
+  const sewingMachineDesk = includesAny(text, [
+    "sewing machine desk", "sewing cabinet desk", "singer machine conversion",
+    "singer cabinet conversion", "singer treadle conversion", "sewing cabinet conversion",
+  ]);
+  const treadleDesk = includesAny(text, [
+    "treadle base desk", "treadle machine desk", "treadle-base desk",
+    "industrial treadle base", "decorative treadle base", "treadle base conversion",
+    "repurposed treadle desk",
+  ]);
+  const telephoneDesk = includesAny(text, [
+    "telephone desk", "phone desk", "telephone table desk",
+    "directory-compartment telephone desk", "telephone stand desk",
+  ]);
+  const dropLeafDesk = includesAny(text, [
+    "drop-leaf desk", "drop leaf desk", "drop-leaf writing desk", "drop-leaf desk-table",
+    "hinged-leaf desk", "folding-leaf desk",
+  ]);
+  const gatelegDesk = includesAny(text, [
+    "gateleg desk", "gate-leg desk", "gateleg writing desk", "pivot-leg desk", "swing-leg desk",
+  ]);
+  const convertedDressingTableDesk = includesAny(text, [
+    "dressing table desk", "vanity desk", "makeup table desk", "vanity conversion desk",
+    "dressing table conversion", "converted dressing table",
+  ]);
+  const convertedIndustrialDesk = includesAny(text, [
+    "converted industrial desk", "converted workbench desk", "factory cart desk",
+    "machine base desk", "converted tool chest desk", "industrial conversion desk",
+    "reclaimed industrial desk",
+  ]);
+  const convertedCabinetDesk = includesAny(text, [
+    "converted cabinet desk", "converted armoire desk", "converted wardrobe desk",
+    "converted cupboard desk", "repurposed cabinet desk", "cabinet-to-desk conversion",
+  ]);
+  if (!deskFormDominant) {
+    if (pianoDesk) {
+      add("Piano desk", 96, "Desk converted from a piano case.");
+    } else if (organDesk) {
+      add("Organ desk", 96, "Desk converted from a pump/reed/parlor organ case.");
+    } else if (sewingMachineDesk) {
+      add("Sewing machine desk", 96, "Desk built from or as a sewing-machine cabinet (incl. Singer treadle cabinet conversions).");
+    } else if (treadleDesk) {
+      add("Converted treadle machine desk", 96, "Desk built on a reused cast-iron treadle-machine base.");
+    } else if (telephoneDesk) {
+      add("Telephone desk", 96, "Writing desk with a telephone shelf and directory storage (telephone desk, not a seated gossip bench).");
+    } else if (dropLeafDesk) {
+      add("Drop-leaf desk", 95, "Writing desk with hinged drop leaves (desk function, not a plain drop-leaf table).");
+    } else if (gatelegDesk) {
+      add("Gateleg desk", 104, "Writing desk with swinging gate-leg supports (desk function, not a plain gateleg table).");
+    } else if (convertedDressingTableDesk) {
+      add("Converted dressing table desk", 95, "Dressing table / vanity repurposed with a writing-desk function.");
+    } else if (convertedIndustrialDesk) {
+      add("Converted industrial desk", 95, "Industrial object (factory cart, machine base, tool chest) repurposed as a desk.");
+    } else if (convertedCabinetDesk) {
+      add("Converted cabinet desk", 94, "Cabinet, cupboard, wardrobe, or armoire repurposed as a desk.");
+    }
+  }
 
   // Table forms
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
   if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");
   if (clues.has("extension_mechanism")) add("Extension table", 82, "Extension mechanism is visible.");
-  if (
-  clues.has("pedestal_column") &&
-  !hasAny(
-    "seating_surface",
-    "backrest_present",
-    "toledo_industrial_style",
-    "mid_century_industrial_office",
-    "height_adjustment_mechanism",
-    "swivel_mechanism",
-    "four_leg_caster_base"
-  )
-) {
-  add("Pedestal stand", 88, "Single-column pedestal form is visible.");
-}
+  // Pedestal-column resolution. A single-column / tripod support resolves to a
+  // specific form by WHAT IT CARRIES — the cousin split the canonical map's
+  // "Pedestal stand" NO_MATCH note intends: candle stand = small single-object
+  // top; plant stand = planter support; pedestal table = a full table top on a
+  // central column. When carried-object cues are absent the generic "Pedestal
+  // stand" stands (round-up). Shape-defined pedestal tables (tilt-top, drum,
+  // piecrust) are emitted in the shape cluster below and outscore these.
+  const pedestalSupport = clues.has("pedestal_column");
+  const seatingOrIndustrial = hasAny(
+    "seating_surface", "backrest_present", "toledo_industrial_style",
+    "mid_century_industrial_office", "height_adjustment_mechanism",
+    "swivel_mechanism", "four_leg_caster_base",
+  );
+  const candleStandCues = includesAny(text, [
+    "candle stand", "candlestand", "candle-stand", "candle table", "tripod candle",
+  ]);
+  const plantStandCues = includesAny(text, [
+    "plant stand", "fern stand", "jardiniere stand", "jardinière stand",
+    "planter stand", "plant table",
+  ]);
+  // "round pedestal table" intentionally omitted — the canonical map routes that
+  // phrase to form_drum_table (handled in the shape cluster's drum gate below).
+  const pedestalTableCues = includesAny(text, [
+    "pedestal table", "pedestal dining", "center pedestal table",
+    "tulip table", "tulip pedestal", "gueridon", "guéridon", "capstan table", "loo table",
+  ]);
+  if (!seatingOrIndustrial) {
+    if (candleStandCues) {
+      add("Candle stand", 96, "Small turned/tripod stand sized to hold a single object such as a candle.");
+    } else if (plantStandCues) {
+      add("Plant stand", 96, "Pedestal/stand designed to hold a plant or jardinière.");
+    } else if (pedestalTableCues) {
+      add("Pedestal table", 98, "Table top carried on a central pedestal column rather than four legs.");
+    } else if (pedestalSupport) {
+      add("Pedestal stand", 88, "Single-column pedestal form is visible.");
+    }
+  }
+
+  // Shape/structure-defined table cluster. Gated on text matching each form's
+  // existing common_aliases (the FORM_LABEL_TO_CANONICAL routes already exist;
+  // only this producer emission was missing). One shape identity per piece;
+  // the more specific edge/leaf feature is checked first (piecrust before
+  // tilt-top; Pembroke/Sutherland score above the generic drop-leaf/gateleg
+  // table emissions so the named form wins when it also trips those clues).
+  const lowboyTable = includesAny(text, ["lowboy"]);
+  const demiluneTable = includesAny(text, [
+    "demilune", "demi-lune", "half-moon table", "half moon table",
+    "semicircular table", "semi-circular table", "half-round table", "half-round console",
+  ]);
+  const piecrustTable = includesAny(text, [
+    "piecrust", "pie-crust", "pie crust", "scalloped-edge table", "scalloped tea table",
+  ]);
+  const tiltTopTable = includesAny(text, [
+    "tilt-top", "tilt top", "tip-top table", "flip-top table", "tilt table",
+    "tilting tea table", "tilting top", "birdcage table", "birdcage tilt-top",
+  ]);
+  const drumTable = includesAny(text, ["drum table", "drum side table", "round pedestal table"]);
+  const pembrokeTable = includesAny(text, ["pembroke"]);
+  const sutherlandTable = includesAny(text, ["sutherland"]);
+  const trestleTable = includesAny(text, [
+    "trestle table", "trestle dining", "refectory table", "refectory dining",
+    "monastery table", "abbey table", "sawhorse table", "a-frame table", "x-base table",
+    "draw-leaf trestle",
+  ]);
+  const nestingTables = includesAny(text, ["nesting table", "nest of tables", "stacking tables"]);
+  const etagereTable = includesAny(text, [
+    "etagere table", "étagère table", "tier table", "tiered display table",
+  ]);
+  if (lowboyTable) {
+    add("Lowboy", 100, "Low table-height case-and-table hybrid with drawers on tall legs.");
+  } else if (demiluneTable) {
+    add("Demilune table", 100, "Semicircular / half-moon top — the defining feature.");
+  } else if (piecrustTable) {
+    add("Piecrust table", 102, "Scalloped, carved pie-crust raised-edge top (often a tilt-top tea table).");
+  } else if (tiltTopTable) {
+    add("Tilt-top table", 98, "Top that tilts/tips from horizontal to vertical, often on a tripod birdcage.");
+  } else if (drumTable) {
+    add("Drum table", 100, "Round drum-shaped top, usually over a pedestal with frieze drawers.");
+  } else if (pembrokeTable) {
+    add("Pembroke table", 104, "Small drop-leaf table with short hinged leaves and an apron drawer.");
+  } else if (sutherlandTable) {
+    add("Sutherland table", 106, "Very narrow gateleg drop-leaf table with a thin closed footprint.");
+  } else if (trestleTable) {
+    add("Trestle table", 100, "Long top on two trestle-like end supports joined by a stretcher.");
+  } else if (nestingTables) {
+    add("Nesting tables", 100, "Set of graduated tables that slide/stack beneath one another.");
+  } else if (etagereTable) {
+    add("Etagere table", 98, "Display table with multiple open tiers or shelves.");
+  }
+
+  // Height-defined table cluster, round-up-to-dominant per appraiser call:
+  // emit the common identity and split to the rarer cousin only on an explicit
+  // term. Low (coffee/cocktail), standing (pub/bistro), seated dining
+  // (dining/kitchen/breakfast). Each is a small priority chain.
+  // Low tables in front of seating: coffee is dominant; cocktail only when named.
+  const cocktailTable = includesAny(text, ["cocktail table"]);
+  const coffeeTable = includesAny(text, ["coffee table"]);
+  if (cocktailTable) {
+    add("Cocktail table", 94, "Low table in front of seating, explicitly a cocktail table.");
+  } else if (coffeeTable) {
+    add("Coffee table", 92, "Low table placed in front of seating for drinks/books.");
+  }
+  // Standing / counter height: pub (tavern/bar) vs bistro (café/counter).
+  const pubTable = includesAny(text, [
+    "pub table", "tavern table", "bar-height table", "bar height table", "bar table",
+  ]);
+  const bistroTable = includesAny(text, [
+    "bistro table", "bistro café", "bistro cafe", "café table", "cafe table",
+    "sidewalk café", "sidewalk cafe", "ice-cream parlor table", "soda-fountain table",
+    "counter-height table", "patio bistro",
+  ]);
+  if (pubTable) {
+    add("Pub table", 95, "Tall standing/bar-height table for use while standing or on stools.");
+  } else if (bistroTable) {
+    add("Bistro table", 95, "Small round café/bistro table, often counter height.");
+  }
+  // Seated dining height: kitchen (utility/farmhouse) and breakfast (nook/
+  // dinette) split off their cues; dining is the dominant fallback.
+  const kitchenTable = includesAny(text, [
+    "kitchen table", "kitchen dining", "kitchen utility table", "farmhouse table", "farm table",
+    "farm kitchen", "enamel table", "enamel-top", "porcelain top table", "hoosier table",
+    "formica table", "laminate kitchen", "baking table", "bread table", "utility table",
+  ]);
+  const breakfastTable = includesAny(text, [
+    "breakfast table", "breakfast nook", "nook table", "dinette", "sunroom table",
+    "apartment dining table",
+  ]);
+  const diningTable = includesAny(text, ["dining table", "dining room table"]);
+  if (kitchenTable) {
+    add("Kitchen table", 92, "Domestic utility/farmhouse dining-height kitchen table.");
+  } else if (breakfastTable) {
+    add("Breakfast table", 92, "Small informal seated-dining table (nook/dinette scale).");
+  } else if (diningTable) {
+    add("Dining table", 90, "Large seated-dining surface for meals.");
+  }
+
+  // Work-table cluster (function-defined; gated on explicit terms so they don't
+  // collide with the writing-desk / drafting-desk / sewing-machine-desk and
+  // workbench-desk forms, which require "desk"/"machine"/"workbench" language).
+  if (includesAny(text, ["drafting table", "architect's table", "drawing table", "drafting board"])) {
+    add("Drafting table", 92, "Adjustable/tilting drafting/drawing work table.");
+  } else if (includesAny(text, ["sewing table", "needlework table", "work table for sewing"])) {
+    add("Sewing table", 92, "Small work table fitted for sewing/needlework storage.");
+  } else if (includesAny(text, ["library table"])) {
+    add("Library table", 90, "Substantial reading/writing library table, often with frieze drawers.");
+  } else if (includesAny(text, ["writing table"])) {
+    add("Writing table", 90, "Seated writing/correspondence table with an open work surface.");
+  } else if (includesAny(text, ["work table"])) {
+    add("Work table", 88, "Task-oriented domestic/craft work table.");
+  }
+
+  // Placement / decorative table cluster. Round-up-to-dominant: specific named
+  // forms first; the generic small-auxiliary forms (occasional, then side) act
+  // as the catch tail, and parlor's Victorian cues take precedence over the
+  // generic center table. Shape forms (drum/tilt-top/piecrust) are emitted
+  // earlier and outscore these, so a "drum side table" stays a drum table.
+  if (includesAny(text, ["game table", "games table", "card table", "gaming table"])) {
+    add("Game table", 94, "Table for cards/board games, often with a folding or reversible top.");
+  } else if (includesAny(text, ["tea table"])) {
+    add("Tea table", 92, "Small table for serving tea/refreshments.");
+  } else if (includesAny(text, ["tray table", "tv tray", "folding tray"])) {
+    add("Tray table", 92, "Lightweight auxiliary table built around a tray-like top.");
+  } else if (includesAny(text, ["ottoman table", "ottoman coffee table", "cocktail ottoman", "upholstered coffee table"])) {
+    // Scored above the coffee/cocktail height forms: an ottoman-table is often
+    // also described as a "coffee table", but the upholstered hybrid is the
+    // more specific identity.
+    add("Ottoman table", 96, "Seating-zone hybrid combining an upholstered ottoman with a table top.");
+  } else if (includesAny(text, ["pier table"])) {
+    add("Pier table", 90, "Wall table placed between windows, often with a mirror plinth.");
+  } else if (includesAny(text, ["sofa table"])) {
+    add("Sofa table", 90, "Long narrow table designed to stand behind or beside a sofa.");
+  } else if (includesAny(text, ["console table", "hall console", "hall table"])) {
+    add("Console table", 90, "Narrow wall-oriented table for an entry, hall, or behind seating.");
+  } else if (includesAny(text, [
+    "parlor table", "parlour table", "marble-top parlor", "marble-top parlour",
+    "eastlake table", "aesthetic movement table", "renaissance revival parlor",
+    "rococo revival parlor", "golden oak parlor", "drawing-room table", "sitting-room table",
+  ])) {
+    add("Parlor table", 90, "Victorian decorative parlor/sitting-room table (often marble-topped).");
+  } else if (includesAny(text, ["center table", "centre table"])) {
+    add("Center table", 88, "Room-centered table for display, social setting, or reading.");
+  } else if (includesAny(text, ["occasional table", "accent table", "drink table", "martini table", "occasional stand", "accent stand"])) {
+    add("Occasional table", 88, "Small auxiliary/accent table.");
+  } else if (includesAny(text, ["side table", "end table"])) {
+    add("Side table", 88, "Small auxiliary table placed beside seating or a bed.");
+  }
 
   // Chest and storage forms
   if (clues.has("cedar_lining") || clues.has("lift_lid")) {
@@ -2464,6 +3870,514 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
 
   if (clues.has("open_shelving")) {
     add("Bookcase / open shelving unit", 60, "Open shelving is visible.");
+  }
+
+  // Kitchen / utility-storage cluster (family_general_storage_specialty):
+  // Hoosier cabinet, freestanding kitchen cabinet, step-back cupboard, pie
+  // safe, jelly cupboard, jam cupboard, dough box. These canonicals existed
+  // with label routes but no detector (the route authors left "resolve at
+  // scoreForms" notes). They share aliases ("kitchen cupboard", "country
+  // cupboard"), so checks run most-diagnostic-first; the broad freestanding
+  // kitchen cabinet is the fallback. Gated !deskFormDominant so a fall-front/
+  // cylinder desk isn't pulled in. Each emitted label has a
+  // FORM_LABEL_TO_CANONICAL route.
+  const pieSafe = includesAny(text, [
+    "pie safe", "pie cupboard", "pie chest", "tin safe", "punched-tin safe",
+    "punched tin safe", "pierced tin", "punched tin", "meat safe",
+  ]);
+  const hoosierCabinet = includesAny(text, [
+    "hoosier", "kitchen workstation", "sellers cabinet", "napanee", "mcdougall",
+    "coppes", "boone cabinet", "flour bin", "flour sifter",
+  ]);
+  const doughBox = includesAny(text, [
+    "dough box", "dough trough", "bread trough", "kneading trough", "kneading box", "dough bin",
+  ]);
+  const stepBackCupboard = includesAny(text, [
+    "step-back cupboard", "stepback cupboard", "step back cupboard",
+    "step-back hutch", "stepback hutch", "two-piece cupboard", "two piece cupboard",
+  ]);
+  const jellyCupboard = includesAny(text, ["jelly cupboard"]);
+  const jamCupboard = includesAny(text, ["jam cupboard", "preserve cupboard", "jar cupboard"]);
+  const kitchenStorageCabinet = includesAny(text, [
+    "kitchen cabinet", "kitchen cupboard", "pantry cabinet", "utility cabinet",
+    "dry goods cabinet", "dry-goods cabinet", "baker's cabinet", "bakers cabinet",
+    "farmhouse cabinet", "painted kitchen cupboard", "kitchen storage cabinet",
+  ]);
+  // Definitive kitchen-storage cues (hoosier, flour bin/sifter, pierced/punched
+  // tin, dough trough, step-back geometry, jelly/jam) win even over the desk
+  // cover-mechanism cluster: a Hoosier legitimately has a tambour/roll front but
+  // is NOT a desk. Hence these bypass the !deskFormDominant gate and score above
+  // the cover-cluster forms (roll-top 110 / tambour 100). The broad
+  // "kitchen cabinet" fallback is generic, so it stays gated on !deskFormDominant.
+  const strongKitchenCue = pieSafe || hoosierCabinet || doughBox || stepBackCupboard || jellyCupboard || jamCupboard;
+  if (strongKitchenCue) {
+    if (pieSafe) {
+      add("Pie safe", 112, "Ventilated food-storage safe with pierced/punched tin (or screen) panels.");
+    } else if (hoosierCabinet) {
+      add("Hoosier cabinet", 112, "Integrated freestanding kitchen workstation (flour bin/sifter, pull-out work surface, maker-line cabinetry).");
+    } else if (doughBox) {
+      add("Dough box", 112, "Trough/kneading box for mixing, proofing, or storing bread dough.");
+    } else if (stepBackCupboard) {
+      add("Step-back cupboard", 112, "Two-piece cupboard with a shallower upper section set back from a deeper base.");
+    } else if (jellyCupboard) {
+      add("Jelly cupboard", 112, "Tall narrow country preserve-storage cupboard.");
+    } else if (jamCupboard) {
+      add("Jam cupboard", 110, "Country pantry/preserve-storage cupboard (jam, jars, crocks, dry goods).");
+    }
+  } else if (kitchenStorageCabinet && !deskFormDominant) {
+    add("Kitchen cabinet", 96, "Freestanding kitchen/pantry storage cabinet without the full Hoosier workstation system.");
+  }
+
+  // Bedroom clothing-storage cluster. NOTE: this is a SPATIAL/functional family
+  // — each form keeps its own identity (dresser is a form, not the cluster).
+  // Detectors are ordered most-diagnostic-first and gated so lines stay crisp:
+  //   - dresser is CUE-GATED vs chest of drawers (per appraiser direction):
+  //     emits only on dresser cues; plain stacked drawers stay "Chest of
+  //     drawers / dresser" (70 -> form_chest_of_drawers). Welsh/kitchen/pewter
+  //     dresser (dining) excluded.
+  //   - chifforobe (wardrobe+drawers) checked before wardrobe; armoire before
+  //     wardrobe ("French wardrobe"); washstand before nightstand (commode);
+  //     highboy before low chest; nightstand before low chest ("bedside chest").
+  //   - armoire/wardrobe/dressing-table also require NO "desk" context so the
+  //     armoire-desk / vanity-desk conversions stay on their desk forms.
+  const deskContext = includesAny(text, ["desk"]);
+  const trunkForm = includesAny(text, [
+    "steamer trunk", "travel trunk", "storage trunk", "footlocker", "wardrobe trunk",
+    "shipping trunk", "immigrant trunk", "luggage trunk", "dome-top trunk",
+    "camelback trunk", "flat-top trunk", "steamer chest", "trunk",
+  ]);
+  const chifforobeForm = includesAny(text, [
+    "chifforobe", "chifferobe", "chiffrobe", "wardrobe chest", "wardrobe dresser",
+    "gentleman's wardrobe", "gentlemans wardrobe", "gentleman's chest", "gentlemans chest",
+    "robe chest", "combination wardrobe",
+  ]);
+  const washstandForm = includesAny(text, [
+    "washstand", "wash stand", "basin stand", "water stand", "chamber stand",
+    "shaving stand", "wash basin stand", "pitcher and basin", "commode washstand",
+  ]);
+  const highboyForm = includesAny(text, [
+    "highboy", "high chest", "high chest of drawers", "tallboy",
+    "chest on frame", "chest-on-frame", "chest on chest", "chest-on-chest", "bonnet-top highboy",
+  ]);
+  const dressingTableForm = includesAny(text, [
+    "dressing table", "vanity table", "makeup table", "make-up table",
+    "dressing vanity", "kneehole vanity", "toilet table", "dressing bureau", "vanity",
+  ]);
+  const armoireForm = includesAny(text, [
+    "armoire", "french wardrobe", "french cabinet", "tv armoire", "entertainment armoire",
+    "linen press", "clothes press",
+  ]);
+  const wardrobeForm = includesAny(text, [
+    "wardrobe", "clothes closet", "clothes cabinet", "wardrobe cabinet",
+    "mirrored wardrobe", "knockdown wardrobe", "knock-down wardrobe",
+  ]);
+  const nightstandForm = includesAny(text, [
+    "nightstand", "night stand", "bedside table", "bedside cabinet", "bedside chest",
+    "night table", "night cabinet", "bed table",
+  ]);
+  const dresserExclude = includesAny(text, [
+    "welsh dresser", "welsh-dresser", "kitchen dresser", "pewter dresser",
+    "country dresser", "pine dresser", "farmhouse dresser", "plate rack dresser",
+    "hairdresser", "hair dresser", // "hairdresser" contains "dresser" as a substring
+  ]);
+  const dresserForm = !dresserExclude && includesAny(text, [
+    "dresser", "bedroom bureau", "bureau dresser", "double dresser", "triple dresser",
+    "low dresser", "drawer dresser", "mirrored dresser", "dresser with mirror",
+  ]);
+  const lowChestForm = includesAny(text, [
+    "low chest", "small chest", "short chest", "low drawer chest",
+    "bachelor's chest", "bachelors chest", "compact chest",
+  ]);
+  if (!deskFormDominant) {
+    if (trunkForm) {
+      add("Trunk", 98, "Travel/steamer trunk or footlocker — a portable lidded transport chest.");
+    } else if (chifforobeForm) {
+      add("Chifforobe", 100, "Combination wardrobe-and-drawers case (clothes-hanging side plus a bank of drawers).");
+    } else if (washstandForm) {
+      add("Washstand", 100, "Bedroom basin/pitcher stand for washing (often with backsplash, towel bar, or commode storage).");
+    } else if (highboyForm) {
+      add("Highboy", 100, "Tall two-part chest of drawers raised on legs or a frame (high chest).");
+    } else if (dressingTableForm && !deskContext) {
+      add("Dressing table", 98, "Kneehole grooming table with a mirror, for seated dressing (vanity).");
+    } else if (armoireForm && !deskContext) {
+      add("Armoire", 98, "Large freestanding clothes/storage cabinet (French wardrobe / press).");
+    } else if (wardrobeForm && !deskContext) {
+      add("Wardrobe", 98, "Freestanding clothes-hanging cabinet (clothes closet).");
+    } else if (nightstandForm) {
+      add("Nightstand", 96, "Bedside table/cabinet sized for use beside a bed.");
+    } else if (dresserForm) {
+      add("Dresser", 96, "Width-dominant bedroom drawer case for grooming/dressing (often with mirror), distinct from a taller single-column chest of drawers.");
+    } else if (lowChestForm) {
+      add("Low chest", 95, "Low/short chest of drawers (bachelor's or bedside scale).");
+    }
+  }
+
+  // Dining / display service-storage cluster. Twelve forms had canonical
+  // content and (mostly) routes but no scoreForms detector, so china cabinets,
+  // sideboards, buffets, hutches, etc. fell to generic "Cabinet" (35) ->
+  // form_china_cabinet. Ordered most-diagnostic-first with collision gates:
+  //   - corner geometry outranks hutch/china/curio structure;
+  //   - "open hutch"/"kitchen dresser"/"country dresser" -> Welsh dresser (open
+  //     plate-rack), checked before hutch;
+  //   - "china hutch"/"buffet hutch" -> Hutch (not china/buffet), so hutch is
+  //     checked before china cabinet and buffet;
+  //   - "standing/hall sideboard" -> Huntboard, checked before sideboard;
+  //   - credenza-storage vs credenza DESK and hutch vs hutch DESK reuse the
+  //     desk-section consts (credenzaDesk / hutchDesk) so desks stay desks;
+  //   - all gated !deskFormDominant. Sideboard is the most generic service case
+  //     and is checked last.
+  const cellaretteForm = includesAny(text, [
+    "cellarette", "cellaret", "wine cooler", "bottle case", "decanter case",
+    "tantalus", "liquor cabinet", "chest-form cellarette",
+  ]);
+  const breakfrontForm = includesAny(text, ["breakfront", "break-front", "broken-front", "broken front"]);
+  const cornerCabinetForm = includesAny(text, [
+    "corner cabinet", "corner cupboard", "corner china cabinet", "corner hutch",
+    "corner display cabinet", "corner curio", "built-in corner cupboard",
+    "hanging corner cupboard", "pie-shaped cabinet", "pie-shaped corner",
+  ]);
+  const welshDresserForm = includesAny(text, [
+    "welsh dresser", "welsh-dresser", "kitchen dresser", "country dresser",
+    "pewter cupboard", "plate rack dresser", "pine dresser", "open hutch", "farmhouse dresser",
+  ]);
+  const huntboardForm = includesAny(text, [
+    "huntboard", "hunt board", "hunting board", "southern huntboard",
+    "standing sideboard", "hall sideboard",
+  ]);
+  const credenzaStorageForm = !credenzaDesk && includesAny(text, [
+    "credenza", "sideboard credenza", "media credenza", "mid-century credenza",
+    "mid century credenza", "mcm credenza", "storage credenza", "floating credenza",
+  ]);
+  const hutchForm = !hutchDesk && !includesAny(text, ["step-back", "stepback"]) && includesAny(text, [
+    "hutch", "china hutch", "dining hutch", "kitchen hutch", "buffet hutch",
+    "buffet and hutch", "country hutch", "display hutch", "cupboard hutch",
+  ]);
+  const chinaCabinetForm = includesAny(text, ["china cabinet", "china closet", "china display"]);
+  const curioForm = includesAny(text, ["curio cabinet", "curio"]) && !includesAny(text, ["curiosities", "cabinet of curiosities"]);
+  const buffetForm = includesAny(text, ["buffet", "dining cabinet"]);
+  const serverForm = includesAny(text, ["serving table", "serving board", "serving cabinet", "dining server"]) ||
+    (/\bserver\b/.test(text) && !includesAny(text, ["server rack", "rack server", "network server", "file server", "web server", "blade server", "server equipment", "server cabinet"]));
+  const sideboardForm = text.includes("sideboard");
+  if (!deskFormDominant) {
+    if (cellaretteForm) {
+      add("Cellarette", 100, "Small lidded or cased liquor- and bottle-storage form (wine cooler / tantalus).");
+    } else if (breakfrontForm) {
+      add("Breakfront", 98, "Large cabinet/bookcase whose center section projects forward of the flanking sections.");
+    } else if (cornerCabinetForm) {
+      add("Corner cabinet", 98, "Triangular cabinet/cupboard built to stand in a room corner (corner geometry outranks hutch/china structure).");
+    } else if (welshDresserForm) {
+      add("Welsh dresser", 98, "Country dresser with an OPEN plate-rack upper over a base of drawers and cupboards.");
+    } else if (huntboardForm) {
+      add("Huntboard", 96, "Tall stand-up-height Southern sideboard-family service case.");
+    } else if (credenzaStorageForm) {
+      add("Credenza", 95, "Long low storage case for dining/living/office service (no work surface — distinct from a credenza desk).");
+    } else if (hutchForm) {
+      add("Hutch", 95, "Two-part dining case: an enclosed or glazed display upper over a service-storage base.");
+    } else if (chinaCabinetForm) {
+      add("China cabinet", 96, "Glazed dining-room cabinet for displaying and storing china and serveware.");
+    } else if (curioForm) {
+      add("Curio cabinet", 96, "Display-dominant glazed cabinet for collectibles and decorative objects.");
+    } else if (buffetForm) {
+      add("Buffet", 94, "Long low dining-room serving/storage cabinet (sideboard family; retail 'buffet').");
+    } else if (serverForm) {
+      add("Server", 94, "Smaller auxiliary dining serving cabinet/table for staging food and serveware.");
+    } else if (sideboardForm) {
+      add("Sideboard", 94, "Long dining-room service case with drawers and cupboards for linens, flatware, and serveware.");
+    }
+  }
+
+  // Entry / support hall-piece cluster. Twenty forms with no scoreForms
+  // detector. Ordered most-diagnostic-first with collision gates:
+  //   - the four bare-word forms (pedestal/screen/mirror/box) use ONLY
+  //     multi-word cues so they never fire on incidental words (e.g. bare
+  //     "mirror" inside a dresser/wardrobe description, or "box" inside dough
+  //     box / writing box);
+  //   - display pedestal stays narrow (sculpture/column) so plant stands and
+  //     pedestal tables keep their own emitters;
+  //   - hall tree absorbs the combo cues ("hat tree"/"coat tree"/"hall stand")
+  //     and is checked before hat rack / coat rack / umbrella stand;
+  //   - "charging valet" -> valet stand (checked before charging station).
+  //   Gated !deskFormDominant.
+  const funeralBierForm = includesAny(text, ["funeral bier", "coffin stand", "casket bier", "catafalque", "funeral stand", "bier"]);
+  const hammockStandForm = includesAny(text, ["hammock stand", "hammock frame"]);
+  const aquariumStandForm = includesAny(text, ["aquarium stand", "fish tank stand", "terrarium stand", "vivarium stand", "tank stand"]);
+  const smokingStandForm = includesAny(text, ["smoking stand", "ash stand", "tobacco stand", "pipe stand", "smoker's stand", "smokers stand", "cigarette stand", "humidor stand"]);
+  const packageStationForm = includesAny(text, ["package station", "parcel station", "package locker", "delivery locker", "parcel locker", "smart package", "package pickup"]);
+  const valetStandForm = includesAny(text, ["valet stand", "suit valet", "clothes valet", "gentleman's valet", "gentlemans valet", "dressing valet", "charging valet", "suit stand", "valet rack"]);
+  const chargingStationForm = includesAny(text, ["charging station", "charging tower", "device charging", "device tower", "usb charging", "multi-device charging", "charging dock"]);
+  const telephoneStandForm = includesAny(text, ["telephone stand", "telephone table", "telephone cabinet", "phone stand", "phone cabinet", "gossip bench", "telephone bench", "telephone seat"]);
+  const hallTreeForm = includesAny(text, ["hall tree", "hall stand", "hat tree", "coat tree", "cloak stand", "vestibule tree", "entry tree", "tree hall stand"]);
+  const umbrellaStandForm = includesAny(text, ["umbrella stand", "umbrella holder", "cane stand", "stick stand", "walking stick stand"]);
+  const hatRackForm = includesAny(text, ["hat rack", "hat stand", "hat hooks"]);
+  const coatRackForm = includesAny(text, ["coat rack", "coat hooks", "hall hooks", "entry hooks", "garment rack"]);
+  const petUtilityForm = includesAny(text, ["pet furniture", "pet feeding station", "pet crate", "dog crate cabinet", "cat feeding station", "dog feeding station", "crate furniture", "concealed crate cabinet"]);
+  const toyStorageForm = includesAny(text, ["toy storage", "toy box", "toy chest", "doll cabinet", "nursery organizer", "nursery storage", "play storage", "children's storage", "childrens storage"]);
+  const entryOrganizerForm = includesAny(text, ["entry organizer", "entryway organizer", "foyer organizer", "mudroom organizer", "shoe organizer", "shoe rack", "mail organizer", "key organizer", "entryway cubby"]);
+  const benchUtilityForm = includesAny(text, ["mudroom bench", "locker bench", "team bench", "dugout bench", "athletic bench", "utility bench", "storage bench", "entry bench"]);
+  const pedestalDisplayForm = includesAny(text, ["display pedestal", "sculpture pedestal", "sculpture stand", "statue stand", "bust stand", "display column", "display plinth", "marble pedestal", "pedestal plinth"]);
+  const mirrorForm = includesAny(text, ["cheval mirror", "floor mirror", "pier mirror", "overmantel mirror", "over-mantel mirror", "looking glass", "wall mirror", "standing mirror", "full-length mirror", "hall mirror", "trumeau mirror", "dressing mirror"]);
+  const screenForm = includesAny(text, ["folding screen", "room divider", "room screen", "dressing screen", "shoji screen", "privacy screen", "fire screen", "fireplace screen", "four-panel screen", "three-panel screen", "coromandel screen"]);
+  const boxForm = includesAny(text, ["keepsake box", "trinket box", "decorative box", "document box", "deed box", "bible box", "ballot box", "strong box", "storage box", "jewelry box", "desk box", "letter box"]);
+  if (!deskFormDominant) {
+    if (funeralBierForm) {
+      add("Funeral bier", 100, "Stand or low platform for supporting a coffin/casket (bier / catafalque).");
+    } else if (hammockStandForm) {
+      add("Hammock stand", 100, "Freestanding frame that supports a hammock without trees or posts.");
+    } else if (aquariumStandForm) {
+      add("Aquarium stand", 100, "Reinforced stand built to carry the weight of an aquarium or terrarium tank.");
+    } else if (smokingStandForm) {
+      add("Smoking stand", 100, "Small stand for tobacco, pipes, ashes, or a humidor.");
+    } else if (packageStationForm) {
+      add("Package station", 98, "Entry parcel/delivery locker or drop station for received packages.");
+    } else if (valetStandForm) {
+      add("Valet stand", 98, "Standing rack for laying out a suit, with bars/hooks for jacket, trousers, and accessories.");
+    } else if (chargingStationForm) {
+      add("Charging station", 96, "Stand or dock organizing and charging multiple devices.");
+    } else if (telephoneStandForm) {
+      add("Telephone stand", 96, "Small stand, table, or bench-and-shelf form for a telephone (gossip bench).");
+    } else if (hallTreeForm) {
+      add("Hall tree", 98, "Tall combination entry stand: hooks for coats/hats plus mirror, umbrella drip pan, and often a seat.");
+    } else if (umbrellaStandForm) {
+      add("Umbrella stand", 96, "Floor receptacle for umbrellas, canes, and walking sticks.");
+    } else if (hatRackForm) {
+      add("Hat rack", 95, "Rack or stand of pegs/hooks specifically for hats.");
+    } else if (coatRackForm) {
+      add("Coat rack", 95, "Rack or stand of hooks/pegs for hanging coats and garments in an entry.");
+    } else if (petUtilityForm) {
+      add("Pet furniture", 96, "Furniture built around a pet function (feeding station, concealed crate cabinet).");
+    } else if (toyStorageForm) {
+      add("Toy storage", 95, "Child's toy box, chest, or nursery storage organizer.");
+    } else if (entryOrganizerForm) {
+      add("Entry organizer", 94, "Entry/mudroom organizer for shoes, mail, keys, and small items (cubbies/hooks).");
+    } else if (benchUtilityForm) {
+      add("Utility bench", 94, "Utility/locker/mudroom or team bench for seating plus gear staging.");
+    } else if (pedestalDisplayForm) {
+      add("Pedestal", 94, "Vertical display pedestal/column for elevating a sculpture, bust, or decorative object.");
+    } else if (mirrorForm) {
+      add("Mirror", 95, "Standalone mirror form (cheval, pier, overmantel, wall, or looking glass).");
+    } else if (screenForm) {
+      add("Screen", 95, "Folding screen / room divider (or fire screen) used to partition or shield space.");
+    } else if (boxForm) {
+      add("Box", 94, "Small lidded box form (keepsake, document, deed, or storage box).");
+    }
+  }
+
+  // Lighting-fixture cluster. Fourteen forms (beyond the already-wired floor/
+  // table/oil/kerosene/banquet lamps) had canonical content and (mostly) routes
+  // but no scoreForms detector. All text-cue based; ordered specific-first so
+  // the two abstract catch-all parents (wall lighting form / hanging lighting
+  // form) only fire when no specific wall- or hanging-fixture form matched:
+  //   - candelabrum (branched/multi-arm) checked before candlestick (single);
+  //   - gas bracket ("gas sconce") checked before sconce;
+  //   - billiard / lantern / chandelier / pendant checked before the generic
+  //     hanging catch-all. Scores (92-96) beat the generic lamp emitters
+  //     (Floor/Table/Oil 86-90) for the same piece (e.g. torchiere floor lamp).
+  const billiardLightForm = includesAny(text, ["billiard light", "pool table light", "snooker light", "pool hall light", "saloon light", "linear billiard"]);
+  const torchereForm = includesAny(text, ["torchere", "torchère", "torchiere", "torchière", "floor torch", "floor uplighter"]);
+  const candelabrumForm = includesAny(text, ["candelabrum", "candelabra", "candelabras", "girandole", "branched candle", "multi-candle holder", "multi-arm candlestick", "branched candlestick", "seven-branch"]);
+  const candlestickForm = includesAny(text, ["candlestick", "candle stick", "candleholder", "candle holder", "chamberstick", "pricket", "taper holder", "hog-scraper candlestick", "push-up candlestick"]);
+  const argandLampForm = includesAny(text, ["argand lamp", "astral lamp", "sinumbra lamp", "solar lamp", "circular wick lamp", "draft lamp"]);
+  const bettyLampForm = includesAny(text, ["betty lamp", "grease lamp", "fat lamp", "pan lamp", "rat-tail lamp", "crusie"]);
+  const studentLampForm = includesAny(text, ["student lamp", "study lamp", "banker's lamp", "bankers lamp", "banker lamp", "library lamp", "rochester lamp", "double student lamp", "kerosene student lamp"]);
+  const gasBracketForm = includesAny(text, ["gas bracket", "gas wall bracket", "gas sconce", "gaslight bracket", "gas arm", "gas wall light", "gas-mantle bracket", "wall gas fixture"]);
+  const sconceForm = includesAny(text, ["sconce", "wall sconce", "wall light", "wall fixture", "wall bracket light", "candle sconce", "electric sconce", "mirror-back sconce", "wall mounted lamp", "wall-mounted lamp"]);
+  const lanternHangingForm = includesAny(text, ["hanging lantern", "ceiling lantern", "hall lantern", "entry lantern", "porch lantern", "pierced-tin hanging lantern"]);
+  const chandelierForm = includesAny(text, ["chandelier", "gasolier", "gaselier", "electrolier", "multi-light fixture", "multi-arm chandelier", "candle chandelier", "crystal chandelier"]);
+  const pendantLightForm = includesAny(text, ["pendant light", "pendant lamp", "hanging pendant", "ceiling pendant", "drop light", "schoolhouse light", "schoolhouse pendant", "industrial pendant", "pulley pendant", "rise and fall light", "mini pendant"]);
+  const wallLightingForm = includesAny(text, ["wall lighting fixture", "wall luminaire", "picture light", "wall washer", "wall lighting form"]);
+  const hangingLightingForm = includesAny(text, ["hanging light fixture", "ceiling light fixture", "ceiling fixture", "flush mount", "semi-flush", "flush-mount light", "hanging lighting form"]);
+  if (billiardLightForm) {
+    add("Billiard light", 96, "Long multi-shade fixture hung over a billiard/pool table.");
+  } else if (torchereForm) {
+    add("Torchère", 94, "Tall floor-standing candle/torch stand or upward-throwing floor uplight.");
+  } else if (candelabrumForm) {
+    add("Candelabrum", 96, "Branched multi-arm candle holder (girandole).");
+  } else if (candlestickForm) {
+    add("Candlestick", 95, "Single-light candle holder (chamberstick, pricket, taper holder).");
+  } else if (argandLampForm) {
+    add("Argand lamp", 95, "Early circular-wick oil lamp with side font (astral / sinumbra / solar variants).");
+  } else if (bettyLampForm) {
+    add("Betty lamp", 96, "Early iron grease/fat lamp with a wick channel (crusie family).");
+  } else if (studentLampForm) {
+    add("Student lamp", 94, "Adjustable shaded reading lamp with a side font (banker's / library / Rochester type).");
+  } else if (gasBracketForm) {
+    add("Gas bracket", 96, "Wall-mounted gas (or gas-electric) lighting arm; gas evidence dominates over plain sconce reading.");
+  } else if (sconceForm) {
+    add("Sconce", 95, "Wall-mounted light bracket (candle, electric, or kerosene).");
+  } else if (lanternHangingForm) {
+    add("Hanging lantern", 95, "Enclosed hanging hall/entry/porch lantern fixture.");
+  } else if (chandelierForm) {
+    add("Chandelier", 96, "Multi-arm radial ceiling fixture (candle, gas/gasolier, or electric/electrolier).");
+  } else if (pendantLightForm) {
+    add("Pendant light", 94, "Single hanging ceiling fixture on a rod, chain, or cord (schoolhouse, industrial, pulley).");
+  } else if (wallLightingForm) {
+    add("Wall lighting form", 88, "Wall-mounted lighting fixture not specifically a sconce or gas bracket (picture light, wall washer).");
+  } else if (hangingLightingForm) {
+    add("Hanging lighting form", 88, "Ceiling/hanging lighting fixture not specifically a chandelier, pendant, lantern, or billiard light (flush/semi-flush mount).");
+  }
+
+  // Clocks + musical/mechanical + misc cluster. Nineteen orphaned forms with no
+  // scoreForms detector. All text-cue based. Collision notes: clock types are
+  // mutually distinct ("schoolhouse clock" -> wall clock, also excluded from the
+  // school-desk cue above); media forms avoid bare "wall unit"/"workstation" so
+  // they don't steal Wall unit desk / Modular workstation desk; pump organ and
+  // sewing-machine cabinet defer to their desk variants when "desk" is present
+  // (reusing the bedroom-block deskContext). cylinder_desk is intentionally NOT
+  // here — it is already reachable via the cylinder/roll-top emit.
+  const tallCaseClockForm = includesAny(text, ["tall case clock", "tall-case clock", "longcase clock", "grandfather clock", "grandmother clock", "granddaughter clock", "floor clock", "standing clock"]);
+  const wallClockForm = includesAny(text, ["wall clock", "hanging clock", "banjo clock", "gallery clock", "regulator clock", "schoolhouse clock", "calendar clock"]);
+  const shelfClockForm = includesAny(text, ["shelf clock", "mantel clock", "mantle clock", "bracket clock", "table clock", "steeple clock", "ogee clock", "kitchen clock"]);
+  const jukeboxForm = includesAny(text, ["jukebox", "juke box", "music machine", "coin-operated music"]);
+  const pinballForm = includesAny(text, ["pinball machine", "pinball", "pin game", "electromechanical pinball", "em pinball", "solid state pinball"]);
+  const arcadeForm = includesAny(text, ["arcade cabinet", "arcade machine", "arcade game", "video game cabinet", "upright arcade"]);
+  const vendingForm = includesAny(text, ["vending machine", "snack machine", "soda machine", "beverage machine", "coke machine", "cigarette machine", "vending"]);
+  const spinningWheelForm = includesAny(text, ["spinning wheel", "saxony wheel", "castle wheel", "great wheel", "walking wheel", "wool wheel", "flax wheel"]);
+  const loomForm = includesAny(text, ["loom", "weaving loom", "floor loom", "table loom", "treadle loom", "handloom", "hand loom"]);
+  const pumpOrganForm = !deskContext && includesAny(text, ["pump organ", "reed organ", "parlor organ", "cabinet organ", "harmonium", "pump organ cabinet"]);
+  const iceboxForm = includesAny(text, ["icebox", "ice box", "oak icebox", "zinc-lined icebox", "ice chest"]);
+  const sewingMachineCabinetForm = !deskContext && !text.includes("converted") && includesAny(text, ["sewing machine cabinet", "treadle sewing machine", "sewing machine stand", "drop-head sewing machine", "drophead sewing machine", "sewing machine base"]);
+  const mediaConsoleForm = includesAny(text, ["media console", "entertainment console", "radio console", "television console", "tv console", "stereo console", "record player console", "hi-fi console", "hifi console", "phonograph cabinet"]);
+  const mediaWallForm = includesAny(text, ["media wall", "entertainment wall", "entertainment center", "home theater unit", "media center", "tv wall unit"]);
+  const mediaStorageForm = includesAny(text, ["media storage", "media tower", "cd tower", "cd storage", "dvd tower", "dvd storage", "disc tower", "game tower", "video game storage"]);
+  const equipmentRackForm = includesAny(text, ["equipment rack", "audio rack", "stereo rack", "server rack", "network rack", "speaker cabinet", "loudspeaker cabinet", "speaker enclosure"]);
+  const interactiveConsoleForm = includesAny(text, ["interactive console", "gaming console", "gaming tower", "gaming pc", "vr station", "vr setup", "control console", "digital interface console"]);
+  const musicalInstrumentForm = includesAny(text, ["music cabinet", "sheet music cabinet", "music stand cabinet", "instrument storage cabinet"]);
+  const basketForm = includesAny(text, ["wicker basket", "sewing basket", "picnic basket", "laundry basket", "market basket", "storage basket", "splint basket", "nantucket basket", "gathering basket", "woven basket", "basketry"]);
+  if (tallCaseClockForm) {
+    add("Tall case clock", 98, "Floor-standing weight-driven clock in a tall case (grandfather/longcase).");
+  } else if (wallClockForm) {
+    add("Wall clock", 96, "Wall-hung clock (banjo, regulator, schoolhouse, gallery, or calendar).");
+  } else if (shelfClockForm) {
+    add("Shelf clock", 96, "Small mantel/shelf clock (steeple, ogee, bracket, or kitchen clock).");
+  } else if (jukeboxForm) {
+    add("Jukebox", 100, "Coin-operated music-playing machine cabinet.");
+  } else if (pinballForm) {
+    add("Pinball machine", 100, "Coin-operated pinball game cabinet (electromechanical or solid-state).");
+  } else if (arcadeForm) {
+    add("Arcade cabinet", 100, "Upright/cocktail video-game arcade cabinet.");
+  } else if (vendingForm) {
+    add("Vending machine", 98, "Coin-operated vending/dispensing machine (snack, soda, cigarette).");
+  } else if (spinningWheelForm) {
+    add("Spinning wheel", 100, "Hand-spinning wheel (Saxony, castle, or great/walking wheel).");
+  } else if (loomForm) {
+    add("Loom", 98, "Weaving loom (floor, table, or treadle).");
+  } else if (pumpOrganForm) {
+    add("Pump organ cabinet", 98, "Reed/parlor pump organ in its furniture cabinet (harmonium).");
+  } else if (iceboxForm) {
+    add("Icebox", 98, "Pre-electric ice-cooled food-storage cabinet (zinc/oak icebox).");
+  } else if (sewingMachineCabinetForm) {
+    add("Sewing machine cabinet", 94, "Treadle sewing machine in its cabinet/stand (not a desk conversion).");
+  } else if (mediaConsoleForm) {
+    add("Media console", 95, "Low AV/media console (radio, phonograph, stereo, or TV console cabinet).");
+  } else if (mediaWallForm) {
+    add("Media wall", 94, "Large entertainment center / home-theater wall unit.");
+  } else if (mediaStorageForm) {
+    add("Media storage unit", 94, "Tower or rack for CDs, DVDs, discs, or game media.");
+  } else if (equipmentRackForm) {
+    add("Equipment rack", 94, "Rack/enclosure for audio, network, or server equipment (incl. speaker cabinet).");
+  } else if (interactiveConsoleForm) {
+    add("Interactive console", 92, "Gaming/VR/control console station.");
+  } else if (musicalInstrumentForm) {
+    add("Musical instrument furniture", 90, "Furniture built around a musical instrument (sheet-music cabinet, instrument storage).");
+  } else if (basketForm) {
+    add("Basket", 95, "Woven basket form (wicker, splint, sewing, picnic, or market basket).");
+  }
+
+  // Industrial / professional / institutional cluster. Concrete forms get
+  // distinctive cues; the abstract catch-alls (built-in/shelving/rack/env/
+  // workstation/kitchen-utility/beverage/hospitality/educational/industrial-
+  // station) get minimal guarded cues and lower scores so concrete forms win.
+  // Collision notes: rack/shelving use ONLY qualified terms so they don't fire
+  // on bare "rack"/"shelving" (coat/hat/equipment rack and bookcase open-shelving
+  // are handled earlier); standing lecterns + teller cages were released from the
+  // institutional-desk cues above; package/delivery lockers stay form_package_station.
+  const drySinkForm = includesAny(text, ["dry sink"]);
+  const barberStationForm = includesAny(text, ["barber station", "barber chair", "barber counter", "barbershop", "barber's workstation", "barber workstation"]);
+  const salonStationForm = includesAny(text, ["salon station", "styling station", "hairdresser station", "beauty salon station", "salon chair", "beauty station"]);
+  const timeClockForm = includesAny(text, ["time clock", "punch clock", "attendance station", "time stamp clock", "factory time clock", "bundy clock"]);
+  const cabinetCuriositiesForm = includesAny(text, ["cabinet of curiosities", "wunderkammer", "curiosity cabinet", "specimen cabinet"]);
+  const easelForm = includesAny(text, ["easel", "artist's easel", "artists easel", "studio easel", "display easel", "tripod easel"]);
+  const musicStandForm = includesAny(text, ["music stand", "sheet music stand", "orchestra stand", "conductor's stand", "folding music stand"]);
+  const pulpitForm = includesAny(text, ["pulpit", "preaching pulpit", "wineglass pulpit", "wine-glass pulpit"]);
+  const lecternForm = includesAny(text, ["standing lectern", "floor lectern", "speaker's lectern", "speakers lectern", "speaking lectern", "church lectern", "presentation lectern", "acrylic lectern", "conductor's lectern", "fixed lectern"]);
+  const podiumForm = includesAny(text, ["podium", "speaker's podium", "speakers podium", "presentation podium", "conductor's podium", "winner's podium", "award podium"]);
+  const churchFurnishingForm = includesAny(text, ["altar", "baptismal font", "communion table", "prie-dieu", "prie dieu", "kneeler", "credence table", "church furnishing", "tabernacle stand", "sanctuary furniture"]);
+  const showcaseForm = includesAny(text, ["showcase", "display case", "glass display case", "jewelry showcase", "jewelry case", "store display case", "museum display case", "glass showcase"]);
+  const kioskForm = includesAny(text, ["kiosk", "information kiosk", "mall kiosk", "newsstand", "ticket kiosk", "retail kiosk"]);
+  const bankFixtureForm = includesAny(text, ["bank fixture", "teller cage", "teller wicket", "safe deposit box unit", "bank vault gate", "banking wicket"]);
+  const utilityCartForm = includesAny(text, ["utility cart", "serving cart", "tea cart", "tea trolley", "bar cart", "drinks trolley", "kitchen cart", "rolling cart", "service trolley", "hostess cart", "microwave cart"]);
+  const lockerForm = includesAny(text, ["locker", "gym locker", "school locker", "employee locker", "storage locker", "metal locker", "locker unit"]);
+  const scientificStandForm = includesAny(text, ["scientific stand", "laboratory stand", "microscope stand", "telescope stand", "lab stand", "specimen stand", "retort stand"]);
+  const safetyFixtureForm = includesAny(text, ["safety fixture", "fire extinguisher cabinet", "first aid cabinet", "eyewash station", "fire hose cabinet", "aed cabinet", "safety cabinet"]);
+  const retailFixtureForm = includesAny(text, ["retail fixture", "store fixture", "gondola shelving", "gondola unit", "slatwall", "slat wall", "merchandising fixture", "display gondola", "point-of-purchase display", "pegboard display"]);
+  const shelvingSystemForm = includesAny(text, ["shelving system", "industrial shelving", "metal shelving", "wire shelving", "storage shelving", "boltless shelving", "rivet shelving", "warehouse shelving", "modular shelving"]);
+  const rackForm = includesAny(text, ["display rack", "storage rack", "utility rack", "wire rack", "metal rack", "warehouse rack", "pallet rack", "dunnage rack", "drying rack", "luggage rack", "wine rack"]);
+  const builtInStorageForm = includesAny(text, ["built-in storage", "built-in cabinetry", "fitted storage", "fitted cabinetry", "architectural built-in"]);
+  const envUtilityForm = includesAny(text, ["radiator cover", "radiator cabinet", "humidifier cabinet", "hvac cabinet", "heater cover", "register cover", "environmental utility"]);
+  const workstationAccessoryForm = includesAny(text, ["workstation accessory", "monitor stand", "monitor riser", "keyboard tray", "cpu holder", "monitor arm"]);
+  const kitchenUtilityUnitForm = includesAny(text, ["kitchen utility unit", "kitchen work unit", "utility prep unit"]);
+  const beverageServiceForm = includesAny(text, ["beverage station", "coffee station", "beverage service", "drink station", "beverage counter"]);
+  const hospitalityFixtureForm = includesAny(text, ["hospitality fixture", "hotel fixture", "hospitality station", "hotel luggage stand"]);
+  const educationalFixtureForm = includesAny(text, ["educational fixture", "classroom fixture", "interactive whiteboard stand"]);
+  const industrialStationForm = includesAny(text, ["industrial station", "assembly station", "packing station", "industrial work station"]);
+  if (drySinkForm) {
+    add("Dry sink", 96, "Country cabinet with a recessed well top for a water basin (pre-plumbing washing).");
+  } else if (barberStationForm) {
+    add("Barber station", 96, "Barber's service station/counter (mirror, drawers, tool storage; barber chair context).");
+  } else if (salonStationForm) {
+    add("Salon station", 96, "Hairdresser/beauty styling station (mirror, drawers, tool storage).");
+  } else if (timeClockForm) {
+    add("Time clock station", 96, "Workplace time/attendance clock station (punch/bundy clock and card rack).");
+  } else if (cabinetCuriositiesForm) {
+    add("Cabinet of curiosities", 96, "Specimen/curiosity display cabinet (wunderkammer).");
+  } else if (easelForm) {
+    add("Easel", 96, "Standing frame for supporting a canvas, artwork, or display board.");
+  } else if (musicStandForm) {
+    add("Music stand", 95, "Adjustable stand holding sheet music for a player or conductor.");
+  } else if (pulpitForm) {
+    add("Pulpit", 96, "Elevated enclosed preaching stand in a church.");
+  } else if (lecternForm) {
+    add("Lectern", 95, "Standing speaking lectern with a sloped reading top (not a writing desk).");
+  } else if (podiumForm) {
+    add("Podium", 94, "Raised speaker's stand/platform for presentations or ceremonies.");
+  } else if (churchFurnishingForm) {
+    add("Church furnishing", 94, "Ecclesiastical furniture (altar, font, communion/credence table, kneeler/prie-dieu).");
+  } else if (showcaseForm) {
+    add("Showcase", 94, "Glazed retail/museum display case for presenting merchandise or objects.");
+  } else if (kioskForm) {
+    add("Kiosk", 95, "Freestanding small-footprint retail/information booth or stand.");
+  } else if (bankFixtureForm) {
+    add("Bank fixture", 92, "Banking-hall fixture (teller cage/wicket, safe-deposit unit) rather than a counter desk.");
+  } else if (utilityCartForm) {
+    add("Utility cart", 94, "Wheeled service/utility cart or trolley (tea cart, bar cart, kitchen cart).");
+  } else if (lockerForm) {
+    add("Locker", 94, "Compartmented metal/wood locker unit for personal storage (gym/school/employee).");
+  } else if (scientificStandForm) {
+    add("Scientific stand", 94, "Laboratory/optical instrument stand (microscope, telescope, retort, specimen).");
+  } else if (safetyFixtureForm) {
+    add("Safety fixture", 94, "Safety-equipment fixture (fire extinguisher / first-aid / eyewash / hose / AED cabinet).");
+  } else if (retailFixtureForm) {
+    add("Retail fixture", 92, "Store merchandising fixture (gondola, slatwall, pegboard, point-of-purchase display).");
+  } else if (shelvingSystemForm) {
+    add("Shelving system", 92, "Industrial/utility shelving system (boltless/rivet, wire, or metal shelving).");
+  } else if (rackForm) {
+    add("Rack", 92, "Open utility/storage rack (display, pallet, wire, drying, luggage, or wine rack).");
+  } else if (builtInStorageForm) {
+    add("Built-in storage", 90, "Architectural built-in cabinetry/storage fitted to the structure.");
+  } else if (envUtilityForm) {
+    add("Environmental utility form", 90, "Furniture concealing an environmental utility (radiator cover, humidifier/HVAC cabinet).");
+  } else if (workstationAccessoryForm) {
+    add("Workstation accessory", 90, "Desktop/workstation accessory (monitor stand/riser, keyboard tray, CPU holder).");
+  } else if (kitchenUtilityUnitForm) {
+    add("Kitchen utility unit", 90, "Kitchen/work utility prep unit (not a full kitchen cabinet or Hoosier).");
+  } else if (beverageServiceForm) {
+    add("Beverage service form", 88, "Beverage/coffee service station or counter.");
+  } else if (hospitalityFixtureForm) {
+    add("Hospitality fixture", 88, "Hotel/hospitality service fixture.");
+  } else if (educationalFixtureForm) {
+    add("Educational fixture", 88, "Classroom/educational fixture (not a school desk).");
+  } else if (industrialStationForm) {
+    add("Industrial station", 88, "Factory/industrial work or assembly/packing station.");
   }
  // Industrial / Toledo-style task chair
 if (
@@ -2513,7 +4427,80 @@ if (
     "Fluted or reeded legs, exposed curved arm supports, and full upholstery support a Colonial / Georgian Revival upholstered armchair reading."
   );
 }
-  if (clues.has("armchair_form")) {
+
+  // ── Seating-form resolution (stress-test fix #12, 2026-05-20) ──────────
+  // Root-cause fix for the armchair-vs-settee override bug. scoreForms
+  // previously scored only armchair + bench among seating forms; the other
+  // 8 seating canonical forms (sofa, settee, lounge_chair, wing_chair,
+  // recliner, stool, ottoman, slipper_chair) had NO clue-key scoring path
+  // and were reachable ONLY if the LLM emitted their exact display name.
+  // Result: armchair_form (the one general seating clue WITH a scoring
+  // path) captured everything — a settee whose observations explicitly
+  // said "sized for two persons / two-seat settee/loveseat, not a single
+  // armchair" still scored as "Upholstered armchair" because Settee and
+  // Sofa had no way to compete.
+  //
+  // This block adds scoring coverage for the seating class and lets
+  // multi-person + posture + wing + recliner evidence OUTSCORE or SUPPRESS
+  // the armchair_form clue when the observations describe a different
+  // seating form. Scores are calibrated above the armchair clue's 62-82
+  // so a correctly-evidenced settee/sofa/lounge wins the primary slot.
+
+  // Multi-person seating language. The LLM frequently emits armchair_form
+  // while DESCRIBING two-person seating in the observation prose. Matching
+  // explicit multi-occupant phrases (not bare "sofa", which appears in
+  // upholstery-technique descriptions like "parlor sofa construction").
+  const multiPersonSeating =
+    /\b(two[- ]?persons?|two[- ]?seat(er|s)?|three[- ]?seat(er|s)?|sized for two|settee|love[- ]?seats?|loveseats?)\b/.test(text);
+
+  if (
+    multiPersonSeating &&
+    hasAny("seating_surface", "seating_present", "armchair_form", "backrest_present", "fully_upholstered")
+  ) {
+    if (/\bsettee\b/.test(text)) {
+      add("Settee", 96, "Observations describe two-person seating with settee proportions — not a single armchair.");
+    } else if (/\blove[- ]?seats?\b|\bloveseats?\b/.test(text)) {
+      add("Loveseat", 96, "Observations describe two-person loveseat-scale seating — not a single armchair.");
+    } else {
+      add("Sofa", 92, "Observations describe multi-person seating — not a single armchair.");
+    }
+  }
+
+  // Lounge chair — posture-based lounge identity (deep seat, low seat
+  // height, reclined back). Only when NOT multi-person (a two-person
+  // lounge piece is a sofa/settee, not a lounge chair).
+  if (clues.has("lounge_chair_form") && !multiPersonSeating) {
+    add(
+      "Lounge chair",
+      clues.has("armchair_form") ? 86 : 80,
+      "Posture-based lounge-chair identity — deeper seat, lower seat height, reclined back — distinct from upright armchair form."
+    );
+  }
+
+  // Wing chair — wing/wingback evidence.
+  if (/\bwing[- ]?backs?\b|\bwing chairs?\b|\bwingbacks?\b/.test(text)) {
+    add("Wing chair", 88, "Wing or wingback chair form (enclosing side wings) is visible.");
+  }
+
+  // Recliner — reclining mechanism.
+  if (/\brecliner|reclining (mechanism|chair|seat)|la-?z-?boy\b/.test(text)) {
+    add("Recliner", 90, "Reclining mechanism or recliner form is visible.");
+  }
+
+  // Stool — backless single-user seating. Only when no backrest evidence
+  // (a stool by definition has no back).
+  if (
+    /\bstools?\b|\btabourets?\b/.test(text) &&
+    !hasAny("backrest_present", "spindle_back")
+  ) {
+    add("Stool", 72, "Backless single-user stool form is visible.");
+  }
+
+  // Armchair scoring — gated so it does NOT fire when the observations
+  // describe multi-person seating (settee/sofa/loveseat). Without this
+  // gate, armchair_form scored "Upholstered armchair" even on explicit
+  // two-person pieces, capturing the primary slot from the correct form.
+  if (clues.has("armchair_form") && !multiPersonSeating) {
     add(
       "Upholstered armchair",
       clues.has("cabriole_leg") ? 82 : 62,
@@ -2525,8 +4512,135 @@ if (
     add("Bench / seating furniture", 55, "Seating surface is visible without stronger desk or telephone features.");
   }
 
+  // Named seating-TYPE cluster. The block above is the generic seating OVERRIDE
+  // system (armchair clue vs multi-person vs wing/recliner/lounge/stool/bench),
+  // and those labels already route to form_armchair/sofa/settee/etc. These 19
+  // forms are SPECIFIC named chair types that were orphaned — orthogonal to the
+  // override: a named type (windsor/ladderback/morris/...) correctly outscores
+  // the generic "Upholstered armchair" (62-82), "Stool" (72), and "Bench" (55).
+  // Collision ordering (most-specific first): the "folding/rocking X" boundary
+  // forms resolve to their TYPE before the generic folding/rocking detectors
+  // (folding auditorium -> theater; rocking Adirondack -> adirondack; Morris
+  // rocker -> morris); bar stool/counter stool -> bar chair (beats Stool);
+  // ottoman/footstool excludes "ottoman table" so the Ottoman TABLE keeps its
+  // emitter. Single-chair named types carry no multi-person cue, so the
+  // Settee/Sofa/Loveseat override is unaffected.
+  const morrisChairForm = includesAny(text, ["morris chair", "morris rocker", "morris recliner", "mission recliner", "mission rocker recliner", "mission lounge chair", "adjustable-back chair", "adjustable back chair", "adjustable-back lounge chair", "bow-arm morris", "flat-arm morris", "stickley-style chair"]);
+  const adirondackForm = includesAny(text, ["adirondack chair", "adirondack", "adirondak", "westport chair", "westport adirondack", "muskoka chair", "fan-back adirondack", "folding adirondack", "rocking adirondack", "poly adirondack", "composite adirondack", "hdpe adirondack"]);
+  const papasanForm = includesAny(text, ["papasan", "papa-san", "mamasan", "double papasan", "wicker bowl chair", "hanging papasan"]);
+  const beanBagForm = includesAny(text, ["bean bag", "beanbag", "sacco chair", "sacco-style chair", "crash pad chair", "lounge sack", "memory foam bean bag"]);
+  const butterflyForm = includesAny(text, ["butterfly chair", "butterfly sling", "bkf chair", "b.k.f. chair", "hardoy chair", "sling chair", "leather sling chair", "canvas sling chair", "hide sling chair", "cowhide butterfly"]);
+  const theaterSeatForm = includesAny(text, ["theater seat", "theatre seat", "auditorium seat", "auditorium chair", "cinema seat", "movie theater seat", "movie theatre seat", "opera seat", "opera house seat", "stadium seat", "arena seat", "lecture hall seat", "folding auditorium seat", "assembly hall seat", "church auditorium seat"]);
+  const pewForm = includesAny(text, ["pew", "church pew", "meetinghouse pew", "meetinghouse bench", "chapel pew", "box pew", "sanctuary pew", "congregational pew", "gothic revival pew", "cut-down pew", "salvage pew"]);
+  const windsorForm = includesAny(text, ["windsor chair", "windsor armchair", "windsor settee", "windsor", "sack-back", "bow-back", "hoop-back", "comb-back", "arrow-back", "fan-back", "birdcage windsor", "firehouse windsor", "captain's chair"]);
+  const ladderbackForm = includesAny(text, ["ladder-back", "ladderback", "ladder back", "slat-back chair", "slat back chair"]);
+  const chaiseForm = includesAny(text, ["chaise longue", "chaise lounge", "fainting couch", "fainting sofa", "recamier", "récamier", "meridienne", "méridienne", "duchesse brisée", "duchesse brisee", "long chair", "sun lounger", "pool lounger", "outdoor lounger", "patio chaise", "garden chaise", "chaise"]);
+  const daybedForm = includesAny(text, ["daybed", "day bed", "studio couch", "couch bed", "day couch", "trundle daybed", "sleigh daybed", "convertible couch", "backed daybed", "bolster daybed"]);
+  const gliderForm = includesAny(text, ["porch glider", "lawn glider", "metal glider", "metal lawn glider", "glider bench", "patio glider", "outdoor glider", "steel glider", "tin glider", "spring glider", "porch glider bench"]);
+  const foldingChairForm = includesAny(text, ["folding chair", "folding seat", "camp chair", "camping chair", "director's chair", "directors chair", "samsonite chair", "bistro folding chair"]);
+  const slipperChairForm = includesAny(text, ["slipper chair", "boudoir chair", "boudoir slipper", "tufted slipper chair", "vanity chair", "dressing chair", "bedroom slipper chair"]);
+  const barChairForm = includesAny(text, ["bar chair", "bar stool", "counter stool", "counter-height stool", "pub stool", "swivel bar stool", "breakfast bar stool", "kitchen counter stool"]);
+  const rockingChairForm = includesAny(text, ["rocking chair", "rocker", "platform rocker", "boston rocker", "bentwood rocker", "pressed-back rocker", "nursing rocker", "sewing rocker", "cane rocker"]);
+  const milkingStoolForm = includesAny(text, ["milking stool", "milk stool", "dairy stool", "cow stool"]);
+  const ottomanFootstoolForm = includesAny(text, ["footstool", "foot stool", "hassock", "pouffe", "pouf", "tuffet", "storage ottoman", "lounge ottoman", "vanity ottoman", "bench ottoman"]) ||
+    (text.includes("ottoman") && !includesAny(text, ["ottoman table", "ottoman coffee table", "ottoman cocktail table", "ottoman side table", "cocktail ottoman table"]));
+  const sideChairForm = includesAny(text, ["side chair", "dining side chair", "armless dining chair", "pull-up chair", "balloon-back chair", "balloon back chair", "press-back chair", "klismos chair"]);
+  if (morrisChairForm) {
+    add("Morris chair", 96, "Arts-and-Crafts armchair with an exposed manually adjustable reclining back.");
+  } else if (adirondackForm) {
+    add("Adirondack chair", 96, "Slat-seat/back outdoor lounge chair with wide flat arms (Westport/Muskoka type).");
+  } else if (papasanForm) {
+    add("Papasan chair", 96, "Bowl-shaped cushion seat resting in a round bent rattan/metal frame.");
+  } else if (beanBagForm) {
+    add("Bean bag chair", 96, "Fabric sack filled with loose pellets/foam, conforming to the sitter.");
+  } else if (butterflyForm) {
+    add("Butterfly chair", 95, "Sling seat (leather/canvas) hung on an X-shaped folding metal frame (BKF/Hardoy).");
+  } else if (theaterSeatForm) {
+    add("Theater seat", 95, "Row/auditorium seating with tip-up seats (theater, cinema, opera, stadium).");
+  } else if (pewForm) {
+    add("Pew", 96, "Bench-form congregational/assembly seating with architectural ends (church/meetinghouse).");
+  } else if (windsorForm) {
+    add("Windsor chair", 95, "Spindle-back chair with a solid saddle seat and splayed legs (sack/bow/comb/fan-back).");
+  } else if (ladderbackForm) {
+    add("Ladderback chair", 95, "Chair with horizontal slat (ladder) back rails.");
+  } else if (chaiseForm) {
+    add("Chaise longue", 95, "Elongated single-person reclining seat (fainting couch / récamier / lounger).");
+  } else if (daybedForm) {
+    add("Daybed", 94, "Seating-height bed-depth lounge for sitting and reclining (studio couch / trundle daybed).");
+  } else if (gliderForm) {
+    add("Porch glider", 94, "Suspended porch/lawn seat that glides on a pivoting under-frame.");
+  } else if (foldingChairForm) {
+    add("Folding chair", 93, "Collapsible single-user chair (camp, director's, or event folding chair).");
+  } else if (slipperChairForm) {
+    add("Slipper chair", 94, "Low armless upholstered bedroom/boudoir chair.");
+  } else if (barChairForm) {
+    add("Bar chair", 92, "Counter/bar-height seat (bar or counter stool), distinct from a low backless stool.");
+  } else if (rockingChairForm) {
+    add("Rocking chair", 94, "Chair mounted on curved rockers (Boston, bentwood, pressed-back, platform rocker).");
+  } else if (milkingStoolForm) {
+    add("Milking stool", 92, "Low short-legged work stool (dairy/milking form).");
+  } else if (ottomanFootstoolForm) {
+    add("Footstool", 90, "Footrest/ottoman/hassock/pouf — a low padded support, not a table.");
+  } else if (sideChairForm) {
+    add("Side chair", 90, "Armless single-user chair (dining side chair / pull-up chair).");
+  }
+
   // Bed forms
-  if (clues.has("metal_bed_frame")) {
+  // Lighting forms (lamps). Routed BEFORE the metal/brass material families so a
+  // lamp's brass/iron base does not fall through to the brass-bed / iron-bed /
+  // metal-furniture material traps (#14). lamp_form and lighting evidence have
+  // no other scoreForms path; the 14+ lamp forms in forms.ts were otherwise
+  // reachable only by exact-name LLM emission (same orphaned-form pattern as #12).
+  const lampSignal =
+    hasAny(
+      "lamp_form", "table_lamp_form", "floor_lamp_form", "lamp_base", "lamp_shade",
+      "lamp_socket", "lamp_harp", "lamp_finial", "slag_glass_shade", "leaded_glass_shade"
+    ) ||
+    includesAny(text, [
+      "table lamp", "floor lamp", "lamp shade", "lampshade", "slag glass", "leaded glass",
+      "panel lamp", "lamp base", "lamp socket", "lamp harp", "electric lamp", "banquet lamp",
+      "boudoir lamp", "gone with the wind lamp",
+    ]);
+  if (lampSignal) {
+    // Functional identity outranks decorative styling and fuel-word resemblance
+    // (#16). POSITIVE electric evidence (socket/cord/E26 clue or phrase, or
+    // electrified-conversion language) is checked FIRST and wins — so a fuel
+    // word that only appears in NEGATING prose the engine itself emits
+    // ("electric rather than oil/kerosene function") cannot route the lamp to a
+    // fuel form. Fuel-type keywords are only consulted INSIDE a positive
+    // burner/font/wick/chimney gate, so bare/negated "kerosene"/"oil" never
+    // reaches them.
+    const electricEvidence =
+      hasAny("electric_table_lamp", "electric_lamp", "lamp_socket_visible", "lamp_socket") ||
+      includesAny(text, [
+        "electric cord", "electric lamp", "electric socket", "electric wiring", "electrified",
+        "medium-base", "medium base", "e26", "pull-chain socket", "keyless socket",
+        "wired for electric", "light socket", "lamp socket", "bulb socket",
+      ]);
+    const fuelEvidence = includesAny(text, [
+      "kerosene burner", "oil burner", "wick mechanism", "fuel font", "fuel fount",
+      "oil reservoir", "kerosene reservoir", "burner and font", "center-draft burner", "glass chimney",
+    ]);
+    const floorForm = includesAny(text, ["floor lamp", "standing lamp", "torchere", "torchière", "torchiere", "bridge lamp"]);
+
+    if (floorForm) {
+      add("Floor lamp", 88, "Floor-standing lamp form (tall shaft, weighted base) is visible.");
+    } else if (electricEvidence) {
+      add("Table lamp", 90, "Surface-set electric table lamp form (shade, socket or harp, decorative base) is visible.");
+    } else if (fuelEvidence && includesAny(text, ["kerosene", "coal oil", "center-draft", "center draft"])) {
+      add("Kerosene lamp", 86, "Kerosene burner, font, or chimney evidence is visible.");
+    } else if (fuelEvidence && includesAny(text, ["whale oil", "sperm oil", "lard oil", "camphene", "burning fluid", "fluid lamp"])) {
+      add("Oil lamp", 86, "Fluid or oil burner and font evidence is visible.");
+    } else if (fuelEvidence) {
+      add("Oil lamp", 80, "Fuel-burning lamp form (burner, font, or wick) is visible.");
+    } else if (includesAny(text, ["banquet lamp", "gone with the wind", "gwtw"])) {
+      add("Banquet lamp", 84, "Tall ornate parlor / banquet lamp form is visible.");
+    } else {
+      add("Table lamp", 88, "Surface-set table lamp form (shade, socket or harp, decorative base) is visible.");
+    }
+  }
+
+  if (clues.has("metal_bed_frame") && !lampSignal) {
     // Block 9: seating signals suppress Iron bed frame. A chair with iron
     // frame is not a bed regardless of the metal_bed_frame clue firing.
     // The LLM sometimes emits metal_bed_frame on any iron/steel-framed
@@ -2547,20 +4661,81 @@ if (
       add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
     }
   }
-     // Non-wood and mixed-material form families
-  if (hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+
+  // Wooden bedstead cluster (form_bedstead). Per the iron/wood split (appraiser
+  // decision 2026-05-19), metal-frame beds route to form_iron_bed (handled
+  // above) and wooden beds route here. Gated against three collisions:
+  //   - metal cues  → stay on form_iron_bed
+  //   - "daybed"    → stay on form_daybed (side-facing lounge bed)
+  //   - seating     → a bed is not a chair/settee
+  // Subtypes checked most-specific-first so substrings don't steal (e.g.
+  // "half-tester bed" contains "tester bed"; "sleigh daybed" — routed to
+  // form_daybed — does not contain "sleigh bed").
+  const metalBedCue =
+    clues.has("metal_bed_frame") ||
+    hasAny("tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame") ||
+    includesAny(text, [
+      "iron bed", "brass bed", "metal bed", "metal bedstead", "iron bedstead",
+      "cast-iron bed", "cast iron bed", "wrought-iron bed", "wrought iron bed",
+      "tubular steel bed", "tubular-steel bed", "steel bed frame",
+    ]);
+  const daybedCue = includesAny(text, ["daybed", "day bed", "studio couch", "couch bed", "day couch"]);
+  const bedSeatingPresent =
+    clues.has("seating_surface") || clues.has("seating_present") ||
+    clues.has("backrest_present") || clues.has("armchair_form");
+
+  const halfTesterBed = includesAny(text, ["half-tester", "half tester"]);
+  const testerBed = includesAny(text, ["tester bed", "canopy bed", "full tester", "full-tester"]);
+  const fourPosterBed = includesAny(text, ["four-poster", "four poster", "poster bed", "pencil-post bed", "pencil post bed"]);
+  const sleighBed = includesAny(text, ["sleigh bed"]);
+  const spoolBed = includesAny(text, ["spool bed", "jenny lind"]);
+  const ropeBed = includesAny(text, ["rope bed"]);
+  const cannonballBed = includesAny(text, ["cannonball bed", "cannon-ball bed"]);
+  const lowPostBed = includesAny(text, ["low-post bed", "low post bed"]);
+  const panelBed = includesAny(text, ["panel bed"]);
+  const genericWoodBed = includesAny(text, [
+    "bedstead", "wooden bed", "wood bed", "wood-frame bed", "wood frame bed", "wooden bedframe",
+  ]);
+
+  if (!lampSignal && !metalBedCue && !daybedCue && !bedSeatingPresent) {
+    if (halfTesterBed) {
+      add("Half-tester bed", 100, "Wooden bed with a partial overhead tester projecting over the head end.");
+    } else if (testerBed) {
+      add("Tester bed", 100, "Wooden four-post bed with a full overhead canopy/tester structure.");
+    } else if (fourPosterBed) {
+      add("Four-poster bed", 100, "Wooden bed with four tall corner posts (no overhead tester).");
+    } else if (sleighBed) {
+      add("Sleigh bed", 100, "Wooden bed with head and foot scrolled outward in a sleigh silhouette.");
+    } else if (spoolBed) {
+      add("Spool bed", 100, "Wooden bed with turned spool/bobbin-like posts and rails (Jenny Lind).");
+    } else if (ropeBed) {
+      add("Rope bed", 100, "Wooden bed with a rope-laced mattress-support system through rail holes.");
+    } else if (cannonballBed) {
+      add("Cannonball bed", 98, "Wooden bed with rounded cannonball finials topping the posts.");
+    } else if (lowPostBed) {
+      add("Low-post bed", 98, "Wooden bed with short corner posts and restrained vertical emphasis.");
+    } else if (panelBed) {
+      add("Panel bed", 96, "Wooden bed with panel-and-frame headboard/footboard (common in factory suites).");
+    } else if (genericWoodBed) {
+      add("Bedstead", 92, "Wooden sleeping-support frame (headboard and/or footboard plus rails).");
+    }
+  }
+
+     // Non-wood and mixed-material form families. Gated on !lampSignal so a lamp's
+     // metal/brass base does not register as bed/metal furniture (#14).
+  if (!lampSignal && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
     add("Metal furniture", 62, "Metal frame or metal furniture construction is visible.");
   }
 
-  if (hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
+  if (!lampSignal && hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
     add("Modernist / chrome-frame furniture", 74, "Tubular steel, chrome, or chrome-and-laminate construction supports a modernist or mid-century furniture reading.");
   }
 
-  if (hasAny("wrought_iron", "cast_iron")) {
+  if (!lampSignal && hasAny("wrought_iron", "cast_iron")) {
     add("Iron furniture", 72, "Iron or cast/wrought metal construction is visible.");
   }
 
-  if (hasAny("brass_frame")) {
+  if (!lampSignal && hasAny("brass_frame")) {
     add("Brass bed or brass-frame furniture", 70, "Brass frame or brass rail construction is visible.");
   }
 
@@ -2859,6 +5034,9 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
     .join(" ")}`.toLowerCase();
 
   const has = (word: string) => text.includes(word);
+  const hasClue = (clue: string) =>
+    (digest.clue_keys || []).includes(clue) ||
+    digest.observations.some((o) => o.clue === clue);
 
   const not = (word: string) =>
     includesAny(text, [
@@ -2867,6 +5045,38 @@ function deriveStyleContext(digest: EvidenceDigest): string | null {
       `without ${word}`,
       `${word} not`,
     ]);
+
+  // Golden Oak Era guard: per appraiser direction, Golden Oak Era is NOT
+  // a style — it is a vernacular dating / material / market-era marker
+  // tied to wood species, finish, and cut pattern (oak + flat-sawn or
+  // quarter-sawn grain + warm honey finish + factory-era hardware,
+  // c. 1890-1915 peak). Pieces from the Golden Oak Era can be in any
+  // actual style (Eastlake, Mission, Colonial Revival, Empire Revival,
+  // etc.) — Golden Oak is the common production-era denominator, not
+  // the style language. Surfacing "Golden Oak Era" as a style_context
+  // string (which then composed into display_form as "Golden Oak Era
+  // Chest of drawers") was an architectural mismatch — analogous to
+  // calling both a Mustang Mach 1 and a Dodge Super Bee "muscle cars"
+  // as if that were their style.
+  //
+  // Return null here so deriveStyleContext does NOT claim a style on
+  // Golden Oak Era pieces. The era marker is properly carried by:
+  // (a) the wood-evidence layer (wood_variant_evidence_golden_oak_era
+  //     in woodEvidence.ts with period_associations: peak 1890-1915,
+  //     emergence 1870, decline 1915-1925)
+  // (b) the dating overlap convergence (wood layer contributes the
+  //     1890-1915 window)
+  // (c) supporting-evidence surfacing in the report (era context
+  //     framed as wood/finish/market-era anchor, not style)
+  //
+  // The early return ALSO preserves the original guard purpose: it
+  // prevents the Empire fallback below from misfiring on factory-era
+  // oak pieces whose descriptions happen to contain words like "empire"
+  // or "transitional" (e.g., empire_transitional_style clue on a
+  // Golden Oak dresser).
+  if (hasClue("golden_oak_era_possible") || hasClue("golden_oak_structural_pattern")) {
+    return null;
+  }
 
   // Jacobean
   if (
@@ -2989,10 +5199,15 @@ const materialDateGuard = (() => {
     );
   }
 
+  // Path 1+2 minimum-viable wiring (Block 23a follow-up): lookup now spans
+  // both canonical MAKER_ENTRIES (77) and legacy MAKER_MARKS (25) via
+  // findMakerMarkById, returning a normalized NormalizedMakerMark shape.
+  // Downstream code below (mark.maker, mark.mark_type, mark.date_range,
+  // mark.dating_authority) consumes the normalized shape unchanged.
   const makerMarkObservation = (digest.observations || [])
     .filter((o) => o.type === "label" && o.clue)
     .map((o) => {
-      const mark = MAKER_MARKS.find((m) => m.id === o.clue);
+      const mark = findMakerMarkById(String(o.clue));
       return mark ? { observation: o, mark } : null;
     })
     .filter(Boolean)[0] as any;
@@ -3002,21 +5217,42 @@ const materialDateGuard = (() => {
     makerMarkObservation.observation.confidence >= 70 &&
     makerMarkObservation.mark.dating_authority !== "low"
   ) {
+    // Path 3 wiring: enrich support and limitations with canonical
+    // attribution_confidence_rule and false_positive_warnings (canonical
+    // entries only; legacy entries leave these undefined). Surface
+    // Confidence Ladder tier (Rule #7) explicitly so report prose
+    // declares the tier and basis rather than asserting unframed.
+    const mk = makerMarkObservation.mark as NormalizedMakerMark;
+    const ladder = makerConfidenceLadderTier(mk, false);
+
+    const enrichedSupport: string[] = [
+      `Maker mark detected: ${mk.maker}.`,
+      `Mark type: ${mk.mark_type}.`,
+      `Dating reference: ${mk.date_range}.`,
+      `Confidence tier (per Maker Mark Attribution Confidence Ladder): ${ladder.tier} — ${ladder.basis}`,
+    ];
+    if (mk.region) {
+      enrichedSupport.push(`Region: ${mk.region}.`);
+    }
+    if (mk.attribution_confidence_rule) {
+      enrichedSupport.push(`Attribution discipline: ${mk.attribution_confidence_rule}`);
+    }
+    enrichedSupport.push(...support);
+
+    const enrichedLimitations: string[] = [
+      "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
+    ];
+    if (mk.false_positive_warnings && mk.false_positive_warnings.length > 0) {
+      enrichedLimitations.push(
+        `False-positive warnings for ${mk.maker}: ${mk.false_positive_warnings.join(" ")}`
+      );
+    }
+
     return {
-      range: makerMarkObservation.mark.date_range,
-      confidence:
-        makerMarkObservation.mark.dating_authority === "high"
-          ? "High"
-          : "Moderate",
-      support: [
-        `Maker mark detected: ${makerMarkObservation.mark.maker}.`,
-        `Mark type: ${makerMarkObservation.mark.mark_type}.`,
-        `Dating reference: ${makerMarkObservation.mark.date_range}.`,
-        ...support,
-      ],
-      limitations: [
-        "Date range is anchored to the detected maker mark; confirm the mark is original to the piece and not a later replacement or unrelated label.",
-      ],
+      range: mk.date_range,
+      confidence: ladder.tier === "HIGH" ? "High" : ladder.tier === "MEDIUM" ? "Moderate" : "Low",
+      support: enrichedSupport,
+      limitations: enrichedLimitations,
       upholstery_layer: upholsteryLayer,
       date_tightening_evidence: buildDateTighteningEvidence(digest),
     };
@@ -3645,70 +5881,79 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
 
   // Sellability score: market reality, not theoretical appraisal value
   let sellability = 50;
+  const factors: Array<{ label: string; delta: number; category: "material" | "construction" | "form" | "condition" | "style" }> = [];
+  const bump = (label: string, delta: number, category: "material" | "construction" | "form" | "condition" | "style") => {
+    sellability += delta;
+    factors.push({ label, delta, category });
+  };
 
   // Non-wood material adjustments
   if (has("molded_plastic", "acrylic_clear")) {
     low = Math.max(low, 30);
     high = Math.min(high, 300);
-    sellability += 5;
+    bump("Molded plastic or acrylic construction", 5, "material");
   }
 
   if (has("laminate_surface", "formica_surface", "chrome_and_laminate")) {
     low = Math.max(low, 60);
     high = Math.min(high, 450);
-    sellability += 8;
+    bump("Laminate or Formica surface (mid-century appeal)", 8, "material");
   }
 
   if (has("woven_body", "rattan_frame")) {
     low = Math.max(low, 75);
     high = Math.min(high, 500);
-    sellability += 10;
+    bump("Woven body or rattan frame", 10, "material");
   }
 
   if (has("fully_upholstered", "visible_springs", "tufted_upholstery")) {
     low = Math.max(low, 75);
     high = Math.min(high, 600);
-    sellability += 6;
+    bump("Upholstered construction", 6, "material");
   }
 
   if (has("metal_frame", "wrought_iron", "cast_iron", "brass_frame")) {
     low = Math.max(low, 50);
     high = Math.min(high, 400);
-    sellability += 6;
+    bump("Metal frame (wrought iron, cast iron, or brass)", 6, "material");
   }
 
   if (has("tubular_steel", "chrome_frame")) {
     low = Math.max(low, 120);
     high = Math.max(high, 900);
-    sellability += 12;
+    bump("Tubular steel or chrome frame (modernist appeal)", 12, "material");
   }
 
   if (has("glass_top")) {
-    sellability += 2;
+    bump("Glass top", 2, "material");
   }
 
   if (has("laminate_surface") && has("molded_plastic")) {
-    sellability -= 5;
+    bump("Mixed budget materials (laminate + plastic)", -5, "material");
   }
 
   // Positive signals
-  if (has("solid_wood_construction")) sellability += 5;
-  if (has("solid_plank_back")) sellability += 5;
-  if (has("frame_and_panel_sides")) sellability += 4;
-  if (has("solid_wood_drawer_construction")) sellability += 4;
-  if (has("maker_label", "roos_label", "lane_label")) sellability += 8;
-  if (textHas("empire", "jacobean", "mission", "arts and crafts", "queen anne")) sellability += 4;
-  if (textHas("unusual", "scarce", "rare", "highboy", "telephone")) sellability += 5;
+  if (has("solid_wood_construction")) bump("Solid wood construction", 5, "construction");
+  if (has("solid_plank_back")) bump("Solid plank back panel", 5, "construction");
+  if (has("frame_and_panel_sides")) bump("Frame-and-panel side construction", 4, "construction");
+  if (has("solid_wood_drawer_construction")) bump("Solid wood drawer construction", 4, "construction");
+  if (has("maker_label", "roos_label", "lane_label")) bump("Maker label or branded mark present", 8, "construction");
+  if (textHas("empire", "jacobean", "mission", "arts and crafts", "queen anne")) bump("Collectible style vocabulary (Empire / Jacobean / Mission / Arts & Crafts / Queen Anne)", 4, "style");
+  if (textHas("unusual", "scarce", "rare", "highboy", "telephone")) bump("Unusual or scarce form noted", 5, "style");
 
   // Market dampeners
-  if (f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) sellability -= 8;
-  if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) sellability -= 12;
-  if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) sellability -= 8;
-  if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) sellability -= 15;
-  if (has("possible_plywood_or_laminated_panel")) sellability -= 8;
-  if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) sellability -= 5;
+  if (f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) bump("Dresser / chest of drawers (oversupplied category)", -8, "form");
+  if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) bump("Finish loss, water staining, or white haze", -12, "condition");
+  if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) bump("Surface scratches or top damage", -8, "condition");
+  if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) bump("Missing / broken / loose parts or veneer loss", -15, "condition");
+  if (has("possible_plywood_or_laminated_panel")) bump("Possible plywood or laminated panel construction", -8, "construction");
+  if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) bump("No diagnostic joinery or fastener evidence", -5, "construction");
 
+  const sellabilityRaw = sellability;
   sellability = clamp(sellability, 20, 90);
+  const clampedNote = sellability !== sellabilityRaw
+    ? (sellabilityRaw > 90 ? "Clamped at 90 (ceiling)" : "Clamped at 20 (floor)")
+    : null;
 
   // Convert sellability into value pressure
   const marketFactor = 0.65 + sellability / 140;
@@ -3739,6 +5984,10 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
       Math.round(finalHigh * 1.85),
     ],
     sellability_score: sellability,
+    sellability_factors: factors,
+    sellability_clamped_note: clampedNote,
+    age_factor: ageFactor,
+    market_factor: marketFactor,
   };
 }
 
@@ -3925,6 +6174,267 @@ function buildDecisionGuidance(args: {
     contradiction_guard: "Buyer-facing weaknesses are framed as negotiation leverage; seller-facing weaknesses are framed as items to disclose, mitigate, or photograph honestly rather than as selling strengths.",
   };
 }
+/**
+ * Normalized maker-mark shape used by engine.ts downstream paths
+ * (matchMakerMarks + dating-anchor lookup at the maker-mark branch in
+ * computeDatingEnvelope). Both the legacy 25-entry MAKER_MARKS array and
+ * the new 77-entry MAKER_ENTRIES library adapt to this shape so downstream
+ * code stays unchanged. Field shape mirrors the legacy schema verbatim
+ * because consumers were written against it.
+ */
+type NormalizedMakerMark = {
+  id: string;
+  maker: string;
+  mark_text_patterns: string[];
+  mark_type: string;
+  date_range: string;
+  confidence_weight: number; // 0–1 scale
+  dating_authority: "high" | "moderate" | "low";
+  source_library: "legacy" | "canonical"; // diagnostic — which array supplied the entry
+
+  // Path 3 (reasoning-rules wiring): rich-field passthrough from canonical
+  // entries. Legacy entries leave these undefined.
+  region?: string;
+  false_positive_warnings?: string[];
+  attribution_confidence_rule?: string;
+};
+
+/**
+ * Adapter — translates a MakerMarkEntry (new canonical) or a
+ * MakerMarkEntry_Legacy (legacy) into the NormalizedMakerMark shape.
+ * Per Block 23a + path 1/2 minimum-viable wiring: enables downstream
+ * consumption of all 77 canonical maker entries without changing the
+ * legacy 25-entry array or any downstream consumer code.
+ *
+ * Field translation rules (canonical → normalized):
+ *  - maker_name → maker
+ *  - known_mark_types[0] → mark_type (first declared type)
+ *  - period_associations[0] → date_range (period_label preferred; else
+ *    "{date_floor}–{date_ceiling}" or "{date_floor}–present")
+ *  - positive_authority → dating_authority + confidence_weight
+ *    (8 or 9 → high / 0.8–0.9; 6 or 7 → moderate / 0.6–0.7; else low)
+ */
+function normalizeMakerMark(entry: any): NormalizedMakerMark {
+  // Legacy entries have a 'maker' field; canonical entries have 'maker_name'.
+  if (typeof entry?.maker === "string" && typeof entry?.maker_name === "undefined") {
+    return {
+      id: entry.id,
+      maker: entry.maker,
+      mark_text_patterns: entry.mark_text_patterns || [],
+      mark_type: entry.mark_type || "unknown",
+      date_range: entry.date_range || "uncertain",
+      confidence_weight: typeof entry.confidence_weight === "number" ? entry.confidence_weight : 0.5,
+      dating_authority: entry.dating_authority || "moderate",
+      source_library: "legacy",
+    };
+  }
+
+  // Canonical MakerMarkEntry — derive legacy fields from new schema.
+  const firstPeriod = Array.isArray(entry?.period_associations) && entry.period_associations.length > 0
+    ? entry.period_associations[0]
+    : null;
+  const date_range = firstPeriod
+    ? (firstPeriod.period_label && firstPeriod.period_label.trim()
+        ? firstPeriod.period_label
+        : typeof firstPeriod.date_floor === "number" && typeof firstPeriod.date_ceiling === "number"
+          ? `${firstPeriod.date_floor}–${firstPeriod.date_ceiling}`
+          : typeof firstPeriod.date_floor === "number"
+            ? `${firstPeriod.date_floor}–present`
+            : "uncertain")
+    : "uncertain";
+
+  const auth = typeof entry?.positive_authority === "number" ? entry.positive_authority : 7;
+  const dating_authority: "high" | "moderate" | "low" =
+    auth >= 8 ? "high" : auth >= 6 ? "moderate" : "low";
+  const confidence_weight = Math.max(0.5, Math.min(0.95, auth / 10));
+
+  return {
+    id: entry.id,
+    maker: entry.maker_name || "Unknown maker",
+    mark_text_patterns: Array.isArray(entry.mark_text_patterns) ? entry.mark_text_patterns : [],
+    mark_type: Array.isArray(entry.known_mark_types) && entry.known_mark_types.length > 0
+      ? String(entry.known_mark_types[0])
+      : "unknown",
+    date_range,
+    confidence_weight,
+    dating_authority,
+    source_library: "canonical",
+    region: typeof entry.region === "string" ? entry.region : undefined,
+    false_positive_warnings: Array.isArray(entry.false_positive_warnings) && entry.false_positive_warnings.length > 0
+      ? entry.false_positive_warnings.slice()
+      : undefined,
+    attribution_confidence_rule: typeof entry.attribution_confidence_rule === "string" && entry.attribution_confidence_rule.trim().length > 0
+      ? entry.attribution_confidence_rule
+      : undefined,
+  };
+}
+
+/**
+ * Look up a maker entry by id across both libraries. Returns normalized
+ * shape or null. Canonical (new) library is checked first so new entries
+ * take precedence when ids overlap (none currently do — legacy ids start
+ * with 'globe_wernicke_', 'hitchcock_', etc.; new ids start with
+ * 'maker_mark_' — but the precedence rule is explicit for safety).
+ */
+function findMakerMarkById(id: string): NormalizedMakerMark | null {
+  if (!id) return null;
+  const canonical = MAKER_ENTRIES.find((e) => e.id === id);
+  if (canonical) return normalizeMakerMark(canonical);
+  const legacy = MAKER_MARKS.find((m) => m.id === id);
+  if (legacy) return normalizeMakerMark(legacy);
+  return null;
+}
+
+/**
+ * Returns the first pattern (verbatim from mark_text_patterns) that
+ * appears as substring in the raw text. Used by matchMakerMarks to know
+ * WHICH pattern fired so attribution rules can introspect the match.
+ */
+function findMatchingPattern(text: string, patterns: string[]): string | null {
+  const lowerText = String(text || "").toLowerCase();
+  for (const pattern of patterns || []) {
+    const p = String(pattern || "");
+    if (!p) continue;
+    if (lowerText.includes(p.toLowerCase())) return p;
+  }
+  return null;
+}
+
+/**
+ * Heuristic: does this string look like initials, monogram, or 2-3 character
+ * abbreviation? Per Universal Rule #2 (Initials Are Not Enough). Examples
+ * that match: "GW", "G.W.", "G W", "B&G", "JHB". Examples that don't:
+ * "Globe-Wernicke", "Berkey & Gay", "Lane Co".
+ */
+function looksLikeInitials(s: string): boolean {
+  const trimmed = String(s || "").trim();
+  if (trimmed.length === 0) return false;
+  if (trimmed.length > 6) return false;
+  // Strip common punctuation and whitespace, then count alphanumeric chars
+  const stripped = trimmed.replace(/[.\s&\-_/\\]/g, "");
+  if (stripped.length === 0) return false;
+  if (stripped.length > 4) return false;
+  // Should be all letters (initials) — digits suggest serial/model, not initials
+  if (!/^[A-Za-z]+$/.test(stripped)) return false;
+  return true;
+}
+
+/**
+ * Path 3 wiring — MAKER_ATTRIBUTION_REASONING_RULES applied to a text
+ * match. Implements the two most concrete universal rules:
+ *
+ *   - Universal Rule #2 (Initials Are Not Enough) — demotes any match
+ *     where the matched pattern is initials-like (≤4 letters, no full
+ *     word) to LOW confidence with explicit caveat
+ *   - Globe-Wernicke Attribution Correction (Rule #8) — operationalized
+ *     specific case of Rule #2 for Globe-Wernicke; if the entry is the
+ *     Globe-Wernicke canonical AND the match is initials-only ("GW",
+ *     "G.W.", "G W"), apply the Globe-Wernicke-specific caveat from the
+ *     seed rule_statement
+ *
+ * Other Universal Rules (City Not Maker, Association Not Single, Retail
+ * Not Maker, Line Name Not Maker) require static pattern lists that are
+ * not yet authored in the canonical library; left as pass-through for
+ * Path 4 data-authoring task. Per-entry false_positive_warnings carry
+ * maker-specific operationalizations meanwhile.
+ *
+ * Returns the demotion outcome: a new mark with adjusted confidence/
+ * authority, plus a caveat string and rule_name for traceability.
+ */
+type AttributionGuardResult = {
+  mark: NormalizedMakerMark;
+  rule_applied: string | null;
+  caveat: string | null;
+  attribution_suppressed: boolean;
+};
+
+function applyMakerAttributionRules(
+  matchedPattern: string,
+  mark: NormalizedMakerMark
+): AttributionGuardResult {
+  const trimmed = String(matchedPattern || "").trim();
+
+  // Rule #8 — Globe-Wernicke specific correction (most specific, check first)
+  if (
+    mark.id.includes("globe_wernicke") &&
+    looksLikeInitials(trimmed)
+  ) {
+    return {
+      mark: {
+        ...mark,
+        confidence_weight: 0.25,
+        dating_authority: "low",
+      },
+      rule_applied: "Globe-Wernicke Attribution Correction",
+      caveat: `Detected initials "${trimmed}" alone are insufficient for Globe-Wernicke attribution. Initials may appear as monogram, owner mark, drawer chalk mark, shipping mark, or retailer code. Globe-Wernicke attribution requires full Globe-Wernicke wording, a recognized label or tag, or maker-specific sectional bookcase evidence (sectional stacking system, distinctive hardware, characteristic placement).`,
+      attribution_suppressed: true,
+    };
+  }
+
+  // Rule #2 — Universal Initials Not Enough (general case)
+  if (looksLikeInitials(trimmed)) {
+    return {
+      mark: {
+        ...mark,
+        confidence_weight: Math.min(mark.confidence_weight, 0.3),
+        dating_authority: "low",
+      },
+      rule_applied: "Universal Rule: Initials Are Not Enough",
+      caveat: `Detected initials "${trimmed}" alone do not establish ${mark.maker} attribution. Initials may identify a maker only when they appear within a known maker-specific device, label, stencil, burn mark, paper tag, or model-code format. Surface as low-confidence pending full maker name, branded device, or supporting construction-and-form evidence.`,
+      attribution_suppressed: true,
+    };
+  }
+
+  // Pass-through: match is substantive (full name, known device, or
+  // characteristic wording). Confidence and authority preserved from
+  // the canonical entry's positive_authority calibration.
+  return {
+    mark,
+    rule_applied: null,
+    caveat: null,
+    attribution_suppressed: false,
+  };
+}
+
+/**
+ * Confidence Ladder (Rule #7) — maps a NormalizedMakerMark + match
+ * substantiveness to one of four tiers: HIGH / MEDIUM / LOW / CONFLICT.
+ * Per seed app-safe maker mark confidence ladder. Returns the tier
+ * label + a one-line evidence basis citation suitable for report prose.
+ *
+ * Conflict tier is reserved for downstream callers that have access to
+ * construction/material evidence and can detect mark-vs-construction
+ * mismatches; this function returns HIGH/MEDIUM/LOW based on the mark
+ * alone. Conflict detection lives in computeDatingEnvelope.
+ */
+function makerConfidenceLadderTier(
+  mark: NormalizedMakerMark,
+  attributionSuppressed: boolean
+): { tier: "HIGH" | "MEDIUM" | "LOW"; basis: string } {
+  if (attributionSuppressed) {
+    return {
+      tier: "LOW",
+      basis: "Attribution rule applied; initials/partial match alone is insufficient for confident attribution.",
+    };
+  }
+  if (mark.dating_authority === "high" && mark.confidence_weight >= 0.85) {
+    return {
+      tier: "HIGH",
+      basis: "Full maker name or known maker-specific device matched; date range derived from canonical period associations.",
+    };
+  }
+  if (mark.dating_authority === "high" || mark.confidence_weight >= 0.7) {
+    return {
+      tier: "MEDIUM",
+      basis: "Partial label match or moderate-confidence canonical entry; full attribution requires additional construction or form evidence.",
+    };
+  }
+  return {
+    tier: "LOW",
+    basis: "Weak or ambiguous match; treat as candidate evidence pending confirmation.",
+  };
+}
+
 function matchMakerMarks(rawText: string, observations: any[] = []) {
   const text = String(rawText || "").toLowerCase();
   if (!text) return [];
@@ -3936,25 +6446,82 @@ function matchMakerMarks(rawText: string, observations: any[] = []) {
   );
 
   if (!hasValidLabelEvidence) return [];
-  return MAKER_MARKS.filter((mark) =>
-    mark.mark_text_patterns.some((pattern) =>
-      text.includes(String(pattern).toLowerCase())
-    )
-  ).map((mark) => ({
-    type: "label",
-    clue: mark.id,
-    description: `Detected maker mark: ${mark.maker}. Mark type: ${mark.mark_type}. Dating reference: ${mark.date_range}.`,
-    confidence: Math.round(mark.confidence_weight * 100),
-    source_image: "phase0_visible_text",
-    hard_negative: false,
-    low_confidence_flag: mark.confidence_weight < 0.7,
-  }));
+
+  // Path 1+2 minimum-viable wiring (Block 23a follow-up): scan BOTH the
+  // canonical 77-entry MAKER_ENTRIES library and the legacy 25-entry
+  // MAKER_MARKS array. Canonical first so new entries take precedence when
+  // a maker_name collision exists; legacy fallback ensures any maker still
+  // only present in the old shim continues working.
+  //
+  // Path 3 (reasoning-rules wiring): for each match we now track WHICH
+  // pattern fired (via findMatchingPattern) so applyMakerAttributionRules
+  // can introspect the match and demote/qualify low-specificity matches
+  // per Universal Rule #2 (Initials Are Not Enough) and Rule #8
+  // (Globe-Wernicke Correction).
+  type Matched = { mark: NormalizedMakerMark; matched_pattern: string };
+
+  const canonicalMatches: Matched[] = [];
+  for (const entry of MAKER_ENTRIES) {
+    const patterns = Array.isArray((entry as any).mark_text_patterns)
+      ? ((entry as any).mark_text_patterns as string[])
+      : [];
+    const matched = findMatchingPattern(text, patterns);
+    if (matched) {
+      canonicalMatches.push({ mark: normalizeMakerMark(entry), matched_pattern: matched });
+    }
+  }
+
+  const legacyMatches: Matched[] = [];
+  for (const legacy of MAKER_MARKS) {
+    const matched = findMatchingPattern(text, legacy.mark_text_patterns);
+    if (matched) {
+      legacyMatches.push({ mark: normalizeMakerMark(legacy), matched_pattern: matched });
+    }
+  }
+
+  // Dedupe by maker+id combo (canonical first; legacy duplicates skipped
+  // when same id appears in both, which currently it never does — legacy
+  // ids start with maker name, canonical ids start with 'maker_mark_').
+  const seenMakers = new Set<string>();
+  const combined: Matched[] = [];
+  for (const m of [...canonicalMatches, ...legacyMatches]) {
+    const dedupeKey = `${m.mark.maker.toLowerCase()}::${m.mark.id}`;
+    if (seenMakers.has(dedupeKey)) continue;
+    seenMakers.add(dedupeKey);
+    combined.push(m);
+  }
+
+  return combined.map(({ mark, matched_pattern }) => {
+    // Path 3: apply attribution rules to the matched pattern
+    const guarded = applyMakerAttributionRules(matched_pattern, mark);
+    const finalMark = guarded.mark;
+    const ladder = makerConfidenceLadderTier(finalMark, guarded.attribution_suppressed);
+
+    // Description differs by suppression state. Suppressed attributions
+    // surface as candidate evidence with the rule caveat rather than as
+    // "Detected maker mark." This prevents the report from confidently
+    // attributing on initials-alone matches.
+    const description = guarded.attribution_suppressed && guarded.caveat
+      ? `Possible ${finalMark.maker} match (low confidence; ${ladder.tier} per Confidence Ladder). ${guarded.caveat}`
+      : `Detected maker mark: ${finalMark.maker}. Mark type: ${finalMark.mark_type}. Dating reference: ${finalMark.date_range}. Confidence tier: ${ladder.tier}.`;
+
+    return {
+      type: "label",
+      clue: finalMark.id,
+      description,
+      confidence: Math.round(finalMark.confidence_weight * 100),
+      source_image: "phase0_visible_text",
+      hard_negative: false,
+      low_confidence_flag: finalMark.confidence_weight < 0.7,
+    };
+  });
 }
 export const PE = {
   async callClaude(
     system: string,
     content: any[],
-    mode: "field_scan" | "full_analysis"
+    mode: "field_scan" | "full_analysis",
+    maxTokensOverride?: number
   ): Promise<ClaudeResult> {
     try {
       // Block 11: raised from 8000/4000 to remove output-truncation risk on
@@ -3963,13 +6530,30 @@ export const PE = {
        // 8000-token ceiling was clipping rich-piece scans. Sonnet 4.6 ceiling
        // is 64000 — 16000 leaves substantial headroom. Cost impact metered
        // and captured for subscription-pricing review in P4-11 backlog.
-       const max_tokens = mode === "full_analysis" ? 16000 : 8000;
+       // Optional maxTokensOverride parameter added for recovery / deep-
+       // extraction passes that need additional headroom; defaults to the
+       // mode-based ceiling when omitted.
+       const max_tokens = maxTokensOverride ?? (mode === "full_analysis" ? 16000 : 8000);
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens,
+          // temperature: 0 forces near-deterministic LLM output for the
+          // same prompt + image input. The Anthropic API default is 1.0,
+          // which produced cascading non-determinism in our stress test:
+          // identical photos yielded different P0 observations across
+          // runs, which propagated through every downstream phase (dating,
+          // form attribution, valuation, recommendation) to produce
+          // visibly different reports for the same scan. For an evidence-
+          // driven appraisal app this destroys user trust. At temperature
+          // 0 we're not 100% deterministic (model-serving infrastructure
+          // has slight stochasticity) but observations are ~90-95%
+          // reproducible across runs vs ~50-70% at default temp. Applies
+          // to both the primary p0 perception call and the recovery
+          // runDeepExtraction call since both go through callClaude.
+          temperature: 0,
           system,
           messages: [{ role: "user", content }],
         }),
@@ -4322,13 +6906,66 @@ Important reasoning rules:
 - Multiple keys may apply to a single piece — emit each as a separate observation.
 
 Preferred form-signal keys:
-seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, roos_label, lane_label, maker_label.
+seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, clock_case_form, roos_label, lane_label, maker_label.
+
+Preferred clock-evidence keys (use whenever the piece is a clock — mantel, shelf, kitchen, parlor, tall case, or wall clock):
+clock_case_form (any clock case), arched_glazed_dial_door (round-top/arch-top mantel clock, c. 1870-1910), turned_spindle_gallery (Victorian gingerbread, c. 1875-1900), scrolled_side_corbels (Victorian shelf clock ornament, c. 1870-1900), reverse_painted_lower_tablet (American Victorian shelf clock, c. 1850-1900), winding_arbors (2 = 8-day time-and-strike, 1 = time-only, 3 = time-strike-chime), striking_mechanism (mechanical strike train), pendulum_bob_cast (decorative cast brass pendulum bob, c. 1860-1910), brass_dial_bezel (American mantel clock, c. 1860-1920), roman_numeral_dial (Roman numerals on paper/enamel dial, pre-1920 dominant), metal_hands (steel or blued-steel clock hands).
 
 Preferred evidence-library keys (use whenever the evidence is visible):
 hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_joint, frame_and_panel_sides, solid_plank_back, hand_forged_nail, cut_nail, wire_nail, phillips_screw, staple_fastener, slotted_screw, pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter, shellac_crazing, shellac_intact, polyurethane, lacquer_finish, painted_metal_finish, refinished_surface, porcelain_caster, modern_caster, decorative_bail_pull, round_wood_knob, modern_concealed_hinge, swivel_mechanism, height_adjustment_mechanism, stamped_metal_bracket, lock_escutcheons, plywood_structural, plywood_drawer_bottom, bent_molded_plywood, cedar_lining, thick_veneer, solid_wood_construction, sheet_back_panel.
 
 Preferred upholstery-evidence keys (Block 12 — use whenever the piece has visible upholstery):
 coil_spring, hand_tied_coil_spring, serpentine_spring, drop_in_spring_unit, marshall_pocket_coil, no_spring_seat, jute_webbing, elastic_webbing, horsehair_stuffing, cotton_batting, foam_padding, polyurethane_foam, feather_down_fill, button_tufting, nailhead_trim, hand_tacks, upholstery_staple_construction, velvet_cover, damask_cover, haircloth_cover, leather_cover, vinyl_cover, chintz_cover, needlepoint_cover, brocade_cover, jacquard_cover.
+
+Preferred non-wood material, joinery, and condition keys (Batch 1-3 non-wood taxonomy — use whenever the piece is primarily metal, wicker, or mixed-material rather than wood):
+
+Metal joining methods (emit whichever is visible at frame intersections, tube junctions, or seam lines):
+- hand_forged_metal_joint — visible hammer marks at the joint, irregular forge fusion line, slight bulge or upset where pieces meet, forge scale on adjacent surfaces. Pre-1900 wrought-iron dominant.
+- riveted_metal_joint — domed, flush, countersunk, or decorative rivet heads visible at joints; repeating rivet pattern along seams or at structural junctions. c. 1850-1940 industrial.
+- brazed_metal_joint — thin brass-colored infill line at lap or butt seam; brass fillet at the joint corner; color contrast between brass infill and parent metal. Especially diagnostic on brass beds and brass lighting.
+- soldered_metal_joint — dull silver or gray solder line at lap or butt seam; small soft bead or fillet. Common in tinware, pewter, lightweight brass, lighting bodies.
+- welded_joint — visible weld bead with rippled scallop or fish-scale pattern (oxyacetylene) or coarser stick-weld pattern (arc); heat-discoloration zone around the joint. Post-1910 widespread.
+- spot_welded_joint — small circular dimples or discolored spots at regular intervals along an overlapped sheet-metal seam, typically 1/4-1/2 inch diameter spaced 1-3 inches apart. Post-1925 industrial.
+- mig_tig_welded_joint — clean uniform weld bead with fine ripple (TIG: stacked-dime appearance; MIG: smoother continuous bead); minimal spatter; minimal heat-discoloration zone. Post-1948 / TIG post-1941. PRIMARY REPRODUCTION-DETECTION SIGNAL on pieces styled as 19th-c. wrought iron or Victorian brass.
+- crimped_folded_seam — raised, folded, or grooved seam visible along sheet-metal joint with no solder/braze/weld/rivets. Post-1850 industrial sheet-metal.
+- wire_wrapped_metal_joint — visible wire wrap, banding, or coil at the joint; common in wicker-and-iron hybrid construction and decorative lighting bands.
+
+Metal materials (emit whenever metal frame components are visible):
+- metal_frame, wrought_iron, cast_iron, brass_frame, tubular_steel, chrome_frame, painted_metal_finish.
+
+Metal wear and condition signals (emit when visible — important for restoration assessment and reproduction detection):
+- rust_pitting — active iron or steel oxidation with surface pitting.
+- plating_loss — chrome, nickel, or brass plating wear-through to base metal. Note: thinner plating wearing through to steel is a period-brass-bed signal c. 1880-1920; uniform thick plating without wear-through is a modern-reproduction signal.
+- joint_corrosion — corrosion concentrated at metal joints (galvanic, crevice, or stress).
+- weld_repair_visible — a modern weld over an original joint of a different type; record the weld as restoration evidence and preserve the original joining method as the dating signal.
+- powder_coat_overspray — modern powder-coat finish (post-1960s) covering an earlier metal piece; obscures original finish and surface wear.
+- bent_or_sprung_metal — permanent deformation from use or stress.
+
+Wicker era / style dating anchors (emit when wicker, rattan, reed, or paper-fiber construction is visible):
+- lloyd_loom_paper_fiber — uniform twisted-paper strands wrapped around a wire core; visible at broken strands and frame edges. Post-1917 HARD anchor (Marshall B. Lloyd 1917 patent; Heywood-Wakefield production). A piece otherwise styled or attributed pre-1917 cannot be Lloyd loom in original construction.
+- bar_harbor_style_wicker — open airy weave, geometric forms, minimal curlicue ornament, often white-painted or natural finish. c. 1900-1920 American resort wicker era.
+- victorian_curlicue_wicker — heavy ornament with scrolls, curlicues, hearts, fans, photo-frame insets, densely decorated backs. c. 1880-1900 Victorian.
+- mid_century_streamlined_wicker — lighter forms, simpler curves, often paired with steel or aluminum frames; often imported Filipino or Asian-Pacific work. c. 1945-1970.
+- paper_fiber_construction — broader category that includes Lloyd loom paper fiber; uniform extruded paper strands vs. the irregular tapered profile of natural plant fibers.
+
+Wicker weave-pattern signals (sub-diagnostic; combine with era/material anchors above):
+- wicker_weave_close — tight close weave with minimal gaps between strands; quality/formal production.
+- wicker_weave_open — open or airy weave with visible gaps between strands; Bar Harbor era signal.
+- wicker_weave_basket — basket-weave pattern (alternating over-under in groups of two or more strands).
+
+Wicker materials (existing keys; emit whenever visible):
+- woven_body, rattan_frame, cane_panels.
+
+Wicker condition signals:
+- wicker_strand_breakage — broken, missing, or unraveled strands.
+- wicker_paint_buildup — multiple paint layers obscuring original finish, weave detail, and material identification.
+
+Critical observation discipline for non-wood pieces:
+1. ALWAYS describe joining method visible at frame intersections — it is often the strongest dating signal on metal furniture.
+2. Distinguish reproductions: MIG/TIG-clean bead on Victorian-styled iron or brass = post-1948 reproduction; uniform thick brass plating with no wear-through = often modern reproduction; powder-coat finish on a piece styled pre-1960s = refinish or reproduction.
+3. Preserve original joining method as the dating signal even if later weld repair is present — record the repair separately as weld_repair_visible.
+4. On wicker: distinguish paper fiber (uniform extruded strands, post-1917) from natural reed/rattan (irregular tapered plant fibers). This single distinction often controls dating.
+5. Report era-anchor markers (lloyd_loom_paper_fiber, bar_harbor_style_wicker, victorian_curlicue_wicker) even when uncertain — the engine will weigh them appropriately.
 
 ${UPHOLSTERY_CANONICAL_APPENDIX}
 
@@ -4474,6 +7111,123 @@ debug: {
     return res;
   },
 
+  /**
+   * Deep-extraction recovery pass. Triggered by runAllPhases when the
+   * primary p0() scan returns zero structured observations. Re-prompts
+   * the LLM with a permissive "describe everything" instruction and an
+   * extended token budget (24000 vs the 16000 full-analysis default) to
+   * recover observations from photos that the structured-schema first
+   * pass couldn't extract. Returns observations + perception in the same
+   * shape as p0() for drop-in substitution. Recovery typically takes
+   * 25-40 seconds; only fires on the rare empty-observations case (est.
+   * 1-3% of scans in steady state, higher during prompt-development).
+   */
+  async runDeepExtraction(
+    images: any[],
+    intake: any
+  ): Promise<{
+    observations: Observation[];
+    perception: Perception;
+    recovered: boolean;
+    recovery_reason: string;
+    raw: string | null;
+  }> {
+    const recoverySystem = `You are an expert American furniture appraiser performing a RECOVERY extraction pass. The initial structured-schema scan of these photos returned zero usable observations. This second pass is designed to capture ANY visible evidence, even when uncertain or partial.
+
+INSTRUCTIONS:
+
+1. Look at every photo in careful detail. Do not skip any image. For each photo, scan systematically: overall form → primary materials → joinery visible at corners and intersections → hardware (knobs, pulls, hinges, casters) → fasteners (nail or screw heads) → finish character → wear and condition → any visible marks, labels, stamps, or text.
+
+2. Be permissive about uncertainty. An observation with confidence 20 and a partial description is far more valuable than no observations at all. Use low confidence (20-40) freely for uncertain observations. Use higher confidence (60-90) only for clear and unambiguous evidence.
+
+3. Return a JSON object with this exact structure:
+
+{
+  "perception": {
+    "labels": [],
+    "maker_names": [],
+    "materials": [],
+    "forms": [],
+    "functional_features": [],
+    "style_cues": [],
+    "construction_cues": [],
+    "condition_cues": [],
+    "visible_text": []
+  },
+  "observations": [
+    {
+      "type": "<form|material|joinery|fastener|hardware|finish|toolmark|wood|label|condition|style|context>",
+      "clue": "<one of the canonical clue keys below, or null if uncertain>",
+      "description": "<plain-language description of what you see — be specific about what photo and what part of the piece>",
+      "confidence": <number 0-100>,
+      "source_image": "<image identifier or 'unknown'>",
+      "hard_negative": false,
+      "low_confidence_flag": <true if confidence < 50, otherwise false>
+    }
+  ]
+}
+
+4. CRITICAL: Return AT LEAST ONE observation. If you can see furniture at all — any form, any material, any construction detail — emit observations for what you see.
+
+5. Common clue keys to use when applicable (otherwise leave clue null and put the detail in description):
+   - Form: seating_surface, backrest_present, drawer_present, door_present, mirror_present, metal_bed_frame, armchair_form, cabriole_leg, secondary_surface, writing_surface, pedestal_column, open_shelving
+   - Material: solid_wood_construction, plywood_structural, metal_frame, wrought_iron, cast_iron, brass_frame, tubular_steel, chrome_frame, glass_top, marble_top, laminate_surface, formica_surface, woven_body, rattan_frame, cane_panels, paper_fiber_construction, lloyd_loom_paper_fiber
+   - Joinery: hand_cut_dovetails, machine_dovetails, dowel_joinery, mortise_and_tenon, welded_joint, riveted_metal_joint, brazed_metal_joint, soldered_metal_joint, mig_tig_welded_joint, spot_welded_joint, hand_forged_metal_joint
+   - Fastener: hand_forged_nail, cut_nail, wire_nail, slotted_screw, phillips_screw, staple_fastener
+   - Hardware: porcelain_caster, modern_caster, decorative_bail_pull, round_wood_knob, modern_concealed_hinge, swivel_mechanism, lock_escutcheons
+   - Finish: shellac_crazing, shellac_intact, polyurethane, lacquer_finish, painted_metal_finish, refinished_surface
+   - Toolmark: pit_saw_marks, circular_saw_arcs, band_saw_lines, hand_plane_chatter
+   - Condition: rust_pitting, plating_loss, joint_corrosion, wicker_strand_breakage, weld_repair_visible
+   - Label: maker_label, roos_label, lane_label
+
+6. If the photos genuinely show no furniture (entirely blank, dark beyond recovery, or non-furniture content), emit one observation: {"type": "context", "clue": null, "description": "Photos do not show recognizable furniture content. [Brief description of what is visible instead.]", "confidence": 80, "source_image": "unknown", "hard_negative": false, "low_confidence_flag": false}
+
+Begin recovery extraction now. Do not return the empty observations array under any circumstances.`;
+
+    const result = await this.callClaude(
+      recoverySystem,
+      [
+        ...this.imgs(images),
+        { type: "text", text: `Intake context: ${buildIntakeSummary(intake)}` },
+      ],
+      "full_analysis",
+      24000
+    );
+
+    const parsed = result.ok
+      ? result.parsed
+      : result.error && (result.error as any).raw
+        ? parseModelJson(String((result.error as any).raw).replace(/^json\s*/i, ""))
+        : null;
+
+    const observations = parsed ? normalizeObservationsFromParsed(parsed) : [];
+    const perception = parsed
+      ? normalizePerception(parsed, observations)
+      : {
+          labels: [],
+          maker_names: [],
+          materials: [],
+          forms: [],
+          functional_features: [],
+          style_cues: [],
+          construction_cues: [],
+          condition_cues: [],
+          visible_text: [],
+        } as Perception;
+
+    return {
+      observations,
+      perception,
+      recovered: observations.length > 0,
+      recovery_reason: result.ok
+        ? "p0_returned_empty"
+        : (result.error && (result.error as any).type) === "no_valid_json"
+          ? "p0_callClaude_no_valid_json"
+          : "p0_callClaude_failed",
+      raw: result.ok ? result.raw || null : ((result.error as any)?.raw || null),
+    };
+  },
+
   p1(caseData: any, intake: any, digest: EvidenceDigest, images: any[]): Phase1Gate {
     const missing = computeMissingEvidence(images);
     const count = digest.observation_count;
@@ -4487,6 +7241,65 @@ debug: {
     if (hasConstruction) pct += 15;
     if (hasLabel) pct += 20;
     pct = clamp(pct, 25, 94);
+
+    // Stress-test fix #4 refined (2026-05-20): confidence cap based on
+    // DATING-STRUCTURAL evidence categories, not all "structural" categories.
+    //
+    // Original fix (2c6c72b) counted construction, joinery, fastener,
+    // toolmark, hardware, material, finish, wood as "structural" — and a
+    // chair with construction (5 clues, all observed from front/side
+    // photos) + material (visible wood species) + finish (surface
+    // observation) still hit the 88% / "High" cap. Appraiser feedback:
+    // "production-date confidence should remain moderate until construction
+    // evidence is available." Construction evidence = the things photos
+    // typically DON'T capture without intentional detail shots: joinery,
+    // fasteners, tool marks, hardware close-ups, wood-evidence beyond
+    // surface identification.
+    //
+    // Refined distinction:
+    //   DATING-STRUCTURAL categories — require detail photos (underside,
+    //   close-ups, hardware shots) to surface, and genuinely anchor
+    //   dating confidence:
+    //     joinery, fastener, toolmark, hardware, wood
+    //
+    //   SURFACE-STRUCTURAL categories — observable from typical front/
+    //   side photos, useful but don't anchor dating without the
+    //   dating-structural layer:
+    //     construction, material, finish
+    //
+    // Cap progression now keys ONLY on dating-structural categories:
+    //   0 dating-structural categories  → cap at 72 (Moderate)
+    //   1 dating-structural category    → cap at 80 (Moderate)
+    //   2 dating-structural categories  → cap at 86 (High threshold)
+    //   3+ dating-structural categories → cap at 94 (full High allowed)
+    //
+    // Effect on the French Louis XVI medallion chair scan that surfaced
+    // this refinement: chair has 0 dating-structural categories (only
+    // construction / material / finish observations from exterior).
+    // Cap drops from 88 to 72 — honest Moderate confidence reflecting
+    // the missing dating-detail photos.
+    // Canonical (plural) category names — must match the normalized
+    // observation types in digest.by_type (see canonicalObservationType).
+    const DATING_STRUCTURAL_CATEGORIES = [
+      "joinery",
+      "fasteners",
+      "toolmarks",
+      "hardware",
+      "materials",
+    ];
+    const datingStructuralCount = DATING_STRUCTURAL_CATEGORIES.filter((cat) => {
+      const observations = digest.by_type[cat] || [];
+      return observations.length > 0;
+    }).length;
+    const structuralCap =
+      datingStructuralCount === 0
+        ? 72
+        : datingStructuralCount === 1
+          ? 80
+          : datingStructuralCount === 2
+            ? 86
+            : 94;
+    pct = Math.min(pct, structuralCap);
 
     const next: string[] = [];
 
@@ -4538,15 +7351,40 @@ if (missing.label_photo) {
   next.push("Maker's mark or label, if present");
 }
  
+    // Sufficiency summary — surfaces the dating-structural-evidence reality
+    // so the user understands why confidence is what it is. When the
+    // photos don't capture dating-detail evidence (joinery, fasteners,
+    // toolmarks, hardware close-ups, underside), the message explicitly
+    // notes that the dating side is moderate even if style / form / label
+    // are strong. Per stress-test fix #4 refined — addresses the
+    // appraiser observation that style confidence and dating confidence
+    // were being blended together too aggressively.
+    let sufficiencySummary: string;
+    if (datingStructuralCount === 0) {
+      sufficiencySummary = hasLabel
+        ? "Label evidence anchors the identification. Dating confidence remains moderate without detail-photo evidence (joinery, fasteners, toolmarks, hardware close-ups, or underside)."
+        : hasForm
+          ? "Visible form and style evidence support a working identification. Dating confidence remains moderate until detail-photo evidence is captured (joinery, fasteners, hardware close-ups, underside)."
+          : "Evidence remains broad. More visible form, construction-detail, or label evidence would materially improve the result.";
+    } else if (datingStructuralCount === 1) {
+      sufficiencySummary = hasLabel
+        ? "Label evidence anchors the identification; one dating-detail evidence category present. Additional joinery, fastener, or hardware detail would refine the dating envelope."
+        : "Working identification supported by one dating-detail evidence category. Additional joinery, fastener, or hardware close-ups would refine the dating envelope.";
+    } else if (datingStructuralCount === 2) {
+      sufficiencySummary = hasLabel
+        ? "Label plus two dating-detail evidence categories give the assessment a strong anchor."
+        : "Two dating-detail evidence categories support a working identification and dating envelope.";
+    } else {
+      sufficiencySummary = hasLabel
+        ? "Rich evidence across label and multiple dating-detail categories gives the assessment its strongest anchor."
+        : "Multiple dating-detail evidence categories (joinery, fasteners, toolmarks, hardware, wood) support both identification and dating with high confidence.";
+    }
+
     return {
       confidence_cap: toConfidenceBand(pct),
       confidence_cap_pct: pct,
       missing_evidence: missing,
-      evidence_sufficiency_summary: hasLabel
-        ? "Label evidence gives the assessment a strong anchor."
-        : hasForm
-        ? "Visible form evidence supports a working identification; structural details can refine date and originality."
-        : "Evidence remains broad; more visible form or construction detail would improve the result.",
+      evidence_sufficiency_summary: sufficiencySummary,
       can_run: { dating: count > 0, form: count > 0, weighting: count > 0, conflict_check: count > 1, valuation_ready: count > 1 },
       next_best_evidence: uniq(next).slice(0, 5),
     };
@@ -4615,8 +7453,19 @@ if (missing.label_photo) {
       .filter((r) => r !== bestForm)
       .slice(0, 3)
       .map((r) => r.form);
+    // alternative_form_ids must exclude the picked form. The reference-
+    // equality filter (.filter((r) => r !== bestForm)) is insufficient
+    // because scoreForms can return multiple ranked entries that resolve
+    // to the same canonical form_id (e.g., "Dresser" label and "Chest of
+    // drawers" label both → form_chest_of_drawers). Without the form_id
+    // dedupe, alternative_form_ids would contain the picked form's own id
+    // — which broke evaluateCousinContrast self-matching before its
+    // defensive filter was added (a1580ec discovery). Fixing here at the
+    // source so all downstream consumers benefit.
+    const bestFormId = bestForm?.form_id ?? null;
     const alternative_form_ids = ranked
       .filter((r) => r !== bestForm)
+      .filter((r) => r.form_id !== bestFormId)
       .slice(0, 3)
       .map((r) => r.form_id)
       .filter((id): id is string => id !== null);
@@ -4657,6 +7506,12 @@ if (missing.label_photo) {
     // authoring surfaces additional hybrid identities).
     const hybrid = evaluateHybridForm(form_id);
 
+    // Parking-lot 2d lean wiring: cousin_form_contrasts from the picked
+    // form, matched against p3-scored alternative form names/ids. Surfaces
+    // in the report for "why this form, not that one" explanation. Does
+    // NOT influence scoring.
+    const cousin_contrasts = evaluateCousinContrast(form_id, alternative_form_ids);
+
     // Block 2a: structured style attribution from styleFamilies.ts.
     // Falls back to engine-derived style strings when no canonical match.
     // Block 14: frame-filtered clue keys so style attribution can't see
@@ -4664,7 +7519,57 @@ if (missing.label_photo) {
     // frame styles.
     const styleRanked = attributeStyle(frameDigest.clue_keys || [], observationDescriptions);
     const style_attribution = styleRanked[0] ?? null;
-    const style_alternatives = styleRanked.slice(1, 4);
+
+    // Stress-test fix #10 (2026-05-20): suppress adjacent revival-family
+    // bleed in surfaced alternatives.
+    //
+    // Issue surfaced by the Colonial Revival Queen Anne chair scan: the
+    // engine surfaced "Spanish Colonial Revival / Mission Revival" as an
+    // alternative because it matched the same two generic tokens
+    // ("colonial", "revival") that Colonial Revival matched. Same matched
+    // terms, same confidence — but Spanish Colonial has no distinct
+    // identifying evidence (no "spanish", no "mission" tokens fired).
+    // Reports read as a cluster of stylistic possibilities rather than
+    // disciplined evidence-first conclusions.
+    //
+    // Two-part filter applied before slicing to 3:
+    //
+    //   1. Confidence floor (0.55) — alternatives below this threshold
+    //      represent weak matches that add noise without information.
+    //      The wave search already uses 0.4 as its floor; alternatives
+    //      surfaced in the user-facing report deserve a higher bar.
+    //
+    //   2. Matched-term distinctness — alternatives whose matched_terms
+    //      are entirely subsumed by terms already seen in the primary
+    //      attribution or in higher-confidence alternatives are
+    //      suppressed. The alternative must contribute at least one
+    //      DISTINCT matched term to be surfaced. This filters the
+    //      Spanish-Colonial-Revival-piggybacking-on-Colonial-Revival
+    //      case directly.
+    //
+    // Both filters apply only to user-facing alternative surfacing.
+    // Internal logic (cousin contrasts, style-wave seeding, etc.) that
+    // operates on the full styleRanked list is unaffected.
+    const ALT_CONFIDENCE_FLOOR = 0.55;
+    const seenMatchedTerms = new Set<string>();
+    if (style_attribution && Array.isArray((style_attribution as any).matched_terms)) {
+      for (const t of (style_attribution as any).matched_terms as string[]) {
+        seenMatchedTerms.add(t.toLowerCase());
+      }
+    }
+    const style_alternatives: StyleAttribution[] = [];
+    for (const alt of styleRanked.slice(1)) {
+      if (style_alternatives.length >= 3) break;
+      if ((alt.confidence ?? 0) < ALT_CONFIDENCE_FLOOR) continue;
+      const altTerms = Array.isArray((alt as any).matched_terms)
+        ? ((alt as any).matched_terms as string[]).map((t) => t.toLowerCase())
+        : [];
+      const hasDistinctTerm =
+        altTerms.length === 0 || altTerms.some((t) => !seenMatchedTerms.has(t));
+      if (!hasDistinctTerm) continue;
+      style_alternatives.push(alt);
+      for (const t of altTerms) seenMatchedTerms.add(t);
+    }
 
     // Block 9: controlled style-supporting evidence. Pulls forward undated
     // observations whose clues are categorically aligned with the surfaced
@@ -4705,6 +7610,7 @@ if (missing.label_photo) {
       style_attribution,
       style_alternatives,
       hybrid,
+      cousin_contrasts,
       style_supporting_evidence,
     };
   },
@@ -4768,6 +7674,7 @@ if (missing.label_photo) {
   });
 
   const weighted_clues = digest.observations
+    .filter((o) => !o.negated)
     .map((o) => {
       const meta = getClueMeta(o.clue);
       const clue = o.clue || o.description;
@@ -4935,6 +7842,63 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
   const clues = new Set(digest.clue_keys || []);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
+  // Transitional-piece reframing: when two style attributions OR two waves
+  // from different families surface AND their date ranges intersect, treat
+  // the intersection as a CONFIRMATION signal, not a conflict. Surfaces as
+  // supporting_context with framing the appraiser would actually use
+  // ("both vocabularies were in production c. YYYY–YYYY") rather than the
+  // legacy "competing attributions" framing that read as engine confusion.
+  // When a canonical named transitional period covers the pair (per
+  // lib/constraints/transitionalPeriods.ts), use its diagnostic_caution_text
+  // for trade-period framing instead of the generic transitional convergence
+  // wording.
+  const bestIntersection = form.best_style_intersection ?? null;
+  if (bestIntersection) {
+    const namedPeriod = bestIntersection.named_transitional_period;
+    if (namedPeriod && namedPeriod.diagnostic_caution_text) {
+      supporting_context.push(namedPeriod.diagnostic_caution_text);
+    } else {
+      const tightnessQualifier =
+        bestIntersection.width <= 25
+          ? "tightly anchors"
+          : bestIntersection.width <= 40
+          ? "anchors"
+          : "is broadly consistent with";
+      const layerNoun = bestIntersection.kind === "wave" ? "revival waves" : "style families";
+      supporting_context.push(
+        `Transitional convergence — both ${bestIntersection.participants.join(" and ")} ${layerNoun} were in production c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}; the overlap ${tightnessQualifier} a transitional dating window of c. ${bestIntersection.date_floor}–${bestIntersection.date_ceiling}.`
+      );
+    }
+    if ((form.style_intersections ?? []).length > 1) {
+      const others = (form.style_intersections ?? []).slice(1, 3);
+      for (const o of others) {
+        supporting_context.push(
+          `Additional ${o.kind}-level overlap — ${o.source_summary}.`
+        );
+      }
+    }
+  }
+
+  // Impossible-pair detection: when two style attributions fire whose
+  // canonical compatibility class is "impossible" (no historical
+  // co-production window per lib/constraints/styleCompatibility.ts),
+  // surface as a p5 conflict with reproduction-signal framing. This is
+  // independent of intersection math because impossible pairs usually
+  // don't have overlapping date envelopes.
+  const impossiblePairs = detectImpossiblePairs(
+    form.style_attribution ?? null,
+    form.style_alternatives ?? []
+  );
+  for (const ip of impossiblePairs) {
+    const text =
+      ip.compatibility_entry.diagnostic_caution_text ??
+      `${ip.participants[0]} and ${ip.participants[1]} both attribute to this piece, but these styles did not historically co-occur. This usually indicates a reproduction, decorator's eclectic mix, or LLM mis-read — verify the attributions and/or look for revival-era construction evidence.`;
+    conflicts.push(`Impossible style co-attribution: ${text}`);
+    resolutions.push(
+      `Per canonical style compatibility matrix, ${ip.participants[0]} and ${ip.participants[1]} have no historical co-production window. Down-weight both attributions and treat the piece as a revival, reproduction, or eclectic later work pending further evidence.`
+    );
+  }
+
   // Block 7a sub-task 2: detect conflicts via numeric date-range incompatibility
   // (not string mismatch). Only flag pairs whose parsed year ranges are disjoint
   // (e.g., pre-1860 alongside post-1934 = genuine conflict). Same-direction
@@ -5071,8 +8035,12 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     weighting.weighted_clues || [],
     form.style_attribution ?? null,
     form.style_waves ?? [],
-    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null },
-    formBoundaries
+    // Form layer = the form's catalog production span, NOT this analysis's own
+    // computed date. Re-injecting the computed date made the form layer a
+    // circular, high-authority echo of the conclusion it was meant to support.
+    getFormDatingEnvelope(form.form_id ?? null),
+    formBoundaries,
+    form.best_style_intersection ?? null
   );
 
   return {
@@ -5089,9 +8057,9 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
       ...(form.style_supporting_evidence && form.style_supporting_evidence.length > 0
         ? [`Supporting ${form.style_context ?? "style"} attribution: ${form.style_supporting_evidence.map((s) => s.display_label).join(", ")} (these features are characteristic of the style but don't independently narrow dating).`]
         : []),
-      `Marketplace resale lane: ${valuationBreakdown.marketplace.range}.`,
-      `Full valuation breakdown: Dealer Buy ${valuationBreakdown.dealer_buy.range}; Quick Sale ${valuationBreakdown.quick_sale.range}; Marketplace ${valuationBreakdown.marketplace.range}; As-Found Retail ${valuationBreakdown.as_found_retail.range}; Restored Retail ${valuationBreakdown.restored_retail.range}.`,
-      `Sellability score: ${vb.sellability_score}/100.`,
+      // Resale lane / valuation breakdown / sellability score now render in
+      // the dedicated Resale Valuation section in app/page.tsx (full_analysis
+      // mode); removed from supported_findings to avoid visual duplication.
     ],
     tentative_findings: [
       ...(conflict.conflicts || []),
@@ -5119,17 +8087,50 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
   // (P0 debug logs removed in Block 0.55; re-instrument as needed)
 
   if (!p0.observations || p0.observations.length === 0) {
-    p0.observations = [
-      {
-        type: "form",
-        clue: "fallback_form",
-        description: "Furniture is visible, but Phase 0 did not return structured observations.",
-        confidence: 20,
-        source_image: "fallback",
-        hard_negative: false,
-        low_confidence_flag: true,
-      },
-    ];
+    // Recovery pass: deep-extraction re-prompt with permissive instructions
+    // and extended token budget. Fires only when the primary p0() scan
+    // returned zero observations (est. 1-3% steady-state, higher during
+    // prompt development). Adds ~25-40 seconds when triggered; only paid
+    // when needed. Prior behavior emitted a single fallback_form placeholder
+    // observation that downstream scoreForms never consumed — silent dead end.
+    const recovery = await this.runDeepExtraction(images, intake);
+    stage_outputs.p0_recovery = recovery;
+    onPhase?.("p0_recovery", recovery);
+
+    if (recovery.recovered) {
+      p0.observations = recovery.observations;
+      p0.perception = recovery.perception;
+      p0.note = "Phase 0 used deep-extraction recovery after initial pass returned no observations.";
+      (p0 as any).recovery_metadata = {
+        recovered: true,
+        recovery_reason: recovery.recovery_reason,
+        observation_count: recovery.observations.length,
+        triggered_at: new Date().toISOString(),
+      };
+    } else {
+      // Recovery also returned nothing — true last-resort placeholder.
+      // Downstream consumers should treat fallback_form as a signal to
+      // suppress confident form claims and surface a "photos didn't yield
+      // structured observations, please re-shoot with better lighting/angle"
+      // message rather than emit guesses.
+      p0.observations = [
+        {
+          type: "form",
+          clue: "fallback_form",
+          description: "Furniture is visible, but neither the initial extraction nor the deep-recovery pass returned structured observations. Try photos with better lighting, focus, or angle.",
+          confidence: 20,
+          source_image: "fallback",
+          hard_negative: false,
+          low_confidence_flag: true,
+        },
+      ];
+      (p0 as any).recovery_metadata = {
+        recovered: false,
+        recovery_reason: recovery.recovery_reason,
+        observation_count: 0,
+        triggered_at: new Date().toISOString(),
+      };
+    }
   }
 
   p0.evidence_digest = buildEvidenceDigest(p0.observations, p0.perception);
@@ -5157,6 +8158,37 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
       p2.date_ceiling ?? null,
       observationDescriptions
     );
+  }
+
+  // Transitional-piece intersection: compute date-envelope overlaps across
+  // competing style attributions and across waves from different parent
+  // families. Surfaces the "both vocabularies were in production c.
+  // YYYY–YYYY" dating window that makes transitional pieces a CONFIRMATION
+  // signal rather than a confusion signal.
+  if (p3.style_attribution || (p3.style_alternatives ?? []).length > 0 || (p3.style_waves ?? []).length > 0) {
+    const intersectionResult = computeStyleIntersections(
+      p3.style_attribution ?? null,
+      p3.style_alternatives ?? [],
+      p3.style_waves ?? []
+    );
+    p3.style_intersections = intersectionResult.intersections;
+    p3.best_style_intersection = intersectionResult.best;
+
+    // Compute the set of alternative attributions that should be suppressed
+    // from the chart's partner Style row because their canonical
+    // compatibility class with the winning attribution is "stacked_revival"
+    // (umbrella co-attribution, not a transitional moment).
+    if (p3.style_attribution && (p3.style_alternatives ?? []).length > 0) {
+      const winnerId = p3.style_attribution.style_family_id;
+      const suppressed: string[] = [];
+      for (const alt of p3.style_alternatives ?? []) {
+        const compat = findStyleCompatibility(winnerId, alt.style_family_id);
+        if (compat?.compatibility_class === "stacked_revival") {
+          suppressed.push(alt.style_family_id);
+        }
+      }
+      p3.stacked_revival_partner_ids = suppressed;
+    }
   }
 
   stage_outputs.p3 = p3; onPhase?.("p3", p3);
@@ -5191,8 +8223,11 @@ if (p6.dating_overlap) {
     frameClues,
     p3.style_attribution ?? null,
     p3.style_waves ?? [],
-    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null },
-    frameBoundaries
+    // Form layer = catalog production span, not p2's own computed date.
+    // Feeding p2 back into the convergence that refines p2 was circular.
+    getFormDatingEnvelope(p3.form_id ?? null),
+    frameBoundaries,
+    p3.best_style_intersection ?? null
   );
   const refined = refineDatingFromConvergence(
     {
@@ -5213,6 +8248,79 @@ if (p6.dating_overlap) {
     p2.support = supportArr;
     stage_outputs.p2 = p2;
   }
+}
+
+// Post-final-assessment style reconciliation. Runs AFTER convergence
+// refinement settles the final dating envelope so it can compare the
+// attribution-time style winner against the date the engine actually
+// converged on. Refines the displayed label to the appraiser-voice
+// identification (revival wave name when dates match a wave, named
+// transitional period when applicable, reproduction framing when dates
+// fall outside all known windows). Mutates p3.final_style and updates
+// p3.display_form so downstream report / chart rendering uses the
+// reconciled label.
+{
+  const hasImpossiblePair = ((p5 as Phase5Result).conflicts || []).some(
+    (c: string) => typeof c === "string" && c.startsWith("Impossible style co-attribution:")
+  );
+  // Era context: vernacular dating/material/market-era markers that are NOT
+  // styles (Golden Oak Era and future analogs). Surfaced into the era_only
+  // reconciliation branch so pieces with no style attribution but clear era
+  // identification get a proper market-context label instead of "Unresolved".
+  // Detected from clue presence at the call site rather than from style_context
+  // (which deriveStyleContext now correctly leaves null for Golden Oak).
+  const hasGoldenOakEra = (digest.clue_keys ?? []).some(
+    (k) => k === "golden_oak_era_possible" || k === "golden_oak_structural_pattern"
+  ) || (digest.observations ?? []).some(
+    (o) => o.clue === "golden_oak_era_possible" || o.clue === "golden_oak_structural_pattern"
+  );
+  const eraContext = hasGoldenOakEra ? "Golden Oak Era" : null;
+
+  // A date past the canonical style ceiling only forces a "reproduction" call
+  // when something genuinely modern is present. Detect hard-negative clues
+  // whose date hint is unambiguously machine-age (post-1920+): plywood,
+  // phillips screws, staples, polyurethane, particle board, etc.
+  const hasModernHardNegative = (p4.weighted_clues || []).some(
+    (w: any) =>
+      w.hard_negative &&
+      typeof w.date_hint === "string" &&
+      /post[-\s]*(19[2-9]\d|20\d\d)/i.test(w.date_hint)
+  );
+
+  const reconciled = reconcileFinalStyle({
+    styleAttribution: p3.style_attribution ?? null,
+    styleWaves: p3.style_waves ?? [],
+    bestIntersection: p3.best_style_intersection ?? null,
+    finalDatingFloor: p2.date_floor ?? null,
+    finalDatingCeiling: p2.date_ceiling ?? null,
+    styleContext: p3.style_context ?? null,
+    eraContext,
+    hasImpossiblePair,
+    hasModernHardNegative,
+  });
+  p3.final_style = reconciled;
+
+  // Update display_form to use the reconciled label only when the
+  // reconciliation actually refines the original attribution-time choice
+  // (kind ∈ {named_transitional, revival_wave, reproduction, impossible_pair}).
+  // For original_period / context_only / unresolved, the existing
+  // display_form is already correct.
+  const refinedKinds: Array<typeof reconciled.kind> = [
+    "named_transitional",
+    "revival_wave",
+    "reproduction",
+    "impossible_pair",
+    "late_period",
+  ];
+  if (refinedKinds.includes(reconciled.kind) && p3.form) {
+    const base = p3.form;
+    const styled = `${reconciled.final_style_label} ${base}`;
+    // Preserve the canonical "(also commonly called: ...)" aliases tail
+    // when the prior display_form had one.
+    const aliasesMatch = (p3.display_form || "").match(/\s\(also commonly called:[^)]*\)\s*$/);
+    p3.display_form = aliasesMatch ? styled + aliasesMatch[0] : styled;
+  }
+  stage_outputs.p3 = p3;
 }
 
 const fieldValue = p6.valuation || valueBand(p3.display_form || p3.form, p2.range, digest);

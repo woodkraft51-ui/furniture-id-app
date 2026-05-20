@@ -42,13 +42,29 @@ export type StyleAttribution = {
 // defining alone).
 const STOP_TOKENS = new Set([
   "and", "the", "of", "or", "style", "pattern", "case", "form",
-  "revival", "movement", "period", "early", "late", "modern",
+  "movement", "period", "early", "late", "modern",
+  // "revival" intentionally NOT stopped: it is the morphological anchor
+  // that distinguishes post-1876 revival families (colonial_revival,
+  // rococo_revival, gothic_revival, etc.) from their original-period
+  // counterparts. Stopping it collapsed clues like
+  // `neoclassical_revival_cues` onto Louis XVI (1770–1830) rather than
+  // routing to Colonial Revival.
   // Block 10a additions:
   "american", "century", "antique", "windsor",
   "design", "design's", "designed",
   "type", "types", "form", "forms",
   "wood", "wooden", "metal", "fabric",
   "general", "generic", "classic",
+  // Furniture FORM words. These are object categories, not style signals, but
+  // they leak into family token indexes via multi-word aliases (e.g. Louis XVI
+  // carries "parquetry French desk" / "French cylinder desk", indexing the bare
+  // token "desk"). A secretary *desk* then false-matches Louis XVI. Stopping
+  // form words keeps style attribution keyed on style vocabulary, not the kind
+  // of object being looked at.
+  "desk", "secretary", "secretaire", "table", "chair", "cabinet", "chest",
+  "dresser", "commode", "bench", "stand", "sofa", "settee", "bed", "bookcase",
+  "sideboard", "wardrobe", "armoire", "bureau", "cupboard", "stool", "vitrine",
+  "credenza", "console", "mirror", "clock",
 ]);
 
 type FamilyIndex = {
@@ -165,6 +181,23 @@ const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
   art_nouveau_pattern: "style_family_art_nouveau",
   shaker_pattern: "style_family_shaker",
   colonial_revival_pattern: "style_family_colonial_revival",
+  // LLM-emitted revival cues route to Colonial Revival so original-period
+  // families (Louis XVI 1770–1830, Federal, etc.) take the competitive
+  // penalty when revival markers are present.
+  neoclassical_revival_cues: "style_family_colonial_revival",
+  colonial_revival_cues: "style_family_colonial_revival",
+  // Golden Oak Era anchors: Golden Oak Era now lives in the wood HCL as an
+  // oak variant (wood_variant_golden_oak_era) per appraiser direction — NOT
+  // a style family. But original-period style attributions (American Empire
+  // 1810–1850, Federal 1790–1815) still need a suppression mechanism when a
+  // post-1876 market-era anchor is present. Route these clues to Colonial
+  // Revival, which is the broadest post-1876 style-family umbrella that
+  // already exists and which most often co-occurs with Golden Oak Era
+  // pieces on the canonical style_overlaps. This makes structuralFamiliesPresent
+  // include Colonial Revival, penalizing pre-1876 family attributions by 30%
+  // without claiming Golden Oak Era is itself a style.
+  golden_oak_structural_pattern: "style_family_colonial_revival",
+  golden_oak_era_possible: "style_family_colonial_revival",
   mission_arts_crafts_structural_pattern: "style_family_arts_and_crafts",
   louis_xvi_revival_pattern: "style_family_louis_xvi_french_neoclassical",
   queen_anne_revival_pattern: "style_family_queen_anne",
@@ -194,6 +227,12 @@ export function attributeStyle(
   }
 
   const results: StyleAttribution[] = [];
+  // Raw weighted score per family — used only as a tiebreak below. baseConf
+  // saturates at 1.0 (→ conf ceiling ~0.82 at authority 0.4), so a family the
+  // appraiser emphasized heavily (e.g. "biedermeier" ×8) can tie an incidental
+  // single-token match ("rococo" off a hardware backplate). On equal
+  // confidence the stronger raw signal should take the label.
+  const rawScoreById = new Map<string, number>();
   for (const { family, tokens } of getIndex()) {
     const matched: string[] = [];
     let weightedScore = 0;
@@ -231,6 +270,7 @@ export function attributeStyle(
     if (confidence < requiredFloor) continue;
 
     const { date_floor, date_ceiling } = periodEnvelope(family);
+    rawScoreById.set(family.id, weightedScore);
     results.push({
       style_family_id: family.id,
       name: family.name,
@@ -241,7 +281,11 @@ export function attributeStyle(
     });
   }
 
-  return results.sort((a, b) => b.confidence - a.confidence);
+  return results.sort((a, b) => {
+    if (b.confidence !== a.confidence) return b.confidence - a.confidence;
+    // Tiebreak: stronger raw signal wins (see rawScoreById above).
+    return (rawScoreById.get(b.style_family_id) ?? 0) - (rawScoreById.get(a.style_family_id) ?? 0);
+  });
 }
 
 // ── Block 9: Controlled style-supporting evidence ───────────────────────
@@ -421,13 +465,30 @@ export function aggregateStyleWaves(
     )
   );
 
+  // Index attribution confidences so Layer 1 can be gated on attribution strength.
+  const attrConf = new Map<string, number>();
+  for (const a of styleAttributions) {
+    const prior = attrConf.get(a.style_family_id) ?? 0;
+    if (a.confidence > prior) attrConf.set(a.style_family_id, a.confidence);
+  }
+  // Layer 1 (attribution as a corroborating signal) only counts when the
+  // attribution is high-confidence. Below this floor, the attribution is
+  // just the iteration anchor — not an independent signal. Previously
+  // Layer 1 was pushed unconditionally, collapsing the 2-of-N gate to
+  // "one of Layer 2 or Layer 3" and letting weak/false attributions
+  // (e.g., 0.4 MCM from noisy text) emit waves on a single date overlap.
+  const ATTRIBUTION_AS_SIGNAL_FLOOR = 0.6;
+
   for (const styleId of attributionIdsArr) {
     const waves = wavesIdx.get(styleId) ?? [];
     for (const wave of waves) {
       const signals: string[] = [];
 
-      // Layer 1: style family attribution matched (always true here, we're iterating from attributions)
-      signals.push(`Style family attribution: ${styleId}`);
+      // Layer 1: style family attribution matched — only as an independent
+      // signal when the attribution is itself high-confidence.
+      if ((attrConf.get(styleId) ?? 0) >= ATTRIBUTION_AS_SIGNAL_FLOOR) {
+        signals.push(`Style family attribution (high-confidence): ${styleId}`);
+      }
 
       // Layer 2: dating envelope overlaps wave date range
       const wFloor = (wave as any).date_floor ?? null;
@@ -439,19 +500,46 @@ export function aggregateStyleWaves(
         signals.push(`Dating envelope overlaps wave range (${dateLabel})`);
       }
 
-      // Layer 3: design_subtleties signal token match in observation text
-      const subtleties = ((wave as any).design_subtleties ?? []) as Array<{ signal: string }>;
+      // Layer 3: design_subtleties signal match against observation text.
+      // Prefer the curated `engine_match_tokens` phrase list when authored
+      // (a phrase matches when all its content tokens appear in the
+      // observation set); fall back to tokenizing the human prose `signal`
+      // for waves authored without tokens.
+      const subtleties = ((wave as any).design_subtleties ?? []) as Array<{
+        signal: string;
+        engine_match_tokens?: string[];
+      }>;
       for (const sub of subtleties) {
-        const sigTokens = tokenize(sub.signal).filter((t) => !STOP_TOKENS.has(t) && t.length >= 4);
-        const sigMatched = sigTokens.filter((t) => obsTokens.has(t));
+        let sigMatched: string[] = [];
+        if (Array.isArray(sub.engine_match_tokens) && sub.engine_match_tokens.length > 0) {
+          for (const phrase of sub.engine_match_tokens) {
+            const phraseTokens = tokenize(phrase).filter((t) => t.length >= 4);
+            if (phraseTokens.length > 0 && phraseTokens.every((t) => obsTokens.has(t))) {
+              sigMatched.push(phrase);
+            }
+          }
+        } else {
+          const sigTokens = tokenize(sub.signal).filter((t) => !STOP_TOKENS.has(t) && t.length >= 4);
+          sigMatched = sigTokens.filter((t) => obsTokens.has(t));
+        }
         if (sigMatched.length > 0) {
           signals.push(`Design signal "${sub.signal}" matched on ${sigMatched.join(", ")}`);
           break; // single subtlety match counts as layer-3 hit; don't multi-count
         }
       }
 
-      // D-PH3-9: 2-of-N gate
-      if (signals.length >= 2) {
+      // D-PH3-9: 2-of-N gate. Yesterday's fix (Layer 1 only counts when
+      // attribution ≥0.6) closed the low-confidence loophole but left a
+      // larger one open: for a high-confidence attribution (e.g., 0.83
+      // American Classical from a single "empire" token match), Layer 1 +
+      // Layer 2 (any wave whose date range overlaps the working envelope)
+      // passes the gate without Layer 3 — surfacing waves with no actual
+      // observational support and polluting the style_wave dating envelope.
+      // Now require: at least 2 signals AND a Layer 3 (design signal)
+      // match. Attribution is the iteration anchor; date overlap alone is
+      // not corroboration.
+      const hasLayer3 = signals.some((s) => s.startsWith("Design signal"));
+      if (signals.length >= 2 && hasLayer3) {
         matched.push({
           wave_id: wave.id,
           wave_name: wave.name,
