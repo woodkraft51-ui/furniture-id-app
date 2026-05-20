@@ -3231,11 +3231,12 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   // round-up discipline): strong distinctive terms first, with the generic
   // "counter desk" / "service desk" left as the transaction-counter catch
   // since those aliases live on form_transaction_counter_desk.
-  // "schoolhouse" also names a pendant-light style; exclude schoolhouse lighting
-  // so a schoolhouse light/pendant routes to form_pendant_light, not a desk.
+  // "schoolhouse" also names a pendant-light style and a wall-clock style;
+  // exclude those so a schoolhouse light/pendant routes to form_pendant_light
+  // and a schoolhouse clock routes to form_wall_clock, not a desk.
   const instSchool = !includesAny(text, [
     "schoolhouse light", "schoolhouse pendant", "schoolhouse globe",
-    "schoolhouse fixture", "schoolhouse shade", "schoolhouse lamp",
+    "schoolhouse fixture", "schoolhouse shade", "schoolhouse lamp", "schoolhouse clock",
   ]) && includesAny(text, [
     "school desk", "student desk", "schoolhouse", "schoolchild", "pupil desk",
     "attached-seat", "attached seat school", "sled-base", "lift-lid school",
@@ -4045,7 +4046,8 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   const chinaCabinetForm = includesAny(text, ["china cabinet", "china closet", "china display"]);
   const curioForm = includesAny(text, ["curio cabinet", "curio"]);
   const buffetForm = includesAny(text, ["buffet", "dining cabinet"]);
-  const serverForm = includesAny(text, ["serving table", "serving board", "serving cabinet", "dining server"]) || /\bserver\b/.test(text);
+  const serverForm = includesAny(text, ["serving table", "serving board", "serving cabinet", "dining server"]) ||
+    (/\bserver\b/.test(text) && !includesAny(text, ["server rack", "rack server", "network server", "file server", "web server", "blade server", "server equipment", "server cabinet"]));
   const sideboardForm = text.includes("sideboard");
   if (!deskFormDominant) {
     if (cellaretteForm) {
@@ -4203,6 +4205,73 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Wall lighting form", 88, "Wall-mounted lighting fixture not specifically a sconce or gas bracket (picture light, wall washer).");
   } else if (hangingLightingForm) {
     add("Hanging lighting form", 88, "Ceiling/hanging lighting fixture not specifically a chandelier, pendant, lantern, or billiard light (flush/semi-flush mount).");
+  }
+
+  // Clocks + musical/mechanical + misc cluster. Nineteen orphaned forms with no
+  // scoreForms detector. All text-cue based. Collision notes: clock types are
+  // mutually distinct ("schoolhouse clock" -> wall clock, also excluded from the
+  // school-desk cue above); media forms avoid bare "wall unit"/"workstation" so
+  // they don't steal Wall unit desk / Modular workstation desk; pump organ and
+  // sewing-machine cabinet defer to their desk variants when "desk" is present
+  // (reusing the bedroom-block deskContext). cylinder_desk is intentionally NOT
+  // here — it is already reachable via the cylinder/roll-top emit.
+  const tallCaseClockForm = includesAny(text, ["tall case clock", "tall-case clock", "longcase clock", "grandfather clock", "grandmother clock", "granddaughter clock", "floor clock", "standing clock"]);
+  const wallClockForm = includesAny(text, ["wall clock", "hanging clock", "banjo clock", "gallery clock", "regulator clock", "schoolhouse clock", "calendar clock"]);
+  const shelfClockForm = includesAny(text, ["shelf clock", "mantel clock", "mantle clock", "bracket clock", "table clock", "steeple clock", "ogee clock", "kitchen clock"]);
+  const jukeboxForm = includesAny(text, ["jukebox", "juke box", "music machine", "coin-operated music"]);
+  const pinballForm = includesAny(text, ["pinball machine", "pinball", "pin game", "electromechanical pinball", "em pinball", "solid state pinball"]);
+  const arcadeForm = includesAny(text, ["arcade cabinet", "arcade machine", "arcade game", "video game cabinet", "upright arcade"]);
+  const vendingForm = includesAny(text, ["vending machine", "snack machine", "soda machine", "beverage machine", "coke machine", "cigarette machine", "vending"]);
+  const spinningWheelForm = includesAny(text, ["spinning wheel", "saxony wheel", "castle wheel", "great wheel", "walking wheel", "wool wheel", "flax wheel"]);
+  const loomForm = includesAny(text, ["loom", "weaving loom", "floor loom", "table loom", "treadle loom", "handloom", "hand loom"]);
+  const pumpOrganForm = !deskContext && includesAny(text, ["pump organ", "reed organ", "parlor organ", "cabinet organ", "harmonium", "pump organ cabinet"]);
+  const iceboxForm = includesAny(text, ["icebox", "ice box", "oak icebox", "zinc-lined icebox", "ice chest"]);
+  const sewingMachineCabinetForm = !deskContext && !text.includes("converted") && includesAny(text, ["sewing machine cabinet", "treadle sewing machine", "sewing machine stand", "drop-head sewing machine", "drophead sewing machine", "sewing machine base"]);
+  const mediaConsoleForm = includesAny(text, ["media console", "entertainment console", "radio console", "television console", "tv console", "stereo console", "record player console", "hi-fi console", "hifi console", "phonograph cabinet"]);
+  const mediaWallForm = includesAny(text, ["media wall", "entertainment wall", "entertainment center", "home theater unit", "media center", "tv wall unit"]);
+  const mediaStorageForm = includesAny(text, ["media storage", "media tower", "cd tower", "cd storage", "dvd tower", "dvd storage", "disc tower", "game tower", "video game storage"]);
+  const equipmentRackForm = includesAny(text, ["equipment rack", "audio rack", "stereo rack", "server rack", "network rack", "speaker cabinet", "loudspeaker cabinet", "speaker enclosure"]);
+  const interactiveConsoleForm = includesAny(text, ["interactive console", "gaming console", "gaming tower", "gaming pc", "vr station", "vr setup", "control console", "digital interface console"]);
+  const musicalInstrumentForm = includesAny(text, ["music cabinet", "sheet music cabinet", "music stand cabinet", "instrument storage cabinet"]);
+  const basketForm = includesAny(text, ["wicker basket", "sewing basket", "picnic basket", "laundry basket", "market basket", "storage basket", "splint basket", "nantucket basket", "gathering basket", "woven basket", "basketry"]);
+  if (tallCaseClockForm) {
+    add("Tall case clock", 98, "Floor-standing weight-driven clock in a tall case (grandfather/longcase).");
+  } else if (wallClockForm) {
+    add("Wall clock", 96, "Wall-hung clock (banjo, regulator, schoolhouse, gallery, or calendar).");
+  } else if (shelfClockForm) {
+    add("Shelf clock", 96, "Small mantel/shelf clock (steeple, ogee, bracket, or kitchen clock).");
+  } else if (jukeboxForm) {
+    add("Jukebox", 100, "Coin-operated music-playing machine cabinet.");
+  } else if (pinballForm) {
+    add("Pinball machine", 100, "Coin-operated pinball game cabinet (electromechanical or solid-state).");
+  } else if (arcadeForm) {
+    add("Arcade cabinet", 100, "Upright/cocktail video-game arcade cabinet.");
+  } else if (vendingForm) {
+    add("Vending machine", 98, "Coin-operated vending/dispensing machine (snack, soda, cigarette).");
+  } else if (spinningWheelForm) {
+    add("Spinning wheel", 100, "Hand-spinning wheel (Saxony, castle, or great/walking wheel).");
+  } else if (loomForm) {
+    add("Loom", 98, "Weaving loom (floor, table, or treadle).");
+  } else if (pumpOrganForm) {
+    add("Pump organ cabinet", 98, "Reed/parlor pump organ in its furniture cabinet (harmonium).");
+  } else if (iceboxForm) {
+    add("Icebox", 98, "Pre-electric ice-cooled food-storage cabinet (zinc/oak icebox).");
+  } else if (sewingMachineCabinetForm) {
+    add("Sewing machine cabinet", 94, "Treadle sewing machine in its cabinet/stand (not a desk conversion).");
+  } else if (mediaConsoleForm) {
+    add("Media console", 95, "Low AV/media console (radio, phonograph, stereo, or TV console cabinet).");
+  } else if (mediaWallForm) {
+    add("Media wall", 94, "Large entertainment center / home-theater wall unit.");
+  } else if (mediaStorageForm) {
+    add("Media storage unit", 94, "Tower or rack for CDs, DVDs, discs, or game media.");
+  } else if (equipmentRackForm) {
+    add("Equipment rack", 94, "Rack/enclosure for audio, network, or server equipment (incl. speaker cabinet).");
+  } else if (interactiveConsoleForm) {
+    add("Interactive console", 92, "Gaming/VR/control console station.");
+  } else if (musicalInstrumentForm) {
+    add("Musical instrument furniture", 90, "Furniture built around a musical instrument (sheet-music cabinet, instrument storage).");
+  } else if (basketForm) {
+    add("Basket", 95, "Woven basket form (wicker, splint, sewing, picnic, or market basket).");
   }
  // Industrial / Toledo-style task chair
 if (

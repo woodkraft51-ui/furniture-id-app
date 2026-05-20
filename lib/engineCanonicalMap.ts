@@ -692,6 +692,23 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Gilbert clock": "form_shelf_clock",
   "Ingraham clock": "form_shelf_clock",
   "Sessions clock": "form_shelf_clock",
+  // Musical / mechanical + misc cluster (scoreForms detectors added).
+  "Jukebox": "form_jukebox",
+  "Arcade cabinet": "form_arcade_cabinet",
+  "Pinball machine": "form_pinball_machine",
+  "Loom": "form_loom",
+  "Spinning wheel": "form_spinning_wheel",
+  "Vending machine": "form_vending_machine",
+  "Pump organ cabinet": "form_pump_organ_cabinet",
+  "Musical instrument furniture": "form_musical_instrument_furniture",
+  "Media console": "form_media_console",
+  "Media storage unit": "form_media_storage_unit",
+  "Media wall": "form_media_wall",
+  "Equipment rack": "form_equipment_rack",
+  "Interactive console": "form_interactive_console",
+  "Icebox": "form_icebox",
+  "Sewing machine cabinet": "form_sewing_machine_cabinet",
+  "Basket": "form_basket",
   // Tall case clock + wall clock aliases route to their existing forms
   "Tall case clock": "form_tall_case_clock",
   "Grandfather clock": "form_tall_case_clock", // subtype grandfather
