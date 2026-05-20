@@ -379,7 +379,12 @@ function evidenceMeaning(text: string): string {
     return "This indicates a dedicated writing or work surface, consistent with a desk, secretary, or writing table.";
   }
 
-  if (t.includes("secondary surface") || t.includes("raised surface")) {
+  // Match "raised surface" only — the bench-feature support is literally
+  // "A secondary raised surface is visible beside the seating area." Matching
+  // bare "secondary surface" false-fired on "secondary wood surfaces" /
+  // "secondary surfaces received minimal finishing" (interior carcass wood on a
+  // desk), wrongly annotating it as a bench feature.
+  if (t.includes("raised surface")) {
     return "This indicates a secondary raised surface beside a seat, consistent with a writing bench or telephone bench.";
   }
 
