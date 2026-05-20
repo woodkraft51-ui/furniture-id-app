@@ -3096,7 +3096,30 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   // even when cylinder was clearly the dominant structural form.
   const cylinderActive = clues.has("cylinder_roll");
   const slantActive = clues.has("slant_front");
-  const deskFormDominant = cylinderActive || slantActive;
+  // Cover-mechanism desk cluster, distinct from the rigid-cover cylinder desk.
+  // Per each form's cousin_form_contrasts: cylinder = rigid curved cover;
+  // Wooton = cabinet-office interior enclosed by outer doors; roll-top =
+  // flexible slatted (S-roll/C-roll) rolling cover, typically a larger office
+  // desk; tambour = sliding tambour, usually smaller or cabinet-fronted.
+  // Gated on !cylinderActive so pieces the resolver already read as a rigid
+  // cylinder stay routed to form_cylinder_desk; these branches only add the
+  // previously-unreachable slatted/tambour/Wooton identities. Round-up
+  // discipline: emit the cover-cluster identity and let the post-selection
+  // subtype evaluator descend to S-roll/C-roll/grade variants only when
+  // evidence clears its 0.65 confidence floor.
+  const wootonNamed = includesAny(text, ["wooton", "wootton"]);
+  const rollTopCover =
+    !cylinderActive &&
+    includesAny(text, [
+      "roll-top", "roll top", "rolltop", "s-roll", "c-roll",
+      "slatted cover", "slatted tambour", "tambour slat", "rolling slat",
+    ]);
+  const tambourCover =
+    !cylinderActive &&
+    !rollTopCover &&
+    includesAny(text, ["tambour"]);
+  const coverClusterActive = wootonNamed || rollTopCover || tambourCover;
+  const deskFormDominant = cylinderActive || slantActive || coverClusterActive;
   if (clues.has("drop_front_desk") && !deskFormDominant) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
   if (clues.has("pigeonholes") && !deskFormDominant) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
   if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
@@ -3108,6 +3131,13 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       125,
       "Cylinder roll-top closure, writing surface, interior compartments, and kneehole desk configuration support a cylinder desk reading."
     );
+  }
+  if (wootonNamed) {
+    add("Wooton desk", 122, "Cabinet-office desk with outer doors enclosing a fitted interior (Wooton patent type).");
+  } else if (rollTopCover) {
+    add("Roll-top desk", 110, "Flexible slatted (S-roll/C-roll) rolling cover over a fitted writing interior.");
+  } else if (tambourCover) {
+    add("Tambour desk", 100, "Sliding tambour closure over a fitted writing interior.");
   }
 
   // Table forms

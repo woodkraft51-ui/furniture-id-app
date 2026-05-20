@@ -237,6 +237,10 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Slant-front desk": "form_slant_front_desk",
   "Louis XVI Revival cylinder desk (bureau à cylindre)": "form_cylinder_desk",
   "Cylinder roll-top desk": "form_cylinder_desk",
+  // Cover-mechanism cluster — distinct cousins of the cylinder desk.
+  "Roll-top desk": "form_roll_top_desk",
+  "Tambour desk": "form_tambour_desk",
+  "Wooton desk": "form_wooton_desk",
 
   // Tables — comprehensive bare-alias routes for existing canonicals.
   // Previously a pre-existing gap: ~16 table canonicals existed in forms.ts

@@ -454,8 +454,84 @@ const CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE: Fixture = {
   },
 };
 
+// Fixture: roll-top desk — exercises the cover-mechanism cluster wiring.
+// Slatted/S-roll rolling cover with no "cylinder" language must route to the
+// newly-reachable form_roll_top_desk (not the rigid cylinder desk), and the
+// interior pigeonholes must be suppressed as a sub-feature (deskFormDominant).
+const ROLL_TOP_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-roll-top-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Quarter-sawn oak roll-top desk with an S-roll slatted tambour cover that retracts into a curved housing; fitted interior of pigeonholes and small drawers; double-pedestal kneehole base.",
+    },
+    observations: [
+      obs("writing_surface", "Fixed writing surface revealed when the slatted cover retracts", 85),
+      obs("pigeonholes", "Fitted interior of pigeonholes and small drawers", 80),
+    ],
+  },
+};
+
+// Fixture: tambour desk — sliding tambour, smaller/ladies' scale, no slat/roll
+// or cylinder language → form_tambour_desk.
+const TAMBOUR_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-tambour-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Small mahogany tambour writing desk; sliding tambour shutters close over a fitted interior; ladies' scale on tapered legs.",
+    },
+    observations: [obs("writing_surface", "Writing surface behind sliding tambour shutters", 82)],
+  },
+};
+
+// Fixture: Wooton desk — cabinet-office secretary with hinged outer doors;
+// explicit Wooton naming → form_wooton_desk.
+const WOOTON_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-wooton-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Wooton patent cabinet office secretary desk; rotary type with a fitted pigeonhole interior enclosed behind two hinged outer doors.",
+    },
+    observations: [obs("pigeonholes", "Fitted pigeonhole interior behind hinged outer doors", 80)],
+  },
+};
+
+// Control fixture: rigid cylinder desk — confirms the cover-cluster wiring does
+// NOT regress existing cylinder routing (form_cylinder_desk stays the pick).
+const CYLINDER_DESK_CONTROL_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-cylinder-desk-control" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Bureau à cylindre with a rigid curved cylinder cover (cylinder closure) over a fitted writing interior and kneehole base.",
+    },
+    observations: [
+      obs("cylinder_roll", "Rigid curved cylinder closure", 88),
+      obs("pigeonholes", "Interior letter slots and pigeonholes", 78),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  roll_top_desk: ROLL_TOP_DESK_FIXTURE,
+  tambour_desk: TAMBOUR_DESK_FIXTURE,
+  wooton_desk: WOOTON_DESK_FIXTURE,
+  cylinder_desk_control: CYLINDER_DESK_CONTROL_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
