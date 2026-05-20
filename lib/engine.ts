@@ -3913,6 +3913,86 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   } else if (kitchenStorageCabinet && !deskFormDominant) {
     add("Kitchen cabinet", 96, "Freestanding kitchen/pantry storage cabinet without the full Hoosier workstation system.");
   }
+
+  // Bedroom clothing-storage cluster. NOTE: this is a SPATIAL/functional family
+  // — each form keeps its own identity (dresser is a form, not the cluster).
+  // Detectors are ordered most-diagnostic-first and gated so lines stay crisp:
+  //   - dresser is CUE-GATED vs chest of drawers (per appraiser direction):
+  //     emits only on dresser cues; plain stacked drawers stay "Chest of
+  //     drawers / dresser" (70 -> form_chest_of_drawers). Welsh/kitchen/pewter
+  //     dresser (dining) excluded.
+  //   - chifforobe (wardrobe+drawers) checked before wardrobe; armoire before
+  //     wardrobe ("French wardrobe"); washstand before nightstand (commode);
+  //     highboy before low chest; nightstand before low chest ("bedside chest").
+  //   - armoire/wardrobe/dressing-table also require NO "desk" context so the
+  //     armoire-desk / vanity-desk conversions stay on their desk forms.
+  const deskContext = includesAny(text, ["desk"]);
+  const trunkForm = includesAny(text, [
+    "steamer trunk", "travel trunk", "storage trunk", "footlocker", "wardrobe trunk",
+    "shipping trunk", "immigrant trunk", "luggage trunk", "dome-top trunk",
+    "camelback trunk", "flat-top trunk", "steamer chest", "trunk",
+  ]);
+  const chifforobeForm = includesAny(text, [
+    "chifforobe", "chifferobe", "chiffrobe", "wardrobe chest", "wardrobe dresser",
+    "gentleman's wardrobe", "gentlemans wardrobe", "gentleman's chest", "gentlemans chest",
+    "robe chest", "combination wardrobe",
+  ]);
+  const washstandForm = includesAny(text, [
+    "washstand", "wash stand", "basin stand", "water stand", "chamber stand",
+    "shaving stand", "wash basin stand", "pitcher and basin", "commode washstand",
+  ]);
+  const highboyForm = includesAny(text, [
+    "highboy", "high chest", "high chest of drawers", "tallboy",
+    "chest on frame", "chest-on-frame", "chest on chest", "chest-on-chest", "bonnet-top highboy",
+  ]);
+  const dressingTableForm = includesAny(text, [
+    "dressing table", "vanity table", "makeup table", "make-up table",
+    "dressing vanity", "kneehole vanity", "toilet table", "dressing bureau", "vanity",
+  ]);
+  const armoireForm = includesAny(text, [
+    "armoire", "french wardrobe", "french cabinet", "tv armoire", "entertainment armoire",
+    "linen press", "clothes press",
+  ]);
+  const wardrobeForm = includesAny(text, [
+    "wardrobe", "clothes closet", "clothes cabinet", "wardrobe cabinet",
+    "mirrored wardrobe", "knockdown wardrobe", "knock-down wardrobe",
+  ]);
+  const nightstandForm = includesAny(text, [
+    "nightstand", "night stand", "bedside table", "bedside cabinet", "bedside chest",
+    "night table", "night cabinet", "bed table",
+  ]);
+  const dresserExclude = includesAny(text, ["welsh dresser", "welsh-dresser", "kitchen dresser", "pewter dresser"]);
+  const dresserForm = !dresserExclude && includesAny(text, [
+    "dresser", "bedroom bureau", "bureau dresser", "double dresser", "triple dresser",
+    "low dresser", "drawer dresser", "mirrored dresser", "dresser with mirror",
+  ]);
+  const lowChestForm = includesAny(text, [
+    "low chest", "small chest", "short chest", "low drawer chest",
+    "bachelor's chest", "bachelors chest", "compact chest",
+  ]);
+  if (!deskFormDominant) {
+    if (trunkForm) {
+      add("Trunk", 98, "Travel/steamer trunk or footlocker — a portable lidded transport chest.");
+    } else if (chifforobeForm) {
+      add("Chifforobe", 100, "Combination wardrobe-and-drawers case (clothes-hanging side plus a bank of drawers).");
+    } else if (washstandForm) {
+      add("Washstand", 100, "Bedroom basin/pitcher stand for washing (often with backsplash, towel bar, or commode storage).");
+    } else if (highboyForm) {
+      add("Highboy", 100, "Tall two-part chest of drawers raised on legs or a frame (high chest).");
+    } else if (dressingTableForm && !deskContext) {
+      add("Dressing table", 98, "Kneehole grooming table with a mirror, for seated dressing (vanity).");
+    } else if (armoireForm && !deskContext) {
+      add("Armoire", 98, "Large freestanding clothes/storage cabinet (French wardrobe / press).");
+    } else if (wardrobeForm && !deskContext) {
+      add("Wardrobe", 98, "Freestanding clothes-hanging cabinet (clothes closet).");
+    } else if (nightstandForm) {
+      add("Nightstand", 96, "Bedside table/cabinet sized for use beside a bed.");
+    } else if (dresserForm) {
+      add("Dresser", 96, "Width-dominant bedroom drawer case for grooming/dressing (often with mirror), distinct from a taller single-column chest of drawers.");
+    } else if (lowChestForm) {
+      add("Low chest", 95, "Low/short chest of drawers (bachelor's or bedside scale).");
+    }
+  }
  // Industrial / Toledo-style task chair
 if (
   hasAny(

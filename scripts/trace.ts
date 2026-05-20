@@ -733,13 +733,13 @@ const mkBed = (id: string, wood: string, raw_text: string,
   },
 });
 const mkCase = (id: string, wood: string, raw_text: string,
-  obDesc = "Cabinet or cupboard storage form"): Fixture => ({
+  obDesc = "Cabinet or cupboard storage form", obClue = "cabinet_form"): Fixture => ({
   caseData: { id: `trace-fixture-${id}` },
   images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
   intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "cabinet" },
   perceptionStub: {
     perception: { ...BASE_PERCEPTION, raw_text },
-    observations: [obs("cabinet_form", obDesc, 82)],
+    observations: [obs(obClue, obDesc, 82)],
   },
 });
 // Escritoire must beat the generic drop-front Secretary route (cabinet-like
@@ -998,6 +998,35 @@ const FIXTURES: Record<string, Fixture> = {
   // Control — dining-display cabinet must NOT route to a kitchen-storage form.
   china_cabinet_control: mkCase("china-cabinet-control", "mahogany",
     "Glazed china cabinet: a formal dining-room china display cabinet with glazed doors and mirrored back."),
+  // ── Case pieces: bedroom clothing-storage cluster ──
+  dresser: mkCase("dresser", "walnut",
+    "Victorian bedroom dresser: a low wide chest of drawers with a tall attached swing mirror and a broad grooming top, in a multi-column drawer bank."),
+  low_chest: mkCase("low-chest", "cherry",
+    "Bachelor's chest: a small low chest of drawers at bedside scale, shorter and more compact than a standard chest."),
+  highboy: mkCase("highboy", "maple",
+    "Queen Anne highboy: a tall two-part high chest of drawers raised on cabriole legs (a high chest on frame)."),
+  chifforobe: mkCase("chifforobe", "oak",
+    "Chifforobe: a combination wardrobe with a clothes-hanging compartment beside a bank of drawers."),
+  wardrobe: mkCase("wardrobe", "walnut",
+    "Knockdown wardrobe: a freestanding clothes-hanging wardrobe cabinet with a single mirrored door and a hanging rail."),
+  armoire: mkCase("armoire", "oak",
+    "French armoire: a large French wardrobe and clothes cabinet with two tall paneled doors."),
+  washstand: mkCase("washstand", "walnut",
+    "Victorian washstand: a marble-top basin stand with a tile backsplash and a towel bar for a wash pitcher and basin."),
+  nightstand: mkCase("nightstand", "mahogany",
+    "Bedside nightstand: a small bedside cabinet with one drawer and a cupboard, sized to sit beside a bed."),
+  dressing_table: mkCase("dressing-table", "satinwood",
+    "Dressing table: a kneehole vanity and dressing table with a triptych mirror and a matching stool."),
+  trunk: mkCase("trunk", "",
+    "Steamer trunk: a domed-top travel trunk with leather straps, metal banding, and a fitted interior tray."),
+  // Controls.
+  chest_of_drawers_control: mkCase("chest-of-drawers-control", "mahogany",
+    "Tall chest of drawers: a narrow single-column stack of five graduated drawers, taller than wide, with no mirror.",
+    "Stacked single-column drawers", "multiple_drawer_case"),
+  armoire_desk_control: mkCase("armoire-desk-control", "cherry",
+    "Computer armoire desk: a tall wardrobe-like cabinet that encloses a fold-away desk work surface behind doors."),
+  welsh_dresser_control: mkCase("welsh-dresser-control", "oak",
+    "Welsh dresser: a tall open-rack pewter and plate dresser with an open upper shelf rack over a base of drawers and cupboards."),
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {

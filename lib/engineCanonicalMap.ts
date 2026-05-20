@@ -333,6 +333,18 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Sewing table": "form_sewing_table",
   "Dressing table": "form_dressing_table",
   "Vanity table": "form_dressing_table",
+  // Bedroom clothing-storage cluster (orphaned forms now wired with scoreForms
+  // detectors). "Dresser" is the form, NOT the cluster — cue-gated against
+  // chest of drawers, so plain stacked drawers stay form_chest_of_drawers.
+  "Dresser": "form_dresser",
+  "Low chest": "form_low_chest",
+  "Highboy": "form_highboy",
+  "Chifforobe": "form_chifforobe",
+  "Wardrobe": "form_wardrobe",
+  "Armoire": "form_armoire",
+  "Washstand": "form_washstand",
+  "Nightstand": "form_nightstand",
+  "Trunk": "form_trunk",
   "Game table": "form_game_table",
   "Card table": "form_game_table", // card table is a game-table subtype
   "Gaming table": "form_game_table",
