@@ -975,9 +975,36 @@ const DESK_SEATED_DRAWER_FIXTURE: Fixture = {
   },
 };
 
+// Slant-front desk with Queen Anne-influenced legs + Colonial Revival cues and
+// NO numeric construction anchor (undated). The reconciliation used to default
+// to the original 18th-c. "Queen Anne" label; with revival cues present and no
+// dating, it should default to the revival reading ("Colonial Revival Queen Anne").
+const QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-queen-anne-revival-no-dating" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk, Queen Anne-influenced turned legs, scrolled apron, ring pulls, Colonial Revival vocabulary" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drop_front_desk", "Fall opens to a writing surface with pigeonhole interior", 68),
+      obs("pigeonholes", "Fitted pigeonhole interior", 68),
+      obs("drawer_present", "One full-width drawer below the fall front", 68),
+      obs("vertical_supports", "Front legs turned with vase-and-ring profile, pad/club feet, Queen Anne-influenced", 82),
+      obs("scrolled_apron", "Scrolled cyma-curved apron brackets at the leg junction", 82),
+      obs("hand_cut_dovetails", "Through-dovetails with slight irregularity consistent with hand-cut work", 82),
+      obs("solid_wood_construction", "Solid wood case and drawer sides", 85),
+      obs("ring_pull", "Brass ring pulls on the drawer, consistent with Colonial Revival ring pulls c. 1890-1940", 45),
+      obs("lock_escutcheons", "Fall-front lock plate", 62),
+      obs("colonial_revival_style_cues", "Turned legs, scrolled apron, ring pulls, cornice molding consistent with Colonial Revival production interpreting earlier Queen Anne forms", 52),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,
+  queen_anne_revival_no_dating: QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE,
   hedged_dovetail_desk: HEDGED_DOVETAIL_DESK_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
