@@ -3148,7 +3148,80 @@ if (
     "Fluted or reeded legs, exposed curved arm supports, and full upholstery support a Colonial / Georgian Revival upholstered armchair reading."
   );
 }
-  if (clues.has("armchair_form")) {
+
+  // ── Seating-form resolution (stress-test fix #12, 2026-05-20) ──────────
+  // Root-cause fix for the armchair-vs-settee override bug. scoreForms
+  // previously scored only armchair + bench among seating forms; the other
+  // 8 seating canonical forms (sofa, settee, lounge_chair, wing_chair,
+  // recliner, stool, ottoman, slipper_chair) had NO clue-key scoring path
+  // and were reachable ONLY if the LLM emitted their exact display name.
+  // Result: armchair_form (the one general seating clue WITH a scoring
+  // path) captured everything — a settee whose observations explicitly
+  // said "sized for two persons / two-seat settee/loveseat, not a single
+  // armchair" still scored as "Upholstered armchair" because Settee and
+  // Sofa had no way to compete.
+  //
+  // This block adds scoring coverage for the seating class and lets
+  // multi-person + posture + wing + recliner evidence OUTSCORE or SUPPRESS
+  // the armchair_form clue when the observations describe a different
+  // seating form. Scores are calibrated above the armchair clue's 62-82
+  // so a correctly-evidenced settee/sofa/lounge wins the primary slot.
+
+  // Multi-person seating language. The LLM frequently emits armchair_form
+  // while DESCRIBING two-person seating in the observation prose. Matching
+  // explicit multi-occupant phrases (not bare "sofa", which appears in
+  // upholstery-technique descriptions like "parlor sofa construction").
+  const multiPersonSeating =
+    /\b(two[- ]?persons?|two[- ]?seat(er|s)?|three[- ]?seat(er|s)?|sized for two|settee|love[- ]?seats?|loveseats?)\b/.test(text);
+
+  if (
+    multiPersonSeating &&
+    hasAny("seating_surface", "seating_present", "armchair_form", "backrest_present", "fully_upholstered")
+  ) {
+    if (/\bsettee\b/.test(text)) {
+      add("Settee", 96, "Observations describe two-person seating with settee proportions — not a single armchair.");
+    } else if (/\blove[- ]?seats?\b|\bloveseats?\b/.test(text)) {
+      add("Loveseat", 96, "Observations describe two-person loveseat-scale seating — not a single armchair.");
+    } else {
+      add("Sofa", 92, "Observations describe multi-person seating — not a single armchair.");
+    }
+  }
+
+  // Lounge chair — posture-based lounge identity (deep seat, low seat
+  // height, reclined back). Only when NOT multi-person (a two-person
+  // lounge piece is a sofa/settee, not a lounge chair).
+  if (clues.has("lounge_chair_form") && !multiPersonSeating) {
+    add(
+      "Lounge chair",
+      clues.has("armchair_form") ? 86 : 80,
+      "Posture-based lounge-chair identity — deeper seat, lower seat height, reclined back — distinct from upright armchair form."
+    );
+  }
+
+  // Wing chair — wing/wingback evidence.
+  if (/\bwing[- ]?backs?\b|\bwing chairs?\b|\bwingbacks?\b/.test(text)) {
+    add("Wing chair", 88, "Wing or wingback chair form (enclosing side wings) is visible.");
+  }
+
+  // Recliner — reclining mechanism.
+  if (/\brecliner|reclining (mechanism|chair|seat)|la-?z-?boy\b/.test(text)) {
+    add("Recliner", 90, "Reclining mechanism or recliner form is visible.");
+  }
+
+  // Stool — backless single-user seating. Only when no backrest evidence
+  // (a stool by definition has no back).
+  if (
+    /\bstools?\b|\btabourets?\b/.test(text) &&
+    !hasAny("backrest_present", "spindle_back")
+  ) {
+    add("Stool", 72, "Backless single-user stool form is visible.");
+  }
+
+  // Armchair scoring — gated so it does NOT fire when the observations
+  // describe multi-person seating (settee/sofa/loveseat). Without this
+  // gate, armchair_form scored "Upholstered armchair" even on explicit
+  // two-person pieces, capturing the primary slot from the correct form.
+  if (clues.has("armchair_form") && !multiPersonSeating) {
     add(
       "Upholstered armchair",
       clues.has("cabriole_leg") ? 82 : 62,

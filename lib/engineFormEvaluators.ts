@@ -40,12 +40,53 @@ export type SubtypeAssignment = {
 
 const SUBTYPE_CONFIDENCE_FLOOR = 0.65; // Q4 lock
 
+// Stress-test fix #13 (2026-05-20): generic-token stop-list.
+// evaluateSubtype matched a subtype attribute on ANY ≥4-char token
+// appearing in the observation haystack. Generic furniture words
+// ("armchair", "seat", "table", "chair") appear in nearly every
+// chair/table observation, so a subtype whose only overlap with the
+// evidence was a generic word still scored a match — e.g. the dining-
+// armchair subtype matched on "armchair" + "seat" and was assigned to
+// a lounge parlor settee at confidence 1.0, despite zero dining-table
+// context and an explicit lounge_chair_form posture observation.
+//
+// Fix: require a subtype attribute to share at least one DISTINCTIVE
+// token (not in this stop-list) with the observation haystack before
+// it counts as matched. The dining subtype's distinctive token is
+// "dining" — absent from a parlor-settee haystack, so the subtype no
+// longer matches. Distinctive tokens (gingerbread, spindle, brass,
+// tubing, fluted, etc.) are unaffected.
+const GENERIC_SUBTYPE_TOKENS = new Set<string>([
+  // Furniture-universal nouns
+  "chair", "chairs", "armchair", "armchairs", "seat", "seats", "seating",
+  "seated", "table", "tables", "wood", "wooden", "hardwood", "softwood",
+  "legs", "foot", "feet", "back", "backs", "front", "fronts", "side",
+  "sides", "frame", "frames", "form", "forms", "piece", "pieces",
+  "cushion", "cushions", "panel", "panels", "surface", "surfaces",
+  "rail", "rails", "support", "supports", "edge", "edges", "case",
+  "cabinet", "drawer", "drawers", "door", "doors", "leg",
+  // Common descriptive adjectives / connectives that carry no
+  // subtype-discriminative power
+  "used", "with", "this", "that", "usually", "often", "common",
+  "commonly", "typical", "typically", "height", "depth", "width",
+  "inch", "inches", "style", "styles", "period", "antique",
+  "furniture", "made", "appears", "appear", "consistent", "head",
+  "top", "bottom", "overall", "design", "decorative", "ornament",
+  "ornamental", "finish", "finished", "visible", "upholstered",
+  "upholstery", "carved", "carving", "construction", "across",
+  "between", "along", "from", "into", "onto", "over", "under",
+  "above", "below", "where", "when", "while", "which", "their",
+  "than", "then", "have", "been", "were", "they", "them",
+]);
+
 /**
  * Pick the best subtype for the given form_id given observation descriptions.
  * Returns null when no subtype reaches the SUBTYPE_CONFIDENCE_FLOOR.
  *
- * Scoring: simple keyword presence in observation descriptions against each
- * subtype's distinguishing_attributes. Confidence = matched / total attrs.
+ * Scoring: keyword presence in observation descriptions against each
+ * subtype's distinguishing_attributes. An attribute counts as matched only
+ * when it shares a DISTINCTIVE (non-generic) ≥4-char token with the
+ * observation haystack. Confidence = matched / total attrs.
  */
 export function evaluateSubtype(
   form_id: string | null,
@@ -65,8 +106,15 @@ export function evaluateSubtype(
     if (!attrs.length) continue;
     const matched: string[] = [];
     for (const attr of attrs) {
-      // Tokenize attribute and require at least one ≥4-char content word match.
-      const tokens = String(attr).toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length >= 4);
+      // Tokenize attribute and require at least one DISTINCTIVE (non-generic)
+      // ≥4-char content-word match. Generic furniture tokens (armchair, seat,
+      // table, etc.) are filtered out so a subtype can't match on words that
+      // appear in nearly every observation — see GENERIC_SUBTYPE_TOKENS and
+      // stress-test fix #13.
+      const tokens = String(attr)
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter((t) => t.length >= 4 && !GENERIC_SUBTYPE_TOKENS.has(t));
       if (tokens.some((t) => haystack.includes(t))) {
         matched.push(attr);
       }
