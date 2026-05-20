@@ -935,8 +935,30 @@ const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
   },
 };
 
+// Slant-front desk whose drawer-corner dovetails were emitted by the LLM as
+// BOTH hand_cut_dovetails ("pre-1860") and machine_dovetails ("post-1860") —
+// a hedge of the same feature. Those contradictory directional bounds used to
+// collapse the joinery layer to a degenerate "1860-1860" band; it should now be
+// ambiguous/undated.
+const HEDGED_DOVETAIL_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-hedged-dovetail-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk, fitted pigeonhole interior, one drawer, drawer-corner dovetails ambiguous between hand-cut and early machine" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drawer_present", "One full-width exterior drawer below the fall front", 68),
+      obs("hand_cut_dovetails", "Through-dovetails with slight spacing variation and visible scribe lines; classification preferred as hand-cut given asymmetry", 72),
+      obs("machine_dovetails", "Alternative reading: spacing is fairly regular and could indicate early machine-cut dovetails (post-1880); emitted as low-confidence alternative", 35),
+      obs("solid_wood_construction", "Case sides and drawer sides read as solid wood", 84),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  hedged_dovetail_desk: HEDGED_DOVETAIL_DESK_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
   eastlake_negations: EASTLAKE_NEGATION_FIXTURE,
