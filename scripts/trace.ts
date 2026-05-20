@@ -732,6 +732,16 @@ const mkBed = (id: string, wood: string, raw_text: string,
     observations: [obs("bed_frame_structure", obDesc, 82)],
   },
 });
+const mkCase = (id: string, wood: string, raw_text: string,
+  obDesc = "Cabinet or cupboard storage form"): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "cabinet" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: [obs("cabinet_form", obDesc, 82)],
+  },
+});
 // Escritoire must beat the generic drop-front Secretary route (cabinet-like
 // fall-front, no bookcase) — deskFormDominant suppresses the Secretary emit.
 const ESCRITOIRE_FIXTURE = mkDesk("escritoire", "oak",
@@ -970,6 +980,24 @@ const FIXTURES: Record<string, Fixture> = {
     "Victorian cast-iron and brass bed: a metal bedstead with cast-iron headboard scrollwork, brass knobs, and tubular side rails."),
   daybed_control: mkBed("daybed-control", "walnut",
     "Wooden daybed: a side-facing lounge daybed with a backrest along one long edge, configured for both rest and seated use."),
+  // ── Case pieces: Hoosier / kitchen-storage cluster (family_general_storage_specialty) ──
+  hoosier_cabinet: mkCase("hoosier-cabinet", "oak",
+    "Sellers Hoosier cabinet: a freestanding kitchen workstation cabinet with an integrated flour bin and sifter, a pull-out enamel work surface, and a tambour upper."),
+  kitchen_cabinet: mkCase("kitchen-cabinet", "oak",
+    "Freestanding kitchen cabinet: a painted farmhouse pantry and dry goods cabinet with shelves and cupboard doors and a plain work shelf, without special workstation fittings."),
+  step_back_cupboard: mkCase("step-back-cupboard", "pine",
+    "Step-back cupboard: a two-piece country cupboard with a shallower glazed upper section set back from a deeper lower base."),
+  pie_safe: mkCase("pie-safe", "poplar",
+    "Primitive pie safe: a ventilated food-storage safe on tall legs with punched-tin pierced star-pattern door panels."),
+  jelly_cupboard: mkCase("jelly-cupboard", "pine",
+    "Tall narrow jelly cupboard: a country preserve-storage cupboard with two doors over a single drawer."),
+  jam_cupboard: mkCase("jam-cupboard", "pine",
+    "Country jam cupboard: a plain pantry preserve cupboard with simple doors for jars and crocks."),
+  dough_box: mkCase("dough-box", "pine",
+    "Primitive dough box: a farmhouse kneading trough with a lift-off lid on a splay-leg base."),
+  // Control — dining-display cabinet must NOT route to a kitchen-storage form.
+  china_cabinet_control: mkCase("china-cabinet-control", "mahogany",
+    "Glazed china cabinet: a formal dining-room china display cabinet with glazed doors and mirrored back."),
 };
 
 function parseArgs(): { piece: string | null; all: boolean } {

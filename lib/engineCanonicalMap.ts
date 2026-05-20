@@ -1226,6 +1226,20 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Preserve cupboard": "form_jam_cupboard", // preserves/jars storage
   "Jar cupboard": "form_jam_cupboard",
 
+  // Jelly cupboard — peer of jam cupboard; takes the "jelly cupboard" label per
+  // the jam-cupboard canonical's deferral note. (Route was assumed present but
+  // never added; the scoreForms detector emits this label.)
+  "Jelly cupboard": "form_jelly_cupboard",
+
+  // Pie safe — ventilated food-storage safe (pierced/punched tin or screen
+  // panels are the diagnostic). Routes were missing entirely.
+  "Pie safe": "form_pie_safe",
+  "Pie cupboard": "form_pie_safe",
+  "Pie chest": "form_pie_safe",
+  "Tin safe": "form_pie_safe",
+  "Punched-tin safe": "form_pie_safe",
+  "Meat safe": "form_pie_safe", // regional (esp. Southern) alias for the ventilated safe
+
   // ───────────────────────────────────────────────────────────────────
   // Suspended lighting — Item 17 Batch E (Tier B lighting elevations)
   // ───────────────────────────────────────────────────────────────────

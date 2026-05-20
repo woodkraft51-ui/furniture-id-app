@@ -3857,6 +3857,62 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (clues.has("open_shelving")) {
     add("Bookcase / open shelving unit", 60, "Open shelving is visible.");
   }
+
+  // Kitchen / utility-storage cluster (family_general_storage_specialty):
+  // Hoosier cabinet, freestanding kitchen cabinet, step-back cupboard, pie
+  // safe, jelly cupboard, jam cupboard, dough box. These canonicals existed
+  // with label routes but no detector (the route authors left "resolve at
+  // scoreForms" notes). They share aliases ("kitchen cupboard", "country
+  // cupboard"), so checks run most-diagnostic-first; the broad freestanding
+  // kitchen cabinet is the fallback. Gated !deskFormDominant so a fall-front/
+  // cylinder desk isn't pulled in. Each emitted label has a
+  // FORM_LABEL_TO_CANONICAL route.
+  const pieSafe = includesAny(text, [
+    "pie safe", "pie cupboard", "pie chest", "tin safe", "punched-tin safe",
+    "punched tin safe", "pierced tin", "punched tin", "meat safe",
+  ]);
+  const hoosierCabinet = includesAny(text, [
+    "hoosier", "kitchen workstation", "sellers cabinet", "napanee", "mcdougall",
+    "coppes", "boone cabinet", "flour bin", "flour sifter",
+  ]);
+  const doughBox = includesAny(text, [
+    "dough box", "dough trough", "bread trough", "kneading trough", "kneading box", "dough bin",
+  ]);
+  const stepBackCupboard = includesAny(text, [
+    "step-back cupboard", "stepback cupboard", "step back cupboard",
+    "step-back hutch", "stepback hutch", "two-piece cupboard", "two piece cupboard",
+  ]);
+  const jellyCupboard = includesAny(text, ["jelly cupboard"]);
+  const jamCupboard = includesAny(text, ["jam cupboard", "preserve cupboard", "jar cupboard"]);
+  const kitchenStorageCabinet = includesAny(text, [
+    "kitchen cabinet", "kitchen cupboard", "pantry cabinet", "utility cabinet",
+    "dry goods cabinet", "dry-goods cabinet", "baker's cabinet", "bakers cabinet",
+    "farmhouse cabinet", "painted kitchen cupboard", "kitchen storage cabinet",
+  ]);
+  // Definitive kitchen-storage cues (hoosier, flour bin/sifter, pierced/punched
+  // tin, dough trough, step-back geometry, jelly/jam) win even over the desk
+  // cover-mechanism cluster: a Hoosier legitimately has a tambour/roll front but
+  // is NOT a desk. Hence these bypass the !deskFormDominant gate and score above
+  // the cover-cluster forms (roll-top 110 / tambour 100). The broad
+  // "kitchen cabinet" fallback is generic, so it stays gated on !deskFormDominant.
+  const strongKitchenCue = pieSafe || hoosierCabinet || doughBox || stepBackCupboard || jellyCupboard || jamCupboard;
+  if (strongKitchenCue) {
+    if (pieSafe) {
+      add("Pie safe", 112, "Ventilated food-storage safe with pierced/punched tin (or screen) panels.");
+    } else if (hoosierCabinet) {
+      add("Hoosier cabinet", 112, "Integrated freestanding kitchen workstation (flour bin/sifter, pull-out work surface, maker-line cabinetry).");
+    } else if (doughBox) {
+      add("Dough box", 112, "Trough/kneading box for mixing, proofing, or storing bread dough.");
+    } else if (stepBackCupboard) {
+      add("Step-back cupboard", 112, "Two-piece cupboard with a shallower upper section set back from a deeper base.");
+    } else if (jellyCupboard) {
+      add("Jelly cupboard", 112, "Tall narrow country preserve-storage cupboard.");
+    } else if (jamCupboard) {
+      add("Jam cupboard", 110, "Country pantry/preserve-storage cupboard (jam, jars, crocks, dry goods).");
+    }
+  } else if (kitchenStorageCabinet && !deskFormDominant) {
+    add("Kitchen cabinet", 96, "Freestanding kitchen/pantry storage cabinet without the full Hoosier workstation system.");
+  }
  // Industrial / Toledo-style task chair
 if (
   hasAny(
