@@ -6904,6 +6904,8 @@ Important reasoning rules:
 - ALWAYS use the preferred keys above when the evidence is visible. The keys are how the engine routes observations to dating envelopes.
 - It is better to use a preferred key with low confidence than to use no key at all.
 - Multiple keys may apply to a single piece — emit each as a separate observation.
+- Regional / national origin (e.g. "Danish", "Italian", "French") is NOT established by form or style vocabulary alone. When a piece reads as Scandinavian-influenced, Continental, etc., describe the design INFLUENCE rather than asserting a country of manufacture, and note that domestic / American commercial production of the same look is usually equally possible. Only attribute a specific country of origin when a maker's label, stamp, or documented provenance supports it.
+- Material identification from a distance is provisional. For cover materials especially (vinyl_cover vs a very smooth woven fabric; leather vs faux leather/bonded leather), keep confidence at moderate or lower unless a close-up shows texture, grain, sheen, seams, or wear that confirms it — and name the alternative material in the description. Still emit the best-fit cover key (see the upholstery contract above); just calibrate confidence and state the uncertainty.
 
 Preferred form-signal keys:
 seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, clock_case_form, roos_label, lane_label, maker_label.
