@@ -1707,8 +1707,15 @@ function promotePerceptionObservations(
     });
   };
 
+  // Word-boundary seating detection. Substring matching previously fired on
+  // "seated" (e.g. a drawer bottom "seated in the frame"), deriving phantom
+  // seating_surface / seating_present clues on desks and other non-seating
+  // forms. \bseat\b matches seat/seats but not "seated"/"seating"; the explicit
+  // alternatives cover the genuine seating words.
+  const hasSeatingWord = /\b(seat|seats|seating|bench|benches|sitting)\b/.test(text);
+
   if (
-    includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+    hasSeatingWord &&
     !isNegated("seat") &&
     !isNegated("seating") &&
     !isNegated("bench") &&
@@ -1730,7 +1737,7 @@ function promotePerceptionObservations(
   }
 
   const hasSeatingContext =
-  includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+  hasSeatingWord &&
   !isNegated("seat") &&
   !isNegated("seating") &&
   !isNegated("bench") &&
@@ -5958,6 +5965,12 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
   if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) bump("Finish loss, water staining, or white haze", -12, "condition");
   if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) bump("Surface scratches or top damage", -8, "condition");
   if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) bump("Missing / broken / loose parts or veneer loss", -15, "condition");
+  if (
+    textHas("insect damage", "powder post", "powderpost", "woodworm", "wood rot", "dry rot", "wet rot", "rotted", "wood deterioration", "crumbling") ||
+    Array.from(clues).some((k) => k.includes("insect") || k.includes("woodworm") || k.includes("wood_rot"))
+  ) {
+    bump("Insect damage or wood rot (structural integrity, restoration cost)", -15, "condition");
+  }
   if (has("possible_plywood_or_laminated_panel")) bump("Possible plywood or laminated panel construction", -8, "construction");
   if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) bump("No diagnostic joinery or fastener evidence", -5, "construction");
 
@@ -8320,6 +8333,17 @@ if (p6.dating_overlap) {
       /post[-\s]*(19[2-9]\d|20\d\d)/i.test(w.date_hint)
   );
 
+  // Revival cues: a Revival-family alternative attribution, or any clue key
+  // containing "revival" (colonial_revival_style_cues, queen_anne_revival_pattern,
+  // etc.). Lets reconcileFinalStyle default an undated original-period style to
+  // its revival reading rather than claiming an original 18th-c. piece.
+  const revivalAltName = ((p3 as any).style_alternatives ?? []).find(
+    (a: any) => typeof a?.name === "string" && /revival/i.test(a.name)
+  )?.name ?? null;
+  const hasRevivalClue = (digest.clue_keys ?? []).some((k) => /revival/i.test(k));
+  const hasRevivalCues = Boolean(revivalAltName) || hasRevivalClue;
+  const revivalLabelHint = revivalAltName ?? (hasRevivalClue ? "Colonial Revival" : null);
+
   const reconciled = reconcileFinalStyle({
     styleAttribution: p3.style_attribution ?? null,
     styleWaves: p3.style_waves ?? [],
@@ -8330,6 +8354,8 @@ if (p6.dating_overlap) {
     eraContext,
     hasImpossiblePair,
     hasModernHardNegative,
+    hasRevivalCues,
+    revivalLabelHint,
   });
   p3.final_style = reconciled;
 

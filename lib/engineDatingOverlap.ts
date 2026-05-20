@@ -53,6 +53,18 @@ export type ConvergenceZone = {
   // style_wave converging at 1845–1850 on a Golden Oak dresser whose
   // form+hardware envelope actually pointed at 1890–1900).
   authority_sum: number;
+  // Specificity-weighted analogues of the two fields above. Each layer
+  // contributes in proportion to how narrow (informative) its band is, so a
+  // broad container (upholstery 1600-1940, style_wave 1845-1990, open-ended
+  // post-1900) can't pad a zone the way a genuinely specific layer does.
+  // refineDatingFromConvergence qualifies and ranks on these.
+  effective_layer_count: number;
+  weighted_authority: number;
+  // Count of layers that genuinely corroborate the zone (specificity >= 0.5 —
+  // a closed band no wider than ~140y). Broad/open-ended layers that merely
+  // contain the zone are excluded. This is what the chart should headline so
+  // "N layers agree" doesn't overstate corroboration.
+  specific_layer_count: number;
   layers: LayerName[];
 };
 
@@ -138,16 +150,20 @@ export function refineDatingFromConvergence(
   // zones and rely on the relative-width check below (override only when tighter
   // than p2) plus width-scaled confidence. The cap only blocks absurd spans.
   const ABSOLUTE_WIDTH_CAP = 160;
+  // Effective (specificity-weighted) layer count required to qualify a computed
+  // zone — replaces the old raw "≥3 layers" so that three genuinely specific
+  // layers qualify but a zone padded out by broad/open-ended containers does not.
+  const EFFECTIVE_LAYER_THRESHOLD = 2.5;
   const qualifying = overlap.convergence_zones
     .filter((z) => {
       const widthOk = (z.date_ceiling - z.date_floor) <= ABSOLUTE_WIDTH_CAP;
       if (!widthOk) return false;
       const isSyntheticIntersection = z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR;
-      return isSyntheticIntersection || z.layer_count >= 3;
+      return isSyntheticIntersection || z.effective_layer_count >= EFFECTIVE_LAYER_THRESHOLD;
     })
     .sort((a, b) => {
-      if (b.authority_sum !== a.authority_sum) return b.authority_sum - a.authority_sum;
-      if (b.layer_count !== a.layer_count) return b.layer_count - a.layer_count;
+      if (b.weighted_authority !== a.weighted_authority) return b.weighted_authority - a.weighted_authority;
+      if (b.effective_layer_count !== a.effective_layer_count) return b.effective_layer_count - a.effective_layer_count;
       return (a.date_ceiling - a.date_floor) - (b.date_ceiling - b.date_floor);
     });
   if (qualifying.length === 0) return fallback;
@@ -178,7 +194,7 @@ export function refineDatingFromConvergence(
     a.date_ceiling >= b.date_floor && b.date_ceiling >= a.date_floor;
   if (isSynthetic(best)) {
     const strongestGenuine = qualifying.find(
-      (z) => !isSynthetic(z) && z.layer_count >= 3
+      (z) => !isSynthetic(z) && z.effective_layer_count >= EFFECTIVE_LAYER_THRESHOLD
     );
     if (strongestGenuine && !overlapsZone(strongestGenuine, best)) {
       best = strongestGenuine;
@@ -232,9 +248,9 @@ export function refineDatingFromConvergence(
   // same confidence as a tight one — so wide zones step down to Low/Moderate.
   let confidence: "High" | "Moderate" | "Low";
   if (convergenceWidth <= 60) {
-    confidence = best.layer_count >= 5 ? "High" : "Moderate";
+    confidence = best.effective_layer_count >= 4 ? "High" : "Moderate";
   } else if (convergenceWidth <= 110) {
-    confidence = best.layer_count >= 4 ? "Moderate" : "Low";
+    confidence = best.effective_layer_count >= 3 ? "Moderate" : "Low";
   } else {
     confidence = "Low";
   }
@@ -245,8 +261,8 @@ export function refineDatingFromConvergence(
     date_ceiling: zCeiling,
     confidence,
     reason: hardFloorClamped
-      ? `${best.layer_count} evidence layers converge on ${best.date_floor}–${best.date_ceiling}; hard-negative post-floor evidence clamps the floor to ${zFloor}.`
-      : `${best.layer_count} evidence layers converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
+      ? `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on ${best.date_floor}–${best.date_ceiling}; hard-negative post-floor evidence clamps the floor to ${zFloor}.`
+      : `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
     refined: true,
   };
 }
@@ -310,6 +326,20 @@ const LAYER_AUTHORITY: Record<LayerName, number> = {
 // driven by porcelain caster 1830–1900 + knob "post-1750").
 const REPLACEMENT_RISK_EXCLUSION_THRESHOLD = 0.35;
 
+// Specificity weight for a layer's contribution to a convergence zone. A band
+// no wider than CONVERGENCE_REF_WIDTH is fully informative (1.0); wider bands
+// scale down as REF_WIDTH/width, and open-ended bands (one bound null) get a
+// low fixed weight. This stops broad/open-ended layers from inflating a zone's
+// effective layer count and authority just because their span happens to
+// contain the zone.
+const CONVERGENCE_REF_WIDTH = 70;
+const OPEN_ENDED_SPECIFICITY = 0.35;
+function layerSpecificity(floor: number | null, ceiling: number | null): number {
+  if (floor == null || ceiling == null) return OPEN_ENDED_SPECIFICITY;
+  const width = Math.max(ceiling - floor, 1);
+  return Math.min(1, CONVERGENCE_REF_WIDTH / Math.max(width, CONVERGENCE_REF_WIDTH));
+}
+
 function aggregateRange(ranges: Array<{ floor: number | null; ceiling: number | null }>) {
   let floor: number | null = null;
   let ceiling: number | null = null;
@@ -320,8 +350,15 @@ function aggregateRange(ranges: Array<{ floor: number | null; ceiling: number | 
     if (f != null) floor = floor === null ? f : Math.min(floor, f);
     if (c != null) ceiling = ceiling === null ? c : Math.max(ceiling, c);
   }
-  if (floor != null && ceiling != null && floor > ceiling) {
-    [floor, ceiling] = [ceiling, floor];
+  // A "pre-X" clue combined with a "post-Y" clue (Y >= X) does not bracket a
+  // coherent window — the two directional bounds contradict each other. Under
+  // min-floor/max-ceiling that surfaces as an inverted (floor > ceiling) or
+  // degenerate (floor == ceiling) band, e.g. hand_cut_dovetails "pre-1860" +
+  // machine_dovetails "post-1860" collapsing to 1860-1860. Treat the layer as
+  // ambiguous/undated rather than fabricating a band (or swapping the bounds to
+  // manufacture one across the gap).
+  if (floor != null && ceiling != null && floor >= ceiling) {
+    return { floor: null, ceiling: null };
   }
   return { floor, ceiling };
 }
@@ -515,6 +552,34 @@ export function buildDatingOverlap(
   const earliest = Math.min(...populated.map((l) => l.date_floor ?? l.date_ceiling ?? 2030));
   const latest = Math.max(...populated.map((l) => l.date_ceiling ?? l.date_floor ?? 2030));
 
+  const specByLayer = new Map<LayerName, number>();
+  for (const l of populated) {
+    specByLayer.set(l.layer, layerSpecificity(l.date_floor, l.date_ceiling));
+  }
+  const finalizeZone = (
+    start: number,
+    end: number,
+    layerSet: Set<LayerName>
+  ): ConvergenceZone => {
+    const layerList = Array.from(layerSet);
+    return {
+      date_floor: start,
+      date_ceiling: end,
+      layer_count: layerList.length,
+      effective_layer_count: Number(
+        layerList.reduce((s, l) => s + (specByLayer.get(l) ?? OPEN_ENDED_SPECIFICITY), 0).toFixed(2)
+      ),
+      authority_sum: layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0), 0),
+      weighted_authority: Number(
+        layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0) * (specByLayer.get(l) ?? OPEN_ENDED_SPECIFICITY), 0).toFixed(2)
+      ),
+      specific_layer_count: layerList.filter(
+        (l) => (specByLayer.get(l) ?? OPEN_ENDED_SPECIFICITY) >= 0.5
+      ).length,
+      layers: layerList,
+    };
+  };
+
   const zones: ConvergenceZone[] = [];
   let currentZone: { start: number; layers: Set<LayerName> } | null = null;
 
@@ -532,26 +597,12 @@ export function buildDatingOverlap(
         yearLayers.forEach((l) => currentZone!.layers.add(l));
       }
     } else if (currentZone) {
-      const layerList = Array.from(currentZone.layers);
-      zones.push({
-        date_floor: currentZone.start,
-        date_ceiling: year - 5,
-        layer_count: currentZone.layers.size,
-        authority_sum: layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0), 0),
-        layers: layerList,
-      });
+      zones.push(finalizeZone(currentZone.start, year - 5, currentZone.layers));
       currentZone = null;
     }
   }
   if (currentZone) {
-    const layerList = Array.from(currentZone.layers);
-    zones.push({
-      date_floor: currentZone.start,
-      date_ceiling: latest,
-      layer_count: currentZone.layers.size,
-      authority_sum: layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0), 0),
-      layers: layerList,
-    });
+    zones.push(finalizeZone(currentZone.start, latest, currentZone.layers));
   }
 
   // Style intersection: when a transitional intersection is supplied (two
@@ -571,7 +622,12 @@ export function buildDatingOverlap(
       date_floor: styleIntersection.date_floor,
       date_ceiling: styleIntersection.date_ceiling,
       layer_count: styleIntersection.participants.length,
+      // A style intersection is a deliberate transitional-overlap signal, not a
+      // broad container — keep it qualifying and dominant in the picker.
+      effective_layer_count: Math.max(styleIntersection.participants.length, 3),
       authority_sum: syntheticAuthoritySum,
+      weighted_authority: syntheticAuthoritySum,
+      specific_layer_count: styleIntersection.participants.length,
       layers: [styleIntersection.kind === "wave" ? "style_wave" : "style"],
     });
   }
