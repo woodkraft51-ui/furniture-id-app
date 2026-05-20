@@ -140,6 +140,12 @@ type Observation = {
   source_image?: string | null;
   hard_negative?: boolean;
   low_confidence_flag?: boolean;
+  // True when the description self-negates its own clue subject ("Object is a
+  // table lamp, not a clock case"). Such a clue is a REJECTED CANDIDATE: it must
+  // not contribute positive evidence to clue_keys or weighting. Distinct from
+  // hard_negative, which marks a PRESENT clue that is an age/authenticity red
+  // flag (phillips_screw, plywood_structural).
+  negated?: boolean;
 };
 
 type EvidenceDigest = {
@@ -1445,6 +1451,47 @@ function normalizeEvidenceStrength(observations: Observation[]): Observation[] {
       };
     });
 }
+// Derive the subject term(s) a clue key refers to, for self-negation detection.
+// "clock_case_form" -> ["clock case", "clock"]; "lamp_form" -> ["lamp"].
+const NEGATION_STRIP_SUFFIXES = ["_form", "_present", "_visible", "_construction", "_evidence", "_feature", "_detail"];
+function clueSubjectTerms(clue?: string | null): string[] {
+  if (!clue) return [];
+  let base = clue.toLowerCase();
+  for (const sfx of NEGATION_STRIP_SUFFIXES) {
+    if (base.endsWith(sfx)) {
+      base = base.slice(0, -sfx.length);
+      break;
+    }
+  }
+  const phrase = base.replace(/_/g, " ").trim();
+  if (!phrase) return [];
+  const terms = [phrase];
+  const head = phrase.split(" ")[0];
+  if (head && head.length >= 4 && head !== phrase) terms.push(head); // head noun: clock_case -> "clock"
+  return terms;
+}
+
+// True when a description rejects its OWN clue subject ("...not a clock case",
+// "rather than a clock", "no clock case"). Matching against the clue's own
+// subject term — not bare "not"/"no" — keeps positive clues whose prose merely
+// contrasts a different thing ("Cabriole legs, not straight") from being dropped.
+function descriptionNegatesClue(clue: string | null | undefined, description: string): boolean {
+  const terms = clueSubjectTerms(clue);
+  if (!terms.length || !description) return false;
+  const text = ` ${description.toLowerCase()} `;
+  for (const t of terms) {
+    const esc = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const patterns = [
+      new RegExp(`\\bnot (?:a |an |the )?${esc}\\b`),
+      new RegExp(`\\b(?:rather than|instead of|as opposed to) (?:a |an |the )?${esc}\\b`),
+      new RegExp(`\\bno ${esc}\\b`),
+      new RegExp(`\\b${esc} (?:is |are )?(?:not present|absent|missing)\\b`),
+    ];
+    if (patterns.some((re) => re.test(text))) return true;
+  }
+  return false;
+}
+
 function normalizeObservationsFromParsed(parsed: any): Observation[] {
   const direct = Array.isArray(parsed?.observations) ? parsed.observations : [];
   const out: Observation[] = [];
@@ -1484,6 +1531,7 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
   raw?.value !== false &&
   String(raw?.value).toLowerCase() !== "false"
 ),
+      negated: descriptionNegatesClue(clue, description),
       low_confidence_flag:
         typeof raw?.confidence === "number" ? raw.confidence < 45 : true,
     });
@@ -2469,7 +2517,15 @@ function buildEvidenceDigest(observations: Observation[], perception?: Perceptio
     by_type[o.type].push(o);
   });
 
-  const clue_keys = uniq(observations.map((o) => normalizeClueKey(o.clue)).filter(Boolean) as string[]);
+  // Rejected candidates (negated) never enter clue_keys — they must not route
+  // forms or contribute positive evidence to any clue_keys consumer (scoreForms,
+  // material classification, dating, style).
+  const clue_keys = uniq(
+    observations
+      .filter((o) => !o.negated)
+      .map((o) => normalizeClueKey(o.clue))
+      .filter(Boolean) as string[]
+  );
   const hard_negatives = uniq(observations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
   const strongest_observations = [...observations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
 
@@ -2898,7 +2954,9 @@ export type ScoredForm = {
 
 function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  // Rejected-candidate prose ("...not a clock case") must not drive text-based
+  // form matching either — exclude negated observations from the haystack (#15).
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
@@ -3234,7 +3292,36 @@ if (
   }
 
   // Bed forms
-  if (clues.has("metal_bed_frame")) {
+  // Lighting forms (lamps). Routed BEFORE the metal/brass material families so a
+  // lamp's brass/iron base does not fall through to the brass-bed / iron-bed /
+  // metal-furniture material traps (#14). lamp_form and lighting evidence have
+  // no other scoreForms path; the 14+ lamp forms in forms.ts were otherwise
+  // reachable only by exact-name LLM emission (same orphaned-form pattern as #12).
+  const lampSignal =
+    hasAny(
+      "lamp_form", "table_lamp_form", "floor_lamp_form", "lamp_base", "lamp_shade",
+      "lamp_socket", "lamp_harp", "lamp_finial", "slag_glass_shade", "leaded_glass_shade"
+    ) ||
+    includesAny(text, [
+      "table lamp", "floor lamp", "lamp shade", "lampshade", "slag glass", "leaded glass",
+      "panel lamp", "lamp base", "lamp socket", "lamp harp", "electric lamp", "banquet lamp",
+      "boudoir lamp", "gone with the wind lamp",
+    ]);
+  if (lampSignal) {
+    if (includesAny(text, ["floor lamp", "standing lamp", "torchere", "torchière", "torchiere", "bridge lamp"])) {
+      add("Floor lamp", 88, "Floor-standing lamp form (tall shaft, weighted base) is visible.");
+    } else if (includesAny(text, ["kerosene", "coal oil", "center-draft", "center draft"])) {
+      add("Kerosene lamp", 86, "Kerosene burner, font, or chimney evidence is visible.");
+    } else if (includesAny(text, ["whale oil", "sperm oil", "lard oil", "camphene", "burning fluid", "fluid lamp"])) {
+      add("Oil lamp", 86, "Fluid or oil burner and font evidence is visible.");
+    } else if (includesAny(text, ["banquet lamp", "gone with the wind", "gwtw"])) {
+      add("Banquet lamp", 84, "Tall ornate parlor / banquet lamp form is visible.");
+    } else {
+      add("Table lamp", 88, "Surface-set table lamp form (shade, socket or harp, decorative base) is visible.");
+    }
+  }
+
+  if (clues.has("metal_bed_frame") && !lampSignal) {
     // Block 9: seating signals suppress Iron bed frame. A chair with iron
     // frame is not a bed regardless of the metal_bed_frame clue firing.
     // The LLM sometimes emits metal_bed_frame on any iron/steel-framed
@@ -3255,20 +3342,21 @@ if (
       add("Iron bed frame", 95, "Metal headboard, footboard, or bed frame structure is visible.");
     }
   }
-     // Non-wood and mixed-material form families
-  if (hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+     // Non-wood and mixed-material form families. Gated on !lampSignal so a lamp's
+     // metal/brass base does not register as bed/metal furniture (#14).
+  if (!lampSignal && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
     add("Metal furniture", 62, "Metal frame or metal furniture construction is visible.");
   }
 
-  if (hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
+  if (!lampSignal && hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
     add("Modernist / chrome-frame furniture", 74, "Tubular steel, chrome, or chrome-and-laminate construction supports a modernist or mid-century furniture reading.");
   }
 
-  if (hasAny("wrought_iron", "cast_iron")) {
+  if (!lampSignal && hasAny("wrought_iron", "cast_iron")) {
     add("Iron furniture", 72, "Iron or cast/wrought metal construction is visible.");
   }
 
-  if (hasAny("brass_frame")) {
+  if (!lampSignal && hasAny("brass_frame")) {
     add("Brass bed or brass-frame furniture", 70, "Brass frame or brass rail construction is visible.");
   }
 
@@ -6205,6 +6293,7 @@ if (missing.label_photo) {
   });
 
   const weighted_clues = digest.observations
+    .filter((o) => !o.negated)
     .map((o) => {
       const meta = getClueMeta(o.clue);
       const clue = o.clue || o.description;

@@ -286,6 +286,54 @@ Per appraiser: "The subtype system is still over-prioritizing 'has arms + expose
 
 ---
 
+### 14. Lamp form-routing failure — orphaned lamp form + material "trap" routing (MAJOR LOGIC ERROR)
+
+**Surfaced by:** Slag-glass table lamp scan, 2026-05-20 (final identification returned "Brass bed or brass-frame furniture", subtype "Victorian brass bed", confidence 1.0).
+
+**Issue:** The perception layer correctly identified a slag-glass table lamp. The LLM emitted `lamp_form` (conf 68) and `clock_case_form` (conf 68, see #15). But the final form reconciliation returned **"Brass bed or brass-frame furniture."** Per appraiser: "the final form reconciliation catastrophically collapses... a downstream canonical-resolution failure overriding overwhelmingly correct upstream perception."
+
+**Root cause — same systemic pattern as #12:** There is no scoreForms path for any lamp clue key. `lamp_form` appears nowhere in `engine.ts` and is not in `CLUE_TO_CANONICAL`. The 14+ lamp forms in `forms.ts` (form_table_lamp, form_floor_lamp, form_oil_lamp, form_kerosene_lamp, etc.) are reachable only by exact-name LLM label emission, never from clue-key scoring. Meanwhile the lamp's legitimate brass/metal base fired `brass_frame`, and the ONLY form `brass_frame` routes to in scoreForms is `add("Brass bed or brass-frame furniture", 70, ...)` (engine.ts:3271). With no lamp form competing, the brass-bed "trap" clue won the slot — exactly the orphaned-form pattern documented in #12 (seating) and the audit flagged in commit ad786f6.
+
+**Code locations:**
+- `lib/engine.ts` — scoreForms (no lamp scoring block; brass_frame → brass-bed trap at ~3271)
+- `lib/engine.ts` — text observation extractor (~1757) and CLUE_LIBRARY (no `lamp_form`)
+- `lib/engineCanonicalMap.ts` — `lamp_form` absent from CLUE_TO_CANONICAL; no "Table lamp" / lighting form-label aliases
+
+**Proposed approach:**
+1. Add a lamp/lighting scoring block in scoreForms: when `lamp_form` (or lighting evidence — shade, socket, harp, finial, slag/leaded glass panels) fires, score the appropriate lamp form (form_table_lamp as the default, rerouting to floor/oil/kerosene/banquet by distinguishing evidence).
+2. Gate the brass-bed routing: do not award "Brass bed or brass-frame furniture" when lamp/lighting evidence is present (a lamp's brass base is material, not a bed). Same guard pattern as the `seatingPresent` gate already protecting the iron-bed route (engine.ts:3254).
+3. Route `lamp_form` (and lighting form labels) through CLUE_TO_CANONICAL / FORM_LABEL_TO_CANONICAL to the lamp canonicals.
+
+**Scope:** Medium (~2-3 hours). Logic error, not calibration — fix-now candidate. Part of the broader orphaned-form-scoring audit.
+
+---
+
+### 15. Negated observations preserved as positive clues — form routing ignores negation (MAJOR ARCHITECTURE LOGIC ERROR)
+
+**Surfaced by:** Slag-glass table lamp scan, 2026-05-20.
+
+**Issue:** The engine recorded the clue key `clock_case_form` (weight 0.850, conf 68) on the lamp scan — even though that observation's own description was **"Object is a table lamp, not a clock case."** The negation was thrown away; the clue entered scoring as positive form evidence.
+
+Per appraiser: "Your engine currently appears to preserve rejected candidate language as active positive evidence instead of treating it as negation metadata. That is extremely dangerous because rejected candidates are still entering later scoring layers." Flagged as "an important architecture clue," not a one-off.
+
+**Root cause:** `buildEvidenceDigest` (engine.ts:2472) builds `clue_keys` as `uniq(observations.map(o => normalizeClueKey(o.clue)))` — taking EVERY observation's `clue` regardless of (a) the `hard_negative` flag, or (b) explicit self-negation in `o.description`. The weighting layer (p4) DOES respect `hard_negative` (engine.ts:6297 filters them out of supporting clues; 6236 boosts them as negative evidence). But **scoreForms reads raw `digest.clue_keys`** (engine.ts:2900), which never excluded negated observations. Two compounding gaps:
+- **Structural:** even an observation correctly flagged `hard_negative: true` still contributes its clue to `clue_keys`, so form routing counts it as present.
+- **Detection:** here the LLM left `hard_negative: false` and put the negation only in prose ("...not a clock case"), so nothing flagged it as negative at all.
+
+**Code locations:**
+- `lib/engine.ts:2472` — `buildEvidenceDigest` clue_keys assembly (no negation/hard_negative exclusion)
+- `lib/engine.ts:2900` — scoreForms consumes raw clue_keys
+- `lib/engine.ts:1482` — LLM `hard_negative` parse (only honors explicit `raw.hard_negative === true`)
+
+**Proposed approach:**
+1. **Detection:** when an observation's description self-negates its own clue (patterns: "not a/an [X]", "is not", "rather than [X]", "[X] not present", "no [X]"), treat the observation as negative — set/honor `hard_negative` for it.
+2. **Structural:** exclude `hard_negative` observations from `clue_keys` (or have scoreForms skip them), so a rejected candidate cannot route a form. Keep them available as negation metadata for the conflicts/weighting layers, which already handle them correctly.
+3. Verify no legitimate positive clue relies on a negating-sounding description before excluding (audit the small set of CLUE_LIBRARY keys whose descriptions contain "no"/"not").
+
+**Scope:** Small-medium (~1.5-2 hours). Logic/architecture error, not calibration — fix-now candidate. Highest architectural leverage of the lamp scan: it protects EVERY form/style/dating layer from rejected-candidate contamination, not just lamps.
+
+---
+
 ## Already-Fixed During This Stress Test (for reference)
 
 | Issue | Commit | Fix |

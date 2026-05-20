@@ -1311,6 +1311,22 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Painted glass lamp": "form_banquet_lamp", // subtype_banquet_lamp_painted_glass
   "Formal parlor lamp": "form_banquet_lamp",
 
+  // Surface-set / freestanding lamps. Previously orphaned: no engine label
+  // routed to form_table_lamp or form_floor_lamp, so lamp_form fell through to
+  // the brass-bed material trap (#14). scoreForms now emits these labels.
+  "Table lamp": "form_table_lamp",
+  "Electric table lamp": "form_table_lamp",
+  "Slag glass lamp": "form_table_lamp", // slag glass is shade material, not a distinct form
+  "Slag-glass lamp": "form_table_lamp",
+  "Leaded glass lamp": "form_table_lamp", // leaded/panel shade material; form remains table lamp
+  "Leaded-glass lamp": "form_table_lamp",
+  "Panel lamp": "form_table_lamp", // bent/slag glass panel shade; table lamp form
+  "Boudoir lamp": "form_table_lamp", // subtype_table_lamp_boudoir_lamp
+  "Floor lamp": "form_floor_lamp",
+  "Standing lamp": "form_floor_lamp",
+  "Bridge lamp": "form_floor_lamp", // subtype_floor_lamp_bridge_lamp
+  "Torchiere lamp": "form_floor_lamp", // subtype_floor_lamp_torchiere_lamp
+
   // ───────────────────────────────────────────────────────────────────
   // Wall lighting — Item 17 Batch F (Tier B wall lighting elevations)
   // ───────────────────────────────────────────────────────────────────
