@@ -240,6 +240,52 @@ Distinct from #9 (which is about picking the correct primary). This issue is abo
 
 ---
 
+### 12. Form resolution overrides observations — armchair vs settee/loveseat (MAJOR LOGIC ERROR)
+
+**Surfaced by:** Louis XV/XVI Revival upholstered seating scan, 2026-05-20.
+
+**Issue:** The observation layer explicitly recognized two-person seating: "Wide upholstered seat cushion visible, sized for two persons — consistent with settee or loveseat form" and "piece is a two-seat settee/loveseat with full arm supports, not a single armchair." But form resolution returned `form_armchair`. The engine correctly observed the evidence, then the form-resolution layer overrode its own observations and forced the object back into the armchair category.
+
+Per appraiser: "This is exactly the kind of downstream reconciliation failure that should be treated as a major logic error. The form engine should never allow a canonical armchair identification when the observation layer explicitly recognizes two-person seating dimensions and loveseat/settee proportions."
+
+**Root cause:** The LLM emitted the clue key `armchair_form` (which routes to form_armchair via scoreForms taxonomy) while DESCRIBING a settee in the observation text. The engine trusts the clue key and ignores the contradicting description. There is no settee/loveseat clue key in the emitted set, and the "two persons / settee / loveseat" language lives only in description prose, which form scoring doesn't read.
+
+**Code locations:**
+- `lib/engine.ts` — scoreForms (form scoring from clue keys)
+- `lib/engine.ts` — p0 system prompt (form-signal key guidance)
+- `lib/engineCanonicalMap.ts` — armchair_form routing note
+
+**Proposed approach:**
+1. Engine-side detection (more robust): scan observation descriptions for two-person-seating language ("two persons", "two-seat", "settee", "loveseat", "love seat", "sized for two"). When present, override an armchair form attribution to form_sofa (which has subtype_sofa_loveseat) regardless of the armchair_form clue key.
+2. Prompt-side: teach the LLM to emit a sofa/settee/loveseat form clue when the seat is sized for 2+ occupants, NOT armchair_form.
+3. Both — engine detection as the safety net, prompt fix to reduce the mismatch at source.
+
+**Scope:** Medium (~2 hours). Logic error, not calibration — does not need more stress-test data to fix. Good fix-now candidate.
+
+---
+
+### 13. Subtype misfire — over-permissive token matching (MAJOR LOGIC ERROR)
+
+**Surfaced by:** Louis XV/XVI Revival upholstered seating scan, 2026-05-20 (classified as "Dining armchair / host chair" subtype with confidence 1.0).
+
+**Issue:** The piece — a lounge/parlor settee with deep reclined seat, overstuffed upholstery, enveloping sides, theatrical cresting — was assigned the "Dining armchair / host chair" subtype. Nothing supports dining-chair logic. The engine's own posture analysis correctly recognized lounge-chair behavior (`lounge_chair_form` clue, conf 78) but the subtype resolver ignored it.
+
+Per appraiser: "The subtype system is still over-prioritizing 'has arms + exposed frame + upright silhouette' while failing to sufficiently weight seat depth, posture angle, upholstery massing, and occupancy scale."
+
+**Root cause:** `assignSubtype` (engineFormEvaluators.ts:53) tokenizes each subtype's `distinguishing_attributes` and matches on ANY ≥4-char token appearing in the observation-descriptions haystack. The dining subtype's attribute "Armchair used at the head or foot of a dining table; seat height usually aligns with dining chairs (17-19 inches)" matched on generic tokens ("armchair", "seat") that appear in the haystack for almost any chair. confidence = matched/total = 1/1 = 1.0 → assigned. No negative-evidence check, no semantic weighting, no consideration of contradicting clues (lounge_chair_form).
+
+**Code location:**
+- `lib/engineFormEvaluators.ts:53` — assignSubtype
+
+**Proposed approach:**
+1. Negative-evidence guard: when contradicting clues are present (e.g., lounge_chair_form contradicts dining subtypes), suppress the conflicting subtype.
+2. Require DISTINCTIVE token matches, not generic ones: tokens like "armchair", "seat", "chair" appear in nearly all chair observations and shouldn't drive subtype confidence. Build a stop-list of generic tokens, OR weight matches by token rarity (IDF-style).
+3. Raise the single-attribute confidence ceiling: a subtype with one attribute that matched one generic token shouldn't reach confidence 1.0. Consider requiring ≥2 distinctive matches, or capping confidence when only generic tokens matched.
+
+**Scope:** Medium (~2-3 hours). Logic error, not calibration. The generic-token stop-list and negative-evidence guard are the highest-value pieces.
+
+---
+
 ## Already-Fixed During This Stress Test (for reference)
 
 | Issue | Commit | Fix |
