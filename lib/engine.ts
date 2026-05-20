@@ -3731,6 +3731,21 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Dining table", 90, "Large seated-dining surface for meals.");
   }
 
+  // Work-table cluster (function-defined; gated on explicit terms so they don't
+  // collide with the writing-desk / drafting-desk / sewing-machine-desk and
+  // workbench-desk forms, which require "desk"/"machine"/"workbench" language).
+  if (includesAny(text, ["drafting table", "architect's table", "drawing table", "drafting board"])) {
+    add("Drafting table", 92, "Adjustable/tilting drafting/drawing work table.");
+  } else if (includesAny(text, ["sewing table", "needlework table", "work table for sewing"])) {
+    add("Sewing table", 92, "Small work table fitted for sewing/needlework storage.");
+  } else if (includesAny(text, ["library table"])) {
+    add("Library table", 90, "Substantial reading/writing library table, often with frieze drawers.");
+  } else if (includesAny(text, ["writing table"])) {
+    add("Writing table", 90, "Seated writing/correspondence table with an open work surface.");
+  } else if (includesAny(text, ["work table"])) {
+    add("Work table", 88, "Task-oriented domestic/craft work table.");
+  }
+
   // Chest and storage forms
   if (clues.has("cedar_lining") || clues.has("lift_lid")) {
     add(
