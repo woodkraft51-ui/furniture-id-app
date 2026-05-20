@@ -334,6 +334,35 @@ Per appraiser: "Your engine currently appears to preserve rejected candidate lan
 
 ---
 
+### 16. Functional evidence overridden by fuel-word / decorative resemblance (MAJOR LOGIC ERROR — FIXED)
+
+**Surfaced by:** Slag-glass electric table lamp scan, 2026-05-20 (rerun after #14/#15). Form held in the lamp family correctly (#14/#15 confirmed working) but resolved to **"French Louis XVI Revival Kerosene lamp"**, subtype "Center-draft kerosene lamp" (conf 1.0) — despite `electric_table_lamp` (conf 70), electric cord, standard E26 socket, and explicit "electric rather than oil/kerosene function" observations.
+
+Per appraiser: "Functional identity should always outrank stylistic resemblance when determining subtype. Once electric socket architecture is confirmed visually, kerosene subtypes should either be eliminated entirely or heavily penalized unless clear conversion evidence exists."
+
+**Root cause (two layers, same negation-contamination class as #15):**
+1. **Form routing** — the #14 lamp block's fuel branch matched the bare word "kerosene" via `includesAny(text, ["kerosene", ...])`. That word appears in NEGATING prose the engine itself emits ("electric rather than oil/kerosene function"), so the lamp routed to Kerosene lamp before the Table lamp fallback. (Regression introduced by #14.)
+2. **Subtype** — once on a lamp form, `evaluateSubtype` matched fuel subtypes (oil/kerosene/hurricane) on "kerosene"/"oil" leaking from the same negating prose, and several subtypes tied at conf 1.0 on tokens ubiquitous to lamps (glass, brass, electric) — first-listed arbitrarily won.
+
+**Fix (committed):**
+- `lib/engine.ts` scoreForms lamp block — **electric-first routing**: `electricEvidence` (socket/cord/E26 clues or text) routes to Table lamp; fuel branches require POSITIVE burner/font/wick/chimney evidence AND no electric/conversion signal.
+- `lib/engineFormEvaluators.ts` evaluateSubtype — **functional-contradiction guard**: when electric is confirmed and no conversion language, fuel/flame subtypes (kerosene, oil, gas, candle, hurricane, wick, burner, chimney) are eliminated. **Ambiguity guard**: when ≥2 subtypes tie at top confidence, return null so the broader evidence-safe form-level identity stands instead of an arbitrary over-specific pick.
+
+**Result:** electric slag-glass lamp now resolves to Table lamp with no forced fuel subtype.
+
+**Scope:** Medium — logic error + regression, fixed now.
+
+---
+
+### Recorded but DEFERRED from the lamp rerun (reinforce existing open issues)
+
+The same lamp scan reinforced two existing calibration/synthesis issues (appraiser: "the remaining weakness is mainly overclassification"):
+
+- **Style over-classification → #11 / #1.** Engine labeled an American Victorian/Edwardian slag-glass lamp as "French Louis XVI Revival" on thin token matches (`["revival","bronze"]`, tied 0.82 with Rococo Revival `["revival","victorian"]`). The decorative program (scallop shells, foliate borders, scrolled feet, theatrical casting) reads Naturalistic Victorian / Rococo Revival, not restrained Louis XVI neoclassicism. The engine should prefer the broader period-accurate label when the specific-style match is thin or tied. Deferred to the #11/#1 style-breadth work (needs the commercial-simplification / decorative-romanticizing weighting).
+- **Dating narrowed too tightly → #8 / #3.** Final range c. 1920–1930 was driven by style-wave reconciliation; construction evidence (channel-set slag glass, pot-metal casting, paneled shade) supports a broader c. 1895–1930 (strongest ~1905–1925). Convergence-zone selection over-weighted the 2-layer style_wave zone over the 4-layer construction zone. Deferred to #8 convergence-zone selection.
+
+---
+
 ## Already-Fixed During This Stress Test (for reference)
 
 | Issue | Commit | Fix |
@@ -346,6 +375,8 @@ Per appraiser: "Your engine currently appears to preserve rejected candidate lan
 | Confidence cap too high with no dating-detail evidence (#4) | `2c6c72b` + `c396be8` | P1 gate caps confidence on count of dating-structural categories (joinery / fastener / toolmark / hardware / wood); 0 → 72, 1 → 80, 2 → 86, 3+ → 94 |
 | "Academic" qualifier overreach (#2) | `1557d2a` + `c396be8` | softenAcademicLabel applied across all 5 reconcileFinalStyle rules (incl. Rule 3 wave names) |
 | Adjacent revival-family bleed (#10, partial) | `c13cc43` | Confidence floor 0.55 + matched-term distinctness filter on user-facing alternatives |
+| Lamp routed to brass-bed trap; negated clues scored as positive (#14, #15) | `5934dea` | Lamp scoring path + metal/brass-trap gating; `negated` detection excludes self-rejected clues from clue_keys / scoreForms text / weighting |
+| Functional evidence overridden by fuel-word / styling resemblance (#16) | _this commit_ | Electric-first lamp routing; evaluateSubtype functional-contradiction guard + tie→null ambiguity guard |
 
 ---
 

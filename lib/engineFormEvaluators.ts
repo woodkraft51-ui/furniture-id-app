@@ -100,10 +100,24 @@ export function evaluateSubtype(
     .map((d) => String(d).toLowerCase())
     .join(" | ");
 
-  let best: SubtypeAssignment | null = null;
+  // Functional-evidence guard (#16): functional identity outranks fuel/styling
+  // resemblance. When evidence confirms ELECTRIC function and shows no
+  // conversion-from-fuel language, fuel-burning subtypes (oil, kerosene, gas,
+  // candle, hurricane-flame) are eliminated — a fuel word appearing in NEGATING
+  // prose ("electric rather than oil/kerosene function") must never pull the
+  // subtype toward a fuel lamp. Scoped to lighting forms.
+  const electricConfirmed = /\b(?:electric|socket|wired|pull-chain|keyless|e26|medium-base|medium base)\b/.test(haystack);
+  const conversionEvidence = /\b(?:converted|electrified|conversion|originally (?:kerosene|oil|gas)|formerly (?:kerosene|oil|gas))\b/.test(haystack);
+  const isFuelSubtype = (st: { name?: string; distinguishing_attributes?: string[] }) =>
+    /\b(?:kerosene|whale oil|lard oil|camphene|burning fluid|fluid lamp|gas lamp|candle|hurricane|wick|burner|chimney|fuel font|fuel fount)\b/.test(
+      `${st.name ?? ""} ${(st.distinguishing_attributes ?? []).join(" ")}`.toLowerCase()
+    );
+
+  const candidates: SubtypeAssignment[] = [];
   for (const st of form.subtypes) {
     const attrs = (st.distinguishing_attributes ?? []) as string[];
     if (!attrs.length) continue;
+    if (electricConfirmed && !conversionEvidence && isFuelSubtype(st)) continue;
     const matched: string[] = [];
     for (const attr of attrs) {
       // Tokenize attribute and require at least one DISTINCTIVE (non-generic)
@@ -125,16 +139,26 @@ export function evaluateSubtype(
     // telephone_cabinet subtype was assigned confidence 1.0 with
     // matched_attributes: [] when the form scoring fired on unrelated
     // composite-pattern evidence).
-    if (matched.length > 0 && confidence >= SUBTYPE_CONFIDENCE_FLOOR && (!best || confidence > best.confidence)) {
-      best = {
+    if (matched.length > 0 && confidence >= SUBTYPE_CONFIDENCE_FLOOR) {
+      candidates.push({
         subtype_id: st.id,
         subtype_name: st.name,
         confidence: Number(confidence.toFixed(2)),
         matched_attributes: matched,
-      };
+      });
     }
   }
-  return best;
+
+  if (!candidates.length) return null;
+  const maxConfidence = Math.max(...candidates.map((c) => c.confidence));
+  const top = candidates.filter((c) => c.confidence === maxConfidence);
+  // Ambiguity guard (#16): when ≥2 subtypes tie at the top confidence the
+  // evidence cannot distinguish them (commonly because they matched only on
+  // tokens ubiquitous to the form — glass, brass, electric for lamps). Forcing
+  // an arbitrary first-listed pick over-classifies; return null so the broader,
+  // evidence-safer form-level identity stands.
+  if (top.length > 1) return null;
+  return top[0];
 }
 
 // ── B4 Anti-back-classification evaluator ────────────────────────────────

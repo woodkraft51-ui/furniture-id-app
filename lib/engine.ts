@@ -3308,12 +3308,37 @@ if (
       "boudoir lamp", "gone with the wind lamp",
     ]);
   if (lampSignal) {
-    if (includesAny(text, ["floor lamp", "standing lamp", "torchere", "torchière", "torchiere", "bridge lamp"])) {
+    // Functional identity outranks decorative styling and fuel-word resemblance
+    // (#16). POSITIVE electric evidence (socket/cord/E26 clue or phrase, or
+    // electrified-conversion language) is checked FIRST and wins — so a fuel
+    // word that only appears in NEGATING prose the engine itself emits
+    // ("electric rather than oil/kerosene function") cannot route the lamp to a
+    // fuel form. Fuel-type keywords are only consulted INSIDE a positive
+    // burner/font/wick/chimney gate, so bare/negated "kerosene"/"oil" never
+    // reaches them.
+    const electricEvidence =
+      hasAny("electric_table_lamp", "electric_lamp", "lamp_socket_visible", "lamp_socket") ||
+      includesAny(text, [
+        "electric cord", "electric lamp", "electric socket", "electric wiring", "electrified",
+        "medium-base", "medium base", "e26", "pull-chain socket", "keyless socket",
+        "wired for electric", "light socket", "lamp socket", "bulb socket",
+      ]);
+    const fuelEvidence = includesAny(text, [
+      "kerosene burner", "oil burner", "wick mechanism", "fuel font", "fuel fount",
+      "oil reservoir", "kerosene reservoir", "burner and font", "center-draft burner", "glass chimney",
+    ]);
+    const floorForm = includesAny(text, ["floor lamp", "standing lamp", "torchere", "torchière", "torchiere", "bridge lamp"]);
+
+    if (floorForm) {
       add("Floor lamp", 88, "Floor-standing lamp form (tall shaft, weighted base) is visible.");
-    } else if (includesAny(text, ["kerosene", "coal oil", "center-draft", "center draft"])) {
+    } else if (electricEvidence) {
+      add("Table lamp", 90, "Surface-set electric table lamp form (shade, socket or harp, decorative base) is visible.");
+    } else if (fuelEvidence && includesAny(text, ["kerosene", "coal oil", "center-draft", "center draft"])) {
       add("Kerosene lamp", 86, "Kerosene burner, font, or chimney evidence is visible.");
-    } else if (includesAny(text, ["whale oil", "sperm oil", "lard oil", "camphene", "burning fluid", "fluid lamp"])) {
+    } else if (fuelEvidence && includesAny(text, ["whale oil", "sperm oil", "lard oil", "camphene", "burning fluid", "fluid lamp"])) {
       add("Oil lamp", 86, "Fluid or oil burner and font evidence is visible.");
+    } else if (fuelEvidence) {
+      add("Oil lamp", 80, "Fuel-burning lamp form (burner, font, or wick) is visible.");
     } else if (includesAny(text, ["banquet lamp", "gone with the wind", "gwtw"])) {
       add("Banquet lamp", 84, "Tall ornate parlor / banquet lamp form is visible.");
     } else {
