@@ -3685,6 +3685,52 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Etagere table", 98, "Display table with multiple open tiers or shelves.");
   }
 
+  // Height-defined table cluster, round-up-to-dominant per appraiser call:
+  // emit the common identity and split to the rarer cousin only on an explicit
+  // term. Low (coffee/cocktail), standing (pub/bistro), seated dining
+  // (dining/kitchen/breakfast). Each is a small priority chain.
+  // Low tables in front of seating: coffee is dominant; cocktail only when named.
+  const cocktailTable = includesAny(text, ["cocktail table"]);
+  const coffeeTable = includesAny(text, ["coffee table"]);
+  if (cocktailTable) {
+    add("Cocktail table", 94, "Low table in front of seating, explicitly a cocktail table.");
+  } else if (coffeeTable) {
+    add("Coffee table", 92, "Low table placed in front of seating for drinks/books.");
+  }
+  // Standing / counter height: pub (tavern/bar) vs bistro (café/counter).
+  const pubTable = includesAny(text, [
+    "pub table", "tavern table", "bar-height table", "bar height table", "bar table",
+  ]);
+  const bistroTable = includesAny(text, [
+    "bistro table", "bistro café", "bistro cafe", "café table", "cafe table",
+    "sidewalk café", "sidewalk cafe", "ice-cream parlor table", "soda-fountain table",
+    "counter-height table", "patio bistro",
+  ]);
+  if (pubTable) {
+    add("Pub table", 95, "Tall standing/bar-height table for use while standing or on stools.");
+  } else if (bistroTable) {
+    add("Bistro table", 95, "Small round café/bistro table, often counter height.");
+  }
+  // Seated dining height: kitchen (utility/farmhouse) and breakfast (nook/
+  // dinette) split off their cues; dining is the dominant fallback.
+  const kitchenTable = includesAny(text, [
+    "kitchen table", "kitchen dining", "kitchen utility", "farmhouse table", "farm table",
+    "farm kitchen", "enamel table", "enamel-top", "porcelain top table", "hoosier table",
+    "formica table", "laminate kitchen", "baking table", "bread table", "utility table",
+  ]);
+  const breakfastTable = includesAny(text, [
+    "breakfast table", "breakfast nook", "nook table", "dinette", "sunroom table",
+    "apartment dining table",
+  ]);
+  const diningTable = includesAny(text, ["dining table", "dining room table"]);
+  if (kitchenTable) {
+    add("Kitchen table", 92, "Domestic utility/farmhouse dining-height kitchen table.");
+  } else if (breakfastTable) {
+    add("Breakfast table", 92, "Small informal seated-dining table (nook/dinette scale).");
+  } else if (diningTable) {
+    add("Dining table", 90, "Large seated-dining surface for meals.");
+  }
+
   // Chest and storage forms
   if (clues.has("cedar_lining") || clues.has("lift_lid")) {
     add(
