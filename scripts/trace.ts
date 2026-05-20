@@ -935,8 +935,27 @@ const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
   },
 };
 
+// Renaissance/Baroque Revival armchair whose prose repeats "Baroque Revival".
+// The lone token "baroque" used to surface "...Folk Baroque" at 0.82, rivaling
+// the genuine two-token Renaissance Revival call; it should now be demoted to a
+// subordinate single-token alternative (<= 0.60), not lead or tie.
+const BAROQUE_SINGLE_TOKEN_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-baroque-single-token" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "chair" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Carved walnut armchair, Renaissance Revival / Baroque Revival vocabulary" },
+    observations: [
+      obs("renaissance_revival_baroque_revival_style", "Carved spiral-twist columns, acanthus carving, claw feet consistent with Renaissance Revival or Baroque Revival high-style seating, c. 1860-1900", 60),
+      obs("carved_columnar_supports", "Heavily carved columnar arm supports; Baroque Revival vocabulary", 52),
+      obs("claw_feet", "Carved claw feet, Baroque Revival seating vocabulary", 52),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  baroque_single_token: BAROQUE_SINGLE_TOKEN_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
   eastlake_negations: EASTLAKE_NEGATION_FIXTURE,
