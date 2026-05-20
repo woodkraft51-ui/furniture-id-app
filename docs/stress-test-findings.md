@@ -207,7 +207,36 @@ Distinct from #9 (which is about picking the correct primary). This issue is abo
 2. Same for wave-level alternatives — currently waves with 1 matched_signal are surfaced; consider requiring 2+ matched signals or a confidence floor
 3. Consider distance / compatibility filter: when primary attribution is e.g. "Colonial Revival Queen Anne," suppress geographically/temporally distant alternatives (Spanish Colonial, Mediterranean) unless they have clearly distinct structural or ornamental evidence
 
+**Status:** PARTIALLY FIXED by commit `c13cc43` (confidence floor 0.55 + matched-term distinctness filter on user-facing alternatives). Remaining: wave-level surfacing floor; distance/compatibility filter.
+
 **Scope:** Small-medium (~1.5 hours). Calibrate threshold values against accumulated stress-test scans.
+
+---
+
+### 11. Overcomplicated style / secondary-style display labels (chart overflow)
+
+**Surfaced by:** Rococo Revival / Naturalistic Victorian + Jacobean Revival lamp/parlor table scan, 2026-05-20. (Appraiser: "Nearly perfect on this one, but it serves as an extreme example of something I have been noticing. We're overcomplicating our style and secondary style descriptions. This description doesn't even fit on the chart.")
+
+**Issue:** Style display labels become unwieldy compound strings that overflow the dating-overlap chart's style-row label area and read as overcomplicated in the report header. Three stacking sources:
+
+1. **Compound style-family names.** The canonical `name` fields in styleFamilies.ts are deliberately multi-name (each style family carries every appraiser/regional naming variant): "Rococo Revival / Naturalistic Victorian", "Federal / Adam / Hepplewhite / Sheraton" (4 names), "Tudor Revival / Jacobean Revival / Elizabethan Revival", "Spanish Colonial Revival / Mission Revival / Mediterranean Revival", "Early Colonial / Pilgrim / Seventeenth-Century American". Comprehensive for the data; unwieldy for display.
+
+2. **Form names that already contain a style word.** This scan's form best-fit was "Jacobean Revival cabinet / sideboard" — the style word is baked into the form name.
+
+3. **Concatenation doubles it.** display_form composition (engine.ts ~6705) prepends the style label to the form name: "Rococo Revival / Naturalistic Victorian" + "Jacobean Revival cabinet / sideboard" = "Rococo Revival / Naturalistic Victorian Jacobean Revival cabinet / sideboard". Two style attributions stacked. And the chart style-row label (page.tsx:1054 `Style: ${styleAttribution.name}`) uses the full compound name verbatim, so it overflows the chart.
+
+**Code locations:**
+- `lib/constraints/styleFamilies.ts` — compound `name` fields
+- `app/page.tsx:1054-1055` — chart style-row label (`styleFamilyLabel`, `partnerStyleLabel`)
+- `lib/engine.ts:~6705` — display_form composition (style prefix + form)
+
+**Proposed approach:**
+1. **Add a `short_name` field to StyleFamilyEntry** — the single dominant name for display (e.g., "Rococo Revival" instead of "Rococo Revival / Naturalistic Victorian"). Keep full `name` for matching + detailed report text. Author short names for ~30 style families.
+2. **Chart labels use short_name** — `page.tsx:1054-1055` switches to `styleAttribution.short_name ?? firstSegment(styleAttribution.name)`.
+3. **display_form de-duplication** — when the form name already contains a style word that overlaps the style prefix, don't double it. Either drop the prefix or drop the style word from the form name. Simplest: when style prefix and form name share a style token, render the form name alone with the style as a separate "Style:" line rather than concatenating.
+4. **Cap the secondary-style surfacing** — tie to issue #10 (already partially fixed); secondary styles shouldn't pile into the primary label.
+
+**Scope:** Medium (~2-3 hours). The chart-overflow piece alone (short_name + chart label switch) is small (~1 hour) and could ship independently as a quick win. The display_form de-duplication is the larger part.
 
 ---
 
@@ -220,6 +249,9 @@ Distinct from #9 (which is about picking the correct primary). This issue is abo
 | Silent failure on 9-photo uploads | `04663d8` | Pre-upload payload + count validation; 413 surfacing in full-analysis mode |
 | Revival pieces labeled as period (Rule 1 firing without date check) | `7a16150` | Date-overlap guard on `reconcileFinalStyle` Rule 1 |
 | Clock evidence captured but routed nowhere | `3c0374f` | Wired clue routes + alias routes to existing `form_shelf_clock`; extended Victorian subtypes; NHCC maker entry; P0 prompt updated |
+| Confidence cap too high with no dating-detail evidence (#4) | `2c6c72b` + `c396be8` | P1 gate caps confidence on count of dating-structural categories (joinery / fastener / toolmark / hardware / wood); 0 → 72, 1 → 80, 2 → 86, 3+ → 94 |
+| "Academic" qualifier overreach (#2) | `1557d2a` + `c396be8` | softenAcademicLabel applied across all 5 reconcileFinalStyle rules (incl. Rule 3 wave names) |
+| Adjacent revival-family bleed (#10, partial) | `c13cc43` | Confidence floor 0.55 + matched-term distinctness filter on user-facing alternatives |
 
 ---
 
@@ -227,7 +259,7 @@ Distinct from #9 (which is about picking the correct primary). This issue is abo
 
 When you're ready to batch-fix after the stress test:
 
-1. Read through items 1-9 in order; the priority is roughly ranked
+1. Read through the open items in order; the priority is roughly ranked
 2. For each item: review the surfacing scan(s), the code location, and the proposed approach
 3. Re-examine the proposed approach with the additional stress-test data you've gathered — some calibration decisions are better made with more examples in hand
 4. Decide which fixes to batch together (e.g., #1 + #2 + #5 cluster naturally around the style-evaluation engine; #3 + #8 cluster around dating-envelope logic; #4 + #7 are tactical narrative/UX wins)
