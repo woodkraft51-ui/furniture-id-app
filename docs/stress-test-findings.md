@@ -354,6 +354,38 @@ Per appraiser: "Functional identity should always outrank stylistic resemblance 
 
 ---
 
+### 17. Systemic orphaned-form scoring — 217 of 242 forms unreachable (ARCHITECTURE GAP)
+
+**Surfaced by:** Full audit of all 242 forms / 1,288 subtypes, 2026-05-20 (prompted by the recurring orphan pattern in #12 seating, #14 lamp). Full worklist: `docs/orphaned-forms-audit.md`.
+
+**Issue:** A canonical form can surface as a primary identification **only** when `scoreForms` emits a hardcoded `add("label", …)` whose label maps to that form_id via `FORM_LABEL_TO_CANONICAL`. Verified that form candidates come *solely* from `scoreForms` ranked results (engine.ts:6091); `CLUE_TO_CANONICAL` and the hundreds of form-label aliases do **not** generate form candidates.
+
+`scoreForms` emits only **64 distinct labels** — 38 map to form_ids (collapsing to just **25 reachable forms**) and 26 resolve to `NO_MATCH` (style-as-form context, no form_id). **The other 217 forms (1,124 subtypes) have no scoring path.** They surface only if the LLM's evidence happens to miss all 25 wired clue-gates (→ inconclusive/style-only result) or, worse, gets captured by a reachable "trap" label.
+
+**Reachable forms (25):** armchair, settee, sofa, lounge chair, wing chair, recliner, stool, bench, chest of drawers, china cabinet, bookcase, blanket chest, secretary/slant-front/cylinder desk, drop-leaf/extension/gateleg table, iron bed, telephone stand, table/floor/banquet/oil/kerosene lamp.
+
+**Orphaned by category (forms / subtypes):** desk 52/269 · table 35/213 · case_piece 29/151 · industrial 29/119 · chair 10/84 · lighting 14/83 · entry_support 20/78 · musical_mechanical 12/39 · seating 6/35 · clock 3/17 · institutional_seating 2/16 · basket 1/12 · seating_support 1/8.
+
+**Concrete high-traffic gaps:** `form_dining_table`, `form_side_table`, `form_coffee_table` (only drop-leaf/extension/gateleg tables route); `form_side_chair` (14 subtypes), `form_rocking_chair`, `form_windsor_chair`, `form_morris_chair`, `form_slipper_chair`; `form_dresser` and `form_wardrobe` (a dresser currently reroutes to `form_chest_of_drawers` via the "Dresser / drawer case" label); **all three clocks** (`form_shelf_clock`/`form_tall_case_clock`/`form_wall_clock`).
+
+**Clock correction:** the earlier "clock fix" (`3c0374f`) wired `CLUE_TO_CANONICAL`, label aliases, and subtypes — but **never added a `scoreForms` scoring path**, so clocks remain form-orphaned. This is the orphan pattern #14 documented, surfacing in an issue we believed closed.
+
+**Trap mechanism (same as #14 lamp → brass bed):** broad reachable labels capture orphaned-form slots — e.g. `brass_frame` → "Brass bed or brass-frame furniture" (now gated for lamps), any cabinet clue → "Cabinet" → form_china_cabinet, any drawer case → form_chest_of_drawers. Each trap is a latent misidentification for the orphaned forms it shadows.
+
+**Code locations:**
+- `lib/engine.ts` — `scoreForms` (the 64 hardcoded `add()` labels are the entire reachable surface)
+- `lib/engineCanonicalMap.ts` — `FORM_LABEL_TO_CANONICAL` (938 aliases authored, but only those scoreForms literally emits are live)
+
+**Proposed approach (roadmap — far too large for one pass):**
+1. **Prioritize by scan likelihood**, not subtype count: clocks, dining/side/coffee tables, side chair, rocking chair, dresser, wardrobe, daybed first (high American-antique traffic).
+2. For each batch, add a `scoreForms` scoring block keyed on the form's diagnostic clues (mirroring the #14 lamp block) and ensure the emitted label exists in `FORM_LABEL_TO_CANONICAL`.
+3. Add/verify the supporting clue vocabulary in `CLUE_LIBRARY` and the P0 prompt so the LLM emits the gating clues.
+4. Audit each new block against existing trap labels (gate the trap when the more-specific form's evidence is present, as done for lamp vs brass-bed).
+
+**Scope:** Very large (the core remaining engine build-out). Not a single fix — a prioritized program. Logic/architecture gap, not calibration.
+
+---
+
 ### Recorded but DEFERRED from the lamp rerun (reinforce existing open issues)
 
 The same lamp scan reinforced two existing calibration/synthesis issues (appraiser: "the remaining weakness is mainly overclassification"):
