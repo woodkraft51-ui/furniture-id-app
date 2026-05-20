@@ -5958,6 +5958,12 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
   if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) bump("Finish loss, water staining, or white haze", -12, "condition");
   if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) bump("Surface scratches or top damage", -8, "condition");
   if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) bump("Missing / broken / loose parts or veneer loss", -15, "condition");
+  if (
+    textHas("insect damage", "powder post", "powderpost", "woodworm", "wood rot", "dry rot", "wet rot", "rotted", "wood deterioration", "crumbling") ||
+    Array.from(clues).some((k) => k.includes("insect") || k.includes("woodworm") || k.includes("wood_rot"))
+  ) {
+    bump("Insect damage or wood rot (structural integrity, restoration cost)", -15, "condition");
+  }
   if (has("possible_plywood_or_laminated_panel")) bump("Possible plywood or laminated panel construction", -8, "construction");
   if (!has("hand_cut_dovetails", "machine_dovetails", "cut_nail", "wire_nail", "hand_forged_nail")) bump("No diagnostic joinery or fastener evidence", -5, "construction");
 

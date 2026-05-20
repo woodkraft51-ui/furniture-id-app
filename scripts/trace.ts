@@ -935,8 +935,28 @@ const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
   },
 };
 
+// Slant-front desk with active insect/rot damage at a drawer joint. Structural
+// condition damage like this should dampen sellability and the valuation lanes
+// (restoration cost, resale confidence) — previously valueBand only penalized
+// finish loss / scratches / missing-broken-loose, so insect/rot slipped through.
+const DESK_INSECT_DAMAGE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-desk-insect-damage" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk, fitted interior, one drawer; drawer-corner joint shows crumbling powdery darkened wood consistent with insect damage / wood rot" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drawer_present", "One full-width exterior drawer below the fall front", 68),
+      obs("solid_wood_construction", "Case sides and drawer sides read as solid wood", 84),
+      obs("insect_damage_drawer_corner", "Drawer corner joint shows crumbling, powdery, darkened wood consistent with old insect damage (powder post beetle) or advanced wood rot at the dovetail end grain", 54),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
   eastlake_negations: EASTLAKE_NEGATION_FIXTURE,
