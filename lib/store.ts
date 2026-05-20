@@ -1,5 +1,6 @@
 // store.ts
 import { saveCase, getCase, listCases, deleteCase } from "./persistence";
+import { ENGINE_VERSION } from "./engineVersion";
 
 const caseStore: any = {};
 let caseCounter = 1000;
@@ -66,6 +67,10 @@ c.evidence_digest = result.evidence_digest || null;
 c.observations = result.observations || c.observations || [];
 c.field_scan = result.field_scan || null;
 c.status = "complete";
+// Stamp the engine version that produced this scan so the saved record
+// carries provenance — a later session can tell whether re-running under
+// today's engine would differ. Surfaced in the report's print header.
+c.engine_version = ENGINE_VERSION;
 
     // Persistence Stage 1: write-through to IndexedDB on scan completion
     // so cases survive page reloads / tab close. Failure is silent
