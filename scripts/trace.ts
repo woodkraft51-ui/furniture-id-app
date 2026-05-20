@@ -885,10 +885,62 @@ const RR_BARLEY_TWIST_FIXTURE: Fixture = {
   },
 };
 
+// Eastlake side chair whose observations include self-negating descriptions:
+// the LLM emits nailhead_trim and spindle_back keys but its own prose says the
+// nailhead trim is NOT present (gimp instead) and the back is NOT true spindles
+// (flat slats). Both clues must be dropped from clue_keys (not routed or
+// surfaced as supporting evidence / labels).
+const EASTLAKE_NEGATION_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-eastlake-negations" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "chair" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Eastlake side chair with incised crest, reeded stiles, needlepoint drop-in seat with gimp trim" },
+    observations: [
+      obs("style_cues", "Incised geometric fan/sunburst crest and reeded stiles consistent with Eastlake aesthetic c. 1870-1895", 58),
+      obs("turned_legs", "Front legs lathe-turned with ring and bobbin details", 82),
+      obs("mortise_and_tenon", "Pegged mortise-and-tenon at back posts", 75),
+      obs("needlepoint_cover", "Drop-in seat pad covered in hand-stitched needlepoint", 50),
+      obs("nailhead_trim", "No decorative nailhead trim visible; instead a gimp/braid trim finishes the needlepoint seat pad edges", 50),
+      obs("spindle_back", "Vertical back slats with arched cutout bases; not true turned spindles but flat slat construction", 52),
+    ],
+  },
+};
+
+// Colonial Revival needlepoint footstool with modern bracket-mounted
+// construction. Reproduces the hard-negative range-collapse bug: a phillips
+// screw (open-ended post-1935 floor, hard negative) lands exactly on the
+// ceiling of a 1900-1935-ish convergence zone, collapsing the frame range to a
+// degenerate single year ("c. 1935-1935") instead of opening the ceiling.
+const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-colonial-revival-footstool-phillips" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "underside" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "footstool" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Needlepoint footstool with turned bobbin legs, stamped metal corner brackets, phillips screws, plywood base panel" },
+    observations: [
+      obs("footstool_form", "Low rectangular footstool with four turned legs and upholstered top", 68),
+      obs("seating_surface", "Rectangular upholstered top functioning as a footrest platform", 68),
+      obs("turned_legs", "Four turned wooden legs with bulbous/bobbin turning profile, ball feet", 82),
+      obs("stamped_metal_bracket", "Four stamped triangular metal corner brackets securing legs to base, mid-20th century or later", 82),
+      obs("dowel_joinery", "Legs attached via stamped metal corner brackets rather than traditional joinery", 70),
+      obs("plywood_structural", "Underside base panel appears to be flat plywood or engineered wood", 45),
+      obs("phillips_screw", "Cross-recess (Phillips-head) screws securing the corner brackets; hard negative for any pre-1934 construction", 85),
+      obs("needlepoint_cover", "Hand-stitched needlepoint canvas with floral bouquet motif over the top", 50),
+      obs("foam_padding", "Slightly rounded top profile suggests foam padding beneath the needlepoint cover", 50),
+      obs("no_spring_seat", "Flat low stuffed pad without spring lift", 45),
+      obs("solid_wood_construction", "Turned legs appear to be solid hardwood", 84),
+      obs("style_cues", "Turned bobbin legs, floral needlepoint, rectangular form consistent with Victorian or Colonial Revival footstools", 52),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
+  eastlake_negations: EASTLAKE_NEGATION_FIXTURE,
+  colonial_revival_footstool_phillips: COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
   tambour_desk: TAMBOUR_DESK_FIXTURE,
   wooton_desk: WOOTON_DESK_FIXTURE,
