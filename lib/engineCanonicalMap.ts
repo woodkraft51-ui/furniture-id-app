@@ -320,6 +320,10 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Sofa table": "form_sofa_table",
   "Pedestal table": "form_pedestal_table",
   "Pier table": "form_pier_table",
+  // Pedestal-column split targets (resolved at scoreForms from carried-object
+  // cues). Previously unmapped despite the line ~349 note assuming they existed.
+  "Candle stand": "form_candle_stand",
+  "Plant stand": "form_plant_stand",
   "Pub table": "form_pub_table",
   "Tavern table": "form_pub_table",
   "Library table": "form_library_table",

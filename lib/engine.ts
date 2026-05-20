@@ -3595,20 +3595,43 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
   if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");
   if (clues.has("extension_mechanism")) add("Extension table", 82, "Extension mechanism is visible.");
-  if (
-  clues.has("pedestal_column") &&
-  !hasAny(
-    "seating_surface",
-    "backrest_present",
-    "toledo_industrial_style",
-    "mid_century_industrial_office",
-    "height_adjustment_mechanism",
-    "swivel_mechanism",
-    "four_leg_caster_base"
-  )
-) {
-  add("Pedestal stand", 88, "Single-column pedestal form is visible.");
-}
+  // Pedestal-column resolution. A single-column / tripod support resolves to a
+  // specific form by WHAT IT CARRIES — the cousin split the canonical map's
+  // "Pedestal stand" NO_MATCH note intends: candle stand = small single-object
+  // top; plant stand = planter support; pedestal table = a full table top on a
+  // central column. When carried-object cues are absent the generic "Pedestal
+  // stand" stands (round-up). Shape-defined pedestal tables (tilt-top, drum,
+  // piecrust) are emitted in the shape cluster below and outscore these.
+  const pedestalSupport = clues.has("pedestal_column");
+  const seatingOrIndustrial = hasAny(
+    "seating_surface", "backrest_present", "toledo_industrial_style",
+    "mid_century_industrial_office", "height_adjustment_mechanism",
+    "swivel_mechanism", "four_leg_caster_base",
+  );
+  const candleStandCues = includesAny(text, [
+    "candle stand", "candlestand", "candle-stand", "candle table", "tripod candle",
+  ]);
+  const plantStandCues = includesAny(text, [
+    "plant stand", "fern stand", "jardiniere stand", "jardinière stand",
+    "planter stand", "plant table",
+  ]);
+  // "round pedestal table" intentionally omitted — the canonical map routes that
+  // phrase to form_drum_table (handled in the shape cluster's drum gate below).
+  const pedestalTableCues = includesAny(text, [
+    "pedestal table", "pedestal dining", "center pedestal table",
+    "tulip table", "tulip pedestal", "gueridon", "guéridon", "capstan table", "loo table",
+  ]);
+  if (!seatingOrIndustrial) {
+    if (candleStandCues) {
+      add("Candle stand", 96, "Small turned/tripod stand sized to hold a single object such as a candle.");
+    } else if (plantStandCues) {
+      add("Plant stand", 96, "Pedestal/stand designed to hold a plant or jardinière.");
+    } else if (pedestalTableCues) {
+      add("Pedestal table", 98, "Table top carried on a central pedestal column rather than four legs.");
+    } else if (pedestalSupport) {
+      add("Pedestal stand", 88, "Single-column pedestal form is visible.");
+    }
+  }
 
   // Shape/structure-defined table cluster. Gated on text matching each form's
   // existing common_aliases (the FORM_LABEL_TO_CANONICAL routes already exist;
@@ -3628,7 +3651,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "tilt-top", "tilt top", "tip-top table", "flip-top table", "tilt table",
     "tilting tea table", "tilting top", "birdcage table", "birdcage tilt-top",
   ]);
-  const drumTable = includesAny(text, ["drum table", "drum side table"]);
+  const drumTable = includesAny(text, ["drum table", "drum side table", "round pedestal table"]);
   const pembrokeTable = includesAny(text, ["pembroke"]);
   const sutherlandTable = includesAny(text, ["sutherland"]);
   const trestleTable = includesAny(text, [
