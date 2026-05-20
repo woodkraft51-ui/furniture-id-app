@@ -758,6 +758,13 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // per modern dominant usage; 18th-century English period usage where
   // "easy chair" = wing chair is handled at scoreForms via structural cues
   // (wing presence routes to form_wing_chair regardless of common-alias hit).
+  // Named seating-type forms (scoreForms detectors added; orphaned routes).
+  "Side chair": "form_side_chair",
+  "Bar chair": "form_bar_chair",
+  "Folding chair": "form_folding_chair",
+  "Ladderback chair": "form_ladderback_chair",
+  "Windsor chair": "form_windsor_chair",
+  "Rocking chair": "form_rocking_chair",
   "Slipper chair": "form_slipper_chair",
   "Boudoir chair": "form_slipper_chair",
   "Boudoir slipper chair": "form_slipper_chair",

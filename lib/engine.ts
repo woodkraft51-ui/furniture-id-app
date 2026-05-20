@@ -4406,6 +4406,79 @@ if (
     add("Bench / seating furniture", 55, "Seating surface is visible without stronger desk or telephone features.");
   }
 
+  // Named seating-TYPE cluster. The block above is the generic seating OVERRIDE
+  // system (armchair clue vs multi-person vs wing/recliner/lounge/stool/bench),
+  // and those labels already route to form_armchair/sofa/settee/etc. These 19
+  // forms are SPECIFIC named chair types that were orphaned — orthogonal to the
+  // override: a named type (windsor/ladderback/morris/...) correctly outscores
+  // the generic "Upholstered armchair" (62-82), "Stool" (72), and "Bench" (55).
+  // Collision ordering (most-specific first): the "folding/rocking X" boundary
+  // forms resolve to their TYPE before the generic folding/rocking detectors
+  // (folding auditorium -> theater; rocking Adirondack -> adirondack; Morris
+  // rocker -> morris); bar stool/counter stool -> bar chair (beats Stool);
+  // ottoman/footstool excludes "ottoman table" so the Ottoman TABLE keeps its
+  // emitter. Single-chair named types carry no multi-person cue, so the
+  // Settee/Sofa/Loveseat override is unaffected.
+  const morrisChairForm = includesAny(text, ["morris chair", "morris rocker", "morris recliner", "mission recliner", "mission rocker recliner", "mission lounge chair", "adjustable-back chair", "adjustable back chair", "adjustable-back lounge chair", "bow-arm morris", "flat-arm morris", "stickley-style chair"]);
+  const adirondackForm = includesAny(text, ["adirondack chair", "adirondack", "adirondak", "westport chair", "westport adirondack", "muskoka chair", "fan-back adirondack", "folding adirondack", "rocking adirondack", "poly adirondack", "composite adirondack", "hdpe adirondack"]);
+  const papasanForm = includesAny(text, ["papasan", "papa-san", "mamasan", "double papasan", "wicker bowl chair", "hanging papasan"]);
+  const beanBagForm = includesAny(text, ["bean bag", "beanbag", "sacco chair", "sacco-style chair", "crash pad chair", "lounge sack", "memory foam bean bag"]);
+  const butterflyForm = includesAny(text, ["butterfly chair", "butterfly sling", "bkf chair", "b.k.f. chair", "hardoy chair", "sling chair", "leather sling chair", "canvas sling chair", "hide sling chair", "cowhide butterfly"]);
+  const theaterSeatForm = includesAny(text, ["theater seat", "theatre seat", "auditorium seat", "auditorium chair", "cinema seat", "movie theater seat", "movie theatre seat", "opera seat", "opera house seat", "stadium seat", "arena seat", "lecture hall seat", "folding auditorium seat", "assembly hall seat", "church auditorium seat"]);
+  const pewForm = includesAny(text, ["pew", "church pew", "meetinghouse pew", "meetinghouse bench", "chapel pew", "box pew", "sanctuary pew", "congregational pew", "gothic revival pew", "cut-down pew", "salvage pew"]);
+  const windsorForm = includesAny(text, ["windsor chair", "windsor armchair", "windsor settee", "windsor", "sack-back", "bow-back", "hoop-back", "comb-back", "arrow-back", "fan-back", "birdcage windsor", "firehouse windsor", "captain's chair"]);
+  const ladderbackForm = includesAny(text, ["ladder-back", "ladderback", "ladder back", "slat-back chair", "slat back chair"]);
+  const chaiseForm = includesAny(text, ["chaise longue", "chaise lounge", "fainting couch", "fainting sofa", "recamier", "récamier", "meridienne", "méridienne", "duchesse brisée", "duchesse brisee", "long chair", "sun lounger", "pool lounger", "outdoor lounger", "patio chaise", "garden chaise", "chaise"]);
+  const daybedForm = includesAny(text, ["daybed", "day bed", "studio couch", "couch bed", "day couch", "trundle daybed", "sleigh daybed", "convertible couch", "backed daybed", "bolster daybed"]);
+  const gliderForm = includesAny(text, ["porch glider", "lawn glider", "metal glider", "metal lawn glider", "glider bench", "patio glider", "outdoor glider", "steel glider", "tin glider", "spring glider", "porch glider bench"]);
+  const foldingChairForm = includesAny(text, ["folding chair", "folding seat", "camp chair", "camping chair", "director's chair", "directors chair", "samsonite chair", "bistro folding chair"]);
+  const slipperChairForm = includesAny(text, ["slipper chair", "boudoir chair", "boudoir slipper", "tufted slipper chair", "vanity chair", "dressing chair", "bedroom slipper chair"]);
+  const barChairForm = includesAny(text, ["bar chair", "bar stool", "counter stool", "counter-height stool", "pub stool", "swivel bar stool", "breakfast bar stool", "kitchen counter stool"]);
+  const rockingChairForm = includesAny(text, ["rocking chair", "rocker", "platform rocker", "boston rocker", "bentwood rocker", "pressed-back rocker", "nursing rocker", "sewing rocker", "cane rocker"]);
+  const milkingStoolForm = includesAny(text, ["milking stool", "milk stool", "dairy stool", "cow stool"]);
+  const ottomanFootstoolForm = includesAny(text, ["footstool", "foot stool", "hassock", "pouffe", "pouf", "tuffet", "storage ottoman", "lounge ottoman", "vanity ottoman", "bench ottoman"]) ||
+    (text.includes("ottoman") && !includesAny(text, ["ottoman table", "ottoman coffee table", "ottoman cocktail table", "ottoman side table", "cocktail ottoman table"]));
+  const sideChairForm = includesAny(text, ["side chair", "dining side chair", "armless dining chair", "pull-up chair", "balloon-back chair", "balloon back chair", "press-back chair", "klismos chair"]);
+  if (morrisChairForm) {
+    add("Morris chair", 96, "Arts-and-Crafts armchair with an exposed manually adjustable reclining back.");
+  } else if (adirondackForm) {
+    add("Adirondack chair", 96, "Slat-seat/back outdoor lounge chair with wide flat arms (Westport/Muskoka type).");
+  } else if (papasanForm) {
+    add("Papasan chair", 96, "Bowl-shaped cushion seat resting in a round bent rattan/metal frame.");
+  } else if (beanBagForm) {
+    add("Bean bag chair", 96, "Fabric sack filled with loose pellets/foam, conforming to the sitter.");
+  } else if (butterflyForm) {
+    add("Butterfly chair", 95, "Sling seat (leather/canvas) hung on an X-shaped folding metal frame (BKF/Hardoy).");
+  } else if (theaterSeatForm) {
+    add("Theater seat", 95, "Row/auditorium seating with tip-up seats (theater, cinema, opera, stadium).");
+  } else if (pewForm) {
+    add("Pew", 96, "Bench-form congregational/assembly seating with architectural ends (church/meetinghouse).");
+  } else if (windsorForm) {
+    add("Windsor chair", 95, "Spindle-back chair with a solid saddle seat and splayed legs (sack/bow/comb/fan-back).");
+  } else if (ladderbackForm) {
+    add("Ladderback chair", 95, "Chair with horizontal slat (ladder) back rails.");
+  } else if (chaiseForm) {
+    add("Chaise longue", 95, "Elongated single-person reclining seat (fainting couch / récamier / lounger).");
+  } else if (daybedForm) {
+    add("Daybed", 94, "Seating-height bed-depth lounge for sitting and reclining (studio couch / trundle daybed).");
+  } else if (gliderForm) {
+    add("Porch glider", 94, "Suspended porch/lawn seat that glides on a pivoting under-frame.");
+  } else if (foldingChairForm) {
+    add("Folding chair", 93, "Collapsible single-user chair (camp, director's, or event folding chair).");
+  } else if (slipperChairForm) {
+    add("Slipper chair", 94, "Low armless upholstered bedroom/boudoir chair.");
+  } else if (barChairForm) {
+    add("Bar chair", 92, "Counter/bar-height seat (bar or counter stool), distinct from a low backless stool.");
+  } else if (rockingChairForm) {
+    add("Rocking chair", 94, "Chair mounted on curved rockers (Boston, bentwood, pressed-back, platform rocker).");
+  } else if (milkingStoolForm) {
+    add("Milking stool", 92, "Low short-legged work stool (dairy/milking form).");
+  } else if (ottomanFootstoolForm) {
+    add("Footstool", 90, "Footrest/ottoman/hassock/pouf — a low padded support, not a table.");
+  } else if (sideChairForm) {
+    add("Side chair", 90, "Armless single-user chair (dining side chair / pull-up chair).");
+  }
+
   // Bed forms
   // Lighting forms (lamps). Routed BEFORE the metal/brass material families so a
   // lamp's brass/iron base does not fall through to the brass-bed / iron-bed /
