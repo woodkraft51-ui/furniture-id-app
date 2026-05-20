@@ -105,6 +105,13 @@ function engineCategoryFor(entry: any): string {
 // numeric range and still conflicts with incompatible evidence.
 const PERSISTENT_NONDATING_CANONICAL_IDS = new Set<string>([
   "joinery_category_mortise_and_tenon_family",
+  // Dowel/peg joinery spans eras: drawbored/pegged mortise-and-tenon is
+  // centuries old, while uniform machine doweling is a factory-era method. The
+  // LLM emits dowel_joinery for both, so a hard "post-1900" floor falsely
+  // late-dated plainly Victorian pieces. Per the canonical
+  // joinery_alone_never_dates_furniture meta-rule, treat it as non-dating on
+  // its own; corroborating evidence still anchors the date.
+  "joinery_type_dowel_joinery",
 ]);
 
 function dateHintFor(entry: any): string | undefined {

@@ -333,7 +333,7 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   cabriole_leg: { category: "style", dateHint: "18th century form; common revival c. 1890–1940", weight: 0.68 },
   shell_carving: { category: "style", weight: 0.65 },
   claw_or_pad_foot: { category: "style", weight: 0.62 },
-  barley_twist: { category: "style", dateHint: "Jacobean Revival c. 1890–1935", weight: 0.78 },
+  barley_twist: { category: "style", dateHint: "spiral/barley-twist turning spans Baroque originals, Jacobean Revival, and Victorian revival production; not era-specific on its own", weight: 0.78 },
   heavy_carving: { category: "style", weight: 0.65 },
   spindle_gallery: { category: "style", weight: 0.62 },
 
@@ -360,7 +360,7 @@ const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; f
   hand_cut_dovetails: { category: "joinery", dateHint: "pre-1860", weight: 0.88 },
   machine_dovetails: { category: "joinery", dateHint: "post-1860", weight: 0.82 },
   mortise_and_tenon: { category: "joinery", weight: 0.72 },
-  dowel_joinery: { category: "joinery", dateHint: "post-1900", weight: 0.72 },
+  dowel_joinery: { category: "joinery", dateHint: "spans eras (pegged/drawbored joints to modern machine doweling); limited dating value on its own", weight: 0.72 },
 
   pit_saw_marks: { category: "toolmarks", dateHint: "pre-1830", weight: 0.86 },
   circular_saw_arcs: { category: "toolmarks", dateHint: "post-1830", weight: 0.78 },
