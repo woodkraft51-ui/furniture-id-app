@@ -261,6 +261,27 @@ export function getFormDatingBoundaries(
 }
 
 /**
+ * The form's canonical production envelope (date_floor / date_ceiling) from the
+ * catalog entry. Distinct from the evidence-derived dating an analysis produces:
+ * this is the form's documented production window, used as the "form" row in the
+ * dating-overlap chart. Feeding the catalog span here — rather than re-injecting
+ * the analysis's own computed date — keeps the form layer from becoming a
+ * circular echo of the conclusion it's supposed to help support. A null ceiling
+ * means an open-ended ("to present") form.
+ */
+export function getFormDatingEnvelope(
+  form_id: string | null
+): { date_floor: number | null; date_ceiling: number | null } {
+  if (!form_id) return { date_floor: null, date_ceiling: null };
+  const form = getForm(form_id);
+  if (!form) return { date_floor: null, date_ceiling: null };
+  return {
+    date_floor: form.date_floor ?? null,
+    date_ceiling: form.date_ceiling ?? null,
+  };
+}
+
+/**
  * B1 stub. Implementation deferred — current fixtures don't populate intake
  * dimensions; evaluator becomes useful once real user submissions land.
  */

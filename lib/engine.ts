@@ -69,6 +69,7 @@ import {
   evaluateCousinContrast,
   getCommonAliasesForDisplay,
   getFormDatingBoundaries,
+  getFormDatingEnvelope,
   type SubtypeAssignment,
   type AntiBackViolation,
   type HybridAnnotation,
@@ -2510,7 +2511,34 @@ function detectStructuralPatterns(observations: Observation[]): Observation[] {
 }
 
  
+// The p0 perception prompt emits observation types in the singular
+// (material / fastener / toolmark / wood), but every downstream scoring and
+// dating table — AUTHORITY_RANK, the dating-overlap CATEGORY_TO_LAYER map,
+// CLUE_LIBRARY categories, the structural-evidence gates — keys on the plural
+// canonical form. Left unreconciled, any LLM-emitted construction or material
+// observation (the strongest age anchors) falls through to the default
+// authority of 2 AND never reaches its dating-overlap layer, silently
+// discarding genuine-age evidence. Normalize once at ingestion so every
+// consumer sees the canonical vocabulary. (wood collapses into materials —
+// the "wood" dating layer is keyed by the "materials" category.)
+const OBSERVATION_TYPE_ALIASES: Record<string, string> = {
+  material: "materials",
+  fastener: "fasteners",
+  toolmark: "toolmarks",
+  wood: "materials",
+};
+function canonicalObservationType(t: string | null | undefined): string {
+  const key = String(t || "context").toLowerCase().trim();
+  return OBSERVATION_TYPE_ALIASES[key] ?? key;
+}
+
 function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
+  // Normalize emitted types to the canonical vocabulary before anything reads
+  // them (see OBSERVATION_TYPE_ALIASES). Mutating here means by_type, p4
+  // weighting, and the dating overlap all agree downstream.
+  observations.forEach((o) => {
+    o.type = canonicalObservationType(o.type);
+  });
   const by_type: Record<string, Observation[]> = {};
   observations.forEach((o) => {
     if (!by_type[o.type]) by_type[o.type] = [];
@@ -6577,12 +6605,14 @@ Begin recovery extraction now. Do not return the empty observations array under 
     // construction / material / finish observations from exterior).
     // Cap drops from 88 to 72 — honest Moderate confidence reflecting
     // the missing dating-detail photos.
+    // Canonical (plural) category names — must match the normalized
+    // observation types in digest.by_type (see canonicalObservationType).
     const DATING_STRUCTURAL_CATEGORIES = [
       "joinery",
-      "fastener",
-      "toolmark",
+      "fasteners",
+      "toolmarks",
       "hardware",
-      "wood",
+      "materials",
     ];
     const datingStructuralCount = DATING_STRUCTURAL_CATEGORIES.filter((cat) => {
       const observations = digest.by_type[cat] || [];
@@ -7332,7 +7362,10 @@ p5(digest: EvidenceDigest, weighting: Phase4Result, dating: Phase2Result, form: 
     weighting.weighted_clues || [],
     form.style_attribution ?? null,
     form.style_waves ?? [],
-    { date_floor: dating.date_floor ?? null, date_ceiling: dating.date_ceiling ?? null },
+    // Form layer = the form's catalog production span, NOT this analysis's own
+    // computed date. Re-injecting the computed date made the form layer a
+    // circular, high-authority echo of the conclusion it was meant to support.
+    getFormDatingEnvelope(form.form_id ?? null),
     formBoundaries,
     form.best_style_intersection ?? null
   );
@@ -7517,7 +7550,9 @@ if (p6.dating_overlap) {
     frameClues,
     p3.style_attribution ?? null,
     p3.style_waves ?? [],
-    { date_floor: p2.date_floor ?? null, date_ceiling: p2.date_ceiling ?? null },
+    // Form layer = catalog production span, not p2's own computed date.
+    // Feeding p2 back into the convergence that refines p2 was circular.
+    getFormDatingEnvelope(p3.form_id ?? null),
     frameBoundaries,
     p3.best_style_intersection ?? null
   );
@@ -7568,6 +7603,17 @@ if (p6.dating_overlap) {
   );
   const eraContext = hasGoldenOakEra ? "Golden Oak Era" : null;
 
+  // A date past the canonical style ceiling only forces a "reproduction" call
+  // when something genuinely modern is present. Detect hard-negative clues
+  // whose date hint is unambiguously machine-age (post-1920+): plywood,
+  // phillips screws, staples, polyurethane, particle board, etc.
+  const hasModernHardNegative = (p4.weighted_clues || []).some(
+    (w: any) =>
+      w.hard_negative &&
+      typeof w.date_hint === "string" &&
+      /post[-\s]*(19[2-9]\d|20\d\d)/i.test(w.date_hint)
+  );
+
   const reconciled = reconcileFinalStyle({
     styleAttribution: p3.style_attribution ?? null,
     styleWaves: p3.style_waves ?? [],
@@ -7577,6 +7623,7 @@ if (p6.dating_overlap) {
     styleContext: p3.style_context ?? null,
     eraContext,
     hasImpossiblePair,
+    hasModernHardNegative,
   });
   p3.final_style = reconciled;
 
@@ -7590,6 +7637,7 @@ if (p6.dating_overlap) {
     "revival_wave",
     "reproduction",
     "impossible_pair",
+    "late_period",
   ];
   if (refinedKinds.includes(reconciled.kind) && p3.form) {
     const base = p3.form;

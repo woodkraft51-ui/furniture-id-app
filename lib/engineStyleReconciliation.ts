@@ -59,6 +59,7 @@ export type FinalStyleKind =
   | "transitional_generic" // intersection exists but no named period
   | "revival_wave"         // surfaced wave overlaps final dating
   | "original_period"      // attribution's own date range overlaps final dating
+  | "late_period"          // dating sits modestly past the canonical ceiling, no modern hard negative — provincial / persistence production, not a reproduction
   | "reproduction"         // dating falls outside all waves AND original period
   | "context_only"         // no style attribution; using style_context fallback (Jacobean / Queen Anne / Empire text cues; NOT Golden Oak — that's a wood/era marker, not a style)
   | "era_only"             // no style attribution; era marker present (Golden Oak Era and similar vernacular dating/material/market-era anchors that are NOT styles). Final label frames the era as a market-context identification.
@@ -155,6 +156,13 @@ export function reconcileFinalStyle(input: {
    * rather than leaving the piece "Unresolved". */
   eraContext?: string | null;
   hasImpossiblePair: boolean;
+  /** True when a hard-negative modern-construction marker is present (plywood
+   * post-1920, phillips screws post-1935, staples post-1945, polyurethane,
+   * particle board). When true, a date past the canonical style ceiling IS a
+   * reproduction — the late-period / persistence path (Rule 4.5) is suppressed
+   * and we fall through to reproduction framing. Absent such a marker, a date
+   * modestly past the ceiling reads as genuine late-period production. */
+  hasModernHardNegative?: boolean;
 }): FinalStyleReconciliation {
   const {
     styleAttribution,
@@ -165,6 +173,7 @@ export function reconcileFinalStyle(input: {
     styleContext,
     eraContext,
     hasImpossiblePair,
+    hasModernHardNegative = false,
   } = input;
 
   // Rule 1: Named transitional period takes precedence (highest-resolution
@@ -281,6 +290,36 @@ export function reconcileFinalStyle(input: {
       final_style_label: softName,
       kind: "original_period",
       final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls within the original ${softName} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}).`,
+    };
+  }
+
+  // Rule 4.5: Final dating sits MODESTLY past the attribution's canonical
+  // ceiling, with no modern-construction hard negative present. Real furniture
+  // production doesn't stop at the canonical period boundary — regional shops,
+  // provincial makers, and conservative urban cabinetmakers kept producing
+  // Empire / Biedermeier / Classical forms for decades past the fashionable
+  // peak. Absent a modern hard negative (plywood, phillips screws, staples,
+  // polyurethane), a date a few decades past the ceiling reads as genuine
+  // late-period / persistence production, NOT a 20th-century reproduction.
+  // Past the tolerance — or with a modern hard negative — we fall through to
+  // Rule 5's reproduction framing. This guards against the engine flipping a
+  // genuinely-old piece to "reproduction" the moment its date drifts one year
+  // past a hard style boundary.
+  const PERSISTENCE_TOLERANCE_YEARS = 60;
+  if (
+    styleAttribution &&
+    finalDatingFloor != null &&
+    finalDatingCeiling != null &&
+    styleAttribution.date_ceiling != null &&
+    !hasModernHardNegative &&
+    finalDatingFloor > styleAttribution.date_ceiling &&
+    finalDatingFloor <= styleAttribution.date_ceiling + PERSISTENCE_TOLERANCE_YEARS
+  ) {
+    const softName = softenAcademicLabel(styleAttribution.name);
+    return {
+      final_style_label: `${softName} (late-period production)`,
+      kind: "late_period",
+      final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls just past the canonical ${softName} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}), within the window where regional and provincial shops kept producing the form. No modern-construction markers contradict an authentic piece, so this reads as late-period / persistence production rather than a later reproduction.`,
     };
   }
 

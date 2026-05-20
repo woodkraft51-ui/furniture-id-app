@@ -150,6 +150,17 @@ export function buildDatingFindingNarrative(input: {
     };
   }
 
+  // ─── Case 2.5: late_period (provincial / persistence production) ───
+  // Date sits modestly past the canonical ceiling with no modern hard
+  // negative — authentic late-period production, not a reproduction.
+  if (kind === "late_period") {
+    const styleLabel = styleName ?? "the attributed style";
+    const headline =
+      `Evidence dates this piece ${workingRange} — just past the canonical ${styleLabel} period, but with no modern-construction markers. ` +
+      `This reads as genuine late-period / provincial production, where regional shops kept making the form past the fashionable peak — not a later reproduction.`;
+    return { headline, detail: finalStyle?.final_style_reason, tone: "qualified" };
+  }
+
   // ─── Case 3: era_only (Golden Oak Era and similar vernacular markers) ───
   if (kind === "era_only") {
     const eraName = finalStyle?.final_style_label?.replace(/\s+market production$/, "") ?? "the era";

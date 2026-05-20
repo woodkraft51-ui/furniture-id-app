@@ -156,6 +156,10 @@ export function refineDatingFromConvergence(
   let zCeiling = best.date_ceiling;
   let hardFloorClamped = false;
   for (const l of overlap.layers) {
+    // The form layer's open-ended span (catalog production floor) is not a
+    // construction hard-negative — only material/fastener/finish post-floors
+    // (plywood, phillips, polyurethane) should clamp the date forward.
+    if (l.layer === "form") continue;
     if (l.date_floor != null && l.date_ceiling == null && l.date_floor > zFloor) {
       const width = zCeiling - zFloor;
       zFloor = l.date_floor;
@@ -428,9 +432,21 @@ export function buildDatingOverlap(
   // meaningful (≥2 is too noisy when style + style-wave + form often overlap
   // trivially; ≥3 requires at least one evidence-library layer agreement).
   const CONVERGENCE_THRESHOLD = 3;
-  const populated = layers.filter(
-    (l) => l.date_floor != null || l.date_ceiling != null
-  );
+  const populated = layers.filter((l) => {
+    if (l.date_floor == null && l.date_ceiling == null) return false;
+    // The form layer carries the form's catalog production span, not
+    // independent dating evidence. When that span is open-ended (no ceiling —
+    // e.g. "secrétaire à abattant, c. 1750–present"), it covers the entire
+    // axis and would merge otherwise-distinct evidence zones into one
+    // over-wide zone, defeating convergence. An open-ended span carries no
+    // dating information, so it doesn't vote (it still renders as an
+    // informational row in the viz). Forms with a BOUNDED window (telephone
+    // bench c. 1900–1935, iron bed c. 1880–1920) keep voting — their span IS
+    // a dating signal. Form impossibility is still enforced separately via
+    // emergence/extinction clipping above.
+    if (l.layer === "form" && l.date_ceiling == null) return false;
+    return true;
+  });
 
   if (populated.length === 0) {
     return { layers, convergence_zones: [], overall_floor: null, overall_ceiling: null };
