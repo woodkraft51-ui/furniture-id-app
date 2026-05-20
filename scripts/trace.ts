@@ -227,6 +227,70 @@ const COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 6b: MCM spindle-back lounge chair. Synthesized from a real
+// diagnostic trace (May 2026) where the engine's FINAL read was correct
+// (mid-century modern spindle-back lounge chair, frame c. 1950–1975) but
+// the supporting reasoning surfaced three persistence-vs-exclusivity bugs:
+//   - Conflict: mortise_and_tenon (canonical "1620–1920") flagged as
+//     conflicting with vinyl_cover (post-1930) and foam_padding (c.1930–
+//     1960), with M&T "favored over" the upholstery by authority. M&T is a
+//     SPANS-ERAS construction technique; its "dominant period" ceiling is
+//     not a terminus and must not generate a disjoint-range conflict with
+//     later material evidence.
+//   - Overall envelope: 1620–1980 — absurd for an MCM lounge chair. The
+//     1620 floor leaks in from M&T's open-ended persistence; persistent
+//     construction techniques must not anchor the headline envelope floor.
+//   - Narrative: spindle/turned-element UI blurbs hardcoded "late 19th to
+//     early 20th century production," contextually wrong for an MCM piece.
+// Expected post-fix behavior:
+//   - NO "vinyl/foam conflicts with mortise and tenon" conflict
+//   - mortise_and_tenon dateHint open-ended (post-1620), not closed 1620–1920
+//   - overall envelope floor no longer pinned to 1620 by M&T
+//   - frame range stays c. 1950–1975 (was already correct)
+const MCM_SPINDLE_LOUNGE_CHAIR_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-mcm-spindle-lounge-chair" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "side" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "",
+    user_category_guess: "chair",
+    condition_notes:
+      "barrel-back upholstered shell with spindle gallery beneath; flat paddle armrests; splayed turned/tapered legs with stretchers; gray limed/cerused refinish; vinyl-look seat and back with soiling",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Mid-century modern spindle-back lounge chair: continuous upholstered barrel/tub back, flat paddle arms, vertical turned spindle gallery, four splayed tapered legs with round stretchers, gray limed wood finish, smooth vinyl-look gray upholstery with surface soiling. No maker label visible.",
+    },
+    observations: [
+      obs("seating_surface", "Upholstered seat pad, padded and covered in light gray fabric", 68),
+      obs("backrest_present", "Continuous barrel-back upholstered shell wrapping arm to arm", 68),
+      obs("armchair_form", "Two flat paddle-style wooden armrests extending forward from the barrel back", 68),
+      obs("spindle_back", "Multiple vertical round spindles between seat rail and barrel back shell", 68),
+      obs("round_tenon_joinery", "Round spindles inserted into round mortise sockets in seat rail and back rail", 82),
+      obs("mortise_and_tenon", "Flat paddle armrests joined to back post and front leg via mortise-and-tenon", 72),
+      obs("splayed_legs", "Four turned/tapered legs splay outward at a moderate angle", 82),
+      obs("stretcher_rails", "Horizontal round-section stretcher rails connecting the legs beneath the seat", 82),
+      obs("barrel_back_form", "Backrest forms a continuous curved barrel/tub shape wrapping the sitter", 52),
+      obs("paddle_arm_form", "Flat wide paddle-style wooden armrests with squared ends", 52),
+      obs("solid_wood_construction", "Legs, spindles, stretchers, and armrests appear solid wood throughout", 84),
+      obs("refinished_surface", "Uniform gray/driftwood limed or cerused finish; deliberate surface treatment", 45),
+      obs("vinyl_cover", "Smooth, slightly shiny light gray cover; no visible weave; reads as vinyl/faux leather", 50),
+      obs("foam_padding", "Rounded seat and smooth barrel-back profile consistent with foam padding; no spring crown", 45),
+      obs("no_spring_seat", "Flat seat profile without domed coil-spring crown; foam-over-platform construction", 50),
+      obs("upholstery_soiling", "Seat and barrel back show surface soiling and grime; structurally intact", 54),
+      obs("wood_frame_condition", "Surface wear and use patina; no breaks or structural failures", 54),
+      obs("upholstered_barrel_back_shell", "Continuous curved upholstered shell wrapping arm to arm; seam at top center", 88),
+      obs("mid_century_modern_style", "Barrel back, spindle back, splayed tapered legs, paddle arms read as MCM", 52),
+      obs("fully_upholstered", "Seat and barrel back upholstered", 74),
+      obs("mcm_structural_pattern", "Paddle arm caps, spindle back, and splayed/tapered legs form a consistent MCM pattern", 86),
+      obs("lounge_chair_form", "Deeper seat, lower seat height, reclined back; lounge-chair posture", 78),
+      obs("barrel_tub_back", "Barrel/tub/cylindrical back vocabulary on a seating form", 76),
+    ],
+  },
+};
+
 // Fixture 7: Golden Oak dresser misdiagnosed as American Classical / Empire
 // c. 1845–1850. Synthesized from a real diagnostic trace (May 2026) where:
 //   - Form correctly read as form_chest_of_drawers
@@ -951,6 +1015,7 @@ const FIXTURES: Record<string, Fixture> = {
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
   pre_1860_piece: PRE_1860_PIECE_FIXTURE,
   mcm_plastic_chair: MCM_PLASTIC_CHAIR_FIXTURE,
+  mcm_spindle_lounge_chair: MCM_SPINDLE_LOUNGE_CHAIR_FIXTURE,
   colonial_revival_lounge_chair: COLONIAL_REVIVAL_LOUNGE_CHAIR_MISDIAGNOSED_FIXTURE,
   golden_oak_dresser: GOLDEN_OAK_DRESSER_MISDIAGNOSED_FIXTURE,
   transitional_rococo_renaissance: TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE,

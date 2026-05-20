@@ -389,11 +389,11 @@ function evidenceMeaning(text: string): string {
   }
 
   if (t.includes("spindle")) {
-    return "Spindle construction supports late 19th to early 20th century production and helps define the form structure.";
+    return "Spindle construction spans many periods — Windsor and stick furniture through mid-century modern and later — so it helps define the form but does not by itself narrow the date.";
   }
 
   if (t.includes("turned")) {
-    return "Turned elements suggest lathe-based shaping, common in late 1800s to early 1900s production.";
+    return "Turned elements indicate lathe-shaped components, a technique used continuously from the 18th century to the present; on its own it does not pin the date to a specific era.";
   }
 
   if (t.includes("paint") || t.includes("finish")) {

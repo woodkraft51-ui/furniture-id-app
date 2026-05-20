@@ -85,7 +85,35 @@ function engineCategoryFor(entry: any): string {
 // {date_floor: 1800, date_ceiling: 1970}). For upholstery, prefer the
 // tightest CLOSED period regardless of order. Non-upholstery libraries
 // continue to use Block 10b's first-wins rule.
+// Persistent construction techniques whose authored historical span is a
+// "dominant usage period," NOT an exclusive window. The canonical M&T family
+// note records the migrated HCL text verbatim: mortise-and-tenon "was the
+// standard structural method for American furniture from the earliest colonial
+// period through the early twentieth century, offering limited dating value on
+// its own" — and in practice it persisted through the mid-century (spindle-back
+// lounge chairs still use round-tenon/M&T) and to the present. Emitting its
+// closed numeric range (1620–1920) made the engine (a) fire false disjoint-
+// range conflicts against genuinely later material evidence (e.g. post-1930
+// vinyl / foam upholstery) and (b) anchor the overall dating envelope floor to
+// 1620 on plainly modern pieces. These techniques are treated as
+// non-dating/informational: a prose hint that does not parse to a numeric band,
+// matching how other spans-eras evidence (refinished_surface, fully_upholstered)
+// already behaves. The clue still surfaces in the dating-overlap chart as
+// "present, no parseable date" rather than silently disappearing. Distinguishes
+// construction-technology *persistence* from construction-era *exclusivity*:
+// genuinely era-bound joinery (hand-cut dovetails, biscuit joints) keeps its
+// numeric range and still conflicts with incompatible evidence.
+const PERSISTENT_NONDATING_CANONICAL_IDS = new Set<string>([
+  "joinery_category_mortise_and_tenon_family",
+]);
+
 function dateHintFor(entry: any): string | undefined {
+  if (
+    typeof entry?.id === "string" &&
+    PERSISTENT_NONDATING_CANONICAL_IDS.has(entry.id)
+  ) {
+    return "spans eras (colonial period to present); limited dating value on its own";
+  }
   if (typeof entry?.date_floor === "number" && typeof entry?.date_ceiling === "number") {
     return `c. ${entry.date_floor}–${entry.date_ceiling}`;
   }
