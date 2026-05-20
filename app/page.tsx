@@ -96,6 +96,7 @@ type ReportShape = {
   observations?: any[];
   images?: any[];
   evidence_digest?: any;
+  engine_version?: string;
 };
 
 type RecommendationLevel = "BUY_NOW" | "BUY" | "CONSIDER" | "PASS";
@@ -2780,6 +2781,47 @@ const p7 = stageOutputs.p7 || null;
                 viewingSavedScanTimestamp || new Date().toISOString()
               )}
             </div>
+            {report?.engine_version && (
+              <div>
+                <strong>Engine version:</strong> {report.engine_version}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Advisory disclaimer — shown on the report on screen AND in print
+            (deliberately NOT .no-print) so the liability framing travels with
+            any saved/printed PDF. Proof Sleuth gives an evidence-based reading,
+            not a certified appraisal; this protects the appraiser when a user
+            acts on a recommendation. */}
+        {report && (
+          <div
+            style={{
+              marginTop: 16,
+              padding: "10px 14px",
+              background: "#fbf7ef",
+              border: "1px solid #e3d6bd",
+              borderLeft: "3px solid #b9956a",
+              borderRadius: 8,
+              fontSize: 12.5,
+              lineHeight: 1.55,
+              color: "#6a5845",
+            }}
+          >
+            <strong style={{ color: "#1a2e4e" }}>Advisory only.</strong> This is
+            an evidence-based reading generated from your photos — not a
+            certified appraisal, authentication, or guarantee of value. Values
+            are estimates and market conditions vary. Verify independently
+            before buying, selling, or insuring. For a binding valuation,{" "}
+            <a
+              href="https://newcreationswoodcraft.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#1a2e4e", borderBottom: "1px solid #b9956a" }}
+            >
+              consult a professional appraiser
+            </a>
+            .
           </div>
         )}
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import packageJson from "../package.json";
+import { ENGINE_VERSION } from "../lib/engineVersion";
 
 const APP_VERSION = packageJson.version;
 
@@ -168,6 +169,10 @@ export default function RootLayout({
           <span className="ps-footer-sep">·</span>
           <Link href="/scans">My Scans</Link>
           <span className="ps-footer-sep">·</span>
+          <Link href="/privacy">Privacy</Link>
+          <span className="ps-footer-sep">·</span>
+          <Link href="/terms">Terms</Link>
+          <span className="ps-footer-sep">·</span>
           <a
             href="https://newcreationswoodcraft.com"
             target="_blank"
@@ -176,11 +181,13 @@ export default function RootLayout({
             New Creations Woodcraft
           </a>
           <span className="ps-footer-sep">·</span>
-          {/* Engine version surfaced so power users (and stress-test
-              evaluators) can correlate a given scan output to a specific
-              app/engine state. Tied to package.json version so it
-              auto-updates on version bumps. */}
-          <span style={{ color: "#a08866", fontSize: 12 }}>v{APP_VERSION}</span>
+          {/* App build version and ENGINE version surfaced separately so a
+              user (or stress-test evaluator) can correlate a scan to both the
+              UI build and the dating/attribution logic that produced it. The
+              engine version is the one stamped onto saved scans. */}
+          <span style={{ color: "#a08866", fontSize: 12 }}>
+            App v{APP_VERSION} · Engine {ENGINE_VERSION}
+          </span>
         </footer>
       </body>
     </html>
