@@ -502,10 +502,15 @@ type ConvergenceZone = {
   date_floor: number;
   date_ceiling: number;
   layer_count: number;
-  // Sum of LAYER_AUTHORITY weights for contributing layers. Used to identify
-  // the "strongest" zone for chip-label badging (max authority_sum wins,
-  // tiebreak by layer_count then narrowest range).
+  // Sum of LAYER_AUTHORITY weights for contributing layers.
   authority_sum: number;
+  // Specificity-weighted analogues; the engine qualifies and ranks zones on
+  // these, and the chart headlines specific_layer_count so broad/open-ended
+  // containers don't overstate "N layers agree". Optional for back-compat with
+  // any cached report shape.
+  effective_layer_count?: number;
+  weighted_authority?: number;
+  specific_layer_count?: number;
   layers: string[];
 };
 
@@ -1064,19 +1069,25 @@ function DatingOverlapViz({
   const partnerStyleLabel = transitionalPartner?.name ? `Style: ${transitionalPartner.name}` : "Style (partner)";
 
   // Identify the strongest convergence zone for "strongest" badge labeling.
-  // Tiebreak: max authority_sum, then max layer_count, then narrowest range.
-  // Returns the index in data.convergence_zones, or -1 if no zones.
+  // Mirrors the engine's picker (refineDatingFromConvergence): max
+  // specificity-weighted authority, then effective layer count, then narrowest
+  // range. Falls back to the raw fields for older report shapes.
+  const zoneRank = (z: ConvergenceZone) => ({
+    authority: z.weighted_authority ?? z.authority_sum,
+    count: z.effective_layer_count ?? z.layer_count,
+  });
   const strongestZoneIdx = data.convergence_zones.length === 0
     ? -1
     : data.convergence_zones.reduce(
         (bestIdx, z, i, arr) => {
-          const best = arr[bestIdx];
-          if (z.authority_sum > best.authority_sum) return i;
-          if (z.authority_sum < best.authority_sum) return bestIdx;
-          if (z.layer_count > best.layer_count) return i;
-          if (z.layer_count < best.layer_count) return bestIdx;
+          const best = zoneRank(arr[bestIdx]);
+          const cur = zoneRank(z);
+          if (cur.authority > best.authority) return i;
+          if (cur.authority < best.authority) return bestIdx;
+          if (cur.count > best.count) return i;
+          if (cur.count < best.count) return bestIdx;
           const zWidth = z.date_ceiling - z.date_floor;
-          const bestWidth = best.date_ceiling - best.date_floor;
+          const bestWidth = arr[bestIdx].date_ceiling - arr[bestIdx].date_floor;
           return zWidth < bestWidth ? i : bestIdx;
         },
         0
@@ -1268,7 +1279,7 @@ function DatingOverlapViz({
             return (
               <div
                 key={`zone-${i}`}
-                title={`Convergence: ${z.layer_count} layers agree on ${z.date_floor}–${z.date_ceiling} (${z.layers.join(", ")})`}
+                title={`Convergence: ${z.specific_layer_count ?? z.layer_count} corroborating layer(s) on ${z.date_floor}–${z.date_ceiling} (${z.layers.join(", ")})`}
                 style={{
                   position: "absolute",
                   top: PLOT_TOP_PADDING - 4,
@@ -1312,10 +1323,11 @@ function DatingOverlapViz({
             const layerSummary = z.layers
               .map((l) => LAYER_LABELS[l] ?? l)
               .join(", ");
+            const corrobCount = z.specific_layer_count ?? z.layer_count;
             return (
               <div
                 key={`zone-label-${i}`}
-                title={`Zone ${i + 1}: ${z.date_floor}–${z.date_ceiling} · ${z.layer_count} layer${z.layer_count !== 1 ? "s" : ""} agree (${layerSummary})${isStrongest ? " · STRONGEST convergence" : ""}`}
+                title={`Zone ${i + 1}: ${z.date_floor}–${z.date_ceiling} · ${corrobCount} corroborating layer${corrobCount !== 1 ? "s" : ""}${z.layer_count > corrobCount ? ` (${z.layer_count} total incl. broad/open-ended)` : ""}: ${layerSummary}${isStrongest ? " · STRONGEST convergence" : ""}`}
                 style={{
                   position: "absolute",
                   top: ZONE_LABEL_TOP,
@@ -1342,8 +1354,8 @@ function DatingOverlapViz({
                 }}
               >
                 <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {z.date_floor}–{z.date_ceiling} · {z.layer_count}
-                  {viewport.isMobile ? "L" : ` layer${z.layer_count !== 1 ? "s" : ""}`}
+                  {z.date_floor}–{z.date_ceiling} · {corrobCount}
+                  {viewport.isMobile ? "L" : ` layer${corrobCount !== 1 ? "s" : ""}`}
                 </span>
                 {isStrongest && (
                   <span
@@ -1555,10 +1567,12 @@ function DatingOverlapViz({
                 }}
               />
               <div>
-                <strong>Green vertical bands</strong> mark <strong>convergence zones</strong> where 3 or more layers
+                <strong>Green vertical bands</strong> mark <strong>convergence zones</strong> where multiple layers
                 agree on the same date range. These are the strongest dating signals. The chip-label above each band
-                shows the zone&apos;s range and layer count; the darker green chip marked &ldquo;strongest&rdquo;
-                identifies the highest-authority zone (most layers and/or highest-authority evidence). Currently
+                shows the zone&apos;s range and the count of <em>corroborating</em> layers — broad or open-ended layers
+                that merely span (rather than pinpoint) the range are not counted. The darker green chip marked
+                &ldquo;strongest&rdquo; identifies the highest-authority zone (most corroborating layers and/or
+                highest-authority evidence). Currently
                 showing {data.convergence_zones.length === 1 ? "1 convergence zone" : `${data.convergence_zones.length} convergence zones`}.
               </div>
             </div>
