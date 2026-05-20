@@ -584,6 +584,68 @@ const TRANSACTION_COUNTER_FIXTURE: Fixture = {
   },
 };
 
+// Seated pedestal / knee + multi-user cluster fixtures.
+// Davenport must beat the sofa "Davenport" (map sends bare "Davenport" to
+// form_sofa) via desk-context cues; partner's must beat executive when the
+// piece is two-sided; pedestal is the metal-tanker catch-all; kneehole must
+// beat pedestal when the central opening is the emphasis.
+const DAVENPORT_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-davenport-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Compact Victorian Davenport desk; small ship captain's writing desk with a sloped lift-top writing surface over a bank of side drawers.",
+    },
+    observations: [obs("writing_surface", "Sloped lift-top writing surface", 80)],
+  },
+};
+const PARTNERS_EXECUTIVE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-partners-executive-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // "executive partner's desk" appears in BOTH executive and partner's
+      // aliases; two-sided access must win (partner's), per cousin contrast.
+      raw_text:
+        "Large executive partner's desk; double-sided pedestal desk finished on both faces for two users seated face-to-face.",
+    },
+    observations: [obs("writing_surface", "Leather-inset writing surface on both sides", 80)],
+  },
+};
+const PEDESTAL_TANKER_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-pedestal-tanker-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // Steel piece -> blocksTraditionalWoodForms; "Pedestal desk" label must
+      // still emit (not in the blocked-traditional substring list).
+      raw_text:
+        "Mid-century gray steel government tanker desk; double-pedestal office desk with stamped-steel drawer banks and a linoleum top.",
+    },
+    observations: [obs("metal_frame", "Stamped sheet-steel case and pedestals", 85)],
+  },
+};
+const KNEEHOLE_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-kneehole-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Georgian kneehole desk; compact kneehole writing desk with a recessed central knee opening flanked by short drawer stacks.",
+    },
+    observations: [obs("writing_surface", "Flat writing top over a central kneehole recess", 80)],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
@@ -594,6 +656,10 @@ const FIXTURES: Record<string, Fixture> = {
   clerks_desk: CLERK_VS_STANDING_FIXTURE,
   reception_desk: RECEPTION_DESK_FIXTURE,
   transaction_counter_desk: TRANSACTION_COUNTER_FIXTURE,
+  davenport_desk: DAVENPORT_DESK_FIXTURE,
+  partners_executive_desk: PARTNERS_EXECUTIVE_FIXTURE,
+  pedestal_tanker_desk: PEDESTAL_TANKER_FIXTURE,
+  kneehole_desk: KNEEHOLE_DESK_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,

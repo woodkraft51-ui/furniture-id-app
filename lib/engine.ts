@@ -3212,6 +3212,79 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Transaction counter desk", 92, "Service / counter desk for public transactions.");
   }
 
+  // Seated pedestal / knee desk cluster + multi-user pair. Discriminated by the
+  // cluster's cousin_form_contrasts: partner's = two-sided / bilateral access
+  // (overrides pedestal/executive); benching = system-based open-plan multi-user
+  // run; Davenport = compact side-drawer sloped desk; credenza desk = low cabinet
+  // with work-surface/office function; executive = larger scale / suite context;
+  // kneehole = central user opening; pedestal = drawer-support structure and the
+  // cluster's broad catch-all (40 aliases: tanker, banker's, legal, government,
+  // industrial single-user office desks). Gated on !deskFormDominant so the
+  // pedestals + kneehole intrinsic to a roll-top/cylinder/slant desk are not
+  // re-emitted here as independent evidence. One identity per piece (round-up).
+  const davenportDesk =
+    includesAny(text, [
+      "davenport desk", "captain davenport", "ship captain's desk",
+      "side-drawer davenport", "lift-top davenport", "campaign davenport",
+    ]) ||
+    (text.includes("davenport") &&
+      includesAny(text, ["writing", "side drawer", "side-drawer", "sloped", "slope", "lift-top", "lift top", "desk"]) &&
+      !includesAny(text, ["sofa", "settee", "couch", "loveseat", "sleeper"]));
+  const partnersDesk = includesAny(text, [
+    "partner's desk", "partners desk", "partner desk", "double-sided desk",
+    "two-sided desk", "two-person desk", "double desk", "face-to-face desk",
+    "opposed work desk", "partner workstation", "double writing table",
+  ]);
+  const benchingDesk = includesAny(text, [
+    "benching", "bench desk", "open-plan bench", "open plan bench",
+    "hot-desk", "hot desk", "team bench", "linear bench", "side-by-side desk",
+    "bench-style shared",
+  ]);
+  const credenzaDesk =
+    includesAny(text, [
+      "credenza desk", "desk credenza", "office credenza desk",
+      "computer credenza", "storage credenza desk", "wall credenza desk",
+      "executive credenza desk",
+    ]) ||
+    (text.includes("credenza") && includesAny(text, ["desk", "work surface", "keyboard", "office work"]));
+  const executiveDesk = includesAny(text, [
+    "executive desk", "executive pedestal", "executive suite desk",
+    "executive return", "desk suite", "office suite desk",
+    "executive bow-front", "managerial desk", "executive l-desk", "executive u-desk",
+  ]);
+  const kneeholeDesk = includesAny(text, [
+    "kneehole desk", "knee-hole desk", "flat-top kneehole", "compact kneehole",
+    "domestic kneehole", "georgian kneehole", "queen anne kneehole",
+    "chippendale kneehole", "federal kneehole", "victorian kneehole",
+    "kneehole writing", "central kneehole", "kneehole recess", "kneehole opening",
+  ]);
+  const pedestalDesk = includesAny(text, [
+    "pedestal desk", "twin-pedestal", "twin pedestal", "double-pedestal desk",
+    "single-pedestal desk", "return-pedestal", "tanker desk", "banker's desk",
+    "bank officer", "lawyer's desk", "attorney's desk", "barrister's desk",
+    "bureau desk", "kneehole bureau", "government desk", "civil service desk",
+    "administrative pedestal", "foreman's desk", "factory office desk",
+    "industrial pedestal", "law office pedestal", "legal desk",
+    "bureau writing desk", "bureau cabinet desk",
+  ]);
+  if (!deskFormDominant) {
+    if (partnersDesk) {
+      add("Partner's desk", 100, "Two-sided / bilateral-access desk for two facing users.");
+    } else if (benchingDesk) {
+      add("Benching desk", 95, "System-based open-plan multi-user bench desking.");
+    } else if (davenportDesk) {
+      add("Davenport desk", 100, "Compact desk with a sloped/lift top and characteristic side drawers.");
+    } else if (credenzaDesk) {
+      add("Credenza desk", 92, "Low credenza-style cabinet with a work-surface / office function.");
+    } else if (executiveDesk) {
+      add("Executive desk", 98, "Large pedestal/suite desk with managerial scale or office-suite context.");
+    } else if (kneeholeDesk) {
+      add("Kneehole desk", 94, "Desk emphasizing a central knee opening flanked by drawers.");
+    } else if (pedestalDesk) {
+      add("Pedestal desk", 88, "Seated single-user desk built on drawer pedestals (incl. tanker, banker's, legal, government, industrial office desks).");
+    }
+  }
+
   // Table forms
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
   if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");

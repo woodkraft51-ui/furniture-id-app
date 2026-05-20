@@ -249,6 +249,14 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Reception desk": "form_reception_desk",
   "Clerk's desk": "form_clerks_desk",
   "Standing desk": "form_standing_desk",
+  // Seated pedestal / knee cluster + multi-user pair.
+  "Partner's desk": "form_partners_desk",
+  "Benching desk": "form_benching_desk",
+  "Davenport desk": "form_davenport_desk",
+  "Credenza desk": "form_credenza_desk",
+  "Executive desk": "form_executive_desk",
+  "Kneehole desk": "form_kneehole_desk",
+  "Pedestal desk": "form_pedestal_desk",
 
   // Tables — comprehensive bare-alias routes for existing canonicals.
   // Previously a pre-existing gap: ~16 table canonicals existed in forms.ts
