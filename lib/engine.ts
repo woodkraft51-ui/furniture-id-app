@@ -3231,7 +3231,12 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   // round-up discipline): strong distinctive terms first, with the generic
   // "counter desk" / "service desk" left as the transaction-counter catch
   // since those aliases live on form_transaction_counter_desk.
-  const instSchool = includesAny(text, [
+  // "schoolhouse" also names a pendant-light style; exclude schoolhouse lighting
+  // so a schoolhouse light/pendant routes to form_pendant_light, not a desk.
+  const instSchool = !includesAny(text, [
+    "schoolhouse light", "schoolhouse pendant", "schoolhouse globe",
+    "schoolhouse fixture", "schoolhouse shade", "schoolhouse lamp",
+  ]) && includesAny(text, [
     "school desk", "student desk", "schoolhouse", "schoolchild", "pupil desk",
     "attached-seat", "attached seat school", "sled-base", "lift-lid school",
     "tablet-arm desk", "tablet arm desk", "classroom desk", "combo desk",
@@ -4144,6 +4149,60 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     } else if (boxForm) {
       add("Box", 94, "Small lidded box form (keepsake, document, deed, or storage box).");
     }
+  }
+
+  // Lighting-fixture cluster. Fourteen forms (beyond the already-wired floor/
+  // table/oil/kerosene/banquet lamps) had canonical content and (mostly) routes
+  // but no scoreForms detector. All text-cue based; ordered specific-first so
+  // the two abstract catch-all parents (wall lighting form / hanging lighting
+  // form) only fire when no specific wall- or hanging-fixture form matched:
+  //   - candelabrum (branched/multi-arm) checked before candlestick (single);
+  //   - gas bracket ("gas sconce") checked before sconce;
+  //   - billiard / lantern / chandelier / pendant checked before the generic
+  //     hanging catch-all. Scores (92-96) beat the generic lamp emitters
+  //     (Floor/Table/Oil 86-90) for the same piece (e.g. torchiere floor lamp).
+  const billiardLightForm = includesAny(text, ["billiard light", "pool table light", "snooker light", "pool hall light", "saloon light", "linear billiard"]);
+  const torchereForm = includesAny(text, ["torchere", "torchère", "torchiere", "torchière", "floor torch", "floor uplighter"]);
+  const candelabrumForm = includesAny(text, ["candelabrum", "candelabra", "candelabras", "girandole", "branched candle", "multi-candle holder", "multi-arm candlestick", "branched candlestick", "seven-branch"]);
+  const candlestickForm = includesAny(text, ["candlestick", "candle stick", "candleholder", "candle holder", "chamberstick", "pricket", "taper holder", "hog-scraper candlestick", "push-up candlestick"]);
+  const argandLampForm = includesAny(text, ["argand lamp", "astral lamp", "sinumbra lamp", "solar lamp", "circular wick lamp", "draft lamp"]);
+  const bettyLampForm = includesAny(text, ["betty lamp", "grease lamp", "fat lamp", "pan lamp", "rat-tail lamp", "crusie"]);
+  const studentLampForm = includesAny(text, ["student lamp", "study lamp", "banker's lamp", "bankers lamp", "banker lamp", "library lamp", "rochester lamp", "double student lamp", "kerosene student lamp"]);
+  const gasBracketForm = includesAny(text, ["gas bracket", "gas wall bracket", "gas sconce", "gaslight bracket", "gas arm", "gas wall light", "gas-mantle bracket", "wall gas fixture"]);
+  const sconceForm = includesAny(text, ["sconce", "wall sconce", "wall light", "wall fixture", "wall bracket light", "candle sconce", "electric sconce", "mirror-back sconce", "wall mounted lamp", "wall-mounted lamp"]);
+  const lanternHangingForm = includesAny(text, ["hanging lantern", "ceiling lantern", "hall lantern", "entry lantern", "porch lantern", "pierced-tin hanging lantern"]);
+  const chandelierForm = includesAny(text, ["chandelier", "gasolier", "gaselier", "electrolier", "multi-light fixture", "multi-arm chandelier", "candle chandelier", "crystal chandelier"]);
+  const pendantLightForm = includesAny(text, ["pendant light", "pendant lamp", "hanging pendant", "ceiling pendant", "drop light", "schoolhouse light", "schoolhouse pendant", "industrial pendant", "pulley pendant", "rise and fall light", "mini pendant"]);
+  const wallLightingForm = includesAny(text, ["wall lighting fixture", "wall luminaire", "picture light", "wall washer", "wall lighting form"]);
+  const hangingLightingForm = includesAny(text, ["hanging light fixture", "ceiling light fixture", "ceiling fixture", "flush mount", "semi-flush", "flush-mount light", "hanging lighting form"]);
+  if (billiardLightForm) {
+    add("Billiard light", 96, "Long multi-shade fixture hung over a billiard/pool table.");
+  } else if (torchereForm) {
+    add("Torchère", 94, "Tall floor-standing candle/torch stand or upward-throwing floor uplight.");
+  } else if (candelabrumForm) {
+    add("Candelabrum", 96, "Branched multi-arm candle holder (girandole).");
+  } else if (candlestickForm) {
+    add("Candlestick", 95, "Single-light candle holder (chamberstick, pricket, taper holder).");
+  } else if (argandLampForm) {
+    add("Argand lamp", 95, "Early circular-wick oil lamp with side font (astral / sinumbra / solar variants).");
+  } else if (bettyLampForm) {
+    add("Betty lamp", 96, "Early iron grease/fat lamp with a wick channel (crusie family).");
+  } else if (studentLampForm) {
+    add("Student lamp", 94, "Adjustable shaded reading lamp with a side font (banker's / library / Rochester type).");
+  } else if (gasBracketForm) {
+    add("Gas bracket", 96, "Wall-mounted gas (or gas-electric) lighting arm; gas evidence dominates over plain sconce reading.");
+  } else if (sconceForm) {
+    add("Sconce", 95, "Wall-mounted light bracket (candle, electric, or kerosene).");
+  } else if (lanternHangingForm) {
+    add("Hanging lantern", 95, "Enclosed hanging hall/entry/porch lantern fixture.");
+  } else if (chandelierForm) {
+    add("Chandelier", 96, "Multi-arm radial ceiling fixture (candle, gas/gasolier, or electric/electrolier).");
+  } else if (pendantLightForm) {
+    add("Pendant light", 94, "Single hanging ceiling fixture on a rod, chain, or cord (schoolhouse, industrial, pulley).");
+  } else if (wallLightingForm) {
+    add("Wall lighting form", 88, "Wall-mounted lighting fixture not specifically a sconce or gas bracket (picture light, wall washer).");
+  } else if (hangingLightingForm) {
+    add("Hanging lighting form", 88, "Ceiling/hanging lighting fixture not specifically a chandelier, pendant, lantern, or billiard light (flush/semi-flush mount).");
   }
  // Industrial / Toledo-style task chair
 if (

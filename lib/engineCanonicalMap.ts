@@ -1352,6 +1352,11 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // Portable surface lighting — Item 17 Batch D (Tier B lighting)
   // ───────────────────────────────────────────────────────────────────
 
+  // Lighting forms missing a label->id route (scoreForms detectors added).
+  "Torchère": "form_torchere",
+  "Candelabrum": "form_candelabrum",
+  "Wall lighting form": "form_wall_lighting_form",
+  "Hanging lighting form": "form_hanging_lighting_form",
   "Candlestick": "form_candlestick",
   "Candle stick": "form_candlestick",
   "Candleholder": "form_candlestick",
