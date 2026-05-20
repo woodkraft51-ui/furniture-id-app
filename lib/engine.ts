@@ -3394,6 +3394,63 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     }
   }
 
+  // Cabinet-integrated + architectural built-in desk clusters. Per the
+  // cousin_form_contrasts: Murphy folds away / integrates with a wall-bed or
+  // cabinet system; wall unit is a wall system with substantial cabinet storage
+  // plus a work surface; built-in is permanently installed in architectural
+  // cabinetry/millwork (vs. a removable wall desk); wall desk is simply mounted;
+  // hutch adds open upper storage (vs. a secretary's concealed fitted interior);
+  // armoire is a tall freestanding wardrobe-like enclosure and the broad
+  // "cabinet desk" catch. Ordered most-specific-architectural first;
+  // !deskFormDominant-gated.
+  // Murphy is defined by wall-bed / wall integration, NOT folding alone (an
+  // armoire desk also folds away — "Folding armoire desk" is an armoire alias),
+  // so the gate requires wall/wall-bed/Murphy context rather than bare "fold".
+  const murphyDesk = includesAny(text, [
+    "murphy desk", "fold-down wall desk", "fold down wall desk", "wall-bed desk",
+    "wall bed desk", "cabinet murphy desk",
+  ]);
+  const wallUnitDesk = includesAny(text, [
+    "wall unit desk", "wall system desk", "wall-spanning desk", "wall unit with desk",
+    "entertainment center desk", "library wall unit desk",
+  ]);
+  const builtInDesk = includesAny(text, [
+    "built-in desk", "built in desk", "architectural desk", "millwork desk",
+    "alcove built-in", "window-seat built-in", "under-stair built-in",
+    "kitchen office built-in", "bookcase-integrated built-in", "built-in writing",
+  ]);
+  const wallDesk = includesAny(text, [
+    "wall desk", "floating wall desk", "wall-mounted desk", "wall mounted desk",
+    "wall-mounted writing", "wall-hung writing", "hanging writing cupboard",
+    "wall-mounted writing cupboard", "compact wall desk",
+  ]);
+  const hutchDesk = includesAny(text, [
+    "hutch desk", "desk with hutch", "computer hutch", "student hutch",
+    "executive hutch", "secretary hutch", "hutch top",
+  ]);
+  const armoireDesk = includesAny(text, [
+    "armoire desk", "computer armoire", "secretary armoire", "hideaway desk",
+    "wardrobe desk", "cabinet workstation", "closet desk", "cabinet hideaway",
+    "armoire hideaway", "concealed desk", "enclosed cabinet desk",
+    "office cabinet desk", "standing cabinet desk", "locking cabinet desk",
+    "desk cabinet", "storage cabinet desk", "cabinet desk",
+  ]);
+  if (!deskFormDominant) {
+    if (murphyDesk) {
+      add("Murphy desk", 98, "Fold-away desk integrated with a wall-bed or cabinet system.");
+    } else if (wallUnitDesk) {
+      add("Wall unit desk", 96, "Wall system combining substantial cabinet storage with a usable work surface.");
+    } else if (builtInDesk) {
+      add("Built-in desk", 96, "Desk permanently installed as part of architectural cabinetry or millwork.");
+    } else if (wallDesk) {
+      add("Wall desk", 94, "Wall-mounted (removable) writing desk or writing cupboard.");
+    } else if (hutchDesk) {
+      add("Hutch desk", 95, "Desk with an added open upper hutch storage unit.");
+    } else if (armoireDesk) {
+      add("Armoire desk", 95, "Tall freestanding wardrobe-like cabinet enclosing a fold-away desk interior.");
+    }
+  }
+
   // Table forms
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
   if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");
