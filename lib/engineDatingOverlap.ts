@@ -320,8 +320,15 @@ function aggregateRange(ranges: Array<{ floor: number | null; ceiling: number | 
     if (f != null) floor = floor === null ? f : Math.min(floor, f);
     if (c != null) ceiling = ceiling === null ? c : Math.max(ceiling, c);
   }
-  if (floor != null && ceiling != null && floor > ceiling) {
-    [floor, ceiling] = [ceiling, floor];
+  // A "pre-X" clue combined with a "post-Y" clue (Y >= X) does not bracket a
+  // coherent window — the two directional bounds contradict each other. Under
+  // min-floor/max-ceiling that surfaces as an inverted (floor > ceiling) or
+  // degenerate (floor == ceiling) band, e.g. hand_cut_dovetails "pre-1860" +
+  // machine_dovetails "post-1860" collapsing to 1860-1860. Treat the layer as
+  // ambiguous/undated rather than fabricating a band (or swapping the bounds to
+  // manufacture one across the gap).
+  if (floor != null && ceiling != null && floor >= ceiling) {
+    return { floor: null, ceiling: null };
   }
   return { floor, ceiling };
 }
