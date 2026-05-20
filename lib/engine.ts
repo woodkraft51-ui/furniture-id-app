@@ -1480,13 +1480,21 @@ function descriptionNegatesClue(clue: string | null | undefined, description: st
   const terms = clueSubjectTerms(clue);
   if (!terms.length || !description) return false;
   const text = ` ${description.toLowerCase()} `;
+  // Allow a few intervening qualifier words between the negation cue and the
+  // clue's subject term so common phrasings are caught — e.g. "No decorative
+  // nailhead trim visible" (no -> nailhead) and "not true turned spindles"
+  // (not -> spindle). The window stays anchored to the clue's OWN subject term
+  // (not a bare "no"/"not"), which keeps contrastive prose about a DIFFERENT
+  // thing — "Hand-cut dovetails, not machine cut" — from dropping the clue.
+  const W = `(?:\\w+\\s+){0,3}`;
   for (const t of terms) {
     const esc = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const patterns = [
-      new RegExp(`\\bnot (?:a |an |the )?${esc}\\b`),
-      new RegExp(`\\b(?:rather than|instead of|as opposed to) (?:a |an |the )?${esc}\\b`),
-      new RegExp(`\\bno ${esc}\\b`),
-      new RegExp(`\\b${esc} (?:is |are )?(?:not present|absent|missing)\\b`),
+      new RegExp(`\\bnot (?:a |an |the )?(?:${W})?${esc}s?\\b`),
+      new RegExp(`\\b(?:rather than|instead of|as opposed to) (?:a |an |the )?(?:${W})?${esc}s?\\b`),
+      new RegExp(`\\bno (?:${W})?${esc}s?\\b`),
+      new RegExp(`\\bwithout (?:${W})?${esc}s?\\b`),
+      new RegExp(`\\b${esc}s?\\b[^.;,]{0,30}?\\b(?:not present|not visible|not observed|absent|missing)\\b`),
     ];
     if (patterns.some((re) => re.test(text))) return true;
   }
@@ -1570,9 +1578,13 @@ function normalizePerception(parsed: any, observations: Observation[]): Percepti
   const arr = (v: any) =>
     Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : [];
 
+  // Negated observations describe an ABSENT feature — keep their prose out of
+  // raw_text so it can't re-derive the very clue it negates (e.g. a
+  // "not true turned spindles" observation must not seed spindle_gallery via
+  // raw_text-driven perception derivation).
   const raw = [
     ...(p.raw_text ? [String(p.raw_text)] : []),
-    ...observations.map((o) => `${o.clue || ""} ${o.description || ""}`),
+    ...observations.filter((o) => !o.negated).map((o) => `${o.clue || ""} ${o.description || ""}`),
   ].join(" | ");
 
   const t = raw.toLowerCase();
