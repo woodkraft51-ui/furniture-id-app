@@ -1707,8 +1707,15 @@ function promotePerceptionObservations(
     });
   };
 
+  // Word-boundary seating detection. Substring matching previously fired on
+  // "seated" (e.g. a drawer bottom "seated in the frame"), deriving phantom
+  // seating_surface / seating_present clues on desks and other non-seating
+  // forms. \bseat\b matches seat/seats but not "seated"/"seating"; the explicit
+  // alternatives cover the genuine seating words.
+  const hasSeatingWord = /\b(seat|seats|seating|bench|benches|sitting)\b/.test(text);
+
   if (
-    includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+    hasSeatingWord &&
     !isNegated("seat") &&
     !isNegated("seating") &&
     !isNegated("bench") &&
@@ -1730,7 +1737,7 @@ function promotePerceptionObservations(
   }
 
   const hasSeatingContext =
-  includesAny(text, ["seat", "seating", "bench", "sitting surface"]) &&
+  hasSeatingWord &&
   !isNegated("seat") &&
   !isNegated("seating") &&
   !isNegated("bench") &&
