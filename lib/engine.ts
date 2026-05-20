@@ -3610,6 +3610,58 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   add("Pedestal stand", 88, "Single-column pedestal form is visible.");
 }
 
+  // Shape/structure-defined table cluster. Gated on text matching each form's
+  // existing common_aliases (the FORM_LABEL_TO_CANONICAL routes already exist;
+  // only this producer emission was missing). One shape identity per piece;
+  // the more specific edge/leaf feature is checked first (piecrust before
+  // tilt-top; Pembroke/Sutherland score above the generic drop-leaf/gateleg
+  // table emissions so the named form wins when it also trips those clues).
+  const lowboyTable = includesAny(text, ["lowboy"]);
+  const demiluneTable = includesAny(text, [
+    "demilune", "demi-lune", "half-moon table", "half moon table",
+    "semicircular table", "semi-circular table", "half-round table", "half-round console",
+  ]);
+  const piecrustTable = includesAny(text, [
+    "piecrust", "pie-crust", "pie crust", "scalloped-edge table", "scalloped tea table",
+  ]);
+  const tiltTopTable = includesAny(text, [
+    "tilt-top", "tilt top", "tip-top table", "flip-top table", "tilt table",
+    "tilting tea table", "tilting top", "birdcage table", "birdcage tilt-top",
+  ]);
+  const drumTable = includesAny(text, ["drum table", "drum side table"]);
+  const pembrokeTable = includesAny(text, ["pembroke"]);
+  const sutherlandTable = includesAny(text, ["sutherland"]);
+  const trestleTable = includesAny(text, [
+    "trestle table", "trestle dining", "refectory table", "refectory dining",
+    "monastery table", "abbey table", "sawhorse table", "a-frame table", "x-base table",
+    "draw-leaf trestle",
+  ]);
+  const nestingTables = includesAny(text, ["nesting table", "nest of tables", "stacking tables"]);
+  const etagereTable = includesAny(text, [
+    "etagere table", "étagère table", "tier table", "tiered display table",
+  ]);
+  if (lowboyTable) {
+    add("Lowboy", 100, "Low table-height case-and-table hybrid with drawers on tall legs.");
+  } else if (demiluneTable) {
+    add("Demilune table", 100, "Semicircular / half-moon top — the defining feature.");
+  } else if (piecrustTable) {
+    add("Piecrust table", 102, "Scalloped, carved pie-crust raised-edge top (often a tilt-top tea table).");
+  } else if (tiltTopTable) {
+    add("Tilt-top table", 98, "Top that tilts/tips from horizontal to vertical, often on a tripod birdcage.");
+  } else if (drumTable) {
+    add("Drum table", 100, "Round drum-shaped top, usually over a pedestal with frieze drawers.");
+  } else if (pembrokeTable) {
+    add("Pembroke table", 104, "Small drop-leaf table with short hinged leaves and an apron drawer.");
+  } else if (sutherlandTable) {
+    add("Sutherland table", 106, "Very narrow gateleg drop-leaf table with a thin closed footprint.");
+  } else if (trestleTable) {
+    add("Trestle table", 100, "Long top on two trestle-like end supports joined by a stretcher.");
+  } else if (nestingTables) {
+    add("Nesting tables", 100, "Set of graduated tables that slide/stack beneath one another.");
+  } else if (etagereTable) {
+    add("Etagere table", 98, "Display table with multiple open tiers or shelves.");
+  }
+
   // Chest and storage forms
   if (clues.has("cedar_lining") || clues.has("lift_lid")) {
     add(

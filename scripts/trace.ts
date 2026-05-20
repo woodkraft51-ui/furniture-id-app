@@ -713,6 +713,15 @@ const mkDesk = (id: string, wood: string, raw_text: string, ob = "writing_surfac
     observations: [obs(ob, obDesc, 80)],
   },
 });
+const mkTable = (id: string, wood: string, raw_text: string, extraObs: Array<{ clue: string; description: string }> = []): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "table" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: extraObs.map((o) => obs(o.clue, o.description, 82)),
+  },
+});
 // Escritoire must beat the generic drop-front Secretary route (cabinet-like
 // fall-front, no bookcase) — deskFormDominant suppresses the Secretary emit.
 const ESCRITOIRE_FIXTURE = mkDesk("escritoire", "oak",
@@ -828,6 +837,32 @@ const FIXTURES: Record<string, Fixture> = {
   converted_workbench_guard: mkDesk("converted-workbench", "",
     "Converted workbench desk: a reclaimed industrial workbench repurposed into an office desk with an added writing surface.",
     "metal_frame", "Reclaimed steel workbench base"),
+  // ── Tables: shape/structure-defined cluster ──
+  demilune_table: mkTable("demilune", "mahogany",
+    "Federal demilune table: a half-moon semicircular console table with satinwood inlay, flat against the wall."),
+  piecrust_table: mkTable("piecrust", "mahogany",
+    "Chippendale piecrust tilt-top tea table: a round mahogany top with a carved scalloped pie-crust raised edge on a birdcage tripod base.",
+    [{ clue: "pedestal_column", description: "Tripod birdcage pedestal" }]),
+  tilt_top_table: mkTable("tilt-top", "walnut",
+    "Tripod tilt-top tea table: a round top that tips to vertical on a birdcage over a turned pedestal tripod.",
+    [{ clue: "pedestal_column", description: "Turned pedestal tripod" }]),
+  drum_table: mkTable("drum", "mahogany",
+    "Regency drum table: a round leather-topped drum table with frieze drawers over a central pedestal and splayed legs.",
+    [{ clue: "pedestal_column", description: "Central pedestal" }]),
+  pembroke_table: mkTable("pembroke", "mahogany",
+    "Sheraton Pembroke table: a small drop-leaf table with two short hinged leaves and a single apron drawer on tapered legs.",
+    [{ clue: "drop_leaf_hinged", description: "Short hinged drop leaves" }]),
+  sutherland_table: mkTable("sutherland", "walnut",
+    "Victorian Sutherland table: a very narrow gateleg drop-leaf table with a thin closed footprint and swing-leg supports.",
+    [{ clue: "gateleg_support", description: "Swing gate-leg supports" }, { clue: "drop_leaf_hinged", description: "Drop leaves" }]),
+  trestle_table: mkTable("trestle", "oak",
+    "Jacobean refectory trestle table: a long oak top on two trestle end supports joined by a stretcher."),
+  nesting_tables: mkTable("nesting", "teak",
+    "Mid-century nest of tables: a set of three graduated nesting tables that stack beneath one another."),
+  etagere_table: mkTable("etagere", "brass",
+    "Brass and glass etagere table: a tiered display table with three open glass shelves."),
+  lowboy_table: mkTable("lowboy", "walnut",
+    "Queen Anne lowboy: a low table-height case with a row of apron drawers raised on four cabriole legs."),
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
