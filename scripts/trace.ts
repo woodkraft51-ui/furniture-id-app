@@ -843,8 +843,37 @@ const BUREAU_PLAT_FIXTURE = mkDesk("bureau-plat", "mahogany",
 const KIDNEY_FIXTURE = mkDesk("kidney", "walnut",
   "Victorian kidney desk: a kidney-shaped writing desk with a leather top and curved drawer pedestals.");
 
+// Colonial Revival needlepoint footstool with modern bracket-mounted
+// construction. Reproduces the hard-negative range-collapse bug: a phillips
+// screw (open-ended post-1935 floor, hard negative) lands exactly on the
+// ceiling of a 1900-1935-ish convergence zone, collapsing the frame range to a
+// degenerate single year ("c. 1935-1935") instead of opening the ceiling.
+const COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-colonial-revival-footstool-phillips" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "underside" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "footstool" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Needlepoint footstool with turned bobbin legs, stamped metal corner brackets, phillips screws, plywood base panel" },
+    observations: [
+      obs("footstool_form", "Low rectangular footstool with four turned legs and upholstered top", 68),
+      obs("seating_surface", "Rectangular upholstered top functioning as a footrest platform", 68),
+      obs("turned_legs", "Four turned wooden legs with bulbous/bobbin turning profile, ball feet", 82),
+      obs("stamped_metal_bracket", "Four stamped triangular metal corner brackets securing legs to base, mid-20th century or later", 82),
+      obs("dowel_joinery", "Legs attached via stamped metal corner brackets rather than traditional joinery", 70),
+      obs("plywood_structural", "Underside base panel appears to be flat plywood or engineered wood", 45),
+      obs("phillips_screw", "Cross-recess (Phillips-head) screws securing the corner brackets; hard negative for any pre-1934 construction", 85),
+      obs("needlepoint_cover", "Hand-stitched needlepoint canvas with floral bouquet motif over the top", 50),
+      obs("foam_padding", "Slightly rounded top profile suggests foam padding beneath the needlepoint cover", 50),
+      obs("no_spring_seat", "Flat low stuffed pad without spring lift", 45),
+      obs("solid_wood_construction", "Turned legs appear to be solid hardwood", 84),
+      obs("style_cues", "Turned bobbin legs, floral needlepoint, rectangular form consistent with Victorian or Colonial Revival footstools", 52),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  colonial_revival_footstool_phillips: COLONIAL_REVIVAL_FOOTSTOOL_PHILLIPS_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
   tambour_desk: TAMBOUR_DESK_FIXTURE,
   wooton_desk: WOOTON_DESK_FIXTURE,
