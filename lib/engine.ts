@@ -3269,10 +3269,12 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "two-sided desk", "two-person desk", "double desk", "face-to-face desk",
     "opposed work desk", "partner workstation", "double writing table",
   ]);
+  // Qualified bench-desk alias forms only (never bare "bench desk", which is a
+  // substring of "workbench desk" -> would steal the workbench-desk form).
   const benchingDesk = includesAny(text, [
-    "benching", "bench desk", "open-plan bench", "open plan bench",
-    "hot-desk", "hot desk", "team bench", "linear bench", "side-by-side desk",
-    "bench-style shared",
+    "benching", "office benching", "shared bench desk", "linear bench desk",
+    "open-plan bench desk", "open plan bench desk", "team bench desk",
+    "hot-desk", "hot desk", "side-by-side desk", "bench-style shared",
   ]);
   const credenzaDesk =
     includesAny(text, [
@@ -3448,6 +3450,59 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("Hutch desk", 95, "Desk with an added open upper hutch storage unit.");
     } else if (armoireDesk) {
       add("Armoire desk", 95, "Tall freestanding wardrobe-like cabinet enclosing a fold-away desk interior.");
+    }
+  }
+
+  // Task-specific + portable desk clusters. Per field_desk's cousin_form_
+  // contrasts: a writing box is a portable case-like object; a tabletop desk is
+  // an organizer/cabinet meant to sit on other furniture; a field desk implies
+  // mobile work use (campaign/military/naval/expedition). Task-specific work
+  // desks (artist's drawing/drafting, laboratory, workbench) are gated on their
+  // trade language. Workbench avoids the bare "industrial desk" / "service
+  // desk" / "bench desk" terms (those collide with the convertible-industrial,
+  // transaction, and benching forms). !deskFormDominant-gated.
+  const writingBoxDesk = includesAny(text, [
+    "writing box", "writing slope", "lap desk", "lap laptop desk", "portable writing slope",
+  ]);
+  const fieldDesk = includesAny(text, [
+    "field desk", "campaign desk", "campaign writing table", "folding field",
+    "knockdown campaign", "officer's campaign", "field officer", "army field desk",
+    "navy writing desk", "naval desk", "expedition desk", "explorer's desk",
+    "survey expedition", "colonial expedition", "barracks desk", "shipboard desk",
+    "marine writing desk", "military desk",
+  ]);
+  const tabletopDesk = includesAny(text, [
+    "tabletop desk", "table-top desk", "tabletop writing cabinet",
+    "tabletop secrétaire", "tabletop secretaire",
+  ]);
+  const artistDesk = includesAny(text, [
+    "artist's desk", "artists desk", "drawing desk", "drafting table desk",
+    "illustrator", "tilting artist", "art table desk", "studio desk",
+  ]);
+  const laboratoryDesk = includesAny(text, [
+    "laboratory desk", "science desk", "lab work desk", "lab desk",
+    "research desk", "technician's desk", "technician desk",
+  ]);
+  const workbenchDesk = includesAny(text, [
+    "workbench desk", "workbench", "industrial work desk", "maker desk",
+    "craft workbench", "jeweler's desk", "jeweler desk", "watchmaker",
+    "precision work desk", "craftsperson", "machinist", "mechanic's desk",
+    "garage desk", "parts desk", "tool desk", "tool-storage desk", "shop desk",
+    "workshop desk", "factory desk", "maintenance desk",
+  ]);
+  if (!deskFormDominant) {
+    if (writingBoxDesk) {
+      add("Writing box", 100, "Portable case-like writing box / slope with a fitted interior (incl. lap desks).");
+    } else if (fieldDesk) {
+      add("Field desk", 100, "Portable folding/knockdown campaign or military field desk for mobile work.");
+    } else if (tabletopDesk) {
+      add("Tabletop desk", 98, "Writing cabinet/organizer meant to rest on another piece of furniture.");
+    } else if (artistDesk) {
+      add("Artist's desk", 98, "Drawing/drafting desk with an adjustable or tilting work surface.");
+    } else if (laboratoryDesk) {
+      add("Laboratory desk", 96, "Science/research/technician work desk with durable task surfaces.");
+    } else if (workbenchDesk) {
+      add("Workbench desk", 96, "Heavy utilitarian trade/workshop desk (jeweler, watchmaker, machinist, shop, factory).");
     }
   }
 
