@@ -3247,10 +3247,14 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       "executive credenza desk",
     ]) ||
     (text.includes("credenza") && includesAny(text, ["desk", "work surface", "keyboard", "office work"]));
+  // "executive l-desk" / "executive u-desk" are intentionally NOT gated here:
+  // they appear in both the executive and the L/U alias lists, and the L/U
+  // configuration is the more specific structural identity, so they fall
+  // through to the office-equipment chain below.
   const executiveDesk = includesAny(text, [
     "executive desk", "executive pedestal", "executive suite desk",
     "executive return", "desk suite", "office suite desk",
-    "executive bow-front", "managerial desk", "executive l-desk", "executive u-desk",
+    "executive bow-front", "managerial desk",
   ]);
   const kneeholeDesk = includesAny(text, [
     "kneehole desk", "knee-hole desk", "flat-top kneehole", "compact kneehole",
@@ -3282,6 +3286,50 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("Kneehole desk", 94, "Desk emphasizing a central knee opening flanked by drawers.");
     } else if (pedestalDesk) {
       add("Pedestal desk", 88, "Seated single-user desk built on drawer pedestals (incl. tanker, banker's, legal, government, industrial office desks).");
+    }
+  }
+
+  // Office-equipment / machine-support desk cluster. Per the cluster's
+  // cousin_form_contrasts: typewriter = drop-well / machine platform; computer
+  // = keyboard / monitor / tower / cable support (gaming/esports/streaming are
+  // computer-desk subtypes); modular workstation = component / panel / cubicle
+  // systems furniture; L = one return, U = wraps three sides with a bridge.
+  // Configuration (L/U) is checked before the generic computer catch so a
+  // "computer L-desk" routes to the L form. !deskFormDominant-gated for
+  // consistency with the other desk clusters.
+  const typewriterDesk = includesAny(text, [
+    "typewriter desk", "drop-well typewriter", "drop well typewriter",
+    "machine-platform typewriter", "lift-top typewriter", "secretarial typewriter",
+  ]);
+  const modularWorkstation = includesAny(text, [
+    "modular workstation", "modular office desk", "systems furniture",
+    "systems desk", "action office", "herman miller systems",
+    "steelcase systems", "panel-based workstation", "cubicle desk",
+    "cubicle workstation", "open-plan workstation", "office cubicle",
+  ]);
+  const uShapedDesk = includesAny(text, [
+    "u-shaped desk", "u-desk", "u-configuration", "bridge-and-credenza",
+  ]);
+  const lShapedDesk = includesAny(text, [
+    "l-shaped desk", "l-desk", "l-configuration", "corner l-desk",
+  ]);
+  const computerDesk = includesAny(text, [
+    "computer desk", "keyboard tray", "keyboard-tray", "monitor shelf",
+    "monitor-shelf", "tower cabinet", "tower-cabinet", "pc desk", "gaming desk",
+    "esports", "streaming desk", "rgb gaming", "multi-monitor", "laptop workstation",
+    "laptop desk", "computer workstation",
+  ]);
+  if (!deskFormDominant) {
+    if (typewriterDesk) {
+      add("Typewriter desk", 100, "Desk with a drop well, lift platform, or machine shelf sized for a typewriter.");
+    } else if (modularWorkstation) {
+      add("Modular workstation desk", 96, "Component / panel-based systems-furniture workstation or cubicle.");
+    } else if (uShapedDesk) {
+      add("U-shaped desk", 96, "Desk that wraps the user on three sides with a bridge and credenza return.");
+    } else if (lShapedDesk) {
+      add("L-shaped desk", 96, "Desk with a single perpendicular return forming an L.");
+    } else if (computerDesk) {
+      add("Computer desk", 92, "Desk with keyboard tray, monitor shelf, tower cabinet, or cable management for computer equipment (incl. gaming/streaming).");
     }
   }
 

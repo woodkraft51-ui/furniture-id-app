@@ -646,6 +646,63 @@ const KNEEHOLE_DESK_FIXTURE: Fixture = {
   },
 };
 
+// Office-equipment cluster fixtures. Typewriter must beat computer (drop-well
+// vs keyboard/monitor); an "Executive L-desk" must route to L-shaped (config
+// beats the executive tier); modular/cubicle systems are their own form.
+const TYPEWRITER_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-typewriter-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Early-20th-century secretarial typewriter desk with a spring-loaded drop-well that lifts the machine platform up to the work surface.",
+    },
+    observations: [obs("writing_surface", "Work surface beside a typewriter drop well", 80)],
+  },
+};
+const COMPUTER_GAMING_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-computer-gaming-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Black laminate multi-monitor RGB gaming desk / computer desk with a sliding keyboard tray, monitor shelf, and cable management grommets.",
+    },
+    observations: [obs("laminate_surface", "Black laminate work surface with cable grommets", 80)],
+  },
+};
+const L_SHAPED_EXECUTIVE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-l-shaped-executive-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // "Executive L-desk" is in both alias lists; the L configuration wins.
+      raw_text:
+        "Executive L-desk: a walnut-veneer office desk with a single perpendicular return forming an L-shaped configuration.",
+    },
+    observations: [obs("writing_surface", "Main work surface with one perpendicular return", 80)],
+  },
+};
+const MODULAR_CUBICLE_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-modular-cubicle-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Herman Miller Action Office panel-based cubicle workstation; modular systems-furniture desk with hang-on work surfaces and partition panels.",
+    },
+    observations: [obs("laminate_surface", "Hang-on laminate work surface on partition panels", 80)],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
@@ -660,6 +717,10 @@ const FIXTURES: Record<string, Fixture> = {
   partners_executive_desk: PARTNERS_EXECUTIVE_FIXTURE,
   pedestal_tanker_desk: PEDESTAL_TANKER_FIXTURE,
   kneehole_desk: KNEEHOLE_DESK_FIXTURE,
+  typewriter_desk: TYPEWRITER_DESK_FIXTURE,
+  computer_gaming_desk: COMPUTER_GAMING_FIXTURE,
+  l_shaped_executive_desk: L_SHAPED_EXECUTIVE_FIXTURE,
+  modular_cubicle_desk: MODULAR_CUBICLE_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,
