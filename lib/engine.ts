@@ -4069,6 +4069,82 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("Sideboard", 94, "Long dining-room service case with drawers and cupboards for linens, flatware, and serveware.");
     }
   }
+
+  // Entry / support hall-piece cluster. Twenty forms with no scoreForms
+  // detector. Ordered most-diagnostic-first with collision gates:
+  //   - the four bare-word forms (pedestal/screen/mirror/box) use ONLY
+  //     multi-word cues so they never fire on incidental words (e.g. bare
+  //     "mirror" inside a dresser/wardrobe description, or "box" inside dough
+  //     box / writing box);
+  //   - display pedestal stays narrow (sculpture/column) so plant stands and
+  //     pedestal tables keep their own emitters;
+  //   - hall tree absorbs the combo cues ("hat tree"/"coat tree"/"hall stand")
+  //     and is checked before hat rack / coat rack / umbrella stand;
+  //   - "charging valet" -> valet stand (checked before charging station).
+  //   Gated !deskFormDominant.
+  const funeralBierForm = includesAny(text, ["funeral bier", "coffin stand", "casket bier", "catafalque", "funeral stand", "bier"]);
+  const hammockStandForm = includesAny(text, ["hammock stand", "hammock frame"]);
+  const aquariumStandForm = includesAny(text, ["aquarium stand", "fish tank stand", "terrarium stand", "vivarium stand", "tank stand"]);
+  const smokingStandForm = includesAny(text, ["smoking stand", "ash stand", "tobacco stand", "pipe stand", "smoker's stand", "smokers stand", "cigarette stand", "humidor stand"]);
+  const packageStationForm = includesAny(text, ["package station", "parcel station", "package locker", "delivery locker", "parcel locker", "smart package", "package pickup"]);
+  const valetStandForm = includesAny(text, ["valet stand", "suit valet", "clothes valet", "gentleman's valet", "gentlemans valet", "dressing valet", "charging valet", "suit stand", "valet rack"]);
+  const chargingStationForm = includesAny(text, ["charging station", "charging tower", "device charging", "device tower", "usb charging", "multi-device charging", "charging dock"]);
+  const telephoneStandForm = includesAny(text, ["telephone stand", "telephone table", "telephone cabinet", "phone stand", "phone cabinet", "gossip bench", "telephone bench", "telephone seat"]);
+  const hallTreeForm = includesAny(text, ["hall tree", "hall stand", "hat tree", "coat tree", "cloak stand", "vestibule tree", "entry tree", "tree hall stand"]);
+  const umbrellaStandForm = includesAny(text, ["umbrella stand", "umbrella holder", "cane stand", "stick stand", "walking stick stand"]);
+  const hatRackForm = includesAny(text, ["hat rack", "hat stand", "hat hooks"]);
+  const coatRackForm = includesAny(text, ["coat rack", "coat hooks", "hall hooks", "entry hooks", "garment rack"]);
+  const petUtilityForm = includesAny(text, ["pet furniture", "pet feeding station", "pet crate", "dog crate cabinet", "cat feeding station", "dog feeding station", "crate furniture", "concealed crate cabinet"]);
+  const toyStorageForm = includesAny(text, ["toy storage", "toy box", "toy chest", "doll cabinet", "nursery organizer", "nursery storage", "play storage", "children's storage", "childrens storage"]);
+  const entryOrganizerForm = includesAny(text, ["entry organizer", "entryway organizer", "foyer organizer", "mudroom organizer", "shoe organizer", "shoe rack", "mail organizer", "key organizer", "entryway cubby"]);
+  const benchUtilityForm = includesAny(text, ["mudroom bench", "locker bench", "team bench", "dugout bench", "athletic bench", "utility bench", "storage bench", "entry bench"]);
+  const pedestalDisplayForm = includesAny(text, ["display pedestal", "sculpture pedestal", "sculpture stand", "statue stand", "bust stand", "display column", "display plinth", "marble pedestal", "pedestal plinth"]);
+  const mirrorForm = includesAny(text, ["cheval mirror", "floor mirror", "pier mirror", "overmantel mirror", "over-mantel mirror", "looking glass", "wall mirror", "standing mirror", "full-length mirror", "hall mirror", "trumeau mirror", "dressing mirror"]);
+  const screenForm = includesAny(text, ["folding screen", "room divider", "room screen", "dressing screen", "shoji screen", "privacy screen", "fire screen", "fireplace screen", "four-panel screen", "three-panel screen", "coromandel screen"]);
+  const boxForm = includesAny(text, ["keepsake box", "trinket box", "decorative box", "document box", "deed box", "bible box", "ballot box", "strong box", "storage box", "jewelry box", "desk box", "letter box"]);
+  if (!deskFormDominant) {
+    if (funeralBierForm) {
+      add("Funeral bier", 100, "Stand or low platform for supporting a coffin/casket (bier / catafalque).");
+    } else if (hammockStandForm) {
+      add("Hammock stand", 100, "Freestanding frame that supports a hammock without trees or posts.");
+    } else if (aquariumStandForm) {
+      add("Aquarium stand", 100, "Reinforced stand built to carry the weight of an aquarium or terrarium tank.");
+    } else if (smokingStandForm) {
+      add("Smoking stand", 100, "Small stand for tobacco, pipes, ashes, or a humidor.");
+    } else if (packageStationForm) {
+      add("Package station", 98, "Entry parcel/delivery locker or drop station for received packages.");
+    } else if (valetStandForm) {
+      add("Valet stand", 98, "Standing rack for laying out a suit, with bars/hooks for jacket, trousers, and accessories.");
+    } else if (chargingStationForm) {
+      add("Charging station", 96, "Stand or dock organizing and charging multiple devices.");
+    } else if (telephoneStandForm) {
+      add("Telephone stand", 96, "Small stand, table, or bench-and-shelf form for a telephone (gossip bench).");
+    } else if (hallTreeForm) {
+      add("Hall tree", 98, "Tall combination entry stand: hooks for coats/hats plus mirror, umbrella drip pan, and often a seat.");
+    } else if (umbrellaStandForm) {
+      add("Umbrella stand", 96, "Floor receptacle for umbrellas, canes, and walking sticks.");
+    } else if (hatRackForm) {
+      add("Hat rack", 95, "Rack or stand of pegs/hooks specifically for hats.");
+    } else if (coatRackForm) {
+      add("Coat rack", 95, "Rack or stand of hooks/pegs for hanging coats and garments in an entry.");
+    } else if (petUtilityForm) {
+      add("Pet furniture", 96, "Furniture built around a pet function (feeding station, concealed crate cabinet).");
+    } else if (toyStorageForm) {
+      add("Toy storage", 95, "Child's toy box, chest, or nursery storage organizer.");
+    } else if (entryOrganizerForm) {
+      add("Entry organizer", 94, "Entry/mudroom organizer for shoes, mail, keys, and small items (cubbies/hooks).");
+    } else if (benchUtilityForm) {
+      add("Utility bench", 94, "Utility/locker/mudroom or team bench for seating plus gear staging.");
+    } else if (pedestalDisplayForm) {
+      add("Pedestal", 94, "Vertical display pedestal/column for elevating a sculpture, bust, or decorative object.");
+    } else if (mirrorForm) {
+      add("Mirror", 95, "Standalone mirror form (cheval, pier, overmantel, wall, or looking glass).");
+    } else if (screenForm) {
+      add("Screen", 95, "Folding screen / room divider (or fire screen) used to partition or shield space.");
+    } else if (boxForm) {
+      add("Box", 94, "Small lidded box form (keepsake, document, deed, or storage box).");
+    }
+  }
  // Industrial / Toledo-style task chair
 if (
   hasAny(
