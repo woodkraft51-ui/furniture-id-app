@@ -1700,6 +1700,8 @@ function TipsList({ items }: { items?: string[] }) {
 
 type ValuationShape = {
   display?: string;
+  insufficient_evidence?: boolean;
+  note?: string;
   sellability_score?: number;
   sellability_factors?: Array<{ label: string; delta: number; category: string }>;
   sellability_clamped_note?: string | null;
@@ -1808,6 +1810,13 @@ function AppraiserReviewCTA({ triggers }: { triggers: { reason: string }[] }) {
 }
 
 function ResaleValuationSection({ valuation, formLabel }: { valuation?: ValuationShape; formLabel?: string }) {
+  if (valuation?.insufficient_evidence) {
+    return (
+      <div style={emptyText}>
+        {valuation.note || "Not enough evidence to estimate value. Re-shoot with clearer, well-lit photos for a valuation."}
+      </div>
+    );
+  }
   if (!valuation || !valuation.platform_breakdown) {
     return <div style={emptyText}>No resale valuation was returned.</div>;
   }
