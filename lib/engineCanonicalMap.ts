@@ -287,6 +287,17 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Artist's desk": "form_artists_desk",
   "Laboratory desk": "form_laboratory_desk",
   "Workbench desk": "form_workbench_desk",
+  // Convertible / repurposed cluster.
+  "Piano desk": "form_piano_desk",
+  "Organ desk": "form_organ_desk",
+  "Sewing machine desk": "form_sewing_machine_desk",
+  "Converted treadle machine desk": "form_converted_treadle_machine_desk",
+  "Telephone desk": "form_telephone_desk",
+  "Drop-leaf desk": "form_drop_leaf_desk",
+  "Gateleg desk": "form_gateleg_desk",
+  "Converted dressing table desk": "form_converted_dressing_table_desk",
+  "Converted industrial desk": "form_converted_industrial_desk",
+  "Converted cabinet desk": "form_converted_cabinet_desk",
 
   // Tables — comprehensive bare-alias routes for existing canonicals.
   // Previously a pre-existing gap: ~16 table canonicals existed in forms.ts

@@ -3396,6 +3396,16 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     }
   }
 
+  // Conversion flag: a non-desk source object repurposed AS a desk. Per the
+  // convertible cluster's cousin_form_contrasts, an explicit conversion should
+  // be classified as the converted form rather than the purpose-built cousin,
+  // so the armoire-desk and workbench-desk gates below yield to it ("converted
+  // armoire desk" -> converted_cabinet_desk; "converted workbench desk" ->
+  // converted_industrial_desk).
+  const convertedSource = includesAny(text, [
+    "converted", "conversion", "reclaimed", "repurposed", "upcycled",
+  ]);
+
   // Cabinet-integrated + architectural built-in desk clusters. Per the
   // cousin_form_contrasts: Murphy folds away / integrates with a wall-bed or
   // cabinet system; wall unit is a wall system with substantial cabinet storage
@@ -3430,7 +3440,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "hutch desk", "desk with hutch", "computer hutch", "student hutch",
     "executive hutch", "secretary hutch", "hutch top",
   ]);
-  const armoireDesk = includesAny(text, [
+  const armoireDesk = !convertedSource && includesAny(text, [
     "armoire desk", "computer armoire", "secretary armoire", "hideaway desk",
     "wardrobe desk", "cabinet workstation", "closet desk", "cabinet hideaway",
     "armoire hideaway", "concealed desk", "enclosed cabinet desk",
@@ -3483,7 +3493,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "laboratory desk", "science desk", "lab work desk", "lab desk",
     "research desk", "technician's desk", "technician desk",
   ]);
-  const workbenchDesk = includesAny(text, [
+  const workbenchDesk = !convertedSource && includesAny(text, [
     "workbench desk", "workbench", "industrial work desk", "maker desk",
     "craft workbench", "jeweler's desk", "jeweler desk", "watchmaker",
     "precision work desk", "craftsperson", "machinist", "mechanic's desk",
@@ -3503,6 +3513,81 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("Laboratory desk", 96, "Science/research/technician work desk with durable task surfaces.");
     } else if (workbenchDesk) {
       add("Workbench desk", 96, "Heavy utilitarian trade/workshop desk (jeweler, watchmaker, machinist, shop, factory).");
+    }
+  }
+
+  // Convertible / repurposed desk cluster: a source object (instrument, sewing
+  // or treadle machine, leaf table, cabinet, dressing table, industrial piece)
+  // serving desk function, plus the telephone desk. Per the cousin_form_
+  // contrasts, classify the conversion only when desk/writing function is
+  // evident; otherwise the base table/instrument form (already reachable) keeps
+  // its route. Gated on explicit conversion/desk language so a plain drop-leaf
+  // or gateleg table, or a telephone bench, is NOT pulled in here. Order keeps
+  // qualified forms ahead of the broad "converted cabinet" catch; sewing is
+  // checked before treadle so a "treadle-base sewing machine desk" routes to
+  // the sewing form. !deskFormDominant-gated.
+  const pianoDesk = includesAny(text, [
+    "piano desk", "piano conversion", "reclaimed-piano desk", "piano case desk",
+    "repurposed piano desk",
+  ]);
+  const organDesk = includesAny(text, [
+    "organ desk", "organ conversion", "pump organ desk", "reed organ desk",
+    "parlor organ desk", "organ case desk", "repurposed organ desk",
+  ]);
+  const sewingMachineDesk = includesAny(text, [
+    "sewing machine desk", "sewing cabinet desk", "singer machine conversion",
+    "singer cabinet conversion", "singer treadle conversion", "sewing cabinet conversion",
+  ]);
+  const treadleDesk = includesAny(text, [
+    "treadle base desk", "treadle machine desk", "treadle-base desk",
+    "industrial treadle base", "decorative treadle base", "treadle base conversion",
+    "repurposed treadle desk",
+  ]);
+  const telephoneDesk = includesAny(text, [
+    "telephone desk", "phone desk", "telephone table desk",
+    "directory-compartment telephone desk", "telephone stand desk",
+  ]);
+  const dropLeafDesk = includesAny(text, [
+    "drop-leaf desk", "drop leaf desk", "drop-leaf writing desk", "drop-leaf desk-table",
+    "hinged-leaf desk", "folding-leaf desk",
+  ]);
+  const gatelegDesk = includesAny(text, [
+    "gateleg desk", "gate-leg desk", "gateleg writing desk", "pivot-leg desk", "swing-leg desk",
+  ]);
+  const convertedDressingTableDesk = includesAny(text, [
+    "dressing table desk", "vanity desk", "makeup table desk", "vanity conversion desk",
+    "dressing table conversion", "converted dressing table",
+  ]);
+  const convertedIndustrialDesk = includesAny(text, [
+    "converted industrial desk", "converted workbench desk", "factory cart desk",
+    "machine base desk", "converted tool chest desk", "industrial conversion desk",
+    "reclaimed industrial desk",
+  ]);
+  const convertedCabinetDesk = includesAny(text, [
+    "converted cabinet desk", "converted armoire desk", "converted wardrobe desk",
+    "converted cupboard desk", "repurposed cabinet desk", "cabinet-to-desk conversion",
+  ]);
+  if (!deskFormDominant) {
+    if (pianoDesk) {
+      add("Piano desk", 96, "Desk converted from a piano case.");
+    } else if (organDesk) {
+      add("Organ desk", 96, "Desk converted from a pump/reed/parlor organ case.");
+    } else if (sewingMachineDesk) {
+      add("Sewing machine desk", 96, "Desk built from or as a sewing-machine cabinet (incl. Singer treadle cabinet conversions).");
+    } else if (treadleDesk) {
+      add("Converted treadle machine desk", 96, "Desk built on a reused cast-iron treadle-machine base.");
+    } else if (telephoneDesk) {
+      add("Telephone desk", 96, "Writing desk with a telephone shelf and directory storage (telephone desk, not a seated gossip bench).");
+    } else if (dropLeafDesk) {
+      add("Drop-leaf desk", 95, "Writing desk with hinged drop leaves (desk function, not a plain drop-leaf table).");
+    } else if (gatelegDesk) {
+      add("Gateleg desk", 104, "Writing desk with swinging gate-leg supports (desk function, not a plain gateleg table).");
+    } else if (convertedDressingTableDesk) {
+      add("Converted dressing table desk", 95, "Dressing table / vanity repurposed with a writing-desk function.");
+    } else if (convertedIndustrialDesk) {
+      add("Converted industrial desk", 95, "Industrial object (factory cart, machine base, tool chest) repurposed as a desk.");
+    } else if (convertedCabinetDesk) {
+      add("Converted cabinet desk", 94, "Cabinet, cupboard, wardrobe, or armoire repurposed as a desk.");
     }
   }
 
