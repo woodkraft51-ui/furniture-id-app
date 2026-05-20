@@ -3746,6 +3746,42 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Work table", 88, "Task-oriented domestic/craft work table.");
   }
 
+  // Placement / decorative table cluster. Round-up-to-dominant: specific named
+  // forms first; the generic small-auxiliary forms (occasional, then side) act
+  // as the catch tail, and parlor's Victorian cues take precedence over the
+  // generic center table. Shape forms (drum/tilt-top/piecrust) are emitted
+  // earlier and outscore these, so a "drum side table" stays a drum table.
+  if (includesAny(text, ["game table", "games table", "card table", "gaming table"])) {
+    add("Game table", 94, "Table for cards/board games, often with a folding or reversible top.");
+  } else if (includesAny(text, ["tea table"])) {
+    add("Tea table", 92, "Small table for serving tea/refreshments.");
+  } else if (includesAny(text, ["tray table", "tv tray", "folding tray"])) {
+    add("Tray table", 92, "Lightweight auxiliary table built around a tray-like top.");
+  } else if (includesAny(text, ["ottoman table", "ottoman coffee table", "cocktail ottoman", "upholstered coffee table"])) {
+    // Scored above the coffee/cocktail height forms: an ottoman-table is often
+    // also described as a "coffee table", but the upholstered hybrid is the
+    // more specific identity.
+    add("Ottoman table", 96, "Seating-zone hybrid combining an upholstered ottoman with a table top.");
+  } else if (includesAny(text, ["pier table"])) {
+    add("Pier table", 90, "Wall table placed between windows, often with a mirror plinth.");
+  } else if (includesAny(text, ["sofa table"])) {
+    add("Sofa table", 90, "Long narrow table designed to stand behind or beside a sofa.");
+  } else if (includesAny(text, ["console table", "hall console", "hall table"])) {
+    add("Console table", 90, "Narrow wall-oriented table for an entry, hall, or behind seating.");
+  } else if (includesAny(text, [
+    "parlor table", "parlour table", "marble-top parlor", "marble-top parlour",
+    "eastlake table", "aesthetic movement table", "renaissance revival parlor",
+    "rococo revival parlor", "golden oak parlor", "drawing-room table", "sitting-room table",
+  ])) {
+    add("Parlor table", 90, "Victorian decorative parlor/sitting-room table (often marble-topped).");
+  } else if (includesAny(text, ["center table", "centre table"])) {
+    add("Center table", 88, "Room-centered table for display, social setting, or reading.");
+  } else if (includesAny(text, ["occasional table", "accent table", "drink table", "martini table", "occasional stand", "accent stand"])) {
+    add("Occasional table", 88, "Small auxiliary/accent table.");
+  } else if (includesAny(text, ["side table", "end table"])) {
+    add("Side table", 88, "Small auxiliary table placed beside seating or a bed.");
+  }
+
   // Chest and storage forms
   if (clues.has("cedar_lining") || clues.has("lift_lid")) {
     add(
