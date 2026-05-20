@@ -261,6 +261,17 @@ export function attributeStyle(
       confidence = Number((confidence * 0.7).toFixed(2));
     }
 
+    // A match resting on a single DISTINCT style token is weak evidence — even
+    // when the description repeats that token. A "Baroque Revival" piece that
+    // repeats "baroque" surfaced "...Folk Baroque" at 0.82 off the lone shared
+    // word, rivaling the genuine two-token Renaissance Revival call. Cap
+    // single-token confidence at the surface floor so repetition alone can't
+    // push a lone token into leading or rivaling a multi-token attribution; it
+    // still surfaces as a subordinate alternative.
+    if (matched.length === 1) {
+      confidence = Math.min(confidence, SINGLE_TOKEN_CONFIDENCE_FLOOR);
+    }
+
     // Block 10a: soft confidence floor. Single-token matches must be
     // high-confidence (deep token match, dominant family); multi-token can
     // pass at lower floor.
