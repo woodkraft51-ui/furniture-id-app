@@ -956,8 +956,28 @@ const HEDGED_DOVETAIL_DESK_FIXTURE: Fixture = {
   },
 };
 
+// Desk whose drawer-bottom description contains the word "seated" ("panel
+// seated in the drawer frame"). Substring matching used to fire on "seat" and
+// derive phantom seating_surface / seating_present clues on this non-seating
+// form; word-boundary matching should now leave them out.
+const DESK_SEATED_DRAWER_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-desk-seated-drawer" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk; open drawer view shows the drawer bottom as a single flat panel seated in the drawer frame" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drawer_present", "One full-width drawer below the fall front", 68),
+      obs("drawer_bottom_construction", "Open drawer view shows the drawer bottom as a single flat panel seated in the drawer frame", 45),
+      obs("solid_wood_construction", "Solid wood case and drawer sides", 85),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,
   hedged_dovetail_desk: HEDGED_DOVETAIL_DESK_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
