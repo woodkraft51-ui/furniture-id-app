@@ -526,12 +526,74 @@ const CYLINDER_DESK_CONTROL_FIXTURE: Fixture = {
   },
 };
 
+// Institutional / public-task desk cluster fixtures. Each gates on its
+// authored distinctive language; the chain must keep cousins separate
+// (clerk's vs standing; school vs teacher's; reception vs transaction).
+const SCHOOL_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-school-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "oak", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Cast-iron and oak one-room schoolhouse desk; lift-lid school desk with an attached-seat sled base and a tablet-arm writing surface.",
+    },
+    observations: [obs("writing_surface", "Hinged lift-lid student writing surface", 80)],
+  },
+};
+const CLERK_VS_STANDING_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-clerks-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // "standing ledger desk" deliberately mixes posture + occupational
+      // language; the chain must pick clerk's (occupational wins).
+      raw_text:
+        "Tall sloped standing ledger desk from a counting-house; high bookkeeper's desk with a slanted ledger surface used with a stool.",
+    },
+    observations: [obs("writing_surface", "Sloped ledger writing surface", 80)],
+  },
+};
+const RECEPTION_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-reception-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Hotel lobby reception desk / front desk with a raised transaction counter and concierge check-in station.",
+    },
+    observations: [obs("writing_surface", "Raised counter work surface", 78)],
+  },
+};
+const TRANSACTION_COUNTER_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-transaction-counter-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Bank teller counter desk / cashier checkout station with a transaction surface and register well.",
+    },
+    observations: [obs("writing_surface", "Teller transaction surface", 78)],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
   tambour_desk: TAMBOUR_DESK_FIXTURE,
   wooton_desk: WOOTON_DESK_FIXTURE,
   cylinder_desk_control: CYLINDER_DESK_CONTROL_FIXTURE,
+  school_desk: SCHOOL_DESK_FIXTURE,
+  clerks_desk: CLERK_VS_STANDING_FIXTURE,
+  reception_desk: RECEPTION_DESK_FIXTURE,
+  transaction_counter_desk: TRANSACTION_COUNTER_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,

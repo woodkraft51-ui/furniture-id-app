@@ -3140,6 +3140,78 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Tambour desk", 100, "Sliding tambour closure over a fitted writing interior.");
   }
 
+  // Institutional / public-task desk cluster.
+  // These seven forms share identical group-level distinguishing_features, so
+  // discrimination is driven by each form's authored common_aliases and the
+  // cluster's cousin_form_contrasts: clerk's = occupational (ledger / counting-
+  // house) vs. standing = posture/height-based; school = student + classroom
+  // hardware vs. teacher's = schoolmaster/instructor; reception = greeting /
+  // check-in vs. transaction counter = exchange / payment / service. Evaluated
+  // as a single priority chain (one institutional identity per piece, per the
+  // round-up discipline): strong distinctive terms first, with the generic
+  // "counter desk" / "service desk" left as the transaction-counter catch
+  // since those aliases live on form_transaction_counter_desk.
+  const instSchool = includesAny(text, [
+    "school desk", "student desk", "schoolhouse", "schoolchild", "pupil desk",
+    "attached-seat", "attached seat school", "sled-base", "lift-lid school",
+    "tablet-arm desk", "tablet arm desk", "classroom desk", "combo desk",
+    "one-room schoolhouse", "dorm desk", "homework desk",
+  ]);
+  const instTeacher = includesAny(text, [
+    "teacher's desk", "teachers desk", "teacher desk", "schoolmaster",
+    "schoolmistress", "instructor's desk", "instructor desk", "classroom pedestal",
+  ]);
+  const instLectern = includesAny(text, [
+    "lectern", "writing lectern", "ecclesiastical desk", "vestry desk",
+    "sacristy desk", "scriptorium", "manuscript desk", "monastic writing",
+    "monk's writing", "registry desk", "sign-in desk", "guest book desk",
+    "guestbook desk", "marriage registry", "reading slope",
+  ]);
+  const instTransactionStrong = includesAny(text, [
+    "teller", "cashier", "checkout desk", "register desk", "point of sale",
+    "sales counter", "host stand", "maître d", "maitre d", "help desk",
+    "support desk", "information desk", "returns desk", "customer service desk",
+  ]);
+  const instReception = includesAny(text, [
+    "reception desk", "reception counter", "front desk", "check-in desk",
+    "check in desk", "concierge", "nurse station", "nurses station",
+    "security desk", "guard desk", "lobby security", "checkpoint desk",
+    "welcome desk",
+  ]);
+  const instClerk = includesAny(text, [
+    "clerk's desk", "clerks desk", "counting-house", "counting house",
+    "ledger desk", "bookkeeper", "accountant's desk", "accountant desk",
+    "mail-sorting", "mail sorting desk", "sorting desk", "postal desk",
+    "post office clerk", "bank clerk", "store clerk",
+  ]);
+  const instStanding = includesAny(text, [
+    "standing desk", "stand-up desk", "sit-stand", "sit stand",
+    "height-adjustable desk", "height adjustable desk", "crank-adjustable desk",
+    "electric height", "adjustable standing", "high writing desk",
+    "high office desk", "wheelchair-accessible desk",
+  ]);
+  const instTransactionGeneric = includesAny(text, [
+    "transaction desk", "counter desk", "service desk", "order desk",
+    "catalog order", "showroom desk", "retail desk",
+  ]);
+  if (instSchool) {
+    add("School desk", 105, "Student/classroom desk with institutional hardware (attached seat, lift-lid, or tablet arm).");
+  } else if (instTeacher) {
+    add("Teacher's desk", 102, "Classroom instructor's desk (schoolmaster/teacher form).");
+  } else if (instLectern) {
+    add("Lectern desk", 100, "Sloped reading/writing lectern or registry desk.");
+  } else if (instTransactionStrong) {
+    add("Transaction counter desk", 100, "Public-facing counter prioritizing exchange, payment, or service (teller, cashier, checkout, or help desk).");
+  } else if (instReception) {
+    add("Reception desk", 98, "Greeting / check-in counter (front desk, concierge, or reception station).");
+  } else if (instClerk) {
+    add("Clerk's desk", 100, "Occupational ledger / counting-house desk (bookkeeper, accountant, or sorting clerk).");
+  } else if (instStanding) {
+    add("Standing desk", 95, "Stand-height or sit-stand / height-adjustable work desk (posture-based form).");
+  } else if (instTransactionGeneric) {
+    add("Transaction counter desk", 92, "Service / counter desk for public transactions.");
+  }
+
   // Table forms
   if (clues.has("drop_leaf_hinged")) add("Drop-leaf table", 90, "Drop-leaf construction is visible.");
   if (clues.has("gateleg_support")) add("Gateleg table", 100, "Gate-leg support is visible.");
