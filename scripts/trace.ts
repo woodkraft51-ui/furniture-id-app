@@ -703,6 +703,53 @@ const MODULAR_CUBICLE_FIXTURE: Fixture = {
   },
 };
 
+// Fall/slope-front + open writing-surface cluster fixtures.
+const mkDesk = (id: string, wood: string, raw_text: string, ob = "writing_surface", obDesc = "Writing surface"): Fixture => ({
+  caseData: { id: `trace-fixture-${id}` },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: wood, user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text },
+    observations: [obs(ob, obDesc, 80)],
+  },
+});
+// Escritoire must beat the generic drop-front Secretary route (cabinet-like
+// fall-front, no bookcase) — deskFormDominant suppresses the Secretary emit.
+const ESCRITOIRE_FIXTURE = mkDesk("escritoire", "oak",
+  "Cabinet escritoire: a tall cabinet-like fall-front writing desk with a vertical fall lid over a fitted pigeonhole interior, no bookcase top.",
+  "pigeonholes", "Fitted pigeonhole interior behind the fall");
+const ABATTANT_FIXTURE = mkDesk("abattant", "mahogany",
+  "Secrétaire à abattant: a tall French cabinet desk with a flat vertical fall front that drops to form the writing surface over interior drawers.",
+  "pigeonholes", "Interior drawers and pigeonholes behind the abattant fall");
+const GRADINS_FIXTURE = mkDesk("gradins", "walnut",
+  "Bureau à gradins: a writing desk with a stepped tiered superstructure of small drawers (gradins) and a gallery across the back of the work surface.");
+// Control: a true bookcase-topped drop-front secretary must STILL route to the
+// Secretary form (no fall-front-family term present).
+const SECRETARY_DROP_FRONT_CONTROL_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-secretary-drop-front-control" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "mahogany", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Drop-front secretary desk with a glazed bookcase top over a slant writing surface and a chest of drawers below.",
+    },
+    observations: [
+      obs("drop_front_desk", "Hinged drop-front writing surface", 88),
+      obs("pigeonholes", "Interior pigeonholes", 78),
+    ],
+  },
+};
+const BONHEUR_FIXTURE = mkDesk("bonheur-du-jour", "satinwood",
+  "Bonheur du jour: a small ladies' writing table with a raised cabinet superstructure of small drawers and a leather-inset writing slide.");
+const CARLTON_FIXTURE = mkDesk("carlton-house", "mahogany",
+  "Carlton House desk: a writing desk with a curved-back bank of small drawers and pigeonholes wrapping a U-shaped leather-topped writing surface.");
+const BUREAU_PLAT_FIXTURE = mkDesk("bureau-plat", "mahogany",
+  "Bureau plat: a flat-top French writing table / formal writing desk with a leather-inset open work surface and three frieze drawers, gilt-bronze mounts.");
+const KIDNEY_FIXTURE = mkDesk("kidney", "walnut",
+  "Victorian kidney desk: a kidney-shaped writing desk with a leather top and curved drawer pedestals.");
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   roll_top_desk: ROLL_TOP_DESK_FIXTURE,
@@ -721,6 +768,14 @@ const FIXTURES: Record<string, Fixture> = {
   computer_gaming_desk: COMPUTER_GAMING_FIXTURE,
   l_shaped_executive_desk: L_SHAPED_EXECUTIVE_FIXTURE,
   modular_cubicle_desk: MODULAR_CUBICLE_FIXTURE,
+  escritoire_desk: ESCRITOIRE_FIXTURE,
+  abattant_desk: ABATTANT_FIXTURE,
+  gradins_desk: GRADINS_FIXTURE,
+  secretary_drop_front_control: SECRETARY_DROP_FRONT_CONTROL_FIXTURE,
+  bonheur_du_jour_desk: BONHEUR_FIXTURE,
+  carlton_house_desk: CARLTON_FIXTURE,
+  bureau_plat_desk: BUREAU_PLAT_FIXTURE,
+  kidney_desk: KIDNEY_FIXTURE,
   roos_cedar_chest: ROOS_CEDAR_CHEST_FIXTURE,
   eastlake_dresser: EASTLAKE_DRESSER_FIXTURE,
   plywood_federal_repro: PLYWOOD_FEDERAL_REPRO_FIXTURE,

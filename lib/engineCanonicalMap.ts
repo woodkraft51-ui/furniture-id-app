@@ -263,6 +263,16 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "U-shaped desk": "form_u_shaped_desk",
   "L-shaped desk": "form_l_shaped_desk",
   "Computer desk": "form_computer_desk",
+  // Fall/slope-front writing-desk family.
+  "Secrétaire à abattant": "form_secretaire_a_abattant",
+  "Bureau à gradins": "form_bureau_a_gradins",
+  "Escritoire": "form_escritoire",
+  "Fall-front desk": "form_fall_front_desk",
+  // Open writing-surface cluster.
+  "Bonheur du jour": "form_bonheur_du_jour",
+  "Carlton House desk": "form_carlton_house_desk",
+  "Bureau plat": "form_bureau_plat",
+  "Kidney desk": "form_kidney_desk",
 
   // Tables — comprehensive bare-alias routes for existing canonicals.
   // Previously a pre-existing gap: ~16 table canonicals existed in forms.ts

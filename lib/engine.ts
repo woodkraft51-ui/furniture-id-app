@@ -3119,7 +3119,31 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     !rollTopCover &&
     includesAny(text, ["tambour"]);
   const coverClusterActive = wootonNamed || rollTopCover || tambourCover;
-  const deskFormDominant = cylinderActive || slantActive || coverClusterActive;
+  // Fall/slope-front writing-desk family (vertical or hinged fall front; cousins
+  // of the slant-front and bookcase-topped secretary). Per fall_front_desk's
+  // cousin_form_contrasts: secretary combines a desk WITH bookcase/chest storage;
+  // escritoire is more cabinet-like (no bookcase); secrétaire à abattant is a
+  // tall French cabinet with a vertical fall; bureau à gradins adds desk-born
+  // tiers/galleries (vs. a hutch desk's larger upper storage). Folded into
+  // deskFormDominant so a specifically-named fall-front identity suppresses the
+  // generic drop-front/pigeonhole Secretary emission (those are sub-features
+  // here). Bare "drop-front" is intentionally left to the Secretary route as
+  // the broad round-up identity for the American market.
+  const abattantDesk = includesAny(text, [
+    "secrétaire à abattant", "secretaire a abattant", "abattant",
+    "tall fall-front secretary", "drop-front cabinet secretary", "french fall-front cabinet",
+  ]);
+  const gradinsDesk = includesAny(text, [
+    "bureau à gradins", "bureau a gradins", "gradins",
+    "writing desk with superstructure", "gallery writing desk", "tiered writing desk",
+  ]);
+  const escritoireDesk = includesAny(text, ["escritoire"]);
+  const fallFrontDesk = includesAny(text, [
+    "fall-front", "fall front", "fall-lid", "fall lid",
+    "folding-front", "wall-mounted fall-front", "compact fall-front",
+  ]);
+  const fallFrontFamilyActive = abattantDesk || gradinsDesk || escritoireDesk || fallFrontDesk;
+  const deskFormDominant = cylinderActive || slantActive || coverClusterActive || fallFrontFamilyActive;
   if (clues.has("drop_front_desk") && !deskFormDominant) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
   if (clues.has("pigeonholes") && !deskFormDominant) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
   if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
@@ -3138,6 +3162,16 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     add("Roll-top desk", 110, "Flexible slatted (S-roll/C-roll) rolling cover over a fitted writing interior.");
   } else if (tambourCover) {
     add("Tambour desk", 100, "Sliding tambour closure over a fitted writing interior.");
+  }
+  // Fall/slope-front family emit (most specific French cabinet forms first).
+  if (abattantDesk) {
+    add("Secrétaire à abattant", 105, "Tall French cabinet desk with a vertical fall front over a fitted interior.");
+  } else if (gradinsDesk) {
+    add("Bureau à gradins", 102, "Writing desk with a stepped superstructure of small drawers or a gallery.");
+  } else if (escritoireDesk) {
+    add("Escritoire", 100, "Cabinet-like fall-front writing desk without a bookcase top.");
+  } else if (fallFrontDesk) {
+    add("Fall-front desk", 98, "Hinged vertical fall-front writing surface over a fitted interior.");
   }
 
   // Institutional / public-task desk cluster.
@@ -3330,6 +3364,33 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("L-shaped desk", 96, "Desk with a single perpendicular return forming an L.");
     } else if (computerDesk) {
       add("Computer desk", 92, "Desk with keyboard tray, monitor shelf, tower cabinet, or cable management for computer equipment (incl. gaming/streaming).");
+    }
+  }
+
+  // Open writing-surface desk cluster: writing surface visible when not in use,
+  // no enclosing cover (distinct from the fall-front / cover families above).
+  // Distinctive named forms with little cross-overlap. !deskFormDominant-gated.
+  const bonheurDuJour = includesAny(text, [
+    "bonheur du jour", "bonheur-du-jour", "writing table with cabinet",
+    "cabinet writing table", "small secretary table",
+  ]);
+  const carltonHouse = includesAny(text, ["carlton house", "curved-back writing desk"]);
+  const bureauPlat = includesAny(text, [
+    "bureau plat", "flat-top writing desk", "formal writing table", "french writing table",
+  ]);
+  const kidneyDesk = includesAny(text, [
+    "kidney desk", "kidney-shaped writing", "kidney shaped writing",
+    "ladies' kidney", "leather-top kidney",
+  ]);
+  if (!deskFormDominant) {
+    if (bonheurDuJour) {
+      add("Bonheur du jour", 100, "Small ladies' writing table with a raised cabinet superstructure.");
+    } else if (carltonHouse) {
+      add("Carlton House desk", 100, "Writing desk with a curved bank of drawers and pigeonholes wrapping a U-shaped top.");
+    } else if (bureauPlat) {
+      add("Bureau plat", 98, "Flat-top French writing table/desk with an open work surface.");
+    } else if (kidneyDesk) {
+      add("Kidney desk", 98, "Kidney/curved-outline writing desk, usually leather-topped.");
     }
   }
 
