@@ -55,6 +55,16 @@ const STOP_TOKENS = new Set([
   "type", "types", "form", "forms",
   "wood", "wooden", "metal", "fabric",
   "general", "generic", "classic",
+  // Furniture FORM words. These are object categories, not style signals, but
+  // they leak into family token indexes via multi-word aliases (e.g. Louis XVI
+  // carries "parquetry French desk" / "French cylinder desk", indexing the bare
+  // token "desk"). A secretary *desk* then false-matches Louis XVI. Stopping
+  // form words keeps style attribution keyed on style vocabulary, not the kind
+  // of object being looked at.
+  "desk", "secretary", "secretaire", "table", "chair", "cabinet", "chest",
+  "dresser", "commode", "bench", "stand", "sofa", "settee", "bed", "bookcase",
+  "sideboard", "wardrobe", "armoire", "bureau", "cupboard", "stool", "vitrine",
+  "credenza", "console", "mirror", "clock",
 ]);
 
 type FamilyIndex = {
@@ -217,6 +227,12 @@ export function attributeStyle(
   }
 
   const results: StyleAttribution[] = [];
+  // Raw weighted score per family — used only as a tiebreak below. baseConf
+  // saturates at 1.0 (→ conf ceiling ~0.82 at authority 0.4), so a family the
+  // appraiser emphasized heavily (e.g. "biedermeier" ×8) can tie an incidental
+  // single-token match ("rococo" off a hardware backplate). On equal
+  // confidence the stronger raw signal should take the label.
+  const rawScoreById = new Map<string, number>();
   for (const { family, tokens } of getIndex()) {
     const matched: string[] = [];
     let weightedScore = 0;
@@ -254,6 +270,7 @@ export function attributeStyle(
     if (confidence < requiredFloor) continue;
 
     const { date_floor, date_ceiling } = periodEnvelope(family);
+    rawScoreById.set(family.id, weightedScore);
     results.push({
       style_family_id: family.id,
       name: family.name,
@@ -264,7 +281,11 @@ export function attributeStyle(
     });
   }
 
-  return results.sort((a, b) => b.confidence - a.confidence);
+  return results.sort((a, b) => {
+    if (b.confidence !== a.confidence) return b.confidence - a.confidence;
+    // Tiebreak: stronger raw signal wins (see rawScoreById above).
+    return (rawScoreById.get(b.style_family_id) ?? 0) - (rawScoreById.get(a.style_family_id) ?? 0);
+  });
 }
 
 // ── Block 9: Controlled style-supporting evidence ───────────────────────

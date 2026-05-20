@@ -140,7 +140,29 @@ export function refineDatingFromConvergence(
     });
   if (qualifying.length === 0) return fallback;
 
-  const best = qualifying[0];
+  let best = qualifying[0];
+
+  // Synthetic-intersection containment. A synthetic style intersection zone
+  // (authority_sum ≥ FLOOR, injected from two style families'/waves' production
+  // windows agreeing) is given dominating authority so it can refine a genuine
+  // transitional reading. But a COINCIDENTAL overlap of two revival waves must
+  // not OVERRIDE genuine construction/material evidence that points elsewhere —
+  // e.g. two revival waves intersecting c. 1900–1910 should not outvote a
+  // wood + finish + style convergence at c. 1815–1860 on a piece with thick
+  // hand-sawn veneer. When the top zone is synthetic but a genuine multi-layer
+  // evidence zone exists that does NOT overlap it, the real evidence wins. When
+  // they DO overlap, the piece really does sit in the intersection window and
+  // the synthetic refinement is kept.
+  const isSynthetic = (z: ConvergenceZone) =>
+    z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR;
+  const overlapsZone = (a: ConvergenceZone, b: ConvergenceZone) =>
+    a.date_ceiling >= b.date_floor && b.date_ceiling >= a.date_floor;
+  if (isSynthetic(best)) {
+    const genuineDisjoint = qualifying.find(
+      (z) => !isSynthetic(z) && z.layer_count >= 3 && !overlapsZone(z, best)
+    );
+    if (genuineDisjoint) best = genuineDisjoint;
+  }
 
   // Hard-negative post-floor enforcement. Open-ended post-YYYY layer
   // envelopes (e.g., phillips_screw post-1935, plywood_drawer_bottom
