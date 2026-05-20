@@ -954,9 +954,78 @@ const DESK_INSECT_DAMAGE_FIXTURE: Fixture = {
   },
 };
 
+// Slant-front desk whose drawer-corner dovetails were emitted by the LLM as
+// BOTH hand_cut_dovetails ("pre-1860") and machine_dovetails ("post-1860") —
+// a hedge of the same feature. Those contradictory directional bounds used to
+// collapse the joinery layer to a degenerate "1860-1860" band; it should now be
+// ambiguous/undated.
+const HEDGED_DOVETAIL_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-hedged-dovetail-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk, fitted pigeonhole interior, one drawer, drawer-corner dovetails ambiguous between hand-cut and early machine" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drawer_present", "One full-width exterior drawer below the fall front", 68),
+      obs("hand_cut_dovetails", "Through-dovetails with slight spacing variation and visible scribe lines; classification preferred as hand-cut given asymmetry", 72),
+      obs("machine_dovetails", "Alternative reading: spacing is fairly regular and could indicate early machine-cut dovetails (post-1880); emitted as low-confidence alternative", 35),
+      obs("solid_wood_construction", "Case sides and drawer sides read as solid wood", 84),
+    ],
+  },
+};
+
+// Desk whose drawer-bottom description contains the word "seated" ("panel
+// seated in the drawer frame"). Substring matching used to fire on "seat" and
+// derive phantom seating_surface / seating_present clues on this non-seating
+// form; word-boundary matching should now leave them out.
+const DESK_SEATED_DRAWER_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-desk-seated-drawer" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "joinery_closeup" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk; open drawer view shows the drawer bottom as a single flat panel seated in the drawer frame" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drawer_present", "One full-width drawer below the fall front", 68),
+      obs("drawer_bottom_construction", "Open drawer view shows the drawer bottom as a single flat panel seated in the drawer frame", 45),
+      obs("solid_wood_construction", "Solid wood case and drawer sides", 85),
+    ],
+  },
+};
+
+// Slant-front desk with Queen Anne-influenced legs + Colonial Revival cues and
+// NO numeric construction anchor (undated). The reconciliation used to default
+// to the original 18th-c. "Queen Anne" label; with revival cues present and no
+// dating, it should default to the revival reading ("Colonial Revival Queen Anne").
+const QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-queen-anne-revival-no-dating" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: { ...BASE_INTAKE, primary_wood_guess: "walnut", user_category_guess: "desk" },
+  perceptionStub: {
+    perception: { ...BASE_PERCEPTION, raw_text: "Slant-front desk, Queen Anne-influenced turned legs, scrolled apron, ring pulls, Colonial Revival vocabulary" },
+    observations: [
+      obs("slant_front", "Angled hinged writing flap (fall front) clearly visible", 68),
+      obs("drop_front_desk", "Fall opens to a writing surface with pigeonhole interior", 68),
+      obs("pigeonholes", "Fitted pigeonhole interior", 68),
+      obs("drawer_present", "One full-width drawer below the fall front", 68),
+      obs("vertical_supports", "Front legs turned with vase-and-ring profile, pad/club feet, Queen Anne-influenced", 82),
+      obs("scrolled_apron", "Scrolled cyma-curved apron brackets at the leg junction", 82),
+      obs("hand_cut_dovetails", "Through-dovetails with slight irregularity consistent with hand-cut work", 82),
+      obs("solid_wood_construction", "Solid wood case and drawer sides", 85),
+      obs("ring_pull", "Brass ring pulls on the drawer, consistent with Colonial Revival ring pulls c. 1890-1940", 45),
+      obs("lock_escutcheons", "Fall-front lock plate", 62),
+      obs("colonial_revival_style_cues", "Turned legs, scrolled apron, ring pulls, cornice molding consistent with Colonial Revival production interpreting earlier Queen Anne forms", 52),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
+  desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,
+  queen_anne_revival_no_dating: QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE,
+  hedged_dovetail_desk: HEDGED_DOVETAIL_DESK_FIXTURE,
   victorian_chair_pegged_dowel: VICTORIAN_CHAIR_PEGGED_DOWEL_FIXTURE,
   rr_barley_twist: RR_BARLEY_TWIST_FIXTURE,
   eastlake_negations: EASTLAKE_NEGATION_FIXTURE,

@@ -163,6 +163,15 @@ export function reconcileFinalStyle(input: {
    * and we fall through to reproduction framing. Absent such a marker, a date
    * modestly past the ceiling reads as genuine late-period production. */
   hasModernHardNegative?: boolean;
+  /** True when revival-style cues are present — a Revival-family alternative
+   * attribution, or a clue key containing "revival" (e.g.
+   * colonial_revival_style_cues, queen_anne_revival_pattern). Used by the
+   * no-dating fallback to default an original-period attribution to its
+   * revival reading instead of claiming an original 18th/early-19th-c. piece. */
+  hasRevivalCues?: boolean;
+  /** Preferred revival label (e.g. "Colonial Revival") when hasRevivalCues is
+   * set; falls back to "<Original> Revival" when null. */
+  revivalLabelHint?: string | null;
 }): FinalStyleReconciliation {
   const {
     styleAttribution,
@@ -174,6 +183,8 @@ export function reconcileFinalStyle(input: {
     eraContext,
     hasImpossiblePair,
     hasModernHardNegative = false,
+    hasRevivalCues = false,
+    revivalLabelHint = null,
   } = input;
 
   // Fix B (original-over-revival): when the final dating FLOOR sits within the
@@ -384,6 +395,31 @@ export function reconcileFinalStyle(input: {
       final_style_label: `${eraContext} market production`,
       kind: "era_only",
       final_style_reason: `No style-family attribution; piece carries ${eraContext} vernacular dating/material/market-era markers (wood species, finish, cut pattern, factory hardware). ${eraContext} is a production-era anchor, not a style — pieces from this era may be in any of several actual styles (Eastlake, Mission, Colonial Revival, etc.) or have no specific style language. The era marker contributes to dating via the wood-evidence layer.`,
+    };
+  }
+
+  // Rule 8 (revival-inferred): final dating is unavailable, the attribution is
+  // an ORIGINAL pre-revival style (ceiling <= 1850: Queen Anne, Chippendale,
+  // Federal, Empire, etc.), and revival-style cues are present. With no dating
+  // to confirm a genuine 18th/early-19th-c. piece and explicit revival
+  // vocabulary on the object, default to the REVIVAL reading rather than
+  // claiming the original period. (When dating IS available, Rules 3/4 already
+  // resolve revival-vs-original correctly; this only governs the no-dating
+  // case, where the prior behavior defaulted to the original-period label.)
+  if (
+    styleAttribution &&
+    hasRevivalCues &&
+    styleAttribution.date_ceiling != null &&
+    styleAttribution.date_ceiling <= 1850
+  ) {
+    const softName = softenAcademicLabel(styleAttribution.name);
+    const revivalLabel = revivalLabelHint
+      ? `${revivalLabelHint} ${softName}`
+      : `${softName} Revival`;
+    return {
+      final_style_label: revivalLabel,
+      kind: "revival_wave",
+      final_style_reason: `Original-period dating for ${softName} (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}) is not supported by the evidence, and revival-style cues are present — this reads as ${revivalLabel} (revival-era production), not an original-period piece. Underside, back, or maker's-mark evidence would confirm the production date.`,
     };
   }
 
