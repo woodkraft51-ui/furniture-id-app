@@ -3961,7 +3961,10 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     "nightstand", "night stand", "bedside table", "bedside cabinet", "bedside chest",
     "night table", "night cabinet", "bed table",
   ]);
-  const dresserExclude = includesAny(text, ["welsh dresser", "welsh-dresser", "kitchen dresser", "pewter dresser"]);
+  const dresserExclude = includesAny(text, [
+    "welsh dresser", "welsh-dresser", "kitchen dresser", "pewter dresser",
+    "country dresser", "pine dresser", "farmhouse dresser", "plate rack dresser",
+  ]);
   const dresserForm = !dresserExclude && includesAny(text, [
     "dresser", "bedroom bureau", "bureau dresser", "double dresser", "triple dresser",
     "low dresser", "drawer dresser", "mirrored dresser", "dresser with mirror",
@@ -3991,6 +3994,79 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("Dresser", 96, "Width-dominant bedroom drawer case for grooming/dressing (often with mirror), distinct from a taller single-column chest of drawers.");
     } else if (lowChestForm) {
       add("Low chest", 95, "Low/short chest of drawers (bachelor's or bedside scale).");
+    }
+  }
+
+  // Dining / display service-storage cluster. Twelve forms had canonical
+  // content and (mostly) routes but no scoreForms detector, so china cabinets,
+  // sideboards, buffets, hutches, etc. fell to generic "Cabinet" (35) ->
+  // form_china_cabinet. Ordered most-diagnostic-first with collision gates:
+  //   - corner geometry outranks hutch/china/curio structure;
+  //   - "open hutch"/"kitchen dresser"/"country dresser" -> Welsh dresser (open
+  //     plate-rack), checked before hutch;
+  //   - "china hutch"/"buffet hutch" -> Hutch (not china/buffet), so hutch is
+  //     checked before china cabinet and buffet;
+  //   - "standing/hall sideboard" -> Huntboard, checked before sideboard;
+  //   - credenza-storage vs credenza DESK and hutch vs hutch DESK reuse the
+  //     desk-section consts (credenzaDesk / hutchDesk) so desks stay desks;
+  //   - all gated !deskFormDominant. Sideboard is the most generic service case
+  //     and is checked last.
+  const cellaretteForm = includesAny(text, [
+    "cellarette", "cellaret", "wine cooler", "bottle case", "decanter case",
+    "tantalus", "liquor cabinet", "chest-form cellarette",
+  ]);
+  const breakfrontForm = includesAny(text, ["breakfront", "break-front", "broken-front", "broken front"]);
+  const cornerCabinetForm = includesAny(text, [
+    "corner cabinet", "corner cupboard", "corner china cabinet", "corner hutch",
+    "corner display cabinet", "corner curio", "built-in corner cupboard",
+    "hanging corner cupboard", "pie-shaped cabinet", "pie-shaped corner",
+  ]);
+  const welshDresserForm = includesAny(text, [
+    "welsh dresser", "welsh-dresser", "kitchen dresser", "country dresser",
+    "pewter cupboard", "plate rack dresser", "pine dresser", "open hutch", "farmhouse dresser",
+  ]);
+  const huntboardForm = includesAny(text, [
+    "huntboard", "hunt board", "hunting board", "southern huntboard",
+    "standing sideboard", "hall sideboard",
+  ]);
+  const credenzaStorageForm = !credenzaDesk && includesAny(text, [
+    "credenza", "sideboard credenza", "media credenza", "mid-century credenza",
+    "mid century credenza", "mcm credenza", "storage credenza", "floating credenza",
+  ]);
+  const hutchForm = !hutchDesk && !includesAny(text, ["step-back", "stepback"]) && includesAny(text, [
+    "hutch", "china hutch", "dining hutch", "kitchen hutch", "buffet hutch",
+    "buffet and hutch", "country hutch", "display hutch", "cupboard hutch",
+  ]);
+  const chinaCabinetForm = includesAny(text, ["china cabinet", "china closet", "china display"]);
+  const curioForm = includesAny(text, ["curio cabinet", "curio"]);
+  const buffetForm = includesAny(text, ["buffet", "dining cabinet"]);
+  const serverForm = includesAny(text, ["serving table", "serving board", "serving cabinet", "dining server"]) || /\bserver\b/.test(text);
+  const sideboardForm = text.includes("sideboard");
+  if (!deskFormDominant) {
+    if (cellaretteForm) {
+      add("Cellarette", 100, "Small lidded or cased liquor- and bottle-storage form (wine cooler / tantalus).");
+    } else if (breakfrontForm) {
+      add("Breakfront", 98, "Large cabinet/bookcase whose center section projects forward of the flanking sections.");
+    } else if (cornerCabinetForm) {
+      add("Corner cabinet", 98, "Triangular cabinet/cupboard built to stand in a room corner (corner geometry outranks hutch/china structure).");
+    } else if (welshDresserForm) {
+      add("Welsh dresser", 98, "Country dresser with an OPEN plate-rack upper over a base of drawers and cupboards.");
+    } else if (huntboardForm) {
+      add("Huntboard", 96, "Tall stand-up-height Southern sideboard-family service case.");
+    } else if (credenzaStorageForm) {
+      add("Credenza", 95, "Long low storage case for dining/living/office service (no work surface — distinct from a credenza desk).");
+    } else if (hutchForm) {
+      add("Hutch", 95, "Two-part dining case: an enclosed or glazed display upper over a service-storage base.");
+    } else if (chinaCabinetForm) {
+      add("China cabinet", 96, "Glazed dining-room cabinet for displaying and storing china and serveware.");
+    } else if (curioForm) {
+      add("Curio cabinet", 96, "Display-dominant glazed cabinet for collectibles and decorative objects.");
+    } else if (buffetForm) {
+      add("Buffet", 94, "Long low dining-room serving/storage cabinet (sideboard family; retail 'buffet').");
+    } else if (serverForm) {
+      add("Server", 94, "Smaller auxiliary dining serving cabinet/table for staging food and serveware.");
+    } else if (sideboardForm) {
+      add("Sideboard", 94, "Long dining-room service case with drawers and cupboards for linens, flatware, and serveware.");
     }
   }
  // Industrial / Toledo-style task chair

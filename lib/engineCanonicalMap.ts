@@ -1146,6 +1146,13 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // for open-rack dressers") this is flagged as a misuse; the alias is
   // routed to form_hutch (above) where the dominant retail use sits.
 
+  // Sideboard-family service cases + china cabinet (scoreForms detectors added
+  // with the dining/display cluster; previously these fell to generic
+  // "Cabinet" -> form_china_cabinet).
+  "Sideboard": "form_sideboard",
+  "Buffet": "form_buffet",
+  "Server": "form_server",
+  "China cabinet": "form_china_cabinet",
   "Curio": "form_curio_cabinet",
   "Curio cabinet": "form_curio_cabinet",
   "Vitrine": "form_curio_cabinet", // subtype_curio_cabinet_vitrine (no separate vitrine canonical yet)
