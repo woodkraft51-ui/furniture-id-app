@@ -5875,6 +5875,19 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
 
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
   const textHas = (...words: string[]) => words.some((w) => text.includes(w));
+  // Negation-aware variant for condition dampeners. A sentence led by "no /
+  // not / without / free of" describes ABSENCE of damage, not damage — e.g.
+  // the structural_integrity observation "No visible broken joints, missing
+  // stretchers, or collapsed structure" must NOT trigger a "missing/broken"
+  // penalty on a structurally SOUND piece. Split on sentence boundaries and
+  // skip any sentence carrying a leading negation cue.
+  const NEGATION_CUES = ["no ", "not ", "without ", "free of ", "free from "];
+  const textHasUnnegated = (...words: string[]) => {
+    const sentences = text.split(/[.;]/);
+    return words.some((w) =>
+      sentences.some((s) => s.includes(w) && !NEGATION_CUES.some((n) => s.includes(n)))
+    );
+  };
 
   // Base form lanes
   if (f.includes("telephone bench")) {
@@ -5963,9 +5976,17 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
 
   // Market dampeners
   if (f.includes("dresser") || f.includes("drawers") || f.includes("chest of drawers")) bump("Dresser / chest of drawers (oversupplied category)", -8, "form");
-  if (textHas("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) bump("Finish loss, water staining, or white haze", -12, "condition");
-  if (textHas("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) bump("Surface scratches or top damage", -8, "condition");
-  if (textHas("missing", "broken", "loose", "veneer loss", "structural damage")) bump("Missing / broken / loose parts or veneer loss", -15, "condition");
+  if (textHasUnnegated("finish loss", "finish_worn", "worn finish", "water stain", "white haze")) bump("Finish loss, water staining, or white haze", -12, "condition");
+  if (textHasUnnegated("scratches", "surface damage", "top_surface_damage", "top_surface_condition")) bump("Surface scratches or top damage", -8, "condition");
+  if (textHasUnnegated("missing", "broken", "loose", "veneer loss", "structural damage")) bump("Missing / broken / loose parts or veneer loss", -15, "condition");
+  // Painted-over / altered surface and heavy paint loss. The engine flags
+  // these as clue keys; they were previously unpenalized because the text
+  // dampeners above don't match "paint loss" / "repaint". An altered (over-
+  // painted) finish forfeits original-surface value, and heavy paint loss is
+  // a real condition hit — both depress resale even when the frame is sound.
+  if (has("paint_loss_heavy")) bump("Heavy paint or finish loss", -12, "condition");
+  if (has("refinished_surface", "multiple_paint_layers", "overpainted_surface", "repainted_surface"))
+    bump("Altered / non-original (over)painted finish", -10, "condition");
   if (
     textHas("insect damage", "powder post", "powderpost", "woodworm", "wood rot", "dry rot", "wet rot", "rotted", "wood deterioration", "crumbling") ||
     Array.from(clues).some((k) => k.includes("insect") || k.includes("woodworm") || k.includes("wood_rot"))
