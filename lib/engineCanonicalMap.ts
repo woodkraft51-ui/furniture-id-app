@@ -64,6 +64,42 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   // should show.
   slotted_screw: "fastener_type_slotted_wood_screw",
   slotted_wood_screw: "fastener_type_slotted_wood_screw",
+  // ── Reachability pass: dated fastener entries that previously had no clue
+  // route (the visual reference's fastener row stayed blank). Each key below is
+  // now both instructed to the P0 model (via the canonical appendix) and routed
+  // to its dated entry. Nails: ──
+  rosehead_nail: "fastener_type_rosehead_nail",
+  l_head_nail: "fastener_type_l_head_t_head_nail",
+  t_head_nail: "fastener_type_l_head_t_head_nail",
+  hand_headed_cut_nail: "fastener_type_early_hand_headed_cut_nail",
+  machine_headed_cut_nail: "fastener_type_machine_headed_cut_nail",
+  brad_nail: "fastener_type_brad_finish_cut_nail",
+  common_wire_nail: "fastener_type_common_wire_nail",
+  finish_nail: "fastener_type_finish_nail",
+  box_nail: "fastener_type_box_nail",
+  // Screws / drives:
+  handmade_wood_screw: "fastener_type_handmade_wood_screw",
+  brass_wood_screw: "fastener_type_brass_wood_screw",
+  brass_screw: "fastener_type_brass_wood_screw",
+  steel_wood_screw: "fastener_type_steel_wood_screw",
+  steel_screw: "fastener_type_steel_wood_screw",
+  robertson_screw: "fastener_type_robertson",
+  square_drive_screw: "fastener_type_robertson",
+  torx_screw: "fastener_type_torx",
+  allen_screw: "fastener_type_allen_hex_socket_screw",
+  hex_socket_screw: "fastener_type_allen_hex_socket_screw",
+  machine_cut_screw: "fastener_subcategory_machine_cut_screws",
+  modern_drive_screw: "fastener_subcategory_modern_drive_types",
+  confirmat_screw: "fastener_type_confirmat_screw",
+  // Bolts / knock-down / specialty (cam_lock kept for hardware; here the
+  // knock-down fastener uses the distinct cam_lock_connector key):
+  carriage_bolt: "fastener_type_carriage_bolt",
+  threaded_rod: "fastener_type_threaded_rod",
+  barrel_nut: "fastener_type_barrel_nut_cross_dowel",
+  cross_dowel: "fastener_type_barrel_nut_cross_dowel",
+  cam_lock_connector: "fastener_type_cam_lock_connector",
+  corrugated_fastener: "fastener_type_corrugated_fastener",
+  compression_plate_fastener: "fastener_type_biscuit_compression_plate",
 
   // ── FINISH (delete from CLUE_LIBRARY) ─────────────────────────────────────
   shellac_crazing: "finish_type_shellac_crazing",
