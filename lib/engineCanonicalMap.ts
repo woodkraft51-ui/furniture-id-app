@@ -32,6 +32,14 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   machine_dovetails: "joinery_type_machine_cut_drawer_dovetails",
   mortise_and_tenon: "joinery_category_mortise_and_tenon_family",
   dowel_joinery: "joinery_type_dowel_joinery",
+  // Pegged / drawbored M&T are DISTINCT dated canonical entries (not the
+  // persistent-nondating family). The LLM emits these keys but they were
+  // unwired, so a drawbored peg — a strong pre-1920 vernacular signal — dated
+  // nothing and left the joinery row blank in the visual reference.
+  pegged_mortise_tenon: "joinery_type_pegged_mortise_and_tenon",
+  pegged_mortise_and_tenon: "joinery_type_pegged_mortise_and_tenon",
+  drawbored_mortise_tenon: "joinery_type_drawbored_mortise_and_tenon",
+  drawbored_mortise_and_tenon: "joinery_type_drawbored_mortise_and_tenon",
   rule_joint: NO_MATCH, // no canonical joinery entry; appraiser knowledge lives in engine
   drawer_box_joinery: NO_MATCH, // meta-clue (which-joinery-type-on-drawer); no single canonical
 
@@ -48,6 +56,14 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   phillips_screw: "fastener_type_phillips_wood_screw",
   staple_fastener: "fastener_subcategory_machine_staples",
   no_phillips_screws_observed: NO_MATCH, // negation observation; not an entry
+  // Slotted wood screw — the textbook datable fastener (canonical primary
+  // dominance 1840–1940). The LLM emits `slotted_screw` constantly but it was
+  // unwired, so it landed in "hardware" with NO date band. Wiring it to the
+  // canonical fastener entry routes it to the FASTENER layer with its dated
+  // window — exactly the kind of layered dating clue the visual reference
+  // should show.
+  slotted_screw: "fastener_type_slotted_wood_screw",
+  slotted_wood_screw: "fastener_type_slotted_wood_screw",
 
   // ── FINISH (delete from CLUE_LIBRARY) ─────────────────────────────────────
   shellac_crazing: "finish_type_shellac_crazing",
