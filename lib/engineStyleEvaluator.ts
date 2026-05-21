@@ -174,7 +174,7 @@ const MULTI_TOKEN_CONFIDENCE_FLOOR = 0.45;
 // 60-year era word, not evidence for Rococo Revival specifically. A real
 // attribution needs a family-IDENTIFYING token ("rococo", "eastlake",
 // "chippendale", "naturalistic", ...) or clue-key provenance — not just these.
-const GENERIC_STYLE_TOKENS = new Set(["victorian", "revival", "colonial"]);
+const GENERIC_STYLE_TOKENS = new Set(["victorian", "revival", "colonial", "new"]);
 
 // Maps detectStructuralPatterns synthesized keys to the style family they
 // canonically belong to. When one of these fires in the digest, attributions

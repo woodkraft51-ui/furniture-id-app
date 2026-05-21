@@ -4284,7 +4284,12 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   const arcadeForm = includesAny(text, ["arcade cabinet", "arcade machine", "arcade game", "video game cabinet", "upright arcade"]);
   const vendingForm = includesAny(text, ["vending machine", "snack machine", "soda machine", "beverage machine", "coke machine", "cigarette machine", "vending"]);
   const spinningWheelForm = includesAny(text, ["spinning wheel", "saxony wheel", "castle wheel", "great wheel", "walking wheel", "wool wheel", "flax wheel"]);
-  const loomForm = includesAny(text, ["loom", "weaving loom", "floor loom", "table loom", "treadle loom", "handloom", "hand loom"]);
+  // Word-boundary loom detection. Substring matching previously fired on "loom"
+  // inside "machine-loomed" (jacquard fabric descriptions), routing upholstered
+  // seating to form_loom at score 98. \bloom(s)?\b matches the genuine loom words
+  // (incl. the "loom" in "weaving/floor/table/treadle/hand loom") but not
+  // "loomed"/"machine-loomed"/"heirloom".
+  const loomForm = /\b(?:looms?|handlooms?)\b/.test(text);
   const pumpOrganForm = !deskContext && includesAny(text, ["pump organ", "reed organ", "parlor organ", "cabinet organ", "harmonium", "pump organ cabinet"]);
   const iceboxForm = includesAny(text, ["icebox", "ice box", "oak icebox", "zinc-lined icebox", "ice chest"]);
   const sewingMachineCabinetForm = !deskContext && !text.includes("converted") && includesAny(text, ["sewing machine cabinet", "treadle sewing machine", "sewing machine stand", "drop-head sewing machine", "drophead sewing machine", "sewing machine base"]);
@@ -7638,7 +7643,15 @@ if (missing.label_photo) {
     // Block 14: frame-filtered clue keys so style attribution can't see
     // upholstery vocabulary (velvet, button-tufting, etc.) when scoring
     // frame styles.
-    const styleRanked = attributeStyle(frameDigest.clue_keys || [], observationDescriptions);
+    // Maker/identity labels (e.g. "New Haven Clock Co.") are not style vocabulary.
+    // Tokenizing them into the style haystack let the place name "New Haven" seed
+    // the token "new", which matched the contemporary family's "New Traditional"
+    // alias and mislabeled a Victorian clock as a post-1990 reproduction. Exclude
+    // [label]-type observations from style attribution (subtype eval still gets all).
+    const styleDescriptions = (frameDigest.observations || [])
+      .filter((o) => o.type !== "label")
+      .map((o) => o.description || "");
+    const styleRanked = attributeStyle(frameDigest.clue_keys || [], styleDescriptions);
 
     // Distinctiveness gate (2026-05-20): only attributions that rest on real
     // style evidence (a distinctive token or a structured clue key) are
