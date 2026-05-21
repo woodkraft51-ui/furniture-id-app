@@ -1177,10 +1177,66 @@ const PAINTED_TABLE_COLONIAL_REVIVAL_OVERATTRIBUTED_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 13: Third real scan of the painted parlor table (20 obs, May 2026).
+// The appraiser's verdict: an obvious vernacular folk painted parlor/pub table,
+// c. 1900-1915, colonial-revival influence — yet the engine said almost nothing
+// ("Parlor table, Unresolved style, c. 1900 onward, Low"). The dating scores
+// (traditionalConstructionScore / earlyHandmadeScore / strongPre1920Signals)
+// only count CASE-PIECE clues (dovetails, drawer runners, plank backs), so a
+// table's convergent pre-1920 evidence — pegged/drawbored mortise-and-tenon
+// (conf 85), box stretcher, traditional square-block joinery, turned legs,
+// two-tone folk paint over multiple campaigns, heavy honest wear — scored just
+// under every threshold and fell through to "Broad". And the absence of ANY
+// modern marker (no plywood, Phillips, staples, synthetic finish) was ignored
+// as a ceiling signal. Expected post-fix: the absence-of-modern + convergent-
+// traditional rule fires and reports a real bounded range floored at the
+// post-1900 hardware (c. 1900-1920), not an open-ended "c. 1900 onward".
+const PAINTED_TABLE_VERNACULAR_PRE1920_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-painted-table-vernacular-pre1920" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "underside" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "",
+    user_category_guess: "table",
+    condition_notes:
+      "small painted parlor/pub table; turned baluster legs with square top and foot blocks; flat box stretcher frame; scalloped top; pegged mortise-and-tenon joinery (visible drawbore peg); two-tone black/red folk paint over an earlier finish, heavily worn to bare wood; underside has stamped metal corner brackets with slotted screws; no plywood, Phillips screws, staples, or synthetic finish anywhere",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Small painted vernacular parlor/pub table: scalloped top, four turned baluster legs with square blocks top and foot, flat box stretcher frame, painted apron. Pegged/drawbored mortise-and-tenon joinery visible at the leg blocks. Two-tone black-over-red folk paint over an earlier campaign, heavily worn to bare wood. Underside solid wood with stamped metal corner brackets and slotted screws. No plywood, Phillips screws, staples, or modern finish.",
+    },
+    observations: [
+      obs("flat_surface", "Shaped/scalloped flat tabletop visible from above and side views; serves as primary surface of a small occasional or parlor table.", 68, "form"),
+      obs("scalloped_top_edge", "The tabletop has a shaped/scalloped or clover-leaf outline with curved lobes visible from the overhead side view, a decorative form common in Victorian parlor tables.", 68, "form"),
+      obs("turned_legs", "Four turned wooden legs with vase/baluster profile visible; legs transition from square block at top to turned shaft with decorative rings, then to square foot block at bottom.", 82, "structure"),
+      obs("stretchers", "Rectangular cross-section stretchers connect all four legs near the base, forming a full box stretcher frame. Stretchers appear to be flat rectangular stock, not turned.", 82, "structure"),
+      obs("apron_present", "A flat apron rail connects the legs just below the tabletop, visible on all sides. Apron is painted black with paint cracking and wear.", 82, "structure"),
+      obs("mortise_and_tenon", "The joinery closeup shows the square leg block at the top of the turned leg receiving two apron/stretcher rails meeting at right angles. The joint geometry is consistent with mortise-and-tenon construction where the apron tenons enter the square leg block. A round wooden peg or dowel head is visible on the top face of the leg block, suggesting a pegged mortise-and-tenon joint.", 82, "construction"),
+      obs("pegged_mortise_tenon", "A domed round wooden peg is clearly visible on the top face of the square leg block in the joinery closeup, consistent with a drawbored or pegged mortise-and-tenon joint securing the apron to the leg. This is a traditional joinery method common in pre-industrial and early industrial furniture.", 85, "construction"),
+      obs("stamped_metal_bracket", "Small brass-colored flat metal brackets (appear to be slotted-screw-fastened corner or tabletop attachment brackets) are visible on the underside of the top in the joinery closeup image. At least two are visible near the corner area.", 62, "hardware"),
+      obs("slotted_screw", "Slotted screws are visible on the underside view securing the corner brackets to the tabletop underside. Slotted screws are consistent with pre-1930s production but continued in use throughout the 20th century.", 62, "hardware"),
+      obs("two_tone_painted_decoration", "The piece is painted in two colors: black for the majority of the surface (legs, apron, stretchers, top) and red accent rings on the turned leg shafts and the edge band of the tabletop. This decorative painting scheme is consistent with Victorian-era painted furniture or later folk/decorative repainting.", 52, "style"),
+      obs("refinished_surface", "Heavy paint wear on the tabletop exposes bare wood and what appears to be an earlier lighter-colored paint layer beneath the current black paint. Multiple paint layers are visible at chip edges on the apron and stretchers. The current paint scheme appears to be a later decorative repaint over an earlier finish.", 45, "finish"),
+      obs("paint_loss_and_chipping", "Extensive paint loss on the tabletop surface with bare wood exposed in large patches. Paint is chipping and flaking on the apron, stretchers, and leg blocks. The red accent paint on the leg rings is also worn and chipping. Condition is heavily distressed.", 54, "condition"),
+      obs("multiple_paint_layers", "At chip edges on the apron and leg blocks, at least two paint layers are visible: a lighter cream/white or earlier layer beneath the current black paint. This confirms at least one repainting campaign.", 54, "condition"),
+      obs("solid_wood_construction", "The underside view shows the tabletop is solid wood (not plywood or veneered panel); grain is visible on the unpainted underside surface. The wood appears to be a medium-density hardwood or softwood, species uncertain under paint.", 45, "materials"),
+      obs("square_leg_block_transition", "Each turned leg has a square (unturned) block section at the top where the apron rails join, and a square block at the foot. This is a traditional construction method for turned-leg tables where the square section provides flat faces for mortise-and-tenon joinery.", 95, "construction"),
+      obs("box_stretcher_frame", "The stretchers form a complete rectangular box frame connecting all four legs near the floor, visible in both front and side views. The stretchers are flat rectangular stock, not turned, and meet the leg blocks at right angles.", 82, "structure"),
+      obs("victorian_parlor_table_form", "The combination of scalloped/shaped top, turned legs with decorative rings, box stretcher base, and small occasional-table scale is consistent with Victorian-era parlor or lamp table forms, c. 1870-1910.", 52, "style"),
+      obs("top_attachment_brackets", "The underside view shows metal flat brackets screwed to the underside of the top, likely used to secure the top to the apron frame. This is a common tabletop attachment method in factory-era furniture.", 78, "construction"),
+      obs("wood_species_uncertain_under_paint", "The wood species cannot be confidently identified due to the painted finish covering all primary surfaces. The unpainted underside shows a medium-brown wood with relatively straight grain, possibly pine, poplar, or a secondary hardwood. Species identification requires examination of unfinished surfaces.", 40, "materials"),
+      obs("structural_integrity_appears_sound", "Despite heavy surface paint wear, the joinery appears intact with no visible loose joints, broken stretchers, or missing components. The leg-to-apron joints appear tight in the closeup views.", 54, "condition"),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   painted_occasional_table_overattributed: PAINTED_OCCASIONAL_TABLE_OVERATTRIBUTED_FIXTURE,
   painted_table_colonial_revival_overattributed: PAINTED_TABLE_COLONIAL_REVIVAL_OVERATTRIBUTED_FIXTURE,
+  painted_table_vernacular_pre1920: PAINTED_TABLE_VERNACULAR_PRE1920_FIXTURE,
   baroque_single_token: BAROQUE_SINGLE_TOKEN_FIXTURE,
   desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
   desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,

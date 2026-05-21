@@ -5706,12 +5706,37 @@ const materialDateGuard = (() => {
     (has("solid_wood_construction") ? 1 : 0) +
     (has("solid_wood_drawer_construction") ? 1 : 0);
 
+  // Traditional / vernacular construction signals — tables, stands, stools, and
+  // country pieces whose dating evidence is joinery- and form-based, not
+  // drawer/dovetail-based. The case-piece scores above are blind to these, so a
+  // table's convergent pre-1920 evidence never reached threshold and fell
+  // through to "Broad". Pegged/drawbored mortise-and-tenon is a strong pre-1920
+  // hand / early-industrial signal; box stretchers, traditional square-block
+  // leg joinery, and hand-applied folk paint corroborate.
+  const traditionalVernacularScore =
+    (has("pegged_mortise_tenon", "drawbored_joint", "drawbore_pegged_joint", "pinned_mortise_tenon") ? 2 : 0) +
+    (has("mortise_and_tenon") ? 1 : 0) +
+    (has("box_stretcher_frame", "h_stretcher", "stretchers") ? 1 : 0) +
+    (has("square_leg_block_transition") ? 1 : 0) +
+    (has("two_tone_painted_decoration", "folk_painted_decoration", "hand_painted_decoration") ? 1 : 0);
+
   const absenceOfModern =
     !has("phillips_screw") &&
     !has("staple_fastener") &&
     !has("modern_concealed_hinge") &&
     !has("plywood_structural") &&
-    !has("plywood_drawer_bottom");
+    !has("plywood_drawer_bottom") &&
+    // Modern material / upholstery markers also defeat an absence-of-modern
+    // read, keeping this honest on mid-century pieces (vinyl, foam, molded
+    // plastic, tubular steel, laminate, particleboard/MDF are post-1930s).
+    !has("vinyl_cover") &&
+    !has("foam_padding") &&
+    !has("molded_plastic") &&
+    !has("tubular_steel") &&
+    !has("laminate_surface") &&
+    !has("formica_surface") &&
+    !has("particle_board") &&
+    !has("mdf_panel");
 
   const conflictingSignals =
     has("possible_plywood_or_laminated_panel") &&
@@ -5760,9 +5785,19 @@ const materialDateGuard = (() => {
     };
   }
 
-  if (absenceOfModern && strongPre1920Signals >= 2) {
+  // Absence of modern markers + convergent pre-1920 construction (case-piece OR
+  // vernacular/table) is a positive dating read: the lack of modern evidence
+  // caps the ceiling, and the convergent traditional signals set the floor.
+  // This is the "lack of modern evidence IS evidence" rule — it must fire for a
+  // turned-and-stretchered painted table, not only for chests with drawers.
+  if (absenceOfModern && (strongPre1920Signals + traditionalVernacularScore) >= 2) {
+    const post1900Hardware = has("stamped_metal_bracket", "top_attachment_brackets", "top_attachment_method");
     return {
-      range: conflictingSignals ? "c. 1900–1930" : "c. 1890–1920",
+      range: conflictingSignals
+        ? "c. 1900–1930"
+        : post1900Hardware
+          ? "c. 1900–1920"
+          : "c. 1890–1920",
       confidence: "Moderate",
       support,
       limitations,
@@ -7647,6 +7682,11 @@ if (missing.label_photo) {
     for (const inf of unsupportedRanked) {
       if (style_influences.length >= 2) break;
       if ((inf.confidence ?? 0) < ALT_CONFIDENCE_FLOOR) continue;
+      // A candidate worth noting must rest on more than a lone generic era word.
+      // A single "victorian" token surfacing "Rococo Revival" is noise, not a
+      // tentative read — suppress it rather than show a misleading influence.
+      const infTerms = Array.isArray((inf as any).matched_terms) ? ((inf as any).matched_terms as string[]) : [];
+      if (infTerms.length < 2) continue;
       style_influences.push(inf);
     }
 
