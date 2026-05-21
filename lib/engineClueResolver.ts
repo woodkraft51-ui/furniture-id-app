@@ -131,56 +131,23 @@ function dateHintFor(entry: any): string | undefined {
   const m = notes.match(/typical_date_range\s+"([^"]+)"/);
   if (m) return m[1];
 
-  const isUpholstery = typeof entry?.category === "string" &&
-    (entry.category.startsWith("upholstery_construction") ||
-     entry.category.startsWith("upholstery_cover"));
-  // Hardware entries (turned_wooden_knob, porcelain_caster, etc.) often
-  // author period_associations with an open-ended "Continuous use" entry
-  // first (e.g., date_floor: 1750) and a closed "Especially common period"
-  // entry second (e.g., 1820–1910). The Block 10b first-wins rule then
-  // emits "post-1750" as the dateHint — useless for dating overlap, even
-  // though the curated peak window is right there in the same array. Treat
-  // hardware like upholstery: prefer the tightest closed period.
-  const isHardware = typeof entry?.category === "string" &&
-    entry.category.startsWith("hardware_type");
-
   const periods = entry?.period_associations;
   if (Array.isArray(periods) && periods.length > 0) {
-    // Block 15: upholstery — prefer tightest CLOSED period (skips the
-    // open-ended "continuous era" period[0] in favor of the diagnostic window).
-    if (isUpholstery || isHardware) {
-      let tightestFloor: number | null = null;
-      let tightestCeiling: number | null = null;
-      let tightestSpan = Infinity;
-      for (const p of periods) {
-        if (typeof p?.date_floor === "number" && typeof p?.date_ceiling === "number") {
-          const span = p.date_ceiling - p.date_floor;
-          if (span < tightestSpan) {
-            tightestSpan = span;
-            tightestFloor = p.date_floor;
-            tightestCeiling = p.date_ceiling;
-          }
-        }
-      }
-      if (tightestFloor !== null && tightestCeiling !== null) {
-        return `c. ${tightestFloor}–${tightestCeiling}`;
-      }
-      // No closed period — fall through to first open-ended for upholstery
-      for (const p of periods) {
-        if (typeof p?.date_floor === "number") return `post-${p.date_floor}`;
-        if (typeof p?.date_ceiling === "number") return `pre-${p.date_ceiling}`;
-      }
-      return undefined;
-    }
-
-    // Non-upholstery: Block 10b first-wins rule (period[0] is the diagnostic
-    // window per joinery/fastener authoring convention).
     const first = periods[0];
-    if (typeof first?.date_floor === "number" && typeof first?.date_ceiling === "number") {
+    const firstClosed =
+      typeof first?.date_floor === "number" && typeof first?.date_ceiling === "number";
+    // When period[0] is a CLOSED window it IS the authored diagnostic — use it
+    // as written (the early hand-tool clues, e.g. cut_nail / hand_forged_nail,
+    // correctly lead with their early window; reordering them later-dates the
+    // piece). Only when period[0] is OPEN-ENDED was the curated peak buried:
+    // joinery through_mortise_and_tenon leads with "post-1700" and hides a
+    // 1890–1920 peak; wood poplar_group leads with "post-1800" and hides a
+    // 1850–1940 peak; hardware/upholstery do this routinely. In that case dig
+    // out the tightest CLOSED period so the authored diagnostic window — right
+    // there in the same array — is actually used, instead of a timid post-YYYY.
+    if (firstClosed) {
       return `c. ${first.date_floor}–${first.date_ceiling}`;
     }
-    if (typeof first?.date_floor === "number") return `post-${first.date_floor}`;
-    if (typeof first?.date_ceiling === "number") return `pre-${first.date_ceiling}`;
     let tightestFloor: number | null = null;
     let tightestCeiling: number | null = null;
     let tightestSpan = Infinity;
@@ -197,6 +164,10 @@ function dateHintFor(entry: any): string | undefined {
     if (tightestFloor !== null && tightestCeiling !== null) {
       return `c. ${tightestFloor}–${tightestCeiling}`;
     }
+    // No closed period anywhere — genuinely persistent "still in use" evidence
+    // (e.g. butt hinge). Emit the open-ended bound from period[0].
+    if (typeof first?.date_floor === "number") return `post-${first.date_floor}`;
+    if (typeof first?.date_ceiling === "number") return `pre-${first.date_ceiling}`;
     for (const p of periods) {
       if (typeof p?.date_floor === "number") return `post-${p.date_floor}`;
       if (typeof p?.date_ceiling === "number") return `pre-${p.date_ceiling}`;
