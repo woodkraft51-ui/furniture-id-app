@@ -868,6 +868,30 @@ function toConfidenceBand(pct: number): "High" | "Moderate" | "Low" | "Inconclus
   return "Inconclusive";
 }
 
+// Prepend a style label to a form name without stuttering. Some form display
+// names bake a style into them (form_cylinder_desk → "Louis XVI Revival
+// cylinder desk"); prepending the style context or a reconciled wave label
+// ("Centennial French Louis XVI Revival") then doubled the shared words —
+// "Centennial French Louis XVI Revival Louis XVI Revival cylinder desk". Strip
+// a leading run of the form that duplicates the trailing run of the style
+// label, and skip entirely when the form already contains the full style.
+function composeStyledForm(stylePrefix: string | null | undefined, formBase: string): string {
+  const prefix = String(stylePrefix ?? "").trim();
+  if (!prefix) return formBase;
+  if (formBase.toLowerCase().includes(prefix.toLowerCase())) return formBase;
+  const s = prefix.split(/\s+/);
+  const b = formBase.trim().split(/\s+/);
+  let overlap = 0;
+  for (let k = Math.min(s.length, b.length); k >= 1; k--) {
+    if (s.slice(s.length - k).join(" ").toLowerCase() === b.slice(0, k).join(" ").toLowerCase()) {
+      overlap = k;
+      break;
+    }
+  }
+  const rest = b.slice(overlap).join(" ");
+  return rest ? `${prefix} ${rest}` : prefix;
+}
+
 function cleanJsonText(raw: string): string {
   return String(raw || "").replace(/```json/gi, "").replace(/```/g, "").trim();
 }
@@ -3216,8 +3240,15 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
     if (cylinderActive) {
     add(
+      // FORM label stays style-free — a bureau à cylindre is the French
+      // cylinder-desk form regardless of style; the "Louis XVI / Centennial
+      // Revival" framing comes from the (independent) style attribution +
+      // reconciliation. Baking the style into the form name doubled it once the
+      // style label was prepended ("Centennial French Louis XVI Revival Louis
+      // XVI Revival cylinder desk"). The neoclassical cues still distinguish the
+      // French bureau à cylindre from a plain American cylinder roll-top.
       hasAny("parquetry_veneer", "ormolu_mounts", "brass_foot_sabots", "louis_xvi_french_neoclassical", "louis_xvi_revival_pattern")
-        ? "Louis XVI Revival cylinder desk (bureau à cylindre)"
+        ? "Cylinder desk (bureau à cylindre)"
         : "Cylinder roll-top desk",
       125,
       "Cylinder roll-top closure, writing surface, interior compartments, and kneehole desk configuration support a cylinder desk reading."
@@ -7710,7 +7741,7 @@ if (missing.label_photo) {
     // canonical form has aliases. Surfaces user-trust language without surrendering
     // canonical identification ("Identified as buffet (also commonly called sideboard)").
     const aliases = getCommonAliasesForDisplay(form_id, 2);
-    const styledForm = style && !form.toLowerCase().includes(style.toLowerCase()) ? `${style} ${form}` : form;
+    const styledForm = composeStyledForm(style, form);
     const display_form = aliases.length
       ? `${styledForm} (also commonly called: ${aliases.join(", ")})`
       : styledForm;
@@ -8487,7 +8518,7 @@ if (p6.dating_overlap) {
   ];
   if (refinedKinds.includes(reconciled.kind) && p3.form) {
     const base = p3.form;
-    const styled = `${reconciled.final_style_label} ${base}`;
+    const styled = composeStyledForm(reconciled.final_style_label, base);
     // Preserve the canonical "(also commonly called: ...)" aliases tail
     // when the prior display_form had one.
     const aliasesMatch = (p3.display_form || "").match(/\s\(also commonly called:[^)]*\)\s*$/);

@@ -1232,11 +1232,60 @@ const PAINTED_TABLE_VERNACULAR_PRE1920_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 14: Louis XVI Revival cylinder desk (bureau à cylindre). Reproduced
+// from a real scan whose label stuttered — "Centennial French Louis XVI Revival
+// Louis XVI Revival cylinder desk" — because the form-scoring step baked the
+// style into the FORM label (engine.ts:3244) and the style attribution +
+// reconciliation then prepended it again. Form and style are independent axes:
+// the form is a bureau à cylindre; the Louis XVI Revival framing must come from
+// the (independent) style attribution. Expected post-fix: form label style-free
+// ("Cylinder desk (bureau à cylindre)"), style "Louis XVI / French Neoclassical"
+// from attribution, reconciled to "Centennial French Louis XVI Revival", and the
+// displayed Best-reading + Analysis-summary are stutter-free.
+const LOUIS_XVI_CYLINDER_DESK_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-louis-xvi-cylinder-desk" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "",
+    user_category_guess: "desk",
+    condition_notes:
+      "cylinder roll-top (bureau à cylindre) desk; parquetry veneer, stringing inlay, burl crossbanding; tapered square legs with cast brass acanthus sabots; ormolu mounts; aged shellac finish; cast brass bail pulls",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Cylinder roll-top desk (bureau à cylindre) with parquetry veneer, stringing inlay, burl crossbanding, tapered square legs with cast brass acanthus-leaf sabots, applied ormolu mounts, and an aged shellac finish. Fitted interior with pigeonholes and a small drawer; central knee-hole; cast brass bail pulls.",
+    },
+    observations: [
+      obs("cylinder_roll", "A curved/cylindrical rotating closure is visible over the writing surface; primary form-defining feature of a bureau à cylindre.", 68, "form"),
+      obs("cylinder_desk_mechanism", "The cylinder closure rotates on a track to open and close over the writing surface; a lock is present on the cylinder face.", 95, "construction"),
+      obs("pigeonholes", "Interior compartments/cubbies visible when the cylinder is partly open.", 68, "form"),
+      obs("writing_surface", "Interior writing surface (leather/baize) visible when the cylinder is open; writing function primary.", 70, "function"),
+      obs("drawer_present", "Multiple drawers across the lower case flanking a central knee hole.", 68, "form"),
+      obs("knee_hole_opening", "Central knee-hole opening in the lower case between flanking drawer pedestals.", 82, "structure"),
+      obs("pedestal_column", "Single-column pedestal form visible.", 84, "form"),
+      obs("parquetry_veneer", "Elaborate parquetry veneer: herringbone field with bookmatched lozenge side panels; Continental neoclassical technique.", 52, "style"),
+      obs("stringing_inlay", "Fine satinwood/boxwood stringing borders the burl crossbanding throughout; refined neoclassical decorative border.", 52, "style"),
+      obs("neoclassical_louis_xvi_influence", "Tapered square legs, parquetry veneer, ormolu mounts, stringing inlay, cylinder form read as Louis XVI / neoclassical design influence; widely reproduced late 19th/early 20th c.", 52, "style"),
+      obs("louis_xvi_revival_pattern", "Louis XVI / French neoclassical vocabulary with tapered legs, parquetry, stringing, ormolu, brass sabots, cylinder-roll construction supports a Louis XVI Revival pattern; revival-era production, not 18th-c. French.", 84, "structure"),
+      obs("ormolu_mounts", "Cast brass ormolu-style mounts (acanthus/feather, torch/quiver) applied at case corners and sides; sabots at the feet.", 62, "hardware"),
+      obs("cast_brass_sabot", "Each tapered square leg terminates in a cast brass acanthus-leaf sabot with visible screw attachment.", 62, "hardware"),
+      obs("tapered_leg", "Four tapered square legs veneered on outer faces, capped with brass sabots; characteristic of Louis XVI / neoclassical design.", 96, "construction"),
+      obs("decorative_bail_pull", "Cast brass bail pulls with ornate foliate/rocaille backplates, darkened with patina.", 62, "hardware"),
+      obs("lock_escutcheons", "Decorative brass lock escutcheon centered on the cylinder face.", 45, "hardware"),
+      obs("shellac_intact", "Warm amber finish with some sheen consistent with shellac/early varnish; aged naturally, no plastic-like polyurethane film.", 45, "finish"),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   painted_occasional_table_overattributed: PAINTED_OCCASIONAL_TABLE_OVERATTRIBUTED_FIXTURE,
   painted_table_colonial_revival_overattributed: PAINTED_TABLE_COLONIAL_REVIVAL_OVERATTRIBUTED_FIXTURE,
   painted_table_vernacular_pre1920: PAINTED_TABLE_VERNACULAR_PRE1920_FIXTURE,
+  louis_xvi_cylinder_desk: LOUIS_XVI_CYLINDER_DESK_FIXTURE,
   baroque_single_token: BAROQUE_SINGLE_TOKEN_FIXTURE,
   desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
   desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,

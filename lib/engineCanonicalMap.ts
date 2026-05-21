@@ -499,7 +499,8 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Secretary desk / drop-front desk": "form_secretary_desk",
   "Secretary desk / writing desk": "form_secretary_desk",
   "Slant-front desk": "form_slant_front_desk",
-  "Louis XVI Revival cylinder desk (bureau à cylindre)": "form_cylinder_desk",
+  "Cylinder desk (bureau à cylindre)": "form_cylinder_desk",
+  "Louis XVI Revival cylinder desk (bureau à cylindre)": "form_cylinder_desk", // legacy fused label; kept as matching alias
   "Cylinder roll-top desk": "form_cylinder_desk",
   // Cover-mechanism cluster — distinct cousins of the cylinder desk.
   "Roll-top desk": "form_roll_top_desk",
