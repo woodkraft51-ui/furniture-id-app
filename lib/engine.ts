@@ -1151,6 +1151,18 @@ function includesAny(text: string, words: string[]) {
   return words.some((w) => text.includes(w));
 }
 
+// Whole-word / whole-phrase matcher. Unlike includesAny's bare substring test,
+// this requires word boundaries, so "loom" no longer matches inside
+// "machine-loomed", "iron" no longer matches inside "environment", etc. Use
+// this (not includesAny) for short single-word triggers where a substring of a
+// larger word would be a false positive.
+function containsWord(text: string, words: string[]) {
+  return words.some((w) => {
+    const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`\\b${escaped}\\b`).test(text);
+  });
+}
+
 function collectText(value: any, out: string[] = []): string[] {
   if (value == null) return out;
   if (typeof value === "string") {
@@ -1173,10 +1185,14 @@ function detectClueFromText(text: string): string | null {
     includesAny(t, [
       `no ${phrase}`,
       `not ${phrase}`,
+      `not a ${phrase}`,
+      `not an ${phrase}`,
       `without ${phrase}`,
       `${phrase} not`,
       `absence of ${phrase}`,
       `no visible ${phrase}`,
+      `rather than ${phrase}`,
+      `${phrase} rather than`,
     ]);
 
   // Skip vague / uncertain statements entirely
@@ -1310,27 +1326,31 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("plywood") && includesAny(t, ["plywood", "sheet back"])) return "sheet_back_panel";
 
 // --- NON-WOOD MATERIAL DETECTION ---
+// Guarded with isNegated(...) + whole-word containsWord(...) like every other
+// fallback. Previously these used bare .includes() with no negation check, so
+// "pot metal rather than cast iron" fired wrought_iron and "no button tufting"
+// fired tufted_upholstery.
 
-if (t.includes("metal")) return "metal_frame";
-if (t.includes("steel")) return "tubular_steel";
-if (t.includes("iron")) return "wrought_iron";
-if (t.includes("brass")) return "brass_frame";
-if (t.includes("chrome")) return "chrome_frame";
+if (!isNegated("metal") && containsWord(t, ["metal"])) return "metal_frame";
+if (!isNegated("steel") && containsWord(t, ["steel"])) return "tubular_steel";
+if (!isNegated("iron") && containsWord(t, ["iron"])) return "wrought_iron";
+if (!isNegated("brass") && containsWord(t, ["brass"])) return "brass_frame";
+if (!isNegated("chrome") && containsWord(t, ["chrome"])) return "chrome_frame";
 
-if (t.includes("upholstered") || t.includes("fabric") || t.includes("cushion")) return "fully_upholstered";
-if (t.includes("tufted")) return "tufted_upholstery";
-if (t.includes("springs")) return "visible_springs";
+if (!isNegated("upholstered") && containsWord(t, ["upholstered", "fabric", "cushion"])) return "fully_upholstered";
+if (!isNegated("tufted") && !isNegated("tufting") && containsWord(t, ["tufted"])) return "tufted_upholstery";
+if (!isNegated("springs") && containsWord(t, ["springs"])) return "visible_springs";
 
-if (t.includes("wicker")) return "woven_body";
-if (t.includes("rattan")) return "rattan_frame";
-if (t.includes("cane")) return "cane_panels";
+if (!isNegated("wicker") && containsWord(t, ["wicker"])) return "woven_body";
+if (!isNegated("rattan") && containsWord(t, ["rattan"])) return "rattan_frame";
+if (!isNegated("cane") && containsWord(t, ["cane"])) return "cane_panels";
 
-if (t.includes("glass")) return "glass_top";
-if (t.includes("laminate")) return "laminate_surface";
-if (t.includes("formica")) return "formica_surface";
+if (!isNegated("glass") && containsWord(t, ["glass"])) return "glass_top";
+if (!isNegated("laminate") && containsWord(t, ["laminate"])) return "laminate_surface";
+if (!isNegated("formica") && containsWord(t, ["formica"])) return "formica_surface";
 
-if (t.includes("plastic")) return "molded_plastic";
-if (t.includes("acrylic") || t.includes("lucite")) return "acrylic_clear";
+if (!isNegated("plastic") && containsWord(t, ["plastic"])) return "molded_plastic";
+if (!isNegated("acrylic") && containsWord(t, ["acrylic", "lucite"])) return "acrylic_clear";
 
 // ─────────────────────────────────────────────────────────────────────
 // Non-wood material/joinery/condition text-pattern fallbacks
