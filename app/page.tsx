@@ -2916,6 +2916,11 @@ const p7 = stageOutputs.p7 || null;
               <SectionCard title="Likely Identification">
                 <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
                 {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
+                {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
+                  <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                    Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value above.
+                  </div>
+                )}
                 {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
                   <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
                     Why this label: {p3.final_style.final_style_reason}
@@ -3089,6 +3094,11 @@ const p7 = stageOutputs.p7 || null;
                 <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
                 <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p3?.confidence) }}>{p3?.confidence || "Inconclusive"}</strong></div>
                 {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
+                {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
+                  <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                    Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value above.
+                  </div>
+                )}
                 {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
                   <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
                     Why this label: {p3.final_style.final_style_reason}
