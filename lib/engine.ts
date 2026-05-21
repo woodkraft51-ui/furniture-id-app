@@ -7643,7 +7643,15 @@ if (missing.label_photo) {
     // Block 14: frame-filtered clue keys so style attribution can't see
     // upholstery vocabulary (velvet, button-tufting, etc.) when scoring
     // frame styles.
-    const styleRanked = attributeStyle(frameDigest.clue_keys || [], observationDescriptions);
+    // Maker/identity labels (e.g. "New Haven Clock Co.") are not style vocabulary.
+    // Tokenizing them into the style haystack let the place name "New Haven" seed
+    // the token "new", which matched the contemporary family's "New Traditional"
+    // alias and mislabeled a Victorian clock as a post-1990 reproduction. Exclude
+    // [label]-type observations from style attribution (subtype eval still gets all).
+    const styleDescriptions = (frameDigest.observations || [])
+      .filter((o) => o.type !== "label")
+      .map((o) => o.description || "");
+    const styleRanked = attributeStyle(frameDigest.clue_keys || [], styleDescriptions);
 
     // Distinctiveness gate (2026-05-20): only attributions that rest on real
     // style evidence (a distinctive token or a structured clue key) are
