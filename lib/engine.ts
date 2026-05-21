@@ -231,6 +231,7 @@ type Phase3Result = {
   // Block 2a: structured style attribution from styleFamilies.ts
   style_attribution?: StyleAttribution | null;
   style_alternatives?: StyleAttribution[]; // up to 3 lower-confidence attributions
+  style_influences?: StyleAttribution[]; // non-authoritative prose-only matches ("worth checking")
   // Block 2b: style-wave aggregator output (≥2-of-N rule per D-PH3-9)
   style_waves?: StyleWaveAttribution[];
   // Transitional-piece reasoning: date-envelope intersections across
@@ -7550,7 +7551,19 @@ if (missing.label_photo) {
     // upholstery vocabulary (velvet, button-tufting, etc.) when scoring
     // frame styles.
     const styleRanked = attributeStyle(frameDigest.clue_keys || [], observationDescriptions);
-    const style_attribution = styleRanked[0] ?? null;
+
+    // Distinctiveness gate (2026-05-20): only attributions that rest on real
+    // style evidence (a distinctive token or a structured clue key) are
+    // authoritative. A match built solely from generic tokens scraped from
+    // observation PROSE — e.g. "victorian"/"revival" harvested from a hedging
+    // sentence like "consistent with late Victorian or Colonial Revival forms"
+    // — is the engine citing its own comparative language as evidence. Those
+    // (supported === false) are demoted to non-authoritative style_influences:
+    // surfaced as "worth checking", never the headline label, and never
+    // seeding the dating layers (style / style_wave) or valuation.
+    const supportedRanked = styleRanked.filter((s) => s.supported);
+    const unsupportedRanked = styleRanked.filter((s) => !s.supported);
+    const style_attribution = supportedRanked[0] ?? null;
 
     // Stress-test fix #10 (2026-05-20): suppress adjacent revival-family
     // bleed in surfaced alternatives.
@@ -7590,7 +7603,7 @@ if (missing.label_photo) {
       }
     }
     const style_alternatives: StyleAttribution[] = [];
-    for (const alt of styleRanked.slice(1)) {
+    for (const alt of supportedRanked.slice(1)) {
       if (style_alternatives.length >= 3) break;
       if ((alt.confidence ?? 0) < ALT_CONFIDENCE_FLOOR) continue;
       const altTerms = Array.isArray((alt as any).matched_terms)
@@ -7601,6 +7614,18 @@ if (missing.label_photo) {
       if (!hasDistinctTerm) continue;
       style_alternatives.push(alt);
       for (const t of altTerms) seenMatchedTerms.add(t);
+    }
+
+    // Non-authoritative style influences: prose-only generic matches that were
+    // demoted from authoritative attribution. Surfaced in the report as a
+    // hedged "style influences worth checking" note — never the headline
+    // label, never a dating layer, never a valuation input. Capped at 2 and
+    // required to clear the same confidence floor so the note stays disciplined.
+    const style_influences: StyleAttribution[] = [];
+    for (const inf of unsupportedRanked) {
+      if (style_influences.length >= 2) break;
+      if ((inf.confidence ?? 0) < ALT_CONFIDENCE_FLOOR) continue;
+      style_influences.push(inf);
     }
 
     // Block 9: controlled style-supporting evidence. Pulls forward undated
@@ -7641,6 +7666,7 @@ if (missing.label_photo) {
       dimensional_check,
       style_attribution,
       style_alternatives,
+      style_influences,
       hybrid,
       cousin_contrasts,
       style_supporting_evidence,

@@ -32,6 +32,15 @@ export type StyleAttribution = {
   date_ceiling: number | null;
   confidence: number;            // 0-1; 2+ token matches = strong (≥0.7), 1 match = weak (~0.5)
   matched_terms: string[];
+  /** True when the match rests on at least one DISTINCTIVE token (appears in
+   * ≤ DISTINCTIVE_MAX_FAMILIES families) OR a token sourced from a structured
+   * clue KEY — i.e. real style evidence, not generic vocabulary harvested only
+   * from free-text observation prose. When false, the attribution rests
+   * entirely on shared/generic tokens scraped from descriptions (e.g.
+   * "victorian"/"revival" from a hedging sentence) and must NOT be treated as
+   * authoritative: the caller demotes it to a non-authoritative "style
+   * influence" that never feeds the headline label, dating, or valuation. */
+  supported: boolean;
 };
 
 // Tokens that appear in nearly every style name and shouldn't gate matches.
@@ -158,6 +167,14 @@ function periodEnvelope(family: StyleFamilyEntry): { date_floor: number | null; 
  */
 const SINGLE_TOKEN_CONFIDENCE_FLOOR = 0.60;
 const MULTI_TOKEN_CONFIDENCE_FLOOR = 0.45;
+// Broad era / morphology words that recur in descriptive prose and do NOT, on
+// their own, identify a specific style family. Inverse-document-frequency can't
+// catch these: "victorian" happens to appear in only ONE family's alias
+// ("Naturalistic Victorian") so it scores as highly specific, yet it's a
+// 60-year era word, not evidence for Rococo Revival specifically. A real
+// attribution needs a family-IDENTIFYING token ("rococo", "eastlake",
+// "chippendale", "naturalistic", ...) or clue-key provenance — not just these.
+const GENERIC_STYLE_TOKENS = new Set(["victorian", "revival", "colonial"]);
 
 // Maps detectStructuralPatterns synthesized keys to the style family they
 // canonically belong to. When one of these fires in the digest, attributions
@@ -214,7 +231,12 @@ export function attributeStyle(
   // most-emphasized style signal.
   const haystack = new Map<string, number>();
   const bump = (t: string) => haystack.set(t, (haystack.get(t) ?? 0) + 1);
-  for (const k of clueKeys) for (const t of tokenize(k)) bump(t);
+  // Track which tokens came from structured clue KEYS (curated evidence, e.g.
+  // `colonial_revival_cues`) vs only from free-text observation descriptions
+  // (LLM prose, which includes hedging/comparative language). A family matched
+  // only on generic tokens scraped from prose is contamination, not evidence.
+  const clueKeyTokens = new Set<string>();
+  for (const k of clueKeys) for (const t of tokenize(k)) { bump(t); clueKeyTokens.add(t); }
   for (const d of observationDescriptions) for (const t of tokenize(d)) bump(t);
 
   // Block 10a: identify structural-pattern families that fired in the digest.
@@ -280,6 +302,16 @@ export function attributeStyle(
       : MULTI_TOKEN_CONFIDENCE_FLOOR;
     if (confidence < requiredFloor) continue;
 
+    // Supported = rests on real style evidence, not generic prose. True when
+    // at least one matched token is family-IDENTIFYING (not a broad era word)
+    // OR was sourced from a structured clue key. A structural-pattern clue
+    // (which puts this family in structuralFamiliesPresent) is also
+    // definitionally supported. A match built only from GENERIC_STYLE_TOKENS
+    // scraped from observation prose is contamination, not evidence.
+    const supported =
+      structuralFamiliesPresent.has(family.id) ||
+      matched.some((t) => !GENERIC_STYLE_TOKENS.has(t) || clueKeyTokens.has(t));
+
     const { date_floor, date_ceiling } = periodEnvelope(family);
     rawScoreById.set(family.id, weightedScore);
     results.push({
@@ -289,6 +321,7 @@ export function attributeStyle(
       date_ceiling,
       confidence,
       matched_terms: matched,
+      supported,
     });
   }
 

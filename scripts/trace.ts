@@ -1038,8 +1038,78 @@ const QUEEN_ANNE_REVIVAL_NO_DATING_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 11: Painted scalloped-top occasional table over-attributed as
+// "Rococo Revival / Naturalistic Victorian Parlor table" at HIGH confidence,
+// dated too tightly to c. 1900–1910. Reproduced verbatim from a real May 2026
+// Full Analysis trace (case-1001) the appraiser flagged as a regression.
+//
+// Root cause: attributeStyle() tokenizes observation DESCRIPTION prose, so the
+// engine's own hedging language — "consistent with late Victorian or Colonial
+// Revival occasional table forms" + "late Victorian... painted furniture
+// traditions" — gets mined for the generic tokens "victorian"/"revival" and
+// matched against style_family_rococo_revival (conf 0.61) even though the
+// distinctive token "rococo" never appears and no rococo_revival_pattern clue
+// fired. That weak attribution then seeds the `style` (1845–1914) and
+// `style_wave` (1850–1965) dating layers — two non-independent votes from one
+// prose match — which, combined with an open-ended "post-1900" hardware floor,
+// manufacture a tight "1900–1910 · 3 layers" convergence at High confidence.
+//
+// Expected post-fix behavior (appraiser-directed):
+//   - style attribution NOT authoritative: rococo_revival rests only on
+//     generic prose tokens (no distinctive token, no clue-key provenance), so
+//     it must be demoted to a non-authoritative "style influence", never the
+//     headline label and never feeding the dating layers or valuation.
+//   - headline identification leads with a vernacular form/era reading
+//     (painted occasional table / stand), not "Rococo Revival".
+//   - dating widens well beyond 1900–1910 (no fabricated narrow convergence
+//     from redundant style layers + open-ended hardware floor).
+//   - confidence is NOT High.
+//   - valuation responds to weak sellability + heavy paint loss + altered
+//     finish (bands well below the original $95–243 / $216–311 / up to $500).
+const PAINTED_OCCASIONAL_TABLE_OVERATTRIBUTED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-painted-occasional-table-overattributed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "underside" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "",
+    user_category_guess: "table",
+    condition_notes:
+      "small painted scalloped-top occasional table; turned legs with box stretcher; two-tone black/red paint with heavy paint loss exposing earlier paint layers and bare wood; underside shows unpainted warm-brown hardwood, stamped metal corner brackets and slotted screws",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Small painted occasional/parlor table with a scalloped shaped top, four turned legs with baluster turnings, rectangular box stretcher, and a shaped apron. Two-tone black-and-red painted finish over an earlier natural wood surface; heavy paint loss and multiple paint layers visible. Underside reveals solid warm-brown hardwood, stamped metal corner brackets, and slotted screws.",
+    },
+    observations: [
+      obs("flat_surface", "Scalloped/shaped flat tabletop visible from above; top surface is the primary functional surface of this occasional table.", 68),
+      obs("scalloped_top_edge", "Top has a shaped/scalloped perimeter edge with multiple lobed curves rather than a plain round or rectangular edge; visible clearly from the overhead side view.", 68),
+      obs("turned_legs", "Four turned wood legs with baluster-form turnings, painted black with red accent rings at the turning transitions. Legs transition from square block at top to turned shaft.", 82),
+      obs("stretchers", "Rectangular box stretcher system connecting all four legs near the floor; stretchers are square-section members painted black, visible from front, side, and underside views.", 82),
+      obs("apron_present", "Rectangular apron connecting the four legs just below the tabletop; painted dark gray/black with paint wear exposing underlying wood.", 82),
+      obs("mortise_and_tenon", "Leg-to-apron joinery appears to be mortise-and-tenon based on the square block at the top of each turned leg and the tight apron-to-leg fit. The hardware closeup shows the square leg block with a round tenon end visible at the top, consistent with a round tenon inserted into the tabletop or apron block.", 45),
+      obs("stamped_metal_bracket", "Stamped metal corner brackets visible on the underside at the apron-to-leg corners; appear to be flat metal strap brackets secured with screws, used to reinforce the leg-to-apron joint.", 62),
+      obs("slotted_screw", "Slotted screws visible securing the metal corner brackets to the underside of the apron/top assembly; single-slot heads clearly visible in the hardware closeup image.", 62),
+      obs("paint_loss_heavy", "Heavy paint loss and chipping across the tabletop surface, exposing bare wood beneath the black paint layer. Multiple paint layers visible at the scalloped edge — red underlayer beneath black top coat.", 54),
+      obs("two_tone_painted_decoration", "Piece is painted in two colors: black for the main body (top surface, apron, legs, stretchers) and red for the scalloped edge band and accent rings on the turned legs. This decorative painting scheme is consistent with late Victorian or early 20th-century painted furniture traditions.", 52),
+      obs("refinished_surface", "The piece shows evidence of painted finish over what appears to be an earlier natural wood surface. The underside reveals unpainted warm brown wood, while the exterior is fully painted black and red. Paint wear at edges reveals a cream/white underlayer suggesting at least two paint campaigns. This is an alteration finish.", 45),
+      obs("solid_wood_construction", "Underside and hardware closeup reveal solid wood construction throughout — the tabletop underside shows solid board grain, the apron members are solid wood, and the leg blocks are solid. No plywood or engineered substrate visible.", 84),
+      obs("wood_species_probable", "The unpainted underside of the tabletop shows a warm medium-brown hardwood with relatively straight grain and moderate pore structure. Species is uncertain under the paint and finish but the grain pattern and color are consistent with oak, birch, or a similar domestic hardwood. Low confidence due to paint obscuring most surfaces.", 40),
+      obs("leg_top_round_tenon", "Hardware closeup shows the top of a leg block with a visible round tenon or dowel end protruding upward into the tabletop, consistent with a round tenon joinery system connecting the leg to the top.", 78),
+      obs("scalloped_apron_cutout", "The underside view reveals that the apron has shaped/scalloped cutouts on its lower edge, visible as curved profiles on the apron sides, adding decorative character consistent with late Victorian or Colonial Revival occasional table forms.", 52),
+      obs("paint_wear_on_legs", "Paint wear on the turned legs exposes underlying wood at the turning transitions and along the shaft; the red accent rings show significant wear and chipping. Consistent with extended use and age.", 54),
+      obs("structural_integrity", "No visible broken joints, missing stretchers, or collapsed structure. The table appears structurally sound despite heavy surface paint wear.", 54),
+      obs("top_attachment_hardware", "The underside hardware closeup shows a flat metal strap/clip with slotted screws used to attach the top to the apron frame, a common factory-era table construction method.", 82),
+      obs("occasional_table_form", "Overall form is a small occasional or parlor table with shaped top, turned legs, box stretchers, and decorative painted finish. Scale and form consistent with a lamp table, parlor table, or side table.", 52),
+      obs("multiple_paint_layers", "At the scalloped edge and at areas of paint loss, multiple paint layers are visible: a cream/white layer beneath the red, and the red beneath the black top coat. This indicates at least two repainting campaigns over the life of the piece.", 54),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
+  painted_occasional_table_overattributed: PAINTED_OCCASIONAL_TABLE_OVERATTRIBUTED_FIXTURE,
   baroque_single_token: BAROQUE_SINGLE_TOKEN_FIXTURE,
   desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
   desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,
