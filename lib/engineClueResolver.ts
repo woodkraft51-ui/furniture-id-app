@@ -121,6 +121,20 @@ function dateHintFor(entry: any): string | undefined {
   ) {
     return "spans eras (colonial period to present); limited dating value on its own";
   }
+  // Wood SPECIES IDENTITY is non-dating. Per the canonical caution "wood alone
+  // should never date furniture", and because the walnut/oak group entries lead
+  // with a CLOSED Pilgrim/Early-Colonial window (1620–1700) that the firstClosed
+  // rule below would otherwise adopt as the authored diagnostic — anchoring the
+  // whole dating envelope floor to the 1600s on plainly later pieces (a Victorian
+  // walnut chest, a 1900–1930 slag-glass lamp). Treat species identity as
+  // supporting/undated, matching the generic `wood_species` key (no canonical
+  // route → already shows "present, no parseable date"). Substrates
+  // (substrate_evidence_* — plywood/MDF/particleboard), cut-grain methods
+  // (cut_grain_evidence_*), and wood_diagnostic_signal_* remain genuinely
+  // diagnostic and keep their numeric ranges — only species IDENTITY is excluded.
+  if (entry?.category === "wood_species_evidence") {
+    return "wood species; supporting/regional evidence, not a dating signal on its own";
+  }
   if (typeof entry?.date_floor === "number" && typeof entry?.date_ceiling === "number") {
     return `c. ${entry.date_floor}–${entry.date_ceiling}`;
   }

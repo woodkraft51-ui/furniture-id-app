@@ -235,6 +235,13 @@ export function attributeStyle(
   for (const k of clueKeys) for (const t of tokenize(k)) bump(t);
   for (const d of observationDescriptions) for (const t of tokenize(d)) bump(t);
 
+  // Provenance: tokens sourced from structured CLUE KEYS, kept separate from
+  // the merged haystack above. A match that rests only on tokens scraped from
+  // free-text observation PROSE (not in this set) is the engine citing its own
+  // descriptive language — it must NOT be authoritative (see `supported` below).
+  const clueKeyTokens = new Set<string>();
+  for (const k of clueKeys) for (const t of tokenize(k)) clueKeyTokens.add(t);
+
   // Block 10a: identify structural-pattern families that fired in the digest.
   // Style attributions to families OTHER than these get a competitive penalty
   // (structural pattern detection is higher-authority than alias token matching).
@@ -307,16 +314,24 @@ export function attributeStyle(
 
     // Supported = rests on real style evidence, not generic prose. True when
     // a structural-pattern clue mapped to THIS family fired (structuralFamilies
-    // Present), OR at least one matched token is family-IDENTIFYING (not a
-    // broad era word in GENERIC_STYLE_TOKENS). Clue-key provenance is NOT a
-    // free pass for generic tokens: a generic word like "revival" appearing in
-    // some OTHER family's clue key (e.g. colonial_revival_style_cues) must not
-    // make a rococo_revival prose match "supported" — that let Rococo
-    // piggyback on Colonial Revival's clue. A family that needs clue-key
-    // support routes through STRUCTURAL_PATTERN_FAMILY instead.
+    // Present), OR at least one matched token is BOTH (a) sourced from a
+    // structured clue KEY (clueKeyTokens) and (b) family-IDENTIFYING (not a
+    // broad era word in GENERIC_STYLE_TOKENS).
+    //
+    // Provenance is the crux (2026-05-21): a non-generic token alone is NOT
+    // enough — "mid" (from "mid-century"), "bronze" (a finish color), and
+    // "louis"/"xvi" (lifted from "Louis XVI revival influence") are all
+    // non-generic yet were scraped only from observation PROSE, and each became
+    // an authoritative misID (Mid-Century, Louis XVI lamp, false impossible
+    // pair). Requiring the identifying token to come from a clue KEY demotes
+    // those prose-only matches to non-authoritative "style influences worth
+    // checking" (engine.ts ~7665), never the headline / dating / valuation.
+    // Genuine attributions are unaffected: they carry a structural pattern
+    // (e.g. mcm_structural_pattern) or a clue-key token (e.g. "jacobean" from
+    // jacobean_colonial_revival_style).
     const supported =
       structuralFamiliesPresent.has(family.id) ||
-      matched.some((t) => !GENERIC_STYLE_TOKENS.has(t));
+      matched.some((t) => clueKeyTokens.has(t) && !GENERIC_STYLE_TOKENS.has(t));
 
     const { date_floor, date_ceiling } = periodEnvelope(family);
     rawScoreById.set(family.id, weightedScore);
