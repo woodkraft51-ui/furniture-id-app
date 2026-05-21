@@ -219,6 +219,7 @@ type Phase3Result = {
   display_form: string;
   style_context: string | null;
   confidence: ConfidenceBand | string;
+  confidence_pct?: number; // numeric pct behind `confidence`, so p6 can re-cap on dating contribution
   support: string[];
   alternatives: string[];
   // Block 1 additive fields:
@@ -7680,6 +7681,7 @@ if (missing.label_photo) {
       display_form,
       style_context: style,
       confidence: toConfidenceBand(confidencePct),
+      confidence_pct: confidencePct,
       support: buildReportEvidenceSupport(frameDigest, bestForm?.support || []),
       alternatives,
       alternative_form_ids,
@@ -8340,6 +8342,31 @@ if (p6.dating_overlap) {
     supportArr.push(`Engine reasoning: ${refined.reason}`);
     p2.support = supportArr;
     stage_outputs.p2 = p2;
+  }
+
+  // Re-cap identification confidence on ACTUAL dating contribution. The p1 gate
+  // caps on dating-structural category PRESENCE, but a category full of undated
+  // / open observations (joinery "spans eras", wood "species unidentified")
+  // doesn't date the piece — so a scan can hit High off three present-but-
+  // undated categories. Count dating-structural LAYERS that actually
+  // contributed a parseable date in the overlap; map that to the same cap
+  // ladder. This only ever LOWERS confidence (datedCount <= presentCount).
+  const DATING_CONTRIB_LAYERS = ["joinery", "fastener", "toolmark", "hardware", "wood"];
+  const datedContribCount = (frameOverlap.layers || []).filter(
+    (l) =>
+      DATING_CONTRIB_LAYERS.includes(l.layer) &&
+      l.source_count > 0 &&
+      (l.date_floor != null || l.date_ceiling != null)
+  ).length;
+  const datedCap =
+    datedContribCount === 0 ? 72 : datedContribCount === 1 ? 80 : datedContribCount === 2 ? 86 : 94;
+  if (typeof p3.confidence_pct === "number" && datedCap < p3.confidence_pct) {
+    p3.confidence_pct = datedCap;
+    p3.confidence = toConfidenceBand(datedCap);
+    p1.confidence_cap_pct = Math.min(p1.confidence_cap_pct, datedCap);
+    p1.confidence_cap = toConfidenceBand(p1.confidence_cap_pct);
+    stage_outputs.p3 = p3;
+    stage_outputs.p1 = p1;
   }
 }
 

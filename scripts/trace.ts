@@ -60,11 +60,16 @@ const BASE_PERCEPTION = {
   raw_text: "trace fixture (no real LLM call)",
 };
 
-const obs = (clue: string, description: string, confidence = 80) => ({
+const obs = (clue: string, description: string, confidence = 80, type?: string) => ({
   clue,
   description,
   confidence,
   source_image: "trace",
+  // The live LLM tags each observation with a category ([form], [hardware],
+  // etc.); the engine routes by_type on it. Fixtures that omit it land in
+  // "context" and under-exercise the confidence-cap path, so category-
+  // sensitive fixtures should pass it.
+  ...(type ? { type } : {}),
 });
 
 const PLACEHOLDER_FIXTURE: Fixture = {
@@ -1107,9 +1112,75 @@ const PAINTED_OCCASIONAL_TABLE_OVERATTRIBUTED_FIXTURE: Fixture = {
   },
 };
 
+// Fixture 12: Second real over-attribution of the same painted parlor table
+// (different scan, 24 observations, May 2026). This one is WORSE than fixture
+// 11 and exposes two further bugs the prose-token fix didn't cover:
+//   - Style demotion LEAKED: rococo_revival surfaced "supported" off the
+//     generic tokens ["revival","victorian"] because this scan carries a
+//     colonial_revival_style_cues clue whose KEY contains "revival" — and the
+//     clue-key provenance check let ANY family matching "revival" borrow it.
+//     So Rococo piggybacked on Colonial Revival's clue, kept HIGH confidence,
+//     and its style (1845-1914) + style_wave (1920-1965) layers blew the date
+//     envelope out to a useless c. 1850-1965.
+//   - Confidence counted category PRESENCE, not dating power: the cap reported
+//     High because joinery/hardware/wood were present, even though the trace
+//     shows those layers contribute ZERO parseable dates.
+// The real piece is a factory-era painted Colonial Revival / late-Victorian
+// parlor table: stamped metal corner brackets (post-1900), factory top
+// attachment, explicit colonial_revival_style_cues, heavy multi-campaign paint.
+// Expected post-fix: style is Colonial Revival (a real cue), NOT Rococo; the
+// rococo prose match is demoted to a style influence; confidence is not High;
+// the working range anchors on the post-1900 factory hardware (c. 1900 onward)
+// rather than 1850-1965.
+const PAINTED_TABLE_COLONIAL_REVIVAL_OVERATTRIBUTED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-painted-table-colonial-revival-overattributed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "underside" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "",
+    user_category_guess: "table",
+    condition_notes:
+      "small painted parlor/occasional table; turned baluster legs with square top blocks; flat box stretchers; scalloped top; two-tone black/red paint heavily worn through to bare wood and earlier red/cream layers; underside has stamped metal corner brackets with slotted screws attaching the top",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Small painted parlor/occasional table: scalloped top, four turned baluster legs with square blocks at the apron, flat box stretchers, painted apron. Two-tone black-over-red paint, heavily worn to bare wood. Underside shows solid wood boards, stamped metal corner brackets secured with slotted screws, and a factory top-attachment method.",
+    },
+    observations: [
+      obs("flat_surface", "Piece has a flat horizontal top surface functioning as a table surface; shaped/scalloped outline visible from above.", 68, "form"),
+      obs("shaped_top_edge", "The tabletop has a shaped, scalloped or multi-lobed outline rather than a plain rectangle or circle; visible clearly from the overhead/side view.", 68, "form"),
+      obs("turned_legs", "Four turned wooden legs with vase/baluster profile turnings visible; legs transition from square block at top to turned shaft below.", 82, "structure"),
+      obs("square_leg_block", "Each leg has a square (unturned) block section at the top where it meets the apron/stretcher rails, a characteristic construction feature of turned-leg tables.", 82, "structure"),
+      obs("stretchers", "Rectangular flat stretchers connect all four legs near the base, forming an H or box stretcher configuration visible from front and side views.", 82, "structure"),
+      obs("apron_skirt", "A flat apron/skirt rail runs between the legs just below the tabletop, painted black, visible from front and side.", 82, "structure"),
+      obs("mortise_and_tenon", "Leg-to-apron and leg-to-stretcher junctions appear to use mortise-and-tenon joinery; the square block at the top of each leg is consistent with a turned leg mortised into apron rails. No visible dowel ends or mechanical fasteners at these joints.", 72, "construction"),
+      obs("round_tenon_joinery", "The turned leg shaft transitions to a square block at the apron junction; the joinery method at the stretcher-to-leg connection may use round tenons inserted into the square block, consistent with traditional turned-leg table construction.", 60, "construction"),
+      obs("stamped_metal_bracket", "Metal corner brackets (appear to be flat stamped brass or steel) are visible on the underside at the apron corners, secured with screws. These reinforce the leg-to-apron joints.", 62, "hardware"),
+      obs("slotted_screw", "Screws visible on underside corner brackets appear to be slotted-head wood screws based on their round domed profile; Phillips cannot be confirmed or ruled out at this resolution.", 60, "hardware"),
+      obs("refinished_surface", "The piece shows evidence of at least two paint campaigns: a red layer beneath the current black top coat, visible at worn edges and chipped areas. The current black paint is heavily worn through on the top surface exposing bare wood and the earlier red/cream layers beneath.", 54, "condition"),
+      obs("paint_layer_stratigraphy", "At least two distinct paint layers are visible at worn edges: a red/orange layer and a black top coat. Bare wood (cream/tan) is exposed through both layers in heavily worn areas on the top surface.", 54, "condition"),
+      obs("two_tone_painted_decoration", "The piece is painted in a deliberate two-tone scheme: black for the main body and legs, red accent bands at the turned leg rings and along the top edge profile. This decorative painting scheme is consistent with late Victorian or Colonial Revival painted furniture traditions.", 52, "style"),
+      obs("colonial_revival_style_cues", "Turned legs with baluster profile, shaped/scalloped top, stretcher base, and painted decoration are consistent with Colonial Revival or late Victorian parlor table forms popular c. 1880-1930.", 52, "style"),
+      obs("solid_wood_construction", "Underside view shows solid wood boards for the tabletop with visible grain and no lamination layers; apron and stretchers also appear to be solid wood.", 84, "materials"),
+      obs("wood_species_unidentified", "Bare wood visible through paint chips on the top surface appears to be a medium-toned hardwood; grain pattern is not clearly diagnostic under paint. Underside shows warm brown wood consistent with oak, maple, or similar domestic hardwood.", 45, "materials"),
+      obs("paint_wear_heavy", "Heavy paint wear and chipping across the entire top surface, exposing bare wood in large patches. Leg paint also worn at high-contact areas. Consistent with extended use and age.", 54, "condition"),
+      obs("top_attachment_method", "The tabletop is attached to the apron using metal corner brackets visible on the underside at each corner, a common factory-era attachment method.", 85, "construction"),
+      obs("stretcher_configuration", "Flat rectangular stretchers connect all four legs near the floor in a box or near-box configuration; visible from front, side, and underside views.", 92, "construction"),
+      obs("leg_top_block_to_apron", "The joinery closeup shows the square block at the top of the turned leg where two apron/stretcher rails meet. The rails appear to butt into or be mortised into the square block. Paint obscures exact joint type but the geometry is consistent with mortise-and-tenon.", 68, "joinery"),
+      obs("structural_integrity", "No visible breaks, cracks in structural members, or loose joints apparent from the photos. The table appears structurally intact despite heavy surface wear.", 54, "condition"),
+      obs("barley_twist", "Legs are baluster/vase turned, not barley-twist. No spiral turning visible.", 52, "style"),
+      obs("drawer_present", "No drawer visible on any face of the apron from front, side, or underside views.", 68, "form"),
+      obs("visible_fastener_on_bracket", "On the underside corner brackets, a round domed fastener head is visible at each corner bracket mounting point. Could be a round-head slotted screw or carriage bolt.", 62, "hardware"),
+    ],
+  },
+};
+
 const FIXTURES: Record<string, Fixture> = {
   placeholder: PLACEHOLDER_FIXTURE,
   painted_occasional_table_overattributed: PAINTED_OCCASIONAL_TABLE_OVERATTRIBUTED_FIXTURE,
+  painted_table_colonial_revival_overattributed: PAINTED_TABLE_COLONIAL_REVIVAL_OVERATTRIBUTED_FIXTURE,
   baroque_single_token: BAROQUE_SINGLE_TOKEN_FIXTURE,
   desk_insect_damage: DESK_INSECT_DAMAGE_FIXTURE,
   desk_seated_drawer: DESK_SEATED_DRAWER_FIXTURE,

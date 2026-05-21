@@ -137,18 +137,28 @@ function tryOpenFloorAnchor(
   overlap: DatingOverlapData
 ): RefinedDating | null {
   if (original.date_floor != null) return null;
-  const floor = overlap.overall_floor;
-  if (floor == null || floor < OPEN_FLOOR_MIN_YEAR) return null;
-  // The floor must rest on real dating evidence, not a style/form remnant.
-  const hasRealDatedEvidence = overlap.layers.some(
-    (l) =>
-      l.layer !== "style" &&
-      l.layer !== "style_wave" &&
-      l.layer !== "form" &&
-      (l.date_floor != null || l.date_ceiling != null)
+  // Anchor on REAL dating evidence only — construction/joinery/fastener/
+  // toolmark/wood/hardware/finish/upholstery. Form (catalog span) and style /
+  // style_wave (broad period context) are excluded: a style band must not set
+  // the construction date. This keeps a "post-1900" factory-hardware floor from
+  // being dragged earlier by a broad style floor (e.g. Colonial Revival 1876)
+  // or capped by a disjoint revival-wave ceiling.
+  const EXCLUDED: LayerName[] = ["form", "style", "style_wave"];
+  const real = overlap.layers.filter(
+    (l) => !EXCLUDED.includes(l.layer) && (l.date_floor != null || l.date_ceiling != null)
   );
-  if (!hasRealDatedEvidence) return null;
-  const ceiling = overlap.overall_ceiling;
+  if (real.length === 0) return null;
+  // Binding floor = the most restrictive (latest) lower bound the evidence
+  // allows; the piece can't predate its most recent diagnostic.
+  const floors = real.map((l) => l.date_floor).filter((x): x is number => x != null);
+  const floor = floors.length ? Math.max(...floors) : null;
+  if (floor == null || floor < OPEN_FLOOR_MIN_YEAR) return null;
+  // Binding ceiling = earliest real upper bound, but never at/below the floor
+  // (a contradictory pair leaves the ceiling open rather than fabricating a
+  // degenerate band).
+  const ceilings = real.map((l) => l.date_ceiling).filter((x): x is number => x != null);
+  let ceiling = ceilings.length ? Math.min(...ceilings) : null;
+  if (ceiling != null && ceiling <= floor) ceiling = null;
   const range = ceiling != null ? `c. ${floor}–${ceiling}` : openEndedFloorPhrase(floor);
   return {
     range,

@@ -203,6 +203,7 @@ const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
   // penalty when revival markers are present.
   neoclassical_revival_cues: "style_family_colonial_revival",
   colonial_revival_cues: "style_family_colonial_revival",
+  colonial_revival_style_cues: "style_family_colonial_revival",
   // Golden Oak Era anchors: Golden Oak Era now lives in the wood HCL as an
   // oak variant (wood_variant_golden_oak_era) per appraiser direction — NOT
   // a style family. But original-period style attributions (American Empire
@@ -231,12 +232,7 @@ export function attributeStyle(
   // most-emphasized style signal.
   const haystack = new Map<string, number>();
   const bump = (t: string) => haystack.set(t, (haystack.get(t) ?? 0) + 1);
-  // Track which tokens came from structured clue KEYS (curated evidence, e.g.
-  // `colonial_revival_cues`) vs only from free-text observation descriptions
-  // (LLM prose, which includes hedging/comparative language). A family matched
-  // only on generic tokens scraped from prose is contamination, not evidence.
-  const clueKeyTokens = new Set<string>();
-  for (const k of clueKeys) for (const t of tokenize(k)) { bump(t); clueKeyTokens.add(t); }
+  for (const k of clueKeys) for (const t of tokenize(k)) bump(t);
   for (const d of observationDescriptions) for (const t of tokenize(d)) bump(t);
 
   // Block 10a: identify structural-pattern families that fired in the digest.
@@ -296,21 +292,31 @@ export function attributeStyle(
 
     // Block 10a: soft confidence floor. Single-token matches must be
     // high-confidence (deep token match, dominant family); multi-token can
-    // pass at lower floor.
+    // pass at lower floor. EXCEPTION: a family whose structural-pattern clue
+    // fired (e.g. colonial_revival_style_cues) is high-authority evidence and
+    // surfaces even when its generic alias tokens score below the floor —
+    // otherwise a genuinely-cued Colonial Revival is dropped and the read goes
+    // style-less. We only EXEMPT it from the drop; we do NOT inflate its
+    // confidence, so it still ranks below any genuine distinctive-token match
+    // (e.g. Queen Anne / Eastlake stay the lead when they out-score it) and
+    // leads only when nothing stronger is present.
     const requiredFloor = matched.length === 1
       ? SINGLE_TOKEN_CONFIDENCE_FLOOR
       : MULTI_TOKEN_CONFIDENCE_FLOOR;
-    if (confidence < requiredFloor) continue;
+    if (confidence < requiredFloor && !structuralFamiliesPresent.has(family.id)) continue;
 
     // Supported = rests on real style evidence, not generic prose. True when
-    // at least one matched token is family-IDENTIFYING (not a broad era word)
-    // OR was sourced from a structured clue key. A structural-pattern clue
-    // (which puts this family in structuralFamiliesPresent) is also
-    // definitionally supported. A match built only from GENERIC_STYLE_TOKENS
-    // scraped from observation prose is contamination, not evidence.
+    // a structural-pattern clue mapped to THIS family fired (structuralFamilies
+    // Present), OR at least one matched token is family-IDENTIFYING (not a
+    // broad era word in GENERIC_STYLE_TOKENS). Clue-key provenance is NOT a
+    // free pass for generic tokens: a generic word like "revival" appearing in
+    // some OTHER family's clue key (e.g. colonial_revival_style_cues) must not
+    // make a rococo_revival prose match "supported" — that let Rococo
+    // piggyback on Colonial Revival's clue. A family that needs clue-key
+    // support routes through STRUCTURAL_PATTERN_FAMILY instead.
     const supported =
       structuralFamiliesPresent.has(family.id) ||
-      matched.some((t) => !GENERIC_STYLE_TOKENS.has(t) || clueKeyTokens.has(t));
+      matched.some((t) => !GENERIC_STYLE_TOKENS.has(t));
 
     const { date_floor, date_ceiling } = periodEnvelope(family);
     rawScoreById.set(family.id, weightedScore);
