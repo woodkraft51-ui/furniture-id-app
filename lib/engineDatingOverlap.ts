@@ -108,6 +108,58 @@ export type RefinedDating = {
  */
 export const CONVERGENCE_OVERRIDE_ENABLED = true; // Block 7b3 feature flag
 
+// Open-floor anchoring: only consider floors at or after this year "meaningful"
+// enough to anchor a working range. An earlier floor (e.g. a persistent
+// technique like mortise-and-tenon "post-1620") carries no useful dating
+// signal and should leave the range fully broad.
+const OPEN_FLOOR_MIN_YEAR = 1850;
+
+function openEndedFloorPhrase(floor: number): string {
+  const era =
+    floor >= 1945 ? "mid 20th century or later"
+    : floor >= 1900 ? "early-to-mid 20th century or later"
+    : "late 19th century or later";
+  return `c. ${floor} onward (${era})`;
+}
+
+/**
+ * When no convergence zone qualifies but real (non-style) evidence sets a
+ * meaningful floor — e.g. factory-era hardware "post-1900" — anchor the
+ * working range to that floor instead of reporting "Broad, not tightly dated."
+ * The most recent dating evidence is a genuine lower bound; surfacing it
+ * ("c. 1900 onward") is more useful and honest than declaring the piece
+ * undatable. Only fires when p2 produced NO numeric anchor of its own, so it
+ * never overrides a real computed range. Confidence stays Low — a single
+ * open-ended floor is a bound, not a convergence.
+ */
+function tryOpenFloorAnchor(
+  original: { date_floor: number | null },
+  overlap: DatingOverlapData
+): RefinedDating | null {
+  if (original.date_floor != null) return null;
+  const floor = overlap.overall_floor;
+  if (floor == null || floor < OPEN_FLOOR_MIN_YEAR) return null;
+  // The floor must rest on real dating evidence, not a style/form remnant.
+  const hasRealDatedEvidence = overlap.layers.some(
+    (l) =>
+      l.layer !== "style" &&
+      l.layer !== "style_wave" &&
+      l.layer !== "form" &&
+      (l.date_floor != null || l.date_ceiling != null)
+  );
+  if (!hasRealDatedEvidence) return null;
+  const ceiling = overlap.overall_ceiling;
+  const range = ceiling != null ? `c. ${floor}–${ceiling}` : openEndedFloorPhrase(floor);
+  return {
+    range,
+    date_floor: floor,
+    date_ceiling: ceiling,
+    confidence: "Low",
+    reason: `No layer convergence, but the most recent dating evidence sets a floor of c. ${floor}, so the working range is anchored there rather than left fully open. Convergent construction, joinery, or maker evidence would tighten it.`,
+    refined: true,
+  };
+}
+
 export function refineDatingFromConvergence(
   original: {
     range: string;
@@ -125,9 +177,12 @@ export function refineDatingFromConvergence(
     reason: "no convergence override applied",
     refined: false,
   };
+  // No convergence override available → still anchor to a meaningful evidence
+  // floor when one exists, rather than falling all the way back to broad.
+  const noOverride = (): RefinedDating => tryOpenFloorAnchor(original, overlap) ?? fallback;
 
-  if (!CONVERGENCE_OVERRIDE_ENABLED) return fallback;
-  if (!overlap.convergence_zones?.length) return fallback;
+  if (!CONVERGENCE_OVERRIDE_ENABLED) return noOverride();
+  if (!overlap.convergence_zones?.length) return noOverride();
 
   // Pick the strongest qualifying convergence zone: highest authority sum,
   // then most layers, then narrowest. Previously the picker sorted by layer
@@ -166,7 +221,7 @@ export function refineDatingFromConvergence(
       if (b.effective_layer_count !== a.effective_layer_count) return b.effective_layer_count - a.effective_layer_count;
       return (a.date_ceiling - a.date_floor) - (b.date_ceiling - b.date_floor);
     });
-  if (qualifying.length === 0) return fallback;
+  if (qualifying.length === 0) return noOverride();
 
   let best = qualifying[0];
 
