@@ -1925,19 +1925,40 @@ const FIXTURES: Record<string, Fixture> = {
     "Teller window: a bank teller counter and checkout desk for customer transactions."),
 };
 
-function parseArgs(): { piece: string | null; all: boolean } {
+function parseArgs(): { piece: string | null; all: boolean; deterministic: boolean } {
   const argv = (typeof process !== "undefined" ? process.argv : []).slice(2);
   let piece: string | null = null;
   let all = false;
+  let deterministic = false;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--piece" && argv[i + 1]) {
       piece = String(argv[i + 1]);
       i++;
     } else if (argv[i] === "--all") {
       all = true;
+    } else if (argv[i] === "--deterministic" || argv[i] === "--stable") {
+      deterministic = true;
     }
   }
-  return { piece, all };
+  return { piece, all, deterministic };
+}
+
+// Wall-clock timings and the engine's recovery `triggered_at` timestamp make raw
+// trace output non-reproducible, so two runs of the same fixture never compare
+// equal. Under --deterministic we zero the timings and pin the timestamp, so
+// regression diffs (especially --all) reflect only real engine-behavior changes.
+function normalizeForDiff(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(normalizeForDiff);
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (k === "triggered_at") out[k] = "<normalized>";
+      else if (k === "total_ms" || k === "elapsed_ms") out[k] = 0;
+      else out[k] = normalizeForDiff(v);
+    }
+    return out;
+  }
+  return value;
 }
 
 function loadFixture(piece: string | null): Fixture {
@@ -1990,23 +2011,25 @@ async function runFixture(name: string, fixture: Fixture): Promise<any> {
 }
 
 async function main(): Promise<void> {
-  const { piece, all } = parseArgs();
+  const { piece, all, deterministic } = parseArgs();
+  const emit = (o: unknown) => {
+    // eslint-disable-next-line no-console
+    console.log(JSON.stringify(deterministic ? normalizeForDiff(o) : o, null, 2));
+  };
 
   if (all) {
     const outputs: Record<string, any> = {};
     for (const name of Object.keys(FIXTURES)) {
       outputs[name] = await runFixture(name, FIXTURES[name]);
     }
-    // eslint-disable-next-line no-console
-    console.log(JSON.stringify(outputs, null, 2));
+    emit(outputs);
     return;
   }
 
   const name = piece && FIXTURES[piece] ? piece : "placeholder";
   const fixture = loadFixture(piece);
   const output = await runFixture(name, fixture);
-  // eslint-disable-next-line no-console
-  console.log(JSON.stringify(output, null, 2));
+  emit(output);
 }
 
 main().then(
