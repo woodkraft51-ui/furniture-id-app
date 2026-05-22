@@ -8,7 +8,12 @@ import WelcomeLanding from "./WelcomeLanding";
 import ExampleModal from "./ExampleModal";
 import GuidanceMessages from "./GuidanceMessages";
 import TraceReport from "./TraceReport";
+import PickerProfileSetup from "./PickerProfileSetup";
+import GlossaryText from "./GlossaryText";
 import { PHOTO_EXAMPLES } from "../lib/intake";
+import { recommendationFromValue, isLargeForm, hasRepairSignals } from "../lib/fieldRecommendation";
+import { getProfile, saveProfile, hasBeenPrompted, markPrompted } from "../lib/profile";
+import { getBasket, addToBasket, isInBasket, COMPARE_BASKET_EVENT, COMPARE_BASKET_MAX } from "../lib/compareBasket";
 
 const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
 
@@ -276,13 +281,6 @@ function computeMissingEvidenceFromStructured(coreImages: CoreImageMap, groupIma
   };
 }
 
-function recommendationLabel(rec: RecommendationLevel) {
-  if (rec === "BUY_NOW") return "BUY NOW";
-  if (rec === "BUY") return "BUY";
-  if (rec === "CONSIDER") return "CONSIDER";
-  return "PASS";
-}
-
 function recommendationStyle(rec: RecommendationLevel): React.CSSProperties {
   if (rec === "BUY_NOW") return { background: "#dff3e4", border: "1px solid #9ec8a9", color: "#1f5a2b" };
   if (rec === "BUY") return { background: "#e8f6ea", border: "1px solid #afcfb6", color: "#245b2f" };
@@ -342,45 +340,6 @@ function fieldValueBand(form: string, dateRange: string, conflictCount: number, 
   return { low, high, display: `$${low} – $${high}` };
 }
 
-function deriveFieldRecommendation(args: { askingPrice: string; valueLow: number; valueHigh: number; confidenceBand?: string; conflictCount: number }) {
-  const asking = Number(String(args.askingPrice || "").replace(/[$,]/g, "").trim());
-  const hasAsking = Number.isFinite(asking) && asking > 0;
-  const midpoint = Math.round((args.valueLow + args.valueHigh) / 2);
-  let score = 50;
-
-  if (hasAsking) {
-    const margin = midpoint - asking;
-    if (margin >= 175) score += 24;
-    else if (margin >= 90) score += 16;
-    else if (margin >= 35) score += 8;
-    else if (margin < 0) score -= 22;
-  } else {
-    score -= 6;
-  }
-
-  if (args.conflictCount >= 1) score -= 8;
-  if (args.confidenceBand === "High") score += 8;
-  if (args.confidenceBand === "Moderate") score += 3;
-  if (args.confidenceBand === "Low") score -= 8;
-  if (args.confidenceBand === "Inconclusive") score -= 14;
-
-  let recommendation: RecommendationLevel = "CONSIDER";
-  if (score >= 82) recommendation = "BUY_NOW";
-  else if (score >= 66) recommendation = "BUY";
-  else if (score < 45) recommendation = "PASS";
-
-  if (!hasAsking && recommendation === "BUY_NOW") recommendation = "BUY";
-  if (!hasAsking && recommendation === "BUY") recommendation = "CONSIDER";
-
-  let explanation = "";
-  if (!hasAsking) explanation = "No asking price was entered, so this recommendation stays conservative.";
-  else if (recommendation === "BUY_NOW") explanation = "The estimated value lane and visible evidence support a strong buy at the entered price.";
-  else if (recommendation === "BUY") explanation = "The piece appears promising at the entered price, with enough support for a positive field decision.";
-  else if (recommendation === "CONSIDER") explanation = "There may be upside, but uncertainty or risk suggests a cautious decision.";
-  else explanation = "The visible risk, weak margin, or limited support make this a pass.";
-
-  return { recommendation, label: recommendationLabel(recommendation), explanation };
-}
 function evidenceMeaning(text: string): string {
   const t = String(text || "").toLowerCase();
 
@@ -2152,6 +2111,16 @@ export default function Page() {
   const [showLanding, setShowLanding] = useState<boolean | null>(null);
   const [traceVisible, setTraceVisible] = useState(false);
 
+  // Picker Profile wizard state. The wizard (app/PickerProfileSetup.tsx) is a
+  // controlled component: the parent owns the in-progress draft and step.
+  const [showPickerProfile, setShowPickerProfile] = useState(false);
+  const [pickerDraft, setPickerDraft] = useState<any>({});
+  const [pickerStep, setPickerStep] = useState(0);
+
+  // Comparison-basket count, kept in sync for the header indicator.
+  const [compareCount, setCompareCount] = useState(0);
+  const [compareNote, setCompareNote] = useState("");
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -2162,6 +2131,45 @@ export default function Page() {
       setShowLanding(true);
     }
   }, []);
+
+  // Hydrate the saved Picker Profile into intake on mount so the field-scan
+  // scorer picks it up; keep the comparison-basket count in sync.
+  useEffect(() => {
+    const saved = getProfile();
+    if (saved) setIntake((prev) => ({ ...prev, picker_profile: saved }));
+    const syncCount = () => setCompareCount(getBasket().length);
+    syncCount();
+    window.addEventListener(COMPARE_BASKET_EVENT, syncCount);
+    return () => window.removeEventListener(COMPARE_BASKET_EVENT, syncCount);
+  }, []);
+
+  const handleSaveProfile = (profile: any) => {
+    saveProfile(profile);
+    setIntake((prev) => ({ ...prev, picker_profile: profile }));
+    setShowPickerProfile(false);
+  };
+
+  const handleSkipProfile = () => {
+    markPrompted();
+    setShowPickerProfile(false);
+  };
+
+  const openPickerProfile = () => {
+    setPickerDraft(intake.picker_profile || {});
+    setPickerStep(0);
+    setShowPickerProfile(true);
+  };
+
+  const handleAddToCompare = () => {
+    const cid = report?.id || activeCaseId;
+    if (!cid) return;
+    const res = addToBasket(cid);
+    setCompareNote(
+      res === "full"
+        ? `Comparison holds up to ${COMPARE_BASKET_MAX} scans — remove one first.`
+        : ""
+    );
+  };
 
   // Secret-code reveal for the Engine Trace. Display-only: the trace data is
   // always computed and present in `report`; this just toggles the section.
@@ -2206,6 +2214,13 @@ export default function Page() {
       window.localStorage.setItem(LANDING_DISMISSED_KEY, "true");
     } catch {
       // ignore
+    }
+    // First-run: offer the Picker Profile the first time someone enters Field
+    // Scan, since it personalizes the buy score. Only prompt once.
+    if (mode === "field_scan" && !getProfile() && !hasBeenPrompted()) {
+      setPickerDraft({});
+      setPickerStep(0);
+      setShowPickerProfile(true);
     }
   };
 
@@ -2657,8 +2672,17 @@ const p7 = stageOutputs.p7 || null;
 
   const fieldRecommendation = useMemo(() => {
     if (!fieldValue) return null;
-    return deriveFieldRecommendation({ askingPrice: intake.asking_price, valueLow: fieldValue.low, valueHigh: fieldValue.high, confidenceBand: p1?.confidence_cap, conflictCount: Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0 });
-  }, [fieldValue, intake.asking_price, p1, p5]);
+    return recommendationFromValue({
+      askingPrice: intake.asking_price,
+      valueLow: fieldValue.low,
+      valueHigh: fieldValue.high,
+      confidenceBand: p1?.confidence_cap,
+      conflictCount: Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0,
+      profile: intake.picker_profile,
+      largeForm: isLargeForm(p3?.display_form || p3?.form, intake.approximate_height, intake.approximate_width),
+      repairSignals: hasRepairSignals(intake.condition_notes, intake.known_alterations),
+    });
+  }, [fieldValue, intake, p1, p3, p5]);
 
   const supportingEvidence = useMemo(() => pickSupportingEvidence(report), [report]);
   const primaryCaution = (Array.isArray(p5?.conflict_notes) && p5.conflict_notes[0]) || (Array.isArray(p2?.limitations) && p2.limitations[0]) || "Exact dating depends on construction evidence such as joinery, fasteners, and structural details. Without these, visible style may suggest a period but cannot confirm it.";
@@ -2686,6 +2710,16 @@ const p7 = stageOutputs.p7 || null;
 
   return (
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
+      {showPickerProfile && (
+        <PickerProfileSetup
+          draft={pickerDraft}
+          setDraft={setPickerDraft}
+          step={pickerStep}
+          setStep={setPickerStep}
+          onSave={handleSaveProfile}
+          onCancel={handleSkipProfile}
+        />
+      )}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 20px 60px" }}>
         {/* Back-to-landing link — small, low-weight, lives above the page h1
             so power users can return to the two-path picker any time.
@@ -2711,6 +2745,17 @@ const p7 = stageOutputs.p7 || null;
         >
           ← Back to start
         </button>
+        <div className="no-print" style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", marginBottom: 16, fontSize: 13 }}>
+          <a href="/glossary" style={navLinkStyle}>Glossary</a>
+          <a href="/compare" style={navLinkStyle}>
+            Compare{compareCount > 0 ? ` (${compareCount})` : ""}
+          </a>
+          {analysisMode === "field_scan" && (
+            <button type="button" onClick={openPickerProfile} style={navButtonStyle}>
+              {intake.picker_profile ? "Edit picker profile" : "Set up picker profile"}
+            </button>
+          )}
+        </div>
         <header className="no-print" style={{ marginBottom: 24 }}>
           {analysisMode === "field_scan" ? (
             <>
@@ -3158,6 +3203,14 @@ const p7 = stageOutputs.p7 || null;
                 <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: "0.03em", lineHeight: 1.1 }}>{fieldRecommendation.label}</div>
                 <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.55 }}>{fieldRecommendation.explanation}</div>
               </div>
+              <div className="no-print" style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                {(report?.id || activeCaseId) && isInBasket(report?.id || activeCaseId) ? (
+                  <a href="/compare" style={{ ...navLinkStyle, fontSize: 14 }}>In comparison ✓ — view{compareCount > 0 ? ` (${compareCount})` : ""}</a>
+                ) : (
+                  <button type="button" onClick={handleAddToCompare} style={{ ...tinyRemoveButton, fontWeight: 600 }}>+ Add to comparison</button>
+                )}
+                {compareNote && <span style={{ fontSize: 12, color: "#7a2626" }}>{compareNote}</span>}
+              </div>
             </SectionCard>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
@@ -3228,18 +3281,18 @@ const p7 = stageOutputs.p7 || null;
                 <div style={metaRowStyle}><span>Typical resale lane</span><strong>{fieldValue.display}</strong></div>
                 <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>This is a broad field-use range shaped by likely form, date lane, and visible risk.</div>
               </SectionCard>
-              <SectionCard title="Main Caution"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{primaryCaution}</div></SectionCard>
+              <SectionCard title="Main Caution"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}><GlossaryText text={primaryCaution} /></div></SectionCard>
             </div>
 
             <SectionCard title="Key Supporting Evidence">
-              {supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div>{evidenceMeaning(item) && (
+              {supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div>{evidenceMeaning(item) && (
   <div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>
-    {evidenceMeaning(item)}
+    <GlossaryText text={evidenceMeaning(item)} />
   </div>
 )}</div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}
             </SectionCard>
 
-            <SectionCard title="Next Best Evidence"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{nextBestEvidence}</div></SectionCard>
+            <SectionCard title="Next Best Evidence"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}><GlossaryText text={nextBestEvidence} /></div></SectionCard>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
             <SectionCard title="Negotiating Tips">
             <TipsList items={p7?.negotiation_tips} />
@@ -3445,7 +3498,7 @@ const p7 = stageOutputs.p7 || null;
                 />
               </SectionCard>
             )}
-            <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}>{item}</div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>{evidenceMeaning(item)}</div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
+            <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}><GlossaryText text={evidenceMeaning(item)} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
             <SectionCard title="Resale Valuation">
               <ResaleValuationSection valuation={p6?.valuation as ValuationShape | undefined} formLabel={p3?.display_form || p3?.form} />
             </SectionCard>
@@ -3497,6 +3550,8 @@ const p7 = stageOutputs.p7 || null;
   );
 }
 
+const navLinkStyle: React.CSSProperties = { color: "#1a2e4e", textDecoration: "none", fontWeight: 600, borderBottom: "1px solid #b9956a", paddingBottom: 1 };
+const navButtonStyle: React.CSSProperties = { background: "none", border: "none", padding: 0, cursor: "pointer", color: "#1a2e4e", fontWeight: 600, fontFamily: "inherit", fontSize: 13, borderBottom: "1px solid #b9956a" };
 const inputStyle: React.CSSProperties = { width: "100%", border: "1px solid #d7c8af", borderRadius: 8, padding: "10px 12px", background: "#fffefb", color: "#2f2418", fontSize: 14 };
 const textareaStyle: React.CSSProperties = { ...inputStyle, resize: "vertical" };
 const primaryButton: React.CSSProperties = { border: "none", background: "#5a3e1b", color: "#fffaf2", borderRadius: 10, padding: "11px 16px", fontSize: 14, fontWeight: 700 };
