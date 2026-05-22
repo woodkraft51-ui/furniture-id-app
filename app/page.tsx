@@ -146,13 +146,14 @@ const INITIAL_INTAKE: IntakeState = {
   suggests_prior_function: false,
 };
 
-// Block 11 P4-1: client-side image downscaling. Removes Vercel's 4.5MB
-// FUNCTION_PAYLOAD_TOO_LARGE failure on Full Analysis. Modern phone photos
-// are typically 2-4MB each; 5-photo Full Analysis blew the cap. Downscale
-// to max 1600px longer edge, JPEG quality 0.82 → typical ~300-600KB/photo.
-// Skip re-encoding when image is already small (<1.5MB AND ≤1600px longer
-// edge) — avoids unnecessary processing time + potential quality loss
-// from re-encoding already-compressed JPEGs.
+// Block 11 P4-1: client-side image downscaling. Modern phone photos are
+// typically 2-4MB each; an unscaled multi-photo scan bloats the upload and
+// can exceed the per-image / per-request budget. Downscale to max 1600px
+// longer edge, JPEG quality 0.82 → typical ~300-600KB/photo, well under
+// Anthropic's 5MB-per-image limit and keeping a 12-photo scan comfortably
+// within the 32MB request ceiling. Skip re-encoding when image is already
+// small (<1.5MB AND ≤1600px longer edge) — avoids unnecessary processing
+// time + potential quality loss from re-encoding already-compressed JPEGs.
 const MAX_IMAGE_EDGE = 1600;
 const JPEG_QUALITY = 0.82;
 const SKIP_DOWNSCALE_BYTES = 1_500_000;
@@ -206,7 +207,7 @@ async function downscaleImageFile(file: File): Promise<File> {
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise(async (resolve, reject) => {
     try {
-      // Block 11: downscale first to stay under Vercel's 4.5MB payload cap.
+      // Block 11: downscale first to keep uploads small and within the request budget.
       const processed = await downscaleImageFile(file);
       const reader = new FileReader();
       reader.onload = () => resolve(String(reader.result || ""));
@@ -2496,19 +2497,18 @@ export default function Page() {
       }
     }
 
-    // Pre-upload payload guard. Without this, large photo sets silently
-    // fail at the Vercel platform layer (4.5MB cap on serverless function
-    // payloads) — the proxy at /api/analyze returns 413 but in
-    // full-analysis mode there was no UI to surface that error, so the
-    // button reverted to "Run Full Analysis" with no indication of what
-    // went wrong. Catching it client-side BEFORE the call means a clear
-    // message instead of a silent failure.
+    // Pre-upload payload guard. Estimates total upload size and blocks
+    // before the API call so the user gets a clear message instead of a
+    // silent failure. The real ceiling is Anthropic's 32MB-per-request
+    // limit — the app runs on an always-on server (Render) with no small
+    // body cap, so this is no longer a host constraint. 20 MB leaves
+    // generous room for ~12 downscaled photos plus the system prompt +
+    // intake metadata + JSON overhead, while still catching a runaway
+    // upload (e.g. if downscaling fell back to originals).
     //
     // Estimate payload size by summing data_url string lengths. data_urls
     // are base64-encoded (1 char ≈ 1 byte payload) plus a small prefix.
-    // 4 MB threshold leaves ~500KB margin under Vercel's 4.5MB cap for
-    // system prompt + intake metadata + JSON structure overhead.
-    const PAYLOAD_BYTE_LIMIT = 4_000_000;
+    const PAYLOAD_BYTE_LIMIT = 20_000_000;
     const totalDataUrlBytes = allImages.reduce((sum, img) => {
       const url = (img && (img as any).data_url) ? String((img as any).data_url) : "";
       return sum + url.length;
@@ -2522,10 +2522,10 @@ export default function Page() {
       return;
     }
 
-    // Soft count cap: more than 8 photos rarely improves analysis and
-    // routinely pushes payloads over the platform limit. Suggest pruning
+    // Soft count cap: beyond ~12 photos, extra angles rarely improve the
+    // analysis and just add input-token cost and latency. Suggest pruning
     // before attempting.
-    const PHOTO_COUNT_SOFT_CAP = 8;
+    const PHOTO_COUNT_SOFT_CAP = 12;
     if (allImages.length > PHOTO_COUNT_SOFT_CAP) {
       setError(
         `${allImages.length} photos is more than the engine can effectively use. Reduce to ${PHOTO_COUNT_SOFT_CAP} or fewer — choose your highest-detail shots (joinery close-ups, label, underside) over wide angle views. Fewer good photos beat more redundant ones.`
