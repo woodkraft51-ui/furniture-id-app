@@ -64,6 +64,22 @@ Launch Readiness per synthesis 13.3).
 
 ## P4-2 — Evidence-vocabulary expansion in LLM observation parsing
 
+**Status (2026-05-22): RESOLVED.** Closed by the Block 15–23 canonical-appendix
+system. Nine canonical appendices (upholstery, joinery, fastener, hardware,
+finish, toolmark, wood-identification, wood-evidence, maker-mark) are built at
+engine init via `lib/engineClueResolver.ts` (e.g. `buildUpholsteryCanonicalAppendix`)
+and injected into the P0 perception prompt (`lib/engine.ts`). Each enumerates
+the canonical library's per-entry identifying characteristics with explicit
+elicitation instructions, so the LLM now observes against the full canonical
+vocabulary rather than only the inline `CLUE_LIBRARY` (which itself grew from
+~86 to ~170 entries). "Wire dated {fastener,joinery,wood-evidence} entries to
+clue keys (reachability pass 1/4–4/4)" closed the loop so elicited observations
+map onto canonical evidence layers. The "possibly … canonical entry IDs as
+observation keys directly" sub-scope was intentionally not pursued — the
+engine-key → `CLUE_TO_CANONICAL` mapping satisfies the goal. Remaining
+validation is empirical only (trace runs against real-photo fixtures to confirm
+evidence layers populate), not code.
+
 **Surfaced during**: Block 3b rendering verification — dating-overlap viz
 showed many "no signal" layers on real-photo runs.
 

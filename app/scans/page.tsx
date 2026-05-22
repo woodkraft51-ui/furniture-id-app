@@ -3,6 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import { API } from "../../lib/store";
+import {
+  getBasket,
+  addToBasket,
+  removeFromBasket,
+  COMPARE_BASKET_EVENT,
+  COMPARE_BASKET_MAX,
+} from "../../lib/compareBasket";
 
 /**
  * My Scans — list view of every persisted case (Stage 2 of the
@@ -40,6 +47,28 @@ import { API } from "../../lib/store";
 export default function MyScansPage() {
   const [cases, setCases] = React.useState<any[] | null>(null);
   const [error, setError] = React.useState<string>("");
+  const [basket, setBasket] = React.useState<string[]>([]);
+
+  // Track the comparison basket and keep it in sync across this page.
+  React.useEffect(() => {
+    const sync = () => setBasket(getBasket());
+    sync();
+    window.addEventListener(COMPARE_BASKET_EVENT, sync);
+    return () => window.removeEventListener(COMPARE_BASKET_EVENT, sync);
+  }, []);
+
+  const toggleCompare = (id: string) => {
+    if (basket.includes(id)) {
+      removeFromBasket(id);
+    } else {
+      const res = addToBasket(id);
+      if (res === "full") {
+        setError(`Comparison holds up to ${COMPARE_BASKET_MAX} scans — remove one first.`);
+        return;
+      }
+    }
+    setError("");
+  };
 
   // Load on mount
   React.useEffect(() => {
@@ -86,7 +115,14 @@ export default function MyScansPage() {
       <h1 style={headlineStyle}>My Scans</h1>
       <p style={subtitleStyle}>
         Every scan you run is saved here automatically. Click any saved scan to view its report again.
+        Add scans to the comparison basket to view them side by side.
       </p>
+
+      {basket.length > 0 && (
+        <Link href="/compare" style={compareLinkStyle}>
+          Compare {basket.length} {basket.length === 1 ? "scan" : "scans"} →
+        </Link>
+      )}
 
       {error && <div style={errorStyle}>{error}</div>}
 
@@ -109,7 +145,13 @@ export default function MyScansPage() {
       {cases !== null && cases.length > 0 && (
         <div style={listStyle}>
           {cases.map((c) => (
-            <ScanRow key={c.id} caseData={c} onDelete={() => deleteCase(c.id)} />
+            <ScanRow
+              key={c.id}
+              caseData={c}
+              onDelete={() => deleteCase(c.id)}
+              inBasket={basket.includes(c.id)}
+              onToggleCompare={() => toggleCompare(c.id)}
+            />
           ))}
         </div>
       )}
@@ -117,7 +159,17 @@ export default function MyScansPage() {
   );
 }
 
-function ScanRow({ caseData, onDelete }: { caseData: any; onDelete: () => void }) {
+function ScanRow({
+  caseData,
+  onDelete,
+  inBasket,
+  onToggleCompare,
+}: {
+  caseData: any;
+  onDelete: () => void;
+  inBasket: boolean;
+  onToggleCompare: () => void;
+}) {
   const id = caseData?.id || "?";
   const mode = caseData?.analysis_mode === "field_scan" ? "Field Scan" : "Full Analysis";
   const modeColor = caseData?.analysis_mode === "field_scan" ? "#1a2e4e" : "#6b4400";
@@ -163,6 +215,13 @@ function ScanRow({ caseData, onDelete }: { caseData: any; onDelete: () => void }
         <Link href={`/?view=${encodeURIComponent(id)}`} style={viewButtonStyle}>
           View →
         </Link>
+        <button
+          type="button"
+          onClick={onToggleCompare}
+          style={inBasket ? compareButtonActiveStyle : compareButtonStyle}
+        >
+          {inBasket ? "In compare ✓" : "Compare"}
+        </button>
         <button type="button" onClick={onDelete} style={deleteButtonStyle}>
           Delete
         </button>
@@ -408,4 +467,36 @@ const deleteButtonStyle: React.CSSProperties = {
   fontWeight: 500,
   cursor: "pointer",
   fontFamily: "inherit",
+};
+
+const compareButtonStyle: React.CSSProperties = {
+  padding: "6px 12px",
+  background: "transparent",
+  color: NAVY,
+  border: `1px solid ${GOLD}`,
+  borderRadius: 6,
+  fontSize: 12,
+  fontWeight: 600,
+  cursor: "pointer",
+  fontFamily: "inherit",
+  whiteSpace: "nowrap",
+};
+
+const compareButtonActiveStyle: React.CSSProperties = {
+  ...compareButtonStyle,
+  background: NAVY,
+  color: "#fff",
+  border: `1px solid ${NAVY}`,
+};
+
+const compareLinkStyle: React.CSSProperties = {
+  display: "inline-block",
+  marginBottom: 16,
+  padding: "8px 16px",
+  background: NAVY,
+  color: "#fff",
+  textDecoration: "none",
+  borderRadius: 8,
+  fontSize: 13,
+  fontWeight: 600,
 };

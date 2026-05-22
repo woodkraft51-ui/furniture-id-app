@@ -8,6 +8,7 @@ import { MAKER_MARKS, MAKER_ENTRIES } from "./constraints/makerMarks";
 // edit and a code edit (intentional — the rule prose is appraiser-canon
 // and code edits should track canonical changes deliberately).
 import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
+import { recommendationFromValue, isLargeForm, hasRepairSignals } from "./fieldRecommendation";
 import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
 
 // Block 15: build canonical upholstery prompt appendix ONCE at module init.
@@ -6209,15 +6210,6 @@ function valueBand(form: string, dateRange: string, digest?: EvidenceDigest) {
   };
 }
 
-function fieldRecommendation(asking: any, low: number, high: number) {
-  const price = Number(String(asking || "").replace(/[$,]/g, "").trim());
-  if (!Number.isFinite(price) || price <= 0) return { recommendation: "CONSIDER", label: "CONSIDER", explanation: "No asking price was entered, so this recommendation stays conservative." };
-  const margin = Math.round((low + high) / 2) - price;
-  if (margin >= 175) return { recommendation: "BUY_NOW", label: "BUY NOW", explanation: "The estimated value lane supports a strong buy at the entered price." };
-  if (margin >= 50) return { recommendation: "BUY", label: "BUY", explanation: "The piece appears promising at the entered price." };
-  if (margin >= 0) return { recommendation: "CONSIDER", label: "CONSIDER", explanation: "There may be upside, but margin is limited." };
-  return { recommendation: "PASS", label: "PASS", explanation: "The entered price appears high against the field-scan value lane." };
-}
 function buildDecisionGuidance(args: {
   gate: Phase1Gate;
   dating: any;
@@ -8668,11 +8660,16 @@ const p7 = buildDecisionGuidance({
 
 stage_outputs.p7 = p7; onPhase?.("p7", p7);
 
-const recommendation = fieldRecommendation(
-  intake?.asking_price,
-  fieldValue.low,
-  fieldValue.high
-);
+const recommendation = recommendationFromValue({
+  askingPrice: intake?.asking_price,
+  valueLow: fieldValue.low,
+  valueHigh: fieldValue.high,
+  confidenceBand: p1?.confidence_cap,
+  conflictCount: Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0,
+  profile: intake?.picker_profile,
+  largeForm: isLargeForm(p3.display_form || p3.form, intake?.approximate_height, intake?.approximate_width),
+  repairSignals: hasRepairSignals(intake?.condition_notes, intake?.known_alterations),
+});
   return {
     id: caseData.id,
     status: "complete",
