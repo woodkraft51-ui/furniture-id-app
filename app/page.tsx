@@ -2243,6 +2243,23 @@ export default function Page() {
     );
   }, [report]);
 
+  // When an inconclusive scan was caused by a SERVICE failure (the API call
+  // errored or returned unparseable output) rather than a genuine empty read,
+  // the message must say so — blaming the user's photos for an infrastructure
+  // error is wrong. recovery_metadata carries this signal from the engine.
+  const scanServiceFailure = useMemo(
+    () => Boolean(report?.stage_outputs?.p0?.recovery_metadata?.service_failure),
+    [report]
+  );
+  const scanServiceFailureDetail = useMemo(() => {
+    const e = report?.stage_outputs?.p0?.recovery_metadata?.recovery_error;
+    if (!e) return null;
+    if (typeof e === "string") return e;
+    const status = e.status ? `HTTP ${e.status}` : null;
+    const t = e.api_error_type || e.type || null;
+    return [status, t].filter(Boolean).join(" · ") || null;
+  }, [report]);
+
   const analysisMode = intake.analysis_mode;
 
   /**
@@ -3066,11 +3083,20 @@ const p7 = stageOutputs.p7 || null;
                 marginBottom: 6,
               }}
             >
-              This scan didn't produce confident results.
+              {scanServiceFailure
+                ? "This scan hit a service error — not a photo problem."
+                : "This scan didn't produce confident results."}
             </div>
             <div style={{ fontSize: 13, color: "#594734", lineHeight: 1.55 }}>
-              The photos didn't yield enough structured evidence for a confident reading. Try re-shooting with better lighting, focus, or angle — or add a different combination of photos (underside, joinery close-up, or maker label).
+              {scanServiceFailure
+                ? "The analysis engine returned an error or couldn't be reached, so no evidence could be extracted. This isn't about your photos — please try the scan again in a moment."
+                : "The photos didn't yield enough structured evidence for a confident reading. Try re-shooting with better lighting, focus, or angle — or add a different combination of photos (underside, joinery close-up, or maker label)."}
             </div>
+            {scanServiceFailure && scanServiceFailureDetail && (
+              <div style={{ marginTop: 6, fontSize: 11, color: "#8a7355", fontFamily: "monospace" }}>
+                Diagnostic: {scanServiceFailureDetail}
+              </div>
+            )}
             {/* TODO: when subscription/quota system lands, surface the
                 quota-exemption message here:
                 "Inconclusive scans don't count toward your scan quota." */}

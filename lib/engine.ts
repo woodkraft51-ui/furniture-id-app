@@ -6741,70 +6741,72 @@ export const PE = {
     mode: "field_scan" | "full_analysis",
     maxTokensOverride?: number
   ): Promise<ClaudeResult> {
-    try {
-      // Block 11: raised from 8000/4000 to remove output-truncation risk on
-       // information-rich scans. Block 6 + 9 + 10 prompt expansion added
-       // substantial new vocabulary the LLM has to emit observations for;
-       // 8000-token ceiling was clipping rich-piece scans. Sonnet 4.6 ceiling
-       // is 64000 — 16000 leaves substantial headroom. Cost impact metered
-       // and captured for subscription-pricing review in P4-11 backlog.
-       // Optional maxTokensOverride parameter added for recovery / deep-
-       // extraction passes that need additional headroom; defaults to the
-       // mode-based ceiling when omitted.
-       const max_tokens = maxTokensOverride ?? (mode === "full_analysis" ? 16000 : 8000);
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens,
-          // temperature: 0 forces near-deterministic LLM output for the
-          // same prompt + image input. The Anthropic API default is 1.0,
-          // which produced cascading non-determinism in our stress test:
-          // identical photos yielded different P0 observations across
-          // runs, which propagated through every downstream phase (dating,
-          // form attribution, valuation, recommendation) to produce
-          // visibly different reports for the same scan. For an evidence-
-          // driven appraisal app this destroys user trust. At temperature
-          // 0 we're not 100% deterministic (model-serving infrastructure
-          // has slight stochasticity) but observations are ~90-95%
-          // reproducible across runs vs ~50-70% at default temp. Applies
-          // to both the primary p0 perception call and the recovery
-          // runDeepExtraction call since both go through callClaude.
-          temperature: 0,
-          // Cache the large static reference block (~51.5K tokens) shared by
-          // every scan. Images + intake live in `messages` (after `system`),
-          // so they don't invalidate the cached prefix. ~0.1x input cost on
-          // cache hits; Field and Full share one entry (identical system).
-          system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-          messages: [{ role: "user", content }],
-        }),
-      });
-      if (res.status === 413) {
-        const err = new Error("Payload too large");
-        err.name = "PayloadTooLargeError";
-        throw err;
+    const max_tokens = maxTokensOverride ?? (mode === "full_analysis" ? 16000 : 8000);
+    // temperature: 0 keeps observations ~90-95% reproducible across runs (vs
+    // ~50-70% at the API default of 1.0), which an evidence-driven appraisal
+    // needs. Caching marks the ~51.5K-token static reference block as an
+    // ephemeral cached prefix; images + intake follow in `messages`, so they
+    // don't invalidate it (Field and Full share one cache entry).
+    const requestBody = JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens,
+      temperature: 0,
+      system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+      messages: [{ role: "user", content }],
+    });
+
+    // Transient infrastructure failures (429 rate-limit, 529 overload, 5xx, and
+    // network/transport throws) are retried with short backoff, so a momentary
+    // blip is NOT reported to the user as "your photos weren't good enough".
+    // Deterministic failures (other 4xx, unparseable JSON) return immediately —
+    // retrying only burns tokens. Every error is tagged with the HTTP status +
+    // API error type so callers can tell an infra failure from an empty read.
+    const isTransientStatus = (s: number) => s === 429 || s === 529 || (s >= 500 && s < 600);
+    const MAX_ATTEMPTS = 3;
+    let lastError: any = "unknown_error";
+
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01" },
+          body: requestBody,
+        });
+        if (res.status === 413) {
+          const err = new Error("Payload too large");
+          err.name = "PayloadTooLargeError";
+          throw err;
+        }
+        const data = await res.json();
+        if (res.ok) {
+          const raw = Array.isArray(data?.content) ? data.content.map((b: any) => b?.text || "").join("\n") : "";
+          const parsed = parseModelJson(raw);
+          if (parsed) return { ok: true, parsed, raw };
+          return { ok: false, error: { type: "no_valid_json", raw } };
+        }
+        lastError = {
+          type: "api_error",
+          status: res.status,
+          api_error_type: data?.error?.type ?? data?.type ?? null,
+          message: data?.error?.message ?? null,
+        };
+        if (isTransientStatus(res.status) && attempt < MAX_ATTEMPTS) {
+          await new Promise((r) => setTimeout(r, 700 * attempt));
+          continue;
+        }
+        return { ok: false, error: lastError };
+      } catch (e: any) {
+        if (e?.name === "PayloadTooLargeError") throw e;
+        // A thrown fetch is a network/transport failure — transient by nature.
+        lastError = { type: "network_error", message: e?.message || "unknown_error" };
+        if (attempt < MAX_ATTEMPTS) {
+          await new Promise((r) => setTimeout(r, 700 * attempt));
+          continue;
+        }
+        return { ok: false, error: lastError };
       }
-      const data = await res.json();
-      if (!res.ok) return { ok: false, error: data };
-      const raw = Array.isArray(data?.content) ? data.content.map((b: any) => b?.text || "").join("\n") : "";
-      const parsed = parseModelJson(raw);
-
-if (parsed) {
-  return { ok: true, parsed, raw };
-}
-
-return {
-  ok: false,
-  error: {
-    type: "no_valid_json",
-    raw,
-  },
-};
-    } catch (e: any) {
-      if (e?.name === "PayloadTooLargeError") throw e;
-      return { ok: false, error: e?.message || "unknown_error" };
     }
+    return { ok: false, error: lastError };
   },
 
   imgs(images: any[]) {
@@ -7354,6 +7356,7 @@ debug: {
     perception: Perception;
     recovered: boolean;
     recovery_reason: string;
+    recovery_error: any;
     raw: string | null;
   }> {
     const recoverySystem = `You are an expert American furniture appraiser performing a RECOVERY extraction pass. The initial structured-schema scan of these photos returned zero usable observations. This second pass is designed to capture ANY visible evidence, even when uncertain or partial.
@@ -7448,6 +7451,7 @@ Begin recovery extraction now. Do not return the empty observations array under 
         : (result.error && (result.error as any).type) === "no_valid_json"
           ? "p0_callClaude_no_valid_json"
           : "p0_callClaude_failed",
+      recovery_error: result.ok ? null : (result.error ?? null),
       raw: result.ok ? result.raw || null : ((result.error as any)?.raw || null),
     };
   },
@@ -8390,16 +8394,21 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
         triggered_at: new Date().toISOString(),
       };
     } else {
-      // Recovery also returned nothing — true last-resort placeholder.
-      // Downstream consumers should treat fallback_form as a signal to
-      // suppress confident form claims and surface a "photos didn't yield
-      // structured observations, please re-shoot with better lighting/angle"
-      // message rather than emit guesses.
+      // Recovery also returned nothing. Distinguish a genuine empty read from a
+      // SERVICE failure (the API call errored or returned unparseable output) —
+      // the latter must NOT be blamed on the user's photos. The fallback
+      // observation carries the honest message; recovery_metadata carries the
+      // structured reason for the UI and the engine trace.
+      const serviceFailure =
+        recovery.recovery_reason === "p0_callClaude_failed" ||
+        recovery.recovery_reason === "p0_callClaude_no_valid_json";
       p0.observations = [
         {
           type: "form",
           clue: "fallback_form",
-          description: "Furniture is visible, but neither the initial extraction nor the deep-recovery pass returned structured observations. Try photos with better lighting, focus, or angle.",
+          description: serviceFailure
+            ? "A service error interrupted this scan — the analysis engine returned an error or could not be reached, so no evidence was extracted. This is NOT a problem with your photos. Please try again in a moment."
+            : "Furniture is visible, but neither the initial extraction nor the deep-recovery pass returned structured observations. Try photos with better lighting, focus, or angle.",
           confidence: 20,
           source_image: "fallback",
           hard_negative: false,
@@ -8409,6 +8418,8 @@ async runAllPhases(caseData: any, images: any[], intake: any, onPhase?: any) {
       (p0 as any).recovery_metadata = {
         recovered: false,
         recovery_reason: recovery.recovery_reason,
+        recovery_error: recovery.recovery_error,
+        service_failure: serviceFailure,
         observation_count: 0,
         triggered_at: new Date().toISOString(),
       };
