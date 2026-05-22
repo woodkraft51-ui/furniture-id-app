@@ -1217,6 +1217,18 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("door") && t.includes("door")) return "door_present";
 
   // STYLE (low authority, guard heavily)
+  // Style-FAMILY phrases route to the family clue KEY so a piece whose French
+  // vocabulary the model bucketed as prose still earns a *supported* attribution
+  // through clue-key provenance (the 2958afe gate), not raw prose tokens. Only
+  // unambiguous family names — never generic era words ("neoclassical",
+  // "revival", "colonial") that appear as incidental influence prose elsewhere.
+  if (
+    includesAny(t, ["french provincial", "louis xv", "louis xvi"]) &&
+    !isNegated("french provincial") &&
+    !isNegated("louis xv") &&
+    !isNegated("louis xvi")
+  )
+    return "french_provincial_style";
   if (!isNegated("cabriole") && t.includes("cabriole")) return "cabriole_leg";
   if (!isNegated("barley twist") && t.includes("barley twist")) return "barley_twist";
 
@@ -1299,7 +1311,7 @@ function detectClueFromText(text: string): string | null {
   if (!isNegated("horsehair") && includesAny(t, ["horsehair stuffing", "horse hair stuffing", "curled hair stuffing", "horsehair padding"])) return "horsehair_stuffing";
   if (!isNegated("cotton batting") && includesAny(t, ["cotton batting", "cotton padding", "cotton wadding"])) return "cotton_batting";
   if (!isNegated("polyurethane foam") && includesAny(t, ["polyurethane foam", "synthetic foam", "yellow foam", "memory foam"])) return "polyurethane_foam";
-  if (!isNegated("foam") && includesAny(t, ["foam padding", "foam cushion", "latex foam"])) return "foam_padding";
+  if (!isNegated("foam") && (containsWord(t, ["foam"]) || includesAny(t, ["latex foam"]))) return "foam_padding";
   if (!isNegated("down") && includesAny(t, ["feather fill", "down fill", "feather and down", "feather cushion"])) return "feather_down_fill";
   if (!isNegated("tufting") && includesAny(t, ["button tufting", "deep buttoned", "button-tufted", "buttoned tufting", "biscuit tufting", "deep tufted", "deeply tufted", "tufted seat cushion", "tufted back cushion", "tufted cushion"])) return "button_tufting";
   if (!isNegated("nailhead") && includesAny(t, ["nailhead trim", "nail-head trim", "decorative brass nails", "brass tack trim", "nailhead detailing"])) return "nailhead_trim";
@@ -1606,7 +1618,74 @@ function normalizeObservationsFromParsed(parsed: any): Observation[] {
     });
   }
 
+  mineCluesFromProse(parsed, out);
+
   return dedupeObservations(normalizeEvidenceStrength(out));
+}
+
+// The open perception arrays the P0 model dumps prose into instead of emitting
+// a structured clue key, plus the generic key-names it stamps on observations
+// when it doesn't pick a specific one. Both are "bucketed prose" we re-mine.
+const GENERIC_CUE_KEYS = new Set<string>([
+  "style_cues",
+  "construction_cues",
+  "condition_cues",
+  "materials",
+  "forms",
+  "functional_features",
+]);
+
+// Keystone (root-cause fix). The P0 model routinely buckets its evidence into
+// the open perception arrays (style_cues / construction_cues / condition_cues /
+// materials / forms) or emits a GENERIC clue key (style_cues, frame_members,
+// condition_cues) whose description still names a real, authored clue. Neither
+// surface was ever mined, so the dated vocabulary the author wrote
+// (french_provincial_style, foam_padding, springs, staples, …) silently failed
+// to fire whenever the model picked a synonym instead of the exact key — the
+// reported "sometime this century" collapse. This pass mines every prose surface
+// for clues the model didn't key, ADDITIVELY (dedupeObservations handles
+// overlap), so the author's date bands reach the engine regardless of phrasing.
+// Negation is honored both inside detectClueFromText and via descriptionNegatesClue.
+function mineCluesFromProse(parsed: any, out: Observation[]): void {
+  const present = new Set(out.map((o) => o.clue).filter(Boolean) as string[]);
+
+  const p = parsed?.perception || {};
+  const prose: string[] = [];
+  for (const key of GENERIC_CUE_KEYS) {
+    const v = p[key];
+    if (Array.isArray(v)) for (const s of v) if (typeof s === "string" && s.trim()) prose.push(s);
+  }
+  // Also re-mine descriptions of observations the model EXPLICITLY bucketed —
+  // i.e. whose key is one of the generic cue-bucket names (style_cues,
+  // condition_cues, …). Those descriptions are bucketed prose that names a real
+  // clue the engine never resolved. We deliberately do NOT re-mine specific
+  // (if unrecognized) keys like `eastlake_pull` or `cane_panel_sides`: their
+  // descriptions mention incidental materials ("brass pulls", "cane side
+  // panels") that the low-precision single-word material fallbacks would
+  // wrongly promote to brass_frame / cane_panels and misroute form + dating.
+  for (const o of out) {
+    if (!o.negated && o.clue && GENERIC_CUE_KEYS.has(o.clue) && typeof o.description === "string" && o.description.trim()) {
+      prose.push(o.description);
+    }
+  }
+
+  for (const s of prose) {
+    const clue = detectClueFromText(s);
+    if (!clue || present.has(clue)) continue;
+    if (descriptionNegatesClue(clue, s)) continue;
+    const meta = getClueMeta(clue);
+    out.push({
+      type: meta?.category || "context",
+      clue,
+      description: s,
+      confidence: 50,
+      source_image: null,
+      hard_negative: false,
+      negated: false,
+      low_confidence_flag: false,
+    });
+    present.add(clue);
+  }
 }
 
 function dedupeObservations(observations: Observation[]): Observation[] {
