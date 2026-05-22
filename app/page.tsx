@@ -3,6 +3,7 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { API } from "../lib/store";
 import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
+import { pickStrongestZoneIndex } from "../lib/engineDatingOverlap";
 import WelcomeLanding from "./WelcomeLanding";
 import ExampleModal from "./ExampleModal";
 import GuidanceMessages from "./GuidanceMessages";
@@ -766,13 +767,39 @@ const TONE_PALETTE: Record<DatingFindingNarrative["tone"], {
   caution:   { bg: "#f8e8d4", border: "#d8a96b", text: "#5a3a1a", accent: "#a26a2a", label: "Dating caution" },
 };
 
-function DatingFindingCallout({ narrative }: { narrative: DatingFindingNarrative }) {
+function DatingFindingCallout({
+  narrative,
+  dateFloor,
+  dateCeiling,
+}: {
+  narrative: DatingFindingNarrative;
+  dateFloor?: number | null;
+  dateCeiling?: number | null;
+}) {
   const palette = TONE_PALETTE[narrative.tone];
+  // Big plain-language "answer": the resolved date, rendered as the headline so
+  // it reads at a glance instead of being buried in the prose below.
+  const dateAnswer =
+    dateFloor != null && dateCeiling != null
+      ? `c. ${dateFloor}–${dateCeiling}`
+      : dateFloor != null
+      ? `after ${dateFloor}`
+      : dateCeiling != null
+      ? `before ${dateCeiling}`
+      : null;
+  const confidenceWord =
+    narrative.tone === "confident"
+      ? "Confident"
+      : narrative.tone === "qualified"
+      ? "Qualified"
+      : narrative.tone === "tentative"
+      ? "Tentative"
+      : "Caution";
   return (
     <div
       style={{
         marginBottom: 14,
-        padding: "12px 14px",
+        padding: "14px 16px",
         borderRadius: 10,
         background: palette.bg,
         border: `1px solid ${palette.border}`,
@@ -784,16 +811,46 @@ function DatingFindingCallout({ narrative }: { narrative: DatingFindingNarrative
     >
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: 0.6,
-          textTransform: "uppercase",
-          color: palette.accent,
-          marginBottom: 6,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          marginBottom: dateAnswer ? 4 : 6,
         }}
       >
-        {palette.label}
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: 0.6,
+            textTransform: "uppercase",
+            color: palette.accent,
+          }}
+        >
+          {palette.label}
+        </div>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: 0.5,
+            textTransform: "uppercase",
+            color: "#fff",
+            background: palette.accent,
+            padding: "2px 8px",
+            borderRadius: 999,
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          {confidenceWord}
+        </span>
       </div>
+      {dateAnswer && (
+        <div style={{ fontSize: 24, fontWeight: 800, color: palette.text, lineHeight: 1.2, marginBottom: 6 }}>
+          {dateAnswer}
+        </div>
+      )}
       <div style={{ fontSize: 14, color: palette.text }}>{narrative.headline}</div>
       {narrative.detail && (
         <div style={{ marginTop: 8, fontSize: 13, color: palette.text, opacity: 0.85, lineHeight: 1.55 }}>
@@ -1048,6 +1105,10 @@ function DatingOverlapViz({
   // edge on narrow viewports when zones cluster near the axis extremes).
   const plotRef = useRef<HTMLDivElement | null>(null);
   const [plotWidth, setPlotWidth] = useState<number>(0);
+  // Progressive-disclosure toggles: per-clue sourcing (replaces hover-only
+  // tooltips so touch users can see it) and the chart explainer. Default closed.
+  const [showSourcing, setShowSourcing] = useState(false);
+  const [showHowToRead, setShowHowToRead] = useState(false);
   useEffect(() => {
     if (!plotRef.current) return;
     const el = plotRef.current;
@@ -1070,29 +1131,9 @@ function DatingOverlapViz({
   const partnerStyleLabel = transitionalPartner?.name ? `Style: ${transitionalPartner.name}` : "Style (partner)";
 
   // Identify the strongest convergence zone for "strongest" badge labeling.
-  // Mirrors the engine's picker (refineDatingFromConvergence): max
-  // specificity-weighted authority, then effective layer count, then narrowest
-  // range. Falls back to the raw fields for older report shapes.
-  const zoneRank = (z: ConvergenceZone) => ({
-    authority: z.weighted_authority ?? z.authority_sum,
-    count: z.effective_layer_count ?? z.layer_count,
-  });
-  const strongestZoneIdx = data.convergence_zones.length === 0
-    ? -1
-    : data.convergence_zones.reduce(
-        (bestIdx, z, i, arr) => {
-          const best = zoneRank(arr[bestIdx]);
-          const cur = zoneRank(z);
-          if (cur.authority > best.authority) return i;
-          if (cur.authority < best.authority) return bestIdx;
-          if (cur.count > best.count) return i;
-          if (cur.count < best.count) return bestIdx;
-          const zWidth = z.date_ceiling - z.date_floor;
-          const bestWidth = arr[bestIdx].date_ceiling - arr[bestIdx].date_floor;
-          return zWidth < bestWidth ? i : bestIdx;
-        },
-        0
-      );
+  // Uses the shared picker (lib/engineDatingOverlap) so the chart chip and the
+  // dating narrative always agree on which zone is strongest.
+  const strongestZoneIdx = pickStrongestZoneIndex(data.convergence_zones);
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
@@ -1277,6 +1318,7 @@ function DatingOverlapViz({
             const left = clampPct(yearToPct(z.date_floor));
             const right = clampPct(yearToPct(z.date_ceiling));
             const width = Math.max(0.5, right - left);
+            const isStrongest = i === strongestZoneIdx;
             return (
               <div
                 key={`zone-${i}`}
@@ -1287,9 +1329,9 @@ function DatingOverlapViz({
                   bottom: 0,
                   left: `${left}%`,
                   width: `${width}%`,
-                  background: "rgba(123, 178, 121, 0.18)",
-                  borderLeft: "1px dashed rgba(75, 134, 70, 0.55)",
-                  borderRight: "1px dashed rgba(75, 134, 70, 0.55)",
+                  background: isStrongest ? "rgba(123, 178, 121, 0.30)" : "rgba(123, 178, 121, 0.12)",
+                  borderLeft: `1px dashed rgba(75, 134, 70, ${isStrongest ? 0.75 : 0.4})`,
+                  borderRight: `1px dashed rgba(75, 134, 70, ${isStrongest ? 0.75 : 0.4})`,
                   pointerEvents: "none",
                 }}
               />
@@ -1546,8 +1588,32 @@ function DatingOverlapViz({
           border: "1px solid #e3d3b3",
         }}
       >
-        <div style={{ fontWeight: 700, marginBottom: 6, color: "#3d2d1f" }}>How to read this chart</div>
-        <div style={{ display: "grid", gap: 4 }}>
+        <button
+          type="button"
+          onClick={() => setShowHowToRead((v) => !v)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            gap: 8,
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            margin: 0,
+            cursor: "pointer",
+            font: "inherit",
+            fontWeight: 700,
+            color: "#3d2d1f",
+            textAlign: "left",
+          }}
+          aria-expanded={showHowToRead}
+        >
+          <span>How to read this chart</span>
+          <span style={{ fontSize: 11, color: "#8a785f" }}>{showHowToRead ? "Hide ▲" : "Show ▼"}</span>
+        </button>
+        {showHowToRead && (
+        <div style={{ display: "grid", gap: 4, marginTop: 6 }}>
           <div>
             <strong>Each row</strong> shows the date envelope for one evidence layer (style, joinery, hardware, etc.).
             <strong> Wide bars</strong> mean the evidence supports a long span — usually because the technique or
@@ -1604,6 +1670,86 @@ function DatingOverlapViz({
             evidence (e.g., visible hardware or wood) but couldn&apos;t anchor the observation to a specific year window.
           </div>
         </div>
+        )}
+      </div>
+
+      {/* Evidence sourcing (progressive disclosure) — replaces hover-only
+          tooltips so touch users (field/booth) can see what backs each layer. */}
+      <div style={{ borderRadius: 8, background: "#faf6ea", border: "1px solid #e3d3b3", overflow: "hidden" }}>
+        <button
+          type="button"
+          onClick={() => setShowSourcing((v) => !v)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            gap: 8,
+            background: "transparent",
+            border: "none",
+            padding: "10px 12px",
+            margin: 0,
+            cursor: "pointer",
+            font: "inherit",
+            fontWeight: 700,
+            fontSize: 13,
+            color: "#3d2d1f",
+            textAlign: "left",
+          }}
+          aria-expanded={showSourcing}
+        >
+          <span>Evidence sourcing — what backs each layer</span>
+          <span style={{ fontSize: 11, color: "#8a785f", flexShrink: 0 }}>{showSourcing ? "Hide ▲" : "Show ▼"}</span>
+        </button>
+        {showSourcing && (
+          <div style={{ padding: "0 12px 12px", display: "grid", gap: 8 }}>
+            {layersOrdered
+              .filter(
+                (l) =>
+                  (l.source_clues?.length ?? 0) > 0 ||
+                  (l.undated_clues?.length ?? 0) > 0 ||
+                  l.date_floor != null ||
+                  l.date_ceiling != null
+              )
+              .map((l) => {
+                const range =
+                  l.date_floor != null && l.date_ceiling != null
+                    ? `${l.date_floor}–${l.date_ceiling}`
+                    : l.date_floor != null
+                    ? `post-${l.date_floor}`
+                    : l.date_ceiling != null
+                    ? `pre-${l.date_ceiling}`
+                    : "no parseable date";
+                const clues = (l.source_clues ?? []).map((c) => c.replace(/_/g, " "));
+                const undated = (l.undated_clues ?? []).map((c) => c.replace(/_/g, " "));
+                return (
+                  <div
+                    key={`src-${l.layer}`}
+                    style={{ border: "1px solid #ece0c6", borderRadius: 6, background: "#fffdf9", padding: "8px 10px" }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                      <span style={{ fontWeight: 700, fontSize: 13, color: "#3d2d1f" }}>
+                        {LAYER_LABELS[l.layer] ?? l.layer}
+                      </span>
+                      <span style={{ fontSize: 12, color: bandColor(l.confidence), whiteSpace: "nowrap" }}>
+                        {range} · {l.confidence}
+                      </span>
+                    </div>
+                    {clues.length > 0 && (
+                      <div style={{ marginTop: 4, fontSize: 12, color: "#5c4a37", lineHeight: 1.5 }}>
+                        {clues.join(", ")}
+                      </div>
+                    )}
+                    {undated.length > 0 && (
+                      <div style={{ marginTop: 4, fontSize: 12, color: "#776654", fontStyle: "italic", lineHeight: 1.5 }}>
+                        Present but undated: {undated.join(", ")}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        )}
       </div>
 
       {/* Conditional between-wave callout. Fires only when construction
@@ -3176,7 +3322,16 @@ const p7 = stageOutputs.p7 || null;
                     finalDatingFloor: p2?.date_floor ?? null,
                     finalDatingCeiling: p2?.date_ceiling ?? null,
                   });
-                  return narrative ? <DatingFindingCallout narrative={narrative} /> : null;
+                  if (!narrative) return null;
+                  // Headline date for the answer band: prefer the engine's
+                  // resolved working range, then the strongest convergence zone,
+                  // then the overall envelope.
+                  const ov = p6.dating_overlap;
+                  const sIdx = pickStrongestZoneIndex(ov.convergence_zones ?? []);
+                  const sZone = sIdx >= 0 ? ov.convergence_zones[sIdx] : null;
+                  const ansFloor = p2?.date_floor ?? sZone?.date_floor ?? ov.overall_floor ?? null;
+                  const ansCeiling = p2?.date_ceiling ?? sZone?.date_ceiling ?? ov.overall_ceiling ?? null;
+                  return <DatingFindingCallout narrative={narrative} dateFloor={ansFloor} dateCeiling={ansCeiling} />;
                 })()}
                 <DatingOverlapViz
                   data={p6.dating_overlap}
