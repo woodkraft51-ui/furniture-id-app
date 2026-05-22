@@ -13,10 +13,20 @@ import { PHOTO_EXAMPLES } from "../lib/intake";
 const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
 
 /**
- * Debug trace gate. Set to true during app validation to show the
- * Engine Trace diagnostic at the bottom of full-analysis reports;
- * set to false before launch to hide it. Single boolean — flip once
- * to enable or disable across the whole app.
+ * Engine Trace visibility — secret-code reveal (see the render gate near the
+ * bottom of Page() and the keydown listener in Page()'s effects).
+ *
+ * The trace data is computed on EVERY scan and is always present in the report
+ * object; this flag only controls whether the diagnostic SECTION is displayed.
+ * It defaults to hidden for end users. Type TRACE_REVEAL_CODE anywhere on the
+ * page (outside a text field) to toggle it on or off — the choice is remembered
+ * in localStorage across reloads, and works on a report that's already on
+ * screen as well as a fresh page.
+ *
+ * NOTE: this is obscurity, not a security boundary. The code ships in the
+ * client bundle, so a determined user reading the JS could find it. That's an
+ * acceptable bar here: the trace exposes no secrets, only the same evidence
+ * already used to build that user's own report. Change the word freely.
  *
  * The trace surfaces per-phase visibility into engine reasoning:
  * P0 observations, Block 14 frame/upholstery split, P3 form +
@@ -25,7 +35,8 @@ const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
  * dating + upholstery layer, P1 gate. Used to verify that evidence
  * captured at Phase 0 is being routed correctly downstream.
  */
-const DEBUG_TRACE = true;
+const TRACE_REVEAL_CODE = "xyzzy";
+const TRACE_VISIBLE_KEY = "wk_trace_visible";
 
 // CORE_SLOTS key → PHOTO_EXAMPLES key. Slots without an entry render
 // without a "View example" link. GROUP_SLOTS map by their `key` (not
@@ -2139,6 +2150,7 @@ export default function Page() {
   // broken. Once known, landing shows on first visit and is dismissed when
   // the user picks a mode (persisted to localStorage).
   const [showLanding, setShowLanding] = useState<boolean | null>(null);
+  const [traceVisible, setTraceVisible] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -2149,6 +2161,42 @@ export default function Page() {
       // localStorage unavailable (private mode, etc.) — default to showing
       setShowLanding(true);
     }
+  }, []);
+
+  // Secret-code reveal for the Engine Trace. Display-only: the trace data is
+  // always computed and present in `report`; this just toggles the section.
+  // Restores the last choice from localStorage, then listens for the code typed
+  // anywhere outside a text field. Typing it again toggles back off.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (window.localStorage.getItem(TRACE_VISIBLE_KEY) === "true") setTraceVisible(true);
+    } catch {
+      // localStorage unavailable — trace stays hidden
+    }
+    let buffer = "";
+    const onKeyDown = (e: KeyboardEvent) => {
+      // Don't capture keystrokes while the user is typing into a form field.
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || el?.isContentEditable) return;
+      if (e.key.length !== 1) return; // ignore modifiers, arrows, Enter, etc.
+      buffer = (buffer + e.key.toLowerCase()).slice(-TRACE_REVEAL_CODE.length);
+      if (buffer === TRACE_REVEAL_CODE) {
+        buffer = "";
+        setTraceVisible((prev) => {
+          const next = !prev;
+          try {
+            window.localStorage.setItem(TRACE_VISIBLE_KEY, next ? "true" : "false");
+          } catch {
+            // ignore persistence failure
+          }
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
   const dismissLandingWithMode = (mode: "full_analysis" | "field_scan") => {
@@ -3425,13 +3473,13 @@ const p7 = stageOutputs.p7 || null;
               <AppraiserReviewCTA triggers={appraiserReviewTriggers} />
             )}
 
-            {/* Engine Trace diagnostic — pre-launch validation infra.
-                Gated by DEBUG_TRACE constant at top of file so it can
-                be hidden with a single boolean flip when ready to ship.
-                Surfaces per-phase engine reasoning for verifying that
-                evidence captured at P0 is routed correctly downstream.
-                Hidden in print (diagnostic noise on a paper readout). */}
-            {DEBUG_TRACE && (
+            {/* Engine Trace diagnostic. Hidden from end users by default;
+                revealed by typing TRACE_REVEAL_CODE (see top of file). The
+                trace data is always computed — this gate only controls display.
+                Surfaces per-phase engine reasoning for verifying that evidence
+                captured at P0 is routed correctly downstream. Hidden in print
+                (diagnostic noise on a paper readout). */}
+            {traceVisible && (
               <div className="no-print">
                 <TraceReport report={report} />
               </div>
