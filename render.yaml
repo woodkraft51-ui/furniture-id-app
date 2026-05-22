@@ -1,0 +1,25 @@
+# Render Blueprint — codifies the production Web Service so deploy config
+# lives in the repo instead of only in the dashboard.
+#
+# This is a long-running Node server (Next.js `next start`), NOT a static
+# site. Render auto-deploys this service on every push to `main`.
+#
+# To adopt: Render Dashboard → Blueprints → New Blueprint Instance, pointed at
+# this repo. If you already have a Web Service, give it the same `name` below
+# so the Blueprint manages it instead of creating a duplicate.
+#
+# ANTHROPIC_API_KEY is intentionally `sync: false` — set its value in the
+# Render dashboard; it must never be committed to the repo.
+services:
+  - type: web
+    name: furniture-id-app
+    runtime: node
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: ANTHROPIC_API_KEY
+        sync: false
