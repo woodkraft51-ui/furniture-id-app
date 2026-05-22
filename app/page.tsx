@@ -771,14 +771,16 @@ function DatingFindingCallout({
   narrative,
   dateFloor,
   dateCeiling,
+  identification,
+  confidenceBand,
 }: {
   narrative: DatingFindingNarrative;
   dateFloor?: number | null;
   dateCeiling?: number | null;
+  identification?: string | null;
+  confidenceBand?: string | null;
 }) {
   const palette = TONE_PALETTE[narrative.tone];
-  // Big plain-language "answer": the resolved date, rendered as the headline so
-  // it reads at a glance instead of being buried in the prose below.
   const dateAnswer =
     dateFloor != null && dateCeiling != null
       ? `c. ${dateFloor}–${dateCeiling}`
@@ -787,14 +789,26 @@ function DatingFindingCallout({
       : dateCeiling != null
       ? `before ${dateCeiling}`
       : null;
+  // The pill reports the engine's REAL dating confidence (the p2 band), not the
+  // narrative tone — a Low/Inconclusive date must never read as "Confident".
   const confidenceWord =
-    narrative.tone === "confident"
+    confidenceBand ||
+    (narrative.tone === "confident"
       ? "Confident"
       : narrative.tone === "qualified"
       ? "Qualified"
       : narrative.tone === "tentative"
       ? "Tentative"
-      : "Caution";
+      : "Caution");
+  const pillColor = confidenceBand ? bandColor(confidenceBand) : palette.accent;
+  // Lead with the identification we're actually confident about; the numeric
+  // date is demoted to a muted subline. When dating confidence is Low/
+  // Inconclusive or the span is wide (≥80 yr), the date is flagged as a broad
+  // estimate so it never reads as a precise headline answer.
+  const spanWide =
+    dateFloor != null && dateCeiling != null && dateCeiling - dateFloor >= 80;
+  const dateUncertain =
+    spanWide || confidenceBand === "Low" || confidenceBand === "Inconclusive";
   return (
     <div
       style={{
@@ -836,7 +850,7 @@ function DatingFindingCallout({
             letterSpacing: 0.5,
             textTransform: "uppercase",
             color: "#fff",
-            background: palette.accent,
+            background: pillColor,
             padding: "2px 8px",
             borderRadius: 999,
             whiteSpace: "nowrap",
@@ -846,10 +860,24 @@ function DatingFindingCallout({
           {confidenceWord}
         </span>
       </div>
-      {dateAnswer && (
-        <div style={{ fontSize: 24, fontWeight: 800, color: palette.text, lineHeight: 1.2, marginBottom: 6 }}>
-          {dateAnswer}
-        </div>
+      {identification ? (
+        <>
+          <div style={{ fontSize: 22, fontWeight: 800, color: palette.text, lineHeight: 1.25, marginBottom: dateAnswer ? 3 : 6 }}>
+            {identification}
+          </div>
+          {dateAnswer && (
+            <div style={{ fontSize: 13, color: palette.text, opacity: 0.75, marginBottom: 6 }}>
+              Estimated production: {dateAnswer}
+              {dateUncertain && " — broad estimate; underside, construction, or maker evidence would narrow it"}
+            </div>
+          )}
+        </>
+      ) : (
+        dateAnswer && (
+          <div style={{ fontSize: 24, fontWeight: 800, color: palette.text, lineHeight: 1.2, marginBottom: 6 }}>
+            {dateAnswer}
+          </div>
+        )
       )}
       <div style={{ fontSize: 14, color: palette.text }}>{narrative.headline}</div>
       {narrative.detail && (
@@ -3331,7 +3359,7 @@ const p7 = stageOutputs.p7 || null;
                   const sZone = sIdx >= 0 ? ov.convergence_zones[sIdx] : null;
                   const ansFloor = p2?.date_floor ?? sZone?.date_floor ?? ov.overall_floor ?? null;
                   const ansCeiling = p2?.date_ceiling ?? sZone?.date_ceiling ?? ov.overall_ceiling ?? null;
-                  return <DatingFindingCallout narrative={narrative} dateFloor={ansFloor} dateCeiling={ansCeiling} />;
+                  return <DatingFindingCallout narrative={narrative} dateFloor={ansFloor} dateCeiling={ansCeiling} identification={p3?.display_form || p3?.form || null} confidenceBand={p2?.confidence ?? null} />;
                 })()}
                 <DatingOverlapViz
                   data={p6.dating_overlap}
