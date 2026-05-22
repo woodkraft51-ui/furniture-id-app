@@ -523,6 +523,115 @@ const CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE: Fixture = {
   },
 };
 
+// Fixture: French Provincial / Louis XV bergère lounge chair, captured in the
+// FAILURE MODE the user reported (deployments 2958afe / 76a6317). The vision
+// model bucketed its French structural vocabulary into the generic `style_cues`
+// key + perception buckets instead of emitting the `french_provincial_style`
+// clue key, and described the cushion fill as prose ("likely foam or spring-
+// assisted") instead of emitting `foam_padding`. PRE-FIX expected (the bug):
+//   - style attribution = NONE (prose-only Louis/French fails the 2958afe
+//     `supported` gate because no clue KEY carries the family tokens)
+//   - style + style_wave dating layers EMPTY
+//   - upholstery layer anchored only by jacquard_cover (post-1800), open ceiling
+//   - working range collapses toward c. 1900–2000 / Low
+// POST-FIX expected (bucket/prose mining):
+//   - `french_provincial_style` mined from the style_cues bucket/prose → Louis
+//     XVI / French Neoclassical `supported` again (via a real clue KEY, so the
+//     2958afe gate passes legitimately) → style + wave layers populate
+//   - `foam_padding` (and/or a spring clue) mined from the cushion prose →
+//     upholstery layer gets a real post-1930 floor
+//   - working range becomes a CONFIDENT mid-to-late-20th-c reproduction
+const BERGERE_FRENCH_PROVINCIAL_BUCKETED_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-bergere-french-provincial-bucketed" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "walnut",
+    user_category_guess: "chair",
+    condition_notes:
+      "Upholstered French Provincial style bergère/fauteuil armchair; carved show-wood frame; loose seat cushion; floral striped jacquard cover; soiled and frayed.",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      // Buckets carry the structural French vocabulary + the foam/spring fill —
+      // the realistic "model bucketed it generically" case the engine never mines.
+      style_cues: [
+        "Serpentine carved crest rail, cabriole legs, scrolled arm terminals and shaped apron read as French Provincial / Louis XV-influenced design vocabulary",
+        "Show-wood frame with upholstered panels; classic bergère armchair form",
+      ],
+      construction_cues: [
+        "Exposed solid wood frame; serpentine crest rail; shaped apron; scrolled arm terminals",
+      ],
+      condition_cues: [
+        "Soiling and fraying at cushion welt seams; surface wear on crest rail and arm supports",
+      ],
+      materials: [
+        "Medium-brown hardwood, possibly walnut, cherry, or stained beech/fruitwood",
+        "Loose seat cushion with loft/fill — likely foam or spring-assisted",
+      ],
+      forms: ["bergère / fauteuil armchair", "lounge chair"],
+      raw_text:
+        "Upholstered French Provincial / Louis XV bergère armchair: carved serpentine crest rail, cabriole legs, scrolled arm terminals, shaped apron, show-wood frame, loose seat cushion likely foam or spring-assisted, floral striped jacquard cover with soiling and fraying.",
+    },
+    observations: [
+      obs("seating_surface", "Loose seat cushion on an upholstered seat platform; cushion has loft/fill — likely foam or spring-assisted; floral striped woven cover", 68, "form"),
+      obs("backrest_present", "Upholstered back panel framed by exposed carved wood crest rail and stiles; back fully upholstered with the same floral striped fabric", 68, "form"),
+      obs("armchair_form", "Padded upholstered arms with exposed carved wood arm terminals and arm supports; classic bergère/fauteuil armchair form with show-wood frame", 68, "form"),
+      obs("cabriole_leg", "Four cabriole legs — curved S-shaped profile with pad/scroll foot — characteristic of Louis XV / French Provincial style", 52, "style"),
+      obs("style_cues", "Serpentine carved crest rail, cabriole legs, shaped apron, scrolled arm terminals, and show-wood frame with upholstered panels are all consistent with French Provincial or Louis XV-influenced American production", 58, "style"),
+      obs("style_cues", "Wide shaped serpentine crest rail with carved molded profile — arched center with scrolled shoulders — characteristic of Louis XV bergère / French Provincial armchair form", 58, "style"),
+      obs("style_cues", "Shaped/curved seat apron with carved molded profile consistent with Louis XV / French Provincial style; apron curves gently between the cabriole legs", 58, "style"),
+      obs("frame_members", "Exposed solid wood frame at crest rail, stiles, arm supports, arm terminals, seat rail, and legs; medium-brown hardwood, possibly walnut, cherry, or stained fruitwood/beech", 45, "structure"),
+      obs("solid_wood_construction", "Frame members appear to be solid wood throughout; no veneer or laminate visible on the frame", 84, "materials"),
+      obs("jacquard_cover", "Complex multi-color woven floral and stripe pattern consistent with jacquard-loomed upholstery fabric", 50, "upholstery"),
+      obs("button_tufting", "Regular button tufting on the back panel and seat back; fabric-covered buttons", 50, "upholstery"),
+      obs("condition_cues", "Upholstery shows soiling, general use wear, and fraying/loose threads at the cushion front edge", 57, "condition"),
+      obs("refinished_surface", "Wood frame finish relatively uniform; cannot determine original finish vs a later refinish", 35, "finish"),
+      obs("seating_present", "Integrated seating is visible", 78, "form"),
+      obs("fully_upholstered", "Upholstered or cushioned surfaces are visible", 74, "materials"),
+      obs("lounge_chair_form", "Posture-based lounge-chair identity (deeper seat, lower seat height, reclined back)", 78, "form"),
+    ],
+  },
+};
+
+// Control: the SAME bergère in the GOOD path (deployments 715a9d5 / 6f87287),
+// where the model emitted the discrete `french_provincial_style` + `foam_padding`
+// clue keys. Must STAY correct after the fix (no double-counting / no regression).
+const BERGERE_FRENCH_PROVINCIAL_GOOD_CONTROL_FIXTURE: Fixture = {
+  caseData: { id: "trace-fixture-bergere-french-provincial-good-control" },
+  images: [{ data_url: "data:image/png;base64,", image_type: "front" }],
+  intake: {
+    ...BASE_INTAKE,
+    primary_wood_guess: "walnut",
+    user_category_guess: "chair",
+    condition_notes:
+      "Upholstered French Provincial style bergère armchair; carved show-wood frame; loose foam seat cushion; floral striped jacquard cover.",
+  },
+  perceptionStub: {
+    perception: {
+      ...BASE_PERCEPTION,
+      raw_text:
+        "Upholstered French Provincial bergère armchair with carved show-wood frame, cabriole legs, serpentine crest, foam seat cushion, and floral striped jacquard cover.",
+    },
+    observations: [
+      obs("seating_surface", "Loose seat cushion over an upholstered seat deck", 68, "form"),
+      obs("backrest_present", "Fully upholstered back within a carved wood frame surround", 68, "form"),
+      obs("armchair_form", "Bergère/fauteuil armchair form with carved wood arm supports", 68, "form"),
+      obs("cabriole_leg", "Four cabriole legs, French Provincial / Louis XV vocabulary", 52, "style"),
+      obs("french_provincial_style", "Cabriole legs, serpentine crest rail, shaped apron, scrolled arm terminals — French Provincial / Louis XV design vocabulary", 52, "style"),
+      obs("carved_crest_rail", "Serpentine carved crest rail with shaped profile", 52, "style"),
+      obs("solid_wood_construction", "Solid carved wood frame throughout; no veneer/laminate", 84, "materials"),
+      obs("jacquard_cover", "Complex woven floral/stripe jacquard upholstery cover", 50, "upholstery"),
+      obs("button_tufting", "Button tufting on the back panel", 50, "upholstery"),
+      obs("foam_padding", "Seat and back cushions have foam padding", 50, "upholstery"),
+      obs("seating_present", "Integrated seating is visible", 78, "form"),
+      obs("fully_upholstered", "Upholstered or cushioned surfaces are visible", 74, "materials"),
+      obs("lounge_chair_form", "Posture-based lounge-chair identity", 78, "form"),
+    ],
+  },
+};
+
 // Fixture: roll-top desk — exercises the cover-mechanism cluster wiring.
 // Slatted/S-roll rolling cover with no "cylinder" language must route to the
 // newly-reachable form_roll_top_desk (not the rigid cylinder desk), and the
@@ -1471,6 +1580,8 @@ const FIXTURES: Record<string, Fixture> = {
   transitional_rococo_renaissance: TRANSITIONAL_ROCOCO_RENAISSANCE_FIXTURE,
   chippendale_art_deco_fantasy: CHIPPENDALE_ART_DECO_FANTASY_FIXTURE,
   centennial_colonial_revival_chippendale: CENTENNIAL_COLONIAL_REVIVAL_CHIPPENDALE_FIXTURE,
+  bergere_french_provincial: BERGERE_FRENCH_PROVINCIAL_BUCKETED_FIXTURE,
+  bergere_french_provincial_good: BERGERE_FRENCH_PROVINCIAL_GOOD_CONTROL_FIXTURE,
   // ── Case pieces: bedsteads cluster (form_bedstead, wooden beds) ──
   four_poster_bed: mkBed("four-poster-bed", "mahogany",
     "Federal four-poster bed: a wooden bed with four tall turned mahogany corner posts and a headboard, with no overhead canopy."),

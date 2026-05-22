@@ -34,6 +34,7 @@
  */
 
 import type { ConvergenceZone, DatingOverlapData, LayerDateBand } from "./engineDatingOverlap";
+import { pickStrongestZoneIndex } from "./engineDatingOverlap";
 import type { FinalStyleReconciliation } from "./engineStyleReconciliation";
 import type { StyleAttribution } from "./engineStyleEvaluator";
 
@@ -82,17 +83,17 @@ function formatRange(floor: number | null | undefined, ceiling: number | null | 
 
 function findStrongestZone(zones: ConvergenceZone[]): { zone: ConvergenceZone; idx: number } | null {
   if (zones.length === 0) return null;
-  let bestIdx = 0;
-  for (let i = 1; i < zones.length; i++) {
-    const z = zones[i];
-    const b = zones[bestIdx];
-    if (z.authority_sum > b.authority_sum) { bestIdx = i; continue; }
-    if (z.authority_sum < b.authority_sum) continue;
-    if (z.layer_count > b.layer_count) { bestIdx = i; continue; }
-    if (z.layer_count < b.layer_count) continue;
-    if ((z.date_ceiling - z.date_floor) < (b.date_ceiling - b.date_floor)) bestIdx = i;
-  }
-  return { zone: zones[bestIdx], idx: bestIdx };
+  // Delegate to the shared picker so the narrative's "strongest zone" always
+  // matches the chart chip's (specificity-weighted authority + layer count).
+  const idx = pickStrongestZoneIndex(zones);
+  return { zone: zones[idx], idx };
+}
+
+// Layers that genuinely corroborate the zone (specificity >= 0.5) — the same
+// count the chart chip headlines, so prose and chip never disagree. Falls back
+// to the raw layer count for older report shapes.
+function corroboratingCount(zone: ConvergenceZone): number {
+  return zone.specific_layer_count ?? zone.layer_count;
 }
 
 function summarizeZoneLayers(zone: ConvergenceZone): string {
@@ -165,7 +166,7 @@ export function buildDatingFindingNarrative(input: {
   if (kind === "era_only") {
     const eraName = finalStyle?.final_style_label?.replace(/\s+market production$/, "") ?? "the era";
     const convergenceClause = strongest
-      ? ` Evidence converges most strongly at ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${strongest.zone.layer_count} layer${strongest.zone.layer_count !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}).`
+      ? ` Evidence converges most strongly at ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}).`
       : "";
     return {
       headline:
@@ -179,7 +180,7 @@ export function buildDatingFindingNarrative(input: {
   if (kind === "named_transitional") {
     const headline = `${finalStyle?.final_style_label} — both style vocabularies were in production during this window. Working range ${workingRange}.`;
     const detail = strongest
-      ? `Strongest layer convergence: ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${strongest.zone.layer_count} layer${strongest.zone.layer_count !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}). ${finalStyle?.final_style_reason ?? ""}`.trim()
+      ? `Strongest layer convergence: ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}). ${finalStyle?.final_style_reason ?? ""}`.trim()
       : finalStyle?.final_style_reason;
     return { headline, detail, tone: "confident" };
   }
@@ -197,11 +198,11 @@ export function buildDatingFindingNarrative(input: {
   // ─── Case 6: revival_wave ───
   if (kind === "revival_wave") {
     const headline = strongest
-      ? `Evidence aligns with ${finalStyle?.final_style_label}. The strongest layer convergence is ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${strongest.zone.layer_count} layer${strongest.zone.layer_count !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}), consistent with the working range ${workingRange}.`
+      ? `Evidence aligns with ${finalStyle?.final_style_label}. The strongest layer convergence is ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}), consistent with the working range ${workingRange}.`
       : `Evidence aligns with ${finalStyle?.final_style_label}. Working range ${workingRange}.`;
     const detail =
       data.convergence_zones.length > 1 && strongest
-        ? `A secondary convergence zone exists but the ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} reading dominates by layer count and authority.`
+        ? `A secondary convergence zone exists, but the ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} reading is the strongest — it carries the most corroborating specific layers and the highest weighted authority.`
         : undefined;
     return { headline, detail, tone: "confident" };
   }
@@ -210,7 +211,7 @@ export function buildDatingFindingNarrative(input: {
   if (kind === "original_period") {
     const styleLabel = styleName ?? "the attributed style";
     const headline = strongest
-      ? `Evidence places this piece in the original ${styleLabel} period, ${workingRange}. The strongest layer convergence is ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${strongest.zone.layer_count} layer${strongest.zone.layer_count !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}).`
+      ? `Evidence places this piece in the original ${styleLabel} period, ${workingRange}. The strongest layer convergence is ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}).`
       : `Evidence places this piece in the original ${styleLabel} period, ${workingRange}.`;
     return { headline, tone: "confident" };
   }
@@ -219,7 +220,7 @@ export function buildDatingFindingNarrative(input: {
   if (kind === "context_only") {
     const headline = `No formal style attribution; piece identified via "${finalStyle?.final_style_label}" derived from text cues. Working range ${workingRange}.`;
     const detail = strongest
-      ? `Strongest layer convergence: ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${strongest.zone.layer_count} layer${strongest.zone.layer_count !== 1 ? "s" : ""}).`
+      ? `Strongest layer convergence: ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}).`
       : undefined;
     return { headline, detail, tone: "qualified" };
   }
@@ -228,7 +229,7 @@ export function buildDatingFindingNarrative(input: {
   if (data.convergence_zones.length > 0 && strongest) {
     return {
       headline:
-        `Evidence converges at ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${strongest.zone.layer_count} layer${strongest.zone.layer_count !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}), but no specific style was attributed. ` +
+        `Evidence converges at ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}), but no specific style was attributed. ` +
         `Working range ${workingRange}.`,
       tone: "qualified",
     };

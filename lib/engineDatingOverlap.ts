@@ -75,6 +75,41 @@ export type DatingOverlapData = {
   overall_ceiling: number | null;
 };
 
+// Shared "strongest convergence zone" picker. Used by BOTH the dating chart
+// chip (app/page.tsx) and the dating narrative (datingFindingNarrative.ts) so
+// the two never disagree about which zone is strongest. Ranks by
+// specificity-weighted authority, then specificity-weighted layer count, then
+// narrowest range — the same criteria refineDatingFromConvergence applies
+// internally. Falls back to the raw fields for older/cached report shapes that
+// predate the weighted analogues. Permissive input type so both callers'
+// ConvergenceZone shapes (lib's required fields, the UI's optional ones) fit.
+export type StrongestZoneRankInput = {
+  date_floor: number;
+  date_ceiling: number;
+  layer_count: number;
+  authority_sum: number;
+  weighted_authority?: number;
+  effective_layer_count?: number;
+};
+export function pickStrongestZoneIndex(zones: StrongestZoneRankInput[]): number {
+  if (zones.length === 0) return -1;
+  const rank = (z: StrongestZoneRankInput) => ({
+    authority: z.weighted_authority ?? z.authority_sum,
+    count: z.effective_layer_count ?? z.layer_count,
+  });
+  let best = 0;
+  for (let i = 1; i < zones.length; i++) {
+    const z = rank(zones[i]);
+    const b = rank(zones[best]);
+    if (z.authority > b.authority) { best = i; continue; }
+    if (z.authority < b.authority) continue;
+    if (z.count > b.count) { best = i; continue; }
+    if (z.count < b.count) continue;
+    if ((zones[i].date_ceiling - zones[i].date_floor) < (zones[best].date_ceiling - zones[best].date_floor)) best = i;
+  }
+  return best;
+}
+
 // ── Block 7b3: convergence-override refinement for p2 ───────────────────
 
 export type RefinedDating = {
