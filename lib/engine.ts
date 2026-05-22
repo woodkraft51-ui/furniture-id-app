@@ -6693,7 +6693,11 @@ export const PE = {
           // to both the primary p0 perception call and the recovery
           // runDeepExtraction call since both go through callClaude.
           temperature: 0,
-          system,
+          // Cache the large static reference block (~51.5K tokens) shared by
+          // every scan. Images + intake live in `messages` (after `system`),
+          // so they don't invalidate the cached prefix. ~0.1x input cost on
+          // cache hits; Field and Full share one entry (identical system).
+          system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
           messages: [{ role: "user", content }],
         }),
       });
