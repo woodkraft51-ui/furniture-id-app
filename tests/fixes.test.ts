@@ -8,7 +8,9 @@ import {
   pickNamePrefixStyle,
   subtypeDisjointFromDating,
   isWoodPrimary,
+  falseTwinMaterialsToSuppress,
 } from "../lib/engineReportHelpers";
+import { COMMODE_RUNS } from "./fixtures/commodeRuns";
 
 const woodLayer = (clues: any[]) =>
   buildDatingOverlap(clues, null, [], null).layers.find((l) => l.layer === "wood")!;
@@ -127,4 +129,40 @@ test("Fix #4a: a solid-wood construction marker marks the piece wood-primary", (
 test("Fix #4a: a metal-only piece is NOT wood-primary (tips show)", () => {
   assert.equal(isWoodPrimary(new Set(["metal_frame", "tubular_steel"])), false);
   assert.equal(isWoodPrimary([]), false);
+});
+
+// ── Phase 2: false-twin metal-frame guard ───────────────────────────────────
+test("Phase 2: false-twin frame keys are suppressed on a wood-primary piece", () => {
+  const got = falseTwinMaterialsToSuppress([
+    "solid_wood_construction", "wood_species_oak_group", "butt_hinge", "brass_frame", "tubular_steel",
+  ]).sort();
+  assert.deepEqual(got, ["brass_frame", "tubular_steel"]);
+});
+
+test("Phase 2: a genuine metal piece keeps its frame keys (not wood-primary)", () => {
+  assert.deepEqual(falseTwinMaterialsToSuppress(["metal_frame", "tubular_steel", "chrome_frame"]), []);
+});
+
+test("Phase 2: no false twins present → nothing suppressed", () => {
+  assert.deepEqual(falseTwinMaterialsToSuppress(["solid_wood_construction", "butt_hinge"]), []);
+});
+
+test("Phase 2: guard fires on all 5 real commode runs (brass_frame always, twins removed)", () => {
+  for (const run of COMMODE_RUNS) {
+    assert.ok(isWoodPrimary(run.clueKeys), `run ${run.run} should be wood-primary`);
+    const suppress = new Set(falseTwinMaterialsToSuppress(run.clueKeys));
+    // brass_frame fired in every run and must be suppressed
+    assert.ok(suppress.has("brass_frame"), `run ${run.run} should suppress brass_frame`);
+    // tubular_steel only when it was emitted
+    assert.equal(
+      suppress.has("tubular_steel"),
+      run.clueKeys.includes("tubular_steel"),
+      `run ${run.run} tubular_steel suppression should match emission`
+    );
+    // the de-twinned key set keeps the real evidence and drops the twins
+    const kept = run.clueKeys.filter((k) => !suppress.has(k));
+    assert.ok(!kept.includes("brass_frame") && !kept.includes("tubular_steel"));
+    assert.ok(kept.includes("solid_wood_construction"));
+    assert.ok(kept.some((k) => k.includes("commode")), `run ${run.run} keeps a commode key`);
+  }
 });

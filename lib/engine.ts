@@ -81,7 +81,7 @@ import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData
 import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
-import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary } from "./engineReportHelpers";
+import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress } from "./engineReportHelpers";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -2703,8 +2703,27 @@ function buildEvidenceDigest(observations: Observation[], perception?: Perceptio
   observations.forEach((o) => {
     o.type = canonicalObservationType(o.type);
   });
+
+  // On a wood-primary piece, metal-FRAME material keys (brass_frame,
+  // tubular_steel, chrome_frame, metal_frame) are false twins of incidental
+  // metal — brass hinges, an enameled-steel insert — and must not drive form,
+  // style, or dating. Drop both the keys and their observations here so the
+  // whole pipeline (frame digest, scoreForms, p4, dating overlap) sees one
+  // consistent de-twinned digest.
+  const presentKeys = observations
+    .filter((o) => !o.negated)
+    .map((o) => normalizeClueKey(o.clue))
+    .filter(Boolean) as string[];
+  const twinSuppress = new Set(falseTwinMaterialsToSuppress(presentKeys));
+  const keptObservations = twinSuppress.size
+    ? observations.filter((o) => {
+        const k = normalizeClueKey(o.clue);
+        return !(k != null && twinSuppress.has(k));
+      })
+    : observations;
+
   const by_type: Record<string, Observation[]> = {};
-  observations.forEach((o) => {
+  keptObservations.forEach((o) => {
     if (!by_type[o.type]) by_type[o.type] = [];
     by_type[o.type].push(o);
   });
@@ -2713,15 +2732,15 @@ function buildEvidenceDigest(observations: Observation[], perception?: Perceptio
   // forms or contribute positive evidence to any clue_keys consumer (scoreForms,
   // material classification, dating, style).
   const clue_keys = uniq(
-    observations
+    keptObservations
       .filter((o) => !o.negated)
       .map((o) => normalizeClueKey(o.clue))
       .filter(Boolean) as string[]
   );
-  const hard_negatives = uniq(observations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
-  const strongest_observations = [...observations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
+  const hard_negatives = uniq(keptObservations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
+  const strongest_observations = [...keptObservations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
 
-  return { observations, observation_count: observations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception };
+  return { observations: keptObservations, observation_count: keptObservations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception };
 }
 
 function computeMissingEvidence(images: any[]) {

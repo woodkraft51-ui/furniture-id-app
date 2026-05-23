@@ -51,3 +51,26 @@ export function isWoodPrimary(clueKeys: Iterable<string>): boolean {
     Array.from(set).some((k) => k.startsWith("wood_species_"))
   );
 }
+
+/** Metal-FRAME material keys that imply a metal-structured piece (a brass bed, a
+ * tubular-steel modernist frame). On a wood-primary piece these are false twins
+ * of incidental metal — brass hinges read as `brass_frame`, an enameled-steel
+ * basin read as `tubular_steel` — and they wrongly drive form/style/value
+ * (audit: Victorian commode repeatedly mis-scored "Brass bed" / "Modernist /
+ * chrome-frame", inflating value ~3x). */
+const FALSE_TWIN_FRAME_MATERIALS = new Set<string>([
+  "brass_frame",
+  "tubular_steel",
+  "chrome_frame",
+  "metal_frame",
+]);
+
+/** Given a piece's clue keys, return the false-twin metal-frame keys that should
+ * be suppressed because the piece is wood-primary (so a metal FRAME is
+ * impossible). Empty when the piece is not wood-primary — a genuine brass bed or
+ * tubular-steel chair has no solid-wood markers, so its frame keys survive. */
+export function falseTwinMaterialsToSuppress(clueKeys: Iterable<string>): string[] {
+  const set = clueKeys instanceof Set ? clueKeys : new Set(clueKeys);
+  if (!isWoodPrimary(set)) return [];
+  return [...set].filter((k) => FALSE_TWIN_FRAME_MATERIALS.has(k));
+}
