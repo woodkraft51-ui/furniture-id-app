@@ -43,10 +43,10 @@ const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
 const TRACE_REVEAL_CODE = "xyzzy";
 const TRACE_VISIBLE_KEY = "wk_trace_visible";
 // Mobile reveal: tapping a hidden corner hotspot TRACE_TAP_COUNT times within
-// TRACE_TAP_WINDOW_MS toggles the same trace. The tight window keeps ordinary
-// taps from accumulating into a trigger.
+// TRACE_TAP_WINDOW_MS toggles the same trace. The window is generous enough to
+// trigger comfortably by hand while still ignoring stray, spaced-out taps.
 const TRACE_TAP_COUNT = 3;
-const TRACE_TAP_WINDOW_MS = 700;
+const TRACE_TAP_WINDOW_MS = 1500;
 
 // CORE_SLOTS key → PHOTO_EXAMPLES key. Slots without an entry render
 // without a "View example" link. GROUP_SLOTS map by their `key` (not
@@ -2744,7 +2744,7 @@ const p7 = stageOutputs.p7 || null;
           aria-hidden
           className="no-print"
           onClick={onTraceHotspotTap}
-          style={{ position: "fixed", left: 0, bottom: 0, width: 44, height: 44, zIndex: 2147483647, background: "transparent" }}
+          style={{ position: "fixed", left: 0, bottom: 0, width: 64, height: 64, zIndex: 2147483647, background: "transparent" }}
         />
       )}
       {showPickerProfile && (
@@ -3563,17 +3563,16 @@ const p7 = stageOutputs.p7 || null;
               <AppraiserReviewCTA triggers={appraiserReviewTriggers} />
             )}
 
-            {/* Engine Trace diagnostic. Hidden from end users by default;
-                revealed by typing TRACE_REVEAL_CODE (see top of file). The
-                trace data is always computed — this gate only controls display.
-                Surfaces per-phase engine reasoning for verifying that evidence
-                captured at P0 is routed correctly downstream. Hidden in print
-                (diagnostic noise on a paper readout). */}
-            {traceVisible && (
-              <div className="no-print">
-                <TraceReport report={report} />
-              </div>
-            )}
+          </div>
+        )}
+        {/* Engine Trace diagnostic. Hidden by default; revealed by typing
+            TRACE_REVEAL_CODE on desktop or the mobile corner-tap gesture.
+            Rendered below either report mode (field scan + full analysis) —
+            the trace data is always computed, this gate only controls display.
+            Hidden in print (diagnostic noise on a paper readout). */}
+        {report && traceVisible && (
+          <div className="no-print">
+            <TraceReport report={report} />
           </div>
         )}
       </div>
