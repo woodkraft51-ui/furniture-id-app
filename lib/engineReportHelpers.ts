@@ -117,3 +117,15 @@ export const CLUE_KEY_ALIASES: Record<string, string> = {
 export function canonicalClueKey(key: string): string {
   return CLUE_KEY_ALIASES[key] ?? key;
 }
+
+/** Chamber-pot commode / close-stool signature: a circular aperture cut for a
+ * basin, or an explicit commode/close-stool function read (optionally
+ * corroborated by the enameled basin). Keys are expected to be canonicalized
+ * (see CLUE_KEY_ALIASES) so synonym drift does not hide the signature. */
+export function commodeEvidencePresent(clueKeys: Iterable<string>): boolean {
+  const set = clueKeys instanceof Set ? clueKeys : new Set(clueKeys);
+  if (set.has("commode_function")) return true;
+  if (set.has("circular_aperture_seat_board")) return true;
+  if (set.has("victorian_commode_form") && set.has("enameled_steel_basin")) return true;
+  return false;
+}

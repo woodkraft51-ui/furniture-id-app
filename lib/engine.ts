@@ -81,7 +81,7 @@ import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData
 import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
-import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress, canonicalClueKey } from "./engineReportHelpers";
+import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress, canonicalClueKey, commodeEvidencePresent } from "./engineReportHelpers";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -2697,7 +2697,7 @@ function canonicalObservationType(t: string | null | undefined): string {
   return OBSERVATION_TYPE_ALIASES[key] ?? key;
 }
 
-function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
+export function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   // Normalize emitted types to the canonical vocabulary before anything reads
   // them (see OBSERVATION_TYPE_ALIASES). Mutating here means by_type, p4
   // weighting, and the dating overlap all agree downstream.
@@ -2960,7 +2960,7 @@ function detectUpholsteryLayer(digest: EvidenceDigest): UpholsteryLayer | null {
 // Block 14: build a frame-only digest by filtering out clues categorized as
 // "upholstery" in CLUE_LIBRARY. Used to keep form ID, style attribution,
 // and frame-date computation independent of upholstery evidence.
-function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
+export function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
   const upholsteryClueKeys = new Set<string>(
     Object.entries(CLUE_LIBRARY)
       .filter(([, meta]: [string, any]) => meta?.category === "upholstery")
@@ -3164,7 +3164,7 @@ export type ScoredForm = {
   support: string[];
 };
 
-function scoreForms(digest: EvidenceDigest): ScoredForm[] {
+export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
@@ -4665,11 +4665,23 @@ if (
     add("Recliner", 90, "Reclining mechanism or recliner form is visible.");
   }
 
+  // Commode / close stool — a hinged-lid case enclosing a chamber-pot basin
+  // (circular aperture cut in an interior seat board). Scored above the plain
+  // "Stool" text-match below because the diagnostic antique term "close stool"
+  // contains the word "stool" and would otherwise route a chamber-pot commode
+  // to a backless seat (audit: Victorian commode repeatedly mis-identified as
+  // "Stool"). Ungated by backrest so a stray backrest read can't suppress it.
+  const commodeEvidence = commodeEvidencePresent(clues);
+  if (commodeEvidence) {
+    add("Commode (close stool)", 96, "Hinged-lid case with a circular aperture cut for a chamber-pot basin — a close stool / commode.");
+  }
+
   // Stool — backless single-user seating. Only when no backrest evidence
-  // (a stool by definition has no back).
+  // (a stool by definition has no back) and not a close-stool commode.
   if (
     /\bstools?\b|\btabourets?\b/.test(text) &&
-    !hasAny("backrest_present", "spindle_back")
+    !hasAny("backrest_present", "spindle_back") &&
+    !commodeEvidence
   ) {
     add("Stool", 72, "Backless single-user stool form is visible.");
   }

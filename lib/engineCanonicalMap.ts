@@ -608,6 +608,7 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Wardrobe": "form_wardrobe",
   "Armoire": "form_armoire",
   "Washstand": "form_washstand",
+  "Commode (close stool)": "form_commode",
   "Nightstand": "form_nightstand",
   "Trunk": "form_trunk",
   "Game table": "form_game_table",

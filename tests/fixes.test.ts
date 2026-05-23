@@ -10,8 +10,10 @@ import {
   isWoodPrimary,
   falseTwinMaterialsToSuppress,
   canonicalClueKey,
+  commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms } from "../lib/engine";
 
 const woodLayer = (clues: any[]) =>
   buildDatingOverlap(clues, null, [], null).layers.find((l) => l.layer === "wood")!;
@@ -198,5 +200,46 @@ test("Phase 3: canonicalization recovers the recognized dated/label keys in ever
     for (const run of COMMODE_RUNS) {
       assert.ok(canon(run).has(key), `run ${run.run} should yield ${key} after canonicalization`);
     }
+  }
+});
+
+// ── Phase 4: commode form routing (end-to-end through scoreForms) ────────────
+test("Phase 4: commodeEvidencePresent fires on every run's canonicalized keys", () => {
+  for (const run of COMMODE_RUNS) {
+    const canon = run.clueKeys.map(canonicalClueKey);
+    assert.ok(commodeEvidencePresent(canon), `run ${run.run} should read as a commode`);
+  }
+  // a plain stool (seating, no aperture/commode-function) does not
+  assert.equal(commodeEvidencePresent(["seating_surface", "seating_present", "bun_feet"]), false);
+});
+
+// Build a faithful digest from a run's clue keys: each key becomes an
+// observation, and the commode/close-stool key carries the diagnostic
+// "close stool" prose (which otherwise trips the plain "Stool" text-match).
+function digestFromRun(clueKeys: string[]) {
+  const observations = clueKeys.map((k) => ({
+    type: "construction",
+    clue: k,
+    description: /commode|close_stool/.test(k)
+      ? "Victorian close stool / commode with a fitted chamber-pot basin"
+      : k.replace(/_/g, " "),
+    confidence: 70,
+    negated: false,
+  }));
+  return buildFrameDigest(buildEvidenceDigest(observations as any));
+}
+
+test("Phase 4: the commode wins end-to-end on all 5 runs (not Stool, not Brass bed)", () => {
+  for (const run of COMMODE_RUNS) {
+    const ranked = scoreForms(digestFromRun(run.clueKeys));
+    const best = ranked.find((r) => r.form_id !== null);
+    assert.equal(
+      best?.form_id,
+      "form_commode",
+      `run ${run.run} should resolve to form_commode (got ${best?.form_id} / "${best?.form}")`
+    );
+    // the false-twin / text-artifact forms must not appear as a resolved pick
+    assert.ok(!ranked.some((r) => r.form_id === "form_stool"), `run ${run.run} must not score Stool`);
+    assert.ok(!ranked.some((r) => r.form_id === "form_iron_bed"), `run ${run.run} must not score Brass bed`);
   }
 });
