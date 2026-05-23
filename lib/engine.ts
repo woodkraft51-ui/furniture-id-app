@@ -7864,13 +7864,15 @@ if (missing.label_photo) {
       || deriveStyleContext(frameDigest)
       || styleFromObservation;
 
-    // Only a SUPPORTED style attribution (or a form-promoted style label) may
-    // prefix the form NAME. The text-cue guesses (deriveStyleContext /
-    // styleFromObservation) are context-only and must not rename the object —
-    // e.g. "Modernist / chrome-frame Stool" on a Victorian commode (S017) or
-    // "American Empire / late Classical Revival Trunk" on a clock (S009). The
-    // guessed context still surfaces separately in the hedged style-context field.
-    const namePrefixStyle = style_attribution?.name || styleFromForm || null;
+    // Only a SUPPORTED style attribution may prefix the form NAME. The text-cue
+    // guesses (deriveStyleContext / styleFromObservation) AND the form-scorer
+    // artifact (styleFromForm) are context-only and must not rename the object —
+    // e.g. "Modernist / chrome-frame Stool" on a Victorian commode (S017): there
+    // styleFromForm is itself "Modernist / chrome-frame", fed by the tubular_steel
+    // → "Modernist/chrome-frame furniture" form candidate (an M6 false-positive on
+    // "iron/steel screws"). All non-attribution sources still surface separately in
+    // the hedged style-context field.
+    const namePrefixStyle = style_attribution?.name || null;
 
     // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
     // canonical form has aliases. Surfaces user-trust language without surrendering
