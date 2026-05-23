@@ -81,6 +81,7 @@ import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData
 import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
+import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary } from "./engineReportHelpers";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -6289,14 +6290,7 @@ function buildDecisionGuidance(args: {
   // incidental metal/glass clue fired (brass hinges/mounts, steel/enamel parts,
   // door glass → metal_frame/brass_frame/tubular_steel false twins). Gate the
   // metal block on the piece NOT being wood-primary (audit S009/S010/S014/S015/S017).
-  const woodPrimary =
-    has(
-      "solid_wood_construction",
-      "solid_wood_secondary_underframe",
-      "softwood_secondary_wood",
-      "solid_plank_back",
-      "solid_plank_drawer_bottom"
-    ) || Array.from(clues).some((k) => k.startsWith("wood_species_"));
+  const woodPrimary = isWoodPrimary(clues);
   if (
     has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame") &&
     !woodPrimary
@@ -7872,7 +7866,7 @@ if (missing.label_photo) {
     // → "Modernist/chrome-frame furniture" form candidate (an M6 false-positive on
     // "iron/steel screws"). All non-attribution sources still surface separately in
     // the hedged style-context field.
-    const namePrefixStyle = style_attribution?.name || null;
+    const namePrefixStyle = pickNamePrefixStyle(style_attribution);
 
     // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
     // canonical form has aliases. Surfaces user-trust language without surrendering
@@ -8673,14 +8667,7 @@ if (p6.dating_overlap) {
   // computed frame dating — it cannot coexist with the date (audit: mule_chest
   // 1700–1850 surfaced on an 1890–1920 apothecary chest (S011) and a 1900–1910
   // Regency bookcase (S015)). Pure-win filter; date-compatible subtypes are kept.
-  if (
-    p3.subtype &&
-    typeof p2.date_floor === "number" &&
-    typeof p2.date_ceiling === "number" &&
-    typeof p3.subtype.date_floor === "number" &&
-    typeof p3.subtype.date_ceiling === "number" &&
-    (p3.subtype.date_ceiling < p2.date_floor || p3.subtype.date_floor > p2.date_ceiling)
-  ) {
+  if (subtypeDisjointFromDating(p3.subtype, p2.date_floor, p2.date_ceiling)) {
     p3.subtype = null;
   }
 
