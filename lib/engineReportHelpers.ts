@@ -14,22 +14,24 @@ export function pickNamePrefixStyle(
   return styleAttribution?.name || null;
 }
 
-/** True when a subtype's own production window is fully disjoint from the
- * computed frame dating (so it cannot coexist with the date and should be
- * dropped). Requires all four bounds to be real numbers. */
+/** True when a subtype's own production window is disjoint from the computed
+ * frame dating (so it cannot coexist with the date and should be dropped). The
+ * frame dating must be fully known; the subtype window may be open-ended — a
+ * null bound is treated as ±infinity, so a [1970, null] reproduction subtype is
+ * still dropped from a 1900–1930 frame (audit: run-5 brass-bed revival, whose
+ * null ceiling previously let it survive). */
 export function subtypeDisjointFromDating(
   subtype: { date_floor?: number | null; date_ceiling?: number | null } | null | undefined,
   p2DateFloor: number | null | undefined,
   p2DateCeiling: number | null | undefined
 ): boolean {
-  return (
-    !!subtype &&
-    typeof p2DateFloor === "number" &&
-    typeof p2DateCeiling === "number" &&
-    typeof subtype.date_floor === "number" &&
-    typeof subtype.date_ceiling === "number" &&
-    (subtype.date_ceiling < p2DateFloor || subtype.date_floor > p2DateCeiling)
-  );
+  if (!subtype) return false;
+  if (typeof p2DateFloor !== "number" || typeof p2DateCeiling !== "number") return false;
+  const disjointAbove =
+    typeof subtype.date_floor === "number" && subtype.date_floor > p2DateCeiling;
+  const disjointBelow =
+    typeof subtype.date_ceiling === "number" && subtype.date_ceiling < p2DateFloor;
+  return disjointAbove || disjointBelow;
 }
 
 /** True when the piece reads as wood-primary (solid-wood construction markers

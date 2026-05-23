@@ -103,6 +103,18 @@ test("Fix #3 gate: missing subtype or non-numeric dating is never disjoint", () 
   assert.equal(subtypeDisjointFromDating({ date_floor: null, date_ceiling: null }, 1890, 1920), false);
 });
 
+test("Fix #3 gate: an open-ended subtype window outside the frame is dropped", () => {
+  // run-5 brass-bed revival: [1970, ∞) on a 1900–1930 frame — null ceiling
+  assert.equal(subtypeDisjointFromDating({ date_floor: 1970, date_ceiling: null }, 1900, 1930), true);
+  // (−∞, 1850] on a 1900–1930 frame — null floor
+  assert.equal(subtypeDisjointFromDating({ date_floor: null, date_ceiling: 1850 }, 1900, 1930), true);
+});
+
+test("Fix #3 gate: an open-ended subtype that still overlaps is kept", () => {
+  assert.equal(subtypeDisjointFromDating({ date_floor: 1920, date_ceiling: null }, 1900, 1930), false);
+  assert.equal(subtypeDisjointFromDating({ date_floor: null, date_ceiling: 1925 }, 1900, 1930), false);
+});
+
 // ── Fix #4a: wood-primary suppresses metal-furniture tips ───────────────────
 test("Fix #4a: a wood_species_* clue marks the piece wood-primary", () => {
   assert.equal(isWoodPrimary(new Set(["wood_species_oak", "metal_frame"])), true);
