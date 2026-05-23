@@ -318,10 +318,19 @@ export function reconcileFinalStyle(input: {
     rangesOverlap(styleAttribution.date_floor, styleAttribution.date_ceiling, finalDatingFloor, finalDatingCeiling)
   ) {
     const softName = softenAcademicLabel(styleAttribution.name);
+    // "falls within" only when the final range is actually contained in the
+    // attribution period; on a partial overlap (a sliver), say "overlaps" — the
+    // old wording claimed e.g. "1925–1975 falls within 1895–1930" (audit S016).
+    const af = styleAttribution.date_floor;
+    const ac = styleAttribution.date_ceiling;
+    const contained =
+      af != null && ac != null && finalDatingFloor >= af && finalDatingCeiling <= ac;
     return {
       final_style_label: softName,
       kind: "original_period",
-      final_style_reason: `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls within the original ${softName} period (c. ${styleAttribution.date_floor}–${styleAttribution.date_ceiling}).`,
+      final_style_reason: contained
+        ? `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) falls within the original ${softName} period (c. ${af}–${ac}).`
+        : `Final dating (c. ${finalDatingFloor}–${finalDatingCeiling}) overlaps the original ${softName} period (c. ${af}–${ac}).`,
     };
   }
 

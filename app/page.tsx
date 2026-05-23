@@ -1987,7 +1987,7 @@ function AppraiserReviewCTA({ triggers }: { triggers: { reason: string }[] }) {
           {reasonText} A hands-on assessment can confirm details that photos
           can&apos;t capture: weight, joint integrity under stress, surface smell
           as a finish and age indicator, period-correct restoration scope,
-          and the tactile feel of the wood. New Creations Woodcraft offers
+          and the tactile feel of the piece. New Creations Woodcraft offers
           this service directly with Michael.
         </div>
         <div

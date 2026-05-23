@@ -6285,7 +6285,22 @@ function buildDecisionGuidance(args: {
     );
   }
 
-  if (has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+  // Wood-primary pieces should not get metal-furniture tips just because an
+  // incidental metal/glass clue fired (brass hinges/mounts, steel/enamel parts,
+  // door glass → metal_frame/brass_frame/tubular_steel false twins). Gate the
+  // metal block on the piece NOT being wood-primary (audit S009/S010/S014/S015/S017).
+  const woodPrimary =
+    has(
+      "solid_wood_construction",
+      "solid_wood_secondary_underframe",
+      "softwood_secondary_wood",
+      "solid_plank_back",
+      "solid_plank_drawer_bottom"
+    ) || Array.from(clues).some((k) => k.startsWith("wood_species_"));
+  if (
+    has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame") &&
+    !woodPrimary
+  ) {
     addPair(
       "For metal furniture, check welds, bends, plating wear, rust, and structural looseness before agreeing to the price.",
       "For metal furniture, highlight clean lines, original finish or plating, stable joints, and any distinctive design features."
@@ -7849,11 +7864,19 @@ if (missing.label_photo) {
       || deriveStyleContext(frameDigest)
       || styleFromObservation;
 
+    // Only a SUPPORTED style attribution (or a form-promoted style label) may
+    // prefix the form NAME. The text-cue guesses (deriveStyleContext /
+    // styleFromObservation) are context-only and must not rename the object —
+    // e.g. "Modernist / chrome-frame Stool" on a Victorian commode (S017) or
+    // "American Empire / late Classical Revival Trunk" on a clock (S009). The
+    // guessed context still surfaces separately in the hedged style-context field.
+    const namePrefixStyle = style_attribution?.name || styleFromForm || null;
+
     // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
     // canonical form has aliases. Surfaces user-trust language without surrendering
     // canonical identification ("Identified as buffet (also commonly called sideboard)").
     const aliases = getCommonAliasesForDisplay(form_id, 2);
-    const styledForm = composeStyledForm(style, form);
+    const styledForm = composeStyledForm(namePrefixStyle, form);
     const display_form = aliases.length
       ? `${styledForm} (also commonly called: ${aliases.join(", ")})`
       : styledForm;
@@ -8643,6 +8666,22 @@ if (p6.dating_overlap) {
     const aliasesMatch = (p3.display_form || "").match(/\s\(also commonly called:[^)]*\)\s*$/);
     p3.display_form = aliasesMatch ? styled + aliasesMatch[0] : styled;
   }
+
+  // Drop a subtype whose own production window is fully disjoint from the
+  // computed frame dating — it cannot coexist with the date (audit: mule_chest
+  // 1700–1850 surfaced on an 1890–1920 apothecary chest (S011) and a 1900–1910
+  // Regency bookcase (S015)). Pure-win filter; date-compatible subtypes are kept.
+  if (
+    p3.subtype &&
+    typeof p2.date_floor === "number" &&
+    typeof p2.date_ceiling === "number" &&
+    typeof p3.subtype.date_floor === "number" &&
+    typeof p3.subtype.date_ceiling === "number" &&
+    (p3.subtype.date_ceiling < p2.date_floor || p3.subtype.date_floor > p2.date_ceiling)
+  ) {
+    p3.subtype = null;
+  }
+
   stage_outputs.p3 = p3;
 }
 

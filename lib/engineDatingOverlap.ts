@@ -386,6 +386,22 @@ const CATEGORY_TO_LAYER: Record<string, LayerName> = {
   upholstery: "upholstery",
 };
 
+// Material clues that are METAL or GLASS, not wood/substrate. The `materials`
+// category maps to the "wood" layer above, so without this guard a brass mount,
+// steel/enamel component, or pane of glass would date the wood/substrate layer —
+// a category error that produced phantom "wood 1900–1930" layers and skewed/
+// inflated convergence (audit S009 clock, S013 candelabrum, S015 bookcase mount,
+// S017 enamel-bowl commode). These are recorded present-but-undated instead.
+const NON_SUBSTRATE_MATERIAL_CLUES = new Set<string>([
+  "brass_frame",
+  "metal_frame",
+  "tubular_steel",
+  "chrome_frame",
+  "cast_iron",
+  "wrought_iron",
+  "glass_top",
+]);
+
 type WeightedClue = {
   clue: string;
   category: string;
@@ -516,6 +532,13 @@ export function buildDatingOverlap(
   for (const wc of weightedClues) {
     const layer = CATEGORY_TO_LAYER[wc.category];
     if (!layer) continue;
+    // Metal/glass material clues must not date the wood/substrate layer (see
+    // NON_SUBSTRATE_MATERIAL_CLUES). Recorded as present-but-undated so the
+    // diagnostic surface still shows them, but they contribute no date band.
+    if (layer === "wood" && NON_SUBSTRATE_MATERIAL_CLUES.has(wc.clue)) {
+      (undatedBuckets[layer] ||= []).push(wc.clue);
+      continue;
+    }
     // Replacement-risk clues (commonly-replaced hardware: porcelain casters,
     // round wood knobs, decorative bail pulls) are still recorded as undated
     // observations so the diagnostic surface shows "present, not used for

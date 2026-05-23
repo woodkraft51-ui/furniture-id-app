@@ -36,6 +36,11 @@ export type SubtypeAssignment = {
   subtype_name: string;
   confidence: number;
   matched_attributes: string[];
+  // Canonical production window for this subtype (when authored). Surfaced so
+  // downstream assembly can drop a subtype whose window is disjoint from the
+  // computed frame dating.
+  date_floor?: number | null;
+  date_ceiling?: number | null;
 };
 
 const SUBTYPE_CONFIDENCE_FLOOR = 0.65; // Q4 lock
@@ -145,6 +150,8 @@ export function evaluateSubtype(
         subtype_name: st.name,
         confidence: Number(confidence.toFixed(2)),
         matched_attributes: matched,
+        date_floor: st.date_floor ?? null,
+        date_ceiling: st.date_ceiling ?? null,
       });
     }
   }
