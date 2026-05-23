@@ -155,4 +155,30 @@ export const COMMODE_RUNS: CommodeRun[] = [
       "hardware_tarnish", "enameled_ware_white_basin", "brass_frame", "tubular_steel", "cabinet_form",
     ],
   },
+  {
+    // First live re-scan after the fix deployed. Regressed to Nightstand: the
+    // model's commode description said "...night stand with chamber pot", which
+    // tripped the bedside-cabinet text-match (Nightstand, 96) — tying the
+    // commode's score and winning on insertion order. Recorded outcome is that
+    // pre-fix flip; the fix scores the commode above the cousin tier and gates
+    // the nightstand match when commode evidence is present.
+    run: 7,
+    formId: "form_nightstand",
+    formLabel: "Nightstand",
+    styleContext: "Unresolved",
+    dateFloor: 1900,
+    dateCeiling: 1920,
+    valueLow: 155,
+    valueHigh: 353,
+    sellability: 54,
+    clueKeys: [
+      "lift_lid", "commode_chamber_pot_cabinet", "vertical_supports", "bun_feet",
+      "turned_finials_on_posts", "solid_wood_construction", "wood_species_oak_group",
+      "frame_and_panel_sides", "mortise_and_tenon", "butt_hinge", "machine_made_hinge",
+      "slotted_screw", "stamped_metal_bracket", "maker_label", "enameled_steel_basin",
+      "lid_panel_split", "surface_wear_scratches", "shellac_intact", "hardware_tarnish",
+      "circular_aperture_seat_board", "two_part_hinged_lid", "victorian_utilitarian_form",
+      "corner_post_leg_construction", "visible_text", "cabinet_form",
+    ],
+  },
 ];

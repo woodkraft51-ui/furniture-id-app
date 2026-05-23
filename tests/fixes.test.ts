@@ -150,23 +150,24 @@ test("Phase 2: no false twins present → nothing suppressed", () => {
   assert.deepEqual(falseTwinMaterialsToSuppress(["solid_wood_construction", "butt_hinge"]), []);
 });
 
-test("Phase 2: guard fires on all 5 real commode runs (brass_frame always, twins removed)", () => {
+test("Phase 2: on every real commode run, any emitted metal twin is suppressed and none remain", () => {
   for (const run of COMMODE_RUNS) {
     assert.ok(isWoodPrimary(run.clueKeys), `run ${run.run} should be wood-primary`);
     const suppress = new Set(falseTwinMaterialsToSuppress(run.clueKeys));
-    // brass_frame fired in every run and must be suppressed
-    assert.ok(suppress.has("brass_frame"), `run ${run.run} should suppress brass_frame`);
-    // tubular_steel only when it was emitted
-    assert.equal(
-      suppress.has("tubular_steel"),
-      run.clueKeys.includes("tubular_steel"),
-      `run ${run.run} tubular_steel suppression should match emission`
-    );
+    // any false twin that WAS emitted must be suppressed (some runs emit none)
+    for (const twin of ["brass_frame", "tubular_steel"]) {
+      if (run.clueKeys.includes(twin)) {
+        assert.ok(suppress.has(twin), `run ${run.run} should suppress ${twin}`);
+      }
+    }
     // the de-twinned key set keeps the real evidence and drops the twins
     const kept = run.clueKeys.filter((k) => !suppress.has(k));
     assert.ok(!kept.includes("brass_frame") && !kept.includes("tubular_steel"));
     assert.ok(kept.includes("solid_wood_construction"));
-    assert.ok(kept.some((k) => k.includes("commode")), `run ${run.run} keeps a commode key`);
+    assert.ok(
+      kept.some((k) => /commode|close_stool|chamber_pot|circular/.test(k)),
+      `run ${run.run} keeps a commode key`
+    );
   }
 });
 
@@ -213,8 +214,8 @@ function digestFromRun(clueKeys: string[]) {
   const observations = clueKeys.map((k) => ({
     type: "construction",
     clue: k,
-    description: /commode|close_stool/.test(k)
-      ? "Victorian close stool / commode with a fitted chamber-pot basin"
+    description: /commode|close_stool|chamber_pot/.test(k)
+      ? "Victorian close stool / commode / night stand with a fitted chamber-pot basin"
       : k.replace(/_/g, " "),
     confidence: 70,
     negated: false,
@@ -231,8 +232,9 @@ test("Phase 4: the commode wins end-to-end on all 5 runs (not Stool, not Brass b
       "form_commode",
       `run ${run.run} should resolve to form_commode (got ${best?.form_id} / "${best?.form}")`
     );
-    // the false-twin / text-artifact forms must not appear as a resolved pick
+    // the false-twin / text-artifact / cousin forms must not appear as a resolved pick
     assert.ok(!ranked.some((r) => r.form_id === "form_stool"), `run ${run.run} must not score Stool`);
     assert.ok(!ranked.some((r) => r.form_id === "form_iron_bed"), `run ${run.run} must not score Brass bed`);
+    assert.ok(!ranked.some((r) => r.form_id === "form_nightstand"), `run ${run.run} must not score Nightstand`);
   }
 });
