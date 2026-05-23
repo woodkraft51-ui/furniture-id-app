@@ -9,6 +9,7 @@ import {
   subtypeDisjointFromDating,
   isWoodPrimary,
   falseTwinMaterialsToSuppress,
+  canonicalClueKey,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
 
@@ -164,5 +165,38 @@ test("Phase 2: guard fires on all 5 real commode runs (brass_frame always, twins
     assert.ok(!kept.includes("brass_frame") && !kept.includes("tubular_steel"));
     assert.ok(kept.includes("solid_wood_construction"));
     assert.ok(kept.some((k) => k.includes("commode")), `run ${run.run} keeps a commode key`);
+  }
+});
+
+// ── Phase 3: clue-key canonicalization ──────────────────────────────────────
+test("Phase 3: synonym variants map to one canonical key; unknowns pass through", () => {
+  assert.equal(canonicalClueKey("commode_chamber_pot_function"), "commode_function");
+  assert.equal(canonicalClueKey("commode_close_stool_function"), "commode_function");
+  assert.equal(canonicalClueKey("victorian_utility_commode"), "victorian_commode_form");
+  assert.equal(canonicalClueKey("circular_cutout_platform"), "circular_aperture_seat_board");
+  assert.equal(canonicalClueKey("brass_lid_catch_or_bracket"), "stamped_metal_bracket");
+  assert.equal(canonicalClueKey("label_text_full"), "visible_text");
+  // canonical targets and unknowns are returned unchanged
+  assert.equal(canonicalClueKey("commode_function"), "commode_function");
+  assert.equal(canonicalClueKey("some_unrelated_key"), "some_unrelated_key");
+});
+
+test("Phase 3: canonicalization makes the commode-identity keys 5/5 across runs", () => {
+  const canon = (run: { clueKeys: string[] }) => new Set(run.clueKeys.map(canonicalClueKey));
+  for (const key of ["commode_function", "victorian_commode_form", "circular_aperture_seat_board"]) {
+    for (const run of COMMODE_RUNS) {
+      assert.ok(canon(run).has(key), `run ${run.run} should yield ${key} after canonicalization`);
+    }
+  }
+});
+
+test("Phase 3: canonicalization recovers the recognized dated/label keys in every run", () => {
+  const canon = (run: { clueKeys: string[] }) => new Set(run.clueKeys.map(canonicalClueKey));
+  // stamped_metal_bracket (post-1900) — run 2 emitted brass_lid_catch_or_bracket
+  // visible_text — runs coined visible_text_us_standard / label_text_full / visible_text_label
+  for (const key of ["stamped_metal_bracket", "visible_text"]) {
+    for (const run of COMMODE_RUNS) {
+      assert.ok(canon(run).has(key), `run ${run.run} should yield ${key} after canonicalization`);
+    }
   }
 });

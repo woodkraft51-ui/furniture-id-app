@@ -74,3 +74,46 @@ export function falseTwinMaterialsToSuppress(clueKeys: Iterable<string>): string
   if (!isWoodPrimary(set)) return [];
   return [...set].filter((k) => FALSE_TWIN_FRAME_MATERIALS.has(k));
 }
+
+/** The model coins many synonymous clue-key names for the same feature across
+ * runs (commode_function / commode_chamber_pot_function / commode_close_stool_function).
+ * Collapsing them to one canonical key — applied at the single normalization hook
+ * every consumer routes through — stops hint-bearing keys from appearing and
+ * vanishing on phrasing alone, and lets form/date routing fire regardless of which
+ * synonym was emitted. Only unambiguous synonyms are mapped; generic terms
+ * (e.g. vertical_supports) are intentionally left alone. Keys are already
+ * slug-normalized (lowercase, underscores) before lookup. */
+export const CLUE_KEY_ALIASES: Record<string, string> = {
+  // commode / close-stool identity
+  commode_chamber_pot_function: "commode_function",
+  commode_close_stool_function: "commode_function",
+  close_stool_function: "commode_function",
+  victorian_utilitarian_commode_form: "victorian_commode_form",
+  victorian_utilitarian_commode: "victorian_commode_form",
+  victorian_utility_commode: "victorian_commode_form",
+  circular_aperture_cutout: "circular_aperture_seat_board",
+  circular_cutout_platform: "circular_aperture_seat_board",
+  // enameled-steel basin / insert
+  enameled_steel_insert: "enameled_steel_basin",
+  enameled_ware_chamber_pot: "enameled_steel_basin",
+  enameled_ware_insert: "enameled_steel_basin",
+  enameled_ware_white_blue_rim: "enameled_steel_basin",
+  // dated brass bracket plate (recovers the recognized post-1900 key)
+  brass_lid_catch_or_bracket: "stamped_metal_bracket",
+  // maker-label text (recovers the recognized visible_text key)
+  visible_text_us_standard: "visible_text",
+  visible_text_label: "visible_text",
+  label_text_full: "visible_text",
+  // turned bun feet
+  turned_bun_feet: "bun_feet",
+  turned_bun_foot_style: "bun_feet",
+  // post-top finials
+  turned_finial_post_tops: "turned_finials_on_posts",
+  corner_post_tenon_tops: "turned_finials_on_posts",
+};
+
+/** Map a slug-normalized clue key through the alias table; passthrough when no
+ * alias exists. */
+export function canonicalClueKey(key: string): string {
+  return CLUE_KEY_ALIASES[key] ?? key;
+}

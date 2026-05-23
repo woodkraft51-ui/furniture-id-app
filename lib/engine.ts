@@ -81,7 +81,7 @@ import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData
 import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
-import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress } from "./engineReportHelpers";
+import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress, canonicalClueKey } from "./engineReportHelpers";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -941,7 +941,8 @@ function parseModelJson(raw: string): any | null {
 
 function normalizeClueKey(v: any): string | null {
   const key = asString(v).toLowerCase().replace(/-/g, "_").replace(/\s+/g, "_");
-  return key || null;
+  if (!key) return null;
+  return canonicalClueKey(key);
 }
 
 function normalizePhase0Clue(raw: any): string | null {
