@@ -21,6 +21,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { CLUE_LIBRARY } from "../lib/engine";
+import { CLUE_KEY_ALIASES } from "../lib/engineReportHelpers";
 import { FORMS } from "../lib/constraints/forms";
 import { FAMILIES } from "../lib/constraints/families";
 import { SPATIAL_BEHAVIORS } from "../lib/constraints/spatialBehaviors";
@@ -37,6 +38,37 @@ import { STYLE_FAMILIES, STYLE_REVIVAL_WAVES } from "../lib/constraints/styleFam
 const REPO = path.resolve(fileURLToPath(import.meta.url), "../..");
 const ENGINE_PATH = path.join(REPO, "lib/engine.ts");
 const OUT_PATH = path.join(REPO, "lib/constraints/canonicalVocabulary.generated.ts");
+
+// Presentation categories for canonical keys the engine uses but CLUE_LIBRARY
+// does not define (mined scoreForms routing keys + alias targets). Category is
+// for the P0 list / snapping only — it does NOT assign a CLUE_LIBRARY weight, so
+// it can't change dating/weighting behavior. (Triage; see PARKING_LOT.md for
+// the follow-up to promote these into CLUE_LIBRARY properly.)
+const MANUAL_KEY_CATEGORIES: Record<string, string> = {
+  // style / structural-pattern signals
+  art_deco_pattern: "style", art_nouveau_pattern: "style", chippendale_pattern: "style",
+  colonial_georgian_revival_upholstered_armchair_pattern: "style", colonial_revival_pattern: "style",
+  edwardian_pattern: "style", federal_hepplewhite_sheraton_pattern: "style", gothic_revival_pattern: "style",
+  jacobean_tudor_revival_case_pattern: "style", louis_xvi_revival_pattern: "style",
+  mcm_structural_pattern: "style", mission_arts_crafts_structural_pattern: "style",
+  renaissance_revival_upholstered_armchair_pattern: "style", rococo_revival_pattern: "style",
+  shaker_pattern: "style", victorian_eastlake_pattern: "style", william_and_mary_pattern: "style",
+  toledo_industrial_style: "style", mid_century_industrial_office: "style", victorian_commode_form: "style",
+  // form signals (lamps + chair forms)
+  lamp_form: "form", floor_lamp_form: "form", table_lamp_form: "form", electric_lamp: "form",
+  electric_table_lamp: "form", lamp_base: "form", lamp_finial: "form", lamp_harp: "form",
+  lamp_shade: "form", lamp_socket: "form", lamp_socket_visible: "form",
+  barrel_tub_back: "form", club_chair_form: "form", lounge_chair_form: "form",
+  slipper_chair_form: "form", wingback_form: "form",
+  // materials
+  leaded_glass_shade: "materials", slag_glass_shade: "materials", enameled_steel_basin: "materials",
+  // structure / hardware / construction / function
+  circular_footring_stretcher: "structure", four_leg_caster_base: "structure",
+  stamped_metal_seat_support_bracket: "hardware",
+  circular_aperture_seat_board: "construction", commode_function: "function",
+  // alias targets the engine recognizes but CLUE_LIBRARY doesn't define
+  bun_feet: "style", turned_finials_on_posts: "style", visible_text: "label",
+};
 
 const STOPWORDS = new Set([
   "type", "category", "evidence", "group", "present", "visible", "form", "the", "and",
@@ -115,7 +147,7 @@ export function buildCanonicalVocabulary(engineSource: string = fs.readFileSync(
   const { routingKeys, promptKeys } = mineEngineSource(engineSource);
 
   // evidence vocabulary, grouped by CLUE_LIBRARY category
-  const evidence: Record<string, { id: string; category: string; dateHint?: string; weight: number; disqualifying?: true }[]> = {};
+  const evidence: Record<string, { id: string; category: string; dateHint?: string; weight?: number; disqualifying?: true; source: string }[]> = {};
   const disqualifying: string[] = [];
   const clueLibKeys = new Set<string>();
   for (const [id, meta] of Object.entries(CLUE_LIBRARY)) {
@@ -127,6 +159,7 @@ export function buildCanonicalVocabulary(engineSource: string = fs.readFileSync(
       ...(meta.dateHint ? { dateHint: meta.dateHint } : {}),
       weight: meta.weight,
       ...(meta.hardNegative ? { disqualifying: true as const } : {}),
+      source: "clue_library",
     });
     if (meta.hardNegative) disqualifying.push(id);
   }
@@ -137,12 +170,32 @@ export function buildCanonicalVocabulary(engineSource: string = fs.readFileSync(
       .map((e: any) => e?.id as string)
       .filter((id) => /^(wood_species|wood_subspecies|wood_variant|substrate|engineered)_/.test(id))
   );
-
-  for (const cat of Object.keys(evidence)) evidence[cat].sort((a, b) => a.id.localeCompare(b.id));
+  const woodSet = new Set(woodKeys);
 
   // coverage gaps: keys the engine routes/prompts on that CLUE_LIBRARY doesn't define
   const routingKeysNotInClueLibrary = uniqSorted([...routingKeys].filter((k) => !clueLibKeys.has(k)));
   const promptKeysNotInClueLibrary = uniqSorted([...promptKeys.keys()].filter((k) => !clueLibKeys.has(k)));
+
+  // Fold in canonical keys the engine uses that CLUE_LIBRARY doesn't define:
+  //  - mined routing keys outside CLUE_LIBRARY
+  //  - alias TARGETS (e.g. commode_function) — consumed by substring helpers the
+  //    miner can't see, so they'd otherwise be absent from the canonical set.
+  // Alias SYNONYMS (the drifted left-hand side) are NOT canonical and excluded.
+  const aliasSynonyms = new Set(Object.keys(CLUE_KEY_ALIASES));
+  const aliasTargets = uniqSorted(Object.values(CLUE_KEY_ALIASES));
+  const extraCanonical = uniqSorted(
+    [...routingKeysNotInClueLibrary, ...aliasTargets].filter(
+      (k) => !clueLibKeys.has(k) && !woodSet.has(k) && !aliasSynonyms.has(k)
+    )
+  );
+  const unclassifiedKeys: string[] = [];
+  for (const k of extraCanonical) {
+    const cat = MANUAL_KEY_CATEGORIES[k];
+    if (!cat) { unclassifiedKeys.push(k); continue; }
+    (evidence[cat] ??= []).push({ id: k, category: cat, source: "engine_routing" });
+  }
+
+  for (const cat of Object.keys(evidence)) evidence[cat].sort((a, b) => a.id.localeCompare(b.id));
 
   // forms + subforms
   const forms = FORMS.map((f: any) => ({
@@ -165,8 +218,8 @@ export function buildCanonicalVocabulary(engineSource: string = fs.readFileSync(
     spatialBehaviors: SPATIAL_BEHAVIORS.map((x: any) => ({ id: x.id, family_id: x.family_id ?? null })).sort((a, b) => a.id.localeCompare(b.id)),
   };
 
-  // crosswalk every clue key (CLUE_LIBRARY ∪ wood ∪ routing ∪ prompt) to deep taxonomy
-  const allClueKeys = uniqSorted([...clueLibKeys, ...woodKeys, ...routingKeys, ...promptKeys.keys()]);
+  // crosswalk every canonical clue key to deep taxonomy
+  const allClueKeys = uniqSorted([...clueLibKeys, ...woodKeys, ...routingKeys, ...promptKeys.keys(), ...extraCanonical]);
   const xwalk = crosswalk(allClueKeys, taxonomyEntries());
 
   const meta = {
@@ -182,18 +235,26 @@ export function buildCanonicalVocabulary(engineSource: string = fs.readFileSync(
       spatialBehaviors: relationships.spatialBehaviors.length,
       routingKeysMined: routingKeys.size,
       promptKeysMined: promptKeys.size,
+      foldedEngineKeys: extraCanonical.length - unclassifiedKeys.length,
+      aliases: Object.keys(CLUE_KEY_ALIASES).length,
       allClueKeys: allClueKeys.length,
     },
     minedRoutingKeys: uniqSorted([...routingKeys]),
     coverageGaps: { routingKeysNotInClueLibrary, promptKeysNotInClueLibrary },
+    unclassifiedKeys,
     crosswalk: { mapped: Object.keys(xwalk.mapped).length, unmapped: xwalk.gaps.length },
   };
+
+  // synonym → canonical (the snap-to-canonical alias layer, sorted)
+  const aliases: Record<string, string> = {};
+  for (const k of Object.keys(CLUE_KEY_ALIASES).sort()) aliases[k] = CLUE_KEY_ALIASES[k];
 
   return {
     meta,
     evidence,
     disqualifying: uniqSorted(disqualifying),
     woodEvidenceKeys: woodKeys,
+    aliases,
     forms,
     subforms,
     relationships,

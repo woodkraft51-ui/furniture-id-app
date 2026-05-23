@@ -17,7 +17,9 @@ export const CANONICAL_VOCABULARY = {
       "spatialBehaviors": 76,
       "routingKeysMined": 97,
       "promptKeysMined": 84,
-      "allClueKeys": 245
+      "foldedEngineKeys": 47,
+      "aliases": 24,
+      "allClueKeys": 252
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -166,9 +168,10 @@ export const CANONICAL_VOCABULARY = {
         "thick_veneer"
       ]
     },
+    "unclassifiedKeys": [],
     "crosswalk": {
-      "mapped": 156,
-      "unmapped": 89
+      "mapped": 157,
+      "unmapped": 95
     }
   },
   "evidence": {
@@ -177,18 +180,26 @@ export const CANONICAL_VOCABULARY = {
         "id": "lane_label",
         "category": "label",
         "dateHint": "c. 1930–1965",
-        "weight": 0.99
+        "weight": 0.99,
+        "source": "clue_library"
       },
       {
         "id": "maker_label",
         "category": "label",
-        "weight": 0.98
+        "weight": 0.98,
+        "source": "clue_library"
       },
       {
         "id": "roos_label",
         "category": "label",
         "dateHint": "c. 1940–1960",
-        "weight": 0.99
+        "weight": 0.99,
+        "source": "clue_library"
+      },
+      {
+        "id": "visible_text",
+        "category": "label",
+        "source": "engine_routing"
       }
     ],
     "form": [
@@ -196,241 +207,383 @@ export const CANONICAL_VOCABULARY = {
         "id": "arched_glazed_dial_door",
         "category": "form",
         "dateHint": "arched glass dial door on a shelf clock case; characteristic of American round-top and arch-top mantel clock production c. 1870-1910",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "armchair_form",
         "category": "form",
-        "weight": 0.86
+        "weight": 0.86,
+        "source": "clue_library"
+      },
+      {
+        "id": "barrel_tub_back",
+        "category": "form",
+        "source": "engine_routing"
       },
       {
         "id": "cabinet_form",
         "category": "form",
-        "weight": 0.74
+        "weight": 0.74,
+        "source": "clue_library"
       },
       {
         "id": "clock_case_form",
         "category": "form",
         "dateHint": "clock case form; surface-set shelf/mantel clock — broad American production c. 1820-1940",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
+      },
+      {
+        "id": "club_chair_form",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "electric_lamp",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "electric_table_lamp",
+        "category": "form",
+        "source": "engine_routing"
       },
       {
         "id": "flat_top_overhanging",
         "category": "form",
         "dateHint": "c. 1800–1930",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
+      },
+      {
+        "id": "floor_lamp_form",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_base",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_finial",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_form",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_harp",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_shade",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_socket",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lamp_socket_visible",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "lounge_chair_form",
+        "category": "form",
+        "source": "engine_routing"
       },
       {
         "id": "metal_bed_frame",
         "category": "form",
         "dateHint": "c. 1880–1920",
-        "weight": 0.92
+        "weight": 0.92,
+        "source": "clue_library"
       },
       {
         "id": "metal_clock_form",
         "category": "form",
         "dateHint": "clock case form; mantel, shelf, kitchen, or parlor clock — broad American production c. 1820-1940 (Connecticut clock industry dominance)",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "mirror_present",
         "category": "form",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "open_shelving",
         "category": "form",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "pedestal_column",
         "category": "form",
-        "weight": 0.9
+        "weight": 0.9,
+        "source": "clue_library"
       },
       {
         "id": "scrolled_bracket_feet",
         "category": "form",
         "dateHint": "c. 1880–1930",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "seating_present",
         "category": "form",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "seating_surface",
         "category": "form",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
+      },
+      {
+        "id": "slipper_chair_form",
+        "category": "form",
+        "source": "engine_routing"
+      },
+      {
+        "id": "table_lamp_form",
+        "category": "form",
+        "source": "engine_routing"
       },
       {
         "id": "telephone_shelf",
         "category": "form",
         "dateHint": "c. 1900–1935",
-        "weight": 0.9
+        "weight": 0.9,
+        "source": "clue_library"
+      },
+      {
+        "id": "wingback_form",
+        "category": "form",
+        "source": "engine_routing"
       }
     ],
     "structure": [
       {
         "id": "backrest_present",
         "category": "structure",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
+      },
+      {
+        "id": "circular_footring_stretcher",
+        "category": "structure",
+        "source": "engine_routing"
+      },
+      {
+        "id": "four_leg_caster_base",
+        "category": "structure",
+        "source": "engine_routing"
       },
       {
         "id": "overhanging_top",
         "category": "structure",
         "dateHint": "overhanging cornice or top board supports Empire or transitional case-furniture form",
-        "weight": 0.58
+        "weight": 0.58,
+        "source": "clue_library"
       },
       {
         "id": "spindle_back",
         "category": "structure",
-        "weight": 0.76
+        "weight": 0.76,
+        "source": "clue_library"
       },
       {
         "id": "tapered_leg",
         "category": "structure",
         "dateHint": "tapered legs are common in Federal, Sheraton, Louis XVI, neoclassical, and revival furniture",
-        "weight": 0.64
+        "weight": 0.64,
+        "source": "clue_library"
       }
     ],
     "function": [
       {
+        "id": "commode_function",
+        "category": "function",
+        "source": "engine_routing"
+      },
+      {
         "id": "secondary_surface",
         "category": "function",
-        "weight": 0.82
+        "weight": 0.82,
+        "source": "clue_library"
       },
       {
         "id": "striking_mechanism",
         "category": "function",
         "dateHint": "mechanical striking train in a clock; broad pre-1970 American mechanical clock production",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "writing_surface",
         "category": "function",
-        "weight": 0.84
+        "weight": 0.84,
+        "source": "clue_library"
       }
     ],
     "construction": [
       {
+        "id": "circular_aperture_seat_board",
+        "category": "construction",
+        "source": "engine_routing"
+      },
+      {
         "id": "cylinder_roll",
         "category": "construction",
         "dateHint": "1870–1920",
-        "weight": 0.92
+        "weight": 0.92,
+        "source": "clue_library"
       },
       {
         "id": "door_present",
         "category": "construction",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "drawer_present",
         "category": "construction",
-        "weight": 0.45
+        "weight": 0.45,
+        "source": "clue_library"
       },
       {
         "id": "drop_front_desk",
         "category": "construction",
-        "weight": 0.88
+        "weight": 0.88,
+        "source": "clue_library"
       },
       {
         "id": "drop_leaf_hinged",
         "category": "construction",
         "dateHint": "1720–1930",
-        "weight": 0.9
+        "weight": 0.9,
+        "source": "clue_library"
       },
       {
         "id": "exposed_upholstery_tacks",
         "category": "construction",
         "dateHint": "visible upholstery tacks can support older or traditional upholstery methods, but may also be decorative",
-        "weight": 0.58
+        "weight": 0.58,
+        "source": "clue_library"
       },
       {
         "id": "extension_mechanism",
         "category": "construction",
-        "weight": 0.85
+        "weight": 0.85,
+        "source": "clue_library"
       },
       {
         "id": "frame_and_panel_sides",
         "category": "construction",
         "dateHint": "traditional frame-and-panel side construction; dating depends on joinery and fasteners",
-        "weight": 0.74
+        "weight": 0.74,
+        "source": "clue_library"
       },
       {
         "id": "gateleg_support",
         "category": "construction",
         "dateHint": "1680–1800; revival 1880–1930",
-        "weight": 0.92
+        "weight": 0.92,
+        "source": "clue_library"
       },
       {
         "id": "lift_lid",
         "category": "construction",
-        "weight": 0.86
+        "weight": 0.86,
+        "source": "clue_library"
       },
       {
         "id": "multiple_drawer_case",
         "category": "construction",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "pigeonholes",
         "category": "construction",
-        "weight": 0.82
+        "weight": 0.82,
+        "source": "clue_library"
       },
       {
         "id": "possible_plywood_or_laminated_panel",
         "category": "construction",
         "dateHint": "uncertain panel construction; does not confirm modern manufacture",
-        "weight": 0.25
+        "weight": 0.25,
+        "source": "clue_library"
       },
       {
         "id": "slant_front",
         "category": "construction",
         "dateHint": "1700–1860",
-        "weight": 0.9
+        "weight": 0.9,
+        "source": "clue_library"
       },
       {
         "id": "solid_plank_back",
         "category": "construction",
         "dateHint": "solid plank back construction; usually pre-plywood or traditional case construction",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "solid_wood_construction",
         "category": "construction",
         "dateHint": "solid wood construction; not a plywood indicator",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "solid_wood_side_panels",
         "category": "construction",
         "dateHint": "solid side-panel construction; supports pre-plywood or traditional case construction",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "visible_springs",
         "category": "construction",
         "dateHint": "visible spring construction supports upholstered seating analysis; coil, sinuous, and webbing types affect dating",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "wicker_weave_basket",
         "category": "construction",
         "dateHint": "basket-weave pattern (alternating over-under in groups of two or more strands); often decorative panel insert on Victorian and early-20th-c. wicker. Distinct from simple over-under and from herringbone.",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "wicker_weave_close",
         "category": "construction",
         "dateHint": "tight close weave with minimal gaps between strands; common in higher-quality production across periods. Less air-flow, denser visual mass; often associated with formal parlor wicker, Lloyd loom paper fiber, or quality reed work.",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "wicker_weave_open",
         "category": "construction",
         "dateHint": "open or airy weave with visible gaps between strands; common in Bar Harbor-era resort wicker (c. 1900-1920) and porch/sunroom furniture. Often paired with white-painted or natural finish.",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       }
     ],
     "materials": [
@@ -438,256 +591,424 @@ export const CANONICAL_VOCABULARY = {
         "id": "acrylic_clear",
         "category": "materials",
         "dateHint": "clear acrylic or Lucite furniture generally indicates mid-20th century or later modern production",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "bent_molded_plywood",
         "category": "materials",
         "dateHint": "post-1935",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "brass_frame",
         "category": "materials",
         "dateHint": "brass beds and brass-mounted furniture were especially common from the late Victorian period into the early 20th century",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "cane_panels",
         "category": "materials",
         "dateHint": "cane panels appear on many 19th and 20th century chairs, settees, beds, and Colonial Revival forms",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "cast_iron",
         "category": "materials",
         "dateHint": "cast iron furniture and bed components are common in late 19th and early 20th century production",
-        "weight": 0.74
+        "weight": 0.74,
+        "source": "clue_library"
       },
       {
         "id": "cedar_lining",
         "category": "materials",
-        "weight": 0.88
+        "weight": 0.88,
+        "source": "clue_library"
       },
       {
         "id": "chrome_and_laminate",
         "category": "materials",
         "dateHint": "chrome and laminate combinations strongly support mid-century kitchen, dinette, or utility furniture",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "chrome_frame",
         "category": "materials",
         "dateHint": "chrome-plated furniture strongly suggests Art Deco, Machine Age, mid-century, or later modern production",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
+      },
+      {
+        "id": "enameled_steel_basin",
+        "category": "materials",
+        "source": "engine_routing"
       },
       {
         "id": "formica_surface",
         "category": "materials",
         "dateHint": "Formica or similar laminate is strongly associated with mid-century and later furniture",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "fully_upholstered",
         "category": "materials",
         "dateHint": "upholstered seating spans many periods; dating depends on frame, springs, stuffing, legs, and upholstery method",
-        "weight": 0.68
+        "weight": 0.68,
+        "source": "clue_library"
       },
       {
         "id": "glass_top",
         "category": "materials",
         "dateHint": "glass tops are often replacement or protective surfaces unless integrated into the original design",
-        "weight": 0.42
+        "weight": 0.42,
+        "source": "clue_library"
       },
       {
         "id": "golden_oak_era_possible",
         "category": "materials",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "laminate_surface",
         "category": "materials",
         "dateHint": "laminate surfaces generally support mid-century or later production unless used as a later alteration",
-        "weight": 0.68
+        "weight": 0.68,
+        "source": "clue_library"
+      },
+      {
+        "id": "leaded_glass_shade",
+        "category": "materials",
+        "source": "engine_routing"
       },
       {
         "id": "lloyd_loom_paper_fiber",
         "category": "materials",
         "dateHint": "post-1917 American hard-anchor; Marshall B. Lloyd patented Lloyd loom machinery in 1917, weaving twisted kraft paper around a wire core on automated looms. Construction is highly diagnostic and survives well — paper-fiber 'wicker' over a wire armature is visible at broken strands and at frame edges. Peak American production c. 1920-1950 (Lloyd Loom of Heywood-Wakefield); continues in present-day reproduction. A piece otherwise styled or attributed pre-1917 cannot be Lloyd loom in original construction.",
-        "weight": 0.85
+        "weight": 0.85,
+        "source": "clue_library"
       },
       {
         "id": "metal_frame",
         "category": "materials",
         "dateHint": "metal furniture construction; date depends on form, joints, plating, and fasteners",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "molded_plastic",
         "category": "materials",
         "dateHint": "molded plastic furniture generally indicates postwar modern or later production",
-        "weight": 0.76
+        "weight": 0.76,
+        "source": "clue_library"
       },
       {
         "id": "paper_fiber_construction",
         "category": "materials",
         "dateHint": "paper-fiber (twisted kraft paper) construction post-1900 industrial development; Lloyd loom paper fiber is the dominant subtype post-1917. Distinct from natural rattan, reed, and cane. Paper fiber appears as uniform extruded strands rather than the irregular tapered profile of natural plant fibers.",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "parquetry_veneer",
         "category": "materials",
         "dateHint": "parquetry or marquetry veneer supports formal revival, French-style, or high-style cabinetmaking; dating depends on construction",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "plywood_drawer_bottom",
         "category": "materials",
         "dateHint": "post-1920",
         "weight": 0.88,
-        "disqualifying": true
+        "disqualifying": true,
+        "source": "clue_library"
       },
       {
         "id": "plywood_structural",
         "category": "materials",
         "dateHint": "post-1920",
         "weight": 0.9,
-        "disqualifying": true
+        "disqualifying": true,
+        "source": "clue_library"
       },
       {
         "id": "rattan_frame",
         "category": "materials",
         "dateHint": "rattan furniture is common in porch, tropical, mid-century, and revival production",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "sheet_back_panel",
         "category": "materials",
         "dateHint": "post-1900",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
+      },
+      {
+        "id": "slag_glass_shade",
+        "category": "materials",
+        "source": "engine_routing"
       },
       {
         "id": "stringing_inlay",
         "category": "materials",
         "dateHint": "stringing and banding support neoclassical, Federal/Sheraton, Louis XVI, or revival cabinetmaking",
-        "weight": 0.68
+        "weight": 0.68,
+        "source": "clue_library"
       },
       {
         "id": "tubular_steel",
         "category": "materials",
         "dateHint": "tubular steel furniture became especially associated with modernist and mid-century production",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "upholstered_back",
         "category": "materials",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "woven_body",
         "category": "materials",
         "dateHint": "woven wicker or reed construction appears in Victorian, porch, Arts and Crafts, and later revival furniture",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "wrought_iron",
         "category": "materials",
         "dateHint": "wrought iron furniture spans Victorian, garden, and revival production; date depends on construction and finish",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       }
     ],
     "style": [
       {
+        "id": "art_deco_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "art_nouveau_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
         "id": "bar_harbor_style_wicker",
         "category": "style",
         "dateHint": "c. 1900-1920 American resort-wicker era; named for Maine resort town. Open airy weave, geometric forms, minimal curlicue ornament, often natural or white-painted finish. Distinct from heavy Victorian curlicue wicker (c. 1880-1900) and from Lloyd loom paper fiber (post-1917). Strong collector market for original-period Bar Harbor settees, chairs, and tables.",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "barley_twist",
         "category": "style",
         "dateHint": "spiral/barley-twist turning spans Baroque originals, Jacobean Revival, and Victorian revival production; not era-specific on its own",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
+      },
+      {
+        "id": "bun_feet",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "cabriole_leg",
         "category": "style",
         "dateHint": "18th century form; common revival c. 1890–1940",
-        "weight": 0.68
+        "weight": 0.68,
+        "source": "clue_library"
+      },
+      {
+        "id": "chippendale_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "claw_or_pad_foot",
         "category": "style",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
+      },
+      {
+        "id": "colonial_georgian_revival_upholstered_armchair_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "colonial_revival_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "edwardian_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "empire_transitional_style",
         "category": "style",
         "dateHint": "c. 1840–1880",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
+      },
+      {
+        "id": "federal_hepplewhite_sheraton_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "gothic_revival_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "heavy_carving",
         "category": "style",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
+      },
+      {
+        "id": "jacobean_tudor_revival_case_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "louis_xvi_french_neoclassical",
         "category": "style",
         "dateHint": "French Louis XVI / neoclassical style; style supports context but does not independently date construction",
-        "weight": 0.58
+        "weight": 0.58,
+        "source": "clue_library"
+      },
+      {
+        "id": "louis_xvi_revival_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "mcm_structural_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "mid_century_industrial_office",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "mid_century_streamlined_wicker",
         "category": "style",
         "dateHint": "c. 1945-1970 mid-century modern wicker and rattan production; lighter forms, simpler curves, often paired with steel or aluminum frames, often imported Filipino or Asian-Pacific work. Distinct from earlier Victorian, Bar Harbor, and Lloyd loom traditions. Compare papasan, peacock chair, and tropical-modern vocabularies.",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
+      },
+      {
+        "id": "mission_arts_crafts_structural_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "renaissance_revival_upholstered_armchair_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "reverse_painted_lower_tablet",
         "category": "style",
         "dateHint": "reverse-painted decorative glass tablet covering the pendulum window of a shelf clock; characteristic of American Victorian production c. 1850-1900",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
+      },
+      {
+        "id": "rococo_revival_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "rope_carved_pilasters",
         "category": "style",
         "dateHint": "Empire or transitional case-furniture style cue; lower authority than construction",
-        "weight": 0.58
+        "weight": 0.58,
+        "source": "clue_library"
       },
       {
         "id": "scrolled_side_corbels",
         "category": "style",
         "dateHint": "scrolled or ribbon-carved corbel brackets flanking the dial of a shelf clock; characteristic of Victorian American shelf clock production c. 1870-1900",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
+      },
+      {
+        "id": "shaker_pattern",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "shell_carving",
         "category": "style",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "spindle_gallery",
         "category": "style",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
+      },
+      {
+        "id": "toledo_industrial_style",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "tufted_upholstery",
         "category": "style",
         "dateHint": "tufted upholstery is common across Victorian, Chesterfield, traditional, and revival seating forms",
-        "weight": 0.58
+        "weight": 0.58,
+        "source": "clue_library"
+      },
+      {
+        "id": "turned_finials_on_posts",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "turned_spindle_gallery",
         "category": "style",
         "dateHint": "turned-spindle gallery at the top of a shelf clock case; characteristic of Victorian American gingerbread/kitchen clock production c. 1875-1900",
-        "weight": 0.75
+        "weight": 0.75,
+        "source": "clue_library"
+      },
+      {
+        "id": "victorian_commode_form",
+        "category": "style",
+        "source": "engine_routing"
       },
       {
         "id": "victorian_curlicue_wicker",
         "category": "style",
         "dateHint": "c. 1880-1900 American Victorian wicker era; heavy ornament with scrolls, curlicues, hearts, fans, photo-frame insets, and densely decorated backs. Often natural finish, gilt accents, or stained dark. Distinct from later Bar Harbor open-weave (c. 1900-1920) and Lloyd loom paper fiber (post-1917). Heywood Bros., Wakefield Rattan, and merged Heywood-Wakefield are major makers; attribution requires label, mark, or catalog match.",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
+      },
+      {
+        "id": "victorian_eastlake_pattern",
+        "category": "style",
+        "source": "engine_routing"
+      },
+      {
+        "id": "william_and_mary_pattern",
+        "category": "style",
+        "source": "engine_routing"
       }
     ],
     "joinery": [
@@ -695,89 +1016,104 @@ export const CANONICAL_VOCABULARY = {
         "id": "brazed_metal_joint",
         "category": "joinery",
         "dateHint": "late-19th-c. to present; especially diagnostic for brass beds, brass lighting bodies, gas fixtures, and decorative metalwork",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "crimped_folded_seam",
         "category": "joinery",
         "dateHint": "industrial sheet-metal lock seams widespread post-1850; common in tinware lighting, mid-20th-c. metal kitchen cabinets, stamped-metal lawn furniture",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "dowel_joinery",
         "category": "joinery",
         "dateHint": "spans eras (pegged/drawbored joints to modern machine doweling); limited dating value on its own",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "drawer_box_joinery",
         "category": "joinery",
         "dateHint": "drawer-box joinery evidence; dating depends on whether hand-cut, machine-cut, dado, or butt construction is visible",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "hand_cut_dovetails",
         "category": "joinery",
         "dateHint": "pre-1860",
-        "weight": 0.88
+        "weight": 0.88,
+        "source": "clue_library"
       },
       {
         "id": "hand_forged_metal_joint",
         "category": "joinery",
         "dateHint": "pre-1900 dominant for American wrought-iron furniture; post-1900 hand-forged work is usually artisan/revival",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "machine_dovetails",
         "category": "joinery",
         "dateHint": "post-1860",
-        "weight": 0.82
+        "weight": 0.82,
+        "source": "clue_library"
       },
       {
         "id": "mig_tig_welded_joint",
         "category": "joinery",
         "dateHint": "post-1948 (MIG) / post-1941 (TIG); widespread c. 1960-present; primary reproduction-detection signal for wrought-iron and Victorian-revival metalwork",
-        "weight": 0.8
+        "weight": 0.8,
+        "source": "clue_library"
       },
       {
         "id": "mortise_and_tenon",
         "category": "joinery",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "riveted_metal_joint",
         "category": "joinery",
         "dateHint": "c. 1850-1940 industrial dominance for sheet steel, wrought iron, and brass furniture; continues in industrial-style production",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "rule_joint",
         "category": "joinery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "soldered_metal_joint",
         "category": "joinery",
         "dateHint": "spans all periods; especially common in tinware, pewter, lightweight brass, and lighting bodies",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "spot_welded_joint",
         "category": "joinery",
         "dateHint": "post-1925 industrial; dominant c. 1930-present for tubular-steel chairs, metal lawn furniture, sheet-steel cabinets, and lighting bodies",
-        "weight": 0.75
+        "weight": 0.75,
+        "source": "clue_library"
       },
       {
         "id": "welded_joint",
         "category": "joinery",
         "dateHint": "post-1910",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "wire_wrapped_metal_joint",
         "category": "joinery",
         "dateHint": "spans all periods; especially common in wicker-and-iron c. 1880-1930, decorative lighting bands, and rattan-metal hybrid furniture",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       }
     ],
     "toolmarks": [
@@ -785,25 +1121,29 @@ export const CANONICAL_VOCABULARY = {
         "id": "band_saw_lines",
         "category": "toolmarks",
         "dateHint": "post-1870",
-        "weight": 0.75
+        "weight": 0.75,
+        "source": "clue_library"
       },
       {
         "id": "circular_saw_arcs",
         "category": "toolmarks",
         "dateHint": "post-1830",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "hand_plane_chatter",
         "category": "toolmarks",
         "dateHint": "pre-1880",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "pit_saw_marks",
         "category": "toolmarks",
         "dateHint": "pre-1830",
-        "weight": 0.86
+        "weight": 0.86,
+        "source": "clue_library"
       }
     ],
     "fasteners": [
@@ -811,39 +1151,45 @@ export const CANONICAL_VOCABULARY = {
         "id": "cut_nail",
         "category": "fasteners",
         "dateHint": "1790–1890",
-        "weight": 0.82
+        "weight": 0.82,
+        "source": "clue_library"
       },
       {
         "id": "hand_forged_nail",
         "category": "fasteners",
         "dateHint": "pre-1800",
-        "weight": 0.88
+        "weight": 0.88,
+        "source": "clue_library"
       },
       {
         "id": "no_phillips_screws_observed",
         "category": "fasteners",
         "dateHint": "absence of visible Phillips screws; removes post-1934 fastener evidence but does not independently date the piece",
-        "weight": 0.35
+        "weight": 0.35,
+        "source": "clue_library"
       },
       {
         "id": "phillips_screw",
         "category": "fasteners",
         "dateHint": "post-1934",
         "weight": 0.9,
-        "disqualifying": true
+        "disqualifying": true,
+        "source": "clue_library"
       },
       {
         "id": "staple_fastener",
         "category": "fasteners",
         "dateHint": "post-1945",
         "weight": 0.9,
-        "disqualifying": true
+        "disqualifying": true,
+        "source": "clue_library"
       },
       {
         "id": "wire_nail",
         "category": "fasteners",
         "dateHint": "post-1880",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       }
     ],
     "hardware": [
@@ -851,90 +1197,110 @@ export const CANONICAL_VOCABULARY = {
         "id": "brass_dial_bezel",
         "category": "hardware",
         "dateHint": "brass dial bezel/surround on a clock dial; typical of American mantel clock production c. 1860-1920",
-        "weight": 0.58
+        "weight": 0.58,
+        "source": "clue_library"
       },
       {
         "id": "brass_foot_sabots",
         "category": "hardware",
         "dateHint": "brass foot sabots support French neoclassical, Louis XVI, or later revival furniture",
-        "weight": 0.6
+        "weight": 0.6,
+        "source": "clue_library"
       },
       {
         "id": "decorative_bail_pull",
         "category": "hardware",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "height_adjustment_mechanism",
         "category": "hardware",
         "dateHint": "post-1890",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "lock_escutcheons",
         "category": "hardware",
         "dateHint": "drawer lock escutcheons support period case-furniture construction but are not independently decisive",
-        "weight": 0.56
+        "weight": 0.56,
+        "source": "clue_library"
       },
       {
         "id": "modern_caster",
         "category": "hardware",
         "dateHint": "post-1900",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "modern_concealed_hinge",
         "category": "hardware",
         "dateHint": "post-1950",
         "weight": 0.92,
-        "disqualifying": true
+        "disqualifying": true,
+        "source": "clue_library"
       },
       {
         "id": "ormolu_mounts",
         "category": "hardware",
         "dateHint": "ormolu or gilt-bronze style mounts support French neoclassical or Louis XVI revival context",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "pendulum_bob_cast",
         "category": "hardware",
         "dateHint": "decorative cast brass pendulum bob visible behind glass tablet; American Victorian shelf clock production c. 1860-1910",
-        "weight": 0.6
+        "weight": 0.6,
+        "source": "clue_library"
       },
       {
         "id": "porcelain_caster",
         "category": "hardware",
         "dateHint": "1830–1900",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "round_wood_knob",
         "category": "hardware",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "stamped_metal_bracket",
         "category": "hardware",
         "dateHint": "post-1900",
-        "weight": 0.6
+        "weight": 0.6,
+        "source": "clue_library"
+      },
+      {
+        "id": "stamped_metal_seat_support_bracket",
+        "category": "hardware",
+        "source": "engine_routing"
       },
       {
         "id": "swivel_mechanism",
         "category": "hardware",
         "dateHint": "post-1880",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "winding_arbors",
         "category": "hardware",
         "dateHint": "winding arbors on a clock dial (8-day time-and-strike spring movement = 2 arbors); American spring-driven shelf clock production c. 1840-present",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "wood_knob_pulls",
         "category": "hardware",
         "dateHint": "wooden knob pulls are common on 19th and early 20th century case furniture, but may be replaced",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       }
     ],
     "finish": [
@@ -942,175 +1308,208 @@ export const CANONICAL_VOCABULARY = {
         "id": "lacquer_finish",
         "category": "finish",
         "dateHint": "1920–1980",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "painted_metal_finish",
         "category": "finish",
         "dateHint": "post-1900",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "polyurethane",
         "category": "finish",
         "dateHint": "post-1960",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "powder_coat_overspray",
         "category": "finish",
         "dateHint": "powder-coat finish post-1960s; modern refinish over earlier metal pieces is common and obscures original finish, plating, and surface wear",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "refinished_surface",
         "category": "finish",
         "dateHint": "any period; alteration evidence",
-        "weight": 0.35
+        "weight": 0.35,
+        "source": "clue_library"
       },
       {
         "id": "shellac_crazing",
         "category": "finish",
         "dateHint": "1800–1920",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "shellac_intact",
         "category": "finish",
         "dateHint": "1800–1920",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       }
     ],
     "upholstery": [
       {
         "id": "brocade_cover",
         "category": "upholstery",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "button_tufting",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "chintz_cover",
         "category": "upholstery",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "coil_spring",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "cotton_batting",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "damask_cover",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "drop_in_spring_unit",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "elastic_webbing",
         "category": "upholstery",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "feather_down_fill",
         "category": "upholstery",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "foam_padding",
         "category": "upholstery",
-        "weight": 0.7
+        "weight": 0.7,
+        "source": "clue_library"
       },
       {
         "id": "haircloth_cover",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "hand_tacks",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "hand_tied_coil_spring",
         "category": "upholstery",
-        "weight": 0.82
+        "weight": 0.82,
+        "source": "clue_library"
       },
       {
         "id": "horsehair_stuffing",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "jacquard_cover",
         "category": "upholstery",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "jute_webbing",
         "category": "upholstery",
-        "weight": 0.72
+        "weight": 0.72,
+        "source": "clue_library"
       },
       {
         "id": "leather_cover",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "marshall_pocket_coil",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "nailhead_trim",
         "category": "upholstery",
-        "weight": 0.62
+        "weight": 0.62,
+        "source": "clue_library"
       },
       {
         "id": "needlepoint_cover",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "no_spring_seat",
         "category": "upholstery",
-        "weight": 0.68
+        "weight": 0.68,
+        "source": "clue_library"
       },
       {
         "id": "polyurethane_foam",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "serpentine_spring",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "upholstery_staple_construction",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       },
       {
         "id": "velvet_cover",
         "category": "upholstery",
-        "weight": 0.65
+        "weight": 0.65,
+        "source": "clue_library"
       },
       {
         "id": "vinyl_cover",
         "category": "upholstery",
-        "weight": 0.78
+        "weight": 0.78,
+        "source": "clue_library"
       }
     ],
     "condition": [
@@ -1118,43 +1517,50 @@ export const CANONICAL_VOCABULARY = {
         "id": "bent_or_sprung_metal",
         "category": "condition",
         "dateHint": "permanent metal deformation from use, damage, or stress; structural concern for tubular steel, wrought iron, and sheet-metal furniture",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "joint_corrosion",
         "category": "condition",
         "dateHint": "corrosion concentrated at metal joints (galvanic, crevice, or stress corrosion); structural-integrity concern at the weakest geometry",
-        "weight": 0.6
+        "weight": 0.6,
+        "source": "clue_library"
       },
       {
         "id": "plating_loss",
         "category": "condition",
         "dateHint": "chrome, nickel, or brass plating wear/loss; common on tubular-steel, chrome-frame, and plated brass furniture; restoration or refinishing common",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "rust_pitting",
         "category": "condition",
         "dateHint": "active iron or steel oxidation; structural-integrity concern; finish-failure restoration signal",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       },
       {
         "id": "weld_repair_visible",
         "category": "condition",
         "dateHint": "modern weld over an original joint indicates later repair; preserve original joining method as the dating signal and record the weld as restoration evidence",
-        "weight": 0.6
+        "weight": 0.6,
+        "source": "clue_library"
       },
       {
         "id": "wicker_paint_buildup",
         "category": "condition",
         "dateHint": "multiple paint layers on wicker obscuring original finish, weave detail, and material identification; common on long-lived porch and sunroom pieces. Paint stratigraphy may help dating but original finish (natural, shellac, stain, original paint color) is often hidden.",
-        "weight": 0.5
+        "weight": 0.5,
+        "source": "clue_library"
       },
       {
         "id": "wicker_strand_breakage",
         "category": "condition",
         "dateHint": "broken, missing, or unraveled wicker strands; structural condition signal; common on aged or heavily-used wicker. Repair difficulty depends on weave pattern and material (paper fiber harder to splice invisibly than natural reed).",
-        "weight": 0.55
+        "weight": 0.55,
+        "source": "clue_library"
       }
     ],
     "signal": [
@@ -1162,7 +1568,8 @@ export const CANONICAL_VOCABULARY = {
         "id": "fallback_form",
         "category": "signal",
         "dateHint": "no structured observations recovered; engine should suppress confident claims and request better photos",
-        "weight": 0
+        "weight": 0,
+        "source": "clue_library"
       }
     ]
   },
@@ -1209,6 +1616,32 @@ export const CANONICAL_VOCABULARY = {
     "wood_subspecies_evidence_white_oak",
     "wood_variant_evidence_golden_oak_era"
   ],
+  "aliases": {
+    "brass_lid_catch_or_bracket": "stamped_metal_bracket",
+    "chamber_pot_cabinet": "commode_function",
+    "circular_aperture_cutout": "circular_aperture_seat_board",
+    "circular_cutout_interior": "circular_aperture_seat_board",
+    "circular_cutout_platform": "circular_aperture_seat_board",
+    "close_stool_function": "commode_function",
+    "commode_chamber_pot_function": "commode_function",
+    "commode_close_stool_form": "commode_function",
+    "commode_close_stool_function": "commode_function",
+    "corner_post_tenon_tops": "turned_finials_on_posts",
+    "enameled_steel_insert": "enameled_steel_basin",
+    "enameled_ware_chamber_pot": "enameled_steel_basin",
+    "enameled_ware_insert": "enameled_steel_basin",
+    "enameled_ware_white_basin": "enameled_steel_basin",
+    "enameled_ware_white_blue_rim": "enameled_steel_basin",
+    "label_text_full": "visible_text",
+    "turned_bun_feet": "bun_feet",
+    "turned_bun_foot_style": "bun_feet",
+    "turned_finial_post_tops": "turned_finials_on_posts",
+    "victorian_utilitarian_commode": "victorian_commode_form",
+    "victorian_utilitarian_commode_form": "victorian_commode_form",
+    "victorian_utility_commode": "victorian_commode_form",
+    "visible_text_label": "visible_text",
+    "visible_text_us_standard": "visible_text"
+  },
   "forms": [
     {
       "form_id": "form_adirondack_chair",
@@ -14397,6 +14830,18 @@ export const CANONICAL_VOCABULARY = {
         "score": 1
       }
     ],
+    "victorian_commode_form": [
+      {
+        "taxonomyId": "style_family_rococo_revival",
+        "lib": "styleFamilies",
+        "score": 0.5
+      },
+      {
+        "taxonomyId": "style_revival_wave_late_victorian_jacobean_elizabethan_revival",
+        "lib": "styleFamilies",
+        "score": 0.5
+      }
+    ],
     "victorian_eastlake_pattern": [
       {
         "taxonomyId": "style_revival_wave_late_victorian_cottage_eastlake_afterwave",
@@ -14855,19 +15300,23 @@ export const CANONICAL_VOCABULARY = {
     "bent_or_sprung_metal",
     "brass_dial_bezel",
     "brass_foot_sabots",
+    "bun_feet",
     "button_tufting",
     "cabinet_form",
     "cabriole_leg",
     "chrome_and_laminate",
+    "circular_aperture_seat_board",
     "circular_footring_stretcher",
     "claw_or_pad_foot",
     "colonial_georgian_revival_upholstered_armchair_pattern",
+    "commode_function",
     "door_present",
     "drop_front_desk",
     "drop_leaf_hinged",
     "edwardian_pattern",
     "electric_lamp",
     "electric_table_lamp",
+    "enameled_steel_basin",
     "fallback_form",
     "flat_top_overhanging",
     "floor_lamp_form",
@@ -14922,8 +15371,10 @@ export const CANONICAL_VOCABULARY = {
     "tapered_leg",
     "telephone_shelf",
     "tubular_steel",
+    "turned_finials_on_posts",
     "turned_spindle_gallery",
     "victorian_curlicue_wicker",
+    "visible_text",
     "weld_repair_visible",
     "wicker_paint_buildup",
     "wicker_strand_breakage",

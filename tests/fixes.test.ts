@@ -16,6 +16,7 @@ import { COMMODE_RUNS } from "./fixtures/commodeRuns";
 import { buildEvidenceDigest, buildFrameDigest, scoreForms } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
+import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
 
 const woodLayer = (clues: any[]) =>
   buildDatingOverlap(clues, null, [], null).layers.find((l) => l.layer === "wood")!;
@@ -273,4 +274,39 @@ test("Vocab: harvested counts and crosswalk are sane", () => {
     (CANONICAL_VOCABULARY.crosswalk as any).shellac_intact?.some((m: any) => m.lib === "finish"),
     "shellac_intact should crosswalk to a finish taxonomy entry"
   );
+});
+
+// ── Stage 1 / Component B: snap-to-canonical ingest normalization ────────────
+test("Snap: an already-canonical key resolves exactly (with slug normalization)", () => {
+  assert.deepEqual(snapToCanonical("commode_function", "function"), { canonical: "commode_function", method: "exact" });
+  assert.deepEqual(snapToCanonical("Circular-Aperture-Seat-Board"), { canonical: "circular_aperture_seat_board", method: "exact" });
+  assert.equal(isCanonicalKey("commode_function"), true);
+  assert.equal(isCanonicalKey("commode_close_stool_form"), false);
+});
+
+test("Snap: curated synonyms resolve via the alias layer", () => {
+  const cases: [string, string][] = [
+    ["commode_close_stool_form", "commode_function"],
+    ["chamber_pot_cabinet", "commode_function"],
+    ["circular_cutout_interior", "circular_aperture_seat_board"],
+    ["enameled_ware_white_basin", "enameled_steel_basin"],
+    ["turned_bun_feet", "bun_feet"],
+  ];
+  for (const [raw, expected] of cases) {
+    const r = snapToCanonical(raw);
+    assert.equal(r.canonical, expected, `${raw} should snap to ${expected} (got ${r.canonical})`);
+    assert.equal(r.method, "alias", `${raw} should resolve via alias`);
+  }
+});
+
+test("Snap: a novel lexical variant (not in the alias table) snaps within its category", () => {
+  const r = snapToCanonical("circular_seat_aperture", "construction");
+  assert.equal(r.canonical, "circular_aperture_seat_board");
+  assert.equal(r.method, "lexical");
+  assert.ok((r.score ?? 0) >= 0.6);
+});
+
+test("Snap: an unrecognizable key is preserved as unmatched, never force-mapped", () => {
+  assert.deepEqual(snapToCanonical("blarg_unknown_widget", "materials"), { canonical: null, method: "unmatched" });
+  assert.deepEqual(snapToCanonical(""), { canonical: null, method: "unmatched" });
 });
