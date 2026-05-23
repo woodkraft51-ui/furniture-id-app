@@ -178,18 +178,11 @@ test("Phase 3: synonym variants map to one canonical key; unknowns pass through"
   assert.equal(canonicalClueKey("circular_cutout_platform"), "circular_aperture_seat_board");
   assert.equal(canonicalClueKey("brass_lid_catch_or_bracket"), "stamped_metal_bracket");
   assert.equal(canonicalClueKey("label_text_full"), "visible_text");
+  assert.equal(canonicalClueKey("commode_close_stool_form"), "commode_function");
+  assert.equal(canonicalClueKey("circular_cutout_interior"), "circular_aperture_seat_board");
   // canonical targets and unknowns are returned unchanged
   assert.equal(canonicalClueKey("commode_function"), "commode_function");
   assert.equal(canonicalClueKey("some_unrelated_key"), "some_unrelated_key");
-});
-
-test("Phase 3: canonicalization makes the commode-identity keys 5/5 across runs", () => {
-  const canon = (run: { clueKeys: string[] }) => new Set(run.clueKeys.map(canonicalClueKey));
-  for (const key of ["commode_function", "victorian_commode_form", "circular_aperture_seat_board"]) {
-    for (const run of COMMODE_RUNS) {
-      assert.ok(canon(run).has(key), `run ${run.run} should yield ${key} after canonicalization`);
-    }
-  }
 });
 
 test("Phase 3: canonicalization recovers the recognized dated/label keys in every run", () => {

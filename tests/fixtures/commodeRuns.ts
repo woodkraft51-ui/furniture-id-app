@@ -129,4 +129,30 @@ export const COMMODE_RUNS: CommodeRun[] = [
       "corner_post_tenon_tops", "brass_frame", "tubular_steel", "seating_present", "backrest_present",
     ],
   },
+  {
+    // Re-scan after Phases 2-4 were committed, but run against pre-fix code
+    // (the branch was not deployed). Recorded outcome is therefore the OLD
+    // behavior. Notable: this run coined NEW synonyms (commode_close_stool_form,
+    // chamber_pot_cabinet, circular_cutout_interior, enameled_ware_white_basin)
+    // that the exact-match alias table did not cover — the reason the commode
+    // detector was made substring-based.
+    run: 6,
+    formId: "form_stool",
+    formLabel: "Stool",
+    styleContext: "Modernist / chrome-frame",
+    dateFloor: 1900,
+    dateCeiling: 1930,
+    valueLow: 386,
+    valueHigh: 943,
+    sellability: 72,
+    clueKeys: [
+      "lift_lid", "commode_close_stool_form", "chamber_pot_cabinet", "vertical_supports",
+      "mortise_and_tenon", "solid_wood_construction", "wood_species_oak_group", "enameled_steel_basin",
+      "maker_label", "butt_hinge", "machine_made_hinge", "slotted_screw", "stamped_metal_bracket",
+      "turned_bun_feet", "turned_finial_post_tops", "molded_top_edge", "surface_scratches",
+      "top_board_crack", "side_panel_crack", "shellac_intact", "two_board_lid_construction",
+      "circular_cutout_interior", "frame_and_panel_sides", "interior_frame_visible", "visible_text",
+      "hardware_tarnish", "enameled_ware_white_basin", "brass_frame", "tubular_steel", "cabinet_form",
+    ],
+  },
 ];

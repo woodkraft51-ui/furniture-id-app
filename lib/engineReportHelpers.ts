@@ -84,20 +84,26 @@ export function falseTwinMaterialsToSuppress(clueKeys: Iterable<string>): string
  * (e.g. vertical_supports) are intentionally left alone. Keys are already
  * slug-normalized (lowercase, underscores) before lookup. */
 export const CLUE_KEY_ALIASES: Record<string, string> = {
-  // commode / close-stool identity
+  // commode / close-stool identity (the substring detector in
+  // commodeEvidencePresent is the robust path; these aliases only dedupe the
+  // observed synonyms for a tidier clue set)
   commode_chamber_pot_function: "commode_function",
   commode_close_stool_function: "commode_function",
+  commode_close_stool_form: "commode_function",
   close_stool_function: "commode_function",
+  chamber_pot_cabinet: "commode_function",
   victorian_utilitarian_commode_form: "victorian_commode_form",
   victorian_utilitarian_commode: "victorian_commode_form",
   victorian_utility_commode: "victorian_commode_form",
   circular_aperture_cutout: "circular_aperture_seat_board",
   circular_cutout_platform: "circular_aperture_seat_board",
+  circular_cutout_interior: "circular_aperture_seat_board",
   // enameled-steel basin / insert
   enameled_steel_insert: "enameled_steel_basin",
   enameled_ware_chamber_pot: "enameled_steel_basin",
   enameled_ware_insert: "enameled_steel_basin",
   enameled_ware_white_blue_rim: "enameled_steel_basin",
+  enameled_ware_white_basin: "enameled_steel_basin",
   // dated brass bracket plate (recovers the recognized post-1900 key)
   brass_lid_catch_or_bracket: "stamped_metal_bracket",
   // maker-label text (recovers the recognized visible_text key)
@@ -118,14 +124,25 @@ export function canonicalClueKey(key: string): string {
   return CLUE_KEY_ALIASES[key] ?? key;
 }
 
-/** Chamber-pot commode / close-stool signature: a circular aperture cut for a
- * basin, or an explicit commode/close-stool function read (optionally
- * corroborated by the enameled basin). Keys are expected to be canonicalized
- * (see CLUE_KEY_ALIASES) so synonym drift does not hide the signature. */
+/** Chamber-pot commode / close-stool signature. The model coins a new synonym
+ * for the function/form key almost every run (commode_function,
+ * commode_close_stool_form, commode_chamber_pot_function, chamber_pot_cabinet,
+ * victorian_commode_form, ...), so this matches the stable word STEMS as
+ * substrings rather than exact keys — that is what makes it robust to the
+ * run-to-run vocabulary drift that an exact alias table cannot keep up with. */
 export function commodeEvidencePresent(clueKeys: Iterable<string>): boolean {
   const set = clueKeys instanceof Set ? clueKeys : new Set(clueKeys);
-  if (set.has("commode_function")) return true;
-  if (set.has("circular_aperture_seat_board")) return true;
-  if (set.has("victorian_commode_form") && set.has("enameled_steel_basin")) return true;
+  const joined = [...set].join(" ");
+  // "commode" / "close stool" / "chamber pot" are highly specific to this form
+  // and appear in the function or form key of every observed scan.
+  if (/commode|close[_ ]?stool|chamber[_ ]?pot/.test(joined)) return true;
+  // Corroborating structural fallback: a circular aperture/cutout cut to receive
+  // a basin (the defining feature), even if no commode-word key was emitted.
+  if (
+    /circular[_ ](aperture|cutout|hole|opening)/.test(joined) &&
+    /basin|seat|chamber|interior_floor/.test(joined)
+  ) {
+    return true;
+  }
   return false;
 }
