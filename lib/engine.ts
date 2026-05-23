@@ -81,6 +81,7 @@ import { buildDatingOverlap, refineDatingFromConvergence, type DatingOverlapData
 import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersection } from "./engineStyleIntersection";
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
+import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress, canonicalClueKey, commodeEvidencePresent } from "./engineReportHelpers";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -940,7 +941,8 @@ function parseModelJson(raw: string): any | null {
 
 function normalizeClueKey(v: any): string | null {
   const key = asString(v).toLowerCase().replace(/-/g, "_").replace(/\s+/g, "_");
-  return key || null;
+  if (!key) return null;
+  return canonicalClueKey(key);
 }
 
 function normalizePhase0Clue(raw: any): string | null {
@@ -2695,15 +2697,34 @@ function canonicalObservationType(t: string | null | undefined): string {
   return OBSERVATION_TYPE_ALIASES[key] ?? key;
 }
 
-function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
+export function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   // Normalize emitted types to the canonical vocabulary before anything reads
   // them (see OBSERVATION_TYPE_ALIASES). Mutating here means by_type, p4
   // weighting, and the dating overlap all agree downstream.
   observations.forEach((o) => {
     o.type = canonicalObservationType(o.type);
   });
+
+  // On a wood-primary piece, metal-FRAME material keys (brass_frame,
+  // tubular_steel, chrome_frame, metal_frame) are false twins of incidental
+  // metal — brass hinges, an enameled-steel insert — and must not drive form,
+  // style, or dating. Drop both the keys and their observations here so the
+  // whole pipeline (frame digest, scoreForms, p4, dating overlap) sees one
+  // consistent de-twinned digest.
+  const presentKeys = observations
+    .filter((o) => !o.negated)
+    .map((o) => normalizeClueKey(o.clue))
+    .filter(Boolean) as string[];
+  const twinSuppress = new Set(falseTwinMaterialsToSuppress(presentKeys));
+  const keptObservations = twinSuppress.size
+    ? observations.filter((o) => {
+        const k = normalizeClueKey(o.clue);
+        return !(k != null && twinSuppress.has(k));
+      })
+    : observations;
+
   const by_type: Record<string, Observation[]> = {};
-  observations.forEach((o) => {
+  keptObservations.forEach((o) => {
     if (!by_type[o.type]) by_type[o.type] = [];
     by_type[o.type].push(o);
   });
@@ -2712,15 +2733,15 @@ function buildEvidenceDigest(observations: Observation[], perception?: Perceptio
   // forms or contribute positive evidence to any clue_keys consumer (scoreForms,
   // material classification, dating, style).
   const clue_keys = uniq(
-    observations
+    keptObservations
       .filter((o) => !o.negated)
       .map((o) => normalizeClueKey(o.clue))
       .filter(Boolean) as string[]
   );
-  const hard_negatives = uniq(observations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
-  const strongest_observations = [...observations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
+  const hard_negatives = uniq(keptObservations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
+  const strongest_observations = [...keptObservations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
 
-  return { observations, observation_count: observations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception };
+  return { observations: keptObservations, observation_count: keptObservations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception };
 }
 
 function computeMissingEvidence(images: any[]) {
@@ -2939,7 +2960,7 @@ function detectUpholsteryLayer(digest: EvidenceDigest): UpholsteryLayer | null {
 // Block 14: build a frame-only digest by filtering out clues categorized as
 // "upholstery" in CLUE_LIBRARY. Used to keep form ID, style attribution,
 // and frame-date computation independent of upholstery evidence.
-function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
+export function buildFrameDigest(digest: EvidenceDigest): EvidenceDigest {
   const upholsteryClueKeys = new Set<string>(
     Object.entries(CLUE_LIBRARY)
       .filter(([, meta]: [string, any]) => meta?.category === "upholstery")
@@ -3143,7 +3164,7 @@ export type ScoredForm = {
   support: string[];
 };
 
-function scoreForms(digest: EvidenceDigest): ScoredForm[] {
+export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
@@ -4644,11 +4665,23 @@ if (
     add("Recliner", 90, "Reclining mechanism or recliner form is visible.");
   }
 
+  // Commode / close stool — a hinged-lid case enclosing a chamber-pot basin
+  // (circular aperture cut in an interior seat board). Scored above the plain
+  // "Stool" text-match below because the diagnostic antique term "close stool"
+  // contains the word "stool" and would otherwise route a chamber-pot commode
+  // to a backless seat (audit: Victorian commode repeatedly mis-identified as
+  // "Stool"). Ungated by backrest so a stray backrest read can't suppress it.
+  const commodeEvidence = commodeEvidencePresent(clues);
+  if (commodeEvidence) {
+    add("Commode (close stool)", 96, "Hinged-lid case with a circular aperture cut for a chamber-pot basin — a close stool / commode.");
+  }
+
   // Stool — backless single-user seating. Only when no backrest evidence
-  // (a stool by definition has no back).
+  // (a stool by definition has no back) and not a close-stool commode.
   if (
     /\bstools?\b|\btabourets?\b/.test(text) &&
-    !hasAny("backrest_present", "spindle_back")
+    !hasAny("backrest_present", "spindle_back") &&
+    !commodeEvidence
   ) {
     add("Stool", 72, "Backless single-user stool form is visible.");
   }
@@ -6289,14 +6322,7 @@ function buildDecisionGuidance(args: {
   // incidental metal/glass clue fired (brass hinges/mounts, steel/enamel parts,
   // door glass → metal_frame/brass_frame/tubular_steel false twins). Gate the
   // metal block on the piece NOT being wood-primary (audit S009/S010/S014/S015/S017).
-  const woodPrimary =
-    has(
-      "solid_wood_construction",
-      "solid_wood_secondary_underframe",
-      "softwood_secondary_wood",
-      "solid_plank_back",
-      "solid_plank_drawer_bottom"
-    ) || Array.from(clues).some((k) => k.startsWith("wood_species_"));
+  const woodPrimary = isWoodPrimary(clues);
   if (
     has("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame") &&
     !woodPrimary
@@ -7872,7 +7898,7 @@ if (missing.label_photo) {
     // → "Modernist/chrome-frame furniture" form candidate (an M6 false-positive on
     // "iron/steel screws"). All non-attribution sources still surface separately in
     // the hedged style-context field.
-    const namePrefixStyle = style_attribution?.name || null;
+    const namePrefixStyle = pickNamePrefixStyle(style_attribution);
 
     // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
     // canonical form has aliases. Surfaces user-trust language without surrendering
@@ -8673,14 +8699,7 @@ if (p6.dating_overlap) {
   // computed frame dating — it cannot coexist with the date (audit: mule_chest
   // 1700–1850 surfaced on an 1890–1920 apothecary chest (S011) and a 1900–1910
   // Regency bookcase (S015)). Pure-win filter; date-compatible subtypes are kept.
-  if (
-    p3.subtype &&
-    typeof p2.date_floor === "number" &&
-    typeof p2.date_ceiling === "number" &&
-    typeof p3.subtype.date_floor === "number" &&
-    typeof p3.subtype.date_ceiling === "number" &&
-    (p3.subtype.date_ceiling < p2.date_floor || p3.subtype.date_floor > p2.date_ceiling)
-  ) {
+  if (subtypeDisjointFromDating(p3.subtype, p2.date_floor, p2.date_ceiling)) {
     p3.subtype = null;
   }
 
