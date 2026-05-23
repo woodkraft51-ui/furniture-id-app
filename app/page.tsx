@@ -167,12 +167,42 @@ const MAX_IMAGE_EDGE = 1600;
 const JPEG_QUALITY = 0.82;
 const SKIP_DOWNSCALE_BYTES = 1_500_000;
 
-async function downscaleImageFile(file: File): Promise<File> {
-  // Skip if not an image, or if already small enough.
-  if (!file.type.startsWith("image/")) return file;
+// media_types Anthropic's vision API accepts. Anything else MUST be re-encoded
+// before it reaches the model, or the request 400s with invalid_request_error.
+const ANTHROPIC_SUPPORTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
-  // Load the image to inspect dimensions.
-  const url = URL.createObjectURL(file);
+function isHeicFile(file: File): boolean {
+  const type = (file.type || "").toLowerCase();
+  if (type === "image/heic" || type === "image/heif") return true;
+  // iOS often hands a HEIC to a file input with an EMPTY MIME type, so also
+  // sniff the filename — otherwise it slips through as "not HEIC" and 400s.
+  return /\.(heic|heif)$/i.test(file.name || "");
+}
+
+type DecodedImage = {
+  width: number;
+  height: number;
+  draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
+  close: () => void;
+};
+
+// Decode a blob to something drawable. Prefer createImageBitmap (faster and
+// applies EXIF orientation); fall back to <img> where it's unavailable.
+async function decodeToImage(blob: Blob): Promise<DecodedImage> {
+  if (typeof createImageBitmap === "function") {
+    try {
+      const bmp = await createImageBitmap(blob, { imageOrientation: "from-image" });
+      return {
+        width: bmp.width,
+        height: bmp.height,
+        draw: (ctx, w, h) => ctx.drawImage(bmp, 0, 0, w, h),
+        close: () => bmp.close(),
+      };
+    } catch {
+      // fall through to the <img> path below
+    }
+  }
+  const url = URL.createObjectURL(blob);
   try {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = new Image();
@@ -180,36 +210,65 @@ async function downscaleImageFile(file: File): Promise<File> {
       i.onerror = () => reject(new Error("Image decode failed"));
       i.src = url;
     });
-    const longerEdge = Math.max(img.naturalWidth, img.naturalHeight);
-    if (longerEdge <= MAX_IMAGE_EDGE && file.size <= SKIP_DOWNSCALE_BYTES) {
-      return file; // already small enough
+    return {
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+      draw: (ctx, w, h) => ctx.drawImage(img, 0, 0, w, h),
+      close: () => {},
+    };
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+// Normalize any picked/captured photo into a downscaled JPEG so the request to
+// Anthropic always carries a supported media_type. HEIC (the iPhone default) is
+// decoded via heic2any first, because browsers outside Safari can't decode it
+// natively — previously such a file was shipped AS-IS and rejected with a 400.
+// Throws if the file genuinely can't be converted, so the caller can skip it
+// instead of poisoning the whole request with an unsupported original.
+async function downscaleImageFile(file: File): Promise<File> {
+  const heic = isHeicFile(file);
+  if (!file.type.startsWith("image/") && !heic) return file; // not an image — leave untouched
+
+  // HEIC/HEIF → JPEG up front. Dynamic import keeps the ~1.4MB decoder out of the
+  // initial bundle; it only loads the first time a HEIC is actually seen.
+  let source: Blob = file;
+  if (heic) {
+    const { default: heic2any } = await import("heic2any");
+    const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: JPEG_QUALITY });
+    source = Array.isArray(converted) ? converted[0] : converted;
+  }
+
+  let decoded: DecodedImage | null = null;
+  try {
+    decoded = await decodeToImage(source);
+    const longerEdge = Math.max(decoded.width, decoded.height);
+
+    // Already a supported, small-enough image: pass through untouched.
+    if (!heic && longerEdge <= MAX_IMAGE_EDGE && file.size <= SKIP_DOWNSCALE_BYTES && ANTHROPIC_SUPPORTED_TYPES.has(file.type)) {
+      return file;
     }
 
-    // Render to canvas at target dimensions.
     const scale = longerEdge > MAX_IMAGE_EDGE ? MAX_IMAGE_EDGE / longerEdge : 1;
-    const targetWidth = Math.round(img.naturalWidth * scale);
-    const targetHeight = Math.round(img.naturalHeight * scale);
+    const targetWidth = Math.max(1, Math.round(decoded.width * scale));
+    const targetHeight = Math.max(1, Math.round(decoded.height * scale));
     const canvas = document.createElement("canvas");
     canvas.width = targetWidth;
     canvas.height = targetHeight;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return file; // canvas unsupported — fall back to original
-    ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+    if (!ctx) throw new Error("Canvas is unavailable in this browser");
+    decoded.draw(ctx, targetWidth, targetHeight);
 
-    // Export as JPEG. Modern browsers handle HEIC display via image decode
-    // but canvas re-encode goes to JPEG cleanly.
     const blob = await new Promise<Blob | null>((resolve) => {
       canvas.toBlob((b) => resolve(b), "image/jpeg", JPEG_QUALITY);
     });
-    if (!blob) return file; // toBlob unsupported — fall back
+    if (!blob) throw new Error("Could not encode image to JPEG");
 
-    // Construct a File with same name (minus extension swap if needed).
-    const baseName = file.name.replace(/\.(heic|heif|png|webp)$/i, ".jpg");
+    const baseName = file.name.replace(/\.(heic|heif|png|webp|gif)$/i, ".jpg") || "photo.jpg";
     return new File([blob], baseName, { type: "image/jpeg", lastModified: Date.now() });
-  } catch {
-    return file; // any error — fall back to original
   } finally {
-    URL.revokeObjectURL(url);
+    decoded?.close();
   }
 }
 
@@ -2467,38 +2526,61 @@ export default function Page() {
     return [...core, ...grouped];
   }, [analysisMode, coreImages, groupImages, fieldPhotos]);
 
+  // Convert one file to an ImageRecord. Surfaces a clear message and skips the
+  // file if it can't be turned into a supported format (rare: corrupt input),
+  // rather than letting an undecodable original reach the API and 400.
+  async function buildImageRecord(file: File, imageType: string): Promise<ImageRecord | null> {
+    try {
+      return { image_type: imageType, data_url: await fileToDataUrl(file), name: file.name };
+    } catch (e) {
+      const why = e instanceof Error ? e.message : "unsupported image";
+      setError(`Couldn't process "${file.name || "photo"}" (${why}) — skipped it. Your other photos are fine.`);
+      return null;
+    }
+  }
+
   async function handleCoreUpload(slotKey: string, fileList: FileList | null) {
     if (!fileList || !fileList[0]) return;
-    const file = fileList[0];
-    const dataUrl = await fileToDataUrl(file);
-    setCoreImages((prev) => ({ ...prev, [slotKey]: { image_type: slotKey, data_url: dataUrl, name: file.name } }));
+    setError("");
+    const record = await buildImageRecord(fileList[0], slotKey);
+    if (!record) return;
+    setCoreImages((prev) => ({ ...prev, [slotKey]: record }));
   }
 
   async function handleGroupUpload(groupKey: string, imageType: string, fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const files = Array.from(fileList);
+    setError("");
     const nextImages: ImageRecord[] = [];
-    for (const file of files) nextImages.push({ image_type: imageType, data_url: await fileToDataUrl(file), name: file.name });
+    for (const file of Array.from(fileList)) {
+      const record = await buildImageRecord(file, imageType);
+      if (record) nextImages.push(record);
+    }
+    if (nextImages.length === 0) return;
     setGroupImages((prev) => ({ ...prev, [groupKey]: [...(prev[groupKey] || []), ...nextImages] }));
   }
 
   async function handleFieldUpload(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const files = Array.from(fileList);
+    setError("");
     const nextImages: ImageRecord[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    for (const file of Array.from(fileList)) {
       const nextIndex = fieldPhotos.length + nextImages.length;
-      nextImages.push({ image_type: inferFieldImageType(nextIndex), data_url: await fileToDataUrl(file), name: file.name });
+      const record = await buildImageRecord(file, inferFieldImageType(nextIndex));
+      if (record) nextImages.push(record);
     }
+    if (nextImages.length === 0) return;
     setFieldPhotos((prev) => [...prev, ...nextImages]);
   }
 
   async function handleFieldRefinementUpload(imageType: string, fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const files = Array.from(fileList);
+    setError("");
     const nextImages: ImageRecord[] = [];
-    for (const file of files) nextImages.push({ image_type: imageType, data_url: await fileToDataUrl(file), name: file.name });
+    for (const file of Array.from(fileList)) {
+      const record = await buildImageRecord(file, imageType);
+      if (record) nextImages.push(record);
+    }
+    if (nextImages.length === 0) return;
     setFieldPhotos((prev) => [...prev, ...nextImages]);
   }
 
