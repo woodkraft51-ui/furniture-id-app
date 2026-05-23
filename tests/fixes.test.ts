@@ -14,6 +14,8 @@ import {
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
 import { buildEvidenceDigest, buildFrameDigest, scoreForms } from "../lib/engine";
+import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
+import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 
 const woodLayer = (clues: any[]) =>
   buildDatingOverlap(clues, null, [], null).layers.find((l) => l.layer === "wood")!;
@@ -237,4 +239,38 @@ test("Phase 4: the commode wins end-to-end on all 5 runs (not Stool, not Brass b
     assert.ok(!ranked.some((r) => r.form_id === "form_iron_bed"), `run ${run.run} must not score Brass bed`);
     assert.ok(!ranked.some((r) => r.form_id === "form_nightstand"), `run ${run.run} must not score Nightstand`);
   }
+});
+
+// ── Stage 1 / Component A: canonical vocabulary generation ───────────────────
+test("Vocab: committed artifact is in sync with its sources (drift guard)", () => {
+  const rebuilt = buildCanonicalVocabulary();
+  assert.deepStrictEqual(
+    JSON.parse(JSON.stringify(rebuilt)),
+    JSON.parse(JSON.stringify(CANONICAL_VOCABULARY)),
+    "canonicalVocabulary.generated.ts is stale — run: node --import tsx scripts/generateCanonicalVocabulary.ts"
+  );
+});
+
+test("Vocab: every scoreForms routing key is covered by the enforce-able vocabulary union", () => {
+  const evidenceIds = Object.values(CANONICAL_VOCABULARY.evidence).flat().map((e: any) => e.id);
+  const union = new Set<string>([
+    ...evidenceIds,
+    ...CANONICAL_VOCABULARY.woodEvidenceKeys,
+    ...CANONICAL_VOCABULARY.meta.coverageGaps.routingKeysNotInClueLibrary,
+  ]);
+  for (const key of CANONICAL_VOCABULARY.meta.minedRoutingKeys) {
+    assert.ok(union.has(key), `routing key ${key} is not covered by the vocabulary union`);
+  }
+});
+
+test("Vocab: harvested counts and crosswalk are sane", () => {
+  assert.equal(CANONICAL_VOCABULARY.forms.length, CANONICAL_VOCABULARY.meta.counts.forms);
+  assert.ok(CANONICAL_VOCABULARY.forms.length > 200, "should have harvested all forms");
+  assert.ok(CANONICAL_VOCABULARY.meta.counts.evidenceCategories >= 12, "should have the category taxonomy");
+  assert.ok(CANONICAL_VOCABULARY.disqualifying.length > 0, "should harvest disqualifying keys");
+  // crosswalk sanity: a clue key with an obvious taxonomy twin resolves to it
+  assert.ok(
+    (CANONICAL_VOCABULARY.crosswalk as any).shellac_intact?.some((m: any) => m.lib === "finish"),
+    "shellac_intact should crosswalk to a finish taxonomy entry"
+  );
 });

@@ -306,7 +306,7 @@ type ClaudeResult =
   | { ok: true; parsed: any; raw: string }
   | { ok: false; error: any };
 
-const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; formHint?: string; dateHint?: string; weight: number }> = {
+export const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boolean; formHint?: string; dateHint?: string; weight: number }> = {
   maker_label: { category: "label", weight: 0.98 },
   roos_label: { category: "label", formHint: "Roos cedar chest / hope chest", dateHint: "c. 1940–1960", weight: 0.99 },
   lane_label: { category: "label", formHint: "Lane cedar chest / hope chest", dateHint: "c. 1930–1965", weight: 0.99 },
