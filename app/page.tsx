@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { API } from "../lib/store";
 import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
 import { pickStrongestZoneIndex } from "../lib/engineDatingOverlap";
@@ -42,6 +42,11 @@ const LANDING_DISMISSED_KEY = "proof_sleuth_landing_dismissed";
  */
 const TRACE_REVEAL_CODE = "xyzzy";
 const TRACE_VISIBLE_KEY = "wk_trace_visible";
+// Mobile reveal: tapping a hidden corner hotspot TRACE_TAP_COUNT times within
+// TRACE_TAP_WINDOW_MS toggles the same trace. The tight window keeps ordinary
+// taps from accumulating into a trigger.
+const TRACE_TAP_COUNT = 3;
+const TRACE_TAP_WINDOW_MS = 700;
 
 // CORE_SLOTS key → PHOTO_EXAMPLES key. Slots without an entry render
 // without a "View example" link. GROUP_SLOTS map by their `key` (not
@@ -2110,6 +2115,37 @@ export default function Page() {
   // the user picks a mode (persisted to localStorage).
   const [showLanding, setShowLanding] = useState<boolean | null>(null);
   const [traceVisible, setTraceVisible] = useState(false);
+  const { isMobile } = useViewport();
+
+  // Flip the trace and persist the choice. Shared by the desktop secret-code
+  // keydown handler and the mobile corner-tap gesture.
+  const toggleTrace = useCallback(() => {
+    setTraceVisible((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem(TRACE_VISIBLE_KEY, next ? "true" : "false");
+      } catch {
+        // ignore persistence failure
+      }
+      return next;
+    });
+  }, []);
+
+  // Mobile gesture: count rapid taps on the hidden corner hotspot. Timestamps
+  // live in a ref so taps don't trigger re-renders; only those inside the
+  // rolling window count toward the threshold.
+  const traceTapTimes = useRef<number[]>([]);
+  const onTraceHotspotTap = useCallback(() => {
+    const now = Date.now();
+    const recent = traceTapTimes.current.filter((t) => now - t < TRACE_TAP_WINDOW_MS);
+    recent.push(now);
+    if (recent.length >= TRACE_TAP_COUNT) {
+      traceTapTimes.current = [];
+      toggleTrace();
+    } else {
+      traceTapTimes.current = recent;
+    }
+  }, [toggleTrace]);
 
   // Picker Profile wizard state. The wizard (app/PickerProfileSetup.tsx) is a
   // controlled component: the parent owns the in-progress draft and step.
@@ -2192,20 +2228,12 @@ export default function Page() {
       buffer = (buffer + e.key.toLowerCase()).slice(-TRACE_REVEAL_CODE.length);
       if (buffer === TRACE_REVEAL_CODE) {
         buffer = "";
-        setTraceVisible((prev) => {
-          const next = !prev;
-          try {
-            window.localStorage.setItem(TRACE_VISIBLE_KEY, next ? "true" : "false");
-          } catch {
-            // ignore persistence failure
-          }
-          return next;
-        });
+        toggleTrace();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [toggleTrace]);
 
   const dismissLandingWithMode = (mode: "full_analysis" | "field_scan") => {
     setIntake((prev) => ({ ...prev, analysis_mode: mode }));
@@ -2710,6 +2738,18 @@ const p7 = stageOutputs.p7 || null;
 
   return (
     <main style={{ minHeight: "100vh", background: "#f6f1e8", color: "#2f2418", fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" }}>
+      {/* Hidden mobile trigger for the Engine Trace: an invisible bottom-left
+          hotspot. Tapping it TRACE_TAP_COUNT times quickly toggles the trace
+          (the desktop equivalent of typing the reveal code). Mobile-only and
+          excluded from print. */}
+      {isMobile && (
+        <div
+          aria-hidden
+          className="no-print"
+          onClick={onTraceHotspotTap}
+          style={{ position: "fixed", left: 0, bottom: 0, width: 44, height: 44, zIndex: 2147483647, background: "transparent" }}
+        />
+      )}
       {showPickerProfile && (
         <PickerProfileSetup
           draft={pickerDraft}
