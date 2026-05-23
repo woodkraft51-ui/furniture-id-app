@@ -3221,6 +3221,11 @@ const add = (form: string, score: number, support: string) => {
 
 const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
 
+  // Chamber-pot commode / close stool. Computed once up front because it both
+  // adds the commode form (below) and suppresses cousin forms whose text-matches
+  // otherwise fire on commode prose (a commode is not a nightstand).
+  const commodeEvidence = commodeEvidencePresent(clues);
+
   // Highest-authority maker/form labels
   if (clues.has("roos_label")) add("Roos cedar chest / hope chest", 120, "Visible Roos label directly supports the identification.");
   if (clues.has("lane_label")) add("Lane cedar chest / hope chest", 120, "Visible Lane label directly supports the identification.");
@@ -4176,7 +4181,7 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
       add("Armoire", 98, "Large freestanding clothes/storage cabinet (French wardrobe / press).");
     } else if (wardrobeForm && !deskContext) {
       add("Wardrobe", 98, "Freestanding clothes-hanging cabinet (clothes closet).");
-    } else if (nightstandForm) {
+    } else if (nightstandForm && !commodeEvidence) {
       add("Nightstand", 96, "Bedside table/cabinet sized for use beside a bed.");
     } else if (dresserForm) {
       add("Dresser", 96, "Width-dominant bedroom drawer case for grooming/dressing (often with mirror), distinct from a taller single-column chest of drawers.");
@@ -4667,13 +4672,14 @@ if (
 
   // Commode / close stool — a hinged-lid case enclosing a chamber-pot basin
   // (circular aperture cut in an interior seat board). Scored above the plain
-  // "Stool" text-match below because the diagnostic antique term "close stool"
-  // contains the word "stool" and would otherwise route a chamber-pot commode
-  // to a backless seat (audit: Victorian commode repeatedly mis-identified as
-  // "Stool"). Ungated by backrest so a stray backrest read can't suppress it.
-  const commodeEvidence = commodeEvidencePresent(clues);
+  // "Stool" text-match below AND above the bedroom-cousin tier (washstand /
+  // nightstand / low chest, all <=100): the chamber-pot aperture is definitive,
+  // but the term "close stool" contains "stool" and these pieces were also
+  // colloquially called "night stands"/"commodes", so the cousin text-matches
+  // otherwise steal the slot. Ungated by backrest so a stray backrest read
+  // can't suppress it.
   if (commodeEvidence) {
-    add("Commode (close stool)", 96, "Hinged-lid case with a circular aperture cut for a chamber-pot basin — a close stool / commode.");
+    add("Commode (close stool)", 108, "Hinged-lid case with a circular aperture cut for a chamber-pot basin — a close stool / commode.");
   }
 
   // Stool — backless single-user seating. Only when no backrest evidence
