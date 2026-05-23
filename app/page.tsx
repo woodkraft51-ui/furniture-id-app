@@ -2407,7 +2407,10 @@ export default function Page() {
     if (typeof e === "string") return e;
     const status = e.status ? `HTTP ${e.status}` : null;
     const t = e.api_error_type || e.type || null;
-    return [status, t].filter(Boolean).join(" · ") || null;
+    // Include the API's actual error message — without it a 400 is unactionable
+    // guesswork (media_type vs size vs base64 vs request shape).
+    const msg = typeof e.message === "string" && e.message.trim() ? e.message.trim() : null;
+    return [status, t, msg].filter(Boolean).join(" · ") || null;
   }, [report]);
 
   const analysisMode = intake.analysis_mode;
