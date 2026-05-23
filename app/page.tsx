@@ -2539,19 +2539,16 @@ export default function Page() {
       }
     }
 
-    // Pre-upload payload guard. Without this, large photo sets silently
-    // fail at the Vercel platform layer (4.5MB cap on serverless function
-    // payloads) — the proxy at /api/analyze returns 413 but in
-    // full-analysis mode there was no UI to surface that error, so the
-    // button reverted to "Run Full Analysis" with no indication of what
-    // went wrong. Catching it client-side BEFORE the call means a clear
-    // message instead of a silent failure.
+    // Pre-upload payload guard. Render runs a long-lived Node server with no
+    // serverless body cap, so this is a sanity ceiling — not a platform limit.
+    // It keeps a single scan comfortably under Anthropic's per-image size
+    // limits and surfaces a clear message instead of a failed request if a
+    // photo set is unusually large. Photos are already downscaled (see
+    // downscaleImageFile), so normal scans land far below this.
     //
     // Estimate payload size by summing data_url string lengths. data_urls
     // are base64-encoded (1 char ≈ 1 byte payload) plus a small prefix.
-    // 4 MB threshold leaves ~500KB margin under Vercel's 4.5MB cap for
-    // system prompt + intake metadata + JSON structure overhead.
-    const PAYLOAD_BYTE_LIMIT = 4_000_000;
+    const PAYLOAD_BYTE_LIMIT = 20_000_000;
     const totalDataUrlBytes = allImages.reduce((sum, img) => {
       const url = (img && (img as any).data_url) ? String((img as any).data_url) : "";
       return sum + url.length;
