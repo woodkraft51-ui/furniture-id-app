@@ -3,6 +3,24 @@
 Tracking list for deferred work surfaced during the commode-determinism fix and
 the Stage 1 vocabulary migration. Newest context at top of each section.
 
+## Observed on live scans (instrumentation stage — logged, not fixed)
+
+- **Material-consistency contradictions go uncaught (P5).** A brass/bronze Art
+  Deco candelabrum scan emitted `woven_body` (wicker, conf 76) alongside
+  `metal_frame` + `cast_metal_construction` and the prose "entirely metal, no
+  wicker." P5 reported 0 conflicts, so the report carried a "Wicker / rattan
+  furniture" alternative plus wicker limitations/negotiating/selling tips on an
+  all-metal object. Need a material-consistency conflict rule (woven vs metal vs
+  wood are mutually exclusive primaries) to drop or flag the contradicted clue.
+- **Revival-wave reconciliation can override genuine-age evidence.** Same scan:
+  a wide, low-confidence metal dating (1900–2000) let style reconciliation match
+  the upper bound to the "Contemporary Deco Glam" wave (2000–null), producing
+  "Contemporary Deco Glam Candelabrum" — despite verdigris, integrated patina,
+  and galvanic joint corrosion that the model itself read as genuine age. A 2000+
+  revival wave should not win when age-consistent condition evidence is present;
+  reconciliation should weigh patina/corrosion/age signals against the wide
+  envelope's upper tail.
+
 ## Architecture / engine
 
 - **Generic, data-driven form matcher (Stage 2).** Replace the ~2,000-line
