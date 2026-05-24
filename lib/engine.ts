@@ -6617,19 +6617,33 @@ function normalizeMakerMark(entry: any): NormalizedMakerMark {
     };
   }
 
-  // Canonical MakerMarkEntry — derive legacy fields from new schema.
-  const firstPeriod = Array.isArray(entry?.period_associations) && entry.period_associations.length > 0
-    ? entry.period_associations[0]
-    : null;
-  const date_range = firstPeriod
-    ? (typeof firstPeriod.date_floor === "number" && typeof firstPeriod.date_ceiling === "number"
-        ? `${firstPeriod.date_floor}–${firstPeriod.date_ceiling}`
-        : typeof firstPeriod.date_floor === "number"
-          ? `post-${firstPeriod.date_floor}`
-          : (firstPeriod.period_label && firstPeriod.period_label.trim()
-              ? firstPeriod.period_label
-              : "uncertain"))
-    : "uncertain";
+  // Canonical MakerMarkEntry — derive legacy fields from new schema. A maker's
+  // date_range must span its FULL active life, not just the first sub-period: a
+  // firm like Globe-Wernicke carries several mark-form periods (1899–1915 paper
+  // label, 1916–1930 stamp, 1930–1955 continuing), and the piece could be from
+  // any of them. So aggregate across ALL period_associations: floor = earliest,
+  // ceiling = latest — and if any period is open-ended (firm still active),
+  // report a floor-only "post-<floor>" (terminus post quem).
+  const periods: any[] = Array.isArray(entry?.period_associations) ? entry.period_associations : [];
+  // Aggregate only the maker's OWN production periods. A revival/style/repro
+  // sub-period (e.g. Phyfe's "Phyfe-style revival period" 1880–1940) is when
+  // OTHERS made pieces in the maker's manner — a piece bearing the actual mark
+  // is from the maker's own production, so those periods must not widen its span.
+  const ownProduction = periods.filter(
+    (p) => !/revival|reproduction|\bstyle\b|centennial|afterwave|aftermarket/i.test(String(p?.period_label || ""))
+  );
+  const usePeriods = ownProduction.length ? ownProduction : periods;
+  const periodFloors = usePeriods.map((p) => p?.date_floor).filter((n: any): n is number => typeof n === "number");
+  const periodCeilings = usePeriods.map((p) => p?.date_ceiling).filter((n: any): n is number => typeof n === "number");
+  const anyOpenCeiling = usePeriods.some((p) => typeof p?.date_floor === "number" && typeof p?.date_ceiling !== "number");
+  const minFloor = periodFloors.length ? Math.min(...periodFloors) : null;
+  const maxCeiling = periodCeilings.length ? Math.max(...periodCeilings) : null;
+  const date_range =
+    minFloor == null
+      ? (usePeriods[0]?.period_label && String(usePeriods[0].period_label).trim() ? String(usePeriods[0].period_label) : "uncertain")
+      : anyOpenCeiling || maxCeiling == null
+        ? `post-${minFloor}`
+        : `${minFloor}–${maxCeiling}`;
 
   const auth = typeof entry?.positive_authority === "number" ? entry.positive_authority : 7;
   const dating_authority: "high" | "moderate" | "low" =
