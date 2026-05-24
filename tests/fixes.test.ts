@@ -310,3 +310,29 @@ test("Snap: an unrecognizable key is preserved as unmatched, never force-mapped"
   assert.deepEqual(snapToCanonical("blarg_unknown_widget", "materials"), { canonical: null, method: "unmatched" });
   assert.deepEqual(snapToCanonical(""), { canonical: null, method: "unmatched" });
 });
+
+// ── Stage 1B: shadow ingest wiring (observe-only, flag-gated) ────────────────
+test("Shadow: P0_VOCAB_SNAP_SHADOW records a diff WITHOUT changing clue_keys", () => {
+  const obs = () => ([
+    { type: "construction", clue: "circular_seat_aperture", description: "circular hole in an interior seat board", confidence: 70, negated: false },
+    { type: "construction", clue: "solid_wood_construction", description: "solid wood", confidence: 80, negated: false },
+    { type: "materials", clue: "wood_species_oak_group", description: "oak", confidence: 50, negated: false },
+    { type: "function", clue: "blarg_unknown_widget", description: "mystery feature", confidence: 40, negated: false },
+  ]);
+  const off = buildEvidenceDigest(obs() as any);
+  assert.equal(off.vocab_shadow, undefined, "no shadow when flag is off");
+
+  process.env.P0_VOCAB_SNAP_SHADOW = "1";
+  const on = buildEvidenceDigest(obs() as any);
+  delete process.env.P0_VOCAB_SNAP_SHADOW;
+
+  // zero behavior change: clue_keys identical with and without the flag
+  assert.deepEqual(on.clue_keys, off.clue_keys);
+  // shadow populated; the lexical remap and the unmatched key are both captured
+  assert.ok(on.vocab_shadow, "shadow present when flag is on");
+  assert.ok(
+    on.vocab_shadow!.changed.some((c) => c.to === "circular_aperture_seat_board" && c.method === "lexical"),
+    "should record the lexical remap of circular_seat_aperture"
+  );
+  assert.ok(on.vocab_shadow!.unmatched.includes("blarg_unknown_widget"), "should record the unmatched key");
+});

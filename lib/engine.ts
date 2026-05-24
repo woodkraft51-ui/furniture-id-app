@@ -82,6 +82,7 @@ import { computeStyleIntersections, detectImpossiblePairs, type StyleIntersectio
 import { findStyleCompatibility } from "./constraints/styleCompatibility";
 import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyleReconciliation";
 import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress, canonicalClueKey, commodeEvidencePresent } from "./engineReportHelpers";
+import { snapToCanonical, type SnapMethod } from "./engineVocabulary";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
@@ -159,6 +160,16 @@ type EvidenceDigest = {
   hard_negatives: string[];
   strongest_observations: Observation[];
   perception?: Perception;
+  // Stage 1B shadow: what canonical-vocabulary snapping WOULD do (observe-only;
+  // present only when P0_VOCAB_SNAP_SHADOW is enabled). Never alters clue_keys.
+  vocab_shadow?: VocabShadow;
+};
+
+type VocabShadow = {
+  total: number;
+  changed: { from: string; to: string; method: SnapMethod }[];
+  unmatched: string[];
+  shadowClueKeys: string[];
 };
 
 type Perception = {
@@ -2697,6 +2708,9 @@ function canonicalObservationType(t: string | null | undefined): string {
   return OBSERVATION_TYPE_ALIASES[key] ?? key;
 }
 
+const vocabSnapShadowEnabled = () =>
+  process.env.P0_VOCAB_SNAP_SHADOW === "1" || process.env.P0_VOCAB_SNAP_SHADOW === "true";
+
 export function buildEvidenceDigest(observations: Observation[], perception?: Perception): EvidenceDigest {
   // Normalize emitted types to the canonical vocabulary before anything reads
   // them (see OBSERVATION_TYPE_ALIASES). Mutating here means by_type, p4
@@ -2741,7 +2755,30 @@ export function buildEvidenceDigest(observations: Observation[], perception?: Pe
   const hard_negatives = uniq(keptObservations.filter((o) => o.hard_negative).map((o) => o.clue || o.description));
   const strongest_observations = [...keptObservations].sort((a, b) => b.confidence - a.confidence).slice(0, 10);
 
-  return { observations: keptObservations, observation_count: keptObservations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception };
+  // Stage 1B shadow (observe-only). When enabled, compute what canonical-vocab
+  // snapping WOULD produce and record the diff vs the current clue_keys — but do
+  // NOT change clue_keys. Lets us measure drift on live scans with zero behavior
+  // change before enforcing the controlled vocabulary.
+  let vocab_shadow: VocabShadow | undefined;
+  if (vocabSnapShadowEnabled()) {
+    const changed: { from: string; to: string; method: SnapMethod }[] = [];
+    const unmatched: string[] = [];
+    const shadowClueKeys: string[] = [];
+    for (const o of keptObservations) {
+      if (o.negated || !o.clue) continue;
+      const currentKey = normalizeClueKey(o.clue);
+      const snap = snapToCanonical(o.clue, o.type);
+      if (snap.canonical) {
+        shadowClueKeys.push(snap.canonical);
+        if (snap.canonical !== currentKey) changed.push({ from: currentKey ?? o.clue, to: snap.canonical, method: snap.method });
+      } else if (currentKey) {
+        unmatched.push(currentKey);
+      }
+    }
+    vocab_shadow = { total: keptObservations.filter((o) => !o.negated && o.clue).length, changed, unmatched: uniq(unmatched), shadowClueKeys: uniq(shadowClueKeys) };
+  }
+
+  return { observations: keptObservations, observation_count: keptObservations.length, by_type, clue_keys, hard_negatives, strongest_observations, perception, vocab_shadow };
 }
 
 function computeMissingEvidence(images: any[]) {
@@ -7305,7 +7342,12 @@ observations = dedupeObservations([...observations, ...makerMarkMatches]);
 
 const digest = buildEvidenceDigest(observations, perception);
 
+if (digest.vocab_shadow && (digest.vocab_shadow.changed.length || digest.vocab_shadow.unmatched.length)) {
+  console.log("[vocab-shadow]", JSON.stringify(digest.vocab_shadow));
+}
+
 const languageAlignmentDebug = {
+  vocab_shadow: digest.vocab_shadow ?? null,
   raw_phase0_observations: Array.isArray(parsedForEvidence?.observations)
     ? parsedForEvidence.observations.map((o: any) => ({
         raw_type: o?.type || o?.category || null,
