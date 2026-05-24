@@ -212,7 +212,12 @@ export function refineDatingFromConvergence(
     date_ceiling: number | null;
     confidence: string;
   },
-  overlap: DatingOverlapData
+  overlap: DatingOverlapData,
+  // Evidence-authority doctrine: a post-WWII "reproduction / modern-production"
+  // date may only be claimed when positive modern-construction evidence is
+  // present. Threaded from the call site (hard-negative post-1920+ clues).
+  // Default false = conservative (no modern claim without evidence).
+  hasModernConstructionEvidence: boolean = false
 ): RefinedDating {
   const fallback: RefinedDating = {
     range: original.range,
@@ -301,6 +306,28 @@ export function refineDatingFromConvergence(
     }
   }
 
+  // ── Reproduction gate (evidence-authority doctrine) ──────────────────────
+  // A convergence zone with a post-WWII floor asserts a "modern / reproduction"
+  // date. That claim is supported ONLY when positive modern-construction
+  // evidence exists (plywood, staples, phillips screws, polyurethane, MIG/TIG —
+  // surfaced as hard-negative post-1920+ clues). Without it, a late zone is
+  // style/revival-wave driven and must NOT override construction-era evidence:
+  // drop to the strongest non-modern qualifying zone. Fixes genuine antiques
+  // mislabeled "Contemporary Deco Glam" / "1960s reproduction" off style alone.
+  const MODERN_REPRO_FLOOR = 1945;
+  let reproForce = false;
+  if (!hasModernConstructionEvidence && best.date_floor >= MODERN_REPRO_FLOOR) {
+    const nonModern = qualifying.find((z) => z.date_floor < MODERN_REPRO_FLOOR);
+    if (!nonModern) return noOverride();
+    best = nonModern;
+    // If p2's own range is the same unsupported post-WWII reproduction error,
+    // force the construction-era zone in even when it is WIDER — we are
+    // correcting a wrong-modern date, not merely tightening a broad one.
+    if (original.date_floor != null && original.date_floor >= MODERN_REPRO_FLOOR) {
+      reproForce = true;
+    }
+  }
+
   // Hard-negative post-floor enforcement. Open-ended post-YYYY layer
   // envelopes (e.g., phillips_screw post-1935, plywood_drawer_bottom
   // post-1920, polyurethane post-1960) are construction-anchor floors: any
@@ -340,8 +367,10 @@ export function refineDatingFromConvergence(
       ? original.date_ceiling - original.date_floor
       : Infinity; // no parseable original → convergence wins
 
-  // Only override when convergence is strictly tighter (not equal)
-  if (convergenceWidth >= originalWidth) return fallback;
+  // Only override when convergence is strictly tighter (not equal) — UNLESS the
+  // reproduction gate fired, in which case we are correcting an unsupported
+  // post-WWII date and must override even with a wider construction-era zone.
+  if (!reproForce && convergenceWidth >= originalWidth) return fallback;
 
   // Confidence scales with BOTH layer count and width. A wide convergence is a
   // real improvement over a broad fallback but shouldn't be reported with the
@@ -360,7 +389,9 @@ export function refineDatingFromConvergence(
     date_floor: zFloor,
     date_ceiling: zCeiling,
     confidence,
-    reason: hardFloorClamped
+    reason: reproForce
+      ? `No modern-construction evidence present, so a post-WWII reproduction date is not supported; dating is anchored to construction-era evidence converging on ${best.date_floor}–${best.date_ceiling} (${best.layers.join(", ")}).`
+      : hardFloorClamped
       ? `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on ${best.date_floor}–${best.date_ceiling}; hard-negative post-floor evidence clamps the floor to ${zFloor}.`
       : `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
     refined: true,

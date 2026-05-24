@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { buildDatingOverlap } from "../lib/engineDatingOverlap";
+import { buildDatingOverlap, refineDatingFromConvergence } from "../lib/engineDatingOverlap";
 import { reconcileFinalStyle } from "../lib/engineStyleReconciliation";
 import { evaluateSubtype } from "../lib/engineFormEvaluators";
 import {
@@ -335,4 +335,38 @@ test("Shadow: P0_VOCAB_SNAP_SHADOW records a diff WITHOUT changing clue_keys", (
     "should record the lexical remap of circular_seat_aperture"
   );
   assert.ok(on.vocab_shadow!.unmatched.includes("blarg_unknown_widget"), "should record the unmatched key");
+});
+
+// ── Reproduction gate: construction evidence outranks late style/revival waves ──
+// Models the parlor-table failure: a synthetic style-wave zone (1960–1965) vs a
+// genuine high-authority construction zone (1850–1920). The pre-existing
+// synthetic-containment guard misses it (the construction zone's real authority
+// sum >=20 makes it read as "synthetic" and get skipped), so the reproduction
+// gate is what must rescue it.
+function reproOverlapFixture() {
+  return {
+    layers: [
+      { layer: "joinery", date_floor: 1850, date_ceiling: 1909, source_count: 1, source_clues: ["hammer_veneering"] },
+      { layer: "fastener", date_floor: 1850, date_ceiling: 1940, source_count: 1, source_clues: ["slotted_screw"] },
+      { layer: "finish", date_floor: 1850, date_ceiling: 1920, source_count: 1, source_clues: ["shellac_intact"] },
+    ],
+    convergence_zones: [
+      { date_floor: 1960, date_ceiling: 1965, authority_sum: 24, weighted_authority: 24, effective_layer_count: 2, specific_layer_count: 1, layers: ["style_wave"] },
+      { date_floor: 1850, date_ceiling: 1920, authority_sum: 23, weighted_authority: 23, effective_layer_count: 3, specific_layer_count: 3, layers: ["joinery", "fastener", "finish", "style_wave"] },
+    ],
+  } as any;
+}
+
+test("Repro gate: a post-WWII style zone cannot win the date without modern-construction evidence", () => {
+  const p2 = { range: "c. 1960–1965", date_floor: 1960, date_ceiling: 1965, confidence: "Moderate" };
+  const r = refineDatingFromConvergence(p2, reproOverlapFixture(), /* hasModernConstructionEvidence */ false);
+  assert.ok(r.refined, "should override the wrong-modern p2");
+  assert.equal(r.date_floor, 1850, `should anchor to the construction era, got ${r.date_floor}`);
+  assert.ok((r.date_floor ?? 9999) < 1945, "must not report a post-WWII reproduction date");
+});
+
+test("Repro gate: WITH modern-construction evidence, a modern date is allowed to stand", () => {
+  const p2 = { range: "c. 1960–1965", date_floor: 1960, date_ceiling: 1965, confidence: "Moderate" };
+  const r = refineDatingFromConvergence(p2, reproOverlapFixture(), /* hasModernConstructionEvidence */ true);
+  assert.ok((r.date_floor ?? 0) >= 1945, `modern date should stand when evidence supports it, got ${r.date_floor}`);
 });
