@@ -1,5 +1,6 @@
 import { API } from "./store";
 import { MAKER_MARKS, MAKER_ENTRIES } from "./constraints/makerMarks";
+import { AUTHORED_MAKER_ENTRIES } from "./constraints/makersAuthored.generated";
 // Note: MAKER_ATTRIBUTION_REASONING_RULES is the canonical source of truth
 // for the rules implemented inline in applyMakerAttributionRules + the
 // Confidence Ladder (Rule #7) inside makerConfidenceLadderTier. Rule
@@ -6848,7 +6849,7 @@ export function matchMakerMarks(rawText: string, observations: any[] = []) {
   type Matched = { mark: NormalizedMakerMark; matched_pattern: string };
 
   const canonicalMatches: Matched[] = [];
-  for (const entry of MAKER_ENTRIES) {
+  for (const entry of [...MAKER_ENTRIES, ...AUTHORED_MAKER_ENTRIES]) {
     const patterns = Array.isArray((entry as any).mark_text_patterns)
       ? ((entry as any).mark_text_patterns as string[])
       : [];

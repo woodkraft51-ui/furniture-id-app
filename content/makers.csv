@@ -1,0 +1,22 @@
+# ── Maker authoring sheet ──────────────────────────────────────────────────
+# Edit this in any spreadsheet (Excel / Google Sheets / Numbers), then "Save as CSV".
+# One row per maker. You only fill in things an antique person already knows.
+#
+# Columns:
+#   maker_name            the firm's name, as it reads on the label
+#   founded               year the firm started (a 4-digit year)
+#   closed                year it ended — LEAVE BLANK if still in business
+#   region                where they made it (city / state / country)
+#   mark_wording          words that appear on the label/mark, separated by ;  <-- this is what the engine matches
+#   furniture_categories  what they made, separated by ;  (e.g. case_goods; seating; tables)
+#   notes                 anything else (optional)
+#
+# Rules the validator checks for you (it will tell you the row + problem if something's off):
+#   - maker_name and at least one mark_wording phrase are required
+#   - founded must be a 4-digit year; closed must be blank or a year on/after founded
+#   - put commas only inside "quotes" — use ; to separate list items, not commas
+#
+# After editing, regenerate with:  node --import tsx scripts/generateAuthoredMakers.ts
+# Replace the example row below with your own makers.
+maker_name,founded,closed,region,mark_wording,furniture_categories,notes
+Example Maker Co.,1955,,"Anytown, USA",Example Maker Co.; Example Co.,case_goods; seating,Replace this example with a real maker. Leave 'closed' blank if the firm is still in business.
