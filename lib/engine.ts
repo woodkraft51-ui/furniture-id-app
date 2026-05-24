@@ -528,6 +528,13 @@ export const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boo
   needlepoint_cover:     { category: "upholstery", weight: 0.65 },
   brocade_cover:         { category: "upholstery", weight: 0.62 },
   jacquard_cover:        { category: "upholstery", weight: 0.62 },
+  // Dust-cover MATERIAL as a terminus-post-quem (synthesized by deriveDustCoverClues
+  // from the dust_cover observation's description). Synthetic non-woven fabric and
+  // stapled attachment are post-WWII upholstery practice → hard-negative post-1950
+  // floors. Woven cotton cambric spans a broad period → no floor on its own.
+  dust_cover_synthetic_nonwoven: { category: "upholstery", hardNegative: true, dateHint: "post-1950", weight: 0.82 },
+  dust_cover_stapled:            { category: "upholstery", hardNegative: true, dateHint: "post-1950", weight: 0.78 },
+  dust_cover_cambric_woven:      { category: "upholstery", weight: 0.55 },
 
   woven_body: {
     category: "materials",
@@ -2072,6 +2079,36 @@ function classifyPrimaryMaterial(digest: EvidenceDigest): {
     confidence: Math.min(1, top.score / 5),
   };
 }
+// Dust-cover material/attachment is a real dating signal that was previously
+// captured (clue `dust_cover`) but routed to [construction] with no date. The
+// model already describes the material in prose, so we read it here and
+// synthesize dated clue keys — no P0 prompt change. Synthetic non-woven fabric
+// and stapled attachment are post-WWII anchors (hard-negative post-1950 floors,
+// which also count as modern-construction evidence for the reproduction gate);
+// woven cotton cambric is broad. Existence alone stays undated.
+export function deriveDustCoverClues(observations: Observation[]): Observation[] {
+  const dc = observations.find(
+    (o) =>
+      !o.negated &&
+      (o.clue === "dust_cover" || /dust[\s-]?cover|dust panel|cambric/i.test(o.description || ""))
+  );
+  if (!dc) return [];
+  const text = `${dc.clue || ""} ${dc.description || ""}`.toLowerCase();
+  const out: Observation[] = [];
+  const add = (clue: string, description: string, confidence: number, hard_negative: boolean) =>
+    out.push({ type: "upholstery", clue, description, confidence, source_image: "derived", hard_negative, low_confidence_flag: false });
+
+  if (/non[\s-]?woven|nonwoven|spun[\s-]?bond|polypropylene|polyester scrim|pellon|synthetic (dust|cambric|cover|fabric)/.test(text)) {
+    add("dust_cover_synthetic_nonwoven", "Dust cover is a synthetic non-woven (spunbonded) fabric — a post-WWII upholstery material, so the piece cannot predate it.", 80, true);
+  } else if (/cambric|woven (cotton|fabric|black)|black woven|woven dust|cotton dust/.test(text)) {
+    add("dust_cover_cambric_woven", "Dust cover is woven cotton cambric — standard factory upholstery practice across a broad period; not a tight date on its own.", 70, false);
+  }
+  if (/stapl/.test(text)) {
+    add("dust_cover_stapled", "Dust cover is stapled to the frame — pneumatic/electric staple attachment is a post-WWII practice.", 75, true);
+  }
+  return out;
+}
+
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
     observations.some((o) => o.clue === clue);
@@ -7334,6 +7371,9 @@ observations = promotePerceptionObservations(observations, perception);
 
 const structuralPatternMatches = detectStructuralPatterns(observations);
 observations = dedupeObservations([...observations, ...structuralPatternMatches]);
+
+const dustCoverMatches = deriveDustCoverClues(observations);
+observations = dedupeObservations([...observations, ...dustCoverMatches]);
 
 perception = normalizePerception(parsedForEvidence, observations);
 
