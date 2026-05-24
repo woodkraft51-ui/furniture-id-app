@@ -13,7 +13,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -404,4 +404,43 @@ test("Dust cover: the synthetic-cover clue floors the upholstery dating layer at
   ).layers.find((l) => l.layer === "upholstery")!;
   assert.equal(up.date_floor, 1950);
   assert.equal(up.date_ceiling, null);
+});
+
+// ── M9a: maker-label year weighed by ROLE (production vs founding/patent/bare) ──
+const lbl = (description: string) => [{ type: "label", clue: "maker_label", description, confidence: 85, negated: false } as any];
+
+test("M9a: a signed/dated production year is a tight date (floor = ceiling)", () => {
+  const r = parseLabelDate(lbl("A. Sydney Logan fecit Philadae anno 1914"));
+  assert.deepEqual(r, { year: 1914, kind: "production", floor: 1914, ceiling: 1914 });
+});
+
+test("M9a: a company-founding year is a FLOOR only (terminus post quem), not production", () => {
+  const r = parseLabelDate(lbl("Fine Furniture — Established 1847"));
+  assert.equal(r?.kind, "founding");
+  assert.equal(r?.floor, 1847);
+  assert.equal(r?.ceiling, null); // must NOT pin a ceiling/tight date
+});
+
+test("M9a: a patent year is a floor only", () => {
+  const r = parseLabelDate(lbl("Pat. May 1893"));
+  assert.equal(r?.kind, "patent");
+  assert.equal(r?.floor, 1893);
+  assert.equal(r?.ceiling, null);
+});
+
+test("M9a: a label with no year yields nothing (maker/line dating is M9b, not here)", () => {
+  assert.equal(parseLabelDate(lbl("Seven Seas by Hooker Furniture")), null);
+});
+
+test("M9a: a bare year with no context is treated conservatively as a floor", () => {
+  const r = parseLabelDate([{ type: "label", clue: "visible_text", description: "label reads 1925", confidence: 85, negated: false } as any]);
+  assert.equal(r?.kind, "bare");
+  assert.equal(r?.floor, 1925);
+  assert.equal(r?.ceiling, null);
+});
+
+test("M9a: with multiple non-production years, the latest terminus-post-quem wins", () => {
+  const r = parseLabelDate(lbl("Established 1847. Pat. 1893."));
+  assert.equal(r?.floor, 1893);
+  assert.equal(r?.ceiling, null);
 });
