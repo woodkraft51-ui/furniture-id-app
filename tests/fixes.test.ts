@@ -1,5 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { buildAuthoredMakers } from "../scripts/generateAuthoredMakers";
+import { AUTHORED_MAKER_ENTRIES } from "../lib/constraints/makersAuthored.generated";
 
 import { buildDatingOverlap, refineDatingFromConvergence } from "../lib/engineDatingOverlap";
 import { reconcileFinalStyle } from "../lib/engineStyleReconciliation";
@@ -464,4 +468,39 @@ test("M9b-core: a defunct maker (Duncan Phyfe) yields a bounded range", () => {
 
 test("M9b-core: maker matching is gated on real label evidence", () => {
   assert.deepEqual(matchMakerMarks("Duncan Phyfe", []), []); // no label observation → no attribution
+});
+
+// ── Self-authoring: makers.csv → generator → engine (the non-coder pipeline) ──
+test("Authoring: committed authored-makers artifact is in sync with content/makers.csv", () => {
+  const csv = fs.readFileSync(path.join(process.cwd(), "content/makers.csv"), "utf8");
+  assert.deepStrictEqual(
+    JSON.parse(JSON.stringify(buildAuthoredMakers(csv))),
+    JSON.parse(JSON.stringify(AUTHORED_MAKER_ENTRIES)),
+    "makersAuthored.generated.ts is stale — run: node --import tsx scripts/generateAuthoredMakers.ts"
+  );
+});
+
+test("Authoring: a CSV-authored maker flows through the engine matcher and dates correctly", () => {
+  // still-active example (no 'closed' year) → floor-only "post-<founded>"
+  const matches = matchMakerMarks("This piece is labeled Example Maker Co.", [
+    { type: "label", clue: "maker_label", description: "x", confidence: 85, source_image: "label_makers_mark", negated: false } as any,
+  ]);
+  const m = matches.find((x: any) => x.clue === "maker_mark_authored_example_maker_co");
+  assert.ok(m, "the CSV-authored maker should be matchable by the engine");
+  assert.match(m!.description, /post-1955/);
+});
+
+test("Authoring: the validator rejects bad rows with a plain-language error", () => {
+  assert.throws(
+    () => buildAuthoredMakers("maker_name,founded,mark_wording\n,1955,Foo Co."),
+    /maker_name is required/
+  );
+  assert.throws(
+    () => buildAuthoredMakers("maker_name,founded,closed,mark_wording\nFoo Co.,1955,1940,Foo Co."),
+    /cannot be before/
+  );
+  assert.throws(
+    () => buildAuthoredMakers("maker_name,founded,mark_wording\nFoo Co.,nineteen,Foo Co."),
+    /4-digit year/
+  );
 });
