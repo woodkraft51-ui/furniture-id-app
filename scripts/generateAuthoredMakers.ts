@@ -14,6 +14,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { MakerMarkEntry } from "../lib/constraints/makerMarks";
+import { MAKER_ENTRIES } from "../lib/constraints/makerMarks";
 import type { PeriodAssociation } from "../lib/constraints/entryShape";
 
 const REPO = path.resolve(fileURLToPath(import.meta.url), "../..");
@@ -57,10 +58,28 @@ const parseYear = (v: string): number | null => {
 };
 const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 
-export function buildAuthoredMakers(csvText: string): MakerMarkEntry[] {
-  const rows = parseCsv(csvText);
-  return rows.map((row, idx) => {
-    const where = `makers.csv row ${idx + 1}`;
+// Collision detection: is this maker already in the canonical library? Compare
+// by NAME CORE (drop generic corporate words; keep the distinguishing brand
+// tokens) so "Baker Furniture Co." matches canonical "Baker" but "Stickley
+// Brothers" does NOT collapse into "Gustav Stickley". Avoids duplicate matchers.
+const NAME_STOP = new Set([
+  "co", "company", "mfg", "manufacturing", "inc", "corp", "corporation",
+  "industries", "furniture", "works", "cabinet", "cabinets", "tables", "table", "the", "and",
+]);
+const coreTokens = (name: string): Set<string> =>
+  new Set(name.toLowerCase().replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter((t) => t && !NAME_STOP.has(t)));
+const subsetOrEqual = (a: Set<string>, b: Set<string>) =>
+  a.size > 0 && b.size > 0 && ([...a].every((t) => b.has(t)) || [...b].every((t) => a.has(t)));
+function canonicalMatchFor(makerName: string): string | null {
+  const a = coreTokens(makerName);
+  for (const e of MAKER_ENTRIES) {
+    if (subsetOrEqual(a, coreTokens(String((e as any).maker_name || "")))) return String((e as any).maker_name);
+  }
+  return null;
+}
+
+function rowToEntry(row: Record<string, string>, idx: number): MakerMarkEntry {
+  const where = `makers.csv row ${idx + 1}`;
     const name = (row.maker_name || "").trim();
     if (!name) throw new Error(`${where}: maker_name is required.`);
     const founded = parseYear(row.founded);
@@ -102,11 +121,33 @@ export function buildAuthoredMakers(csvText: string): MakerMarkEntry[] {
       related_names: [],
     };
     return entry;
+}
+
+export function partitionAuthoredMakers(csvText: string): {
+  added: MakerMarkEntry[];
+  skipped: { maker_name: string; matched: string }[];
+} {
+  const rows = parseCsv(csvText);
+  const added: MakerMarkEntry[] = [];
+  const skipped: { maker_name: string; matched: string }[] = [];
+  rows.forEach((row, idx) => {
+    const entry = rowToEntry(row, idx); // validates + builds (throws on bad input)
+    const match = canonicalMatchFor(entry.maker_name);
+    if (match) skipped.push({ maker_name: entry.maker_name, matched: match });
+    else added.push(entry);
   });
+  return { added, skipped };
+}
+
+// Only NEW makers (not already in the canonical library) become authored entries.
+export function buildAuthoredMakers(csvText: string): MakerMarkEntry[] {
+  return partitionAuthoredMakers(csvText).added;
 }
 
 function writeArtifact() {
-  const entries = buildAuthoredMakers(fs.readFileSync(CSV_PATH, "utf8"));
+  const csv = fs.readFileSync(CSV_PATH, "utf8");
+  const { added, skipped } = partitionAuthoredMakers(csv);
+  const entries = added;
   const banner =
     "// AUTO-GENERATED from content/makers.csv by scripts/generateAuthoredMakers.ts — DO NOT EDIT BY HAND.\n" +
     "// Edit content/makers.csv (a spreadsheet) and regenerate:\n" +
@@ -114,7 +155,10 @@ function writeArtifact() {
     'import type { MakerMarkEntry } from "./makerMarks";\n\n';
   const body = `export const AUTHORED_MAKER_ENTRIES: MakerMarkEntry[] = ${JSON.stringify(entries, null, 2)};\n`;
   fs.writeFileSync(OUT_PATH, banner + body);
-  console.log(`wrote ${OUT_PATH} — ${entries.length} authored maker(s): ${entries.map((e) => e.maker_name).join(", ")}`);
+  console.log(`wrote ${OUT_PATH}`);
+  console.log(`ADDED ${added.length} new maker(s): ${added.map((e) => e.maker_name).join(", ") || "(none)"}`);
+  console.log(`SKIPPED ${skipped.length} already in the canonical library:`);
+  for (const s of skipped) console.log(`  • ${s.maker_name}  →  already covered by "${s.matched}"`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) writeArtifact();
