@@ -3,6 +3,28 @@
 Tracking list for deferred work surfaced during the commode-determinism fix and
 the Stage 1 vocabulary migration. Newest context at top of each section.
 
+## Observed on live scans (instrumentation stage — logged, not fixed)
+
+- **Material-consistency / form contradictions go uncaught (P5).** Hallucinated
+  clues that contradict the rest of the evidence pass through with 0 conflicts:
+  (a) a brass/bronze candelabrum emitted `woven_body` (wicker, conf 76) alongside
+  `metal_frame` + "entirely metal" prose → "Wicker / rattan" alternative + wicker
+  tips on an all-metal object; (b) a glazed Gothic bookcase emitted
+  `seating_surface`/`seating_present` (conf 82/78) → "Bench / seating" alternative
+  on a bookcase. Note (b) is especially dangerous: seating clues carry the highest
+  form weights (0.88/0.85), so a hallucinated seating read can hijack form ID.
+  Need a consistency/mutual-exclusion conflict layer (woven vs metal vs wood as
+  primaries; seating vs glazed-case form) to drop or flag the contradicted clue.
+- **Revival-wave machinery can override higher-authority construction/age
+  evidence.** (a) Candelabrum: wide low-confidence metal dating (1900–2000) let
+  reconciliation pick the "Contemporary Deco Glam" wave (2000+) despite verdigris
+  / integrated patina / galvanic corrosion read as genuine age. (b) Gothic
+  bookcase: 7 style waves + a "transitional revival" overlap anchored 1900–1910
+  even though hand-cut dovetails (pre-1860) and Sheraton oval pulls (1790–1820)
+  point to c. 1800–1840 — and P5 didn't flag the dovetail-vs-1900s conflict.
+  Construction/joinery/age evidence should outweigh style-wave convergence; a
+  pre-1860 joinery signal should hard-conflict with a 1900s+ wave date.
+
 ## Architecture / engine
 
 - **Generic, data-driven form matcher (Stage 2).** Replace the ~2,000-line
@@ -14,6 +36,17 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   matches against observation prose are the direct cause of the Stool/Nightstand
   flips (the model's prose mentioning a cousin trips a match). Subsumed by the
   Stage 2 matcher; latent risk until then.
+- **Style-context text-cue false positives (`deriveStyleContext`).** Same
+  text-substring brittleness, style layer: `deriveStyleContext`
+  (engine.ts ~5331) fires "American Empire / late Classical Revival" on
+  `includesAny(text, ["empire","scrolled feet","ogee","serpentine"])`. Observed
+  live: a utilitarian commode's `molded_top_edge` description ("ogee edge")
+  produced a spurious American Empire style context. `ogee`/`serpentine` are
+  generic molding/shape terms, not Empire-diagnostic. Surfaced only after the
+  false-twin `tubular_steel` (which used to force "Modernist") was removed — not
+  a regression, just the next text cue down. Logged per instruction; no change
+  yet. Fix candidate: drop the generic molding terms from the Empire trigger, or
+  fold style terms into the systemic controlled-vocab / signature treatment.
 - **Insertion-order tie-breaking.** Equal-score forms resolve by source-code
   position (`Array.sort` stable). That *was* the Nightstand bug. Stage 2 should
   tie-break by evidence margin.

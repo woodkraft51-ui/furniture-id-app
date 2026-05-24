@@ -58,6 +58,9 @@ export default function TraceReport({ report }: Props) {
   const obsCount = p0obs.length;
   const clueKeyCount = allClueKeys.length;
 
+  // Stage 1B shadow snapping (observe-only; present only when P0_VOCAB_SNAP_SHADOW=1)
+  const vocabShadow = (report.evidence_digest as any)?.vocab_shadow || null;
+
   // Block 14 frame/upholstery split — read from p4.weighted_clues by category
   const weightedClues = (p4?.weighted_clues as any[]) || [];
   const upholsteryCategories = new Set(["upholstery", "upholstery_cover", "upholstery_construction"]);
@@ -122,6 +125,46 @@ export default function TraceReport({ report }: Props) {
               </div>
             ))}
           </div>
+        )}
+      </Section>
+
+      {/* ─── P0 vocab snapping (shadow, observe-only) ──────────────── */}
+      <Section
+        title={`P0 vocab snapping (shadow) — ${
+          vocabShadow
+            ? `${vocabShadow.changed.length} remap(s), ${vocabShadow.unmatched.length} unmatched`
+            : "disabled"
+        }`}
+      >
+        {!vocabShadow ? (
+          <div style={{ fontSize: 13, color: SUBTLE, lineHeight: 1.6 }}>
+            Shadow disabled. Set <code>P0_VOCAB_SNAP_SHADOW=1</code> to record what
+            canonical-vocabulary snapping would do. Observe-only — it never changes{" "}
+            <code>clue_keys</code> or any result.
+          </div>
+        ) : (
+          <>
+            <Subhead>Remaps ({vocabShadow.changed.length}):</Subhead>
+            {vocabShadow.changed.length === 0 ? (
+              <NoneLine />
+            ) : (
+              <div style={{ fontSize: 13, color: "#574634", lineHeight: 1.7 }}>
+                {vocabShadow.changed.map((c: any, i: number) => (
+                  <div key={i}>
+                    <span style={{ color: "#8a3d2b" }}>{c.from}</span> → {" "}
+                    <span style={{ color: "#2e6b3d" }}>{c.to}</span>{" "}
+                    <span style={{ color: SUBTLE }}>
+                      [{c.method}{typeof c.score === "number" ? ` ${c.score}` : ""}]
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <Subhead>Unmatched — preserved, not routed ({vocabShadow.unmatched.length}):</Subhead>
+            <CommaList items={vocabShadow.unmatched} />
+            <Subhead>Shadow clue keys ({vocabShadow.shadowClueKeys.length}):</Subhead>
+            <CommaList items={vocabShadow.shadowClueKeys} />
+          </>
         )}
       </Section>
 
