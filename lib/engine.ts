@@ -8613,6 +8613,15 @@ if (p6.dating_overlap) {
     frameBoundaries,
     p3.best_style_intersection ?? null
   );
+  // Positive modern-construction evidence (plywood, staples, phillips, polyurethane,
+  // MIG/TIG, etc.) = hard-negative clues whose date hint is unambiguously post-1920+.
+  // Required before any post-WWII reproduction date may win the convergence.
+  const hasModernConstruction = (frameClues as any[]).some(
+    (w) =>
+      w?.hard_negative &&
+      typeof w?.date_hint === "string" &&
+      /post[-\s]*(19[2-9]\d|20\d\d)/i.test(w.date_hint)
+  );
   const refined = refineDatingFromConvergence(
     {
       range: p2.range,
@@ -8620,7 +8629,8 @@ if (p6.dating_overlap) {
       date_ceiling: p2.date_ceiling ?? null,
       confidence: String(p2.confidence ?? ""),
     },
-    frameOverlap
+    frameOverlap,
+    hasModernConstruction
   );
   if (refined.refined) {
     p2.range = refined.range;
