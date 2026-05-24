@@ -2109,6 +2109,62 @@ export function deriveDustCoverClues(observations: Observation[]): Observation[]
   return out;
 }
 
+export type LabelDate = {
+  year: number;
+  kind: "production" | "founding" | "patent" | "bare";
+  floor: number;
+  ceiling: number | null;
+};
+
+// M9a: read a YEAR off a maker label / inscription and weigh it by ROLE. A year
+// is usually NOT the production date — "Est. 1847" / "Since 1852" / "Pat. 1893"
+// are founding/patent dates → a terminus-post-quem FLOOR only (the piece is
+// at-or-after, possibly much later). Only a signed, dated piece ("fecit / made /
+// dated / anno 19XX") is an actual production date → a tight floor=ceiling. A
+// bare year with no qualifying context is treated conservatively as a floor.
+// (Maker/line recognition — e.g. Hooker "Seven Seas" → 1990s — is M9b, not here.)
+export function parseLabelDate(observations: Observation[]): LabelDate | null {
+  const text = observations
+    .filter(
+      (o) =>
+        !o.negated &&
+        (o.type === "label" ||
+          o.clue === "maker_label" ||
+          o.clue === "visible_text" ||
+          /\blabel\b|stamp|maker'?s?\s*mark|inscription|signed|stencil|placard/i.test(o.description || ""))
+    )
+    .map((o) => `${o.clue || ""} ${o.description || ""}`)
+    .join("  ")
+    .toLowerCase();
+  if (!text) return null;
+
+  const matches = [...text.matchAll(/\b(1[789]\d\d|20\d\d)\b/g)];
+  if (matches.length === 0) return null;
+
+  const FOUNDING = /establish|\best\.?\b|\bsince\b|founded|in business|serving|quality[^.]*\bsince\b|company[^.]*\b1[789]\d\d/;
+  const PATENT = /\bpat\.?\b|patent|copyright|©|reg(\.|istered)|design no/;
+  const PRODUCTION = /fecit|\bmade\b|\bdated\b|\banno\b|crafted|completed|wrought/;
+
+  let production: number | null = null;
+  let floorOnly: { year: number; kind: "founding" | "patent" | "bare" } | null = null;
+
+  for (const m of matches) {
+    const year = parseInt(m[1], 10);
+    const i = m.index ?? 0;
+    const win = text.slice(Math.max(0, i - 40), i + 40);
+    if (PRODUCTION.test(win) && !FOUNDING.test(win)) {
+      production = production == null ? year : Math.max(production, year);
+    } else {
+      const kind = FOUNDING.test(win) ? "founding" : PATENT.test(win) ? "patent" : "bare";
+      if (!floorOnly || year > floorOnly.year) floorOnly = { year, kind }; // latest TPQ wins
+    }
+  }
+
+  if (production != null) return { year: production, kind: "production", floor: production, ceiling: production };
+  if (floorOnly) return { year: floorOnly.year, kind: floorOnly.kind, floor: floorOnly.year, ceiling: null };
+  return null;
+}
+
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
     observations.some((o) => o.clue === clue);
@@ -8681,6 +8737,42 @@ if (p6.dating_overlap) {
     supportArr.push(`Engine reasoning: ${refined.reason}`);
     p2.support = supportArr;
     stage_outputs.p2 = p2;
+  }
+
+  // M9a: weigh a maker-label year by ROLE. A signed/dated production year is the
+  // highest-authority date and anchors floor=ceiling directly — UNLESS modern
+  // construction contradicts it (then the label is suspect/later; defer to
+  // construction and flag it). A founding/patent/bare year is only a terminus
+  // post quem: clamp the FLOOR up to it, never a ceiling, never a tight date.
+  const labelDate = parseLabelDate(digest.observations);
+  if (labelDate) {
+    const s = Array.isArray(p2.support) ? [...p2.support] : [];
+    if (labelDate.kind === "production" && !hasModernConstruction) {
+      p2.date_floor = labelDate.floor;
+      p2.date_ceiling = labelDate.ceiling ?? undefined;
+      p2.range = `c. ${labelDate.floor}`;
+      p2.confidence = "High";
+      s.push(`A signed/dated maker inscription gives an explicit production year of ${labelDate.floor}; a literal made-date is the highest-authority dating evidence and anchors the date directly.`);
+      p2.support = s;
+      stage_outputs.p2 = p2;
+    } else if (labelDate.kind === "production" && hasModernConstruction) {
+      s.push(`Caution: the label reads a production year of ${labelDate.year}, but modern construction evidence is present — the inscription may be a later addition or the part replaced; dated by construction rather than the label.`);
+      p2.support = s;
+      stage_outputs.p2 = p2;
+    } else {
+      const cur = typeof p2.date_floor === "number" ? p2.date_floor : null;
+      if (cur == null || labelDate.floor > cur) {
+        p2.date_floor = labelDate.floor;
+        if (typeof p2.date_ceiling === "number" && p2.date_ceiling < labelDate.floor) {
+          p2.date_ceiling = undefined; // prior ceiling predates the floor → can't be right
+          p2.range = `post-${labelDate.floor}`;
+        }
+        const kindWord = labelDate.kind === "founding" ? "company-founding" : labelDate.kind === "patent" ? "patent/registration" : "label";
+        s.push(`The label's ${labelDate.year} ${kindWord} date is a terminus post quem (the piece cannot predate it), applied as a floor only — not as the production date.`);
+        p2.support = s;
+        stage_outputs.p2 = p2;
+      }
+    }
   }
 
   // Re-cap identification confidence on ACTUAL dating contribution. The p1 gate
