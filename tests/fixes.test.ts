@@ -500,6 +500,19 @@ test("Authoring: the collision detector skips makers already in the canonical li
   assert.ok(added.some((e) => /Zzyzx/.test(e.maker_name)), "a genuinely new maker should be added");
 });
 
+test("Authoring: a single shared token does NOT collapse a distinct maker", () => {
+  // "Vaughan-Bassett" must not be treated as already-covered by canonical "Bassett",
+  // nor "Lane Venture" by canonical "Lane" — a lone shared token is too weak a match.
+  const csv =
+    "maker_name,founded,closed,mark_wording\n" +
+    "Vaughan-Bassett Furniture Company,1919,,Vaughan-Bassett\n" +
+    "Lane Venture,1972,,Lane Venture";
+  const { added, skipped } = partitionAuthoredMakers(csv);
+  assert.ok(added.some((e) => /Vaughan-Bassett/.test(e.maker_name)), "Vaughan-Bassett must not collapse into Bassett");
+  assert.ok(added.some((e) => /Lane Venture/.test(e.maker_name)), "Lane Venture must not collapse into Lane");
+  assert.equal(skipped.length, 0, "neither distinct maker should be skipped as a duplicate");
+});
+
 test("Authoring: the validator rejects bad rows with a plain-language error", () => {
   assert.throws(
     () => buildAuthoredMakers("maker_name,founded,mark_wording\n,1955,Foo Co."),
