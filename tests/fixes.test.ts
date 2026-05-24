@@ -14,6 +14,9 @@ import {
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
 import { buildEvidenceDigest, buildFrameDigest, scoreForms } from "../lib/engine";
+import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
+import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
+import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
 
 const woodLayer = (clues: any[]) =>
   buildDatingOverlap(clues, null, [], null).layers.find((l) => l.layer === "wood")!;
@@ -237,4 +240,99 @@ test("Phase 4: the commode wins end-to-end on all 5 runs (not Stool, not Brass b
     assert.ok(!ranked.some((r) => r.form_id === "form_iron_bed"), `run ${run.run} must not score Brass bed`);
     assert.ok(!ranked.some((r) => r.form_id === "form_nightstand"), `run ${run.run} must not score Nightstand`);
   }
+});
+
+// ── Stage 1 / Component A: canonical vocabulary generation ───────────────────
+test("Vocab: committed artifact is in sync with its sources (drift guard)", () => {
+  const rebuilt = buildCanonicalVocabulary();
+  assert.deepStrictEqual(
+    JSON.parse(JSON.stringify(rebuilt)),
+    JSON.parse(JSON.stringify(CANONICAL_VOCABULARY)),
+    "canonicalVocabulary.generated.ts is stale — run: node --import tsx scripts/generateCanonicalVocabulary.ts"
+  );
+});
+
+test("Vocab: every scoreForms routing key is covered by the enforce-able vocabulary union", () => {
+  const evidenceIds = Object.values(CANONICAL_VOCABULARY.evidence).flat().map((e: any) => e.id);
+  const union = new Set<string>([
+    ...evidenceIds,
+    ...CANONICAL_VOCABULARY.woodEvidenceKeys,
+    ...CANONICAL_VOCABULARY.meta.coverageGaps.routingKeysNotInClueLibrary,
+  ]);
+  for (const key of CANONICAL_VOCABULARY.meta.minedRoutingKeys) {
+    assert.ok(union.has(key), `routing key ${key} is not covered by the vocabulary union`);
+  }
+});
+
+test("Vocab: harvested counts and crosswalk are sane", () => {
+  assert.equal(CANONICAL_VOCABULARY.forms.length, CANONICAL_VOCABULARY.meta.counts.forms);
+  assert.ok(CANONICAL_VOCABULARY.forms.length > 200, "should have harvested all forms");
+  assert.ok(CANONICAL_VOCABULARY.meta.counts.evidenceCategories >= 12, "should have the category taxonomy");
+  assert.ok(CANONICAL_VOCABULARY.disqualifying.length > 0, "should harvest disqualifying keys");
+  // crosswalk sanity: a clue key with an obvious taxonomy twin resolves to it
+  assert.ok(
+    (CANONICAL_VOCABULARY.crosswalk as any).shellac_intact?.some((m: any) => m.lib === "finish"),
+    "shellac_intact should crosswalk to a finish taxonomy entry"
+  );
+});
+
+// ── Stage 1 / Component B: snap-to-canonical ingest normalization ────────────
+test("Snap: an already-canonical key resolves exactly (with slug normalization)", () => {
+  assert.deepEqual(snapToCanonical("commode_function", "function"), { canonical: "commode_function", method: "exact" });
+  assert.deepEqual(snapToCanonical("Circular-Aperture-Seat-Board"), { canonical: "circular_aperture_seat_board", method: "exact" });
+  assert.equal(isCanonicalKey("commode_function"), true);
+  assert.equal(isCanonicalKey("commode_close_stool_form"), false);
+});
+
+test("Snap: curated synonyms resolve via the alias layer", () => {
+  const cases: [string, string][] = [
+    ["commode_close_stool_form", "commode_function"],
+    ["chamber_pot_cabinet", "commode_function"],
+    ["circular_cutout_interior", "circular_aperture_seat_board"],
+    ["enameled_ware_white_basin", "enameled_steel_basin"],
+    ["turned_bun_feet", "bun_feet"],
+  ];
+  for (const [raw, expected] of cases) {
+    const r = snapToCanonical(raw);
+    assert.equal(r.canonical, expected, `${raw} should snap to ${expected} (got ${r.canonical})`);
+    assert.equal(r.method, "alias", `${raw} should resolve via alias`);
+  }
+});
+
+test("Snap: a novel lexical variant (not in the alias table) snaps within its category", () => {
+  const r = snapToCanonical("circular_seat_aperture", "construction");
+  assert.equal(r.canonical, "circular_aperture_seat_board");
+  assert.equal(r.method, "lexical");
+  assert.ok((r.score ?? 0) >= 0.6);
+});
+
+test("Snap: an unrecognizable key is preserved as unmatched, never force-mapped", () => {
+  assert.deepEqual(snapToCanonical("blarg_unknown_widget", "materials"), { canonical: null, method: "unmatched" });
+  assert.deepEqual(snapToCanonical(""), { canonical: null, method: "unmatched" });
+});
+
+// ── Stage 1B: shadow ingest wiring (observe-only, flag-gated) ────────────────
+test("Shadow: P0_VOCAB_SNAP_SHADOW records a diff WITHOUT changing clue_keys", () => {
+  const obs = () => ([
+    { type: "construction", clue: "circular_seat_aperture", description: "circular hole in an interior seat board", confidence: 70, negated: false },
+    { type: "construction", clue: "solid_wood_construction", description: "solid wood", confidence: 80, negated: false },
+    { type: "materials", clue: "wood_species_oak_group", description: "oak", confidence: 50, negated: false },
+    { type: "function", clue: "blarg_unknown_widget", description: "mystery feature", confidence: 40, negated: false },
+  ]);
+  const off = buildEvidenceDigest(obs() as any);
+  assert.equal(off.vocab_shadow, undefined, "no shadow when flag is off");
+
+  process.env.P0_VOCAB_SNAP_SHADOW = "1";
+  const on = buildEvidenceDigest(obs() as any);
+  delete process.env.P0_VOCAB_SNAP_SHADOW;
+
+  // zero behavior change: clue_keys identical with and without the flag
+  assert.deepEqual(on.clue_keys, off.clue_keys);
+  // shadow populated; the lexical remap and the unmatched key are both captured
+  assert.ok(on.vocab_shadow, "shadow present when flag is on");
+  assert.ok(
+    on.vocab_shadow!.changed.some((c) => c.to === "circular_aperture_seat_board" && c.method === "lexical"),
+    "should record the lexical remap of circular_seat_aperture"
+  );
+  assert.ok(on.vocab_shadow!.unmatched.includes("blarg_unknown_widget"), "should record the unmatched key");
 });
