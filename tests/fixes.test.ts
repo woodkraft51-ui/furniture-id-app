@@ -504,3 +504,13 @@ test("Authoring: the validator rejects bad rows with a plain-language error", ()
     /4-digit year/
   );
 });
+
+test("M9b-core: a multi-period maker spans its FULL active life, not just the first sub-period", () => {
+  // Globe-Wernicke has three mark-form periods (1899–1915, 1916–1930, 1930–1955);
+  // the maker date must span 1899–1955, not bound to the first sub-period.
+  const matches = matchMakerMarks("Labeled The Globe-Wernicke Co. Cincinnati", makerLabelObs);
+  const gw = matches.find((m: any) => m.clue === "maker_mark_globe_wernicke_co" || /globe-?wernicke/i.test(m.description));
+  assert.ok(gw, "should match Globe-Wernicke");
+  assert.match(gw!.description, /1899.1955/);
+  assert.doesNotMatch(gw!.description, /1899.1915\b/);
+});
