@@ -13,7 +13,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -369,4 +369,39 @@ test("Repro gate: WITH modern-construction evidence, a modern date is allowed to
   const p2 = { range: "c. 1960–1965", date_floor: 1960, date_ceiling: 1965, confidence: "Moderate" };
   const r = refineDatingFromConvergence(p2, reproOverlapFixture(), /* hasModernConstructionEvidence */ true);
   assert.ok((r.date_floor ?? 0) >= 1945, `modern date should stand when evidence supports it, got ${r.date_floor}`);
+});
+
+// ── Dust-cover material as a dating clue (terminus post quem) ────────────────
+test("Dust cover: a synthetic non-woven, stapled cover synthesizes post-1950 hard-negative anchors", () => {
+  const out = deriveDustCoverClues([
+    { type: "construction", clue: "dust_cover", description: "Underside has a non-woven synthetic dust cover, stapled to the frame.", confidence: 90, negated: false } as any,
+  ]);
+  const ids = out.map((o) => o.clue);
+  assert.ok(ids.includes("dust_cover_synthetic_nonwoven"), "should detect synthetic non-woven");
+  assert.ok(ids.includes("dust_cover_stapled"), "should detect stapled attachment");
+  assert.ok(out.every((o) => o.hard_negative), "synthetic + stapled are modern hard-negative anchors");
+});
+
+test("Dust cover: woven cotton cambric is broad — no modern floor", () => {
+  const out = deriveDustCoverClues([
+    { type: "construction", clue: "dust_cover", description: "Black woven fabric dust cover on the underside.", confidence: 90, negated: false } as any,
+  ]);
+  assert.deepEqual(out.map((o) => o.clue), ["dust_cover_cambric_woven"]);
+  assert.equal(out[0].hard_negative, false);
+});
+
+test("Dust cover: nothing synthesized when no dust cover is described", () => {
+  assert.deepEqual(
+    deriveDustCoverClues([{ type: "form", clue: "armchair_form", description: "open armchair", confidence: 68, negated: false } as any]),
+    []
+  );
+});
+
+test("Dust cover: the synthetic-cover clue floors the upholstery dating layer at 1950", () => {
+  const up = buildDatingOverlap(
+    [{ clue: "dust_cover_synthetic_nonwoven", category: "upholstery", date_hint: "post-1950" } as any],
+    null, [], null
+  ).layers.find((l) => l.layer === "upholstery")!;
+  assert.equal(up.date_floor, 1950);
+  assert.equal(up.date_ceiling, null);
 });
