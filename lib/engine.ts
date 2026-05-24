@@ -6621,13 +6621,13 @@ function normalizeMakerMark(entry: any): NormalizedMakerMark {
     ? entry.period_associations[0]
     : null;
   const date_range = firstPeriod
-    ? (firstPeriod.period_label && firstPeriod.period_label.trim()
-        ? firstPeriod.period_label
-        : typeof firstPeriod.date_floor === "number" && typeof firstPeriod.date_ceiling === "number"
-          ? `${firstPeriod.date_floor}–${firstPeriod.date_ceiling}`
-          : typeof firstPeriod.date_floor === "number"
-            ? `${firstPeriod.date_floor}–present`
-            : "uncertain")
+    ? (typeof firstPeriod.date_floor === "number" && typeof firstPeriod.date_ceiling === "number"
+        ? `${firstPeriod.date_floor}–${firstPeriod.date_ceiling}`
+        : typeof firstPeriod.date_floor === "number"
+          ? `post-${firstPeriod.date_floor}`
+          : (firstPeriod.period_label && firstPeriod.period_label.trim()
+              ? firstPeriod.period_label
+              : "uncertain"))
     : "uncertain";
 
   const auth = typeof entry?.positive_authority === "number" ? entry.positive_authority : 7;
@@ -6822,7 +6822,7 @@ function makerConfidenceLadderTier(
   };
 }
 
-function matchMakerMarks(rawText: string, observations: any[] = []) {
+export function matchMakerMarks(rawText: string, observations: any[] = []) {
   const text = String(rawText || "").toLowerCase();
   if (!text) return [];
    // 🔒 HARD GUARD: only allow maker mark detection if valid label/text evidence exists
@@ -7433,7 +7433,11 @@ observations = dedupeObservations([...observations, ...dustCoverMatches]);
 
 perception = normalizePerception(parsedForEvidence, observations);
 
-const makerMarkMatches = matchMakerMarks(perception.raw_text || "");
+const makerMarkLabelText = observations
+  .filter((o) => !o.negated && (o.type === "label" || o.clue === "maker_label" || o.clue === "visible_text"))
+  .map((o) => o.description || "")
+  .join("  ");
+const makerMarkMatches = matchMakerMarks(`${perception.raw_text || ""}  ${makerMarkLabelText}`, observations);
 observations = dedupeObservations([...observations, ...makerMarkMatches]);
 
 const digest = buildEvidenceDigest(observations, perception);

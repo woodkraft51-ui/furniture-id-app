@@ -13,7 +13,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -443,4 +443,25 @@ test("M9a: with multiple non-production years, the latest terminus-post-quem win
   const r = parseLabelDate(lbl("Established 1847. Pat. 1893."));
   assert.equal(r?.floor, 1893);
   assert.equal(r?.ceiling, null);
+});
+
+// ── M9b-core: matched maker dates reach the engine (with role-nuance) ────────
+const makerLabelObs = [{ type: "label", clue: "maker_label", description: "x", confidence: 85, source_image: "label_makers_mark", negated: false } as any];
+
+test("M9b-core: a still-active maker (Hooker) matches and yields a floor-only date (post-founding)", () => {
+  const matches = matchMakerMarks("Seven Seas by Hooker Furniture", makerLabelObs);
+  const hooker = matches.find((m: any) => m.clue === "maker_mark_hooker_furniture");
+  assert.ok(hooker, "should match Hooker Furniture from the label text");
+  assert.match(hooker!.description, /post-1924/); // founded 1924, still active → floor only, not a tight date
+});
+
+test("M9b-core: a defunct maker (Duncan Phyfe) yields a bounded range", () => {
+  const matches = matchMakerMarks("stamped D. Phyfe, New York", makerLabelObs);
+  const phyfe = matches.find((m: any) => m.clue === "maker_mark_duncan_phyfe");
+  assert.ok(phyfe, "should match Duncan Phyfe");
+  assert.match(phyfe!.description, /1792.1847/); // defunct → bounded [founded, closed]
+});
+
+test("M9b-core: maker matching is gated on real label evidence", () => {
+  assert.deepEqual(matchMakerMarks("Duncan Phyfe", []), []); // no label observation → no attribution
 });
