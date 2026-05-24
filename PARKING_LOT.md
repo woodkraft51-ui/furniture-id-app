@@ -14,6 +14,17 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   matches against observation prose are the direct cause of the Stool/Nightstand
   flips (the model's prose mentioning a cousin trips a match). Subsumed by the
   Stage 2 matcher; latent risk until then.
+- **Style-context text-cue false positives (`deriveStyleContext`).** Same
+  text-substring brittleness, style layer: `deriveStyleContext`
+  (engine.ts ~5331) fires "American Empire / late Classical Revival" on
+  `includesAny(text, ["empire","scrolled feet","ogee","serpentine"])`. Observed
+  live: a utilitarian commode's `molded_top_edge` description ("ogee edge")
+  produced a spurious American Empire style context. `ogee`/`serpentine` are
+  generic molding/shape terms, not Empire-diagnostic. Surfaced only after the
+  false-twin `tubular_steel` (which used to force "Modernist") was removed — not
+  a regression, just the next text cue down. Logged per instruction; no change
+  yet. Fix candidate: drop the generic molding terms from the Empire trigger, or
+  fold style terms into the systemic controlled-vocab / signature treatment.
 - **Insertion-order tie-breaking.** Equal-score forms resolve by source-code
   position (`Array.sort` stable). That *was* the Nightstand bug. Stage 2 should
   tie-break by evidence margin.
