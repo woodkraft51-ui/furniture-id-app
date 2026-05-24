@@ -1,22 +1,25 @@
-# ── Maker authoring sheet ──────────────────────────────────────────────────
-# Edit this in any spreadsheet (Excel / Google Sheets / Numbers), then "Save as CSV".
-# One row per maker. You only fill in things an antique person already knows.
-#
-# Columns:
-#   maker_name            the firm's name, as it reads on the label
-#   founded               year the firm started (a 4-digit year)
-#   closed                year it ended — LEAVE BLANK if still in business
-#   region                where they made it (city / state / country)
-#   mark_wording          words that appear on the label/mark, separated by ;  <-- this is what the engine matches
-#   furniture_categories  what they made, separated by ;  (e.g. case_goods; seating; tables)
-#   notes                 anything else (optional)
-#
-# Rules the validator checks for you (it will tell you the row + problem if something's off):
-#   - maker_name and at least one mark_wording phrase are required
-#   - founded must be a 4-digit year; closed must be blank or a year on/after founded
-#   - put commas only inside "quotes" — use ; to separate list items, not commas
-#
-# After editing, regenerate with:  node --import tsx scripts/generateAuthoredMakers.ts
-# Replace the example row below with your own makers.
+# Maker authoring sheet — one row per maker; edit in a spreadsheet, save as CSV.
+# Columns: maker_name, founded, closed (blank=still active), region, mark_wording (;-separated), furniture_categories (;-separated), notes
+# Regenerate:  node --import tsx scripts/generateAuthoredMakers.ts
+# The generator skips makers already in the canonical library (reports them) and adds only new ones.
 maker_name,founded,closed,region,mark_wording,furniture_categories,notes
-Example Maker Co.,1955,,"Anytown, USA",Example Maker Co.; Example Co.,case_goods; seating,Replace this example with a real maker. Leave 'closed' blank if the firm is still in business.
+Kroehler Manufacturing Co.,1893,1981,Naperville IL USA,Kroehler Manufacturing Co.; Kroehler Mfg. Co.; Kroehler,seating; upholstery; case_goods,Began as Naperville Lounge Company; Kroehler name adopted later.
+Berkey & Gay Furniture Co.,1873,1948,Grand Rapids MI USA,Berkey & Gay Furniture Co.; Berkey and Gay; Berkey & Gay,case_goods; bedroom; dining; seating,Strong Grand Rapids Victorian and revival-era maker.
+John Widdicomb Co.,1873,2002,Grand Rapids MI USA,John Widdicomb Co.; John Widdicomb; Widdicomb Furniture Co.,case_goods; bedroom; dining; tables,Use full wording to avoid false match on Widdicomb alone.
+Kittinger Company,1866,,Buffalo NY USA,Kittinger Company; Kittinger; Kittinger Furniture,seating; tables; case_goods; reproduction furniture,Known for high-quality traditional and Colonial Revival reproduction furniture.
+Century Furniture Co.,1947,,Hickory NC USA,Century Furniture Co.; Century Furniture; Century,case_goods; seating; tables; bedroom; dining,Century alone should be treated as weak unless paired with label context.
+Henkel-Harris Co.,1946,,Winchester VA USA,Henkel-Harris Co.; Henkel Harris; Henkel-Harris,case_goods; bedroom; dining; tables,High-quality traditional case goods and reproductions.
+Henredon Furniture Industries,1945,2018,Morganton NC USA,Henredon Furniture Industries; Henredon,case_goods; bedroom; dining; seating; tables,Premium postwar North Carolina maker.
+Pennsylvania House,1887,2005,Lewisburg PA USA,Pennsylvania House; Pennsylvania House Furniture,case_goods; bedroom; dining; tables,Associated with Colonial Revival and traditional solid wood furniture.
+Baker Furniture Co.,1890,,Allegan MI USA,Baker Furniture Co.; Baker Furniture; Baker,case_goods; seating; tables; bedroom; dining,Baker alone is weak without furniture label context.
+L. & J.G. Stickley,1900,,Fayetteville NY USA,L. & J.G. Stickley; L & JG Stickley; Stickley,case_goods; seating; tables; bedroom; dining,Use Stickley carefully because multiple Stickley firms existed.
+Gustav Stickley Company,1898,1918,Eastwood NY USA,Gustav Stickley; Gustave Stickley; United Crafts; Craftsman Workshops; Als Ik Kan,case_goods; seating; tables; desks,Strong Arts and Crafts authority when paired with compass mark or Craftsman wording.
+Stickley Brothers Furniture Co.,1891,1954,Grand Rapids MI USA,Stickley Brothers Furniture Co.; Stickley Brothers; Stickley Bros.,case_goods; seating; tables; dining,Distinct from Gustav Stickley and L. & J.G. Stickley.
+Sligh Furniture Co.,1880,2011,Grand Rapids MI USA,Sligh Furniture Co.; Sligh; Charles R. Sligh Co.,desks; case_goods; bedroom; office furniture,Often found on desks and office case pieces.
+Imperial Furniture Co.,1903,1954,Grand Rapids MI USA,Imperial Furniture Co.; Imperial Furniture; Imperial Tables,tables; occasional tables; case_goods,Imperial alone is weak without table or label context.
+Mersman Tables,1876,1995,Celina OH USA,Mersman Tables; Mersman Bros.; Mersman Furniture; Mersman,tables; occasional tables,Strongest on occasional tables and library tables.
+Brandt Cabinet Works,1901,1985,Hagerstown MD USA,Brandt Cabinet Works; Brandt Furniture; Brandt,case_goods; tables; bedroom; dining,Often traditional reproduction furniture.
+Cushman Furniture Co.,1886,1980,Bennington VT USA,Cushman Furniture Co.; Cushman Colonial Creations; Cushman,seating; tables; case_goods; bedroom,Known for Colonial Revival and maple furniture.
+Willett Furniture Co.,1934,1962,Louisville KY USA,Willett Furniture Co.; Willett; Willett Wildwood,case_goods; bedroom; dining; tables,Known for solid cherry traditional furniture.
+Davis Cabinet Co.,1929,,Nashville TN USA,Davis Cabinet Co.; Davis Cabinet Company; Davis Cabinet,case_goods; bedroom; dining; tables,Traditional Southern cabinet and case goods maker.
+Harden Furniture Co.,1844,2018,McConnellsville NY USA,Harden Furniture Co.; Harden; Harden Furniture,case_goods; bedroom; dining; seating; tables,Long-running solid wood traditional furniture makers

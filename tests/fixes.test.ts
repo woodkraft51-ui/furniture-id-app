@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { buildAuthoredMakers } from "../scripts/generateAuthoredMakers";
+import { buildAuthoredMakers, partitionAuthoredMakers } from "../scripts/generateAuthoredMakers";
 import { AUTHORED_MAKER_ENTRIES } from "../lib/constraints/makersAuthored.generated";
 
 import { buildDatingOverlap, refineDatingFromConvergence } from "../lib/engineDatingOverlap";
@@ -481,13 +481,23 @@ test("Authoring: committed authored-makers artifact is in sync with content/make
 });
 
 test("Authoring: a CSV-authored maker flows through the engine matcher and dates correctly", () => {
-  // still-active example (no 'closed' year) → floor-only "post-<founded>"
-  const matches = matchMakerMarks("This piece is labeled Example Maker Co.", [
+  // Kroehler (added from content/makers.csv; defunct 1893–1981) → bounded range
+  const matches = matchMakerMarks("Labeled Kroehler Manufacturing Co.", [
     { type: "label", clue: "maker_label", description: "x", confidence: 85, source_image: "label_makers_mark", negated: false } as any,
   ]);
-  const m = matches.find((x: any) => x.clue === "maker_mark_authored_example_maker_co");
-  assert.ok(m, "the CSV-authored maker should be matchable by the engine");
-  assert.match(m!.description, /post-1955/);
+  const m = matches.find((x: any) => x.clue === "maker_mark_authored_kroehler_manufacturing_co");
+  assert.ok(m, "a newly-authored maker should be matchable by the engine");
+  assert.match(m!.description, /1893.1981/);
+});
+
+test("Authoring: the collision detector skips makers already in the canonical library", () => {
+  const csv =
+    "maker_name,founded,closed,mark_wording\n" +
+    "Baker Furniture Co.,1890,,Baker Furniture; Baker\n" +
+    "Zzyzx Chair Works,1960,,Zzyzx Chair Works";
+  const { added, skipped } = partitionAuthoredMakers(csv);
+  assert.ok(skipped.some((s) => /Baker/.test(s.maker_name)), "Baker should be flagged as already covered");
+  assert.ok(added.some((e) => /Zzyzx/.test(e.maker_name)), "a genuinely new maker should be added");
 });
 
 test("Authoring: the validator rejects bad rows with a plain-language error", () => {
