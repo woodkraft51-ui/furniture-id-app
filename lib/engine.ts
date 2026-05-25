@@ -70,6 +70,8 @@ import {
   evaluateHybridForm,
   evaluateCousinContrast,
   getCommonAliasesForDisplay,
+  getRegionalPeriodNotes,
+  getCousinFormContrasts,
   getFormDatingBoundaries,
   getFormDatingEnvelope,
   type SubtypeAssignment,
@@ -282,6 +284,13 @@ type Phase3Result = {
   // names/ids. Surfaces in the report to explain "why this form, not
   // that one" calls. Does NOT influence scoring decisions.
   cousin_contrasts?: CousinContrastMatch[];
+  // Free-text regional / period context for the picked form. Authoring prose
+  // surfaced for the report's "Regional & period context" dropdown.
+  regional_period_notes?: string;
+  // General "how this form differs from similar pieces" prose (the picked
+  // form's full cousin_form_contrasts). Surfaced for the "How it differs"
+  // dropdown. Distinct from cousin_contrasts (alternative-matched subset).
+  cousin_form_contrasts?: string[];
   // Block 9: undated observations categorically aligned with the style
   // attribution. Surfaced in the report as supporting context — does NOT
   // contribute to dating-overlap layers to avoid double-counting.
@@ -7941,6 +7950,13 @@ if (missing.label_photo) {
     // NOT influence scoring.
     const cousin_contrasts = evaluateCousinContrast(form_id, alternative_form_ids);
 
+    // Surface the picked form's free-text regional / period context and the
+    // general cousin-form contrasts for the report's "Regional & period
+    // context" and "How it differs" dropdowns. Authoring documentation that
+    // was previously engine-side only. Does NOT influence scoring.
+    const regional_period_notes = getRegionalPeriodNotes(form_id);
+    const cousin_form_contrasts = getCousinFormContrasts(form_id);
+
     // Block 2a: structured style attribution from styleFamilies.ts.
     // Falls back to engine-derived style strings when no canonical match.
     // Block 14: frame-filtered clue keys so style attribution can't see
@@ -8089,6 +8105,8 @@ if (missing.label_photo) {
       style_influences,
       hybrid,
       cousin_contrasts,
+      regional_period_notes,
+      cousin_form_contrasts,
       style_supporting_evidence,
     };
   },

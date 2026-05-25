@@ -938,6 +938,19 @@ const RANK_LAYER_LABELS: Record<string, string> = {
   wood: "Wood", hardware: "Hardware", finish: "Finish", upholstery: "Upholstery",
 };
 
+// Collapsible disclosure used for the Date & Style detail dropdowns
+// (regional/period context, "how it differs"). Native <details>, no JS.
+function DetailDropdown({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  return (
+    <details open={defaultOpen} style={{ borderTop: "1px solid #eadfcf", marginTop: 8 }}>
+      <summary style={{ cursor: "pointer", padding: "12px 0 10px", fontWeight: 600, fontSize: 15, color: "#3d2d1f", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span>{title}</span>
+      </summary>
+      <div style={{ paddingBottom: 12, fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{children}</div>
+    </details>
+  );
+}
+
 function EvidenceRankedList({
   data,
   styleAttribution,
@@ -3699,7 +3712,7 @@ const p7 = stageOutputs.p7 || null;
                 range, limitations, style context) now lives in the Date &
                 Style detail card placed just below the dating visual. */}
             <section style={{ background: "#fffdf9", border: "1px solid #ded3bf", borderRadius: 12, padding: 16, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#3e2f1f", lineHeight: 1.25 }}>{p3?.display_form || p3?.form || "Unknown"}</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#3e2f1f", lineHeight: 1.25 }}>{(p3?.display_form || p3?.form || "Unknown").replace(/\s*\(also commonly called:[^)]*\)\s*$/i, "")}</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
                 {[
                   { k: "Date", v: p2?.range || "Unknown", c: undefined as string | undefined },
@@ -3759,6 +3772,20 @@ const p7 = stageOutputs.p7 || null;
                 </div>
               )}
               {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
+              {p3?.regional_period_notes && (
+                <DetailDropdown title="Regional & period context">
+                  <div style={{ whiteSpace: "pre-wrap" }}>{p3.regional_period_notes}</div>
+                </DetailDropdown>
+              )}
+              {Array.isArray(p3?.cousin_form_contrasts) && p3.cousin_form_contrasts.length > 0 && (
+                <DetailDropdown title="How it differs from similar pieces">
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {p3.cousin_form_contrasts.map((c: string, i: number) => (
+                      <div key={i}>{c}</div>
+                    ))}
+                  </div>
+                </DetailDropdown>
+              )}
             </SectionCard>
             {p2?.upholstery_layer && (
               <SectionCard title="Upholstery (separate from frame)">
