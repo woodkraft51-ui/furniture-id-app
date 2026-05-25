@@ -97,8 +97,15 @@ function corroboratingCount(zone: ConvergenceZone): number {
 }
 
 function summarizeZoneLayers(zone: ConvergenceZone): string {
-  const labels = zone.layers.map(humanLayer);
-  return joinHuman(labels);
+  // Enumerate only the corroborating (specific) layers so the listed layers
+  // match corroboratingCount — a broad/open-ended layer that merely spans the
+  // zone shouldn't be named as if it pins the date. Falls back to all layers
+  // for older report shapes or zones with no specific subset recorded.
+  const src =
+    zone.specific_layers && zone.specific_layers.length > 0
+      ? zone.specific_layers
+      : zone.layers;
+  return joinHuman(src.map(humanLayer));
 }
 
 export function buildDatingFindingNarrative(input: {
@@ -225,12 +232,22 @@ export function buildDatingFindingNarrative(input: {
     return { headline, detail, tone: "qualified" };
   }
 
-  // ─── Case 9: unresolved with convergence — zones exist, no style ───
+  // ─── Case 9: unresolved with convergence — zones exist ───
   if (data.convergence_zones.length > 0 && strongest) {
+    // "unresolved" means style + date couldn't be reconciled into a period —
+    // NOT that no style was found. A style is often attributed here, so don't
+    // claim "no specific style was attributed" when styleAttribution exists.
+    const styleClause = styleName
+      ? `style reads as ${styleName}, though the evidence doesn't resolve it to a specific period`
+      : `no specific style was attributed`;
+    const rangeSentence =
+      workingRange === "uncertain"
+        ? `The working range stays broad pending tighter evidence.`
+        : `Working range ${workingRange}.`;
     return {
       headline:
-        `Evidence converges at ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}), but no specific style was attributed. ` +
-        `Working range ${workingRange}.`,
+        `Evidence converges at ${formatRange(strongest.zone.date_floor, strongest.zone.date_ceiling)} (${corroboratingCount(strongest.zone)} corroborating layer${corroboratingCount(strongest.zone) !== 1 ? "s" : ""}: ${summarizeZoneLayers(strongest.zone)}); ${styleClause}. ` +
+        rangeSentence,
       tone: "qualified",
     };
   }
@@ -260,11 +277,15 @@ export function buildDatingFindingNarrative(input: {
     }
   }
 
+  const broadSentence =
+    workingRange === "uncertain"
+      ? `The working range remains broad.`
+      : `Working range remains broad at ${workingRange}.`;
   return {
     headline:
       `Evidence layers don't converge on a tight window. ` +
       `Narrowest individual signal: ${humanLayer(narrowest.layer)} at ${formatRange(narrowest.date_floor, narrowest.date_ceiling)}. ` +
-      `Working range remains broad at ${workingRange}.`,
+      broadSentence,
     tone: "tentative",
   };
 }

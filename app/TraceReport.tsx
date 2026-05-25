@@ -57,6 +57,10 @@ export default function TraceReport({ report }: Props) {
   const allClueKeys = uniq(p0obs.map((o) => o?.clue).filter(Boolean) as string[]);
   const obsCount = p0obs.length;
   const clueKeyCount = allClueKeys.length;
+  // Observations the model described in prose but never tagged with a clue key.
+  // These are invisible to clue-key consumers (form/style/dating) and to the
+  // vocab-snapping shadow — surfacing the count flags capture loss directly.
+  const keylessObsCount = p0obs.filter((o) => o && !o.negated && !o.clue).length;
 
   // Stage 1B shadow snapping (observe-only; present only when P0_VOCAB_SNAP_SHADOW=1)
   const vocabShadow = (report.evidence_digest as any)?.vocab_shadow || null;
@@ -104,7 +108,7 @@ export default function TraceReport({ report }: Props) {
       </header>
 
       {/* ─── P0 Perception ─────────────────────────────────────────── */}
-      <Section title={`P0 Perception — ${obsCount} observations, ${clueKeyCount} clue keys detected`}>
+      <Section title={`P0 Perception — ${obsCount} observations, ${clueKeyCount} clue keys detected${keylessObsCount > 0 ? `, ${keylessObsCount} with no clue key` : ""}`}>
         <Subhead>Clue keys ({clueKeyCount}):</Subhead>
         <CommaList items={allClueKeys} />
         <Subhead>Observations ({obsCount}):</Subhead>

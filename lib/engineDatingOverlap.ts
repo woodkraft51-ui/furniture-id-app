@@ -66,6 +66,11 @@ export type ConvergenceZone = {
   // "N layers agree" doesn't overstate corroboration.
   specific_layer_count: number;
   layers: LayerName[];
+  // The corroborating (specificity ≥ 0.5) subset of `layers` — what the
+  // narrative should ENUMERATE so the listed layers match specific_layer_count.
+  // A broad/open-ended layer that merely spans the zone is excluded, so the
+  // prose can't say "2 corroborating layers: joinery, style, style_wave" (3).
+  specific_layers?: LayerName[];
 };
 
 export type DatingOverlapData = {
@@ -761,6 +766,9 @@ export function buildDatingOverlap(
     layerSet: Set<LayerName>
   ): ConvergenceZone => {
     const layerList = Array.from(layerSet);
+    const specificLayers = layerList.filter(
+      (l) => (specByLayer.get(l) ?? OPEN_ENDED_SPECIFICITY) >= 0.5
+    );
     return {
       date_floor: start,
       date_ceiling: end,
@@ -772,10 +780,9 @@ export function buildDatingOverlap(
       weighted_authority: Number(
         layerList.reduce((s, l) => s + (LAYER_AUTHORITY[l] ?? 0) * (specByLayer.get(l) ?? OPEN_ENDED_SPECIFICITY), 0).toFixed(2)
       ),
-      specific_layer_count: layerList.filter(
-        (l) => (specByLayer.get(l) ?? OPEN_ENDED_SPECIFICITY) >= 0.5
-      ).length,
+      specific_layer_count: specificLayers.length,
       layers: layerList,
+      specific_layers: specificLayers,
     };
   };
 
