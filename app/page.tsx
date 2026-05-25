@@ -923,6 +923,188 @@ function DatingFindingCallout({
   );
 }
 
+// Ranked-evidence list — the redesigned lead dating visual. Each datable
+// layer is a row (date range + strength bar), ranked by how tightly it pins
+// the date; ✓ marks layers whose range agrees with the convergence window.
+// Layers with no datable signal collapse into a footnote; Style is always
+// shown but as low-weight context, pinned last. Replaces the timeline
+// DatingOverlapViz (kept dormant below during redesign review).
+const RANK_LAYER_AUTHORITY: Record<string, number> = {
+  joinery: 9, fastener: 8, toolmark: 8, form: 7, hardware: 6,
+  wood: 6, upholstery: 5, finish: 4, style: 3, style_wave: 2,
+};
+const RANK_LAYER_LABELS: Record<string, string> = {
+  form: "Form", joinery: "Joinery", fastener: "Fasteners", toolmark: "Toolmarks",
+  wood: "Wood", hardware: "Hardware", finish: "Finish", upholstery: "Upholstery",
+};
+
+function EvidenceRankedList({
+  data,
+  styleAttribution,
+  p2Floor,
+  p2Ceiling,
+}: {
+  data: DatingOverlapData;
+  styleAttribution?: StyleAttributionForViz;
+  p2Floor?: number | null;
+  p2Ceiling?: number | null;
+}) {
+  // Resolve the convergence window the rows are measured against: prefer the
+  // engine's resolved working range, then the strongest convergence zone, then
+  // the overall envelope. Mirrors the DatingFindingCallout above it.
+  const zones = data.convergence_zones ?? [];
+  const sIdx = pickStrongestZoneIndex(zones);
+  const sZone = sIdx >= 0 ? zones[sIdx] : null;
+  const winFloor = p2Floor ?? sZone?.date_floor ?? data.overall_floor ?? null;
+  const winCeiling = p2Ceiling ?? sZone?.date_ceiling ?? data.overall_ceiling ?? null;
+  const haveWindow = winFloor != null && winCeiling != null;
+
+  type Row = {
+    key: string; label: string; rangeText: string;
+    strength: number; tag: string; agrees: boolean; isStyle: boolean;
+  };
+
+  const spanScore = (span: number) =>
+    span <= 20 ? 1 : span <= 35 ? 0.82 : span <= 55 ? 0.6 : span <= 80 ? 0.4 : 0.25;
+  const confScore = (c: string) =>
+    c === "high" ? 1 : c === "moderate" ? 0.7 : c === "low" ? 0.4 : 0;
+  // A layer's allowed range is [floor ?? -inf, ceiling ?? +inf]; it "agrees"
+  // when that interval intersects the convergence window. One-sided bounds
+  // (e.g. "after 1860") therefore still agree if they don't exclude it.
+  const overlaps = (f: number | null, c: number | null) => {
+    if (!haveWindow) return true;
+    return (f ?? -Infinity) <= (winCeiling as number) && (c ?? Infinity) >= (winFloor as number);
+  };
+  const rangeText = (f: number | null, c: number | null) =>
+    f != null && c != null ? `${f}–${c}` : f != null ? `after ${f}` : c != null ? `before ${c}` : "";
+
+  const datable: Row[] = [];
+  const noSignal: string[] = [];
+
+  for (const l of data.layers) {
+    if (l.layer === "style" || l.layer === "style_wave") continue; // style handled below
+    const label = RANK_LAYER_LABELS[l.layer] ?? l.layer;
+    const hasFloor = l.date_floor != null;
+    const hasCeiling = l.date_ceiling != null;
+    // Datable if at least one bound is known; one-sided bounds ("after 1860",
+    // "before 1830") are real signals, not absences.
+    if ((!hasFloor && !hasCeiling) || l.confidence === "none") {
+      if (l.source_count > 0 || (l.present_without_dates ?? 0) > 0) noSignal.push(label);
+      continue;
+    }
+    const span = hasFloor && hasCeiling ? (l.date_ceiling as number) - (l.date_floor as number) : null;
+    const auth = RANK_LAYER_AUTHORITY[l.layer] ?? 4;
+    const strength = Math.round(
+      (0.4 * (span == null ? 0.3 : spanScore(span)) + 0.35 * (auth / 9) + 0.25 * confScore(l.confidence)) * 100
+    );
+    datable.push({
+      key: l.layer, label,
+      rangeText: rangeText(l.date_floor, l.date_ceiling),
+      strength,
+      tag: span == null ? "open" : span <= 30 ? "strong" : span <= 55 ? "moderate" : "broad",
+      agrees: overlaps(l.date_floor, l.date_ceiling), isStyle: false,
+    });
+  }
+  datable.sort((a, b) => b.strength - a.strength);
+
+  // Style row — always shown when present, as low-weight context, pinned last.
+  let styleRow: Row | null = null;
+  if (styleAttribution && (styleAttribution.date_floor != null || styleAttribution.date_ceiling != null)) {
+    styleRow = {
+      key: "style",
+      label: styleAttribution.name ? `Style — ${styleAttribution.name}` : "Style",
+      rangeText: rangeText(styleAttribution.date_floor, styleAttribution.date_ceiling),
+      strength: 22, tag: "minor",
+      agrees: overlaps(styleAttribution.date_floor, styleAttribution.date_ceiling),
+      isStyle: true,
+    };
+  }
+
+  const rows: Row[] = styleRow ? [...datable, styleRow] : datable;
+  if (rows.length === 0 && noSignal.length === 0) return null;
+
+  const agreeCount = datable.filter((r) => r.agrees).length;
+  const windowText = haveWindow ? `c. ${winFloor}–${winCeiling}` : null;
+
+  const C = {
+    ink: "#3d2d1f", muted: "#6a5845", faint: "#a89e90", line: "#eadfcf",
+    good: "#3f7d4e", track: "#ece4d6", bar: "#b88a52", styleBar: "#bcae9a",
+  };
+
+  return (
+    <div style={{ marginTop: 4 }}>
+      <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.55, marginBottom: 12 }}>
+        {windowText && (
+          <strong style={{ color: C.ink }}>
+            {agreeCount} layer{agreeCount === 1 ? "" : "s"} point to {windowText}.{" "}
+          </strong>
+        )}
+        {noSignal.length > 0 && (
+          <>{noSignal.length} layer{noSignal.length === 1 ? "" : "s"} had no datable signal. </>
+        )}
+        {styleRow && <>Style shown as low-weight context.</>}
+      </div>
+
+      <div style={{ fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: C.faint, marginBottom: 6 }}>
+        Evidence, ranked by how tightly it pins the date
+      </div>
+
+      <div>
+        {rows.map((r, i) => (
+          <div
+            key={r.key}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "16px 1fr 124px",
+              gap: 10,
+              alignItems: "center",
+              padding: "9px 0",
+              borderTop: i === 0 ? "none" : `1px solid ${C.line}`,
+              opacity: r.isStyle ? 0.72 : 1,
+            }}
+          >
+            <div style={{ textAlign: "center", fontSize: 14, color: !r.isStyle && r.agrees ? C.good : C.faint }}>
+              {!r.isStyle && r.agrees ? "✓" : "·"}
+            </div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 14, color: C.ink, fontStyle: r.isStyle ? "italic" : "normal" }}>
+                {r.label}
+              </div>
+              <div style={{ fontSize: 12, color: C.muted, fontVariantNumeric: "tabular-nums" }}>
+                {r.rangeText}
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ flex: 1, height: 8, background: C.track, borderRadius: 5, overflow: "hidden" }}>
+                <div
+                  style={{
+                    width: `${Math.max(12, Math.min(95, r.strength))}%`,
+                    height: "100%",
+                    background: r.isStyle ? C.styleBar : C.bar,
+                    borderRadius: 5,
+                  }}
+                />
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, minWidth: 48, textAlign: "right" }}>{r.tag}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {noSignal.length > 0 && (
+        <details style={{ marginTop: 8 }}>
+          <summary style={{ cursor: "pointer", fontSize: 13, color: C.muted, padding: "8px 0 0", borderTop: `1px solid ${C.line}` }}>
+            {noSignal.length} layer{noSignal.length === 1 ? "" : "s"} present, no datable signal
+          </summary>
+          <div style={{ fontSize: 13, color: C.muted, padding: "8px 0 2px", lineHeight: 1.7 }}>
+            {noSignal.join(" · ")}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+
 function DatingOverlapViz({
   data,
   styleAttribution,
@@ -3610,14 +3792,16 @@ const p7 = stageOutputs.p7 || null;
                   const ansCeiling = p2?.date_ceiling ?? sZone?.date_ceiling ?? ov.overall_ceiling ?? null;
                   return <DatingFindingCallout narrative={narrative} dateFloor={ansFloor} dateCeiling={ansCeiling} identification={p3?.display_form || p3?.form || null} confidenceBand={p2?.confidence ?? null} />;
                 })()}
-                <DatingOverlapViz
+                <EvidenceRankedList
                   data={p6.dating_overlap}
                   styleAttribution={p3?.style_attribution ?? null}
-                  styleAlternatives={p3?.style_alternatives ?? []}
-                  styleWaves={p3?.style_waves ?? []}
-                  bestStyleIntersection={p3?.best_style_intersection ?? null}
-                  suppressedPartnerIds={p3?.stacked_revival_partner_ids ?? []}
+                  p2Floor={p2?.date_floor ?? null}
+                  p2Ceiling={p2?.date_ceiling ?? null}
                 />
+                {/* Old timeline kept dormant during redesign review — restore by
+                    swapping EvidenceRankedList back to DatingOverlapViz with its
+                    original props (data / styleAttribution / styleAlternatives /
+                    styleWaves / bestStyleIntersection / suppressedPartnerIds). */}
               </SectionCard>
             )}
             <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}><GlossaryText text={evidenceMeaning(item)} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
