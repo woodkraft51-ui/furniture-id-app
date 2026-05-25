@@ -3694,40 +3694,72 @@ const p7 = stageOutputs.p7 || null;
 
         {report && analysisMode === "full_analysis" && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
-            <SectionCard title="Analysis Summary"><div style={{ fontSize: 15, lineHeight: 1.7, color: "#3e2f1f", whiteSpace: "pre-wrap" }}>{p6?.summary || report.final_report || "No final report text returned."}</div></SectionCard>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-              <SectionCard title="Primary Identification (Frame)">
-                <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
-                <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p3?.confidence) }}>{p3?.confidence || "Inconclusive"}</strong></div>
-                {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
-                {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
-                  <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                    Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value above.
-                  </div>
-                )}
-                {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
-                  <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                    Why this label: {p3.final_style.final_style_reason}
-                  </div>
-                )}
-                {/* "Alternate possibilities" removed per appraiser direction:
-                    when primary confidence is high the alternates undermine
-                    authority; when primary confidence is low a list of also-rans
-                    doesn't help the user decide. Either case the section hurt
-                    more than it helped. p3.alternatives still computed by the
-                    engine (used by other downstream logic / cousin contrasts)
-                    but no longer rendered in the report. */}
+            {/* Headline — at-a-glance answer. Replaces the prose Analysis
+                Summary and the two "Frame" cards; the frame detail (working
+                range, limitations, style context) now lives in the Date &
+                Style detail card placed just below the dating visual. */}
+            <section style={{ background: "#fffdf9", border: "1px solid #ded3bf", borderRadius: 12, padding: 16, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#3e2f1f", lineHeight: 1.25 }}>{p3?.display_form || p3?.form || "Unknown"}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+                {[
+                  { k: "Date", v: p2?.range || "Unknown", c: undefined as string | undefined },
+                  ...(p3?.style_attribution?.name || p3?.style_context
+                    ? [{ k: "Style", v: (p3?.style_attribution?.name || p3?.style_context) as string, c: undefined as string | undefined }]
+                    : []),
+                  { k: "Confidence", v: p3?.confidence || "Inconclusive", c: bandColor(p3?.confidence) },
+                ].map((pill) => (
+                  <span key={pill.k} style={{ display: "inline-flex", gap: 6, alignItems: "baseline", background: "#efe6d6", borderRadius: 999, padding: "5px 12px", fontSize: 14 }}>
+                    <span style={{ fontSize: 11, letterSpacing: 0.4, textTransform: "uppercase", color: "#6a5845" }}>{pill.k}</span>
+                    <strong style={{ color: pill.c || "#3e2f1f" }}>{pill.v}</strong>
+                  </span>
+                ))}
+              </div>
+            </section>
+            {/* Upholstery track moved below the Date & Style detail card. */}
+            {p6?.dating_overlap && (
+              <SectionCard title="How we dated it">
+                {(() => {
+                  const narrative = buildDatingFindingNarrative({
+                    data: p6.dating_overlap,
+                    styleAttribution: p3?.style_attribution ?? null,
+                    finalStyle: p3?.final_style ?? null,
+                    finalDatingFloor: p2?.date_floor ?? null,
+                    finalDatingCeiling: p2?.date_ceiling ?? null,
+                  });
+                  if (!narrative) return null;
+                  // Tone + reasoning only. The date window is carried by the
+                  // headline pill and the ranked list's summary line, so the
+                  // callout no longer repeats the identification or the number.
+                  return <DatingFindingCallout narrative={narrative} dateFloor={null} dateCeiling={null} identification={null} confidenceBand={p2?.confidence ?? null} />;
+                })()}
+                <EvidenceRankedList
+                  data={p6.dating_overlap}
+                  styleAttribution={p3?.style_attribution ?? null}
+                  p2Floor={p2?.date_floor ?? null}
+                  p2Ceiling={p2?.date_ceiling ?? null}
+                />
+                {/* Old timeline kept dormant during redesign review — restore by
+                    swapping EvidenceRankedList back to DatingOverlapViz with its
+                    original props (data / styleAttribution / styleAlternatives /
+                    styleWaves / bestStyleIntersection / suppressedPartnerIds). */}
               </SectionCard>
-              <SectionCard title="Dating Analysis (Frame)">
-                <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
-                <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
-                {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
-              </SectionCard>
-            </div>
-            {/* Block 14: Upholstery treated as a separate identification + dating track.
-                Frame ID + dating above are driven only by frame evidence (form,
-                joinery, wood, hardware, finish, toolmark, style). This card
-                surfaces the upholstery track when upholstery evidence is present. */}
+            )}
+            <SectionCard title="Date & style detail">
+              <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
+              <div style={metaRowStyle}><span>Dating confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
+              {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
+              {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
+                <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                  Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value.
+                </div>
+              )}
+              {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
+                <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                  Why this label: {p3.final_style.final_style_reason}
+                </div>
+              )}
+              {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
+            </SectionCard>
             {p2?.upholstery_layer && (
               <SectionCard title="Upholstery (separate from frame)">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
@@ -3770,39 +3802,6 @@ const p7 = stageOutputs.p7 || null;
                     {p2.upholstery_layer.cross_reference_note}
                   </div>
                 )}
-              </SectionCard>
-            )}
-            {p6?.dating_overlap && (
-              <SectionCard title="Dating Overlap by Evidence Layer">
-                {(() => {
-                  const narrative = buildDatingFindingNarrative({
-                    data: p6.dating_overlap,
-                    styleAttribution: p3?.style_attribution ?? null,
-                    finalStyle: p3?.final_style ?? null,
-                    finalDatingFloor: p2?.date_floor ?? null,
-                    finalDatingCeiling: p2?.date_ceiling ?? null,
-                  });
-                  if (!narrative) return null;
-                  // Headline date for the answer band: prefer the engine's
-                  // resolved working range, then the strongest convergence zone,
-                  // then the overall envelope.
-                  const ov = p6.dating_overlap;
-                  const sIdx = pickStrongestZoneIndex(ov.convergence_zones ?? []);
-                  const sZone = sIdx >= 0 ? ov.convergence_zones[sIdx] : null;
-                  const ansFloor = p2?.date_floor ?? sZone?.date_floor ?? ov.overall_floor ?? null;
-                  const ansCeiling = p2?.date_ceiling ?? sZone?.date_ceiling ?? ov.overall_ceiling ?? null;
-                  return <DatingFindingCallout narrative={narrative} dateFloor={ansFloor} dateCeiling={ansCeiling} identification={p3?.display_form || p3?.form || null} confidenceBand={p2?.confidence ?? null} />;
-                })()}
-                <EvidenceRankedList
-                  data={p6.dating_overlap}
-                  styleAttribution={p3?.style_attribution ?? null}
-                  p2Floor={p2?.date_floor ?? null}
-                  p2Ceiling={p2?.date_ceiling ?? null}
-                />
-                {/* Old timeline kept dormant during redesign review — restore by
-                    swapping EvidenceRankedList back to DatingOverlapViz with its
-                    original props (data / styleAttribution / styleAlternatives /
-                    styleWaves / bestStyleIntersection / suppressedPartnerIds). */}
               </SectionCard>
             )}
             <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}><GlossaryText text={evidenceMeaning(item)} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>

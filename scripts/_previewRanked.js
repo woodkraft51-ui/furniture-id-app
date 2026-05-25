@@ -75,21 +75,31 @@ function renderRows(m){
   return h;
 }
 
+const cardCSS="background:#fffdf9;border:1px solid #ded3bf;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:14px";
+const metaRow="display:flex;justify-content:space-between;gap:12px;font-size:14px;color:#4f3f30;margin-top:4px";
+function card(title,inner){return `<section style="${cardCSS}">${title?`<h3 style="margin:0 0 10px;font-size:18px;color:#3e2f1f">${title}</h3>`:""}${inner}</section>`;}
+function pill(k,v,c){return `<span style="display:inline-flex;gap:6px;align-items:baseline;background:#efe6d6;border-radius:999px;padding:5px 12px;font-size:14px"><span style="font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:#6a5845">${k}</span><strong style="color:${c||"#3e2f1f"}">${v}</strong></span>`;}
+
 const j=JSON.parse(fs.readFileSync("scripts/post-block-12-trace.json","utf8"));
 const scenarios=[["eastlake_dresser","Eastlake dresser"],["roos_cedar_chest","Roos cedar chest"],["pre_1860_piece","Pre-1860 piece"]];
 let cards="";
 for(const [k,title] of scenarios){
   const so=j[k].stage_outputs; const ov=so.p6.dating_overlap;
   const m=build(ov,so.p3?.style_attribution??null,so.p2?.date_floor??null,so.p2?.date_ceiling??null);
-  cards+=`<div style="max-width:560px;margin:0 auto 18px">
-    <div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:${C.faint};margin-bottom:6px">${title} &middot; engine output</div>
-    <section style="background:#fffdf9;border:1px solid #ded3bf;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)">
-      <h3 style="margin:0 0 10px;font-size:18px;color:#3e2f1f">Dating &mdash; evidence by layer</h3>
-      ${renderRows(m)}
-    </section></div>`;
+  const styleLabel=so.p3?.style_attribution?.name||so.p3?.style_context;
+  const pills=[pill("Date",so.p2?.range||"Unknown")];
+  if(styleLabel)pills.push(pill("Style",styleLabel));
+  pills.push(pill("Confidence",so.p3?.confidence||"Inconclusive"));
+  const headline=`<section style="${cardCSS}"><div style="font-size:24px;font-weight:800;color:#3e2f1f;line-height:1.25">${so.p3?.display_form||so.p3?.form||"Unknown"}</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">${pills.join("")}</div></section>`;
+  const dating=card("How we dated it",`<div style="font-size:12px;color:${C.faint};font-style:italic;margin-bottom:10px">[engine tone + reasoning band renders here]</div>`+renderRows(m));
+  let detail=`<div style="${metaRow}"><span>Working range</span><strong>${so.p2?.range||"Unknown"}</strong></div><div style="${metaRow}"><span>Dating confidence</span><strong>${so.p2?.confidence||"Inconclusive"}</strong></div>`;
+  if(so.p3?.style_context)detail+=`<div style="margin-top:10px;font-size:14px;color:#574634;line-height:1.55">Broad style context: ${so.p3.style_context}</div>`;
+  if((so.p2?.limitations||[]).length)detail+=`<div style="margin-top:14px;font-weight:700;font-size:14px;color:#3d2d1f">Current limitations</div><ul style="margin:8px 0 0;padding-left:18px;font-size:14px;color:#574634;line-height:1.6">${so.p2.limitations.map(l=>`<li>${l}</li>`).join("")}</ul>`;
+  const detailCard=card("Date & style detail",detail);
+  cards+=`<div style="max-width:560px;margin:0 auto 30px"><div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:${C.faint};margin-bottom:6px">${title} &middot; engine output</div>${headline}${dating}${detailCard}</div>`;
 }
-const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ranked list — real data</title><style>body{margin:0;background:#f7f3ec;font:16px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px 16px 64px}</style></head><body>
-<div style="max-width:560px;margin:0 auto 18px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:${C.faint}">Real engine output (trace fixtures) &middot; new ranked visual</div>
+const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Report layout — real data</title><style>body{margin:0;background:#f7f3ec;font:16px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px 16px 64px}</style></head><body>
+<div style="max-width:560px;margin:0 auto 18px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:${C.faint}">Stage 2 layout &middot; real engine output &middot; headline + dating + detail</div>
 ${cards}</body></html>`;
 fs.writeFileSync("report-preview-realdata.html",html);
 console.log("wrote report-preview-realdata.html");
