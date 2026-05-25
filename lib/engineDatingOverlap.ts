@@ -328,6 +328,38 @@ export function refineDatingFromConvergence(
     }
   }
 
+  // ── Construction-ceiling gate (generalizes the reproduction gate) ─────────
+  // A bounded, moderate+ construction layer is a terminus ante quem: hand-cut
+  // dovetails capping joinery at 1860 mean the piece cannot date ENTIRELY after
+  // 1860. The reproduction gate only guards post-WWII (≥1945) floors, so a
+  // revival-wave intersection zone at 1900–1910 floated a Regency-Gothic cabinet
+  // decades past its own pre-1860 dovetails. Only joinery/fastener/toolmark
+  // count — form is a catalog window, finish is refinishable, hardware carries
+  // replacement risk, and style/style_wave are the very signals being bounded.
+  // Low-confidence layers don't veto (the ceiling clue may be a tentative read).
+  const HARD_CEILING_LAYERS = new Set<LayerName>(["joinery", "fastener", "toolmark"]);
+  let constructionCeiling: number | null = null;
+  for (const l of overlap.layers) {
+    if (!HARD_CEILING_LAYERS.has(l.layer)) continue;
+    if (l.date_ceiling == null) continue;
+    if (l.confidence !== "moderate" && l.confidence !== "high") continue;
+    if (constructionCeiling == null || l.date_ceiling < constructionCeiling) {
+      constructionCeiling = l.date_ceiling;
+    }
+  }
+  let ceilingForce = false;
+  if (constructionCeiling != null && best.date_floor > constructionCeiling) {
+    // best sits ENTIRELY after the construction ceiling → it contradicts hard
+    // evidence. Drop to the strongest qualifying zone consistent with the
+    // ceiling (mirrors the reproduction gate's drop-down). If none exists, keep
+    // best; the clamp below still pulls its ceiling back to the construction bound.
+    const consistent = qualifying.find((z) => z.date_floor <= constructionCeiling!);
+    if (consistent) {
+      best = consistent;
+      ceilingForce = true;
+    }
+  }
+
   // Hard-negative post-floor enforcement. Open-ended post-YYYY layer
   // envelopes (e.g., phillips_screw post-1935, plywood_drawer_bottom
   // post-1920, polyurethane post-1960) are construction-anchor floors: any
@@ -348,6 +380,7 @@ export function refineDatingFromConvergence(
   let zFloor = best.date_floor;
   let zCeiling = best.date_ceiling;
   let hardFloorClamped = false;
+  let ceilingClamped = false;
   for (const l of overlap.layers) {
     // The form layer's open-ended span (catalog production floor) is not a
     // construction hard-negative — only material/fastener/finish post-floors
@@ -361,6 +394,16 @@ export function refineDatingFromConvergence(
     }
   }
 
+  // Construction-ceiling clamp (mirror of the hard-floor clamp above): pull the
+  // ceiling back to the construction terminus when the chosen zone overruns it.
+  if (constructionCeiling != null && zCeiling > constructionCeiling) {
+    zCeiling = constructionCeiling;
+    if (zCeiling <= zFloor) {
+      zFloor = zCeiling - Math.max(zCeiling - zFloor, MIN_OPEN_FLOOR_SPAN);
+    }
+    ceilingClamped = true;
+  }
+
   const convergenceWidth = zCeiling - zFloor;
   const originalWidth =
     original.date_floor !== null && original.date_ceiling !== null
@@ -370,7 +413,7 @@ export function refineDatingFromConvergence(
   // Only override when convergence is strictly tighter (not equal) — UNLESS the
   // reproduction gate fired, in which case we are correcting an unsupported
   // post-WWII date and must override even with a wider construction-era zone.
-  if (!reproForce && convergenceWidth >= originalWidth) return fallback;
+  if (!reproForce && !ceilingForce && convergenceWidth >= originalWidth) return fallback;
 
   // Confidence scales with BOTH layer count and width. A wide convergence is a
   // real improvement over a broad fallback but shouldn't be reported with the
@@ -391,6 +434,8 @@ export function refineDatingFromConvergence(
     confidence,
     reason: reproForce
       ? `No modern-construction evidence present, so a post-WWII reproduction date is not supported; dating is anchored to construction-era evidence converging on ${best.date_floor}–${best.date_ceiling} (${best.layers.join(", ")}).`
+      : ceilingForce || ceilingClamped
+      ? `A bounded construction layer (ceiling c. ${constructionCeiling}) is a terminus ante quem; the later style-driven reading is ruled out and dating is anchored to ${zFloor}–${zCeiling}.`
       : hardFloorClamped
       ? `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on ${best.date_floor}–${best.date_ceiling}; hard-negative post-floor evidence clamps the floor to ${zFloor}.`
       : `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
