@@ -6,6 +6,7 @@ import { buildAuthoredMakers, partitionAuthoredMakers } from "../scripts/generat
 import { AUTHORED_MAKER_ENTRIES } from "../lib/constraints/makersAuthored.generated";
 
 import { buildDatingOverlap, refineDatingFromConvergence } from "../lib/engineDatingOverlap";
+import { buildDatingFindingNarrative } from "../lib/datingFindingNarrative";
 import { reconcileFinalStyle } from "../lib/engineStyleReconciliation";
 import { evaluateSubtype } from "../lib/engineFormEvaluators";
 import {
@@ -579,4 +580,58 @@ test("M9b-core: a multi-period maker spans its FULL active life, not just the fi
   assert.ok(gw, "should match Globe-Wernicke");
   assert.match(gw!.description, /1899.1955/);
   assert.doesNotMatch(gw!.description, /1899.1915\b/);
+});
+
+// ── #5 / #13: dating-finding narrative consistency ──────────────────────────
+const _zone = (over: any = {}) => ({
+  date_floor: 1925, date_ceiling: 1945, layer_count: 3,
+  authority_sum: 15, weighted_authority: 15, effective_layer_count: 2,
+  specific_layer_count: 2, layers: ["joinery", "style", "style_wave"],
+  specific_layers: ["style", "style_wave"], ...over,
+});
+const _narrInput = (over: any = {}) => ({
+  data: { layers: [], convergence_zones: [], overall_floor: null, overall_ceiling: null },
+  styleAttribution: null,
+  finalStyle: { kind: "unresolved", final_style_label: "X", final_style_reason: "" },
+  finalDatingFloor: null, finalDatingCeiling: null, ...over,
+}) as any;
+
+test("#5a: Case 9 names the attributed style instead of claiming none", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: { layers: [], convergence_zones: [_zone()], overall_floor: 1850, overall_ceiling: 1995 },
+    styleAttribution: { name: "Art Deco", date_floor: 1925, date_ceiling: 1945, style_family_id: "x", confidence: 0.8 },
+    finalStyle: { kind: "unresolved", final_style_label: "Art Deco", final_style_reason: "" },
+  }));
+  assert.ok(n, "narrative should be produced");
+  assert.doesNotMatch(n!.headline, /no specific style was attributed/);
+  assert.match(n!.headline, /Art Deco/);
+});
+
+test("#5a: Case 9 still says 'no specific style' when none was attributed", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: { layers: [], convergence_zones: [_zone()], overall_floor: 1850, overall_ceiling: 1995 },
+    styleAttribution: null,
+  }));
+  assert.match(n!.headline, /no specific style was attributed/);
+});
+
+test("#5b: narrative enumerates only corroborating (specific) layers", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: { layers: [], convergence_zones: [_zone()], overall_floor: 1850, overall_ceiling: 1995 },
+    styleAttribution: { name: "Art Deco", date_floor: 1925, date_ceiling: 1945, style_family_id: "x", confidence: 0.8 },
+    finalStyle: { kind: "unresolved", final_style_label: "Art Deco", final_style_reason: "" },
+  }));
+  assert.match(n!.headline, /2 corroborating layers/);
+  assert.doesNotMatch(n!.headline, /joinery/); // open-ended joinery must not be listed
+  assert.match(n!.headline, /design distinctives/);
+});
+
+test("#13: a null working range never renders 'at uncertain'", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: {
+      layers: [{ layer: "fastener", date_floor: 1840, date_ceiling: 1940, confidence: "low", source_count: 1, source_clues: ["slotted_screw"], present_without_dates: 0, undated_clues: [] }],
+      convergence_zones: [], overall_floor: 1840, overall_ceiling: 1940,
+    },
+  }));
+  assert.doesNotMatch(n!.headline, /at uncertain/);
 });
