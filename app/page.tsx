@@ -969,11 +969,12 @@ function EvidenceRankedList({
   const confScore = (c: string) =>
     c === "high" ? 1 : c === "moderate" ? 0.7 : c === "low" ? 0.4 : 0;
   // A layer's allowed range is [floor ?? -inf, ceiling ?? +inf]; it "agrees"
-  // when that interval intersects the convergence window. One-sided bounds
-  // (e.g. "after 1860") therefore still agree if they don't exclude it.
+  // when that interval overlaps the convergence window with positive width.
+  // A single touching endpoint (e.g. "before 1830" vs a window opening at
+  // 1830) is treated as mild tension, not agreement, so it gets no checkmark.
   const overlaps = (f: number | null, c: number | null) => {
     if (!haveWindow) return true;
-    return (f ?? -Infinity) <= (winCeiling as number) && (c ?? Infinity) >= (winFloor as number);
+    return (f ?? -Infinity) < (winCeiling as number) && (c ?? Infinity) > (winFloor as number);
   };
   const rangeText = (f: number | null, c: number | null) =>
     f != null && c != null ? `${f}–${c}` : f != null ? `after ${f}` : c != null ? `before ${c}` : "";

@@ -23,7 +23,7 @@ function build(ov, styleAttribution, p2Floor, p2Ceiling){
   const haveWindow=winFloor!=null&&winCeiling!=null;
   const spanScore=s=>s<=20?1:s<=35?0.82:s<=55?0.6:s<=80?0.4:0.25;
   const confScore=c=>c==="high"?1:c==="moderate"?0.7:c==="low"?0.4:0;
-  const overlaps=(f,c)=>!haveWindow?true:(f??-Infinity)<=winCeiling&&(c??Infinity)>=winFloor;
+  const overlaps=(f,c)=>!haveWindow?true:(f??-Infinity)<winCeiling&&(c??Infinity)>winFloor;
   const rangeText=(f,c)=>f!=null&&c!=null?`${f}–${c}`:f!=null?`after ${f}`:c!=null?`before ${c}`:"";
   const datable=[],noSignal=[];
   for(const l of ov.layers){
