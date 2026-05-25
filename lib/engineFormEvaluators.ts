@@ -429,6 +429,30 @@ export function getCommonAliasesForDisplay(form_id: string | null, limit = 3): s
   return cleaned;
 }
 
+/**
+ * Return the form's free-text regional / period context for report rendering.
+ * Empty string when the form has no notes. Surfaced in p3.regional_period_notes
+ * and rendered as the "Regional & period context" dropdown in the report.
+ */
+export function getRegionalPeriodNotes(form_id: string | null): string {
+  if (!form_id) return "";
+  const form = getForm(form_id);
+  return (form?.regional_period_notes ?? "").trim();
+}
+
+/**
+ * Return the form's full cousin_form_contrasts prose — the general
+ * "how this form differs from similar pieces" statements. Distinct from
+ * evaluateCousinContrast(), which surfaces only the subset matching the
+ * specific alternatives the engine scored. Surfaced in
+ * p3.cousin_form_contrasts and rendered as the "How it differs" dropdown.
+ */
+export function getCousinFormContrasts(form_id: string | null): string[] {
+  if (!form_id) return [];
+  const form = getForm(form_id);
+  return (form?.cousin_form_contrasts ?? []).map((s) => String(s).trim()).filter(Boolean);
+}
+
 // ── B5 Hybrid form router ────────────────────────────────────────────────
 
 export type HybridAnnotation = {

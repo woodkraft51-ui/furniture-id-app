@@ -68,8 +68,16 @@ const NAME_STOP = new Set([
 ]);
 const coreTokens = (name: string): Set<string> =>
   new Set(name.toLowerCase().replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter((t) => t && !NAME_STOP.has(t)));
-const subsetOrEqual = (a: Set<string>, b: Set<string>) =>
-  a.size > 0 && b.size > 0 && ([...a].every((t) => b.has(t)) || [...b].every((t) => a.has(t)));
+// A single shared token is too weak to claim "already covered": "Vaughan-Bassett"
+// must NOT collapse into canonical "Bassett", nor "Lane Venture" into "Lane".
+// So a size-1 core only collides on an EXACT set match; otherwise the smaller
+// core must have ≥2 tokens AND be fully contained in the larger.
+const subsetOrEqual = (a: Set<string>, b: Set<string>) => {
+  if (a.size === 0 || b.size === 0) return false;
+  const [small, large] = a.size <= b.size ? [a, b] : [b, a];
+  if (small.size < 2 && small.size !== large.size) return false;
+  return [...small].every((t) => large.has(t));
+};
 function canonicalMatchFor(makerName: string): string | null {
   const a = coreTokens(makerName);
   for (const e of MAKER_ENTRIES) {

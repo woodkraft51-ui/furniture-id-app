@@ -23,3 +23,168 @@ Cushman Furniture Co.,1886,1980,Bennington VT USA,Cushman Furniture Co.; Cushman
 Willett Furniture Co.,1934,1962,Louisville KY USA,Willett Furniture Co.; Willett; Willett Wildwood,case_goods; bedroom; dining; tables,Known for solid cherry traditional furniture.
 Davis Cabinet Co.,1929,,Nashville TN USA,Davis Cabinet Co.; Davis Cabinet Company; Davis Cabinet,case_goods; bedroom; dining; tables,Traditional Southern cabinet and case goods maker.
 Harden Furniture Co.,1844,2018,McConnellsville NY USA,Harden Furniture Co.; Harden; Harden Furniture,case_goods; bedroom; dining; seating; tables,Long-running solid wood traditional furniture makers
+# --- Batch 3 (2026-05-24): current US-market makers + design lines. Pure rug/mattress/lighting/wall-art brands omitted (cannot be a furniture maker's mark). ---
+A America,1975,,Washington USA,A America; A-America,case_goods; bedroom; dining; tables,Import and solid wood furniture brand.
+Acme Furniture,1985,,Industry CA USA,Acme Furniture; ACME,case_goods; bedroom; dining; seating; tables,Modern importer and distributor.
+Alexvale,1945,,Taylorsville NC USA,Alexvale; Alexvale Furniture,seating; upholstery,Upholstery brand associated with Sherrill.
+American Drew,1927,,North Wilkesboro NC USA,American Drew; American Drew Furniture,case_goods; bedroom; dining,Later La-Z-Boy affiliated brand.
+American Leather,1990,,Dallas TX USA,American Leather; American Leather Comfort Sleeper,seating; upholstery; sleepers,Modern leather and upholstery maker.
+American Woodcrafters,1997,,High Point NC USA,American Woodcrafters,case_goods; bedroom; dining,Modern case goods importer.
+Amish Essentials,2000,,USA,Amish Essentials,case_goods; bedroom; dining; tables,Treat as modern dealer or collection label.
+Archbold Furniture,1900,,Archbold OH USA,Archbold Furniture; Archbold Furniture Co.,case_goods; bedroom; dining,Solid wood case goods maker.
+ART Furniture,2003,,Ontario CA USA,ART Furniture; A.R.T. Furniture,case_goods; bedroom; dining; tables,Modern whole-home furniture brand.
+Artisan and Post by Vaughan-Bassett,2015,,Galax VA USA,Artisan and Post; Artisan & Post; Artisan and Post by Vaughan-Bassett,case_goods; bedroom; dining,Vaughan-Bassett solid wood line.
+Artistica Home,1990,,High Point NC USA,Artistica Home; Artistica,case_goods; tables; dining,Later associated with Lexington Home Brands.
+Ashley,1945,,Arcadia WI USA,Ashley; Ashley Furniture; Ashley Furniture Industries,case_goods; seating; bedroom; dining; tables,Very broad modern mass-market brand.
+AspenHome,1980,,Phoenix AZ USA,AspenHome; Aspen Home; aspenhome,case_goods; bedroom; dining; office furniture,Modern whole-home furniture brand.
+Barcalounger,1940,,Buffalo NY USA,Barcalounger; Barcalounger Recliner; BarcaLounger,seating; recliners; upholstery,Recliner and motion seating brand.
+Barclay Butera by Lexington,2017,,Lexington NC USA,Barclay Butera by Lexington; Barclay Butera; Lexington Barclay Butera,case_goods; bedroom; dining; seating,Designer collection under Lexington.
+Bassett Mirror Company,1902,,Bassett VA USA,Bassett Mirror Company; Bassett Mirror,mirrors; occasional tables; accessories,Separate mirror and accent furniture line.
+BDI,1984,,Chantilly VA USA,BDI; Becker Designed Inc.; BDI Furniture,media furniture; office furniture; tables,Modern media and office furniture.
+Benchmaster,1970,,USA,Benchmaster; BenchMaster,seating; recliners; ottomans,Modern seating brand.
+Bernhardt Case Goods,1889,,Lenoir NC USA,Bernhardt Case Goods; Bernhardt Furniture; Bernhardt,case_goods; bedroom; dining; tables,Parent company founded 1889.
+Bernhardt Interiors,1889,,Lenoir NC USA,Bernhardt Interiors; Bernhardt,seating; case_goods; tables,Bernhardt lifestyle division.
+Bernhardt Exteriors,1889,,Lenoir NC USA,Bernhardt Exteriors; Bernhardt Outdoor; Bernhardt,outdoor furniture; seating; tables,Outdoor division.
+Bernhardt Loft,1889,,Lenoir NC USA,Bernhardt Loft; Bernhardt,case_goods; bedroom; dining,Collection label under Bernhardt.
+Bernhardt Upholstery,1889,,Lenoir NC USA,Bernhardt Upholstery; Bernhardt,seating; upholstery,Upholstery division.
+Best Home Furnishings,1962,,Ferdinand IN USA,Best Home Furnishings; Best Chairs; Best,seating; recliners; upholstery,Best alone is weak without label context.
+Bradington Young,1982,,Hickory NC USA,Bradington Young; Bradington-Young,seating; leather upholstery; recliners,Leather seating brand.
+Bramble,1991,,USA,Bramble; Bramble Furniture,case_goods; tables; dining; bedroom,Imported handmade furniture brand.
+Braxton Culler,1975,,Sophia NC USA,Braxton Culler; Braxton-Culler,seating; upholstery; bedroom; dining; wicker,Casual and coastal furniture maker.
+Brown Jordan,1945,,Pasadena CA USA,Brown Jordan; Brown-Jordan,outdoor furniture; seating; tables,Important outdoor furniture brand.
+Butler Specialty Furniture,1930,,Chicago IL USA,Butler Specialty; Butler Specialty Furniture; Butler,occasional tables; accent furniture; case_goods,Butler alone is weak.
+Canadel,1982,,Louiseville Quebec Canada,Canadel; Canadel Furniture,dining; tables; chairs,Canadian dining furniture maker.
+Canal Dover,1989,,Millersburg OH USA,Canal Dover; Canal Dover Furniture,case_goods; dining; bedroom; tables,Solid wood Ohio furniture maker.
+Caracole,2009,,High Point NC USA,Caracole; Caracole Furniture,case_goods; seating; bedroom; dining,Modern luxury furniture brand.
+Caracole Modern,2009,,High Point NC USA,Caracole Modern; Caracole,case_goods; seating; tables,Collection under Caracole.
+Caracole Signature,2009,,High Point NC USA,Caracole Signature; Caracole,case_goods; seating; tables,Collection under Caracole.
+Castelle,1979,,Fort Lauderdale FL USA,Castelle; Castelle Furniture,outdoor furniture; seating; tables,Outdoor furniture maker.
+Catnapper Furniture,1933,,Cleveland TN USA,Catnapper; Catnapper Furniture,seating; recliners; motion furniture,Jackson Furniture motion seating brand.
+Chaddock,1958,,Morganton NC USA,Chaddock; Chaddock Furniture; Guy Chaddock,case_goods; seating; tables; bedroom; dining,Custom furniture maker.
+Charleston Forge,1984,,Boone NC USA,Charleston Forge,tables; seating; metal furniture,Known for forged metal bases and custom tables.
+Chelsea House,1974,,Rocky Mount NC USA,Chelsea House; Chelsea House Inc.,accent furniture; lighting; accessories,Decorative furniture and accessories.
+Classic Flame,1996,,Delray Beach FL USA,Classic Flame; ClassicFlame,electric fireplaces; media furniture,Twin-Star related brand.
+Coastal Living by Universal,2019,,High Point NC USA,Coastal Living by Universal; Coastal Living; Universal Furniture Coastal Living,case_goods; bedroom; dining; seating,Collection under Universal.
+Coaster,1981,,Santa Fe Springs CA USA,Coaster; Coaster Furniture; Coaster Fine Furniture,case_goods; bedroom; dining; seating; tables,Modern importer and distributor.
+Compositions,1990,,USA,Compositions; Compositions Furniture,case_goods; bedroom; dining,Treat as collection label unless fuller label present.
+Cooper Classics,1950,,Rocky Mount VA USA,Cooper Classics,mirrors; accent furniture; accessories,Decorative accent brand.
+CR Laine,1958,,Hickory NC USA,CR Laine; C.R. Laine; C R Laine,seating; upholstery,Custom upholstery maker.
+Craftmaster,1972,,Taylorsville NC USA,Craftmaster; Craftmaster Furniture,seating; upholstery,Upholstery maker.
+Crestview,1968,,Memphis TN USA,Crestview; Crestview Collection,accent furniture; lighting; accessories,Home accent and occasional furniture.
+CTH Sherrill Occasional,1945,,Hickory NC USA,CTH; CTH Sherrill Occasional; Sherrill Occasional,occasional tables; accent furniture,Sherrill related occasional line.
+Currey And Company,1988,,Atlanta GA USA,Currey And Company; Currey & Company; Currey,lighting; accent furniture; accessories,Decorative lighting and furnishings.
+Darafeev,1959,,Chino CA USA,Darafeev; Darafeev Furniture,seating; game room furniture; bar stools,Game room and bar seating maker.
+Décor-Rest,1972,,Woodbridge Ontario Canada,Décor-Rest; Decor-Rest; Decor Rest,seating; upholstery,Canadian upholstery maker.
+Designmaster,1989,,Hickory NC USA,Designmaster; Designmaster Furniture,seating; dining chairs; stools,Dining chair specialist.
+Durham Furniture,1899,,Durham Ontario Canada,Durham Furniture,case_goods; bedroom; dining,Canadian solid wood furniture maker.
+Elements International,1988,,Mesquite TX USA,Elements International; Elements Furniture,case_goods; bedroom; dining; upholstery,Modern whole-home furniture supplier.
+Emerald Home Furnishings,1962,,Tacoma WA USA,Emerald Home Furnishings; Emerald Home,case_goods; bedroom; dining; seating,Modern furniture supplier.
+England,1964,,New Tazewell TN USA,England Furniture; England; Englander Furniture,seating; upholstery,La-Z-Boy affiliated upholstery maker.
+Essentials for Living,2009,,Foothill Ranch CA USA,Essentials for Living,case_goods; seating; dining; tables,Modern lifestyle furniture brand.
+Fairfield Chair Company,1921,,Lenoir NC USA,Fairfield Chair Company; Fairfield Chair; Fairfield,seating; upholstery; occasional tables,Long-running seating maker.
+Fjords,1941,,Sykkylven Norway,Fjords; Hjellegjerde; Fjords by Hjellegjerde,seating; recliners; upholstery,Norwegian seating brand.
+Flexsteel,1893,,Dubuque IA USA,Flexsteel; Flexsteel Industries,seating; upholstery; recliners,Known for Blue Steel spring seating.
+Franklin,1970,,Houston MS USA,Franklin; Franklin Furniture; Franklin Corporation,seating; upholstery; recliners,Motion upholstery maker.
+Furniture Classics,1992,,Norfolk VA USA,Furniture Classics; Furniture Classics Ltd.,case_goods; dining; tables; accent furniture,Imported and reclaimed wood furniture brand.
+Furniture of America,2005,,City of Industry CA USA,Furniture of America; FOA,case_goods; bedroom; dining; seating,Modern importer.
+Gat Creek,1996,,Berkeley Springs WV USA,Gat Creek; Gat Creek Furniture,case_goods; bedroom; dining; tables,Solid wood American furniture maker.
+Habersham Plantation,1972,,Toccoa GA USA,Habersham Plantation; Habersham,case_goods; bedroom; dining; cabinets,Painted and custom case furniture.
+Hammary,1943,,Lenoir NC USA,Hammary; Hammary Furniture,occasional tables; case_goods; media furniture,Later La-Z-Boy affiliated brand.
+Hancock and Moore,1981,,Hickory NC USA,Hancock and Moore; Hancock & Moore,seating; leather upholstery; recliners,Premium leather upholstery maker.
+HB Designs,1990,,USA,HB Designs; H B Designs,case_goods; accent furniture,Use only with full label wording.
+Hickory Chair,1911,,Hickory NC USA,Hickory Chair; Hickory Chair Furniture Co.,seating; case_goods; tables,High-end traditional furniture maker.
+Hickory White,1902,,Hickory NC USA,Hickory White; Hickory White Furniture,case_goods; seating; tables; bedroom; dining,Sherrill related brand.
+Highland House,1984,,Hickory NC USA,Highland House; Highland House Furniture,seating; upholstery; occasional tables,Sherrill related upholstery brand.
+Homelegance,1984,,Fremont CA USA,Homelegance; Homelegance Furniture,case_goods; bedroom; dining; seating,Modern importer.
+Homestyles,1997,,USA,Homestyles; Home Styles,case_goods; kitchen furniture; bedroom; dining,Ready-to-assemble and casual furniture.
+Hooker Furniture,1924,,Martinsville VA USA,Hooker Furniture; Hooker Furniture Corp.; Hooker,case_goods; bedroom; dining; home office,Hooker alone is weak without label context.
+Howard Elliot,2001,,Wood Dale IL USA,Howard Elliot; Howard Elliott; Howard Elliott Collection,mirrors; accent furniture; accessories,Decorative accessories and accent furniture.
+Hughes Furniture,1989,,Randleman NC USA,Hughes Furniture; Hughes,seating; upholstery,Upholstery maker.
+Huntington House,1982,,Hickory NC USA,Huntington House,seating; upholstery,Custom upholstery maker.
+Intercon,1976,,Salt Lake City UT USA,Intercon; Intercon Furniture,bedroom; dining; case_goods,Solid wood and import furniture brand.
+International Furniture Direct,1987,,Guadalajara Jalisco Mexico,International Furniture Direct; IFD,case_goods; bedroom; dining; tables,Mexican furniture manufacturer.
+Jackson Furniture,1933,,Cleveland TN USA,Jackson Furniture; Jackson Furniture Industries; Jackson,seating; upholstery; recliners,Parent of Catnapper.
+Jessica Charles,1975,,Hickory NC USA,Jessica Charles,seating; upholstery; dining chairs,Sherrill related custom seating brand.
+Jofran,1975,,Norfolk MA USA,Jofran; Jofran Furniture,case_goods; dining; tables; media furniture,Modern importer and supplier.
+John Thomas,1980,,Whitewood VA USA,John Thomas; John Thomas Furniture,dining; chairs; tables; case_goods,Solid wood casual furniture brand.
+Jonathan Adler,1993,,New York NY USA,Jonathan Adler,seating; tables; case_goods; lighting; accessories,Designer brand.
+Kincaid Case Goods,1946,,Hudson NC USA,Kincaid Case Goods; Kincaid; Kincaid Furniture,case_goods; bedroom; dining,Solid wood case goods maker.
+Kincaid Upholstery,1946,,Hudson NC USA,Kincaid Upholstery; Kincaid; Kincaid Furniture,seating; upholstery,Upholstery division under Kincaid.
+King Hickory,1958,,Hickory NC USA,King Hickory; King Hickory Furniture,seating; upholstery,Custom upholstery maker.
+Lane Venture,1972,,Newton NC USA,Lane Venture; Laneventure,outdoor furniture; wicker; seating; tables,Outdoor and casual furniture brand.
+LA-Z-BOY,1927,,Monroe MI USA,LA-Z-BOY; La-Z-Boy; La Z Boy,seating; recliners; upholstery,Recliner and motion seating maker.
+Leather Italia,1997,,Leland NC USA,Leather Italia; Leather Italia USA,seating; leather upholstery,Modern leather seating brand.
+Lee Industries,1969,,Newton NC USA,Lee Industries; LEE Industries,seating; upholstery,Custom upholstery maker.
+Legacy Classic Furniture,1999,,High Point NC USA,Legacy Classic Furniture; Legacy Classic,case_goods; bedroom; dining,Modern case goods brand.
+Legacy Classic Kids,2017,,High Point NC USA,Legacy Classic Kids; Legacy Kids,youth furniture; bedroom,Youth line under Legacy Classic.
+Legacy Leather,1999,,High Point NC USA,Legacy Leather; Legacy Classic Leather,seating; leather upholstery,Leather line under Legacy.
+Legends Furniture,1990,,Tolleson AZ USA,Legends Furniture; Legends,media furniture; bedroom; case_goods,Modern furniture maker.
+Lexington,1901,,Lexington NC USA,Lexington; Lexington Furniture; Lexington Home Brands,case_goods; bedroom; dining; seating,Lexington alone can be weak without label context.
+Liberty Furniture,1992,,Atlanta GA USA,Liberty Furniture; Liberty Furniture Industries,case_goods; bedroom; dining; tables,Modern case goods supplier.
+Lillian August for Hickory White,2008,,Hickory NC USA,Lillian August for Hickory White; Lillian August; Hickory White,case_goods; seating; tables,Designer collection under Hickory White.
+Lloyd Flanders,1906,,Menominee MI USA,Lloyd Flanders; Lloyd Loom; Lloyd Manufacturing,wicker; outdoor furniture; seating; tables,Important wicker and outdoor furniture maker.
+LMCo. Home by Vaughan-Bassett,2018,,Galax VA USA,LMCo. Home; LMCo Home by Vaughan-Bassett; Vaughan-Bassett LMCo,bedroom; dining; case_goods,Vaughan-Bassett designer collection.
+Luonto Furniture,1964,,Lahti Finland,Luonto Furniture; Luonto,seating; sleepers; upholstery,Finnish sleeper and upholstery maker.
+Magnussen Home,1931,,New Hamburg Ontario Canada,Magnussen Home; Magnussen; Magnussen Furniture,case_goods; bedroom; dining; tables,Canadian-founded furniture brand.
+Maitland-Smith,1979,,High Point NC USA,Maitland-Smith; Maitland Smith,case_goods; tables; seating; accessories,Luxury furniture and decorative accessories.
+Marge Carson,1947,,Pomona CA USA,Marge Carson,seating; upholstery; case_goods; bedroom; dining,High-end furniture brand.
+Martin Furniture,1980,,San Diego CA USA,Martin Furniture; Martin Home Furnishings,office furniture; bookcase; case_goods; media furniture,Home office and case furniture.
+Mayo Manufacturing Corporation,1965,,Texarkana TX USA,Mayo Manufacturing; Mayo Furniture; Mayo,seating; upholstery,Upholstery maker.
+MAVIN,1980,,Millersburg OH USA,MAVIN; Mavin Furniture,case_goods; dining; bedroom,Amish and solid wood furniture brand.
+McGuire,1948,,San Francisco CA USA,McGuire; McGuire Furniture,seating; rattan; case_goods; tables,Known for rattan and designer furniture.
+Michael Amini,1988,,Pico Rivera CA USA,Michael Amini; AICO; Amini Innovation Corp.,case_goods; bedroom; dining; seating,Decorative luxury furniture brand.
+Milling Road,2016,,Grand Rapids MI USA,Milling Road; Milling Road by Baker; Baker Milling Road,case_goods; seating; tables,Collection under Baker.
+Miranda Kerr Home by Universal,2022,,High Point NC USA,Miranda Kerr Home; Miranda Kerr Home by Universal; Universal Furniture Miranda Kerr,case_goods; bedroom; dining; seating,Designer collection under Universal.
+Natuzzi Editions,1959,,Santeramo in Colle Italy,Natuzzi Editions; Natuzzi,seating; leather upholstery,Modern Italian leather furniture brand.
+Nichols and Stone,1857,,Gardner MA USA,Nichols and Stone; Nichols & Stone,seating; chairs; tables; dining,Historic chair and dining furniture maker.
+North Cape,1998,,Alsip IL USA,North Cape; NorthCape,outdoor furniture; wicker; seating; tables,Outdoor and wicker furniture brand.
+Old Hickory Tannery,1972,,Hickory NC USA,Old Hickory Tannery,seating; leather upholstery; case_goods,Premium leather and upholstery maker.
+Our House Designs,1980,,USA,Our House Designs,seating; upholstery,Use full label wording only.
+OW Lee,1947,,Ontario CA USA,OW Lee; O.W. Lee; O W Lee,outdoor furniture; seating; tables,Outdoor furniture maker.
+Palliser Furniture,1944,,Winnipeg Manitoba Canada,Palliser; Palliser Furniture,seating; upholstery; recliners,Canadian upholstery maker.
+Parker House,1946,,Los Angeles CA USA,Parker House; Parker House Furniture,bookcase; office furniture; media furniture; seating,Office and entertainment furniture.
+Parker Living,2010,,Los Angeles CA USA,Parker Living; Parker House Parker Living,seating; recliners; upholstery,Motion seating line under Parker House.
+Paul Robert,1983,,Taylorsville NC USA,Paul Robert; Paul Robert Furniture,seating; upholstery,Custom upholstery maker.
+Paula Deen by Craftmaster,2010,,Taylorsville NC USA,Paula Deen by Craftmaster; Paula Deen Home; Craftmaster Paula Deen,seating; upholstery,Designer collection under Craftmaster.
+Philip Reinisch,1932,,Chicago IL USA,Philip Reinisch; Philip Reinisch Company; Reinisch,curio cabinets; display cabinets; case_goods,Known for curio and display cabinets.
+Polywood,1990,,Syracuse IN USA,Polywood; POLYWOOD,outdoor furniture; seating; tables,Recycled plastic outdoor furniture.
+Precedent Furniture,1986,,Newton NC USA,Precedent Furniture; Precedent,seating; upholstery,Sherrill related upholstery brand.
+Pulaski Furniture,1955,,Pulaski VA USA,Pulaski Furniture; Pulaski,case_goods; curio cabinets; bedroom; dining,Known for curios and case goods.
+Rachael Ray Home by Legacy Classic Furniture,2016,,High Point NC USA,Rachael Ray Home; Rachael Ray Home by Legacy Classic; Legacy Classic Rachael Ray,case_goods; bedroom; dining,Designer collection under Legacy Classic.
+RC Furniture,1971,,City of Industry CA USA,RC Furniture; R C Furniture,seating; upholstery,Custom upholstery maker.
+Riverside,1946,,Fort Smith AR USA,Riverside; Riverside Furniture,case_goods; bedroom; dining; office furniture,Case goods and home office furniture maker.
+Robin Bruce,1989,,Hickory NC USA,Robin Bruce,seating; upholstery,Rowe related upholstery brand.
+Rowe Occasional,1946,,Elliston VA USA,Rowe Occasional; Rowe Furniture,occasional tables; accent furniture,Rowe related occasional furniture.
+Rowe Upholstery,1946,,Elliston VA USA,Rowe Upholstery; Rowe Furniture; Rowe,seating; upholstery,Upholstery maker.
+Sam Moore,1940,,Bedford VA USA,Sam Moore; Sam Moore Furniture,seating; upholstery; chairs,Chair and upholstery maker.
+Samuel Lawrence Furniture,1973,,High Point NC USA,Samuel Lawrence Furniture; Samuel Lawrence,case_goods; bedroom; dining,Modern case goods brand.
+Sarreid,1967,,Wilson NC USA,Sarreid; Sarreid Ltd.,case_goods; tables; seating; accessories,Imported furniture and accessories.
+Schnadig,1952,,Chicago IL USA,Schnadig; Schnadig Furniture,seating; upholstery; case_goods,Later associated with Caracole.
+Seaside Casual,1996,,Coventry RI USA,Seaside Casual,outdoor furniture; seating; tables,Recycled polymer outdoor furniture.
+Sherrill Upholstery,1945,,Hickory NC USA,Sherrill Upholstery; Sherrill Furniture; Sherrill,seating; upholstery,Custom upholstery maker.
+Smith Brothers,1926,,Berne IN USA,Smith Brothers; Smith Brothers of Berne,seating; upholstery; recliners,Upholstery maker.
+Southern Motion,1996,,Pontotoc MS USA,Southern Motion,seating; recliners; motion furniture,Motion upholstery maker.
+Stanton Furniture,1973,,Tualatin OR USA,Stanton Furniture; Stanton,seating; upholstery,Upholstery maker.
+Steve Silver,1983,,Forney TX USA,Steve Silver; Steve Silver Company,dining; tables; case_goods; seating,Modern furniture supplier.
+Stressless by Ekornes,1934,,Sykkylven Norway,Stressless; Stressless by Ekornes; Ekornes,seating; recliners; upholstery,Norwegian recliner and seating brand.
+Summer Classics,1978,,Pelham AL USA,Summer Classics,outdoor furniture; seating; tables,Outdoor furniture brand.
+Taylor King,1974,,Taylorsville NC USA,Taylor King; Taylor King Furniture,seating; upholstery,Custom upholstery maker.
+Telescope Casual Furniture,1903,,Granville NY USA,Telescope Casual; Telescope Casual Furniture,outdoor furniture; seating; tables,Outdoor furniture maker.
+Temple,1962,,Maiden NC USA,Temple; Temple Furniture,seating; upholstery,Upholstery maker.
+Tennessee Enterprises,1988,,Lawrenceburg TN USA,Tennessee Enterprises; TEI,dining; chairs; tables,Dining furniture supplier.
+The MT Company,1995,,High Point NC USA,The MT Company; Miles Talbott,seating; upholstery,Custom upholstery brand.
+Theodore Alexander,1996,,Ho Chi Minh City Vietnam,Theodore Alexander,case_goods; seating; tables; accessories,Luxury furniture brand founded by Paul Maitland Smith.
+Tommy Bahama Home,2000,,Lexington NC USA,Tommy Bahama Home; Lexington Tommy Bahama,case_goods; bedroom; dining; seating,Collection under Lexington.
+Tommy Bahama Outdoor Living,2012,,Lexington NC USA,Tommy Bahama Outdoor Living; Tommy Bahama Outdoor; Lexington Tommy Bahama Outdoor,outdoor furniture; seating; tables,Outdoor collection under Lexington.
+UltraComfort,1985,,Old Forge PA USA,UltraComfort; Ultra Comfort,lift chairs; recliners; seating,Lift chair and motion seating brand.
+Universal Furniture,1953,,High Point NC USA,Universal Furniture; Universal,case_goods; bedroom; dining; seating,Universal alone is weak without label context.
+Uttermost,1975,,Rocky Mount VA USA,Uttermost; The Uttermost Co.,mirrors; lighting; accent furniture; accessories,Decorative furniture and accessories.
+Vanguard,1969,,Conover NC USA,Vanguard; Vanguard Furniture,seating; upholstery; case_goods; tables,Custom furniture maker.
+Vaughan-Bassett Furniture Company,1919,,Galax VA USA,Vaughan-Bassett Furniture Company; Vaughan-Bassett; Vaughan Bassett,case_goods; bedroom; dining,Solid wood bedroom and dining maker.
+Wesley Allen,1976,,Los Angeles CA USA,Wesley Allen,beds; metal beds; seating,Iron beds and metal furniture.
+Wesley Hall,1989,,Hickory NC USA,Wesley Hall,seating; upholstery,Custom upholstery maker.
+Whittier Wood Products,1975,,Eugene OR USA,Whittier Wood Products; Whittier Wood,case_goods; bedroom; dining; office furniture,Solid wood furniture maker.
+Wildwood,1968,,Rocky Mount NC USA,Wildwood; Wildwood Lamps; Wildwood Home,lighting; accent furniture; accessories,Lighting and decorative furnishings.
+Winners Only,1988,,Vista CA USA,Winners Only; Winners Only Furniture,case_goods; bedroom; dining; office furniture,Modern case goods brand.
+Woodbridge Furniture,1981,,Thomasville NC USA,Woodbridge Furniture; Woodbridge,case_goods; tables; dining; seating,Traditional occasional and case furniture.
+YUTZY WOODWORKING,2005,,Sugarcreek OH USA,YUTZY WOODWORKING; Yutzy Woodworking; Yutzy,case_goods; bedroom; dining; tables,Amish and solid wood furniture maker.

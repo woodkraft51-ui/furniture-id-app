@@ -923,6 +923,202 @@ function DatingFindingCallout({
   );
 }
 
+// Ranked-evidence list — the redesigned lead dating visual. Each datable
+// layer is a row (date range + strength bar), ranked by how tightly it pins
+// the date; ✓ marks layers whose range agrees with the convergence window.
+// Layers with no datable signal collapse into a footnote; Style is always
+// shown but as low-weight context, pinned last. Replaces the timeline
+// DatingOverlapViz (kept dormant below during redesign review).
+const RANK_LAYER_AUTHORITY: Record<string, number> = {
+  joinery: 9, fastener: 8, toolmark: 8, form: 7, hardware: 6,
+  wood: 6, upholstery: 5, finish: 4, style: 3, style_wave: 2,
+};
+const RANK_LAYER_LABELS: Record<string, string> = {
+  form: "Form", joinery: "Joinery", fastener: "Fasteners", toolmark: "Toolmarks",
+  wood: "Wood", hardware: "Hardware", finish: "Finish", upholstery: "Upholstery",
+};
+
+// Collapsible disclosure used for the Date & Style detail dropdowns
+// (regional/period context, "how it differs"). Native <details>, no JS.
+function DetailDropdown({ title, defaultOpen = false, children }: { title: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  return (
+    <details open={defaultOpen} style={{ borderTop: "1px solid #eadfcf", marginTop: 8 }}>
+      <summary style={{ cursor: "pointer", padding: "12px 0 10px", fontWeight: 600, fontSize: 15, color: "#3d2d1f", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span>{title}</span>
+      </summary>
+      <div style={{ paddingBottom: 12, fontSize: 14, color: "#574634", lineHeight: 1.6 }}>{children}</div>
+    </details>
+  );
+}
+
+function EvidenceRankedList({
+  data,
+  styleAttribution,
+  p2Floor,
+  p2Ceiling,
+}: {
+  data: DatingOverlapData;
+  styleAttribution?: StyleAttributionForViz;
+  p2Floor?: number | null;
+  p2Ceiling?: number | null;
+}) {
+  // Resolve the convergence window the rows are measured against: prefer the
+  // engine's resolved working range, then the strongest convergence zone, then
+  // the overall envelope. Mirrors the DatingFindingCallout above it.
+  const zones = data.convergence_zones ?? [];
+  const sIdx = pickStrongestZoneIndex(zones);
+  const sZone = sIdx >= 0 ? zones[sIdx] : null;
+  const winFloor = p2Floor ?? sZone?.date_floor ?? data.overall_floor ?? null;
+  const winCeiling = p2Ceiling ?? sZone?.date_ceiling ?? data.overall_ceiling ?? null;
+  const haveWindow = winFloor != null && winCeiling != null;
+
+  type Row = {
+    key: string; label: string; rangeText: string;
+    strength: number; tag: string; agrees: boolean; isStyle: boolean;
+  };
+
+  const spanScore = (span: number) =>
+    span <= 20 ? 1 : span <= 35 ? 0.82 : span <= 55 ? 0.6 : span <= 80 ? 0.4 : 0.25;
+  const confScore = (c: string) =>
+    c === "high" ? 1 : c === "moderate" ? 0.7 : c === "low" ? 0.4 : 0;
+  // A layer's allowed range is [floor ?? -inf, ceiling ?? +inf]; it "agrees"
+  // when that interval overlaps the convergence window with positive width.
+  // A single touching endpoint (e.g. "before 1830" vs a window opening at
+  // 1830) is treated as mild tension, not agreement, so it gets no checkmark.
+  const overlaps = (f: number | null, c: number | null) => {
+    if (!haveWindow) return true;
+    return (f ?? -Infinity) < (winCeiling as number) && (c ?? Infinity) > (winFloor as number);
+  };
+  const rangeText = (f: number | null, c: number | null) =>
+    f != null && c != null ? `${f}–${c}` : f != null ? `after ${f}` : c != null ? `before ${c}` : "";
+
+  const datable: Row[] = [];
+  const noSignal: string[] = [];
+
+  for (const l of data.layers) {
+    if (l.layer === "style" || l.layer === "style_wave") continue; // style handled below
+    const label = RANK_LAYER_LABELS[l.layer] ?? l.layer;
+    const hasFloor = l.date_floor != null;
+    const hasCeiling = l.date_ceiling != null;
+    // Datable if at least one bound is known; one-sided bounds ("after 1860",
+    // "before 1830") are real signals, not absences.
+    if ((!hasFloor && !hasCeiling) || l.confidence === "none") {
+      if (l.source_count > 0 || (l.present_without_dates ?? 0) > 0) noSignal.push(label);
+      continue;
+    }
+    const span = hasFloor && hasCeiling ? (l.date_ceiling as number) - (l.date_floor as number) : null;
+    const auth = RANK_LAYER_AUTHORITY[l.layer] ?? 4;
+    const strength = Math.round(
+      (0.4 * (span == null ? 0.3 : spanScore(span)) + 0.35 * (auth / 9) + 0.25 * confScore(l.confidence)) * 100
+    );
+    datable.push({
+      key: l.layer, label,
+      rangeText: rangeText(l.date_floor, l.date_ceiling),
+      strength,
+      tag: span == null ? "open" : span <= 30 ? "strong" : span <= 55 ? "moderate" : "broad",
+      agrees: overlaps(l.date_floor, l.date_ceiling), isStyle: false,
+    });
+  }
+  datable.sort((a, b) => b.strength - a.strength);
+
+  // Style row — always shown when present, as low-weight context, pinned last.
+  let styleRow: Row | null = null;
+  if (styleAttribution && (styleAttribution.date_floor != null || styleAttribution.date_ceiling != null)) {
+    styleRow = {
+      key: "style",
+      label: styleAttribution.name ? `Style — ${styleAttribution.name}` : "Style",
+      rangeText: rangeText(styleAttribution.date_floor, styleAttribution.date_ceiling),
+      strength: 22, tag: "minor",
+      agrees: overlaps(styleAttribution.date_floor, styleAttribution.date_ceiling),
+      isStyle: true,
+    };
+  }
+
+  const rows: Row[] = styleRow ? [...datable, styleRow] : datable;
+  if (rows.length === 0 && noSignal.length === 0) return null;
+
+  const agreeCount = datable.filter((r) => r.agrees).length;
+  const windowText = haveWindow ? `c. ${winFloor}–${winCeiling}` : null;
+
+  const C = {
+    ink: "#3d2d1f", muted: "#6a5845", faint: "#a89e90", line: "#eadfcf",
+    good: "#3f7d4e", track: "#ece4d6", bar: "#b88a52", styleBar: "#bcae9a",
+  };
+
+  return (
+    <div style={{ marginTop: 4 }}>
+      <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.55, marginBottom: 12 }}>
+        {windowText && (
+          <strong style={{ color: C.ink }}>
+            {agreeCount} layer{agreeCount === 1 ? "" : "s"} point to {windowText}.{" "}
+          </strong>
+        )}
+        {noSignal.length > 0 && (
+          <>{noSignal.length} layer{noSignal.length === 1 ? "" : "s"} had no datable signal. </>
+        )}
+        {styleRow && <>Style shown as low-weight context.</>}
+      </div>
+
+      <div style={{ fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: C.faint, marginBottom: 6 }}>
+        Evidence, ranked by how tightly it pins the date
+      </div>
+
+      <div>
+        {rows.map((r, i) => (
+          <div
+            key={r.key}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "16px 1fr 124px",
+              gap: 10,
+              alignItems: "center",
+              padding: "9px 0",
+              borderTop: i === 0 ? "none" : `1px solid ${C.line}`,
+              opacity: r.isStyle ? 0.72 : 1,
+            }}
+          >
+            <div style={{ textAlign: "center", fontSize: 14, color: !r.isStyle && r.agrees ? C.good : C.faint }}>
+              {!r.isStyle && r.agrees ? "✓" : "·"}
+            </div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 14, color: C.ink, fontStyle: r.isStyle ? "italic" : "normal" }}>
+                {r.label}
+              </div>
+              <div style={{ fontSize: 12, color: C.muted, fontVariantNumeric: "tabular-nums" }}>
+                {r.rangeText}
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ flex: 1, height: 8, background: C.track, borderRadius: 5, overflow: "hidden" }}>
+                <div
+                  style={{
+                    width: `${Math.max(12, Math.min(95, r.strength))}%`,
+                    height: "100%",
+                    background: r.isStyle ? C.styleBar : C.bar,
+                    borderRadius: 5,
+                  }}
+                />
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, minWidth: 48, textAlign: "right" }}>{r.tag}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {noSignal.length > 0 && (
+        <details style={{ marginTop: 8 }}>
+          <summary style={{ cursor: "pointer", fontSize: 13, color: C.muted, padding: "8px 0 0", borderTop: `1px solid ${C.line}` }}>
+            {noSignal.length} layer{noSignal.length === 1 ? "" : "s"} present, no datable signal
+          </summary>
+          <div style={{ fontSize: 13, color: C.muted, padding: "8px 0 2px", lineHeight: 1.7 }}>
+            {noSignal.join(" · ")}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+
 function DatingOverlapViz({
   data,
   styleAttribution,
@@ -2046,29 +2242,18 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
 
   const breakdown = valuation.platform_breakdown;
   const laneOrder: Array<keyof typeof breakdown> = ["dealer_buy", "quick_sale", "marketplace", "as_found_retail", "restored_retail"];
-  const score = typeof valuation.sellability_score === "number" ? valuation.sellability_score : null;
+  // Sellability score is intentionally NOT surfaced in the UI — a 0-100 number
+  // reads as false-precision gamification. It still drives the market_factor
+  // multiplier internally; the factor breakdown below explains what helps/hurts.
   const factors = Array.isArray(valuation.sellability_factors) ? valuation.sellability_factors : [];
   const positiveFactors = factors.filter((f) => f.delta > 0);
   const negativeFactors = factors.filter((f) => f.delta < 0);
 
-  const scoreColor = score == null ? "#6a5845" : score >= 70 ? "#3a7d44" : score >= 45 ? "#9a7d2c" : "#a04a2e";
-  const scoreLabel = score == null ? "—" : score >= 70 ? "Strong" : score >= 45 ? "Moderate" : "Weak";
-
   return (
     <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "baseline", marginBottom: 14 }}>
-        <div>
-          <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Standard marketplace</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#3d2d1f", lineHeight: 1.2 }}>{breakdown.marketplace.range}</div>
-        </div>
-        {score != null && (
-          <div style={{ marginLeft: "auto", textAlign: "right" }}>
-            <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Sellability</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: scoreColor, lineHeight: 1.2 }}>
-              {score}/100 <span style={{ fontSize: 13, fontWeight: 500 }}>({scoreLabel})</span>
-            </div>
-          </div>
-        )}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Standard marketplace</div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#3d2d1f", lineHeight: 1.2 }}>{breakdown.marketplace.range}</div>
       </div>
 
       <div style={{ border: "1px solid #e5d8c2", borderRadius: 10, overflow: "hidden", background: "#fffefb" }}>
@@ -2107,11 +2292,11 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
           <p style={{ margin: "0 0 10px" }}>
             Formula: a base price band for{formLabel ? <> a <em>{formLabel.toLowerCase()}</em></> : " the form bucket"} is multiplied by an age factor
             {typeof valuation.age_factor === "number" ? <> (<strong>{valuation.age_factor.toFixed(2)}×</strong>)</> : null} and a market factor
-            {typeof valuation.market_factor === "number" ? <> (<strong>{valuation.market_factor.toFixed(2)}×</strong>)</> : null} derived from the sellability score. Lane ratios then split the result into Dealer Buy through Restored Retail.
+            {typeof valuation.market_factor === "number" ? <> (<strong>{valuation.market_factor.toFixed(2)}×</strong>)</> : null} derived from condition and desirability signals. Lane ratios then split the result into Dealer Buy through Restored Retail.
           </p>
           {(positiveFactors.length > 0 || negativeFactors.length > 0) && (
             <div style={{ marginTop: 10 }}>
-              <div style={{ fontWeight: 700, color: "#3d2d1f", marginBottom: 6 }}>Factors driving the sellability score on this piece:</div>
+              <div style={{ fontWeight: 700, color: "#3d2d1f", marginBottom: 6 }}>What&rsquo;s helping or hurting value on this piece:</div>
               {positiveFactors.length > 0 && (
                 <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
                   {positiveFactors.map((f, i) => (
@@ -2129,9 +2314,6 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
                     </li>
                   ))}
                 </ul>
-              )}
-              {valuation.sellability_clamped_note && (
-                <div style={{ fontSize: 12, color: "#6a5845", fontStyle: "italic", marginTop: 4 }}>{valuation.sellability_clamped_note}</div>
               )}
             </div>
           )}
@@ -3511,40 +3693,86 @@ const p7 = stageOutputs.p7 || null;
 
         {report && analysisMode === "full_analysis" && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
-            <SectionCard title="Analysis Summary"><div style={{ fontSize: 15, lineHeight: 1.7, color: "#3e2f1f", whiteSpace: "pre-wrap" }}>{p6?.summary || report.final_report || "No final report text returned."}</div></SectionCard>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-              <SectionCard title="Primary Identification (Frame)">
-                <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
-                <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p3?.confidence) }}>{p3?.confidence || "Inconclusive"}</strong></div>
-                {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
-                {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
-                  <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                    Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value above.
-                  </div>
-                )}
-                {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
-                  <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                    Why this label: {p3.final_style.final_style_reason}
-                  </div>
-                )}
-                {/* "Alternate possibilities" removed per appraiser direction:
-                    when primary confidence is high the alternates undermine
-                    authority; when primary confidence is low a list of also-rans
-                    doesn't help the user decide. Either case the section hurt
-                    more than it helped. p3.alternatives still computed by the
-                    engine (used by other downstream logic / cousin contrasts)
-                    but no longer rendered in the report. */}
+            {/* Headline — at-a-glance answer. Replaces the prose Analysis
+                Summary and the two "Frame" cards; the frame detail (working
+                range, limitations, style context) now lives in the Date &
+                Style detail card placed just below the dating visual. */}
+            <section style={{ background: "#fffdf9", border: "1px solid #ded3bf", borderRadius: 12, padding: 16, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#3e2f1f", lineHeight: 1.25 }}>{(p3?.display_form || p3?.form || "Unknown").replace(/\s*\(also commonly called:[^)]*\)\s*$/i, "")}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+                {[
+                  { k: "Date", v: p2?.range || "Unknown", c: undefined as string | undefined },
+                  ...(p3?.style_attribution?.name || p3?.style_context
+                    ? [{ k: "Style", v: (p3?.style_attribution?.name || p3?.style_context) as string, c: undefined as string | undefined }]
+                    : []),
+                  { k: "Confidence", v: p3?.confidence || "Inconclusive", c: bandColor(p3?.confidence) },
+                ].map((pill) => (
+                  <span key={pill.k} style={{ display: "inline-flex", gap: 6, alignItems: "baseline", background: "#efe6d6", borderRadius: 999, padding: "5px 12px", fontSize: 14 }}>
+                    <span style={{ fontSize: 11, letterSpacing: 0.4, textTransform: "uppercase", color: "#6a5845" }}>{pill.k}</span>
+                    <strong style={{ color: pill.c || "#3e2f1f" }}>{pill.v}</strong>
+                  </span>
+                ))}
+              </div>
+            </section>
+            {/* Upholstery track moved below the Date & Style detail card. */}
+            {p6?.dating_overlap && (
+              <SectionCard title="How we dated it">
+                {(() => {
+                  const narrative = buildDatingFindingNarrative({
+                    data: p6.dating_overlap,
+                    styleAttribution: p3?.style_attribution ?? null,
+                    finalStyle: p3?.final_style ?? null,
+                    finalDatingFloor: p2?.date_floor ?? null,
+                    finalDatingCeiling: p2?.date_ceiling ?? null,
+                  });
+                  if (!narrative) return null;
+                  // Tone + reasoning only. The date window is carried by the
+                  // headline pill and the ranked list's summary line, so the
+                  // callout no longer repeats the identification or the number.
+                  return <DatingFindingCallout narrative={narrative} dateFloor={null} dateCeiling={null} identification={null} confidenceBand={p2?.confidence ?? null} />;
+                })()}
+                <EvidenceRankedList
+                  data={p6.dating_overlap}
+                  styleAttribution={p3?.style_attribution ?? null}
+                  p2Floor={p2?.date_floor ?? null}
+                  p2Ceiling={p2?.date_ceiling ?? null}
+                />
+                {/* Old timeline kept dormant during redesign review — restore by
+                    swapping EvidenceRankedList back to DatingOverlapViz with its
+                    original props (data / styleAttribution / styleAlternatives /
+                    styleWaves / bestStyleIntersection / suppressedPartnerIds). */}
               </SectionCard>
-              <SectionCard title="Dating Analysis (Frame)">
-                <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
-                <div style={metaRowStyle}><span>Confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
-                {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
-              </SectionCard>
-            </div>
-            {/* Block 14: Upholstery treated as a separate identification + dating track.
-                Frame ID + dating above are driven only by frame evidence (form,
-                joinery, wood, hardware, finish, toolmark, style). This card
-                surfaces the upholstery track when upholstery evidence is present. */}
+            )}
+            <SectionCard title="Date & style detail">
+              <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
+              <div style={metaRowStyle}><span>Dating confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
+              {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
+              {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
+                <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                  Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value.
+                </div>
+              )}
+              {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
+                <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
+                  Why this label: {p3.final_style.final_style_reason}
+                </div>
+              )}
+              {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
+              {p3?.regional_period_notes && (
+                <DetailDropdown title="Regional & period context">
+                  <div style={{ whiteSpace: "pre-wrap" }}>{p3.regional_period_notes}</div>
+                </DetailDropdown>
+              )}
+              {Array.isArray(p3?.cousin_form_contrasts) && p3.cousin_form_contrasts.length > 0 && (
+                <DetailDropdown title="How it differs from similar pieces">
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {p3.cousin_form_contrasts.map((c: string, i: number) => (
+                      <div key={i}>{c}</div>
+                    ))}
+                  </div>
+                </DetailDropdown>
+              )}
+            </SectionCard>
             {p2?.upholstery_layer && (
               <SectionCard title="Upholstery (separate from frame)">
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
@@ -3589,37 +3817,6 @@ const p7 = stageOutputs.p7 || null;
                 )}
               </SectionCard>
             )}
-            {p6?.dating_overlap && (
-              <SectionCard title="Dating Overlap by Evidence Layer">
-                {(() => {
-                  const narrative = buildDatingFindingNarrative({
-                    data: p6.dating_overlap,
-                    styleAttribution: p3?.style_attribution ?? null,
-                    finalStyle: p3?.final_style ?? null,
-                    finalDatingFloor: p2?.date_floor ?? null,
-                    finalDatingCeiling: p2?.date_ceiling ?? null,
-                  });
-                  if (!narrative) return null;
-                  // Headline date for the answer band: prefer the engine's
-                  // resolved working range, then the strongest convergence zone,
-                  // then the overall envelope.
-                  const ov = p6.dating_overlap;
-                  const sIdx = pickStrongestZoneIndex(ov.convergence_zones ?? []);
-                  const sZone = sIdx >= 0 ? ov.convergence_zones[sIdx] : null;
-                  const ansFloor = p2?.date_floor ?? sZone?.date_floor ?? ov.overall_floor ?? null;
-                  const ansCeiling = p2?.date_ceiling ?? sZone?.date_ceiling ?? ov.overall_ceiling ?? null;
-                  return <DatingFindingCallout narrative={narrative} dateFloor={ansFloor} dateCeiling={ansCeiling} identification={p3?.display_form || p3?.form || null} confidenceBand={p2?.confidence ?? null} />;
-                })()}
-                <DatingOverlapViz
-                  data={p6.dating_overlap}
-                  styleAttribution={p3?.style_attribution ?? null}
-                  styleAlternatives={p3?.style_alternatives ?? []}
-                  styleWaves={p3?.style_waves ?? []}
-                  bestStyleIntersection={p3?.best_style_intersection ?? null}
-                  suppressedPartnerIds={p3?.stacked_revival_partner_ids ?? []}
-                />
-              </SectionCard>
-            )}
             <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}><GlossaryText text={evidenceMeaning(item)} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
             <SectionCard title="Resale Valuation">
               <ResaleValuationSection valuation={p6?.valuation as ValuationShape | undefined} formLabel={p3?.display_form || p3?.form} />
@@ -3629,15 +3826,14 @@ const p7 = stageOutputs.p7 || null;
               <SectionCard title="Cautions and Conflicts">{p6?.tentative_findings?.length ? <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>
             </div>
             <SectionCard title="Next Best Evidence">{Array.isArray(p6?.more_evidence_needed) && p6.more_evidence_needed.length > 0 ? <ul style={listStyle}>{p6.more_evidence_needed.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No additional evidence recommendations were returned.</div>}</SectionCard>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-            <SectionCard title="Negotiating Tips">
-              <TipsList items={p7?.negotiation_tips} />
+            <SectionCard title="Buying &amp; selling tips">
+              <DetailDropdown title="When you're selling">
+                <TipsList items={p7?.selling_tips} />
+              </DetailDropdown>
+              <DetailDropdown title="When you're buying">
+                <TipsList items={p7?.negotiation_tips} />
+              </DetailDropdown>
             </SectionCard>
-
-            <SectionCard title="Selling Tips">
-              <TipsList items={p7?.selling_tips} />
-            </SectionCard>
-        </div>
 
             {/* Conditional appraiser-review CTA — same triggers as the
                 field-scan report; placed at the end of full-analysis
