@@ -106,7 +106,25 @@ for(const [k,title] of scenarios){
   const cousins=getCousinFormContrasts(fid);
   if(cousins.length)detail+=dropdown("How it differs from similar pieces",`<div style="display:grid;gap:8px">${cousins.map(c=>`<div>${esc(c)}</div>`).join("")}</div>`);
   const detailCard=card("Date &amp; style detail",detail);
-  cards+=`<div style="max-width:560px;margin:0 auto 30px"><div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:${C.faint};margin-bottom:6px">${title} &middot; engine output</div>${headline}${dating}${detailCard}</div>`;
+  // Resale valuation — NO sellability score (Stage 4)
+  const bd=so.p6?.valuation?.platform_breakdown;
+  let resale="";
+  if(bd){
+    resale+=`<div style="margin-bottom:14px"><div style="font-size:12px;color:#6a5845;letter-spacing:.3px;text-transform:uppercase">Standard marketplace</div><div style="font-size:22px;font-weight:700;color:#3d2d1f">${esc(bd.marketplace.range)}</div></div>`;
+    resale+=`<div style="border:1px solid #e5d8c2;border-radius:10px;overflow:hidden;background:#fffefb">`;
+    ["dealer_buy","quick_sale","marketplace","as_found_retail","restored_retail"].forEach((key,idx)=>{const lane=bd[key];const hl=key==="marketplace";
+      resale+=`<div style="display:grid;grid-template-columns:minmax(120px,1fr) minmax(90px,130px) minmax(0,2fr);gap:12px;padding:10px 14px;${idx?"border-top:1px solid #efe4d0;":""}${hl?"background:#fbf3e3;":""}align-items:baseline"><div style="font-size:13px;font-weight:${hl?700:600};color:#3d2d1f">${esc(lane.label)}</div><div style="font-size:14px;font-weight:700;color:#3d2d1f;text-align:right">${esc(lane.range)}</div><div style="font-size:12.5px;color:#5c4a37;line-height:1.5">${esc(lane.note||"")}</div></div>`;});
+    resale+=`</div><div style="margin-top:10px;font-size:12px;color:${C.faint};font-style:italic">(sellability score removed from UI &mdash; still drives the multiplier internally)</div>`;
+  }
+  const resaleCard=resale?card("Resale valuation",resale):"";
+  // Tips → buying/selling collapsibles (Stage 4)
+  const tipList=(arr:string[])=>`<ul style="margin:0;padding-left:18px;font-size:14px;color:#574634;line-height:1.6">${arr.map(t=>`<li style="margin-bottom:4px">${esc(t)}</li>`).join("")}</ul>`;
+  const sell=so.p7?.selling_tips||[]; const buy=so.p7?.negotiation_tips||[];
+  let tips="";
+  if(sell.length)tips+=dropdown("When you're selling",tipList(sell));
+  if(buy.length)tips+=dropdown("When you're buying",tipList(buy));
+  const tipsCard=tips?card("Buying &amp; selling tips",tips):"";
+  cards+=`<div style="max-width:560px;margin:0 auto 30px"><div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:${C.faint};margin-bottom:6px">${title} &middot; engine output</div>${headline}${dating}${detailCard}${resaleCard}${tipsCard}</div>`;
 }
 const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Report layout — real data</title><style>body{margin:0;background:#f7f3ec;font:16px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px 16px 64px}summary{list-style:revert}</style></head><body>
 <div style="max-width:560px;margin:0 auto 18px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:${C.faint}">Stage 3 &middot; real engine output &middot; headline + dating + detail w/ dropdowns</div>

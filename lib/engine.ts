@@ -6545,7 +6545,7 @@ function buildDecisionGuidance(args: {
     } else if (valuation.sellability_score >= 70) {
       addPair(
         "The piece appears reasonably sellable, so do not expect extreme discounts unless condition or transport issues are present.",
-        "Lean into the piece’s strongest visual and evidence-supported features; the sellability score suggests there is buyer interest if priced realistically."
+        "Lean into the piece’s strongest visual and evidence-supported features; they tend to attract buyer interest when priced realistically."
       );
     }
   }

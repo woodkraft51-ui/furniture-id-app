@@ -2242,29 +2242,18 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
 
   const breakdown = valuation.platform_breakdown;
   const laneOrder: Array<keyof typeof breakdown> = ["dealer_buy", "quick_sale", "marketplace", "as_found_retail", "restored_retail"];
-  const score = typeof valuation.sellability_score === "number" ? valuation.sellability_score : null;
+  // Sellability score is intentionally NOT surfaced in the UI — a 0-100 number
+  // reads as false-precision gamification. It still drives the market_factor
+  // multiplier internally; the factor breakdown below explains what helps/hurts.
   const factors = Array.isArray(valuation.sellability_factors) ? valuation.sellability_factors : [];
   const positiveFactors = factors.filter((f) => f.delta > 0);
   const negativeFactors = factors.filter((f) => f.delta < 0);
 
-  const scoreColor = score == null ? "#6a5845" : score >= 70 ? "#3a7d44" : score >= 45 ? "#9a7d2c" : "#a04a2e";
-  const scoreLabel = score == null ? "—" : score >= 70 ? "Strong" : score >= 45 ? "Moderate" : "Weak";
-
   return (
     <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "baseline", marginBottom: 14 }}>
-        <div>
-          <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Standard marketplace</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#3d2d1f", lineHeight: 1.2 }}>{breakdown.marketplace.range}</div>
-        </div>
-        {score != null && (
-          <div style={{ marginLeft: "auto", textAlign: "right" }}>
-            <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Sellability</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: scoreColor, lineHeight: 1.2 }}>
-              {score}/100 <span style={{ fontSize: 13, fontWeight: 500 }}>({scoreLabel})</span>
-            </div>
-          </div>
-        )}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, color: "#6a5845", letterSpacing: 0.3, textTransform: "uppercase" }}>Standard marketplace</div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#3d2d1f", lineHeight: 1.2 }}>{breakdown.marketplace.range}</div>
       </div>
 
       <div style={{ border: "1px solid #e5d8c2", borderRadius: 10, overflow: "hidden", background: "#fffefb" }}>
@@ -2303,11 +2292,11 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
           <p style={{ margin: "0 0 10px" }}>
             Formula: a base price band for{formLabel ? <> a <em>{formLabel.toLowerCase()}</em></> : " the form bucket"} is multiplied by an age factor
             {typeof valuation.age_factor === "number" ? <> (<strong>{valuation.age_factor.toFixed(2)}×</strong>)</> : null} and a market factor
-            {typeof valuation.market_factor === "number" ? <> (<strong>{valuation.market_factor.toFixed(2)}×</strong>)</> : null} derived from the sellability score. Lane ratios then split the result into Dealer Buy through Restored Retail.
+            {typeof valuation.market_factor === "number" ? <> (<strong>{valuation.market_factor.toFixed(2)}×</strong>)</> : null} derived from condition and desirability signals. Lane ratios then split the result into Dealer Buy through Restored Retail.
           </p>
           {(positiveFactors.length > 0 || negativeFactors.length > 0) && (
             <div style={{ marginTop: 10 }}>
-              <div style={{ fontWeight: 700, color: "#3d2d1f", marginBottom: 6 }}>Factors driving the sellability score on this piece:</div>
+              <div style={{ fontWeight: 700, color: "#3d2d1f", marginBottom: 6 }}>What&rsquo;s helping or hurting value on this piece:</div>
               {positiveFactors.length > 0 && (
                 <ul style={{ margin: "4px 0 8px", paddingLeft: 18 }}>
                   {positiveFactors.map((f, i) => (
@@ -2325,9 +2314,6 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
                     </li>
                   ))}
                 </ul>
-              )}
-              {valuation.sellability_clamped_note && (
-                <div style={{ fontSize: 12, color: "#6a5845", fontStyle: "italic", marginTop: 4 }}>{valuation.sellability_clamped_note}</div>
               )}
             </div>
           )}
@@ -3840,15 +3826,14 @@ const p7 = stageOutputs.p7 || null;
               <SectionCard title="Cautions and Conflicts">{p6?.tentative_findings?.length ? <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>
             </div>
             <SectionCard title="Next Best Evidence">{Array.isArray(p6?.more_evidence_needed) && p6.more_evidence_needed.length > 0 ? <ul style={listStyle}>{p6.more_evidence_needed.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No additional evidence recommendations were returned.</div>}</SectionCard>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-            <SectionCard title="Negotiating Tips">
-              <TipsList items={p7?.negotiation_tips} />
+            <SectionCard title="Buying &amp; selling tips">
+              <DetailDropdown title="When you're selling">
+                <TipsList items={p7?.selling_tips} />
+              </DetailDropdown>
+              <DetailDropdown title="When you're buying">
+                <TipsList items={p7?.negotiation_tips} />
+              </DetailDropdown>
             </SectionCard>
-
-            <SectionCard title="Selling Tips">
-              <TipsList items={p7?.selling_tips} />
-            </SectionCard>
-        </div>
 
             {/* Conditional appraiser-review CTA — same triggers as the
                 field-scan report; placed at the end of full-analysis
