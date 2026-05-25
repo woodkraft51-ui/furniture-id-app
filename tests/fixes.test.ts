@@ -375,6 +375,49 @@ test("Repro gate: WITH modern-construction evidence, a modern date is allowed to
   assert.ok((r.date_floor ?? 0) >= 1945, `modern date should stand when evidence supports it, got ${r.date_floor}`);
 });
 
+// ── Construction-ceiling gate (generalizes the repro gate below 1945) ────────
+// Layer band shape with an explicit confidence (the repro fixture omits it).
+const cLayer = (layer: any, fl: number | null, ce: number | null, conf: any, clue: string) =>
+  ({ layer, date_floor: fl, date_ceiling: ce, confidence: conf, source_count: fl == null ? 0 : 1, source_clues: [clue], present_without_dates: 0, undated_clues: [] }) as any;
+const cZone = (fl: number, ce: number, auth: number, wAuth: number, eff: number, spec: number, layers: any[]) =>
+  ({ date_floor: fl, date_ceiling: ce, layer_count: layers.length, authority_sum: auth, weighted_authority: wAuth, effective_layer_count: eff, specific_layer_count: spec, layers }) as any;
+
+// Regency-Gothic cabinet: hand-cut dovetails cap joinery at 1860 (moderate layer),
+// but a revival-wave intersection zone (1900–1910) outranks the genuine broad zone.
+const regencyGothicFixture = () => ({
+  layers: [
+    cLayer("form", 1780, 1900, "high", "cabinet_form"),
+    cLayer("joinery", 1500, 1860, "moderate", "hand_cut_dovetails"),
+    cLayer("finish", 1800, 1920, "low", "shellac_intact"),
+    cLayer("style", 1840, 1930, "high", "gothic_revival_style"),
+    cLayer("style_wave", 1840, 1940, "high", "wave"),
+  ],
+  convergence_zones: [
+    cZone(1900, 1910, 24, 24, 2.0, 1, ["style_wave"]),
+    cZone(1800, 1920, 30, 18, 3.0, 3, ["form", "joinery", "finish", "style", "style_wave"]),
+  ],
+  overall_floor: 1800, overall_ceiling: 1940,
+}) as any;
+
+test("Ceiling gate: a moderate+ bounded construction layer vetoes a later style-driven zone", () => {
+  const p2 = { range: "late 19th–20th c.", date_floor: 1850, date_ceiling: 2000, confidence: "Low" };
+  const r = refineDatingFromConvergence(p2, regencyGothicFixture(), false);
+  assert.ok(r.refined, "should override the broad p2");
+  assert.ok((r.date_ceiling ?? 9999) <= 1860, `must not date past the pre-1860 joinery ceiling, got ${r.date_ceiling}`);
+  assert.ok((r.date_floor ?? 0) < (r.date_ceiling ?? 0), "range must not be degenerate");
+});
+
+test("Ceiling gate: a LOW-confidence construction ceiling does NOT clamp (no over-correction)", () => {
+  // Same shape but joinery is LOW confidence (e.g. an ambiguous hammer-veneer read).
+  // The clamp must stay out so a genuine style-driven reading is left intact.
+  const lowConfJoinery = regencyGothicFixture();
+  lowConfJoinery.layers[1] = cLayer("joinery", 1500, 1860, "low", "hand_cut_dovetails");
+  const p2 = { range: "late 19th–20th c.", date_floor: 1850, date_ceiling: 2000, confidence: "Low" };
+  const r = refineDatingFromConvergence(p2, lowConfJoinery, false);
+  assert.equal(r.date_floor, 1900, `low-confidence ceiling should not clamp; expected the 1900 zone, got ${r.date_floor}`);
+  assert.equal(r.date_ceiling, 1910, `low-confidence ceiling should not clamp; got ${r.date_ceiling}`);
+});
+
 // ── Dust-cover material as a dating clue (terminus post quem) ────────────────
 test("Dust cover: a synthetic non-woven, stapled cover synthesizes post-1950 hard-negative anchors", () => {
   const out = deriveDustCoverClues([
