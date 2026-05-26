@@ -759,7 +759,7 @@ const logan_1914_tall_case_clock: ScanFixture = {
 // with a negating description (dropped). M1 3 keyless obs.
 const oak_swivel_bankers_office_chair: ScanFixture = {
   label: "oak_swivel_bankers_office_chair",
-  note: "Oak swivel banker's office chair (~1900–1920, date correct). Validates fix#1 metal→wood + fix#2 live. Tracks M6 cast/wrought_iron → 'Toledo industrial' style + Iron/Metal alt-forms on solid oak; modern_caster n=3 (replacement part); phantom 'Upholstered'.",
+  note: "Oak swivel banker's office chair (~1900–1920, date correct). Validates fix#1 metal→wood + fix#2 + T2a live: cast/wrought_iron from the tilt mechanism no longer make a wood chair 'Toledo industrial' (style now Unresolved) or add Iron/Metal alt-forms. Still tracks modern_caster n=3 + phantom 'Upholstered'.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -781,7 +781,10 @@ const oak_swivel_bankers_office_chair: ScanFixture = {
   asSeen: {
     formId: "Upholstered armchair",
     display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "context_only",
+    // T2a: was context_only "Toledo-style mid-century industrial task chair"
+    // (a wood chair mislabeled industrial-metal from the cast-iron tilt mechanism);
+    // the metal style-context + Iron/Metal alt-forms are now suppressed → Unresolved.
+    finalStyleKind: "unresolved",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,
@@ -905,7 +908,7 @@ const midcentury_craft_panel_back_rocker: ScanFixture = {
 // Metal furniture" alt-forms (brass_frame correctly PARKED in wood layer by shipped fix#1).
 const william_mary_burl_escritoire_on_stand: ScanFixture = {
   label: "william_mary_burl_escritoire_on_stand",
-  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. Form correct (Escritoire).",
+  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. T2a: veneer now reads wood-primary → brass_frame 'Brass bed'/'Metal furniture' alt-forms suppressed; form is the synonymous 'Slant-front desk' (Escritoire now alt #1). The wrong-late date (M11/width-cap) is still open.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -946,8 +949,12 @@ const william_mary_burl_escritoire_on_stand: ScanFixture = {
     { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
   ],
   asSeen: {
-    formId: "Escritoire",
-    display: "Late 20th-Century Formal Traditional Escritoire (also commonly called: Escritoire, French escritoire)",
+    // T2a: gating the metal form-candidates (brass_frame → "Brass bed"/"Metal
+    // furniture") on the now veneer-aware woodPrimary flipped the close primary
+    // form from "Escritoire" to the synonymous "Slant-front desk" ("Escritoire"
+    // is now alt #1). Both are correct for this slant-front bureau-on-stand.
+    formId: "Slant-front desk",
+    display: "Late 20th-Century Formal Traditional Slant-front desk (also commonly called: Slant-front desk, Slant-lid desk)",
     finalStyleKind: "revival_wave",
     dateRange: "Broadly late 19th to 20th century",
     dateFloor: 1900,
