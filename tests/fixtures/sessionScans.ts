@@ -1198,4 +1198,62 @@ const biedermeier_flame_walnut_secretary: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary];
+// Labeled Phoenix Chair Co. (Sheboygan, WI) Colonial Revival Windsor rocker, "Busy
+// since 1875", model No. 962-4½. Form correct (Windsor chair). Date c.1890–1920 (6122
+// catch-all) is plausible for a Phoenix Windsor (~1890–1950). KEY: M12 WRONG-ENTITY
+// hallucination (n=2, = Lloyd Flanders) — the matcher fabricated THREE wrong marks
+// (Phoenix FURNITURE Co. of Grand Rapids 1872–1911 from "Phoenix"; Grand Rapids
+// Association triangle; generic cabinetmaker) even though the model EXPLICITLY
+// disambiguated "Phoenix Chair Co. … distinct from Phoenix Furniture Co." The
+// word-boundary M12 fix can't catch this (real words, wrong entity); the correct maker
+// (Phoenix Chair Co.) is absent from the seed DB so the matcher grabbed the nearest
+// "Phoenix". All 3 are LOW authority so they didn't anchor the date (mitigation held),
+// but they pollute attribution. M9: real maker + "Busy since 1875" founding TPQ not
+// surfaced. #10: spurious "Spindle Gallery" style label again (= S001).
+const phoenix_chair_co_windsor_rocker: ScanFixture = {
+  label: "phoenix_chair_co_windsor_rocker",
+  note: "Labeled Phoenix Chair Co. Windsor rocker; M12 wrong-entity (n=2): matcher hallucinated Phoenix FURNITURE Co. + 2 more from 'Phoenix Chair Co.' despite the model disambiguating them — word-boundary fix can't catch (real words/wrong entity); correct maker absent from DB. LOW-authority so date held (c.1890–1920). M9 real-maker/'since 1875' unparsed; #10 'Spindle Gallery' (= S001).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "label", clue: "maker_label", confidence: 85, description: "Paper label affixed to underside of seat reads 'Phoenix Chair Co. / SHEBOYGAN, WISCONSIN / Busy since 1875 / No. 962-4½ / Fin. [handwritten]'. Label is aged, yellowed, and partially translucent but fully legible. This is a high-authority maker identification." },
+    { type: "label", clue: "visible_text", confidence: 85, description: "Model or style number handwritten on label as 'No. 962-4½'. A 'Fin.' line follows with partially legible handwritten finish designation. These are production/order identifiers consistent with factory chair labeling practice." },
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Solid saddle-shaped plank seat visible from front, side, and underside views. Seat is deeply saddled/carved for comfort, characteristic of Windsor chair construction." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Continuous bent hoop/bow crest rail forming the back and arm rail in one piece, with vertical spindles and a central shaped splat. Classic Windsor bow-back or hoop-back form." },
+    { type: "form", clue: "spindle_back", confidence: 45, description: "Multiple turned vertical spindles visible flanking a central decorative splat. Spindles are slender and round-tenoned into the seat and bow rail. Count appears to be approximately 7 spindles plus central splat." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Continuous arm rail sweeps from the bow back down to arm terminals supported by turned arm posts/balusters on each side. Classic Windsor continuous-arm or bow-arm configuration." },
+    { type: "style", clue: "windsor_rocker_form", confidence: 52, description: "Chair is a Windsor-style rocking chair with bow/hoop back, saddle seat, turned legs, turned stretchers, and curved rocker runners. Central splat has incised shield/urn/arrow decorative motif consistent with Colonial Revival Windsor production." },
+    { type: "style", clue: "central_splat_incised_motif", confidence: 52, description: "Central back splat has a shaped profile with incised decorative lines forming a shield or urn-and-arrow motif. This decorative element is characteristic of late 19th to early 20th century Colonial Revival Windsor production, distinguishing it from plain-spindle Windsor forms." },
+    { type: "structure", clue: "round_tenon", confidence: 82, description: "All spindles, arm posts, and legs appear to use round tenon joinery socketed into the seat plank and bow rail, consistent with Windsor chair construction tradition. Visible at leg-to-seat and spindle-to-bow junctions." },
+    { type: "structure", clue: "turned_legs", confidence: 82, description: "Four turned legs with vase/baluster turning profiles visible from front and side. Turning is well-defined with multiple coves and swells. Legs terminate into rocker runners." },
+    { type: "structure", clue: "stretchers", confidence: 82, description: "Turned H-stretcher or box-stretcher system visible connecting the legs. Front stretcher and side/back stretchers visible. Stretchers are turned with baluster profiles matching the legs." },
+    { type: "structure", clue: "rocker_runners", confidence: 82, description: "Curved rocker runners visible from front, side, and back views. Runners are substantial in width and curve gracefully. Ends of runners show wear consistent with use. Runners appear to be attached to the leg bottoms via turned tenon sockets." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "All visible components — seat, bow rail, spindles, legs, stretchers, arm rail, and rockers — appear to be solid wood. No veneer or laminate visible. Seat underside shows solid plank construction with natural wood grain." },
+    { type: "materials", clue: "wood_species_likely_maple_or_birch", confidence: 45, description: "Wood appears to be a tight-grained hardwood stained very dark (near-black/dark walnut tone). Grain visible on seat underside shows fine, relatively uniform texture consistent with maple or birch — both common in factory Windsor chair production of the late 19th to mid-20th century. Species cannot be confirmed without closer examination." },
+    { type: "finish", clue: "refinished_surface", confidence: 55, description: "The chair is finished in a very dark, near-black stain that is uniform across all surfaces including the seat underside. The darkness and uniformity suggest either a factory-applied dark finish or a later refinish. Some wear through the finish is visible at the rocker ends and seat edges, suggesting the finish has some age." },
+    { type: "condition", clue: "wear_at_contact_points", confidence: 54, description: "Visible wear through the dark finish at rocker runner ends, seat edges, and arm terminals. Scratches visible on seat underside. Wear pattern is consistent with genuine use over time rather than artificial distressing." },
+    { type: "condition", clue: "paper_label_aged", confidence: 54, description: "Paper label on seat underside is yellowed, aged, and partially translucent with age-related foxing/staining. Label is intact and fully legible. Age of label is consistent with mid-20th century or earlier production." },
+    { type: "construction", clue: "saddle_seat_carved", confidence: 96, description: "Seat is a carved saddle/pommel form — deeply shaped with a central ridge and scooped sides — visible from front and side views. This is a defining Windsor chair construction feature requiring hand or machine shaping of a solid plank." },
+    { type: "construction", clue: "bent_bow_rail", confidence: 95, description: "The continuous hoop/bow back and arm rail is a single steam-bent or bent-laminated member forming the entire upper perimeter of the chair. Visible from front, side, and back views. No visible joints in the bow rail." },
+    { type: "construction", clue: "turned_arm_supports", confidence: 96, description: "Two turned baluster-form arm posts visible on each side, supporting the continuous arm/bow rail. Turning profiles match the leg turnings, suggesting unified factory production." },
+    { type: "style", clue: "colonial_revival_windsor", confidence: 52, description: "The combination of bow-back Windsor form, central decorative splat with incised motif, dark stain finish, and factory production by Phoenix Chair Co. of Sheboygan WI is consistent with Colonial Revival Windsor chair production, broadly c. 1890-1950." },
+    { type: "label", clue: "maker_geographic_origin", confidence: 85, description: "Label explicitly states 'SHEBOYGAN, WISCONSIN' as the manufacturing location. Phoenix Chair Co. of Sheboygan WI is a documented American chair manufacturer, distinct from Phoenix Furniture Co. of Grand Rapids MI. The 'Busy since 1875' tagline indicates the company's founding or operating date." },
+    { type: "form", clue: "rocking_chair_form", confidence: 68, description: "Chair has curved rocker runners attached to the leg bases, definitively identifying this as a rocking chair rather than a static Windsor armchair." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "label", clue: "maker_mark_cabinetmaker_paper_labels_and_inscriptions", confidence: 50, description: "Detected maker mark: Cabinetmaker paper labels and inscriptions (generic). Mark type: paper_label. Dating reference: 1770–1860. Confidence tier: LOW." },
+    { type: "label", clue: "maker_mark_grand_rapids_furniture_association_triangle", confidence: 50, description: "Detected maker mark: Grand Rapids Furniture Association triangle mark. Mark type: association_mark. Dating reference: 1900–1940. Confidence tier: LOW." },
+    { type: "label", clue: "maker_mark_phoenix_furniture_co", confidence: 60, description: "Detected maker mark: Phoenix Furniture Co.. Mark type: paper_label. Dating reference: 1872–1911. Confidence tier: LOW." },
+  ],
+  asSeen: {
+    formId: "Windsor chair",
+    display: "Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker];
