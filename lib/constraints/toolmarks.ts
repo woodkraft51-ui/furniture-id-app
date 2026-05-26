@@ -179,8 +179,12 @@ export const TOOLMARK_TYPES: ToolmarkTypeEntry[] = [
       "Circular saw arcs on small replacement parts, drawer bottoms, shelves, or backboards may date the repair rather than the whole piece.",
     ],
     period_associations: [
-      { period_label: "Early industrial circular-saw adoption and mixed milling evidence", date_floor: 1830, date_ceiling: 1880 },
-      { period_label: "Common industrial circular-saw production in furniture stock", date_floor: 1880, date_ceiling: 2030 },
+      {
+        period_label: "Industrial circular-saw milling (continuing technique)",
+        date_floor: 1830,
+        usage_notes:
+          "post-1830 industrial onset, strongest after c. 1880 and in continuous use since. #19: open-ended floor — circular-saw marks are a terminus post quem (≥ c. 1830), NOT an 1830–1880 marker. The prior 1880 ceiling wrongly dated modern pieces to the mid-19th century.",
+      },
     ],
     date_range_summary: "post-1830 as a broad industrial signal; strongest for common furniture-stock dating after c. 1880",
     position_on_piece: [
