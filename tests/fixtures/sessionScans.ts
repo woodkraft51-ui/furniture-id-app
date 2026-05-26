@@ -31,6 +31,10 @@ export type ScanFixture = {
   observations: FixtureObservation[];
   perception?: Record<string, any>;
   intake?: Record<string, any>;
+  // When set, the harness re-runs the P0 seating/spindle derivation on this text
+  // (stripping previously-synthesized clues first) so P0-derivation fixes like the
+  // seating-verb (#10) are exercised end-to-end instead of bypassed by the stub.
+  rawText?: string;
   /** The outcome this scan actually produced, for the fidelity gate. */
   asSeen: {
     formId?: string;
@@ -161,6 +165,9 @@ const sears1960sDresser: ScanFixture = {
   label: "sears_1960s_builder_dresser",
   note: "Owner-dated 1960s; engine maxed at post-1920. wire_nail (1880–1894) + circular_saw_arcs (1830–1880) are continuing-technique onsets with wrong early ceilings — must NOT be #111-b termini. Also deriveStyleContext 'American Empire' (3rd) + seating-verb ('runners seat into the case').",
   perception: minimalPerception,
+  // The verb-of-fitting sentence that synthesized spurious seating (#10). With the
+  // fix, the harness re-derivation must NOT synthesize seating_surface here.
+  rawText: "Dado slots in the case interior where drawer runners and dividers seat into the case sides; machine-cut dado profile.",
   intake: { analysis_mode: "full_analysis" },
   observations: [
     { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "Three full-width drawers stacked vertically in a single case; chest of drawers / dresser form." },
