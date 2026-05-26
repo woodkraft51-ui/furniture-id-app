@@ -267,4 +267,48 @@ const victorian_windsor_rocker: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker];
+const commode_close_stool: ScanFixture = {
+  label: "commode_close_stool",
+  note: "#7 target — enameled-pot maker label (United States Stamping Co.) inflates P1 cap to High ('Label plus… strong anchor') though the model says it's the insert's label, NOT the cabinet. Also backrest_present synthesized from 'case back rail' (FP, #10 sibling); #4 converges-at 1800-1940 vs working 1900-1920; #9 header High vs dating Moderate. Form correct (commode).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "lift_lid", confidence: 68, description: "The top is a hinged lift-lid construction; the side view clearly shows the lid open on brass hinges, defining this as a lift-lid chest/commode form." },
+    { type: "function", clue: "commode_chamber_pot_cabinet", confidence: 70, description: "Interior has a circular cutout in the seat board sized to receive a chamber pot (enameled basin visible inside). This is a Victorian-era close stool / bedside commode / chamber pot cabinet." },
+    { type: "form", clue: "seating_surface", confidence: 68, description: "The hinged top lid and the interior seat board with circular cutout function as a commode seat surface when lid is open." },
+    { type: "structure", clue: "vertical_supports", confidence: 82, description: "Four turned corner posts visible at each corner of the case, extending from the frame down to turned bun feet. Posts show lathe-turned profile with cylindrical shaft." },
+    { type: "structure", clue: "bun_feet", confidence: 82, description: "Four turned bun feet visible at base of corner posts — compressed spherical/bun profile typical of Victorian-era case furniture, c. 1860–1910." },
+    { type: "construction", clue: "frame_and_panel_sides", confidence: 75, description: "Side panels appear to be solid wood boards set within the corner-post frame." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 72, description: "Corner posts and horizontal rails show mortise-and-tenon joinery typical of Victorian case furniture." },
+    { type: "construction", clue: "solid_wood_construction", confidence: 88, description: "All visible surfaces — top, side panels, interior seat board — appear to be solid wood boards, not veneered or plywood construction." },
+    { type: "materials", clue: "wood_species_oak_group", confidence: 45, description: "The side panels and top show open ring-porous grain consistent with oak. Some areas may be walnut or a darker hardwood on the posts." },
+    { type: "hardware", clue: "butt_hinge", confidence: 62, description: "Two brass butt hinges visible attaching the lift-lid to the case back rail. Hinges show aged brass patina." },
+    { type: "hardware", clue: "machine_made_hinge", confidence: 62, description: "The brass butt hinges appear machine-made with relatively uniform barrel and leaf geometry, consistent with post-1840 industrial hardware production." },
+    { type: "hardware", clue: "slotted_screw", confidence: 62, description: "Slotted screw heads visible securing the brass hinges and the brass latch/catch plate. Single-slot heads consistent with pre-1934 hardware." },
+    { type: "hardware", clue: "stamped_metal_bracket", confidence: 45, description: "A rectangular brass latch/catch plate is visible on the interior lid rail, secured with multiple slotted screws." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "Shield-shaped foil/paper label on the enameled chamber pot basin reads: 'U.S. Standard / Enameled Ware / United States Stamping Co. / Moundsville / W. Va.' This is the maker label for the enameled insert, not the wooden cabinet itself. United States Stamping Co. operated in Moundsville, WV, producing enameled ware c. 1880s–1930s." },
+    { type: "condition", clue: "surface_crack_split", confidence: 54, description: "The two-board top shows a significant crack/split running along the glue joint between the two boards. Consistent with seasonal wood movement over many decades." },
+    { type: "condition", clue: "shellac_intact", confidence: 45, description: "The warm amber-brown surface finish appears to be an aged shellac or oil-varnish finish with natural patina and wear. No plastic-like polyurethane sheen visible." },
+    { type: "condition", clue: "age_wear_patina", confidence: 54, description: "Surface scratches, finish loss at edges, darkening in recesses, and overall aged patina consistent with extended use over many decades." },
+    { type: "style", clue: "victorian_utilitarian_form", confidence: 52, description: "The overall form — rectilinear box with turned corner posts, bun feet, hinged lid, and chamber pot insert — is characteristic of Victorian-era bedroom commode / close stool furniture, c. 1860–1910." },
+    { type: "materials", clue: "enameled_steel_basin", confidence: 84, description: "The chamber pot insert is white enameled steel/iron with a dark blue rim band. The U.S. Standard Enameled Ware label confirms this is a stamped and enameled metal basin." },
+    { type: "construction", clue: "two_board_top", confidence: 95, description: "The top lid is constructed from two solid boards joined edge-to-edge, visible from the crack/split along the center joint line." },
+    { type: "construction", clue: "circular_cutout_seat_board", confidence: 96, description: "The interior seat board has a large circular cutout to receive the enameled chamber pot. The cutout edges show age-darkened wood and wear consistent with long use." },
+    { type: "structure", clue: "turned_corner_posts_with_finials", confidence: 82, description: "The four corner posts extend above the top rail and terminate in small turned finial-like caps visible in the underside view." },
+    { type: "visible_text", clue: "visible_text", confidence: 50, description: "Full text visible on shield-shaped label on the enameled basin insert." },
+    { type: "form", clue: "seating_present", confidence: 78, description: "Integrated seating is visible." },
+    { type: "structure", clue: "backrest_present", confidence: 78, description: "A backrest or back rail is visible." },
+    { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
+  ],
+  asSeen: {
+    formId: "Commode (close stool)",
+    display: "Commode (close stool) (also commonly called: close stool, chamber-pot commode)",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1900–1920",
+    dateFloor: 1900,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool];
