@@ -514,6 +514,49 @@ test("M9b-core: maker matching is gated on real label evidence", () => {
   assert.deepEqual(matchMakerMarks("Duncan Phyfe", []), []); // no label observation → no attribution
 });
 
+// ── M12: maker-mark false-positive hardening ─────────────────────────────────
+test("M12 Fix1: a short maker pattern ('sligh') does NOT match inside 'slight'/'slightly'", () => {
+  // Both the China-import cedar chest and the Swivit chair hallucinated Sligh
+  // Furniture Co. because the bare pattern 'sligh' substring-matched the common
+  // word 'slight'. Word-boundary matching must reject this.
+  const matches = matchMakerMarks(
+    "the matte shell shows slight translucency at edges and slight color variation",
+    makerLabelObs
+  );
+  assert.ok(
+    !matches.some((m: any) => m.clue === "maker_mark_sligh_furniture_co"),
+    "'slight' must not trigger a Sligh maker match"
+  );
+});
+
+test("M12 Fix1: a genuine 'Sligh Furniture Co.' label still matches (true positive preserved)", () => {
+  const matches = matchMakerMarks("Labeled Sligh Furniture Co., Holland Michigan", makerLabelObs);
+  assert.ok(
+    matches.some((m: any) => m.clue === "maker_mark_sligh_furniture_co"),
+    "a real Sligh wording must still match"
+  );
+});
+
+test("M12 Fix2: parseLabelDate ignores maker_mark_* clue descriptions (no window-end-as-floor)", () => {
+  // The maker-matcher's own output carries a synthesized operating WINDOW in its
+  // description ('Dating reference: 1933–2005'); parseLabelDate must not re-scan it
+  // and promote the closing year (2005) to a terminus-post-quem floor.
+  const obs = [
+    { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70,
+      description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM.", negated: false } as any,
+  ];
+  assert.equal(parseLabelDate(obs), null, "a maker_mark_* clue must not yield a label date");
+});
+
+test("M12 Fix2: a real visible-text year is still parsed (no over-correction)", () => {
+  const obs = [
+    { type: "label", clue: "visible_text", confidence: 85,
+      description: "Stamped 'Pat. 1952' on the underside.", negated: false } as any,
+  ];
+  const d = parseLabelDate(obs);
+  assert.ok(d && d.year === 1952 && d.kind === "patent", "a genuine patent year should still parse");
+});
+
 // ── Self-authoring: makers.csv → generator → engine (the non-coder pipeline) ──
 test("Authoring: committed authored-makers artifact is in sync with content/makers.csv", () => {
   const csv = fs.readFileSync(path.join(process.cwd(), "content/makers.csv"), "utf8");
@@ -695,6 +738,57 @@ test("#111-b: a continuing-technique onset (wire_nail/circular_saw_arcs ≤1900)
   const p2 = { range: "broad", date_floor: null, date_ceiling: null, confidence: "Low" };
   const r = refineDatingFromConvergence(p2, overlap, /* hasModernConstructionEvidence */ true);
   assert.ok((r.date_ceiling ?? 0) > 1900, `onset clues must not cap a modern piece, got ${r.date_ceiling}`);
+});
+
+// ── fix#1: evidence-floor anchor overrides the unsupported late catch-all ────
+test("fix#1: the 'Broadly late 19th to 20th century' catch-all (fake 1900/2000) is overridden by the evidence floor", () => {
+  // China-cabinet / milking-stool class: the heuristic emits the broad catch-all,
+  // which numericizes to 1900/2000 and used to survive. A real fastener floor
+  // (post-1880) must now anchor the range instead of the placeholder.
+  const overlap = {
+    layers: [
+      { layer: "fastener", date_floor: 1880, date_ceiling: null, confidence: "low", source_count: 1, source_clues: ["wire_nail"] },
+    ],
+    convergence_zones: [],
+  } as any;
+  const p2 = { range: "Broadly late 19th to 20th century", date_floor: 1900, date_ceiling: 2000, confidence: "Low" };
+  const r = refineDatingFromConvergence(p2, overlap, false);
+  assert.ok(r.refined, "the placeholder must be overridden");
+  assert.equal(r.date_floor, 1880, `floor should anchor on the evidence, got ${r.date_floor}`);
+  assert.ok((r.date_ceiling ?? 9999) >= 1880, "the fake 2000 ceiling must be dropped");
+});
+
+test("fix#1: the form layer's FLOOR is used as a terminus-post-quem, but its (open) ceiling is not", () => {
+  // Option A: a form's production START is a real floor. Here form (1880-open) is
+  // the latest floor; finish (1800-1920) provides the ceiling. Result must be
+  // 1880–1920 — proving the form FLOOR bound (1880, not 1800) and that form's open
+  // ceiling did NOT fabricate an upper bound (1920 comes from finish).
+  const overlap = {
+    layers: [
+      { layer: "form", date_floor: 1880, date_ceiling: null, confidence: "low", source_count: 1, source_clues: ["form_china_cabinet"] },
+      { layer: "finish", date_floor: 1800, date_ceiling: 1920, confidence: "low", source_count: 1, source_clues: ["shellac_crazing"] },
+    ],
+    convergence_zones: [],
+  } as any;
+  const p2 = { range: "Broadly late 19th to 20th century", date_floor: 1900, date_ceiling: 2000, confidence: "Low" };
+  const r = refineDatingFromConvergence(p2, overlap, false);
+  assert.equal(r.date_floor, 1880, `form floor should bind, got ${r.date_floor}`);
+  assert.equal(r.date_ceiling, 1920, `ceiling should come from finish, not form, got ${r.date_ceiling}`);
+});
+
+test("fix#1 guard: a committed (non-placeholder) date is NOT overridden by the evidence floor", () => {
+  // A real heuristic date (e.g. American Empire 1830–1870) carries a non-null floor
+  // and is NOT the broad placeholder, so the anchor must leave it untouched.
+  const overlap = {
+    layers: [
+      { layer: "fastener", date_floor: 1880, date_ceiling: null, confidence: "low", source_count: 1, source_clues: ["wire_nail"] },
+    ],
+    convergence_zones: [],
+  } as any;
+  const p2 = { range: "c. 1830–1870", date_floor: 1830, date_ceiling: 1870, confidence: "Moderate" };
+  const r = refineDatingFromConvergence(p2, overlap, false);
+  assert.ok(!r.refined, "a committed date must not be overridden");
+  assert.equal(r.date_floor, 1830, "the committed floor must stand");
 });
 
 // ── #10: seating-verb false-positive — "seat" as a verb of fitting ───────────

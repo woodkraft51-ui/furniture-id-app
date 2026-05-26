@@ -58,7 +58,7 @@ const floor = grab(/Frame date_floor:\s*(\d+)/);
 const ceil = grab(/Frame date_ceiling:\s*(\d+)/);
 const conf = grab(/Frame confidence:\s*(\w+)/);
 const display = grab(/Display:\s*(.+)/);
-const bf = raw.match(/Best fit:\s*\S+\s*\(([^)]+)\)/);
+const bf = raw.match(/Best fit:\s*\S+\s*\((.+)\)\s*$/m); // greedy: handles nested parens, e.g. "Commode (close stool)"
 const formId = bf ? bf[1].trim() : undefined;
 const kind = grab(/"kind"\s*:\s*"(\w+)"/);
 
@@ -83,5 +83,17 @@ out += `    dateCeiling: ${ceil ?? "null"},\n`;
 if (conf) out += `    confidence: ${J(conf)},\n`;
 out += `  },\n};\n`;
 
-console.log(out);
-console.error(`[ingest] ${obs.length} observations (${obs.filter((o) => !o.clue).length} keyless) · register ${label} in SESSION_SCANS`);
+if (process.argv.includes("--append")) {
+  const F = "tests/fixtures/sessionScans.ts";
+  let s = fs.readFileSync(F, "utf8");
+  const marker = "export const SESSION_SCANS: ScanFixture[] = [";
+  const idx = s.indexOf(marker);
+  if (idx < 0) { console.error(`[ingest] could not find SESSION_SCANS in ${F}`); process.exit(1); }
+  s = s.slice(0, idx) + out + "\n" + s.slice(idx);
+  s = s.replace(/(export const SESSION_SCANS: ScanFixture\[\] = \[[^\]]*)\]/, `$1, ${label}]`);
+  fs.writeFileSync(F, s);
+  console.error(`[ingest] appended ${label} to ${F} (${obs.length} obs, ${obs.filter((o) => !o.clue).length} keyless). REVIEW the note, then run the harness to confirm it reproduces.`);
+} else {
+  console.log(out);
+  console.error(`[ingest] ${obs.length} observations (${obs.filter((o) => !o.clue).length} keyless) · register ${label} in SESSION_SCANS (or re-run with --append)`);
+}

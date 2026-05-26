@@ -2146,6 +2146,12 @@ export function parseLabelDate(observations: Observation[]): LabelDate | null {
     .filter(
       (o) =>
         !o.negated &&
+        // Exclude the engine's OWN maker-matcher output (maker_mark_* clues). Their
+        // description carries a synthesized "Dating reference: 1933–2005" operating
+        // WINDOW that is already consumed by the maker-mark date anchor. Re-scanning
+        // it here makes the "latest TPQ wins" rule promote the window's CEILING (e.g.
+        // 2005, a firm's closing year) to a floor — the M12 window-end-as-floor bug.
+        !String(o.clue || "").startsWith("maker_mark_") &&
         (o.type === "label" ||
           o.clue === "maker_label" ||
           o.clue === "visible_text" ||
@@ -6711,10 +6717,26 @@ function findMakerMarkById(id: string): NormalizedMakerMark | null {
  */
 function findMatchingPattern(text: string, patterns: string[]): string | null {
   const lowerText = String(text || "").toLowerCase();
+  const isWordChar = (c: string) => /[a-z0-9]/.test(c);
   for (const pattern of patterns || []) {
     const p = String(pattern || "");
-    if (!p) continue;
-    if (lowerText.includes(p.toLowerCase())) return p;
+    const lp = p.toLowerCase();
+    if (!lp) continue;
+    // Word-boundary substring match: the matched span must not be flanked by
+    // alphanumeric characters. A short pattern like "sligh" then matches the word
+    // "sligh" / "Sligh Furniture" but NOT inside "slight"/"slightly"; "manufacturer"
+    // still matches the standalone word. Internal punctuation in a pattern
+    // (e.g. "charles r. sligh", "globe-wernicke") is unaffected — only the OUTER
+    // boundaries are checked. Fixes the M12 substring false-positive family.
+    let from = 0;
+    while (from <= lowerText.length) {
+      const idx = lowerText.indexOf(lp, from);
+      if (idx < 0) break;
+      const before = idx > 0 ? lowerText[idx - 1] : "";
+      const after = idx + lp.length < lowerText.length ? lowerText[idx + lp.length] : "";
+      if ((!before || !isWordChar(before)) && (!after || !isWordChar(after))) return p;
+      from = idx + 1;
+    }
   }
   return null;
 }
