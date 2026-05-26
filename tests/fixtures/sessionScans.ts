@@ -1426,4 +1426,60 @@ const victorian_barrel_back_parlor_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair];
+const eastlake_oak_settee: ScanFixture = {
+  label: "eastlake_oak_settee",
+  // Eastlake / Modern Gothic oak settee — SUCCESS / control. Everything correct:
+  // form Settee (beat lounge_chair_form), style Eastlake (supported, original_period),
+  // date c.1870–1890 (convergence zone 1870–1895 ADOPTED). The "convergence-worked"
+  // counterpart to the escritoire/Biedermeier disjoint-late failures: succeeds because
+  // a real BOUNDED in-era dating layer exists (eastlake_hardware → 1870–1895) to anchor
+  // the zone. IRONY worth logging: eastlake_hardware is really a STYLE obs ("Not hardware
+  // per se…") mis-keyed to hardware — that mislabel is what gave the bounded anchor;
+  // routing it correctly to style (wt 0.37, no date) could REMOVE the anchor. So this is
+  // a guard against both convergence regressions AND over-eager style→hardware re-routing.
+  note: "Eastlake oak settee — SUCCESS/control. Correct: Settee, Eastlake (orig), c.1870–1890 (convergence 1870–1895 adopted). Convergence-worked because eastlake_hardware gives a bounded in-era anchor (vs escritoire/Biedermeier pre-1850-only). Irony: eastlake_hardware is a mis-keyed STYLE obs whose mislabel supplied the anchor — guard against re-routing it.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Wide upholstered seat accommodating two persons; consistent with settee or loveseat form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Fully upholstered backrest with carved crest rail above; arched top profile framed by carved oak." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Two open arms with scrolled volute terminals and pierced carved brackets beneath arm rails; settee (two-seat) form with full arms on both sides." },
+    { type: "style", clue: "eastlake_hardware", confidence: 52, description: "Overall decorative vocabulary strongly consistent with Eastlake Aesthetic Movement: incised linear carving, fan/feather motifs on crest rail, beaded molding border around back panel, ball finials at crest corners, geometric and stylized plant ornament. Not hardware per se but the carved ornamental language is canonical Eastlake c. 1870-1895." },
+    { type: "style", clue: "style_cues", confidence: 52, description: "Fan/feather carved crest rail with ball finials, beaded molding border, scrolled volute arm terminals, pierced carved arm brackets, and saber-style front legs are all characteristic of American Eastlake or Late Victorian parlor seating c. 1875-1900." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members visible at arms, legs, crest rail, and side rails show solid wood construction with visible grain consistent with oak. No veneer or laminate visible on structural members." },
+    { type: "materials", clue: "wood_species_oak_group", confidence: 82, description: "Warm honey-amber color, visible open grain pattern on arm rails and leg surfaces, and ray fleck visible on flat-sawn surfaces consistent with oak. Golden Oak era finish tone." },
+    { type: "style", clue: "carved_crest_rail", confidence: 52, description: "Crest rail features deeply carved fan/feather or acanthus-leaf motifs with repeating incised vertical elements and ball finials at the corners; highly ornate Eastlake/Late Victorian decorative carving." },
+    { type: "construction", clue: "scrolled_side_corbels", confidence: 88, description: "Scrolled volute corbels visible at the lower corners of the backrest where it meets the seat rail; characteristic Victorian parlor seating ornament c. 1870-1900." },
+    { type: "construction", clue: "pierced_carved_arm_bracket", confidence: 92, description: "Arm brackets beneath the arm rails are pierced (fretwork/cutout) with scrolled foliate motifs; visible on both side views. Characteristic Eastlake/Late Victorian decorative construction detail." },
+    { type: "construction", clue: "beaded_molding_border", confidence: 93, description: "Continuous beaded (rope-bead) molding runs along the inner edge of the backrest frame surrounding the upholstered panel; visible in front and angled closeup views. Characteristic Eastlake decorative molding detail." },
+    { type: "hardware", clue: "nailhead_trim", confidence: 62, description: "Continuous row of brass-colored nailheads visible along the perimeter of both the seat and back upholstered panels; nailheads appear individually placed with slight spacing variation consistent with hand-tacked application rather than modern strip nailhead." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "Cover fabric shows cut-pile velvet characteristics: raised pile surface with blue floral/foliate pattern on cream/tan ground, visible pile direction shading, and soft matte texture consistent with cotton or rayon velvet. Confidence moderate — could be a chenille or jacquard weave with similar appearance." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 45, description: "Alternative classification: the blue floral pattern on cream ground could be a jacquard-woven fabric rather than velvet; the pattern regularity and two-color contrast are consistent with jacquard upholstery. Best-fit classification remains velvet_cover but jacquard_cover is a plausible alternative." },
+    { type: "condition", clue: "upholstery_wear", confidence: 54, description: "Seat upholstery shows sagging and distortion at the front edge, with fabric pulling away slightly from the seat rail; visible in side and overhead views. Back upholstery appears in better condition." },
+    { type: "condition", clue: "frame_condition", confidence: 54, description: "Wood frame appears structurally sound with no visible breaks, cracks, or major repairs. Finish shows age-consistent patina and slight darkening at wear points on arm rails. No obvious refinishing evidence." },
+    { type: "construction", clue: "saber_front_legs", confidence: 80, description: "Front legs show a curved saber or scroll profile rather than straight turned legs; visible in side view. Rear legs appear straight. This leg form is consistent with Late Victorian parlor seating." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 60, description: "Arm rail to back post and seat rail to leg connections appear to use mortise-and-tenon joinery based on the tight shoulder-line fits visible at arm-to-post junctions in closeup views; no visible mechanical fasteners at these joints. Confidence moderate — joinery is hidden by upholstery and finish." },
+    { type: "construction", clue: "ball_finials", confidence: 95, description: "Turned ball finials visible at the top corners of the crest rail; characteristic Late Victorian/Eastlake parlor seating ornament." },
+    { type: "construction", clue: "back_panel_upholstered_both_sides", confidence: 92, description: "Back view shows the reverse of the back panel is also upholstered with the same fabric and nailhead trim; the back of the settee is finished for display, consistent with parlor/reception room use." },
+    { type: "construction", clue: "rear_legs_straight", confidence: 85, description: "Rear legs visible in back view appear straight and square-sectioned, contrasting with the curved front legs; consistent with Late Victorian parlor seating construction." },
+    { type: "style", clue: "fan_feather_carving", confidence: 52, description: "Crest rail features repeating carved fan or feather motifs with incised vertical striations and rounded tops; this specific ornamental vocabulary is strongly associated with Eastlake Aesthetic Movement furniture c. 1875-1895." },
+    { type: "upholstery", clue: "hand_tacks", confidence: 50, description: "Nailhead spacing along seat and back perimeter shows slight irregularity consistent with individually hand-placed upholstery tacks rather than modern strip nailhead application." },
+    { type: "form", clue: "settee_two_seat_form", confidence: 68, description: "Seat width accommodates two persons; backrest spans full width; arms on both sides; consistent with parlor settee or loveseat form rather than single armchair." },
+    { type: "construction", clue: "arm_rail_scroll_terminal", confidence: 90, description: "Arm rails terminate at the front in carved scrolled volutes (ram's-head or scroll form); visible in front and side views. Characteristic Late Victorian/Eastlake parlor seating arm treatment." },
+    { type: "construction", clue: "seat_rail_carved_apron", confidence: 78, description: "Seat rail below the seat cushion shows carved decorative treatment visible in the angled closeup; consistent with Eastlake incised or relief-carved apron decoration." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating_surface" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Settee",
+    display: "Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1870–1890",
+    dateFloor: 1870,
+    dateCeiling: 1890,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee];
