@@ -845,4 +845,49 @@ const jacobean_revival_tall_case_clock: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock];
+// Mid-century American craft panel-back rocker (~1930s–1950s per the model: Tell
+// City / Cushman Colonial idiom). Form correct (Rocking chair). KEY fix#1 SECOND-PATH
+// fixture: output c.1890–1920 is DISJOINT from the 1920–1980 envelope in the EARLY
+// direction — its floor (1890) is 30yr below the envelope floor (lacquer_finish
+// 1920–1980 is a terminus-post-quem). Root: the absenceOfModern && (strongPre1920 +
+// vernacular)≥2 rule (engine.ts:6122) returns a hardcoded "c. 1890–1920" DIRECTLY,
+// bypassing the evidence-floor anchor. The SHIPPED fix#1 does NOT catch this (it only
+// intercepts the "Broadly late 19th to 20th century" placeholder) — this fixture
+// documents the remaining path: heuristic 1890–1920 returns must be clamped to the
+// latest layer floor (here lacquer ≥1920). Also: severe M1 (7/15 obs keyless), #10
+// spurious "American Empire" default WITHOUT a metal trigger (generic no-attribution
+// default), M8 phantom "Upholstered armchair" alt (form_rocking_chair correctly won).
+const midcentury_craft_panel_back_rocker: ScanFixture = {
+  label: "midcentury_craft_panel_back_rocker",
+  note: "Mid-century craft rocker (~1930s–50s); fix#1 SECOND PATH — heuristic 1890–1920 (engine.ts:6122) overrides the lacquer 1920+ floor, dating too EARLY (disjoint below the 1920–1980 envelope). Shipped fix#1 misses this. Also severe M1 (7/15 keyless), #10 American-Empire default sans metal.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Overall front view shows a full rocking chair with arms, high fan/shield-shaped back, solid wood seat, and curved rocker runners. The chair has a substantial, well-proportioned form consistent with mid-20th century American craft production." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "High, wide fan-shaped or shield-shaped backrest composed of multiple solid wood panels joined vertically. The crest rail has a scalloped/serpentine profile with a central carved rose motif. Back is notably tall relative to seat height." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "All visible components appear to be solid wood throughout — seat, back panels, arms, legs, and rockers. The grain pattern and figure visible on the back panels suggest a fruitwood, possibly cherry, with warm amber-to-reddish-brown tones. No veneer or plywood construction is apparent." },
+    { type: "materials", clue: "", confidence: 45, description: "The wood species appears consistent with American black cherry or possibly birch/maple with a warm stain. The back panels show a fine, relatively straight grain with subtle figure. The lighter central panel versus darker side panels may indicate two-tone staining or natural color variation between boards." },
+    { type: "style", clue: "", confidence: 55, description: "The carved rose motif on the crest rail is executed in low-to-medium relief with flowing stem and leaf details, consistent with Art Nouveau or late Arts and Crafts decorative vocabulary. The scalloped crest rail profile reinforces this stylistic reading. Overall form suggests American production circa 1920s-1950s." },
+    { type: "joinery", clue: "dowel_joinery", confidence: 72, description: "In the joinery closeup of the crest rail area, at least four square or diamond-shaped dark plugs or fastener heads are visible flanking the central carved panel — two on each side. These appear to be square wooden plugs covering dowels or screws used to attach the back panels to the crest rail frame. The diamond orientation of the plugs is a decorative touch." },
+    { type: "fasteners", clue: "", confidence: 50, description: "Diamond/square-oriented dark plugs visible in the crest rail area of the back (joinery closeup). These could be decorative square wooden plugs covering screws or dowel ends. Their diamond orientation suggests intentional decorative placement, consistent with Arts and Crafts style hardware presentation." },
+    { type: "construction", clue: "", confidence: 83, description: "The back view (back image) reveals the back panel construction clearly: three vertical solid wood panels are held within a frame consisting of a top crest rail and a lower horizontal rail. The panels appear to float within the frame or be glued edge-to-edge. The back frame is lighter in color than the panels, suggesting different wood species or finish variation." },
+    { type: "form", clue: "seating_surface", confidence: 45, description: "The seat is a solid wood plank, slightly contoured or saddled, with a darker finish than the back panels. From the side view, the seat appears to have a slight forward tilt. No upholstery or cushion is present." },
+    { type: "construction", clue: "dowel_joinery", confidence: 75, description: "Side view shows the rocker runners are long, gracefully curved, and appear to be steam-bent or laminated solid wood. The front legs are slightly splayed and connect to the rockers with what appear to be mortise-and-tenon or dowel joints. The arm support posts are turned or shaped and connect arm to seat rail." },
+    { type: "joinery", clue: "mortise_and_tenon", confidence: 45, description: "From the side view, the junction of the back legs/posts with the seat rail and rocker appears consistent with mortise-and-tenon construction. The back post appears to pass through or seat deeply into the rocker runner. No visible metal fasteners at these joints." },
+    { type: "finish", clue: "lacquer_finish", confidence: 45, description: "The overall finish appears to be a clear or lightly tinted lacquer or varnish with a semi-gloss sheen. The finish shows some wear on the seat surface and minor scratching on the back panels. No obvious crazing or alligatoring consistent with old shellac. The finish appears relatively intact and possibly refinished at some point." },
+    { type: "condition", clue: "", confidence: 54, description: "Overall condition appears good to very good. Minor surface scratches visible on the back panel (front view). Some finish wear on the seat. The back panel in the joinery closeup shows some light surface marks and possible minor checking in the wood. No major structural damage, broken joints, or significant losses visible." },
+    { type: "style", clue: "", confidence: 48, description: "The combination of the fan/shield back form, scalloped crest rail, carved rose decoration, solid wood seat, and graceful rocker runners is consistent with American production rocking chairs of the 1930s-1950s, possibly from a regional furniture maker or a production company such as Tell City, Cushman Colonial, or similar mid-century American manufacturers. The rose carving has a folk/craft quality." },
+    { type: "construction", clue: "", confidence: 48, description: "Back view shows the rear of the back panel assembly. The three-panel back has a lighter-colored outer frame (possibly maple or birch) contrasting with the darker center panels. A horizontal stretcher rail is visible at the bottom of the back panel assembly connecting the two rear posts. The overall back construction is clean with no visible repairs." },
+  ],
+  asSeen: {
+    formId: "Rocking chair",
+    display: "Rocking chair",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker];
