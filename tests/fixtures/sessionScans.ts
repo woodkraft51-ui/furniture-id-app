@@ -414,4 +414,62 @@ const renaissance_revival_sgabello: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello];
+// Modern Chinese-import cedar chest ("Made in China", product label T155-13
+// "3IN1 PACK RUSTIC DRK WOOD"). Perception was perfect; everything downstream broke.
+// TRACKED: (a) M12 NEW — a HALLUCINATED maker mark (maker_mark_sligh_furniture_co,
+// from a non-Sligh import label) becomes the PRIMARY date anchor, overriding the
+// 1900–1980 convergence AND the "Made in China" evidence; (b) maker operating-window
+// END (Sligh 1933–2005) applied as a TPQ FLOOR → "2005–2005" (date-logic bug);
+// (c) #8 incoherence — headline "1933–2005" vs working "2005–2005" vs convergence
+// "1900–1980"; (d) M8 — cedar CHEST → "Occasional table" at HIGH conf, driven by the
+// label's own "3-piece occasional table set" speculation beating lift_lid (0.96);
+// (e) M6 self-contradictory FPs — cabriole_leg vs tapered_block_feet ("not cabriole"),
+// multiple_drawer_case/drawer_present with no drawers. All entangled (maker-anchor +
+// form scoring); fixture is a multi-bug regression target, not a one-scan fix.
+const china_import_cedar_chest: ScanFixture = {
+  label: "china_import_cedar_chest",
+  note: "Modern China-import cedar chest; tracks M12 hallucinated-maker-mark date anchor + maker-window-end-as-floor + chest→table misID + self-contradictory FPs (M12/M8/M6/#8).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "lift_lid", confidence: 68, description: "Lid hinges open fully revealing interior storage cavity; lid stay hardware visible on both sides holding lid open. Classic blanket/storage chest lift-lid construction." },
+    { type: "form", clue: "cedar_lining", confidence: 68, description: "Interior walls, floor, and underside of lid are lined with aromatic red cedar — visible purple-red streaking, fine straight grain, characteristic knotting, and light coloration consistent with eastern red cedar (Juniperus virginiana). Defines this as a cedar chest / hope chest form." },
+    { type: "structure", clue: "frame_and_panel_sides", confidence: 82, description: "Front face shows two raised rectangular panels set within a rail-and-stile framework with applied molding profiles. Side panel also shows single raised panel in frame. Classic frame-and-panel case construction on exterior show surfaces." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 80, description: "Exterior frame members, legs, rails, stiles, and panel fields appear to be solid wood with visible grain consistent with a stained hardwood or softwood. No veneer lifting or substrate exposure visible on show surfaces." },
+    { type: "materials", clue: "cedar_lining", confidence: 84, description: "Interior cedar lining confirmed: aromatic red cedar with characteristic purple-red streaking, fine grain, and knots visible on all interior surfaces including lid underside." },
+    { type: "style", clue: "tapered_block_feet", confidence: 52, description: "Four corner feet are tapered square/block form with a slight stepped profile at the top — a simplified Colonial Revival or transitional traditional style foot. Not a true cabriole or bracket foot." },
+    { type: "style", clue: "raised_panel_decoration", confidence: 52, description: "Front face has two raised rectangular panels with applied molding surrounds. Side has one raised panel. Molding profiles are machine-routed and uniform, consistent with factory production." },
+    { type: "hardware", clue: "machine_made_hinge", confidence: 62, description: "Lid is attached with machine-made butt hinges visible at the back edge of the chest interior. Hinges appear to be standard stamped steel butt hinges with uniform edges and precision barrels. Screws appear to be slotted or Phillips type." },
+    { type: "hardware", clue: "lid_stay_hardware", confidence: 62, description: "Two metal lid stay/support brackets are visible on the interior front corners of the chest, holding the lid open at a fixed angle. These are stamped metal lid supports, consistent with modern cedar chest production." },
+    { type: "hardware", clue: "stamped_metal_bracket", confidence: 62, description: "Lid stay supports are stamped metal brackets — industrially produced, consistent with post-1940s cedar chest hardware." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "Back panel carries a product label reading 'T155-13', '3IN1 PACK RUSTIC DRK WOOD', serial number '9101337188999', and origin stamps 'Made in China / Hecho En China'. This is a retail/import product label, not a named furniture maker's mark. The '3IN1 PACK' designation suggests this chest was sold as part of a set (likely nesting tables or a 3-piece occasional table set with lift-lid storage). Country of manufacture is China." },
+    { type: "label", clue: "country_of_origin", confidence: 85, description: "Both a paper sticker label and a stamped/printed mark on the back panel read 'Made in China / Hecho En China', confirming Chinese manufacture. This is a hard anchor for modern production." },
+    { type: "label", clue: "product_code", confidence: 85, description: "Product/serial number T155-13 visible on label. The '3IN1 PACK RUSTIC DRK WOOD' descriptor suggests this is one piece from a 3-piece nesting or occasional table set with a rustic dark wood finish. Not a named furniture maker attribution." },
+    { type: "construction", clue: "back_panel_material", confidence: 45, description: "The back panel visible in the underside/back image appears to be a thin flat sheet panel — likely hardboard (Masonite) or thin plywood — set into a solid wood frame. The surface texture and uniform tan-brown color are consistent with hardboard. This is a factory construction method." },
+    { type: "construction", clue: "factory_case_construction", confidence: 96, description: "Overall construction evidence — machine-uniform raised panels, stamped metal hardware, thin back panel, 'Made in China' label, product code label — all consistent with modern factory/import production rather than hand-crafted or period American furniture." },
+    { type: "condition", clue: "finish_wear_top", confidence: 45, description: "Top surface shows significant finish wear with multiple water ring stains, light-colored patches where finish has been abraded or moisture-damaged, and general surface dulling. The finish appears to be a lacquer or polyurethane-type coating that has been damaged by moisture and use." },
+    { type: "condition", clue: "foot_damage", confidence: 54, description: "Front left foot shows a chip or split at the lower corner, visible in the overall_front image. Minor structural damage to one foot." },
+    { type: "condition", clue: "interior_condition", confidence: 45, description: "Cedar interior appears clean, unfinished (natural cedar), and intact with no visible damage, staining, or odor-masking treatments visible. Cedar lining appears to be in good serviceable condition." },
+    { type: "finish", clue: "lacquer_finish", confidence: 55, description: "Exterior surfaces show a smooth, moderately glossy finish consistent with a sprayed lacquer or polyurethane-type coating typical of Chinese import furniture production. The finish has worn and water-stained on the top surface." },
+    { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "Primary function is storage — large open interior cavity accessed via lift lid, cedar-lined for textile/clothing storage. Classic blanket/hope chest storage function." },
+    { type: "construction", clue: "lid_construction", confidence: 45, description: "Lid underside visible in open-chest images shows multiple solid wood planks with visible grain and knots, consistent with edge-glued solid cedar or cedar-faced planks. The lid appears to be solid wood rather than veneered panel." },
+    { type: "style", clue: "colonial_revival_influence", confidence: 52, description: "The overall form — raised panel sides, tapered block feet, molded lid edge, dark stained finish — reflects a Colonial Revival or traditional American style vocabulary as interpreted in modern Chinese import production. The style is decorative rather than period-authentic." },
+    { type: "materials", clue: "sheet_back_panel", confidence: 50, description: "hardboard or thin plywood back panel" },
+    { type: "style", clue: "cabriole_leg", confidence: 72, description: "Cabriole legs are visible." },
+    { type: "construction", clue: "drawer_present", confidence: 58, description: "Drawer evidence is visible." },
+    { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70, description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM." },
+  ],
+  asSeen: {
+    // formId check OMITTED: M8 form-misID is stochastic here — live landed
+    // "Occasional table", this reconstruction lands "Nesting tables"; both are
+    // label-speculation-driven table forms, neither is the actual "Cedar chest".
+    // The value of this fixture is the date/maker/style anchor, which reproduces exactly.
+    finalStyleKind: "context_only",
+    dateRange: "1933–2005",
+    dateFloor: 2005,
+    dateCeiling: 2005,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest];
