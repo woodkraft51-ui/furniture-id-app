@@ -57,7 +57,7 @@ function summarize(result: any) {
 }
 
 async function runFixture(fx: ScanFixture) {
-  let observations = fx.observations.map((o) => ({ ...o }));
+  let observations: any[] = fx.observations.map((o) => ({ ...o }));
   const perception: any = fx.perception ?? { raw_text: "" };
   // When a fixture supplies rawText, re-run the P0 seating/spindle derivation on
   // it (after stripping the previously-synthesized clues) so the seating-verb

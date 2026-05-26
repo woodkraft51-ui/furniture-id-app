@@ -514,14 +514,10 @@ export const FASTENER_SUBCATEGORIES: FastenerSubcategoryEntry[] = [
     ],
     period_associations: [
       {
-        period_label: "Introduction",
+        period_label: "Wire-nail production (continuing technique)",
         date_floor: 1880,
-        date_ceiling: 1894,
-      },
-      {
-        period_label: "Dominance",
-        date_floor: 1895,
-        usage_notes: "Dominant by c. 1895–1910 onward per seed.",
+        usage_notes:
+          "Introduced c. 1880s; dominant c. 1895–1910 onward and in continuous use since. #19: open-ended floor — a wire nail is a terminus post quem (≥ c. 1880), NOT a pre-1894 marker. The prior 1880–1894 ceiling wrongly dated modern pieces (1960s Sears dresser) to the 1880s.",
       },
     ],
     date_range_summary: "Introduced c. 1880s. Dominant by c. 1895–1910 onward.",
