@@ -1256,4 +1256,62 @@ const phoenix_chair_co_windsor_rocker: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker];
+// Rococo Revival / Naturalistic Victorian parlor armchair (carved crest, oval-cartouche
+// back, serpentine arms, cabriole legs, walnut, socket casters, jacquard cover). SUCCESS
+// / control: output is CORRECT (Upholstered armchair, c.1850–1890, Rococo Revival
+// original_period). VALIDATES #6 Phase 1 GENERALIZING to a 2nd piece: no hard
+// construction layer dated it, so the consistent "c.1850-1890" style prose
+// (carved_crest_rail + rococo_revival_vocabulary) anchored the date — without #6 it
+// would have hit the 6122 catch-all (c.1890-1920, too late). Latent: a 1845–1920
+// convergence zone formed but didn't override (wider than the 1890-1920 it competed
+// with — same relative-width issue as Biedermeier/escritoire); #6 masked it.
+// Form genuinely upholstered (T1a correctly NOT fired). M7 caster negations
+// (porcelain_caster/modern_caster "not…") correctly dropped.
+const rococo_revival_parlor_armchair: ScanFixture = {
+  label: "rococo_revival_parlor_armchair",
+  note: "Rococo Revival Victorian parlor armchair — SUCCESS/control. Correct: Upholstered armchair, c.1850–1890, Rococo Revival (orig). Validates #6 Phase 1 generalizing (style prose 'c.1850-1890' anchored the date, no construction to date it; without #6 → 6122 catch-all 1890-1920). M7 caster negations dropped; T1a correctly didn't fire (genuinely upholstered).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion present, floral tapestry fabric, seat fills the chair frame between the arms." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Shaped oval/cartouche back frame with upholstered back panel insert and carved crest rail above." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has two sweeping curved arms with shaped arm supports connecting to the seat rail; classic parlor armchair form." },
+    { type: "style", clue: "carved_crest_rail", confidence: 52, description: "Prominent carved crest rail at top of back featuring scrolling C-curves, acanthus leaf motifs, and a central foliate device — characteristic Rococo Revival / Victorian parlor chair ornament, c. 1850-1890." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Front legs visible in side view show a curved cabriole-style profile, consistent with Rococo Revival and Victorian parlor seating vocabulary." },
+    { type: "style", clue: "serpentine_arm", confidence: 52, description: "Arms sweep in a continuous S-curve from the back stile down to the arm pad, a hallmark of Victorian Rococo Revival and late Victorian parlor chair design." },
+    { type: "style", clue: "oval_cartouche_back", confidence: 52, description: "Back frame forms a shaped oval/cartouche outline with the carved crest rail cresting above it — a Rococo Revival and Victorian parlor chair signature form." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members appear to be solid hardwood throughout — arms, back stiles, seat rails, and legs all show solid wood profiles with no visible veneer edges or lamination." },
+    { type: "materials", clue: "wood_species_walnut_or_mahogany", confidence: 60, description: "Frame wood shows warm reddish-brown to dark brown coloration with fine grain visible at worn areas; consistent with black walnut or mahogany. Walnut slightly more probable given the warm brown tone and grain character." },
+    // negated: live P0 caught these as negations ("not porcelain" / "not a modern…
+    // caster") and dropped them; un-negated they'd wrongly date the hardware layer
+    // post-1900 and block #6 (fidelity convention: encode what the original run did).
+    { type: "hardware", clue: "porcelain_caster", confidence: 45, negated: true, description: "Caster visible at front leg base is cast metal (iron or brass-toned), not porcelain. The wheel appears to be a small cast metal roller caster with a socket-type mounting cup, heavily oxidized/patinated." },
+    { type: "hardware", clue: "modern_caster", confidence: 45, negated: true, description: "Caster appears to be a period-appropriate cast metal socket caster, not a modern rubber or plastic wheel caster. Heavy oxidation and patina consistent with age. Likely a Victorian-era brass or iron socket caster, c. 1860-1910." },
+    { type: "hardware", clue: "period_socket_caster", confidence: 62, description: "Close-up shows a cast metal socket-type caster with a cup that receives the leg tenon; the wheel is a small cast metal roller. This style of socket caster is consistent with Victorian parlor furniture, c. 1860-1910. Heavy surface oxidation and patina support age." },
+    { type: "condition", clue: "upholstery_worn_fraying", confidence: 54, description: "Both seat and back upholstery panels show significant wear, fraying at edges, and the back panel appears partially detached from the frame. Fabric is intact but deteriorated." },
+    { type: "condition", clue: "wood_damage_arm_end", confidence: 54, description: "Close-up of front leg/arm junction shows significant wood fiber damage and splitting at the arm end near the caster socket — likely from stress, impact, or age-related joint failure." },
+    { type: "condition", clue: "shellac_intact", confidence: 45, description: "Frame surfaces show a warm amber-brown finish with age-consistent patina and wear at high-contact areas. Finish appears to be original shellac or early varnish rather than modern polyurethane — no thick plastic film visible." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "Seat and back upholstery fabric shows a large-scale multi-color floral pattern with complex repeat. The woven structure with high pattern complexity and machine-loomed appearance is consistent with jacquard upholstery fabric. Could also be classified as brocade; jacquard is the best fit given the machine-loomed regularity of the pattern repeat." },
+    { type: "construction", clue: "back_panel_loose", confidence: 85, description: "Back view reveals the back upholstery panel is a separate pad trimmed with black gimp/braid edging, sitting loosely within the back frame rather than being tightly tacked. This is a later or replacement upholstery campaign." },
+    { type: "upholstery", clue: "nailhead_trim", confidence: 50, description: "No decorative nailhead trim visible on the upholstery edges; the back panel is edged with black gimp/braid trim instead." },
+    { type: "construction", clue: "stretcher_present", confidence: 90, description: "A horizontal stretcher rail is visible connecting the rear legs near the base, providing structural reinforcement — consistent with Victorian parlor chair construction." },
+    { type: "structure", clue: "rear_leg_form", confidence: 72, description: "Rear legs visible in back view appear to splay outward and slightly backward in a curved profile, consistent with Victorian parlor chair construction." },
+    { type: "style", clue: "rococo_revival_vocabulary", confidence: 52, description: "The combination of carved scrolling crest rail with acanthus motifs, shaped oval back, serpentine arms, and cabriole-influenced legs collectively presents a strong Rococo Revival / Victorian parlor chair vocabulary, c. 1850-1890." },
+    { type: "condition", clue: "caster_oxidation", confidence: 54, description: "The cast metal caster shows heavy surface oxidation and darkening consistent with significant age — no bright plating or modern finish visible." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 55, description: "The caster socket close-up reveals the leg end terminates in a turned tenon that seats into the caster cup — consistent with mortise-and-tenon or round-tenon joinery at the leg-to-caster junction. Frame joinery method for arm-to-back and leg-to-rail connections cannot be directly confirmed." },
+    { type: "form", clue: "vertical_supports", confidence: 68, description: "Four legs visible: front legs with cabriole-style curve and caster feet; rear legs with splayed profile and caster feet." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "back cushion partially detached" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+  ],
+  asSeen: {
+    formId: "Upholstered armchair",
+    display: "Rococo Revival / Naturalistic Victorian Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1850–1890",
+    dateFloor: 1850,
+    dateCeiling: 1890,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair];
