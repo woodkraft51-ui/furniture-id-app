@@ -705,4 +705,45 @@ const golden_oak_curved_glass_china_cabinet: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet];
+// A. Sydney Logan tall-case (grandfather) clock, dial signed "fecit Philadae. anno
+// 1914". Re-scan of S009. VALIDATES M9 LIVE: the signed production year is now parsed
+// and anchors the date to c.1914 (floor=ceiling=1914, High) — the original S009 buried
+// it at 1900–1930. Also validates fix#2 (display is "Trunk", not prefixed by the
+// context-only "American Empire…" style). STILL BROKEN (tracked): M8 form clock→Trunk
+// (intermittent; "Tall case clock" sits in alternatives), #10 spurious "American Empire
+// / late Classical Revival" style context on a Georgian/Colonial Revival clock, M1
+// keyless style/inscription obs (weight 0.37, 0 dating authority), M6 mirror_present
+// from the glazed pendulum lenticle. NOTE the live report ALSO showed a stale
+// "Supported Findings: …Broadly late 19th to 20th century" contradicting the c.1914
+// headline (#8 — supported-findings string not refreshed after the parseLabelDate override).
+const logan_1914_tall_case_clock: ScanFixture = {
+  label: "logan_1914_tall_case_clock",
+  note: "Logan 1914 signed tall-case clock; validates M9 (signed year → c.1914) + fix#2 (no style-prefix on form name) live. Still M8 clock→Trunk, #10 spurious Empire context, #8 stale Supported-Findings date.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "door_present", confidence: 68, description: "Overall front view shows a full tall case (grandfather) clock in three sections: bonnet/hood at top with broken-arch pediment, trunk section with arched door, and base with raised panel door and bracket feet. Approximately 7-8 feet tall. Classic American longcase clock form." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "Case is constructed of solid wood throughout — appears to be cherry or mahogany based on the warm reddish-brown color and grain visible on the trunk door and side panels. Grain pattern consistent with solid wood, not veneer, on the trunk and base panels." },
+    { type: "style", clue: "", confidence: 58, description: "Broken-arch (swan-neck) pediment with carved rosette medallions at each arch terminus and a central carved shell/fan finial on a plinth. This is a hallmark of American Georgian and Colonial Revival tall case clock design, consistent with Philadelphia tradition." },
+    { type: "style", clue: "", confidence: 58, description: "Rope-twist (barley-twist) carved columns flank the bonnet on both sides. Visible clearly in overall_front, overall_side, and the joinery_closeup of the bonnet. These are turned and carved from solid wood." },
+    { type: "style", clue: "", confidence: 58, description: "Carved foliate/vine frieze band runs across the full width of the bonnet below the cornice molding. Visible in the joinery_closeup of the bonnet side view — shows intricate carved vine and berry/leaf motif in relief." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "Engraved text on the arched dial cartouche/boss reads: 'I see the Hours, invisible to thee, / And lift my voice lest unperceived they flee. / A. Sydney Logan / fecit Philadae. anno 1914'. This identifies the maker as A. Sydney Logan, made in Philadelphia, anno (year) 1914. 'Fecit' is Latin for 'made it.'" },
+    { type: "hardware", clue: "lock_escutcheons", confidence: 45, description: "Small keyhole escutcheon visible on the trunk door, left side, in the overall_side and joinery_closeup images. Appears to be a simple brass or iron escutcheon for a door lock." },
+    { type: "hardware", clue: "mirror_present", confidence: 62, description: "The trunk door has a glazed lenticle (oval/arched window) in its upper portion, allowing view of the pendulum. Visible clearly in the joinery_closeup of the bonnet side — shows a small arched glass panel set into the raised-panel trunk door." },
+    { type: "construction_cues", clue: "door_present", confidence: 45, description: "Interior of trunk visible in the open-door joinery_closeup: shows three weight cables/chains hanging, consistent with a three-train movement (time, strike, chime). Pendulum rod and bob visible. Interior back board appears to be painted or stained dark." },
+    { type: "finish", clue: "shellac_intact", confidence: 45, description: "Wood case finish appears to be a warm lacquer or shellac/varnish — shows even sheen across trunk and bonnet surfaces. The reddish-brown tone is consistent with cherry or mahogany with an amber finish. No obvious refinishing evidence; finish appears aged and consistent." },
+    { type: "style", clue: "door_present", confidence: 52, description: "Base section has a raised panel door with ogee bracket feet — visible in overall_front and the open-door view. The bracket feet have a simple ogee profile. This is consistent with American Federal/Georgian tall case clock case design." },
+    { type: "visible_text", clue: "", confidence: 50, description: "Full text on the arched dial cartouche: 'I see the Hours, invisible to thee, / And lift my voice lest unperceived they flee. / A. Sydney Logan / fecit Philadae. anno 1914'. The poetic inscription is a motto about time. 'Philadae' is an abbreviation for Philadelphiae (Philadelphia). 'Anno 1914' gives the year of manufacture." },
+  ],
+  asSeen: {
+    formId: "Trunk",
+    display: "Trunk (also commonly called: travel trunk, steamer trunk)",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1914",
+    dateFloor: 1914,
+    dateCeiling: 1914,
+    confidence: "High",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock];
