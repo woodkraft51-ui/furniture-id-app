@@ -677,3 +677,22 @@ test("#111-b: a BROAD fastener ceiling (slotted_screw 1850–1940) does NOT cap 
   const r = refineDatingFromConvergence(p2, overlap, /* hasModernConstructionEvidence */ true);
   assert.ok((r.date_ceiling ?? 0) > 1900, `broad fastener ceiling must not clamp a modern date, got ${r.date_ceiling}`);
 });
+
+// ── #111-b (curated): continuing-technique ONSETS must NOT act as termini ────
+test("#111-b: a continuing-technique onset (wire_nail/circular_saw_arcs ≤1900) does NOT cap, even at low confidence", () => {
+  // The 1960s Sears dresser case: wire_nail (≤1894) + circular_saw_arcs (≤1880)
+  // are ≤1900 but are ONSETS, not termini — they must not cap a modern piece.
+  const overlap = {
+    layers: [
+      { layer: "fastener", date_floor: 1880, date_ceiling: 1894, confidence: "low", source_count: 1, source_clues: ["wire_nail"] },
+      { layer: "toolmark", date_floor: 1830, date_ceiling: 1880, confidence: "low", source_count: 1, source_clues: ["circular_saw_arcs"] },
+    ],
+    convergence_zones: [
+      { date_floor: 1955, date_ceiling: 1970, authority_sum: 24, weighted_authority: 24, effective_layer_count: 2, specific_layer_count: 2, layers: ["style_wave"] },
+      { date_floor: 1950, date_ceiling: 1980, authority_sum: 30, weighted_authority: 18, effective_layer_count: 3, specific_layer_count: 2, layers: ["fastener", "toolmark", "style_wave"] },
+    ],
+  } as any;
+  const p2 = { range: "broad", date_floor: null, date_ceiling: null, confidence: "Low" };
+  const r = refineDatingFromConvergence(p2, overlap, /* hasModernConstructionEvidence */ true);
+  assert.ok((r.date_ceiling ?? 0) > 1900, `onset clues must not cap a modern piece, got ${r.date_ceiling}`);
+});
