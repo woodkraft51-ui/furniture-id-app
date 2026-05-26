@@ -746,4 +746,47 @@ const logan_1914_tall_case_clock: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock];
+// Early-20th-c. solid-OAK swivel banker's/office armchair (Arts & Crafts / Mission
+// office chair, ~1900–1920). Date is correct (c.1890–1920). VALIDATES live: batch-1
+// fix#1 (cast_iron/wrought_iron parked as present-but-undated in the wood layer, not
+// dating it) and fix#2 (display "Upholstered armchair", not prefixed by the style).
+// STILL BROKEN (tracked): M6 metal→furniture — the incidental cast-iron TILT MECHANISM
+// drives cast_iron/wrought_iron → "Iron furniture"/"Metal furniture" alt-forms + the
+// style context "Toledo-style mid-century industrial task chair" (a 3rd canned
+// metal-triggered default, after "American Empire"=brass and "Modernist/chrome"=tubular_steel)
+// on a wooden chair. modern_caster n=3 (here genuinely a REPLACEMENT part, yet it dates
+// the chair). M8 phantom "Upholstered" on a solid-wood saddle seat. M7 polyurethane key
+// with a negating description (dropped). M1 3 keyless obs.
+const oak_swivel_bankers_office_chair: ScanFixture = {
+  label: "oak_swivel_bankers_office_chair",
+  note: "Oak swivel banker's office chair (~1900–1920, date correct). Validates fix#1 metal→wood + fix#2 live. Tracks M6 cast/wrought_iron → 'Toledo industrial' style + Iron/Metal alt-forms on solid oak; modern_caster n=3 (replacement part); phantom 'Upholstered'.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Overall front view shows a wooden swivel office/banker's armchair with a shaped crest rail, three vertical back splats with arched cutouts at their bases, a solid wood saddle seat, and curved open arms. Classic early 20th-century office chair form." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "All structural elements — crest rail, back splats, seat, arms, and base legs — appear to be solid wood throughout. The grain pattern visible on the back splats and seat is consistent with quarter-sawn or plain-sawn oak, showing prominent ray fleck on the back splats." },
+    { type: "materials", clue: "", confidence: 50, description: "The wood grain visible on the back splats in the front view shows pronounced medullary ray fleck characteristic of quarter-sawn oak. The seat surface shows a plainer, straighter grain. The overall warm medium-brown color is consistent with stained oak." },
+    { type: "style", clue: "", confidence: 55, description: "The back splat design features three vertical slats with arched (Gothic or tulip-shaped) cutouts at their lower ends, a curved crest rail, and curved arms — all hallmarks of Arts and Crafts / Mission-style office furniture popular circa 1900-1920. This is a classic 'banker's chair' or 'office armchair' form from that era." },
+    { type: "hardware", clue: "swivel_mechanism", confidence: 62, description: "Side view clearly shows a cast iron tilt-and-swivel mechanism mounted beneath the wooden seat. The mechanism is black-painted or japanned cast iron with visible flanges and a central post. This is a period-appropriate tilting office chair mechanism consistent with early 20th-century production." },
+    { type: "hardware", clue: "modern_caster", confidence: 62, description: "The joinery closeup (base detail) shows four or five modern black plastic/rubber twin-wheel casters mounted at the ends of the wooden base legs. These appear to be modern replacements, inconsistent with the period of the chair's manufacture." },
+    { type: "form", clue: "pedestal_column", confidence: 68, description: "The base detail image shows a five-pronged wooden star base (five curved legs radiating from center) connected to a central black metal post/column that rises to the cast iron tilt mechanism. The wooden base legs are solid oak with a curved, swept profile." },
+    { type: "hardware", clue: "wrought_iron", confidence: 45, description: "The cast iron tilt mechanism visible in the base closeup shows a complex multi-part casting with what appears to be a spring-tilt assembly. A small bolt or adjustment screw is visible at the center of the lower collar/ring. This type of mechanism is consistent with early 20th-century American office chair hardware by manufacturers such as Gunlocke, Milwaukee Chair Co., or similar." },
+    { type: "materials", clue: "cast_iron", confidence: 84, description: "The tilt/swivel mechanism beneath the seat is clearly cast iron — visible in the base closeup as a black, multi-part casting with flanges, a central post, and a lower collar ring. The surface shows a painted or japanned black finish with some wear." },
+    { type: "finish", clue: "polyurethane", confidence: 45, description: "The wooden surfaces show a medium-brown stained finish that appears to be a lacquer or varnish coat. The seat surface in the front view shows surface scratches and a white scuff/residue mark near center. The finish appears original or early refinish — no obvious polyurethane plastic sheen, more consistent with an older lacquer or shellac-based finish." },
+    { type: "condition", clue: "modern_caster", confidence: 54, description: "The seat surface shows multiple light scratches and a white scuff mark. The arm ends show wear and rounding from use. The base leg tips show finish loss and some wood damage/chipping at the ends near the casters. Overall the chair is structurally sound with cosmetic wear consistent with age and use." },
+    { type: "style", clue: "", confidence: 55, description: "The second joinery closeup (three-quarter rear view) confirms the arched cutout design at the base of each back splat — three splats with paired arch cutouts creating a Gothic or tulip motif. The crest rail has a gently curved top edge. The arms sweep forward with a graceful curve and terminate with a slight downward curl. All consistent with Arts and Crafts / Mission office chair circa 1900-1920." },
+    { type: "joinery", clue: "mortise_and_tenon", confidence: 45, description: "The connection of the back splats to the crest rail and seat rail appears to use mortise-and-tenon joinery, as is typical for this type of solid oak office chair construction. No visible mechanical fasteners at these joints in any of the photos." },
+    { type: "context", clue: "maker_label", confidence: 48, description: "Chair is photographed outdoors on a concrete surface with fallen leaves and a garden hose visible in background. No maker's label, stamp, or text is visible in any of the four images." },
+  ],
+  asSeen: {
+    formId: "Upholstered armchair",
+    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair];
