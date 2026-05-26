@@ -1073,4 +1073,58 @@ const woodard_wrought_iron_patio_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair];
+// Barley-twist rush-seat rocking armchair (Jacobean/Arts & Crafts revival idiom).
+// Form correct (Rocking chair). Date c.1890–1920 is plausibly right (barley-twist
+// rush rocker = turn-of-century revival), but it's the fix#1 SECOND-PATH (6122
+// vernacular rule) MASKED-CORRECT — a GUARD that an eventual second-path fix must NOT
+// break (companion to the oak chest, via the vernacular rule rather than the placeholder).
+// M6/M7 phantom upholstery on a RUSH seat (n=3, = S008/S012): jute_webbing ("No webbing
+// visible", negation) + no_spring_seat ("no spring/no padding", negation) +
+// fully_upholstered (conf 74, false) → "Upholstery with no-spring stuffed seat" layer +
+// "Upholstered seating/armchair" alt-forms. Candidate: suppress these when rush_seat_weave
+// present. M5: style Unresolved despite barley-twist/finials revival vocabulary.
+const barley_twist_rush_seat_rocker: ScanFixture = {
+  label: "barley_twist_rush_seat_rocker",
+  note: "Barley-twist rush rocker; fix#1 second-path (6122) MASKED-CORRECT (~1890–1920 plausible) — guard. M6/M7 phantom upholstery on a rush seat (n=3, jute_webbing/no_spring_seat negations + fully_upholstered FP → 'no-spring stuffed seat'). Form correct; style Unresolved (M5).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Rush-woven seat panel visible spanning the seat frame rails; trapezoidal seat typical of armchair rockers." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Rush-woven back panel spanning between two upper horizontal rails, framed by barley-twist back posts with finials." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Flat paddle-shaped arm rests visible on both sides, supported by barley-twist arm posts; chair is an armchair rocker." },
+    { type: "style", clue: "barley_twist", confidence: 52, description: "Prominent barley-twist (spiral rope-twist) turnings visible on back posts, arm supports, and front legs. This is the dominant decorative vocabulary of the chair." },
+    { type: "structure", clue: "rocker_blades", confidence: 82, description: "Long curved rocker blades visible at base in side view; chair is a rocking chair. Blades appear to be solid flat-sawn boards." },
+    { type: "structure", clue: "finial_posts", confidence: 82, description: "Turned acorn or ball finials visible atop both back posts above the rush back panel." },
+    { type: "structure", clue: "round_tenon", confidence: 82, description: "Round tenon joinery visible where stretchers and rungs enter the turned legs and posts; consistent with traditional chair construction." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 82, description: "Joinery closeup shows the rocker blade mortised into the leg base; visible joint line and slight finish separation at the mortise shoulder, consistent with mortise-and-tenon attachment of rocker to leg." },
+    { type: "upholstery", clue: "jute_webbing", confidence: 50, description: "No webbing visible; seat support is provided entirely by the woven rush seat panel spanning the frame rails." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 50, description: "Rush-woven seat with no spring construction; seat is a traditional flat rush weave over the frame rails with no upholstery padding or spring support." },
+    { type: "materials", clue: "rush_seat_weave", confidence: 84, description: "Tightly woven rush (natural plant fiber, likely bulrush or sea grass) covering both the seat and back panel. Weave pattern shows characteristic four-corner diagonal fill pattern typical of traditional rush seating. Strands appear natural/organic rather than paper fiber." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "All frame members appear to be solid turned wood; no veneer or laminate visible. Wood appears to be a medium-density hardwood, possibly oak or elm based on color and grain visible at worn areas." },
+    { type: "condition", clue: "finish_loss_at_joints", confidence: 54, description: "Joinery closeup shows significant finish and wood loss at the rocker-to-leg joint; red/raw wood exposed, paint or finish flaking. Indicates stress at this joint and age-related wear." },
+    { type: "condition", clue: "surface_oxidation_patina", confidence: 54, description: "Overall wood surfaces show aged oxidation and patina; finish appears worn and mellow rather than fresh. Consistent with significant age." },
+    { type: "condition", clue: "rush_aged_intact", confidence: 54, description: "Rush weave on both seat and back appears intact and complete with no major breaks or missing strands visible, though darkened with age and use. Rush has aged to a warm amber-brown tone." },
+    { type: "condition", clue: "refinished_surface", confidence: 40, description: "Wood surfaces appear to have been stripped or lightly refinished at some point; finish is thin and worn, not original thick shellac. Difficult to confirm from photos; may simply be heavily worn original finish." },
+    { type: "style", clue: "turned_stretchers", confidence: 52, description: "Multiple turned stretchers visible connecting legs front-to-back and side-to-side; front stretcher shows bobbin or vase turning. Consistent with traditional chair construction." },
+    { type: "style", clue: "flat_paddle_arms", confidence: 52, description: "Flat, slightly curved paddle-shaped arm rests visible; arms are solid flat boards rather than turned or upholstered. Arms attach to barley-twist arm posts." },
+    { type: "structure", clue: "rush_back_panel", confidence: 82, description: "Rush-woven back panel spans between two horizontal rails (top and bottom of back) framed by the barley-twist back posts; back panel is rectangular and fully woven." },
+    { type: "construction", clue: "rush_weave_pattern_diagonal_fill", confidence: 95, description: "Rush weave shows the classic diagonal-fill four-corner pattern on both seat and back; strands run parallel in groups from each corner meeting at center, creating a characteristic X or chevron pattern. This is traditional hand-woven rush technique." },
+    { type: "structure", clue: "rocker_blade_flat_sawn", confidence: 80, description: "Rocker blades appear to be flat-sawn solid wood boards; grain visible on the face of the blade in the joinery closeup. Blades are long and curved." },
+    { type: "condition", clue: "joint_stress_cracking", confidence: 54, description: "Visible cracking and finish separation at the rocker-to-leg joint in the joinery closeup; wood appears stressed at this high-load connection point." },
+    { type: "style", clue: "back_post_finials", confidence: 52, description: "Turned ball or acorn finials cap both back posts above the rush back panel; finials are clearly visible in front and back views." },
+    { type: "construction", clue: "webbing_rail_joinery", confidence: 75, description: "Rush seat wraps around the four seat rails; tack holes or wrap points visible at corners where rush terminates on the rails. Traditional rush attachment method." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "materials", clue: "fully_upholstered", confidence: 74, description: "Upholstered or cushioned surfaces are visible." },
+  ],
+  asSeen: {
+    formId: "Rocking chair",
+    display: "Rocking chair",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker];
