@@ -20,3 +20,6 @@ Thumbs.db
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# Generated regression-corpus baseline snapshot (regenerate with scripts/_scanCorpus.ts --snapshot)
+scripts/.scanCorpus.baseline.json
