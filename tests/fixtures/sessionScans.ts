@@ -862,7 +862,7 @@ const jacobean_revival_tall_case_clock: ScanFixture = {
 // default), M8 phantom "Upholstered armchair" alt (form_rocking_chair correctly won).
 const midcentury_craft_panel_back_rocker: ScanFixture = {
   label: "midcentury_craft_panel_back_rocker",
-  note: "Mid-century craft rocker (~1930s–50s); fix#1 SECOND PATH — heuristic 1890–1920 (engine.ts:6122) overrides the lacquer 1920+ floor, dating too EARLY (disjoint below the 1920–1980 envelope). Shipped fix#1 misses this. Also severe M1 (7/15 keyless), #10 American-Empire default sans metal.",
+  note: "Mid-century craft rocker (~1930s–50s). #6 Phase 1 FIXES the date: with no hard construction layer to date it, the corroborated style prose ('circa 1920s-1950s' + '1930s-1950s') now anchors c.1930–1959 (Low) instead of the 1890–1920 catch-all — the clean style-prose case (its only datable signal is style). Still tracks severe M1 (7/15 keyless) + #10 American-Empire default (style label unchanged).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -886,10 +886,13 @@ const midcentury_craft_panel_back_rocker: ScanFixture = {
     formId: "Rocking chair",
     display: "Rocking chair",
     finalStyleKind: "context_only",
-    dateRange: "c. 1890–1920",
-    dateFloor: 1890,
-    dateCeiling: 1920,
-    confidence: "Moderate",
+    // POST #6 Phase 1: no hard construction layer dated this craft rocker, so the
+    // corroborated style prose ("circa 1920s-1950s" + "1930s-1950s") now anchors the
+    // date (Low confidence) instead of the 1890-1920 catch-all. Intersection = 1930–1959.
+    dateRange: "c. 1930–1959",
+    dateFloor: 1930,
+    dateCeiling: 1959,
+    confidence: "Low",
   },
 };
 
