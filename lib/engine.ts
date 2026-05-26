@@ -2913,7 +2913,7 @@ function computeMissingEvidence(images: any[]) {
 // Produces structured {identification, range, confidence, date_floor,
 // date_ceiling, note}. Originality inference vs frame dating is applied
 // later in dateFromEvidence once the frame envelope is known.
-function detectUpholsteryLayer(digest: EvidenceDigest): UpholsteryLayer | null {
+export function detectUpholsteryLayer(digest: EvidenceDigest): UpholsteryLayer | null {
   const clues = new Set(digest.clue_keys);
   const has = (...keys: string[]) => keys.some((k) => clues.has(k));
 
@@ -2972,6 +2972,27 @@ function detectUpholsteryLayer(digest: EvidenceDigest): UpholsteryLayer | null {
     attach_staples || legacyPresence || legacyTraditional || legacyModern;
 
   if (!upholsteryPresent) return null;
+
+  // Bare-seat guard (Batch A / T1a). A rush, cane, splint, solid-plank, or expanded-
+  // metal-mesh seat IS the seating surface — not upholstery. On such pieces the
+  // "upholstery" signal is almost always a negation (no_spring_seat / "no webbing") or
+  // a generic false positive (fully_upholstered), or a STRUCTURAL spring mistaken for
+  // an upholstery coil (the Woodard patio chair's metal bounce spring → coil_spring,
+  // which otherwise floors the envelope at 1780–1830). Suppress the phantom layer UNLESS
+  // there is real upholstery evidence — an actual cover, stuffing/fill, or tufting/
+  // nailhead — on top of the bare surface (e.g. a cushioned slip seat).
+  const bareSeatSurface = has(
+    "rush_seat_natural_fiber", "rush_seat_weave", "rush_back_panel",
+    "rush_weave_pattern_diagonal_fill", "rush_aged_intact",
+    "octagonal_seat_plank", "solid_plank_seat", "plank_seat",
+    "expanded_metal_mesh_seat", "metal_mesh_seat",
+    "caned_seat", "cane_seat", "splint_seat"
+  );
+  const realUpholsteryEvidence =
+    anyCover || fill_horsehair || fill_cotton || fill_foam ||
+    fill_polyurethane || fill_feather || legacyTraditional ||
+    attach_button_tuft || attach_nailhead;
+  if (bareSeatSurface && !realUpholsteryEvidence) return null;
 
   // Classify the construction/era profile. Most-specific signals win.
   const modernSynthetic = fill_polyurethane || fill_foam ||

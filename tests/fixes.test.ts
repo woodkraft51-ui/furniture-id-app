@@ -18,7 +18,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations, detectUpholsteryLayer } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -789,6 +789,33 @@ test("fix#1 guard: a committed (non-placeholder) date is NOT overridden by the e
   const r = refineDatingFromConvergence(p2, overlap, false);
   assert.ok(!r.refined, "a committed date must not be overridden");
   assert.equal(r.date_floor, 1830, "the committed floor must stand");
+});
+
+// ── T1a: bare-seat guard — rush/cane/plank/mesh seats are NOT upholstery ─────
+const _uph = (clue_keys: string[]) => detectUpholsteryLayer({ clue_keys } as any);
+
+test("T1a: a bare rush seat (rush + no_spring_seat) yields NO upholstery layer", () => {
+  // Ladderback / barley-twist rocker class: the rush seat is the seating surface,
+  // and no_spring_seat is the ABSENCE of upholstery — must not fabricate a layer.
+  assert.equal(_uph(["rush_seat_weave", "no_spring_seat", "jute_webbing"]), null);
+});
+
+test("T1a: a metal-mesh seat with a structural coil spring yields NO upholstery layer", () => {
+  // Woodard patio chair: expanded-metal-mesh seat + a structural bounce coil spring
+  // (coil_spring) must not become an upholstery layer (which dated 1780–1830).
+  assert.equal(_uph(["expanded_metal_mesh_seat", "coil_spring"]), null);
+});
+
+test("T1a guard: a genuinely upholstered seat (coil spring + horsehair + cover) is KEPT", () => {
+  const layer = _uph(["coil_spring", "horsehair_stuffing", "velvet_cover"]);
+  assert.ok(layer, "real upholstery (spring + fill + cover) must still produce a layer");
+});
+
+test("T1a guard: a rush seat WITH an added cushion (cover + fill) is KEPT", () => {
+  // A bare-seat marker is present, but real cover+fill evidence means there IS
+  // upholstery on top — must not be suppressed.
+  const layer = _uph(["rush_seat_weave", "horsehair_stuffing", "velvet_cover"]);
+  assert.ok(layer, "real upholstery on top of a bare seat must still produce a layer");
 });
 
 // ── #10: seating-verb false-positive — "seat" as a verb of fitting ───────────

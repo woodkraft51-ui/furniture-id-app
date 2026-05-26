@@ -58,7 +58,7 @@ const minimalPerception = {
 // P5 resolved hand_plane_chatter (pre-1880) over cabriole_leg, then date said 1920–1930.
 const ladderback: ScanFixture = {
   label: "ladderback_country_chippendale",
-  note: "P5 ruled pre-1880; date came out 1920–1930. cut_nail(1790–1890)+hand_plane_chatter(pre-1880) low-conf so #111 didn't clamp.",
+  note: "P5 ruled pre-1880; date came out 1920–1930. cut_nail(1790–1890)+hand_plane_chatter(pre-1880) low-conf so #111 didn't clamp. (Rush seat had a phantom 'no-spring stuffed seat' upholstery layer — T1a: now suppressed.)",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -368,7 +368,7 @@ const art_deco_candelabrum: ScanFixture = {
 // armrests... side chair". Date is broad (no floor/ceiling) so those are null.
 const renaissance_revival_sgabello: ScanFixture = {
   label: "renaissance_revival_sgabello",
-  note: "Renaissance Revival sgabello; tracks the narrative/working-range contradiction (convergence claimed yet range Broad) + M6 phantom upholstery on a plank seat (#4/M6).",
+  note: "Renaissance Revival sgabello; tracks the narrative/working-range contradiction (convergence claimed yet range Broad) + M6 phantom upholstery on a plank seat [T1a: now suppressed] (#4/M6).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1030,7 +1030,7 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
 // differentiated UP (Woodard collectible). Mis-keyed door_present / maker_label obs.
 const woodard_wrought_iron_patio_chair: ScanFixture = {
   label: "woodard_wrought_iron_patio_chair",
-  note: "Woodard wrought-iron patio chair (~1940s–60s); date post-1945 CORRECT but #8 narrative GARBLED (inverted '1945–1910', degenerate '1910–1910 0-layer zone'). Root: coil_spring mis-dated 1780–1830 poisons the envelope on a steel bounce-spring chair. M6 phantom upholstery, M8 'Upholstered'. fix#4b validated.",
+  note: "Woodard wrought-iron patio chair (~1940s–60s); date post-1945 CORRECT but #8 narrative GARBLED (inverted '1945–1910', degenerate '1910–1910 0-layer zone'). Root: coil_spring mis-dated 1780–1830 poisons the envelope on a steel bounce-spring chair. M6 phantom upholstery [T1a: coil_spring layer now suppressed → envelope no longer floored at 1780], M8 'Upholstered'. fix#4b validated.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1085,7 +1085,7 @@ const woodard_wrought_iron_patio_chair: ScanFixture = {
 // present. M5: style Unresolved despite barley-twist/finials revival vocabulary.
 const barley_twist_rush_seat_rocker: ScanFixture = {
   label: "barley_twist_rush_seat_rocker",
-  note: "Barley-twist rush rocker; fix#1 second-path (6122) MASKED-CORRECT (~1890–1920 plausible) — guard. M6/M7 phantom upholstery on a rush seat (n=3, jute_webbing/no_spring_seat negations + fully_upholstered FP → 'no-spring stuffed seat'). Form correct; style Unresolved (M5).",
+  note: "Barley-twist rush rocker; fix#1 second-path (6122) MASKED-CORRECT (~1890–1920 plausible) — guard. M6/M7 phantom upholstery on a rush seat (n=3, jute_webbing/no_spring_seat negations + fully_upholstered FP → 'no-spring stuffed seat') [T1a: now suppressed]. Form correct; style Unresolved (M5).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
