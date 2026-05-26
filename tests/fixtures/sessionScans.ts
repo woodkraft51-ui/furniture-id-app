@@ -640,4 +640,63 @@ const vernacular_painted_milking_stool: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool];
+// Golden Oak / Chippendale Revival bow-front curved-glass china cabinet, c.1890–1915.
+// Form correct (China cabinet, High). The CLEAREST #6 case: the model stated the date
+// verbatim ("c.1890-1915") in SIX style observations, but ALL NINE style observations
+// collapsed to the generic key `style_cues` (24 obs → 14 keys), landing at weight 0.41
+// with the style dating layer contributing 0 clues — so the explicitly-dated Golden Oak
+// evidence carried ZERO dating authority (M1 at scale). With style discarded, P2 fell to
+// the late default 1900–2000 (floor 1900/ceil 2000), DISJOINT from both the 1750–1940
+// envelope and the formed convergence zone 1840–1920 (fastener+hardware+finish); the
+// form layer is post-1880, so the evidence-derived answer is ~1890–1920. fix#1 + #6 + M1.
+// Minor: glass_top M6 (curved glass SIDES → "glass top"); #8 layer-count ("2" vs zone 3).
+const golden_oak_curved_glass_china_cabinet: ScanFixture = {
+  label: "golden_oak_curved_glass_china_cabinet",
+  note: "Golden Oak curved-glass china cabinet; model said c.1890-1915 verbatim but 9 style obs collapsed to generic style_cues (0 dating authority) → late default 1900–2000, disjoint from the 1840–1920 convergence zone. fix#1 disjoint + #6 dated-prose-ignored + M1 style_cues collapse.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "door_present", confidence: 68, description: "Single glazed door with flat central stile and curved glass panels flanking; door has keyhole escutcheon and butt hinge visible." },
+    { type: "form", clue: "open_shelving", confidence: 68, description: "Interior visible through glass shows at least one shelf inside the display cabinet." },
+    { type: "form", clue: "cabriole_leg", confidence: 68, description: "Four cabriole legs visible terminating in carved claw-and-ball feet; legs show pronounced knee and ankle typical of Chippendale-revival cabriole form." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Carved claw-and-ball feet on all four cabriole legs; well-defined talons gripping a ball, consistent with Chippendale Revival / Golden Oak era production c. 1890-1915." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Applied carved pineapple-and-shell corbels at upper corners of door frame stiles; diamond-faceted pineapple form with shell cap above, characteristic of late Victorian / Golden Oak decorative carving vocabulary." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Carved fan/shell motif centered on the lower apron between the front cabriole legs; radiating fluted petals consistent with Chippendale Revival ornament." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Curved bow-front form with bent curved glass panels on both sides of the central door; characteristic of American china cabinet / curio cabinet production c. 1890-1915." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Stepped molded cornice at top of case with multiple ogee and flat molding profiles; top surface shows open grain consistent with oak." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members, stiles, rails, legs, and cornice all appear to be solid oak; open grain with visible ray fleck on some surfaces consistent with flat-sawn or slightly quarter-sawn oak." },
+    { type: "materials", clue: "style_cues", confidence: 84, description: "Open ring-porous grain with visible ray structure on door stile and apron surfaces; consistent with American red or white oak, typical of Golden Oak era production." },
+    { type: "hardware", clue: "lock_escutcheons", confidence: 62, description: "Ornate cast brass escutcheon with scrolled Rococo-style surround visible on door stile; keyhole opening present; tarnished brass consistent with age." },
+    { type: "hardware", clue: "butt_hinge", confidence: 45, description: "Butt hinge visible at door edge in side/hinge closeup; appears to be machine-made with uniform barrel; brass or brass-plated; slotted screws visible though image is blurry." },
+    { type: "hardware", clue: "machine_made_hinge", confidence: 62, description: "Hinge barrel appears uniform and machine-made rather than hand-forged; consistent with post-1840 machine production; tarnished brass coloration." },
+    { type: "hardware", clue: "slotted_screw", confidence: 62, description: "Screw heads visible at hinge mounting appear to have single slotted heads consistent with pre-Phillips era hardware; image blurry but no cross-recess visible." },
+    { type: "condition", clue: "condition_cues", confidence: 60, description: "Significant white paint drips and finish loss visible on door stile and lower case; original finish largely intact on case body and legs but door frame shows heavy surface deterioration." },
+    { type: "condition", clue: "shellac_crazing", confidence: 54, description: "Surface of door stile and case members shows crazing and flaking consistent with aged shellac or early varnish finish breaking down; not a modern polyurethane failure pattern." },
+    { type: "condition", clue: "condition_cues", confidence: 60, description: "Green moss or biological growth visible on top cornice surface, indicating prolonged storage in damp or outdoor-adjacent conditions." },
+    { type: "condition", clue: "condition_cues", confidence: 60, description: "Despite surface finish deterioration, case appears structurally sound; legs, frame, and glass panels appear intact with no visible breaks or major structural failures." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Overall form — bow-front curved glass china cabinet with cabriole legs, claw-and-ball feet, pineapple corbels, shell apron, and oak construction — is highly characteristic of American Golden Oak / Chippendale Revival production c. 1890-1915." },
+    { type: "construction", clue: "frame_and_panel_sides", confidence: 88, description: "Sides are curved bent glass rather than wood panel construction; case uses a frame-and-glass construction rather than frame-and-panel wood sides." },
+    { type: "construction", clue: "style_cues", confidence: 82, description: "Pineapple and shell corbels appear to be applied carved elements attached to the stile faces rather than carved in-the-round from the stile stock itself; consistent with factory production methods of the Golden Oak era." },
+    { type: "function", clue: "style_cues", confidence: 70, description: "Form is a freestanding display cabinet (china cabinet / vitrine) intended for displaying decorative objects behind glazed curved glass panels; single locking door provides access." },
+    { type: "materials", clue: "glass_top", confidence: 50, description: "curved bent glass panels" },
+    { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
+  ],
+  asSeen: {
+    formId: "China cabinet",
+    display: "China cabinet",
+    finalStyleKind: "context_only",
+    // Reduced fidelity: live rendered "Broadly late 19th to 20th century"/1900–2000/Low
+    // (convergence zone 1840–1920); this obs-only reconstruction (no raw_text) renders
+    // 1900–1930/Moderate (zone 1800–1940). The range/ceiling/confidence delta is
+    // raw_text-dependent and NOT the tracked bug. What reproduces deterministically and
+    // IS the bug: the 9 style_cues observations contribute 0 to the style dating layer
+    // (M1 collapse / #6 dated-prose-ignored) and the floor sits at 1900, not the
+    // evidence-supported ~1890. Pinned to the harness's deterministic output.
+    dateRange: "late 19th to early 20th century",
+    dateFloor: 1900,
+    dateCeiling: 1930,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet];
