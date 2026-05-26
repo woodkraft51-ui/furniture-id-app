@@ -105,7 +105,7 @@ const ladderback: ScanFixture = {
 // clue-key date_hints, not prose.
 const victorianTrunk: ScanFixture = {
   label: "victorian_dome_top_trunk",
-  note: "Industrial circular_saw_arcs (1830–1880) + cut_nail (≤1890); should NOT be capped to ≤1880 by a saw-mark.",
+  note: "Industrial circular_saw_arcs (1830–1880) + cut_nail (≤1890); should NOT be capped to ≤1880 by a saw-mark. OWNER-CONFIRMED: the circular_saw_arcs read is ERRONEOUS (no arcs on the real piece — worn pine secondary surfaces); the model self-hedged ('not clearly curved arcs at this resolution') yet emitted it at conf 45. Canonical 'don't cap/anchor on a misread, self-doubted toolmark' case.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
