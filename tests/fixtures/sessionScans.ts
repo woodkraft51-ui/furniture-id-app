@@ -536,4 +536,55 @@ const swivit_space_age_pedestal_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair];
+// Factory oak bow-front Colonial Revival chest of drawers (machine dovetails,
+// wire nails, glass knobs). Output c.1890–1920 is ACCEPTABLE — the piece really is
+// ~1890–1920 — but it's the fix#1 catch-all "masked-correct": the evidence envelope
+// is ~1880–1925 (tightest real floor wire_nail post-1880; ceilings glass_knob 1925 /
+// shellac 1920; convergence zone 1860–1925), and the 1890/1920 bounds are the
+// hardcode landing on a coincidentally-right neighborhood. The clean fix#1 target
+// where the evidence-derived answer is knowable. Also tracks: modern_caster FP (key
+// says "modern", description says "wooden casters" → phantom post-1900 hardware
+// signal, 2nd occurrence after S014-R) and M6 phantom door_present/cabinet_form on
+// a doorless 3-drawer chest. Form (chest of drawers) is correct.
+const colonial_revival_oak_bowfront_chest: ScanFixture = {
+  label: "colonial_revival_oak_bowfront_chest",
+  note: "Factory oak Colonial Revival bow-front chest; fix#1 catch-all masked-correct (output 1890–1920, evidence ~1880–1925) + modern_caster FP from 'wooden casters' + M6 phantom door/cabinet.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "Case contains three drawers total: two smaller drawers side-by-side in the upper tier and one full-width drawer below, defining a chest-of-drawers form." },
+    { type: "form", clue: "drawer_present", confidence: 68, description: "Two half-width drawers in upper row and one full-width drawer below; all fitted with glass knob pulls." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "All four legs exhibit a cabriole profile with a curved knee and outward splay, terminating in a small pad or scroll foot. Front legs are more pronounced; rear legs are simpler cabriole forms visible in side and back views." },
+    { type: "style", clue: "bow_front_case", confidence: 52, description: "The case front has a pronounced bow (convex curve) across the full width, visible in the overall front view and confirmed by the curved apron/skirt at the base." },
+    { type: "hardware", clue: "pressed_glass_knob", confidence: 62, description: "All four drawer pulls are faceted glass knobs, appearing hexagonal or multi-faceted in form, consistent with pressed glass knobs common 1860–1925 and in Colonial Revival use into the 1930s–1950s." },
+    { type: "hardware", clue: "wooden_caster", confidence: 62, description: "Caster closeup images show small wooden-wheel casters with iron/metal mounting hardware on all four legs. The wheels appear to be wood (not porcelain, not rubber), heavily worn and oxidized. Consistent with wooden casters used c. 1750–1880 primary, with persistence into early factory era." },
+    { type: "hardware", clue: "rust_pitting", confidence: 62, description: "The caster mounting hardware shows significant iron oxidation and rust pitting, consistent with extended age and outdoor or damp storage exposure." },
+    { type: "construction", clue: "machine_dovetails", confidence: 92, description: "Joinery closeup of the pulled drawer shows uniform, evenly spaced, identically sized dovetail pins and tails at the drawer front-to-side corner joint. The geometry is perfectly repetitive with machine-cut precision, consistent with machine dovetails common after c. 1870–1885 in factory production." },
+    { type: "construction", clue: "solid_plank_back", confidence: 95, description: "The back panel visible in the back image consists of multiple horizontal solid wood planks (not plywood sheet), nailed to the case frame. Three or four horizontal boards are visible with visible grain and board seams." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Case sides, back boards, and drawer components all appear to be solid wood construction with no visible plywood lamination layers at any edge or exposed surface." },
+    { type: "materials", clue: "wood_species_oak", confidence: 84, description: "The case sides visible in the side view show prominent open-pore ring-porous grain structure with visible ray fleck, consistent with oak. The drawer fronts also show open-grain oak texture beneath the worn finish. Likely flat-sawn oak on drawer fronts and case sides." },
+    { type: "materials", clue: "secondary_wood_drawer_sides", confidence: 75, description: "The drawer side visible in the joinery closeup is a lighter-colored, finer-grained wood distinct from the dark oak drawer front, consistent with poplar or maple used as secondary wood in factory-era case goods." },
+    { type: "condition", clue: "finish_wear_heavy", confidence: 54, description: "Drawer fronts and case surfaces show extensive finish loss, scratching, and abrasion across the entire front face. The original dark finish has worn through to bare wood in many areas, especially on the lower drawer and upper drawer fronts." },
+    { type: "condition", clue: "shellac_crazing", confidence: 54, description: "The remaining finish on the case sides and top shows a network of fine surface checking consistent with aged shellac or early varnish crazing. Confidence is moderate as the heavy wear makes definitive finish chemistry identification difficult." },
+    { type: "label", clue: "visible_text_back", confidence: 45, description: "Stenciled or painted block letters 'HCP' appear on the upper back board of the case. This appears to be an owner's mark, inventory mark, or institutional mark rather than a maker's mark. Per maker-mark rules, initials alone are insufficient for maker attribution." },
+    { type: "construction", clue: "wire_nail", confidence: 60, description: "The back boards appear to be attached with small nails visible at the edges; at this resolution they appear to be round-shank wire nails rather than cut nails, consistent with post-1880 factory production. Confidence is moderate as nail heads are not fully resolved." },
+    { type: "structure", clue: "vertical_supports_legs", confidence: 82, description: "Four legs support the case: two front cabriole legs with pronounced knee curve and pad/scroll feet, and two rear legs that are simpler cabriole or tapered forms. All four legs terminate in small casters." },
+    { type: "style", clue: "colonial_revival_style_cue", confidence: 52, description: "The combination of bow-front case form, cabriole legs, pressed glass knobs, and oak construction is consistent with Colonial Revival or Queen Anne Revival factory production, commonly dated c. 1890–1920." },
+    { type: "construction", clue: "factory_case_construction", confidence: 88, description: "Machine-cut dovetails, uniform drawer construction, solid plank back with wire nails, and consistent secondary wood usage all point to factory case construction rather than hand-crafted individual cabinetmaking." },
+    { type: "condition", clue: "condition_overall", confidence: 54, description: "Heavy finish loss across all drawer fronts and case surfaces; casters show significant rust and wear; back boards show age staining and minor checking. The piece is structurally intact but cosmetically distressed." },
+    { type: "hardware", clue: "modern_caster", confidence: 50, description: "wooden casters" },
+    { type: "construction", clue: "door_present", confidence: 58, description: "Door evidence is visible." },
+    { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
+  ],
+  asSeen: {
+    formId: "Chest of drawers / dresser",
+    display: "Chest of drawers / dresser (also commonly called: chest, drawer chest)",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest];
