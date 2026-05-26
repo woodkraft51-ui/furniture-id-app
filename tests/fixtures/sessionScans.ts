@@ -311,4 +311,49 @@ const commode_close_stool: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool];
+const art_deco_candelabrum: ScanFixture = {
+  // Cast brass/bronze 5-arm Art Deco candelabrum — NOT furniture (#12 out-of-scope target).
+  // BUG TRACKED: a phantom date FLOOR of 1940 with NO label/maker present. 1940 is the
+  // CEILING of the style prose ("c. 1920-1940" in art_deco_style_cues / scandinavian_modern)
+  // mis-applied as a floor; the reported range "c. 1925-1995" also mismatches its own floor
+  // (#8 range-vs-floor incoherence). Both reproduce deterministically from the structured obs.
+  // REDUCED FIDELITY: the LIVE scan rendered "c. 1850 onward (open)" with style "unresolved";
+  // this raw_text-less reconstruction renders "c. 1925-1995"/original_period instead. That
+  // delta is raw_text-dependent (style reconciliation + open-onward rendering) and is NOT the
+  // tracked bug, so asSeen pins the reproduced deterministic output (the 1940 phantom floor).
+  label: "art_deco_candelabrum",
+  note: "Out-of-scope candelabrum; tracks the phantom 1940 date floor scraped from style prose (no label present) + the range/floor incoherence (#7/#8/#12).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "candelabra_form", confidence: 68, description: "Five-arm candelabra with symmetrically arranged curved arms radiating from a central stem, each terminating in an urn-shaped candle cup. Central arm is elevated above the four flanking arms." },
+    { type: "function", clue: "candle_holding", confidence: 70, description: "Five individual urn-shaped candle cups, each with a collar/bobeche at the base, designed to hold taper candles." },
+    { type: "materials", clue: "brass_frame", confidence: 45, description: "Piece appears to be cast brass or bronze throughout. Dark brown patina with green verdigris oxidation visible at base edges and joint areas, consistent with aged brass or bronze." },
+    { type: "materials", clue: "metal_frame", confidence: 84, description: "Entire candelabra is metal construction — arms, cups, central knop, stem, and octagonal base are all metal, likely cast brass or bronze with applied dark patina finish." },
+    { type: "structure", clue: "pedestal_column", confidence: 82, description: "Central vertical stem rises from octagonal base through a fluted spherical knop to a collar from which the five arms radiate." },
+    { type: "style", clue: "art_deco_style_cues", confidence: 52, description: "Multiple Art Deco design vocabulary elements present: octagonal base, fluted spherical knop, streamlined urn-shaped cups, symmetrical five-arm arrangement. Overall aesthetic consistent with Art Deco decorative metalwork c. 1920-1940." },
+    { type: "structure", clue: "octagonal_base", confidence: 82, description: "Flat octagonal base plate with chamfered edges supports the entire candelabra. Base shows green verdigris patina at edges." },
+    { type: "style", clue: "fluted_spherical_knop", confidence: 52, description: "Central decorative element is a prominently fluted (ribbed) sphere or melon-form knop. Characteristic decorative motif in Art Deco and early 20th-century metalwork, also seen in Arts & Crafts and Scandinavian Modern metalwork." },
+    { type: "construction", clue: "cast_metal_construction", confidence: 85, description: "All components appear to be cast metal rather than fabricated from sheet or tube. Casting quality consistent with sand casting or lost-wax casting. No visible seam lines." },
+    { type: "construction", clue: "brazed_metal_joint", confidence: 60, description: "Joints between arms and central stem collar appear to be brazed or soldered rather than welded. No visible weld bead." },
+    { type: "condition", clue: "patina_dark_overall", confidence: 54, description: "Entire surface carries a deep dark brown patina over brass or bronze. Consistent across arms, cups, knop, and stem." },
+    { type: "condition", clue: "joint_corrosion", confidence: 54, description: "Green verdigris visible at the base surface, base edges, and at the knop-to-stem junction. Consistent with aged brass or bronze." },
+    { type: "style", clue: "urn_shaped_candle_cups", confidence: 52, description: "Each of the five candle cups is urn or goblet shaped. Consistent with Art Deco and early 20th-century candelabra design vocabulary." },
+    { type: "style", clue: "swept_curved_arms", confidence: 52, description: "Arms sweep in a smooth continuous curve from the central collar outward and up to the candle cups. Characteristic of early-to-mid 20th-century candelabra design." },
+    { type: "style", clue: "five_arm_symmetry", confidence: 52, description: "Five arms arranged symmetrically with a graduated stepped silhouette consistent with formal dining candelabra design." },
+    { type: "condition", clue: "no_visible_damage", confidence: 54, description: "No visible cracks, breaks, missing components, bent arms, or structural damage. All five candle cups appear intact." },
+    { type: "materials", clue: "painted_metal_finish", confidence: 80, description: "The dark surface finish does not appear to be painted enamel. The patina shows natural oxidation and verdigris consistent with chemical patination or natural aging of brass/bronze." },
+    { type: "style", clue: "scandinavian_modern_design_influence", confidence: 45, description: "The combination of fluted spherical knop, octagonal base, clean urn cups, and dark patinated bronze is consistent with Scandinavian Art Deco and early Modern metalwork c. 1920-1940. Design influence only; no maker mark or provenance visible." },
+  ],
+  asSeen: {
+    formId: "Candelabrum",
+    display: "Art Deco Candelabrum (also commonly called: Candelabrum, Candelabra)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1925–1995",
+    dateFloor: 1940,
+    dateCeiling: 1995,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum];
