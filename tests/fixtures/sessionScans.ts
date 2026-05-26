@@ -789,4 +789,60 @@ const oak_swivel_bankers_office_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair];
+// 1920s Jacobean Revival barley-twist tall-case (grandfather) clock. DATE + STYLE
+// are CORRECT (c.1920–1925, Jacobean Revival) — a "pipeline-worked" contrast case
+// like S013/S014: supported attribution (0.82, 1880–1940) → style_wave convergence
+// → P2 used it. BUGS: (1) M8 clock→"Trunk" AGAIN — clock_case_form is the top form
+// clue (0.850) yet form_trunk wins ("Tall case clock" demoted to alt); both clocks
+// this session (Logan + this) route to trunk, so the clock→trunk misroute is
+// reliable, not just intermittent. (2) Hallucinated subtype_flat_top_trunk (conf 1.0)
+// on a clock — fix#3 only drops DATE-disjoint subtypes; this one has null dates so it
+// survives (a fix#3 gap: form-absurd subtypes aren't gated). (3) #8 stale
+// "Supported Findings" date — reads "Broadly late 19th to 20th century" while the
+// headline is c.1920–1925 (2nd occurrence after the Logan clock → recurring).
+// Minor: glass_top (dial glass) parked by fix#1; spindle_back/gallery FPs.
+const jacobean_revival_tall_case_clock: ScanFixture = {
+  label: "jacobean_revival_tall_case_clock",
+  note: "1920s Jacobean Revival grandfather clock; date/style CORRECT (c.1920–1925, pipeline worked). Bugs: M8 clock→Trunk (2nd clock this session), flat-top-trunk subtype conf 1.0 (fix#3 null-date gap), #8 stale Supported-Findings date (n=2).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "clock_case_form", confidence: 68, description: "Tall case / grandfather clock form visible — three-section case with hood, waist, and base; floor-standing height; pendulum and weight chains visible in open waist." },
+    { type: "style", clue: "barley_twist", confidence: 52, description: "Prominent barley-twist (spiral-turned) columns flank the waist section on both sides; visible in front and side views. Barley twist is a strong Jacobean/William & Mary revival and late Victorian stylistic signal." },
+    { type: "style", clue: "turned_spindle_gallery", confidence: 52, description: "Small turned spindles/finials visible flanking the hood dial opening, consistent with Victorian decorative clock case ornament." },
+    { type: "style", clue: "scrolled_side_corbels", confidence: 52, description: "Carved scroll/corbel ornament visible on the side of the hood section in the side view image, consistent with Victorian shelf/case clock ornament." },
+    { type: "hardware", clue: "brass_dial_bezel", confidence: 62, description: "Square brass dial plate with cast acanthus-scroll spandrel ornaments at all four corners; brass background with applied silvered chapter ring. Consistent with American or European tall case clock dial treatment c. 1860-1930." },
+    { type: "hardware", clue: "roman_numeral_dial", confidence: 62, description: "Roman numerals I through XII on the chapter ring of the clock dial; silvered/white chapter ring with black Roman numeral printing. Pre-1920 dominant format." },
+    { type: "hardware", clue: "metal_hands", confidence: 62, description: "Ornate blued-steel or blackened metal clock hands with decorative spade/fleur-de-lis style cutouts visible on the dial closeup." },
+    { type: "hardware", clue: "winding_arbors", confidence: 62, description: "Two weight chains visible hanging in the open waist section, suggesting an 8-day time-and-strike movement with two weights. No third chain visible for chime train." },
+    { type: "hardware", clue: "pendulum_bob_cast", confidence: 45, description: "Round pendulum bob visible in the waist section; appears to be a cast brass or metal disc bob. Consistent with c. 1860-1930 tall case clock pendulum hardware." },
+    { type: "style", clue: "carved_decorative_panel", confidence: 45, description: "Carved figural/foliate relief panel visible on the base section front; appears to show a figure or heraldic motif in low relief. Consistent with Jacobean revival or late Victorian decorative carving." },
+    { type: "style", clue: "rope_molding", confidence: 52, description: "Rope-twist or beaded molding visible along the cornice shelf between hood and waist, and along the base top edge. Consistent with Jacobean revival and Victorian decorative case work." },
+    { type: "style", clue: "broken_pediment_hood", confidence: 52, description: "Hood features a stepped/broken pediment form with raised central block; not a full arch but a flat-top stepped cornice with raised center element. Consistent with Colonial Revival or Jacobean revival tall case clock hoods." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "Case appears to be constructed of solid wood throughout; dark-stained hardwood (possibly oak or walnut-stained gumwood/oak) visible on all surfaces. Barley twist columns appear to be solid turned wood." },
+    { type: "style", clue: "brass_spandrel_ornaments", confidence: 52, description: "Cast brass acanthus-scroll spandrel ornaments at all four corners of the square brass dial plate; ornate foliate casting consistent with 18th-century tall case clock dial tradition or Victorian revival reproduction of same." },
+    { type: "style", clue: "open_waist_design", confidence: 52, description: "The waist section is open/skeletal — flanked by barley-twist columns but without solid side panels enclosing the pendulum and weights. This is an unusual design feature; most traditional tall case clocks have enclosed waist trunks. Suggests a decorative or revival interpretation rather than a traditional English/American tall case form." },
+    { type: "condition", clue: "brass_dial_patina", confidence: 54, description: "The brass dial plate shows uneven patina and tarnish, with the central boss area showing a rough/granular texture consistent with age or casting texture. The silvered chapter ring shows some discoloration. Consistent with genuine age or deliberate antiquing." },
+    { type: "structure", clue: "three_section_case", confidence: 82, description: "Classic tall case clock three-section construction: hood (with dial and movement), waist (with pendulum and weights), and base (plinth/trunk base). All three sections clearly visible." },
+    { type: "style", clue: "jacobean_revival_style", confidence: 52, description: "Multiple Jacobean revival style cues present: barley-twist columns, rope molding, carved relief panels, dark stained wood. This style was popular in American furniture c. 1890-1930 and in reproduction clock cases through the mid-20th century." },
+    { type: "style", clue: "carved_hood_side_panel", confidence: 52, description: "Side view shows a carved rectangular panel on the hood side with raised molded border and carved interior detail, consistent with Jacobean or Colonial Revival decorative case treatment." },
+    { type: "hardware", clue: "weight_driven_movement", confidence: 62, description: "Two metal chains/cables visible hanging from the movement through the open waist, indicating a weight-driven mechanical movement rather than spring-driven. Consistent with traditional tall case clock mechanics." },
+    { type: "form", clue: "floor_standing_height", confidence: 45, description: "Clock is floor-standing; appears to be approximately 5-6 feet tall based on proportions relative to surrounding objects. Qualifies as a tall case / grandfather clock form." },
+    { type: "label", clue: "maker_label", confidence: 80, description: "No visible maker name, label, stamp, or text inscription detected on any visible surface in any of the four images. The dial does not show a maker's name in the visible area." },
+    { type: "style", clue: "no_arch_top_dial", confidence: 52, description: "The dial is square/rectangular format without an arched top, distinguishing this from the arched-dial tall case clock tradition of c. 1720-1800. Square dial format is consistent with earlier tall case clocks (pre-1720) or with later revival/reproduction pieces." },
+    { type: "materials", clue: "glass_top", confidence: 50, description: "glass" },
+    { type: "structure", clue: "spindle_back", confidence: 78, description: "Spindles are visible in the back or side rail." },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+  ],
+  asSeen: {
+    formId: "Trunk",
+    display: "Tudor Revival / Jacobean Revival / Elizabethan Revival Trunk (also commonly called: travel trunk, steamer trunk)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1920–1925",
+    dateFloor: 1920,
+    dateCeiling: 1925,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock];
