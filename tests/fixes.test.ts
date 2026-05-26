@@ -514,6 +514,49 @@ test("M9b-core: maker matching is gated on real label evidence", () => {
   assert.deepEqual(matchMakerMarks("Duncan Phyfe", []), []); // no label observation → no attribution
 });
 
+// ── M12: maker-mark false-positive hardening ─────────────────────────────────
+test("M12 Fix1: a short maker pattern ('sligh') does NOT match inside 'slight'/'slightly'", () => {
+  // Both the China-import cedar chest and the Swivit chair hallucinated Sligh
+  // Furniture Co. because the bare pattern 'sligh' substring-matched the common
+  // word 'slight'. Word-boundary matching must reject this.
+  const matches = matchMakerMarks(
+    "the matte shell shows slight translucency at edges and slight color variation",
+    makerLabelObs
+  );
+  assert.ok(
+    !matches.some((m: any) => m.clue === "maker_mark_sligh_furniture_co"),
+    "'slight' must not trigger a Sligh maker match"
+  );
+});
+
+test("M12 Fix1: a genuine 'Sligh Furniture Co.' label still matches (true positive preserved)", () => {
+  const matches = matchMakerMarks("Labeled Sligh Furniture Co., Holland Michigan", makerLabelObs);
+  assert.ok(
+    matches.some((m: any) => m.clue === "maker_mark_sligh_furniture_co"),
+    "a real Sligh wording must still match"
+  );
+});
+
+test("M12 Fix2: parseLabelDate ignores maker_mark_* clue descriptions (no window-end-as-floor)", () => {
+  // The maker-matcher's own output carries a synthesized operating WINDOW in its
+  // description ('Dating reference: 1933–2005'); parseLabelDate must not re-scan it
+  // and promote the closing year (2005) to a terminus-post-quem floor.
+  const obs = [
+    { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70,
+      description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM.", negated: false } as any,
+  ];
+  assert.equal(parseLabelDate(obs), null, "a maker_mark_* clue must not yield a label date");
+});
+
+test("M12 Fix2: a real visible-text year is still parsed (no over-correction)", () => {
+  const obs = [
+    { type: "label", clue: "visible_text", confidence: 85,
+      description: "Stamped 'Pat. 1952' on the underside.", negated: false } as any,
+  ];
+  const d = parseLabelDate(obs);
+  assert.ok(d && d.year === 1952 && d.kind === "patent", "a genuine patent year should still parse");
+});
+
 // ── Self-authoring: makers.csv → generator → engine (the non-coder pipeline) ──
 test("Authoring: committed authored-makers artifact is in sync with content/makers.csv", () => {
   const csv = fs.readFileSync(path.join(process.cwd(), "content/makers.csv"), "utf8");

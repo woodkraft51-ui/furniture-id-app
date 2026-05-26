@@ -428,7 +428,7 @@ const renaissance_revival_sgabello: ScanFixture = {
 // form scoring); fixture is a multi-bug regression target, not a one-scan fix.
 const china_import_cedar_chest: ScanFixture = {
   label: "china_import_cedar_chest",
-  note: "Modern China-import cedar chest; tracks M12 hallucinated-maker-mark date anchor + maker-window-end-as-floor + chest→table misID + self-contradictory FPs (M12/M8/M6/#8).",
+  note: "Modern China-import cedar chest; M12 corpus target. After Fix2 (parseLabelDate ignores maker_mark_* clues) the maker window is no longer collapsed to its closing year: floor 2005→1933 (proper TPQ window 1933–2005). Live, Fix1 (word-boundary matcher) prevents the hallucinated Sligh match entirely; the corpus stubs P0 so the pre-baked clue persists and validates the consumption-side fix. Still tracks chest→table misID (M8) + self-contradictory FPs (M6).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -466,7 +466,9 @@ const china_import_cedar_chest: ScanFixture = {
     // The value of this fixture is the date/maker/style anchor, which reproduces exactly.
     finalStyleKind: "context_only",
     dateRange: "1933–2005",
-    dateFloor: 2005,
+    // Post-Fix2: TPQ floor is the maker-window FLOOR (founding 1933), not the
+    // collapsed closing year (was 2005). Ceiling remains the window end.
+    dateFloor: 1933,
     dateCeiling: 2005,
     confidence: "Moderate",
   },
@@ -486,7 +488,7 @@ const china_import_cedar_chest: ScanFixture = {
 // all "no/not", conf 82–84) correctly dropped here. M12/M8/M7 — entangled.
 const swivit_space_age_pedestal_chair: ScanFixture = {
   label: "swivit_space_age_pedestal_chair",
-  note: "Space Age Swivit plastic chair; 2nd M12 fixture — same hallucinated Sligh mark + 2005 floor as the cedar chest, on a totally different label. Real 1960s plastic evidence ignored (M12/M8).",
+  note: "Space Age Swivit plastic chair; 2nd M12 fixture. Same hallucinated Sligh mark as the cedar chest, on a different label. After Fix2 the 2005 floor-collapse is gone (floor→1935, real plastic evidence). Live, Fix1 prevents the Sligh match (the 'slight' substring trigger) entirely. Still tracks M8 phantom 'Upholstered armchair' on a hard shell.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -523,13 +525,12 @@ const swivit_space_age_pedestal_chair: ScanFixture = {
     formId: "Upholstered armchair",
     display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
     finalStyleKind: "context_only",
-    // dateFloor 2005 is the M12 datum (hallucinated Sligh mark → TPQ floor) and
-    // reproduces exactly. The range STRING diverges from live ("Broad, not tightly
-    // dated") because the narrative rendering is raw_text-dependent; the harness
-    // renders "c. 1935 onward…" deterministically — pinned here for regression coverage
-    // (both strings are incoherent with the 2005 floor, the tracked #8 defect).
+    // Post-Fix2: the hallucinated Sligh window no longer slams the floor to its 2005
+    // closing year; the date now falls to the real molded-plastic evidence (floor
+    // 1935, "early-to-mid 20th century or later"). Was floor 2005 pre-fix. The range
+    // string is raw_text-dependent narrative (live rendered "Broad, not tightly dated").
     dateRange: "c. 1935 onward (early-to-mid 20th century or later)",
-    dateFloor: 2005,
+    dateFloor: 1935,
     dateCeiling: null,
     confidence: "Low",
   },
