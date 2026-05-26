@@ -890,4 +890,70 @@ const midcentury_craft_panel_back_rocker: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker];
+// William & Mary-style burl-veneer slant-front escritoire-on-stand. Strong GENUINE-
+// EARLY evidence (hand-sawn THICK veneer pre-1910, hand_cut_dovetails pre-1860,
+// surface_mount_lock 1650–1850, verdigris patina, worn green baize). Form CORRECT
+// (Escritoire). SEVERE MISDATE: output "Late 20th-Century Formal Traditional", c.1900–
+// 2000 — i.e. a 1970–2000 reproduction — a potentially huge valuation error.
+// ROOT #1: the richest convergence zone in the corpus (7 layers, 1650–1920) is REJECTED
+// by ABSOLUTE_WIDTH_CAP=160 (270y wide) → falls to the 1900/2000 placeholder.
+// ROOT #2: revival-wave late-pull (M11-family) — style reconciliation aligns to the
+// LATEST wave (1970–2000), ignoring the early construction evidence.
+// fix#1 EDGE: the placeholder fires the anchor, but max real-layer floor is 1840
+// (fastener) < OPEN_FLOOR_MIN_YEAR 1850 → anchor bails → 1900–2000 survives. fix#1
+// structurally can't help pre-1850 pieces. M6: brass_frame (brass lock) → "Brass bed/
+// Metal furniture" alt-forms (brass_frame correctly PARKED in wood layer by shipped fix#1).
+const william_mary_burl_escritoire_on_stand: ScanFixture = {
+  label: "william_mary_burl_escritoire_on_stand",
+  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. Form correct (Escritoire).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "slant_front", confidence: 68, description: "Angled hinged writing flap (fall front) is clearly visible in the open position, supported by the horizontal writing surface. The slant-front is the primary form-defining feature of this desk." },
+    { type: "form", clue: "pigeonholes", confidence: 68, description: "Interior of the open fall front reveals multiple small drawers arranged in a fitted interior with open cubby compartments on the flanking sides — classic pigeonhole / letter-slot interior arrangement visible in overall_front and joinery_closeup images." },
+    { type: "form", clue: "drawer_present", confidence: 68, description: "Two to three exterior case drawers visible below the fall front on the case body, plus multiple small interior drawers within the fitted interior. Exterior drawers have lock escutcheons and turned brass knobs." },
+    { type: "function", clue: "writing_surface", confidence: 70, description: "Fall front opens to reveal a green baize-covered writing surface. The baize is worn and faded, consistent with extended use as a writing surface." },
+    { type: "style", clue: "barley_twist", confidence: 52, description: "All four legs of the stand exhibit pronounced bobbin/barley-twist turning — a defining stylistic feature of William and Mary period furniture (c. 1680–1720). The turnings are dark-stained or ebonized in appearance." },
+    { type: "style", clue: "serpentine_stretcher", confidence: 52, description: "The stand base has a shaped serpentine / X-form flat stretcher connecting the four legs, with a central carved or shaped medallion. This is a characteristic William and Mary / late 17th-century stand feature." },
+    { type: "materials", clue: "thick_veneer", confidence: 84, description: "Veneer losses at the case top corners and edges reveal visibly thick veneer cross-sections — consistent with hand-sawn veneer of the late 17th to early 18th century, substantially thicker than modern rotary-cut or sliced veneer." },
+    { type: "materials", clue: "burl_walnut_veneer", confidence: 45, description: "The slant-front fall, case sides, and exterior drawer fronts are veneered with highly figured burl walnut veneer showing characteristic circular eye patterns and swirling grain." },
+    { type: "materials", clue: "bookmatching", confidence: 84, description: "The slant-front fall panel shows bookmatched burl veneer with bilateral symmetry — mirror-image grain visible across the center seam. This is consistent with high-quality early cabinetmaking veneer work." },
+    { type: "materials", clue: "crossbanding_herringbone", confidence: 82, description: "Crossbanding or herringbone banding is visible as a border strip around the slant-front fall panel and case drawer fronts, consistent with William and Mary / Queen Anne period decorative veneer technique." },
+    { type: "hardware", clue: "lock_escutcheons", confidence: 62, description: "Multiple brass lock escutcheons visible: one on the slant-front fall, and additional escutcheons on the exterior case drawers. The escutcheons appear cast or pierced with decorative profiles consistent with late 17th to early 18th century hardware." },
+    { type: "hardware", clue: "pierced_escutcheon", confidence: 45, description: "The escutcheon on the slant-front fall appears to be a pierced or cast brass escutcheon with decorative surround — consistent with William and Mary / Queen Anne period hardware (c. 1680–1730)." },
+    { type: "hardware", clue: "round_wood_knob", confidence: 62, description: "Interior small drawers have small turned brass or bone/ivory-colored round knobs — simple turned knobs consistent with early period interior fittings. Exterior drawers also have small turned brass knobs." },
+    { type: "hardware", clue: "decorative_bail_pull", confidence: 62, description: "The case side shows a cast brass bail/ring handle with decorative shell or rosette backplates — a carrying handle for the case. This is consistent with William and Mary / Queen Anne period brass hardware." },
+    { type: "hardware", clue: "surface_mount_lock", confidence: 45, description: "A surface-mounted or half-mortise brass lock plate is visible on the interior drawer area. The lock plate appears to be a period surface-mount or half-mortise type consistent with 17th–18th century construction." },
+    { type: "hardware", clue: "slotted_screw", confidence: 62, description: "Slotted screws visible securing the lock plate hardware on the interior drawer. Slotted screws are consistent across all pre-Phillips-head eras." },
+    { type: "hardware", clue: "butt_hinge", confidence: 62, description: "Brass butt hinges visible at the fall-front hinge line connecting the slant-front writing surface to the case body. Hinges appear to be period brass butt hinges." },
+    { type: "condition", clue: "veneer_losses", confidence: 54, description: "Veneer losses visible at the top corners of the case, along edges, and at the case top surface. The losses expose the secondary wood substrate beneath and reveal the thickness of the veneer." },
+    { type: "condition", clue: "shellac_crazing", confidence: 54, description: "Fine network of surface crazing visible on the slant-front fall and case surfaces, consistent with aged shellac or spirit varnish finish." },
+    { type: "condition", clue: "age_wear_patina", confidence: 54, description: "Extensive age-consistent wear and patina throughout: darkened secondary wood interiors, worn baize writing surface, tarnished and verdigris-covered brass hardware. All consistent with genuine extended age." },
+    { type: "construction", clue: "case_on_stand", confidence: 96, description: "The desk is constructed as two separate elements: an upper case (the slant-front writing box with drawers) resting on a separate stand with turned legs and stretcher base. This two-part construction is characteristic of William and Mary period bureau-on-stand / escritoire forms." },
+    { type: "construction", clue: "secondary_wood_interior", confidence: 92, description: "Interior drawer compartments and structural members show a darker, plainer secondary wood (likely oak, pine, or fruitwood) used for the carcass and interior fittings, with the figured veneer applied only to show surfaces. This is consistent with period cabinetmaking practice." },
+    { type: "construction", clue: "fitted_interior_compartments", confidence: 95, description: "The interior of the fall front reveals a fully fitted arrangement of small drawers, open cubbies/pigeonholes, and at least one stepped or tiered central section. A pull-out drawer with internal subdivisions is visible — consistent with a well-appointed period writing interior." },
+    { type: "construction", clue: "ebonized_stand", confidence: 85, description: "The stand legs, stretcher, and feet appear to be ebonized or made from a dark-stained hardwood, contrasting with the warm burl veneer of the upper case. This two-tone treatment is characteristic of William and Mary period English and Continental furniture." },
+    { type: "construction", clue: "bun_feet", confidence: 88, description: "The stand terminates in bun feet — flattened spherical turned feet. Bun feet are a characteristic William and Mary period foot form (c. 1680–1720)." },
+    { type: "materials", clue: "green_baize_writing_surface", confidence: 84, description: "The fall-front writing surface is covered with green baize (wool felt). The baize is worn, faded, and shows age-consistent surface degradation. Green baize writing surfaces are characteristic of period writing furniture." },
+    { type: "style", clue: "william_and_mary_style", confidence: 52, description: "The combination of barley-twist/bobbin-turned legs, serpentine X-stretcher, bun feet, burl veneer show surfaces with crossbanding, two-part case-on-stand construction, and brass bail side handles collectively constitute a strong William and Mary style vocabulary (c. 1680–1720). This could be English, Dutch, or Continental in origin, or a later revival." },
+    { type: "materials", clue: "olivewood_veneer_interior", confidence: 72, description: "The interior small drawer fronts show a highly distinctive swirling, flame-like figured veneer — consistent with olivewood veneer or burr elm veneer, both commonly used for interior fittings in late 17th to early 18th century English and Continental writing furniture." },
+    { type: "hardware", clue: "brass_lock_plate_interior", confidence: 62, description: "Small brass lock plates with escutcheon openings visible on the interior small drawers. Tarnish and verdigris consistent with age." },
+    { type: "condition", clue: "hardware_tarnish_verdigris", confidence: 54, description: "All visible brass hardware shows significant tarnish and green verdigris patina consistent with extended age and minimal cleaning. This is a positive age indicator." },
+    { type: "construction", clue: "hand_cut_dovetails", confidence: 60, description: "Interior drawer visible in joinery_closeup shows corner joinery that appears hand-fitted. While the resolution does not permit definitive dovetail identification, the construction context strongly suggests hand-cut joinery. Confidence is moderate pending closer examination." },
+    { type: "style", clue: "design_influence_william_and_mary_continental", confidence: 52, description: "The overall design vocabulary — bobbin-turned legs, serpentine stretcher, burl veneer, case-on-stand form — is consistent with William and Mary design influence as practiced in England, the Netherlands, and Continental Europe c. 1680–1720." },
+    { type: "materials", clue: "brass_frame", confidence: 50, description: "brass surface-mount lock hardware" },
+    { type: "construction", clue: "drop_front_desk", confidence: 84, description: "Drop-front writing surface is visible." },
+    { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
+  ],
+  asSeen: {
+    formId: "Escritoire",
+    display: "Late 20th-Century Formal Traditional Escritoire (also commonly called: Escritoire, French escritoire)",
+    finalStyleKind: "revival_wave",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand];
