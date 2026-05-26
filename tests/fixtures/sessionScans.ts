@@ -587,4 +587,57 @@ const colonial_revival_oak_bowfront_chest: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest];
+// Vernacular painted-pine milking/foot stool (plank legs, through-tenons, hand-plane
+// chatter, multiple paint layers, deep patina). Form correct (Milking stool, High).
+// MIS-DATED ~50yr late: output 1900–2000 is DISJOINT from the engine's own envelope
+// (1800–1920) — ceiling 2000 is 80yr past it — ignoring a clean early toolmark layer
+// (1850–1880). ROOT: through_mortise_and_tenon is mis-dated c.1890–1920 (a traditional
+// joint wrongly treated as a late marker), creating a joinery layer disjoint from the
+// toolmark layer → 0 convergence → late default. Also M6 woven_body (conf 76) +
+// wicker_paint_buildup (conf 50) on a SOLID-WOOD stool — IDENTICAL signature to S001 —
+// injecting "Wicker/rattan" alt-form #1 + a phantom wicker dating limitation (fix#1/#5/#6).
+const vernacular_painted_milking_stool: ScanFixture = {
+  label: "vernacular_painted_milking_stool",
+  note: "Vernacular pine milking stool; mis-dated 1900–2000 (disjoint from 1800–1920 envelope; early toolmark 1850–1880 ignored), root = through_mortise_and_tenon mis-dated 1890–1920. M6 woven_body FP on solid wood (= S001). fix#1/#5/#6 + clue-data.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Rectangular top surface with heavily rounded corners serves as a seating or foot-rest surface; two-board construction visible with a longitudinal split/seam running the length of the top." },
+    { type: "form", clue: "stool_form", confidence: 68, description: "Small low stool approximately 8-10 inches tall with rectangular top and four splayed plank legs; classic vernacular foot stool or milking stool form." },
+    { type: "structure", clue: "plank_legs", confidence: 82, description: "Four legs cut from flat planks (not turned), splayed outward at an angle; legs are rectangular in cross-section and taper slightly toward the foot. Visible on all views." },
+    { type: "structure", clue: "splayed_leg_angle", confidence: 82, description: "All four legs splay outward from the seat for stability; splay angle visible clearly in front and side views, consistent with vernacular stool construction." },
+    { type: "structure", clue: "cutout_arch_between_legs", confidence: 82, description: "Arched or V-shaped cutout visible between the paired legs on each end, cut from the lower portion of the plank leg assembly; visible in side and joinery closeup views. This is a characteristic vernacular stool construction detail." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 88, description: "Four rectangular mortise slots visible on the underside of the seat top; slots are arranged in pairs near each end of the seat, consistent with through-tenon leg attachment. Slots appear hand-cut with slightly irregular edges." },
+    { type: "construction", clue: "through_mortise_and_tenon", confidence: 82, description: "The rectangular mortise openings visible on the top face of the seat confirm through-tenon construction where leg tenons pass completely through the seat board; consistent with traditional vernacular stool construction." },
+    { type: "construction", clue: "two_board_seat", confidence: 45, description: "The seat top appears to be composed of two boards joined edge-to-edge; a longitudinal seam/split runs the full length of the top surface, visible in front and joinery closeup views." },
+    { type: "construction", clue: "solid_wood_construction", confidence: 95, description: "All components appear to be solid wood throughout; no lamination, plywood, or engineered substrate visible at any edge, split, or worn area." },
+    { type: "materials", clue: "wood_species_pine_group", confidence: 55, description: "Grain pattern visible on underside and worn areas suggests a straight-grained softwood, likely pine or similar conifer; wood is relatively lightweight in appearance and shows checking consistent with pine. Species not definitively identifiable under heavy paint." },
+    { type: "finish", clue: "painted_surface_black", confidence: 55, description: "Entire exterior surface covered in black paint; paint is heavily alligatored, crazed, and peeling revealing warm amber/brown wood beneath and evidence of earlier paint layers." },
+    { type: "finish", clue: "multiple_paint_layers", confidence: 55, description: "At least two distinct paint layers visible at worn edges and losses: a lower reddish-brown or red layer beneath the dominant black layer." },
+    { type: "condition", clue: "heavy_paint_loss_and_wear", confidence: 54, description: "Extensive paint loss across all surfaces; paint is alligatoring, flaking, and peeling throughout. Bare wood exposed at high-wear areas. Consistent with very old painted surface." },
+    { type: "condition", clue: "seat_split_along_grain", confidence: 54, description: "A longitudinal crack/split runs the length of the seat top; consistent with seasonal wood movement over many decades." },
+    { type: "condition", clue: "deep_age_patina", confidence: 54, description: "Underside of seat shows deep amber-brown oxidation and dirt accumulation consistent with extended age; surface is darkened and worn smooth at contact points." },
+    { type: "condition", clue: "leg_foot_wear", confidence: 54, description: "Leg feet show significant wear and rounding at the floor contact points, consistent with long-term use; paint completely worn away at feet." },
+    { type: "construction", clue: "hand_plane_chatter", confidence: 45, description: "Underside of seat shows subtle surface texture that may include hand-plane marks; surface is not machine-smooth and shows slight irregularity consistent with hand-planed preparation, though heavy paint and age obscure definitive identification." },
+    { type: "construction", clue: "band_saw_lines", confidence: 40, description: "The leg surfaces show fine parallel horizontal lines that could be band-saw or circular-saw mill marks; lines are relatively straight and closely spaced. Alternatively could be paint crazing. Moderate uncertainty." },
+    { type: "style", clue: "vernacular_country_primitive", confidence: 52, description: "Form, construction, and finish are consistent with vernacular/country/primitive American furniture tradition; no decorative elements, turned parts, or stylistic ornament present. Purely utilitarian construction." },
+    { type: "hardware", clue: "no_metal_hardware_visible", confidence: 45, description: "No metal hardware of any kind visible on the stool; no nails, screws, bolts, or brackets observed. Construction appears to rely entirely on mortise-and-tenon joinery and possibly glue." },
+    { type: "construction", clue: "rounded_seat_corners", confidence: 95, description: "All four corners of the rectangular seat top are heavily rounded/chamfered, giving the top an oval-rectangular profile; this rounding appears intentional and is consistent with traditional stool construction." },
+    { type: "structure", clue: "four_leg_configuration", confidence: 82, description: "Four legs arranged in two pairs (two per end), each pair cut from a single plank with an arch cut between them; this creates a two-legged-plank-per-end configuration rather than four independent turned legs." },
+    { type: "condition", clue: "surface_dirt_accumulation", confidence: 54, description: "Significant dirt, grime, and debris accumulation visible on all surfaces, particularly in recesses, paint losses, and the underside; consistent with long-term use and storage without cleaning." },
+    { type: "condition", clue: "wicker_paint_buildup", confidence: 50, description: "multiple paint layers visible" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "materials", clue: "woven_body", confidence: 76, description: "Woven wicker or reed body construction is visible." },
+  ],
+  asSeen: {
+    formId: "Milking stool",
+    display: "Milking stool",
+    finalStyleKind: "unresolved",
+    dateRange: "broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool];
