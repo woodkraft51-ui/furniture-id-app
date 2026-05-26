@@ -1137,4 +1137,293 @@ const barley_twist_rush_seat_rocker: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker];
+// Biedermeier flame-walnut fall-front secretary. Strong ORIGINAL-period evidence
+// (thick hand-cut pre-rotary veneer, woodworm holes, 100yr+ verdigris, porcelain
+// 1840–1930, Biedermeier 1815–1860). Form CORRECT (Secretary desk, High). Same
+// valuation-critical failure as the W&M escritoire (n=2): output "Biedermeier Revival,
+// c.1900–2000" — reconciliation explicitly aligns to the 1900–1920 revival wave "not
+// the original period." NEW precise mechanism: a convergence zone DID form at 1800–1920
+// (5 layers, includes the original Biedermeier 1815–1860) and is only 120y wide (UNDER
+// the 160y cap) — yet P2 output the 1900–2000 PLACEHOLDER instead, because
+// refineDatingFromConvergence only overrides p2 when the zone is TIGHTER than p2, and
+// the unsupported placeholder (width 100) is "tighter" than the evidence zone (width
+// 120). The catch-all blocks the real convergence on a width technicality. Plus the
+// fix#1 pre-1850 edge (max real floor 1800 < OPEN_FLOOR_MIN_YEAR 1850 → anchor bails),
+// same as the escritoire. The M11/convergence-override cluster (deferred) is now n=2.
+const biedermeier_flame_walnut_secretary: ScanFixture = {
+  label: "biedermeier_flame_walnut_secretary",
+  note: "Biedermeier flame-walnut secretary; genuine-period evidence → 'Biedermeier Revival' 1900–2000 (n=2 with escritoire). Mechanism: a qualifying 1800–1920 convergence zone (120y, under the cap) is blocked because the unsupported 1900–2000 placeholder is 'tighter' → refineDatingFromConvergence won't override. fix#1 pre-1850 edge again (floor 1800<1850). Form correct.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "drop_front_desk", confidence: 68, description: "The upper section features a large vertical drop-front panel that hinges down to create a horizontal writing surface. The panel is veneered with figured walnut and has a central lock escutcheon with ring pull. When open it reveals an interior fitted with small drawers and a central door." },
+    { type: "form", clue: "pigeonholes", confidence: 68, description: "Interior of the drop-front section reveals multiple small drawers arranged in banks on left and right sides flanking a central door/compartment. These function as letter/document storage cubbies typical of secretary desk interiors." },
+    { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "The lower case section contains three large full-width drawers with bail pulls and lock escutcheons, stacked vertically below the drop-front writing section." },
+    { type: "form", clue: "drawer_present", confidence: 68, description: "Three large exterior drawers in lower case plus approximately 8-10 small interior drawers in the secretary section are visible." },
+    { type: "form", clue: "door_present", confidence: 45, description: "A central door is visible in the interior of the secretary section, flanked by small drawers. The door appears to have a small lock or ring pull. When open it reveals a shallow interior compartment." },
+    { type: "function", clue: "writing_surface", confidence: 45, description: "The drop-front panel when lowered creates a large flat writing surface. The interior surface of the writing flap shows a lighter secondary wood (possibly pine or fruitwood) with visible wear and insect/worm holes consistent with age." },
+    { type: "style", clue: "biedermeier_style_cues", confidence: 52, description: "The piece exhibits strong Biedermeier/Continental Empire design vocabulary: rectilinear form with minimal carved ornament, dramatic figured walnut veneer as primary decorative element, canted/chamfered top corners, rounded cock-bead molding rails, bracket feet with light-colored secondary wood plinth, and restrained proportions. This design influence is consistent with Central European production c. 1815-1850, though domestic American production of similar forms is also possible." },
+    { type: "materials", clue: "thick_veneer", confidence: 80, description: "The walnut veneer on drawer fronts, drop-front panel, and case sides appears substantially thick with dramatic flame/crotch figure. The veneer shows the characteristic heavy cut associated with pre-rotary-veneer era production. Visible at edges and wear points." },
+    { type: "materials", clue: "flame_figure", confidence: 84, description: "The walnut veneer on all major surfaces displays dramatic flame/crotch figure with swirling cathedral grain patterns. This is a hallmark of high-quality Continental European and American Empire/Biedermeier veneered case furniture." },
+    { type: "materials", clue: "plain_sliced_veneer", confidence: 45, description: "The veneer appears to be plain-sliced or book-matched, showing symmetrical flame figure on the large drop-front panel and drawer fronts. The dramatic cathedral grain is consistent with plain-sliced walnut veneer." },
+    { type: "hardware", clue: "porcelain_knob", confidence: 62, description: "The small interior drawers in the secretary section are fitted with small round white porcelain knobs. Cream/white ceramic, small diameter, consistent with porcelain knob hardware common 1840-1930." },
+    { type: "hardware", clue: "decorative_bail_pull", confidence: 62, description: "The three large exterior drawers are fitted with cast brass bail pulls — swinging curved handles on decorative backplates with scrolled/foliate ornament. The pulls show significant green patination consistent with aged brass." },
+    { type: "hardware", clue: "lock_escutcheons", confidence: 45, description: "Each of the three large exterior drawers has a decorative cast brass lock escutcheon centered between the bail pulls. The drop-front panel also has a lock escutcheon with ring pull. The escutcheons show scrolled/rococo ornament and significant patination." },
+    { type: "hardware", clue: "stamped_escutcheon", confidence: 62, description: "The escutcheons appear to be cast rather than stamped — three-dimensional scrolled ornament with depth and weight consistent with cast brass rather than thin stamped sheet metal." },
+    { type: "hardware", clue: "cast_escutcheon", confidence: 62, description: "The lock escutcheons on the exterior drawers appear cast with scrolled foliate ornament, showing depth and three-dimensional relief consistent with cast brass hardware. Significant green patination throughout." },
+    { type: "structure", clue: "bracket_feet", confidence: 45, description: "The case rests on bracket feet visible at the base. The feet appear to be a lighter-colored secondary wood (possibly fruitwood or maple) forming a plinth/base section, consistent with Biedermeier construction where a contrasting lighter wood is used for the base plinth." },
+    { type: "construction", clue: "secondary_wood_contrast", confidence: 45, description: "A distinctly lighter-colored secondary wood is visible at the base/plinth area and on the interior writing surface. This contrasting lighter wood against the dark walnut veneer is characteristic of Biedermeier and Continental Empire construction." },
+    { type: "condition", clue: "worm_insect_holes", confidence: 54, description: "The interior writing surface shows numerous small dark holes consistent with woodworm/insect damage. This suggests significant age and/or storage in conditions favorable to wood-boring insects." },
+    { type: "condition", clue: "shellac_intact", confidence: 54, description: "The exterior surfaces show a warm amber finish with depth and patina consistent with old shellac or spirit varnish. The finish shows age-appropriate wear without the plastic-like build of polyurethane." },
+    { type: "condition", clue: "surface_wear_patina", confidence: 54, description: "Significant surface wear and scratches visible on the top, drop-front panel, and case sides. The wear pattern is consistent with long-term use and age. Hardware shows heavy green patination." },
+    { type: "style", clue: "chamfered_top_corners", confidence: 52, description: "The top of the case has canted/chamfered corners cut at 45 degrees rather than being square. This is a characteristic Biedermeier and Continental Empire design feature." },
+    { type: "style", clue: "rounded_cock_bead_rails", confidence: 52, description: "Rounded half-round molding rails separate the drop-front section from the drawer section. This rounded cock-bead or torus molding is a characteristic Biedermeier/Empire design element." },
+    { type: "construction", clue: "interior_open_compartment", confidence: 45, description: "The joinery_closeup image shows the interior central door open, revealing a shallow open compartment. The interior walls appear to be a lighter secondary wood (possibly pine) with visible age darkening and worm holes." },
+    { type: "construction", clue: "solid_wood_construction", confidence: 45, description: "The case sides appear to be solid wood rather than veneered plywood. The interior compartment walls show solid wood construction without visible lamination layers." },
+    { type: "materials", clue: "walnut_veneer_primary", confidence: 84, description: "Walnut (likely European walnut / Juglans regia) is the primary show wood, applied as veneer on all major exterior surfaces. The figure is dramatic flame/crotch pattern consistent with high-quality walnut veneer selection." },
+    { type: "construction", clue: "interior_small_drawers_layout", confidence: 90, description: "The secretary interior has approximately 4-5 small drawers on the left bank and 4-5 small drawers on the right bank, flanking a central door/compartment. All small drawers have porcelain knobs." },
+    { type: "hardware", clue: "ring_pull_on_drop_front", confidence: 62, description: "The drop-front panel has a small ring pull integrated with the lock escutcheon at the top center of the panel, used to pull the front down to open." },
+    { type: "style", clue: "minimal_carved_ornament", confidence: 52, description: "The case has virtually no carved ornament — decoration is achieved entirely through the figured veneer, molding profiles, and hardware. This restrained approach is characteristic of Biedermeier design philosophy." },
+    { type: "condition", clue: "hardware_patination", confidence: 54, description: "The brass bail pulls and escutcheons show heavy green verdigris patination consistent with aged brass that has not been polished. This level of patination is consistent with significant age (likely 100+ years)." },
+    { type: "construction", clue: "drop_front_support_lopers", confidence: 45, description: "The drop-front writing surface when open appears to be supported by pull-out lopers (sliding support arms) visible at the sides of the writing surface. This is the standard construction method for drop-front secretary desks." },
+  ],
+  asSeen: {
+    formId: "Secretary desk / drop-front desk",
+    display: "Biedermeier Revival Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase)",
+    finalStyleKind: "revival_wave",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+// Labeled Phoenix Chair Co. (Sheboygan, WI) Colonial Revival Windsor rocker, "Busy
+// since 1875", model No. 962-4½. Form correct (Windsor chair). Date c.1890–1920 (6122
+// catch-all) is plausible for a Phoenix Windsor (~1890–1950). KEY: M12 WRONG-ENTITY
+// hallucination (n=2, = Lloyd Flanders) — the matcher fabricated THREE wrong marks
+// (Phoenix FURNITURE Co. of Grand Rapids 1872–1911 from "Phoenix"; Grand Rapids
+// Association triangle; generic cabinetmaker) even though the model EXPLICITLY
+// disambiguated "Phoenix Chair Co. … distinct from Phoenix Furniture Co." The
+// word-boundary M12 fix can't catch this (real words, wrong entity); the correct maker
+// (Phoenix Chair Co.) is absent from the seed DB so the matcher grabbed the nearest
+// "Phoenix". All 3 are LOW authority so they didn't anchor the date (mitigation held),
+// but they pollute attribution. M9: real maker + "Busy since 1875" founding TPQ not
+// surfaced. #10: spurious "Spindle Gallery" style label again (= S001).
+const phoenix_chair_co_windsor_rocker: ScanFixture = {
+  label: "phoenix_chair_co_windsor_rocker",
+  note: "Labeled Phoenix Chair Co. Windsor rocker; M12 wrong-entity (n=2): matcher hallucinated Phoenix FURNITURE Co. + 2 more from 'Phoenix Chair Co.' despite the model disambiguating them — word-boundary fix can't catch (real words/wrong entity); correct maker absent from DB. LOW-authority so date held (c.1890–1920). M9 real-maker/'since 1875' unparsed; #10 'Spindle Gallery' (= S001).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "label", clue: "maker_label", confidence: 85, description: "Paper label affixed to underside of seat reads 'Phoenix Chair Co. / SHEBOYGAN, WISCONSIN / Busy since 1875 / No. 962-4½ / Fin. [handwritten]'. Label is aged, yellowed, and partially translucent but fully legible. This is a high-authority maker identification." },
+    { type: "label", clue: "visible_text", confidence: 85, description: "Model or style number handwritten on label as 'No. 962-4½'. A 'Fin.' line follows with partially legible handwritten finish designation. These are production/order identifiers consistent with factory chair labeling practice." },
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Solid saddle-shaped plank seat visible from front, side, and underside views. Seat is deeply saddled/carved for comfort, characteristic of Windsor chair construction." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Continuous bent hoop/bow crest rail forming the back and arm rail in one piece, with vertical spindles and a central shaped splat. Classic Windsor bow-back or hoop-back form." },
+    { type: "form", clue: "spindle_back", confidence: 45, description: "Multiple turned vertical spindles visible flanking a central decorative splat. Spindles are slender and round-tenoned into the seat and bow rail. Count appears to be approximately 7 spindles plus central splat." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Continuous arm rail sweeps from the bow back down to arm terminals supported by turned arm posts/balusters on each side. Classic Windsor continuous-arm or bow-arm configuration." },
+    { type: "style", clue: "windsor_rocker_form", confidence: 52, description: "Chair is a Windsor-style rocking chair with bow/hoop back, saddle seat, turned legs, turned stretchers, and curved rocker runners. Central splat has incised shield/urn/arrow decorative motif consistent with Colonial Revival Windsor production." },
+    { type: "style", clue: "central_splat_incised_motif", confidence: 52, description: "Central back splat has a shaped profile with incised decorative lines forming a shield or urn-and-arrow motif. This decorative element is characteristic of late 19th to early 20th century Colonial Revival Windsor production, distinguishing it from plain-spindle Windsor forms." },
+    { type: "structure", clue: "round_tenon", confidence: 82, description: "All spindles, arm posts, and legs appear to use round tenon joinery socketed into the seat plank and bow rail, consistent with Windsor chair construction tradition. Visible at leg-to-seat and spindle-to-bow junctions." },
+    { type: "structure", clue: "turned_legs", confidence: 82, description: "Four turned legs with vase/baluster turning profiles visible from front and side. Turning is well-defined with multiple coves and swells. Legs terminate into rocker runners." },
+    { type: "structure", clue: "stretchers", confidence: 82, description: "Turned H-stretcher or box-stretcher system visible connecting the legs. Front stretcher and side/back stretchers visible. Stretchers are turned with baluster profiles matching the legs." },
+    { type: "structure", clue: "rocker_runners", confidence: 82, description: "Curved rocker runners visible from front, side, and back views. Runners are substantial in width and curve gracefully. Ends of runners show wear consistent with use. Runners appear to be attached to the leg bottoms via turned tenon sockets." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "All visible components — seat, bow rail, spindles, legs, stretchers, arm rail, and rockers — appear to be solid wood. No veneer or laminate visible. Seat underside shows solid plank construction with natural wood grain." },
+    { type: "materials", clue: "wood_species_likely_maple_or_birch", confidence: 45, description: "Wood appears to be a tight-grained hardwood stained very dark (near-black/dark walnut tone). Grain visible on seat underside shows fine, relatively uniform texture consistent with maple or birch — both common in factory Windsor chair production of the late 19th to mid-20th century. Species cannot be confirmed without closer examination." },
+    { type: "finish", clue: "refinished_surface", confidence: 55, description: "The chair is finished in a very dark, near-black stain that is uniform across all surfaces including the seat underside. The darkness and uniformity suggest either a factory-applied dark finish or a later refinish. Some wear through the finish is visible at the rocker ends and seat edges, suggesting the finish has some age." },
+    { type: "condition", clue: "wear_at_contact_points", confidence: 54, description: "Visible wear through the dark finish at rocker runner ends, seat edges, and arm terminals. Scratches visible on seat underside. Wear pattern is consistent with genuine use over time rather than artificial distressing." },
+    { type: "condition", clue: "paper_label_aged", confidence: 54, description: "Paper label on seat underside is yellowed, aged, and partially translucent with age-related foxing/staining. Label is intact and fully legible. Age of label is consistent with mid-20th century or earlier production." },
+    { type: "construction", clue: "saddle_seat_carved", confidence: 96, description: "Seat is a carved saddle/pommel form — deeply shaped with a central ridge and scooped sides — visible from front and side views. This is a defining Windsor chair construction feature requiring hand or machine shaping of a solid plank." },
+    { type: "construction", clue: "bent_bow_rail", confidence: 95, description: "The continuous hoop/bow back and arm rail is a single steam-bent or bent-laminated member forming the entire upper perimeter of the chair. Visible from front, side, and back views. No visible joints in the bow rail." },
+    { type: "construction", clue: "turned_arm_supports", confidence: 96, description: "Two turned baluster-form arm posts visible on each side, supporting the continuous arm/bow rail. Turning profiles match the leg turnings, suggesting unified factory production." },
+    { type: "style", clue: "colonial_revival_windsor", confidence: 52, description: "The combination of bow-back Windsor form, central decorative splat with incised motif, dark stain finish, and factory production by Phoenix Chair Co. of Sheboygan WI is consistent with Colonial Revival Windsor chair production, broadly c. 1890-1950." },
+    { type: "label", clue: "maker_geographic_origin", confidence: 85, description: "Label explicitly states 'SHEBOYGAN, WISCONSIN' as the manufacturing location. Phoenix Chair Co. of Sheboygan WI is a documented American chair manufacturer, distinct from Phoenix Furniture Co. of Grand Rapids MI. The 'Busy since 1875' tagline indicates the company's founding or operating date." },
+    { type: "form", clue: "rocking_chair_form", confidence: 68, description: "Chair has curved rocker runners attached to the leg bases, definitively identifying this as a rocking chair rather than a static Windsor armchair." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "label", clue: "maker_mark_cabinetmaker_paper_labels_and_inscriptions", confidence: 50, description: "Detected maker mark: Cabinetmaker paper labels and inscriptions (generic). Mark type: paper_label. Dating reference: 1770–1860. Confidence tier: LOW." },
+    { type: "label", clue: "maker_mark_grand_rapids_furniture_association_triangle", confidence: 50, description: "Detected maker mark: Grand Rapids Furniture Association triangle mark. Mark type: association_mark. Dating reference: 1900–1940. Confidence tier: LOW." },
+    { type: "label", clue: "maker_mark_phoenix_furniture_co", confidence: 60, description: "Detected maker mark: Phoenix Furniture Co.. Mark type: paper_label. Dating reference: 1872–1911. Confidence tier: LOW." },
+  ],
+  asSeen: {
+    formId: "Windsor chair",
+    display: "Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+// Rococo Revival / Naturalistic Victorian parlor armchair (carved crest, oval-cartouche
+// back, serpentine arms, cabriole legs, walnut, socket casters, jacquard cover). SUCCESS
+// / control: output is CORRECT (Upholstered armchair, c.1850–1890, Rococo Revival
+// original_period). VALIDATES #6 Phase 1 GENERALIZING to a 2nd piece: no hard
+// construction layer dated it, so the consistent "c.1850-1890" style prose
+// (carved_crest_rail + rococo_revival_vocabulary) anchored the date — without #6 it
+// would have hit the 6122 catch-all (c.1890-1920, too late). Latent: a 1845–1920
+// convergence zone formed but didn't override (wider than the 1890-1920 it competed
+// with — same relative-width issue as Biedermeier/escritoire); #6 masked it.
+// Form genuinely upholstered (T1a correctly NOT fired). M7 caster negations
+// (porcelain_caster/modern_caster "not…") correctly dropped.
+const rococo_revival_parlor_armchair: ScanFixture = {
+  label: "rococo_revival_parlor_armchair",
+  note: "Rococo Revival Victorian parlor armchair — SUCCESS/control. Correct: Upholstered armchair, c.1850–1890, Rococo Revival (orig). Validates #6 Phase 1 generalizing (style prose 'c.1850-1890' anchored the date, no construction to date it; without #6 → 6122 catch-all 1890-1920). M7 caster negations dropped; T1a correctly didn't fire (genuinely upholstered).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion present, floral tapestry fabric, seat fills the chair frame between the arms." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Shaped oval/cartouche back frame with upholstered back panel insert and carved crest rail above." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has two sweeping curved arms with shaped arm supports connecting to the seat rail; classic parlor armchair form." },
+    { type: "style", clue: "carved_crest_rail", confidence: 52, description: "Prominent carved crest rail at top of back featuring scrolling C-curves, acanthus leaf motifs, and a central foliate device — characteristic Rococo Revival / Victorian parlor chair ornament, c. 1850-1890." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Front legs visible in side view show a curved cabriole-style profile, consistent with Rococo Revival and Victorian parlor seating vocabulary." },
+    { type: "style", clue: "serpentine_arm", confidence: 52, description: "Arms sweep in a continuous S-curve from the back stile down to the arm pad, a hallmark of Victorian Rococo Revival and late Victorian parlor chair design." },
+    { type: "style", clue: "oval_cartouche_back", confidence: 52, description: "Back frame forms a shaped oval/cartouche outline with the carved crest rail cresting above it — a Rococo Revival and Victorian parlor chair signature form." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members appear to be solid hardwood throughout — arms, back stiles, seat rails, and legs all show solid wood profiles with no visible veneer edges or lamination." },
+    { type: "materials", clue: "wood_species_walnut_or_mahogany", confidence: 60, description: "Frame wood shows warm reddish-brown to dark brown coloration with fine grain visible at worn areas; consistent with black walnut or mahogany. Walnut slightly more probable given the warm brown tone and grain character." },
+    // negated: live P0 caught these as negations ("not porcelain" / "not a modern…
+    // caster") and dropped them; un-negated they'd wrongly date the hardware layer
+    // post-1900 and block #6 (fidelity convention: encode what the original run did).
+    { type: "hardware", clue: "porcelain_caster", confidence: 45, negated: true, description: "Caster visible at front leg base is cast metal (iron or brass-toned), not porcelain. The wheel appears to be a small cast metal roller caster with a socket-type mounting cup, heavily oxidized/patinated." },
+    { type: "hardware", clue: "modern_caster", confidence: 45, negated: true, description: "Caster appears to be a period-appropriate cast metal socket caster, not a modern rubber or plastic wheel caster. Heavy oxidation and patina consistent with age. Likely a Victorian-era brass or iron socket caster, c. 1860-1910." },
+    { type: "hardware", clue: "period_socket_caster", confidence: 62, description: "Close-up shows a cast metal socket-type caster with a cup that receives the leg tenon; the wheel is a small cast metal roller. This style of socket caster is consistent with Victorian parlor furniture, c. 1860-1910. Heavy surface oxidation and patina support age." },
+    { type: "condition", clue: "upholstery_worn_fraying", confidence: 54, description: "Both seat and back upholstery panels show significant wear, fraying at edges, and the back panel appears partially detached from the frame. Fabric is intact but deteriorated." },
+    { type: "condition", clue: "wood_damage_arm_end", confidence: 54, description: "Close-up of front leg/arm junction shows significant wood fiber damage and splitting at the arm end near the caster socket — likely from stress, impact, or age-related joint failure." },
+    { type: "condition", clue: "shellac_intact", confidence: 45, description: "Frame surfaces show a warm amber-brown finish with age-consistent patina and wear at high-contact areas. Finish appears to be original shellac or early varnish rather than modern polyurethane — no thick plastic film visible." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "Seat and back upholstery fabric shows a large-scale multi-color floral pattern with complex repeat. The woven structure with high pattern complexity and machine-loomed appearance is consistent with jacquard upholstery fabric. Could also be classified as brocade; jacquard is the best fit given the machine-loomed regularity of the pattern repeat." },
+    { type: "construction", clue: "back_panel_loose", confidence: 85, description: "Back view reveals the back upholstery panel is a separate pad trimmed with black gimp/braid edging, sitting loosely within the back frame rather than being tightly tacked. This is a later or replacement upholstery campaign." },
+    { type: "upholstery", clue: "nailhead_trim", confidence: 50, description: "No decorative nailhead trim visible on the upholstery edges; the back panel is edged with black gimp/braid trim instead." },
+    { type: "construction", clue: "stretcher_present", confidence: 90, description: "A horizontal stretcher rail is visible connecting the rear legs near the base, providing structural reinforcement — consistent with Victorian parlor chair construction." },
+    { type: "structure", clue: "rear_leg_form", confidence: 72, description: "Rear legs visible in back view appear to splay outward and slightly backward in a curved profile, consistent with Victorian parlor chair construction." },
+    { type: "style", clue: "rococo_revival_vocabulary", confidence: 52, description: "The combination of carved scrolling crest rail with acanthus motifs, shaped oval back, serpentine arms, and cabriole-influenced legs collectively presents a strong Rococo Revival / Victorian parlor chair vocabulary, c. 1850-1890." },
+    { type: "condition", clue: "caster_oxidation", confidence: 54, description: "The cast metal caster shows heavy surface oxidation and darkening consistent with significant age — no bright plating or modern finish visible." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 55, description: "The caster socket close-up reveals the leg end terminates in a turned tenon that seats into the caster cup — consistent with mortise-and-tenon or round-tenon joinery at the leg-to-caster junction. Frame joinery method for arm-to-back and leg-to-rail connections cannot be directly confirmed." },
+    { type: "form", clue: "vertical_supports", confidence: 68, description: "Four legs visible: front legs with cabriole-style curve and caster feet; rear legs with splayed profile and caster feet." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "back cushion partially detached" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+  ],
+  asSeen: {
+    formId: "Upholstered armchair",
+    display: "Rococo Revival / Naturalistic Victorian Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1850–1890",
+    dateFloor: 1850,
+    dateCeiling: 1890,
+    confidence: "Low",
+  },
+};
+
+const hollywood_regency_cane_wing_chair: ScanFixture = {
+  label: "hollywood_regency_cane_wing_chair",
+  // Cane-paneled button-tufted wingback chair — Hollywood Regency / transitional
+  // traditional, ~1960s–80s. Date c.1900–1980 OK (contains truth); form correct (Wing
+  // chair); upholstery dating excellent (button-tufted, c.1955–1980, flagged as later
+  // reupholstery via foam_padding). TWO tracked items: (1) M11 keyword style-family
+  // mis-attribution (n=3+) — "French Provincial" prose matched ["french","revival",
+  // "provincial"] → "Louis XVI / French Neoclassical" → label "French Louis XVI
+  // Revival" on a Hollywood Regency chair (mitigated: revival-wave reconciliation kept
+  // the date right). (2) cane→wicker overreach — genuine cane panels → "Wicker/rattan
+  // furniture" alt-form + wicker limitation on a wood-frame chair. CONTRAST/GUARD: the
+  // convergence override WORKED here (P2 adopted the 1900–1980 zone) because real
+  // post-1900 layers exist (foam 1930–1960, lacquer 1920–1980) — unlike escritoire/
+  // Biedermeier where the placeholder blocked the zone.
+  note: "Hollywood Regency cane wing chair (~1960s–80s); date c.1900–1980 OK, form correct, upholstery dating excellent (later reupholstery flagged). M11 keyword mis-attribution (French Provincial → 'French Louis XVI Revival', n=3+; date unharmed). cane→wicker overreach. CONTRAST: convergence override WORKED (real post-1900 layers).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 71, description: "Fully upholstered tufted seat cushion visible from front and overhead views; broad padded seat surface." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall high-back upholstered backrest with button tufting visible; wingback silhouette with pronounced ear/wing extensions at top." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has wing extensions flanking the high back; classic wingback/porter's chair form with cane-paneled wings and sides." },
+    { type: "structure", clue: "cane_panels", confidence: 82, description: "Large woven cane panels fill the wing areas on both sides of the backrest and the lower side panels below the seat rail; cane is machine-woven open-hexagonal pattern (not hand-caned peg-hole style)." },
+    { type: "structure", clue: "woven_body", confidence: 82, description: "Cane weave body panels visible on wings and side panels; open hexagonal weave pattern consistent with machine-pressed sheet cane rather than hand-caned individual strands." },
+    { type: "structure", clue: "rattan_frame", confidence: 45, description: "Frame is solid wood (appears to be walnut or mahogany stained hardwood), not rattan; cane panels are inset into the wood frame." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Curved serpentine wood frame members visible at wings, seat rail, and legs; dark reddish-brown finish consistent with walnut or mahogany-stained hardwood; smooth molded profile on frame edges." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Combination of high wingback form, cane-paneled wings and sides, curved serpentine frame, and button-tufted upholstery is characteristic of Hollywood Regency / Colonial Revival / transitional traditional style popular c. 1960s-1980s." },
+    { type: "structure", clue: "vertical_supports", confidence: 82, description: "Four tapered straight legs visible; front legs appear slightly splayed/tapered; rear legs visible in back view as dark tapered members." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "Cover fabric shows upright pile with nap-direction shading visible across tufted surfaces; olive/gold-green color with matte pile sheen consistent with cut-pile velvet or chenille velvet. Best-fit classification: velvet_cover (chenille-type velvet)." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "Regular grid of deep tufted dimples visible across both the seat cushion and the back panel; small covered buttons visible at each tuft intersection. Button tufting confirmed on back panel closeup images." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "Seat and back cushions show puffy rounded tufted squares with uniform resilience and rounded edges consistent with polyurethane foam or foam-over-spring construction rather than traditional horsehair or cotton batting alone; cushions retain shape suggesting foam substrate." },
+    { type: "condition", clue: "condition_cues", confidence: 57, description: "Upholstery fabric shows significant soiling, staining, and pile crush across seat and back; back exterior panel shows heavy soiling and possible small tear/snag at center. Cane panels appear intact but darkened with age/dirt. Wood frame shows minor scuffs and wear at edges but no major damage visible." },
+    { type: "condition", clue: "refinished_surface", confidence: 54, description: "Wood frame finish appears original or lightly maintained; no obvious stripping or modern polyurethane overcoat visible; finish shows age-consistent wear at contact points." },
+    { type: "construction", clue: "frame_and_panel_sides", confidence: 92, description: "Wing and side panels are constructed as wood frame members holding inset cane panels; the curved wood stile/rail framework is visible surrounding each cane panel section." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Frame shows pronounced S-curve or serpentine profile on the wing/back stiles visible in side view; curved molded wood frame is a decorative feature associated with French Provincial, Hollywood Regency, and Colonial Revival chair forms." },
+    { type: "materials", clue: "lacquer_finish", confidence: 60, description: "Wood frame shows a smooth, hard, uniform dark finish consistent with lacquer or catalyzed finish; no shellac crazing visible; finish appears factory-applied." },
+    { type: "construction", clue: "wicker_weave_close", confidence: 85, description: "Cane panels show a close, tight hexagonal weave pattern; the regularity and uniformity of the weave pattern is consistent with machine-pressed sheet cane rather than hand-caned individual strand work." },
+    { type: "condition", clue: "wicker_strand_breakage", confidence: 54, description: "Cane panels appear largely intact with no obvious broken or missing strands visible in the available images; cane is darkened but structurally present." },
+    { type: "form", clue: "seating_surface", confidence: 48, description: "Seat cushion is a separate tufted pad sitting within the seat frame; appears to be a drop-in or tied cushion rather than fully attached upholstery." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Front legs appear to be straight tapered legs without cabriole curve; rear legs are straight tapered; leg style is consistent with transitional traditional or Colonial Revival chair production c. 1960s-1980s." },
+    { type: "condition", clue: "condition_cues", confidence: 57, description: "Back exterior upholstery panel shows heavy soiling, staining, and a small snag or tear at center-back; fabric appears original and unrestored." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered back exterior" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "context", clue: "french_provincial_style", confidence: 48, description: "Frame shows pronounced S-curve or serpentine profile on the wing/back stiles visible in side view; curved molded wood frame is a decorative feature associated with French Provincial, Hollywood Regency, and Colonial Revival chair forms." },
+    { type: "style", clue: "cabriole_leg", confidence: 72, description: "Cabriole legs are visible." },
+    { type: "form", clue: "wingback_form", confidence: 80, description: "Structural side wings extending forward from upper back indicate wing-chair form. Canonical: form_wing_chair." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Wing chair",
+    display: "French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1900–1980",
+    dateFloor: 1900,
+    dateCeiling: 1980,
+    confidence: "Moderate",
+  },
+};
+
+const victorian_barrel_back_parlor_chair: ScanFixture = {
+  label: "victorian_barrel_back_parlor_chair",
+  // Barrel/tub-back Victorian/Edwardian parlor chair the model read as "approximately
+  // 1880–1910" — yet output the LEGACY 1900–2000 placeholder catch-all (disjoint above
+  // the 1700–1920 envelope). PROVEN not caused by our fixes: #6 declined (only ONE
+  // dated style obs, victorian_edwardian_parlor_chair "1880-1910"; needs ≥2 to anchor),
+  // and fix#1 declined (only construction floor is round_tenon post-1700, < the 1850
+  // OPEN_FLOOR_MIN_YEAR). This fixture sits in the GAP between the conservative
+  // carve-outs and gets the untouched legacy default — the canonical specimen of the
+  // placeholder problem we still need to attack head-on (relax #6's ≥2 when a dated
+  // style obs exists / lower the pre-1850 floor / convergence). M8-ish: barrel-back
+  // parlor chair → "Lounge chair".
+  note: "Victorian barrel-back parlor chair (model: ~1880–1910) → LEGACY 1900–2000 placeholder. PROVEN not us: #6 declined (1 dated style obs <2), fix#1 declined (floor 1700 <1850). The canonical gap specimen for the placeholder catch-all we still need to attack head-on. M8: barrel-back → 'Lounge chair'.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Circular upholstered drop-in seat pad visible, round seat frame beneath." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Continuous curved barrel/tub back rail wraps around the sitter, forming a full encircling backrest and arm rest in one piece." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Barrel-back tub chair form with continuous curved crest rail serving as both back and arms; classic Victorian/Edwardian parlor corner or tub armchair." },
+    { type: "style", clue: "reeded_crest_rail", confidence: 52, description: "Continuous reeded/fluted decoration carved along the full curved crest rail, a characteristic Victorian and Edwardian decorative motif on parlor seating." },
+    { type: "style", clue: "pierced_splat", confidence: 52, description: "Two pierced carved splats visible at left and right sides of the back, each featuring scrolled volute and fan/palmette motifs. Consistent with late Victorian or Edwardian decorative vocabulary." },
+    { type: "structure", clue: "turned_center_spindle", confidence: 82, description: "A single turned decorative spindle rises from the seat rail to the crest rail at the center back, with ring-and-vase turning profile visible." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Cabriole-style legs visible at front corners, curving outward at knee and tapering to foot with casters. Consistent with Victorian/Edwardian parlor chair production." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members appear to be solid hardwood throughout — crest rail, splats, legs, and seat rail all show solid wood profiles with no visible veneer edges or laminate layers." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 60, description: "Dark reddish-brown wood with fine even texture and smooth planed surfaces visible on frame members. Consistent with mahogany or walnut; mahogany slightly more probable given color and grain character, but walnut cannot be excluded at this resolution." },
+    { type: "construction", clue: "steam_bent_or_laminated_crest_rail", confidence: 75, description: "The continuous curved barrel crest rail wraps nearly 270 degrees around the seat. This degree of curvature in a solid wood rail typically indicates steam bending or laminated bent construction. No visible lamination lines at this resolution." },
+    { type: "condition", clue: "crest_rail_crack", confidence: 54, description: "A visible crack or split is present at the junction of the crest rail near the center back spindle attachment point. Structural concern." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "The seat cover shows a small repeating geometric/diamond pattern with subtle color variation. The regularity of the repeat and the woven texture suggest a machine-loomed jacquard or similar woven fabric. Confidence moderate due to image resolution." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "The seat appears to be a drop-in pad or stuffed seat without visible spring crown. The seat profile is relatively flat rather than domed, suggesting stuffed/padded construction without coil springs, though springs beneath burlap cannot be fully excluded." },
+    { type: "upholstery", clue: "hand_tacks", confidence: 50, description: "Small tack heads visible along the lower edge of the seat rail where the upholstery fabric is attached to the seat frame. Spacing appears hand-driven rather than stapled." },
+    { type: "condition", clue: "upholstery_soiled", confidence: 54, description: "Seat cover fabric is heavily soiled with staining and discoloration across the surface. Fabric also shows fraying at the seat edge where it meets the seat rail." },
+    { type: "condition", clue: "finish_wear", confidence: 45, description: "Finish shows wear and minor losses at edges and high-contact areas of the frame, consistent with age-related use wear. Surface appears to retain an older finish (shellac or varnish) rather than a modern polyurethane coating." },
+    { type: "style", clue: "victorian_edwardian_parlor_chair", confidence: 52, description: "The combination of barrel/tub back form, reeded crest rail, pierced scrolled splats, cabriole legs, and turned center spindle is consistent with late Victorian or Edwardian parlor seating, approximately 1880-1910." },
+    { type: "construction", clue: "round_tenon", confidence: 65, description: "The turned center spindle connects to both the seat rail and crest rail; round tenon joinery is the most probable attachment method for this type of turned spindle in period chair construction." },
+    { type: "condition", clue: "dust_cover_torn", confidence: 45, description: "The dust cover or cambric fabric visible beneath the seat frame appears torn or missing in sections." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "fabric fraying at seat edge" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "structure", clue: "spindle_back", confidence: 78, description: "Spindles are visible in the back or side rail." },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+    { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
+    { type: "upholstery", clue: "dust_cover_cambric_woven", confidence: 70, description: "Dust cover is woven cotton cambric — standard factory upholstery practice across a broad period; not a tight date on its own." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "Lounge chair (also commonly called: Easy chair, Club chair)",
+    finalStyleKind: "context_only",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair];
