@@ -1482,4 +1482,60 @@ const eastlake_oak_settee: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee];
+const rococo_renaissance_carved_settee: ScanFixture = {
+  label: "rococo_renaissance_carved_settee",
+  // Heavily-carved mid-Victorian (~1860–1880) Rococo/Renaissance Revival settee
+  // (dragons, grotesque mask, heraldic shield, paw feet). Form correct (Settee), style
+  // FAMILY correct (Rococo Revival), but dated c.1920–1925 — ~50yr late. THE CLEAREST
+  // M11/revival cluster specimen: two zones formed — 1845–1910 (REAL evidence: finish +
+  // upholstery + style + style_wave) and 1920–1925 (style_wave-only revival overlap) —
+  // and the convergence PICKER chose the LATER revival-wave zone (higher weighted
+  // authority from a synthetic revival-wave intersection / narrower tiebreak), then
+  // labeled it a 1920s "French Provincial / Rococo Domestic Revival." Unifies the
+  // cluster: escritoire/Biedermeier = revival+placeholder beat a (pre-1850) zone;
+  // THIS = revival style_wave-only zone beats a real multi-layer zone. Controls
+  // (Eastlake, cane-wing) succeed because real IN-ERA layers win. The head-on fix:
+  // real construction/material/finish/upholstery layers must outweigh style_wave/
+  // revival zones in both the picker and the placeholder-override.
+  note: "Mid-Victorian (~1860–80) carved Rococo/Renaissance settee dated c.1920–1925 (~50yr late). CLEAREST M11/revival case: convergence picker chose a style_wave-only revival zone (1920–1925) OVER the real-evidence zone (1845–1910: finish+upholstery+style). Form/style-family correct; date + revival label wrong. Unifies the cluster; head-on fix = real-evidence layers must outweigh revival style_waves.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion visible across the full width of the settee/loveseat form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Upholstered back panel present, framed by heavily carved crest rail above and scrolled side supports." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Two open arms with scrolled terminals and carved figural arm posts visible on both sides of the seating form; this is a settee or parlor sofa with arms rather than a single armchair." },
+    { type: "style", clue: "rococo_revival_ornament", confidence: 52, description: "Heavily carved crest rail with scrolling acanthus leaves, C-scrolls, and figural elements (dragons/griffins, heraldic shield) strongly consistent with Rococo Revival or Renaissance Revival parlor furniture, c. 1845-1880." },
+    { type: "style", clue: "renaissance_revival_ornament", confidence: 52, description: "Heraldic shield cartouche in crest rail center, grotesque mask arm terminal, and dragon/griffin figural carvings are characteristic of Renaissance Revival high-style parlor furniture, c. 1860-1880, as well as Rococo Revival. Both style waves are plausible." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Front legs visible in overall_front image show cabriole-style curved form terminating in carved paw feet, consistent with Rococo Revival seating." },
+    { type: "style", clue: "paw_feet", confidence: 52, description: "Carved paw feet visible at the base of the front cabriole legs, a characteristic ornamental feature of Rococo Revival and Renaissance Revival parlor seating." },
+    { type: "style", clue: "figural_carved_crest", confidence: 52, description: "Crest rail features deeply carved figural elements including what appear to be dragons or griffins flanking a central heraldic cartouche, with scrolling acanthus foliage throughout. High-relief figural carving of this quality is associated with high-style Victorian parlor furniture, c. 1850-1885." },
+    { type: "style", clue: "grotesque_mask_arm_terminal", confidence: 52, description: "Arm terminal carved as a full human/classical face (grotesque mask or caryatid bust) with surrounding foliage, visible in overall_side closeup. This is a Renaissance Revival and high Rococo Revival ornamental motif, c. 1855-1880." },
+    { type: "style", clue: "dragon_griffin_carving", confidence: 52, description: "Carved creature with open mouth, scaled body, and leonine features visible in joinery_closeup of crest rail — consistent with dragon, griffin, or chimera motif used in Renaissance Revival and high Victorian carved furniture." },
+    { type: "style", clue: "heraldic_shield_cartouche", confidence: 52, description: "Central crest rail features a carved heraldic shield or cartouche flanked by scrollwork and figural creatures, consistent with Renaissance Revival heraldic ornament." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "Frame appears to be solid hardwood throughout — the depth and complexity of the carved relief work on crest rail, arm terminals, and legs is consistent with solid wood carving rather than applied composition ornament. Dark reddish-brown color and finish sheen suggest mahogany or walnut." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 60, description: "Deep reddish-brown color with warm undertones and high-polish finish visible on frame is consistent with mahogany (Honduran or Cuban). Walnut is also possible. The color and finish sheen lean toward mahogany. Confidence is moderate as species identification from finish color alone is provisional." },
+    { type: "finish", clue: "shellac_intact", confidence: 55, description: "Frame surface shows warm amber-reddish high-gloss finish with deep color saturation consistent with intact shellac or early varnish. No obvious plastic-film buildup or polyurethane pooling visible. Finish appears well-preserved and integrated with the carved surfaces." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 45, description: "Seat and back upholstery shows a repeating floral pattern (daisy/flower sprigs on a textured ground) with high pattern complexity and machine-loomed regularity. The fabric appears to be a jacquard-woven textile in gold/champagne tones. Damask is also possible. Best-fit classification: jacquard_cover." },
+    { type: "upholstery", clue: "nailhead_trim", confidence: 50, description: "Continuous row of small brass-colored nailheads visible along the perimeter of the seat, back, and arm upholstery panels. Nailheads appear relatively uniform in spacing and size, consistent with decorative nailhead trim used in Victorian parlor upholstery." },
+    { type: "upholstery", clue: "damask_cover", confidence: 45, description: "Alternative classification to jacquard_cover: the fabric could be a damask with a woven floral repeat in a single color family (gold on gold). The ground texture and pattern are consistent with damask weave. Uncertainty between jacquard and damask noted; jacquard selected as primary classification due to pattern complexity." },
+    { type: "condition", clue: "upholstery_condition", confidence: 45, description: "Upholstery fabric appears intact with no obvious tears or major staining visible in the photos. Some slight color variation or soiling may be present on the seat surface but overall condition appears good for the age of the piece." },
+    { type: "condition", clue: "frame_condition", confidence: 54, description: "Carved wood frame appears intact with no visible breaks, losses, or repairs to the carving. Finish is well-preserved and polished. No obvious structural damage visible." },
+    { type: "hardware", clue: "nailhead_trim", confidence: 62, description: "Decorative brass-colored nailhead trim applied along upholstery edges; consistent with Victorian parlor upholstery practice. Spacing appears relatively uniform suggesting possible strip-nailhead application rather than individually hand-driven tacks, but individual placement cannot be ruled out at this resolution." },
+    { type: "construction", clue: "carved_solid_frame", confidence: 45, description: "The depth and three-dimensionality of the carved ornament on the crest rail (dragons, scrolls, heraldic shield), arm terminals (grotesque mask), and legs (paw feet) is consistent with solid wood carving rather than applied composition or cast ornament. The carving appears to be integral to the frame members." },
+    { type: "style", clue: "scrolled_arm_supports", confidence: 52, description: "Arm supports show scrolled volute form at the arm terminal and scrolled bracket at the junction with the seat rail, consistent with Rococo Revival and Renaissance Revival seating design vocabulary." },
+    { type: "style", clue: "acanthus_leaf_carving", confidence: 52, description: "Acanthus leaf and C-scroll ornament visible throughout the crest rail carving, consistent with Rococo Revival and Renaissance Revival decorative vocabulary, c. 1845-1885." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back panels" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "carved seating" },
+  ],
+  asSeen: {
+    formId: "Settee",
+    display: "French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1920–1925",
+    dateFloor: 1920,
+    dateCeiling: 1925,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee];
