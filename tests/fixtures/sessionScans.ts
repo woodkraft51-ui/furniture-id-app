@@ -472,4 +472,67 @@ const china_import_cedar_chest: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest];
+// Teal Space Age "Swivit" molded-plastic pedestal shell chair (Equipted Products
+// Inc., Maple Plain MN, c.1960s–70s). The 2nd M12 fixture and the clincher: the
+// SAME hallucinated maker_mark_sligh_furniture_co (1933–2005) fires here as on the
+// china_import_cedar_chest — two unrelated labels ("Swivit/Maple Plain MN" here,
+// "Made in China" there) → identical Sligh hallucination → identical 2005 floor.
+// A 1960s–70s chair gets floored to post-2005 by a fabricated mark, ignoring the
+// real Space Age plastic evidence (molded_plastic "postwar+", space_age_pedestal,
+// teal_turquoise, patents_pending). Also: a 2nd phantom mark stacks on
+// (maker_mark_cabinetmaker_paper_labels_and_inscriptions 1770–1860). M8 + phantom
+// "Upholstered armchair" on a hard plastic shell (0 upholstery clues) + armchair_form
+// key-vs-content ("armless"). M7 negations (metal_frame/painted_metal/bent_plywood,
+// all "no/not", conf 82–84) correctly dropped here. M12/M8/M7 — entangled.
+const swivit_space_age_pedestal_chair: ScanFixture = {
+  label: "swivit_space_age_pedestal_chair",
+  note: "Space Age Swivit plastic chair; 2nd M12 fixture — same hallucinated Sligh mark + 2005 floor as the cedar chest, on a totally different label. Real 1960s plastic evidence ignored (M12/M8).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Single-piece molded shell provides integrated seat and backrest in a bucket/scoop form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Backrest is integral to the molded shell; no separate backrest component." },
+    { type: "form", clue: "pedestal_column", confidence: 68, description: "Chair sits on a single central pedestal column that flares into a wide square-rounded base, tulip-pedestal style." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "No armrests present; this is an armless shell/bucket chair." },
+    { type: "structure", clue: "bent_molded_plywood", confidence: 82, description: "Shell is not bent plywood; it is a single-piece molded plastic or fiberglass shell, not laminated wood." },
+    { type: "materials", clue: "metal_frame", confidence: 84, description: "No visible metal frame components; both shell and base appear to be molded plastic or fiberglass/polymer construction throughout." },
+    { type: "materials", clue: "painted_metal_finish", confidence: 84, description: "Base is black molded plastic or rubber-like polymer, not painted metal. Surface texture and form are consistent with injection-molded or rotationally-molded plastic." },
+    { type: "style", clue: "style_cue_space_age_pedestal", confidence: 52, description: "Tulip-inspired pedestal base with organic molded shell in teal/turquoise is characteristic of Space Age / mid-century modern seating design vocabulary, c. 1960s-1970s." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "Embossed text on the front lower edge of the base reads 'Swivit' in stylized script, followed by 'Equipted Products Inc. | Patents Pending | Maple Plain Minnesota'. This is a maker/brand mark molded directly into the base." },
+    { type: "label", clue: "visible_text_swivit", confidence: 85, description: "Brand name 'Swivit' visible in embossed stylized script on the base edge, visible in multiple images." },
+    { type: "label", clue: "visible_text_manufacturer", confidence: 45, description: "Manufacturer name 'Equipted Products Inc.' with location 'Maple Plain Minnesota' and 'Patents Pending' embossed on base edge. Note: 'Equipted' appears to be the brand's own spelling." },
+    { type: "construction", clue: "single_piece_molded_shell", confidence: 95, description: "The seat/back shell is a single continuous molded unit with no seams, joints, or separate components visible. Consistent with injection-molded ABS plastic or fiberglass-reinforced polyester." },
+    { type: "construction", clue: "molded_plastic_base", confidence: 92, description: "The pedestal base is a single molded unit — square with rounded corners tapering to a central column — in black polymer. Underside shows hollow interior consistent with rotationally-molded or blow-molded plastic." },
+    { type: "construction", clue: "hollow_base_interior", confidence: 90, description: "Underside view shows the base is hollow with a large concave interior cavity, consistent with rotationally-molded or blow-molded plastic construction rather than solid cast material." },
+    { type: "condition", clue: "surface_scratches_base", confidence: 54, description: "Multiple surface scratches and scuff marks visible on the underside and sides of the black base, consistent with normal use wear." },
+    { type: "condition", clue: "shell_surface_wear", confidence: 54, description: "Minor surface scuffs and slight color variation/fading visible on the teal shell, particularly at edges and high-contact areas. No cracks or structural damage visible." },
+    { type: "condition", clue: "structural_integrity", confidence: 54, description: "No visible cracks, breaks, or structural failures in either the shell or the base. Chair appears structurally sound." },
+    { type: "style", clue: "teal_turquoise_color", confidence: 52, description: "Shell is a distinctive teal/turquoise blue color, a color palette strongly associated with mid-century modern and Space Age design of the 1960s-1970s." },
+    { type: "style", clue: "patents_pending_mark", confidence: 52, description: "'Patents Pending' embossed on base indicates the product was in active patent application status at time of manufacture, suggesting an early production run." },
+    { type: "function", clue: "sitting", confidence: 70, description: "Object is clearly a chair designed for sitting; the shell provides a contoured seat and back." },
+    { type: "style", clue: "geometric_faceted_shell_back", confidence: 52, description: "The back of the shell shows a faceted, multi-planar geometric form rather than a smooth continuous curve, visible in the back view. This is a distinctive design feature differentiating it from smooth tulip-style shells." },
+    { type: "materials", clue: "fiberglass_or_abs_shell", confidence: 65, description: "Shell surface texture, matte finish, and slight translucency at edges suggest either fiberglass-reinforced polyester or ABS plastic. The matte texture with slight surface variation is more consistent with fiberglass than smooth-surface ABS, but cannot be confirmed without tactile examination." },
+    { type: "construction", clue: "shell_to_base_attachment", confidence: 88, description: "Shell attaches to the pedestal at a single central column point. The column narrows at the junction between base and shell, visible in side and back views." },
+    { type: "style", clue: "maple_plain_minnesota_origin", confidence: 52, description: "Manufacturer location identified as Maple Plain, Minnesota — a small town west of Minneapolis. This is a regional American manufacturer, not a major national furniture brand." },
+    { type: "materials", clue: "molded_plastic", confidence: 50, description: "all-plastic construction" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "label", clue: "maker_mark_cabinetmaker_paper_labels_and_inscriptions", confidence: 50, description: "Detected maker mark: Cabinetmaker paper labels and inscriptions (generic). Mark type: paper_label. Dating reference: 1770–1860. Confidence tier: LOW." },
+    { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70, description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM." },
+  ],
+  asSeen: {
+    formId: "Upholstered armchair",
+    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "context_only",
+    // dateFloor 2005 is the M12 datum (hallucinated Sligh mark → TPQ floor) and
+    // reproduces exactly. The range STRING diverges from live ("Broad, not tightly
+    // dated") because the narrative rendering is raw_text-dependent; the harness
+    // renders "c. 1935 onward…" deterministically — pinned here for regression coverage
+    // (both strings are incoherent with the 2005 floor, the tracked #8 defect).
+    dateRange: "c. 1935 onward (early-to-mid 20th century or later)",
+    dateFloor: 2005,
+    dateCeiling: null,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair];
