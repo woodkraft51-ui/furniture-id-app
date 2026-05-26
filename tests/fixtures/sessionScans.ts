@@ -1372,4 +1372,58 @@ const hollywood_regency_cane_wing_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair];
+const victorian_barrel_back_parlor_chair: ScanFixture = {
+  label: "victorian_barrel_back_parlor_chair",
+  // Barrel/tub-back Victorian/Edwardian parlor chair the model read as "approximately
+  // 1880–1910" — yet output the LEGACY 1900–2000 placeholder catch-all (disjoint above
+  // the 1700–1920 envelope). PROVEN not caused by our fixes: #6 declined (only ONE
+  // dated style obs, victorian_edwardian_parlor_chair "1880-1910"; needs ≥2 to anchor),
+  // and fix#1 declined (only construction floor is round_tenon post-1700, < the 1850
+  // OPEN_FLOOR_MIN_YEAR). This fixture sits in the GAP between the conservative
+  // carve-outs and gets the untouched legacy default — the canonical specimen of the
+  // placeholder problem we still need to attack head-on (relax #6's ≥2 when a dated
+  // style obs exists / lower the pre-1850 floor / convergence). M8-ish: barrel-back
+  // parlor chair → "Lounge chair".
+  note: "Victorian barrel-back parlor chair (model: ~1880–1910) → LEGACY 1900–2000 placeholder. PROVEN not us: #6 declined (1 dated style obs <2), fix#1 declined (floor 1700 <1850). The canonical gap specimen for the placeholder catch-all we still need to attack head-on. M8: barrel-back → 'Lounge chair'.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Circular upholstered drop-in seat pad visible, round seat frame beneath." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Continuous curved barrel/tub back rail wraps around the sitter, forming a full encircling backrest and arm rest in one piece." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Barrel-back tub chair form with continuous curved crest rail serving as both back and arms; classic Victorian/Edwardian parlor corner or tub armchair." },
+    { type: "style", clue: "reeded_crest_rail", confidence: 52, description: "Continuous reeded/fluted decoration carved along the full curved crest rail, a characteristic Victorian and Edwardian decorative motif on parlor seating." },
+    { type: "style", clue: "pierced_splat", confidence: 52, description: "Two pierced carved splats visible at left and right sides of the back, each featuring scrolled volute and fan/palmette motifs. Consistent with late Victorian or Edwardian decorative vocabulary." },
+    { type: "structure", clue: "turned_center_spindle", confidence: 82, description: "A single turned decorative spindle rises from the seat rail to the crest rail at the center back, with ring-and-vase turning profile visible." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Cabriole-style legs visible at front corners, curving outward at knee and tapering to foot with casters. Consistent with Victorian/Edwardian parlor chair production." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members appear to be solid hardwood throughout — crest rail, splats, legs, and seat rail all show solid wood profiles with no visible veneer edges or laminate layers." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 60, description: "Dark reddish-brown wood with fine even texture and smooth planed surfaces visible on frame members. Consistent with mahogany or walnut; mahogany slightly more probable given color and grain character, but walnut cannot be excluded at this resolution." },
+    { type: "construction", clue: "steam_bent_or_laminated_crest_rail", confidence: 75, description: "The continuous curved barrel crest rail wraps nearly 270 degrees around the seat. This degree of curvature in a solid wood rail typically indicates steam bending or laminated bent construction. No visible lamination lines at this resolution." },
+    { type: "condition", clue: "crest_rail_crack", confidence: 54, description: "A visible crack or split is present at the junction of the crest rail near the center back spindle attachment point. Structural concern." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "The seat cover shows a small repeating geometric/diamond pattern with subtle color variation. The regularity of the repeat and the woven texture suggest a machine-loomed jacquard or similar woven fabric. Confidence moderate due to image resolution." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "The seat appears to be a drop-in pad or stuffed seat without visible spring crown. The seat profile is relatively flat rather than domed, suggesting stuffed/padded construction without coil springs, though springs beneath burlap cannot be fully excluded." },
+    { type: "upholstery", clue: "hand_tacks", confidence: 50, description: "Small tack heads visible along the lower edge of the seat rail where the upholstery fabric is attached to the seat frame. Spacing appears hand-driven rather than stapled." },
+    { type: "condition", clue: "upholstery_soiled", confidence: 54, description: "Seat cover fabric is heavily soiled with staining and discoloration across the surface. Fabric also shows fraying at the seat edge where it meets the seat rail." },
+    { type: "condition", clue: "finish_wear", confidence: 45, description: "Finish shows wear and minor losses at edges and high-contact areas of the frame, consistent with age-related use wear. Surface appears to retain an older finish (shellac or varnish) rather than a modern polyurethane coating." },
+    { type: "style", clue: "victorian_edwardian_parlor_chair", confidence: 52, description: "The combination of barrel/tub back form, reeded crest rail, pierced scrolled splats, cabriole legs, and turned center spindle is consistent with late Victorian or Edwardian parlor seating, approximately 1880-1910." },
+    { type: "construction", clue: "round_tenon", confidence: 65, description: "The turned center spindle connects to both the seat rail and crest rail; round tenon joinery is the most probable attachment method for this type of turned spindle in period chair construction." },
+    { type: "condition", clue: "dust_cover_torn", confidence: 45, description: "The dust cover or cambric fabric visible beneath the seat frame appears torn or missing in sections." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "fabric fraying at seat edge" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "structure", clue: "spindle_back", confidence: 78, description: "Spindles are visible in the back or side rail." },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+    { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
+    { type: "upholstery", clue: "dust_cover_cambric_woven", confidence: 70, description: "Dust cover is woven cotton cambric — standard factory upholstery practice across a broad period; not a tight date on its own." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "Lounge chair (also commonly called: Easy chair, Club chair)",
+    finalStyleKind: "context_only",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair];
