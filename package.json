@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit -p tsconfig.dev.json",
     "test:fixes": "node --import tsx --test tests/fixes.test.ts"
   },
   "dependencies": {

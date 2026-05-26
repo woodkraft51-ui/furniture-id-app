@@ -1,0 +1,8 @@
+{
+  // Full type-check INCLUDING dev tooling (scripts/, tests/) that the production
+  // build (tsconfig.json) deliberately excludes. Run via `npm run typecheck`.
+  // Keeps the corpus harness, ingester, fixtures, and test suite type-safe on
+  // demand without letting them gate a deploy.
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", ".next"]
+}
