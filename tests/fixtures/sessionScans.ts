@@ -956,4 +956,63 @@ const william_mary_burl_escritoire_on_stand: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand];
+// Peacock / Emmanuelle rattan armchair (true ~1960s–80s Filipino import). Bizarre,
+// instructive failure: identified as a "Loom" (weaving loom) and dated c.1940–1950.
+// M7→M6 (date driver): lloyd_loom_paper_fiber is the top material clue (wt 0.910) but
+// its description NEGATES Lloyd loom ("natural rattan… NOT… Lloyd loom"); consumed as
+// positive → wood layer 1920–1950 → convergence 1940–1950. The date rests on a clue
+// asserting the piece is NOT what the clue claims.
+// M8: form "Loom" on an armchair — token contamination from "lloyd_LOOM" / the
+// Lloyd-Flanders maker mark → form_loom (worst form misroute in the corpus).
+// M12-adjacent: hallucinated maker_mark_authored_lloyd_flanders (model said NO label)
+// matched "lloyd" inside the construction phrase "Lloyd loom" — a real word match to the
+// WRONG entity, so the word-boundary M12 fix does NOT catch it. fix#2 DID work
+// (parseLabelDate excludes maker_mark_* → no 1906 floor).
+// Negation-heavy (M7 at scale): open_shelving/pedestal_column/etc. negations consumed.
+// Wicker clues are CORRECT here (it IS wicker — not the woven-on-solid-wood M6).
+const peacock_emmanuelle_rattan_chair: ScanFixture = {
+  label: "peacock_emmanuelle_rattan_chair",
+  note: "Peacock/Emmanuelle rattan chair (~1960s–80s) → 'Loom' c.1940–1950. M7→M6: NEGATED lloyd_loom_paper_fiber (0.910, 'NOT Lloyd loom') consumed as positive drives the 1920–1950 wood date. M8 chair→loom + M12-adjacent hallucinated Lloyd Flanders mark (both from the 'Lloyd loom' token; word-boundary fix can't catch a real-word wrong-entity match). fix#2 held.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Circular woven rattan seat surface visible with concentric spiral coil pattern at center; seat is open-weave wicker construction." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Dramatically oversized circular fan-shaped backrest characteristic of peacock/emmanuelle chair form; backrest diameter substantially exceeds seat width." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has two armrests integrated into the lower backrest structure; arms are woven rattan with decorative knotted/braided end caps." },
+    { type: "style", clue: "mid_century_streamlined_wicker", confidence: 52, description: "Classic 'Emmanuelle' or 'peacock' chair form with oversized circular fan back, open diamond-weave field, scrollwork medallion, and ring-loop border — canonical mid-century imported wicker form, c. 1960s-1980s, typically Philippine or Asian-Pacific production." },
+    { type: "materials", clue: "rattan_frame", confidence: 84, description: "Thick bent rattan poles form the structural frame including the circular back hoop, seat ring, legs, and vertical back supports; poles are smooth, round, and show natural rattan node marks." },
+    { type: "materials", clue: "woven_body", confidence: 84, description: "Entire chair body — back field, seat, base skirt, arm panels — is woven with natural reed/rattan strands in multiple patterns including open diamond lattice, close weave, and decorative scrollwork." },
+    { type: "construction", clue: "wire_wrapped_metal_joint", confidence: 70, description: "No visible wire-wrapped metal joints detected; frame junctions appear to be rattan-wrapped rather than wire-bound, consistent with natural-fiber construction throughout." },
+    { type: "style", clue: "victorian_curlicue_wicker", confidence: 52, description: "Chair does not exhibit Victorian curlicue wicker characteristics; instead shows the cleaner mid-century peacock form with geometric open weave and restrained scrollwork medallion." },
+    { type: "style", clue: "bar_harbor_style_wicker", confidence: 52, description: "Not Bar Harbor style; peacock fan-back form with elaborate scrollwork medallion is distinct from the open airy geometric Bar Harbor aesthetic." },
+    { type: "construction", clue: "wicker_weave_open", confidence: 95, description: "Back field and base skirt use open diamond-lattice weave with visible gaps between strands; characteristic of mid-century peacock chair production." },
+    { type: "construction", clue: "wicker_weave_close", confidence: 88, description: "Seat surface and some transitional zones use tighter close weave; multiple weave patterns coexist on the same piece." },
+    { type: "construction", clue: "wicker_weave_basket", confidence: 82, description: "Arm end caps and base skirt panels show basket-weave over-under pattern in groups of strands." },
+    { type: "materials", clue: "lloyd_loom_paper_fiber", confidence: 84, description: "Strands are natural plant fiber (rattan/reed) with irregular tapered profiles visible at broken ends and close-up; not uniform extruded paper-fiber strands of Lloyd loom construction." },
+    { type: "condition", clue: "wicker_strand_breakage", confidence: 54, description: "Significant strand breakage and unraveling visible at the left arm junction area; multiple strands are frayed, broken, and curling away from the structure. Structural integrity of arm attachment appears compromised." },
+    { type: "condition", clue: "wicker_paint_buildup", confidence: 54, description: "No paint buildup observed; chair retains natural unfinished or lightly finished rattan color throughout with no evidence of multiple paint layers obscuring weave detail." },
+    { type: "style", clue: "peacock_fan_back_form", confidence: 52, description: "Oversized circular fan back with decorative scrollwork medallion at center featuring concentric spiral coils and curved rattan loops arranged in a peacock-feather or floral motif; ring-loop border trim around the full circumference of the back hoop. This is the canonical 'Emmanuelle chair' or 'peacock chair' form." },
+    { type: "construction", clue: "vertical_supports", confidence: 96, description: "Two prominent vertical rattan poles rise from seat level through the back field to support the fan back structure; visible from both front and back views." },
+    { type: "construction", clue: "pedestal_column", confidence: 88, description: "Chair sits on four rattan legs (not a single pedestal column); legs are wrapped rattan poles connected by an open-lattice base skirt ring." },
+    { type: "construction", clue: "open_shelving", confidence: 92, description: "No shelving present; the open lattice base skirt is structural/decorative, not a functional shelf." },
+    { type: "materials", clue: "natural_fiber_strands", confidence: 84, description: "Close-up shows irregular tapered natural plant fiber strands (rattan reed/cane) with visible node irregularities and organic taper — consistent with natural rattan/reed rather than paper fiber or synthetic material." },
+    { type: "condition", clue: "overall_structural_integrity", confidence: 54, description: "Main fan back, seat, base, and right arm appear structurally sound. Left arm junction shows significant wicker strand failure with unraveling and breakage. No evidence of major frame breakage or collapse." },
+    { type: "style", clue: "ring_loop_border", confidence: 52, description: "Distinctive chain-link or ring-loop border trim runs around the full circumference of the fan back hoop; this is a characteristic decorative element of the classic peacock/emmanuelle chair form." },
+    { type: "style", clue: "scrollwork_medallion", confidence: 52, description: "Central back field features an elaborate open-work medallion of curved rattan loops and concentric spiral coils arranged symmetrically; this decorative element is characteristic of the classic peacock chair form." },
+    { type: "construction", clue: "coiled_spiral_seat", confidence: 93, description: "Seat surface features a concentric spiral coil pattern at center, created by tightly wound rattan reed; characteristic construction detail of peacock chair seats." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "No maker label, stamp, tag, or visible text observed in any of the three images." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "label", clue: "maker_mark_authored_lloyd_flanders", confidence: 70, description: "Detected maker mark: Lloyd Flanders. Mark type: paper_label. Dating reference: post-1906. Confidence tier: MEDIUM." },
+  ],
+  asSeen: {
+    formId: "Loom",
+    display: "Mid-Century Modern / American Modernism Loom (also commonly called: Loom, Weaving loom)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1940–1950",
+    dateFloor: 1940,
+    dateCeiling: 1950,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair];
