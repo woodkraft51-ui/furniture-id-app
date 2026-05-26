@@ -75,7 +75,14 @@ function joinHuman(items: string[]): string {
 }
 
 function formatRange(floor: number | null | undefined, ceiling: number | null | undefined): string {
-  if (floor != null && ceiling != null) return `c. ${floor}–${ceiling}`;
+  if (floor != null && ceiling != null) {
+    // T1c: never render an inverted ("c. 1945–1910") or zero-width ("c. 1910–1910")
+    // range. An inverted pair means the floor is the binding terminus-post-quem;
+    // a degenerate pair is a single year, not a span.
+    if (floor > ceiling) return `post-${floor}`;
+    if (floor === ceiling) return `c. ${floor}`;
+    return `c. ${floor}–${ceiling}`;
+  }
   if (floor != null) return `post-${floor}`;
   if (ceiling != null) return `pre-${ceiling}`;
   return "uncertain";
@@ -127,7 +134,12 @@ export function buildDatingFindingNarrative(input: {
     return null;
   }
 
-  const strongest = findStrongestZone(data.convergence_zones);
+  let strongest = findStrongestZone(data.convergence_zones);
+  // T1c: a zone with ZERO corroborating (specific) layers is a degenerate
+  // artifact of open-ended layers intersecting at a point — not a real
+  // convergence. Don't let it be presented as "the strongest layer convergence"
+  // (which produced "c. 1910–1910 (0 corroborating layers)" on the Woodard chair).
+  if (strongest && corroboratingCount(strongest.zone) <= 0) strongest = null;
   const workingRange = formatRange(finalDatingFloor, finalDatingCeiling);
   const kind = finalStyle?.kind;
   const styleName = styleAttribution?.name ?? null;

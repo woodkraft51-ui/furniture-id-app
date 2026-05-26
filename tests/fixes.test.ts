@@ -18,7 +18,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations, detectUpholsteryLayer } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -679,6 +679,46 @@ test("#13: a null working range never renders 'at uncertain'", () => {
   assert.doesNotMatch(n!.headline, /at uncertain/);
 });
 
+// ── T1c: never render inverted / degenerate ranges; 0-layer zone is not a convergence
+test("T1c: an inverted working range (floor>ceiling) renders post-floor, not a backwards span", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    finalStyle: { kind: "context_only", final_style_label: "Toledo-style", final_style_reason: "" },
+    finalDatingFloor: 1945, finalDatingCeiling: 1910, // mismatched sources → inverted
+  }));
+  assert.match(n!.headline, /post-1945/);
+  assert.doesNotMatch(n!.headline, /1945[–-]1910/);
+});
+
+test("T1c: a 0-corroborating-layer zone is NOT presented as a convergence", () => {
+  // Woodard chair: a degenerate 1910–1910 zone with specific_layer_count 0.
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: {
+      layers: [],
+      convergence_zones: [_zone({ date_floor: 1910, date_ceiling: 1910, specific_layer_count: 0, specific_layers: [] })],
+      overall_floor: 1910, overall_ceiling: 1910,
+    },
+    finalStyle: { kind: "context_only", final_style_label: "Toledo-style", final_style_reason: "" },
+    finalDatingFloor: 1945, finalDatingCeiling: null,
+  }));
+  assert.doesNotMatch(JSON.stringify(n), /corroborating layer/);
+  assert.doesNotMatch(JSON.stringify(n), /1910[–-]1910/);
+});
+
+test("T1c: a degenerate (single-year) zone renders 'c. 1910', not 'c. 1910–1910'", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: {
+      layers: [],
+      convergence_zones: [_zone({ date_floor: 1910, date_ceiling: 1910, specific_layer_count: 2 })],
+      overall_floor: 1910, overall_ceiling: 1910,
+    },
+    finalStyle: { kind: "original_period", final_style_label: "X", final_style_reason: "" },
+    styleAttribution: { name: "X", date_floor: 1900, date_ceiling: 1920, style_family_id: "x", confidence: 0.8 },
+    finalDatingFloor: 1910, finalDatingCeiling: 1910,
+  }));
+  assert.doesNotMatch(n!.headline, /1910[–-]1910/);
+  assert.match(n!.headline, /c\. 1910\b/);
+});
+
 // ── #111-b: early pre-machine termini cap a runaway style-wave date ──────────
 // Models the country-Chippendale ladderback: a synthetic style-wave zone
 // (1920–1930) vs a genuine construction zone, where cut_nail (≤1890) and
@@ -789,6 +829,33 @@ test("fix#1 guard: a committed (non-placeholder) date is NOT overridden by the e
   const r = refineDatingFromConvergence(p2, overlap, false);
   assert.ok(!r.refined, "a committed date must not be overridden");
   assert.equal(r.date_floor, 1830, "the committed floor must stand");
+});
+
+// ── T1a: bare-seat guard — rush/cane/plank/mesh seats are NOT upholstery ─────
+const _uph = (clue_keys: string[]) => detectUpholsteryLayer({ clue_keys } as any);
+
+test("T1a: a bare rush seat (rush + no_spring_seat) yields NO upholstery layer", () => {
+  // Ladderback / barley-twist rocker class: the rush seat is the seating surface,
+  // and no_spring_seat is the ABSENCE of upholstery — must not fabricate a layer.
+  assert.equal(_uph(["rush_seat_weave", "no_spring_seat", "jute_webbing"]), null);
+});
+
+test("T1a: a metal-mesh seat with a structural coil spring yields NO upholstery layer", () => {
+  // Woodard patio chair: expanded-metal-mesh seat + a structural bounce coil spring
+  // (coil_spring) must not become an upholstery layer (which dated 1780–1830).
+  assert.equal(_uph(["expanded_metal_mesh_seat", "coil_spring"]), null);
+});
+
+test("T1a guard: a genuinely upholstered seat (coil spring + horsehair + cover) is KEPT", () => {
+  const layer = _uph(["coil_spring", "horsehair_stuffing", "velvet_cover"]);
+  assert.ok(layer, "real upholstery (spring + fill + cover) must still produce a layer");
+});
+
+test("T1a guard: a rush seat WITH an added cushion (cover + fill) is KEPT", () => {
+  // A bare-seat marker is present, but real cover+fill evidence means there IS
+  // upholstery on top — must not be suppressed.
+  const layer = _uph(["rush_seat_weave", "horsehair_stuffing", "velvet_cover"]);
+  assert.ok(layer, "real upholstery on top of a bare seat must still produce a layer");
 });
 
 // ── #10: seating-verb false-positive — "seat" as a verb of fitting ───────────

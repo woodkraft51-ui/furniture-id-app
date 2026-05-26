@@ -58,7 +58,7 @@ const minimalPerception = {
 // P5 resolved hand_plane_chatter (pre-1880) over cabriole_leg, then date said 1920–1930.
 const ladderback: ScanFixture = {
   label: "ladderback_country_chippendale",
-  note: "P5 ruled pre-1880; date came out 1920–1930. cut_nail(1790–1890)+hand_plane_chatter(pre-1880) low-conf so #111 didn't clamp.",
+  note: "P5 ruled pre-1880; date came out 1920–1930. cut_nail(1790–1890)+hand_plane_chatter(pre-1880) low-conf so #111 didn't clamp. (Rush seat had a phantom 'no-spring stuffed seat' upholstery layer — T1a: now suppressed.)",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -368,7 +368,7 @@ const art_deco_candelabrum: ScanFixture = {
 // armrests... side chair". Date is broad (no floor/ceiling) so those are null.
 const renaissance_revival_sgabello: ScanFixture = {
   label: "renaissance_revival_sgabello",
-  note: "Renaissance Revival sgabello; tracks the narrative/working-range contradiction (convergence claimed yet range Broad) + M6 phantom upholstery on a plank seat (#4/M6).",
+  note: "Renaissance Revival sgabello; tracks the narrative/working-range contradiction (convergence claimed yet range Broad) + M6 phantom upholstery on a plank seat [T1a: now suppressed] (#4/M6).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1015,4 +1015,116 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair];
+// Woodard-style wrought-iron / expanded-metal-mesh patio armchair (~1940s–60s,
+// Chantilly Rose pattern). Metal clues are CORRECT here (genuinely a metal chair).
+// Date post-1945 is RIGHT. But the "evidence shows" narrative is GARBLED (#8, worst
+// flavor yet): inverted "1945–1910" and a degenerate "1910–1910 (0 corroborating
+// layers)" zero-width zone. ROOT: coil_spring is mis-dated c.1780–1830 (antique
+// upholstery coil) and applied to a mid-century STEEL BOUNCE-spring base → sets the
+// overall envelope to 1780–1830 on a post-WWII chair (M2 clue-data mis-map). P5
+// correctly resolves welded(1910) over coil_spring(1780–1830) so the date holds at
+// post-1945, but the stale 1780–1830 envelope drives the broken narrative math.
+// M6 phantom upholstery layer ("Upholstery with coil spring construction") on an
+// all-metal mesh chair. M8 "Upholstered armchair" (no upholstery). modern_caster n=4
+// (foot glides). VALIDATION: fix#4b ("tactile feel of the piece", not "wood") + value
+// differentiated UP (Woodard collectible). Mis-keyed door_present / maker_label obs.
+const woodard_wrought_iron_patio_chair: ScanFixture = {
+  label: "woodard_wrought_iron_patio_chair",
+  note: "Woodard wrought-iron patio chair (~1940s–60s); date post-1945 CORRECT but #8 narrative GARBLED (inverted '1945–1910', degenerate '1910–1910 0-layer zone'). Root: coil_spring mis-dated 1780–1830 poisons the envelope on a steel bounce-spring chair. M6 phantom upholstery [T1a: coil_spring layer now suppressed → envelope no longer floored at 1780], M8 'Upholstered'. fix#4b validated.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Expanded metal mesh seat panel visible, rectangular form set within tubular metal frame rails." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Arched expanded metal mesh backrest panel visible, fan/shield shaped, set within curved tubular frame with decorative crest rail." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has two armrests with decorative leaf/floral cast metal appliques set within oval cartouche frames on each arm." },
+    { type: "structure", clue: "metal_frame", confidence: 82, description: "Entire structural frame is metal — tubular rod construction forming legs, seat rails, arm supports, and back uprights." },
+    { type: "style", clue: "painted_metal_finish", confidence: 52, description: "Entire chair painted in sage/celadon green enamel or paint. Multiple paint layers visible at chip points. Consistent with mid-century outdoor furniture repainting cycles." },
+    { type: "style", clue: "floral_leaf_motif", confidence: 52, description: "Decorative flat cast or stamped metal leaf-and-flower motifs applied to crest rail, arm cartouches, and front apron rail. Motifs show leaf veining detail. Consistent with Woodard Chantilly Rose or similar mid-century American garden furniture pattern." },
+    { type: "construction", clue: "welded_joint", confidence: 75, description: "Frame intersections at leg-to-rail junctions and stretcher connections appear welded. Paint coverage obscures bead detail but no rivets or bolts visible at structural joints. Consistent with mid-20th century welded steel outdoor furniture." },
+    { type: "construction", clue: "swivel_mechanism", confidence: 90, description: "A prominent circular coil spring element is visible beneath the seat frame in multiple images. This is a spring-action or bounce mechanism characteristic of Woodard and similar mid-century spring-base patio chairs, allowing the seat to flex/bounce on the coil." },
+    { type: "construction", clue: "expanded_metal_mesh_seat", confidence: 96, description: "Both seat and back panels are expanded metal mesh (diamond-pattern perforated sheet metal), not woven wire. This is a distinct industrial material — expanded steel sheet — common in mid-century American outdoor furniture." },
+    { type: "hardware", clue: "modern_caster", confidence: 62, description: "Front legs terminate in small rubber or plastic cap feet/glides visible at ground contact points. Rear legs appear to have similar caps. One cap shows rust bleed-through suggesting metal contact beneath." },
+    { type: "condition", clue: "rust_pitting", confidence: 54, description: "Rust breakthrough visible at multiple joint areas, leg feet, and where paint has chipped. Orange-brown rust staining visible at seat frame corners and foot caps. Indicates outdoor exposure over extended period." },
+    { type: "condition", clue: "paint_loss_chipping", confidence: 54, description: "Paint chipping visible at crest rail, arm joints, seat frame corners, and decorative applique attachment points. Multiple paint layers visible at chip edges suggesting the chair has been repainted at least once." },
+    { type: "style", clue: "victorian_garden_furniture_influence", confidence: 52, description: "Overall aesthetic combines Victorian-influenced floral/leaf ornament with mid-century American outdoor furniture construction. Arched shield-back form, scrolled crest, and leaf appliques are characteristic of Woodard, Salterini, or Russell Woodard-era American wrought iron garden furniture c. 1940s-1960s." },
+    { type: "construction", clue: "spring_base_mechanism", confidence: 92, description: "Circular coil spring visible beneath seat in side and underside views. This spring connects the seat frame to the leg base, providing a bounce/spring action. This is a defining construction feature of Woodard and similar mid-century spring-action patio chairs." },
+    { type: "style", clue: "crest_rail_ornament", confidence: 52, description: "Crest rail features a central flower/rose motif flanked by scrolling leaf-and-vine branches extending to the outer frame. Motifs are flat stamped or cast metal elements welded or attached to the frame. Consistent with Woodard Chantilly Rose or Salterini rose pattern." },
+    { type: "form", clue: "secondary_surface", confidence: 68, description: "No secondary surface (table, shelf, or writing surface) present. This is a standalone armchair." },
+    { type: "construction", clue: "tubular_steel", confidence: 90, description: "Frame members are round-section tubular or solid rod metal, consistent with tubular steel or wrought iron rod construction used in mid-century American outdoor furniture." },
+    { type: "condition", clue: "joint_corrosion", confidence: 54, description: "Corrosion concentrated at welded joint areas and where paint has failed, particularly at seat frame corners and leg-to-rail junctions. Consistent with galvanic or crevice corrosion at paint-failed metal joints." },
+    { type: "style", clue: "arm_cartouche_oval", confidence: 52, description: "Each armrest features an oval cartouche frame enclosing a flat leaf-and-branch decorative applique. This oval arm panel is a characteristic design element of Woodard and similar mid-century wrought iron garden furniture lines." },
+    { type: "construction", clue: "arc_welded_joint", confidence: 45, description: "At visible joint areas (seat frame corners, stretcher connections), the joining method appears to be welded rather than riveted or bolted. Paint obscures bead detail but no rivet heads or bolt hardware visible. Arc or MIG welding consistent with mid-20th century production." },
+    { type: "condition", clue: "refinished_surface", confidence: 54, description: "Multiple paint layers visible at chip points on crest rail and arm joints, suggesting the chair has been repainted at least once over its original finish. Current color is sage/celadon green." },
+    { type: "form", clue: "multiple_chairs_present", confidence: 68, description: "Side and wider views show at least two additional matching chairs in the background, indicating this is part of a set. A table may also be partially visible." },
+    { type: "construction", clue: "door_present", confidence: 50, description: "mid-century American outdoor furniture style" },
+    { type: "label", clue: "maker_label", confidence: 50, description: "cast or stamped flat decorative leaf/flower appliques" },
+    { type: "upholstery", clue: "coil_spring", confidence: 50, description: "coil spring base element visible under seat" },
+    { type: "materials", clue: "molded_plastic", confidence: 50, description: "rubber or plastic feet caps on front legs" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+  ],
+  asSeen: {
+    formId: "Upholstered armchair",
+    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "context_only",
+    dateRange: "post-1945",
+    dateFloor: 1945,
+    dateCeiling: null,
+    confidence: "Moderate",
+  },
+};
+
+// Barley-twist rush-seat rocking armchair (Jacobean/Arts & Crafts revival idiom).
+// Form correct (Rocking chair). Date c.1890–1920 is plausibly right (barley-twist
+// rush rocker = turn-of-century revival), but it's the fix#1 SECOND-PATH (6122
+// vernacular rule) MASKED-CORRECT — a GUARD that an eventual second-path fix must NOT
+// break (companion to the oak chest, via the vernacular rule rather than the placeholder).
+// M6/M7 phantom upholstery on a RUSH seat (n=3, = S008/S012): jute_webbing ("No webbing
+// visible", negation) + no_spring_seat ("no spring/no padding", negation) +
+// fully_upholstered (conf 74, false) → "Upholstery with no-spring stuffed seat" layer +
+// "Upholstered seating/armchair" alt-forms. Candidate: suppress these when rush_seat_weave
+// present. M5: style Unresolved despite barley-twist/finials revival vocabulary.
+const barley_twist_rush_seat_rocker: ScanFixture = {
+  label: "barley_twist_rush_seat_rocker",
+  note: "Barley-twist rush rocker; fix#1 second-path (6122) MASKED-CORRECT (~1890–1920 plausible) — guard. M6/M7 phantom upholstery on a rush seat (n=3, jute_webbing/no_spring_seat negations + fully_upholstered FP → 'no-spring stuffed seat') [T1a: now suppressed]. Form correct; style Unresolved (M5).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Rush-woven seat panel visible spanning the seat frame rails; trapezoidal seat typical of armchair rockers." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Rush-woven back panel spanning between two upper horizontal rails, framed by barley-twist back posts with finials." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Flat paddle-shaped arm rests visible on both sides, supported by barley-twist arm posts; chair is an armchair rocker." },
+    { type: "style", clue: "barley_twist", confidence: 52, description: "Prominent barley-twist (spiral rope-twist) turnings visible on back posts, arm supports, and front legs. This is the dominant decorative vocabulary of the chair." },
+    { type: "structure", clue: "rocker_blades", confidence: 82, description: "Long curved rocker blades visible at base in side view; chair is a rocking chair. Blades appear to be solid flat-sawn boards." },
+    { type: "structure", clue: "finial_posts", confidence: 82, description: "Turned acorn or ball finials visible atop both back posts above the rush back panel." },
+    { type: "structure", clue: "round_tenon", confidence: 82, description: "Round tenon joinery visible where stretchers and rungs enter the turned legs and posts; consistent with traditional chair construction." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 82, description: "Joinery closeup shows the rocker blade mortised into the leg base; visible joint line and slight finish separation at the mortise shoulder, consistent with mortise-and-tenon attachment of rocker to leg." },
+    { type: "upholstery", clue: "jute_webbing", confidence: 50, description: "No webbing visible; seat support is provided entirely by the woven rush seat panel spanning the frame rails." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 50, description: "Rush-woven seat with no spring construction; seat is a traditional flat rush weave over the frame rails with no upholstery padding or spring support." },
+    { type: "materials", clue: "rush_seat_weave", confidence: 84, description: "Tightly woven rush (natural plant fiber, likely bulrush or sea grass) covering both the seat and back panel. Weave pattern shows characteristic four-corner diagonal fill pattern typical of traditional rush seating. Strands appear natural/organic rather than paper fiber." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "All frame members appear to be solid turned wood; no veneer or laminate visible. Wood appears to be a medium-density hardwood, possibly oak or elm based on color and grain visible at worn areas." },
+    { type: "condition", clue: "finish_loss_at_joints", confidence: 54, description: "Joinery closeup shows significant finish and wood loss at the rocker-to-leg joint; red/raw wood exposed, paint or finish flaking. Indicates stress at this joint and age-related wear." },
+    { type: "condition", clue: "surface_oxidation_patina", confidence: 54, description: "Overall wood surfaces show aged oxidation and patina; finish appears worn and mellow rather than fresh. Consistent with significant age." },
+    { type: "condition", clue: "rush_aged_intact", confidence: 54, description: "Rush weave on both seat and back appears intact and complete with no major breaks or missing strands visible, though darkened with age and use. Rush has aged to a warm amber-brown tone." },
+    { type: "condition", clue: "refinished_surface", confidence: 40, description: "Wood surfaces appear to have been stripped or lightly refinished at some point; finish is thin and worn, not original thick shellac. Difficult to confirm from photos; may simply be heavily worn original finish." },
+    { type: "style", clue: "turned_stretchers", confidence: 52, description: "Multiple turned stretchers visible connecting legs front-to-back and side-to-side; front stretcher shows bobbin or vase turning. Consistent with traditional chair construction." },
+    { type: "style", clue: "flat_paddle_arms", confidence: 52, description: "Flat, slightly curved paddle-shaped arm rests visible; arms are solid flat boards rather than turned or upholstered. Arms attach to barley-twist arm posts." },
+    { type: "structure", clue: "rush_back_panel", confidence: 82, description: "Rush-woven back panel spans between two horizontal rails (top and bottom of back) framed by the barley-twist back posts; back panel is rectangular and fully woven." },
+    { type: "construction", clue: "rush_weave_pattern_diagonal_fill", confidence: 95, description: "Rush weave shows the classic diagonal-fill four-corner pattern on both seat and back; strands run parallel in groups from each corner meeting at center, creating a characteristic X or chevron pattern. This is traditional hand-woven rush technique." },
+    { type: "structure", clue: "rocker_blade_flat_sawn", confidence: 80, description: "Rocker blades appear to be flat-sawn solid wood boards; grain visible on the face of the blade in the joinery closeup. Blades are long and curved." },
+    { type: "condition", clue: "joint_stress_cracking", confidence: 54, description: "Visible cracking and finish separation at the rocker-to-leg joint in the joinery closeup; wood appears stressed at this high-load connection point." },
+    { type: "style", clue: "back_post_finials", confidence: 52, description: "Turned ball or acorn finials cap both back posts above the rush back panel; finials are clearly visible in front and back views." },
+    { type: "construction", clue: "webbing_rail_joinery", confidence: 75, description: "Rush seat wraps around the four seat rails; tack holes or wrap points visible at corners where rush terminates on the rails. Traditional rush attachment method." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "materials", clue: "fully_upholstered", confidence: 74, description: "Upholstered or cushioned surfaces are visible." },
+  ],
+  asSeen: {
+    formId: "Rocking chair",
+    display: "Rocking chair",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker];

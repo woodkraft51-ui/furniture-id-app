@@ -53,6 +53,14 @@ function summarize(result: any) {
     dateCeiling: p2.date_ceiling ?? null,
     confidence: p2.confidence ?? null,
     convergence: zones,
+    // Batch A: surface the upholstery layer + alternative forms so the
+    // phantom-upholstery and metal-alt-form fixes are visible in --diff.
+    upholsteryId: p2.upholstery_layer?.identification ?? null,
+    altForms: (p3.alternatives as string[]) ?? [],
+    // T1b: the "Current dating evidence supports X" line must track the final
+    // working range (no stale pre-refinement date).
+    supportedDate: (so.p6?.supported_findings || []).find((s: string) =>
+      /Current dating evidence supports/.test(s)) ?? null,
   };
 }
 
