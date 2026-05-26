@@ -598,7 +598,7 @@ const colonial_revival_oak_bowfront_chest: ScanFixture = {
 // injecting "Wicker/rattan" alt-form #1 + a phantom wicker dating limitation (fix#1/#5/#6).
 const vernacular_painted_milking_stool: ScanFixture = {
   label: "vernacular_painted_milking_stool",
-  note: "Vernacular pine milking stool; mis-dated 1900–2000 (disjoint from 1800–1920 envelope; early toolmark 1850–1880 ignored), root = through_mortise_and_tenon mis-dated 1890–1920. M6 woven_body FP on solid wood (= S001). fix#1/#5/#6 + clue-data.",
+  note: "Vernacular pine milking stool. fix#1 SHIPPED: the false 1900–2000 catch-all is now overridden by the evidence floor → c.1890 onward (was disjoint from the 1800–1920 envelope). Floor still 1890 (over-pulled by the separate through_mortise_and_tenon revival-window mis-date — out of scope). Also tracks M6 woven_body FP on solid wood (= S001, fix#5 candidate).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -633,9 +633,15 @@ const vernacular_painted_milking_stool: ScanFixture = {
     formId: "Milking stool",
     display: "Milking stool",
     finalStyleKind: "unresolved",
-    dateRange: "broadly late 19th to 20th century",
-    dateFloor: 1900,
-    dateCeiling: 2000,
+    // POST fix#1: the unsupported "broadly late 19th to 20th century" catch-all
+    // (fake 1900/2000) no longer survives — the evidence-floor anchor overrides it,
+    // dropping the disjoint 2000 ceiling and anchoring at the most-recent layer floor.
+    // Floor is 1890 (the joinery layer), still over-pulled by the separate
+    // through_mortise_and_tenon revival-window mis-date (out of scope) — once that's
+    // fixed this should fall to the toolmark window ~1850–1880.
+    dateRange: "c. 1890 onward (late 19th century or later)",
+    dateFloor: 1890,
+    dateCeiling: null,
     confidence: "Low",
   },
 };

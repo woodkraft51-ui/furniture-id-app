@@ -172,31 +172,45 @@ function openEndedFloorPhrase(floor: number): string {
  * never overrides a real computed range. Confidence stays Low — a single
  * open-ended floor is a bound, not a convergence.
  */
+// The heuristic cascade's "Broadly late 19th to 20th century" catch-all is an
+// UNSUPPORTED guess that numericizes to a fake 1900/2000 band. Recognize it so the
+// evidence-floor anchor can override it rather than bailing on the non-null floor.
+function isBroadLateDefaultRange(range: string | undefined): boolean {
+  return /^\s*broadly late 19th to 20th century\s*$/i.test(String(range || ""));
+}
+
 function tryOpenFloorAnchor(
-  original: { date_floor: number | null },
+  original: { range?: string; date_floor: number | null },
   overlap: DatingOverlapData
 ): RefinedDating | null {
-  if (original.date_floor != null) return null;
-  // Anchor on REAL dating evidence only — construction/joinery/fastener/
-  // toolmark/wood/hardware/finish/upholstery. Form (catalog span) and style /
-  // style_wave (broad period context) are excluded: a style band must not set
-  // the construction date. This keeps a "post-1900" factory-hardware floor from
-  // being dragged earlier by a broad style floor (e.g. Colonial Revival 1876)
-  // or capped by a disjoint revival-wave ceiling.
-  const EXCLUDED: LayerName[] = ["form", "style", "style_wave"];
-  const real = overlap.layers.filter(
-    (l) => !EXCLUDED.includes(l.layer) && (l.date_floor != null || l.date_ceiling != null)
+  // Fire when there is no committed floor, OR when the only "floor" is the
+  // unsupported "Broadly late 19th to 20th century" catch-all (fake 1900/2000).
+  // That placeholder otherwise trips the non-null-floor gate and blocks
+  // evidence-based refinement (fix#1).
+  if (original.date_floor != null && !isBroadLateDefaultRange(original.range)) return null;
+  // Anchor on REAL dating evidence only. style / style_wave are always excluded —
+  // a period band must not set the construction date. The FLOOR side INCLUDES the
+  // form layer: a form's production START is a genuine terminus-post-quem (a piece
+  // can't predate the era the form existed in). The CEILING side still EXCLUDES
+  // form, whose catalog span runs open/late and must not fabricate an upper bound.
+  const EXCLUDED_FLOOR: LayerName[] = ["style", "style_wave"];
+  const EXCLUDED_CEILING: LayerName[] = ["form", "style", "style_wave"];
+  const floorLayers = overlap.layers.filter(
+    (l) => !EXCLUDED_FLOOR.includes(l.layer) && l.date_floor != null
   );
-  if (real.length === 0) return null;
+  const ceilingLayers = overlap.layers.filter(
+    (l) => !EXCLUDED_CEILING.includes(l.layer) && l.date_ceiling != null
+  );
+  if (floorLayers.length === 0 && ceilingLayers.length === 0) return null;
   // Binding floor = the most restrictive (latest) lower bound the evidence
   // allows; the piece can't predate its most recent diagnostic.
-  const floors = real.map((l) => l.date_floor).filter((x): x is number => x != null);
+  const floors = floorLayers.map((l) => l.date_floor).filter((x): x is number => x != null);
   const floor = floors.length ? Math.max(...floors) : null;
   if (floor == null || floor < OPEN_FLOOR_MIN_YEAR) return null;
   // Binding ceiling = earliest real upper bound, but never at/below the floor
   // (a contradictory pair leaves the ceiling open rather than fabricating a
   // degenerate band).
-  const ceilings = real.map((l) => l.date_ceiling).filter((x): x is number => x != null);
+  const ceilings = ceilingLayers.map((l) => l.date_ceiling).filter((x): x is number => x != null);
   let ceiling = ceilings.length ? Math.min(...ceilings) : null;
   if (ceiling != null && ceiling <= floor) ceiling = null;
   const range = ceiling != null ? `c. ${floor}–${ceiling}` : openEndedFloorPhrase(floor);
