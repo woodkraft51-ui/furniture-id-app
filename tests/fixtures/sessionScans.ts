@@ -1137,4 +1137,65 @@ const barley_twist_rush_seat_rocker: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker];
+// Biedermeier flame-walnut fall-front secretary. Strong ORIGINAL-period evidence
+// (thick hand-cut pre-rotary veneer, woodworm holes, 100yr+ verdigris, porcelain
+// 1840–1930, Biedermeier 1815–1860). Form CORRECT (Secretary desk, High). Same
+// valuation-critical failure as the W&M escritoire (n=2): output "Biedermeier Revival,
+// c.1900–2000" — reconciliation explicitly aligns to the 1900–1920 revival wave "not
+// the original period." NEW precise mechanism: a convergence zone DID form at 1800–1920
+// (5 layers, includes the original Biedermeier 1815–1860) and is only 120y wide (UNDER
+// the 160y cap) — yet P2 output the 1900–2000 PLACEHOLDER instead, because
+// refineDatingFromConvergence only overrides p2 when the zone is TIGHTER than p2, and
+// the unsupported placeholder (width 100) is "tighter" than the evidence zone (width
+// 120). The catch-all blocks the real convergence on a width technicality. Plus the
+// fix#1 pre-1850 edge (max real floor 1800 < OPEN_FLOOR_MIN_YEAR 1850 → anchor bails),
+// same as the escritoire. The M11/convergence-override cluster (deferred) is now n=2.
+const biedermeier_flame_walnut_secretary: ScanFixture = {
+  label: "biedermeier_flame_walnut_secretary",
+  note: "Biedermeier flame-walnut secretary; genuine-period evidence → 'Biedermeier Revival' 1900–2000 (n=2 with escritoire). Mechanism: a qualifying 1800–1920 convergence zone (120y, under the cap) is blocked because the unsupported 1900–2000 placeholder is 'tighter' → refineDatingFromConvergence won't override. fix#1 pre-1850 edge again (floor 1800<1850). Form correct.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "drop_front_desk", confidence: 68, description: "The upper section features a large vertical drop-front panel that hinges down to create a horizontal writing surface. The panel is veneered with figured walnut and has a central lock escutcheon with ring pull. When open it reveals an interior fitted with small drawers and a central door." },
+    { type: "form", clue: "pigeonholes", confidence: 68, description: "Interior of the drop-front section reveals multiple small drawers arranged in banks on left and right sides flanking a central door/compartment. These function as letter/document storage cubbies typical of secretary desk interiors." },
+    { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "The lower case section contains three large full-width drawers with bail pulls and lock escutcheons, stacked vertically below the drop-front writing section." },
+    { type: "form", clue: "drawer_present", confidence: 68, description: "Three large exterior drawers in lower case plus approximately 8-10 small interior drawers in the secretary section are visible." },
+    { type: "form", clue: "door_present", confidence: 45, description: "A central door is visible in the interior of the secretary section, flanked by small drawers. The door appears to have a small lock or ring pull. When open it reveals a shallow interior compartment." },
+    { type: "function", clue: "writing_surface", confidence: 45, description: "The drop-front panel when lowered creates a large flat writing surface. The interior surface of the writing flap shows a lighter secondary wood (possibly pine or fruitwood) with visible wear and insect/worm holes consistent with age." },
+    { type: "style", clue: "biedermeier_style_cues", confidence: 52, description: "The piece exhibits strong Biedermeier/Continental Empire design vocabulary: rectilinear form with minimal carved ornament, dramatic figured walnut veneer as primary decorative element, canted/chamfered top corners, rounded cock-bead molding rails, bracket feet with light-colored secondary wood plinth, and restrained proportions. This design influence is consistent with Central European production c. 1815-1850, though domestic American production of similar forms is also possible." },
+    { type: "materials", clue: "thick_veneer", confidence: 80, description: "The walnut veneer on drawer fronts, drop-front panel, and case sides appears substantially thick with dramatic flame/crotch figure. The veneer shows the characteristic heavy cut associated with pre-rotary-veneer era production. Visible at edges and wear points." },
+    { type: "materials", clue: "flame_figure", confidence: 84, description: "The walnut veneer on all major surfaces displays dramatic flame/crotch figure with swirling cathedral grain patterns. This is a hallmark of high-quality Continental European and American Empire/Biedermeier veneered case furniture." },
+    { type: "materials", clue: "plain_sliced_veneer", confidence: 45, description: "The veneer appears to be plain-sliced or book-matched, showing symmetrical flame figure on the large drop-front panel and drawer fronts. The dramatic cathedral grain is consistent with plain-sliced walnut veneer." },
+    { type: "hardware", clue: "porcelain_knob", confidence: 62, description: "The small interior drawers in the secretary section are fitted with small round white porcelain knobs. Cream/white ceramic, small diameter, consistent with porcelain knob hardware common 1840-1930." },
+    { type: "hardware", clue: "decorative_bail_pull", confidence: 62, description: "The three large exterior drawers are fitted with cast brass bail pulls — swinging curved handles on decorative backplates with scrolled/foliate ornament. The pulls show significant green patination consistent with aged brass." },
+    { type: "hardware", clue: "lock_escutcheons", confidence: 45, description: "Each of the three large exterior drawers has a decorative cast brass lock escutcheon centered between the bail pulls. The drop-front panel also has a lock escutcheon with ring pull. The escutcheons show scrolled/rococo ornament and significant patination." },
+    { type: "hardware", clue: "stamped_escutcheon", confidence: 62, description: "The escutcheons appear to be cast rather than stamped — three-dimensional scrolled ornament with depth and weight consistent with cast brass rather than thin stamped sheet metal." },
+    { type: "hardware", clue: "cast_escutcheon", confidence: 62, description: "The lock escutcheons on the exterior drawers appear cast with scrolled foliate ornament, showing depth and three-dimensional relief consistent with cast brass hardware. Significant green patination throughout." },
+    { type: "structure", clue: "bracket_feet", confidence: 45, description: "The case rests on bracket feet visible at the base. The feet appear to be a lighter-colored secondary wood (possibly fruitwood or maple) forming a plinth/base section, consistent with Biedermeier construction where a contrasting lighter wood is used for the base plinth." },
+    { type: "construction", clue: "secondary_wood_contrast", confidence: 45, description: "A distinctly lighter-colored secondary wood is visible at the base/plinth area and on the interior writing surface. This contrasting lighter wood against the dark walnut veneer is characteristic of Biedermeier and Continental Empire construction." },
+    { type: "condition", clue: "worm_insect_holes", confidence: 54, description: "The interior writing surface shows numerous small dark holes consistent with woodworm/insect damage. This suggests significant age and/or storage in conditions favorable to wood-boring insects." },
+    { type: "condition", clue: "shellac_intact", confidence: 54, description: "The exterior surfaces show a warm amber finish with depth and patina consistent with old shellac or spirit varnish. The finish shows age-appropriate wear without the plastic-like build of polyurethane." },
+    { type: "condition", clue: "surface_wear_patina", confidence: 54, description: "Significant surface wear and scratches visible on the top, drop-front panel, and case sides. The wear pattern is consistent with long-term use and age. Hardware shows heavy green patination." },
+    { type: "style", clue: "chamfered_top_corners", confidence: 52, description: "The top of the case has canted/chamfered corners cut at 45 degrees rather than being square. This is a characteristic Biedermeier and Continental Empire design feature." },
+    { type: "style", clue: "rounded_cock_bead_rails", confidence: 52, description: "Rounded half-round molding rails separate the drop-front section from the drawer section. This rounded cock-bead or torus molding is a characteristic Biedermeier/Empire design element." },
+    { type: "construction", clue: "interior_open_compartment", confidence: 45, description: "The joinery_closeup image shows the interior central door open, revealing a shallow open compartment. The interior walls appear to be a lighter secondary wood (possibly pine) with visible age darkening and worm holes." },
+    { type: "construction", clue: "solid_wood_construction", confidence: 45, description: "The case sides appear to be solid wood rather than veneered plywood. The interior compartment walls show solid wood construction without visible lamination layers." },
+    { type: "materials", clue: "walnut_veneer_primary", confidence: 84, description: "Walnut (likely European walnut / Juglans regia) is the primary show wood, applied as veneer on all major exterior surfaces. The figure is dramatic flame/crotch pattern consistent with high-quality walnut veneer selection." },
+    { type: "construction", clue: "interior_small_drawers_layout", confidence: 90, description: "The secretary interior has approximately 4-5 small drawers on the left bank and 4-5 small drawers on the right bank, flanking a central door/compartment. All small drawers have porcelain knobs." },
+    { type: "hardware", clue: "ring_pull_on_drop_front", confidence: 62, description: "The drop-front panel has a small ring pull integrated with the lock escutcheon at the top center of the panel, used to pull the front down to open." },
+    { type: "style", clue: "minimal_carved_ornament", confidence: 52, description: "The case has virtually no carved ornament — decoration is achieved entirely through the figured veneer, molding profiles, and hardware. This restrained approach is characteristic of Biedermeier design philosophy." },
+    { type: "condition", clue: "hardware_patination", confidence: 54, description: "The brass bail pulls and escutcheons show heavy green verdigris patination consistent with aged brass that has not been polished. This level of patination is consistent with significant age (likely 100+ years)." },
+    { type: "construction", clue: "drop_front_support_lopers", confidence: 45, description: "The drop-front writing surface when open appears to be supported by pull-out lopers (sliding support arms) visible at the sides of the writing surface. This is the standard construction method for drop-front secretary desks." },
+  ],
+  asSeen: {
+    formId: "Secretary desk / drop-front desk",
+    display: "Biedermeier Revival Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase)",
+    finalStyleKind: "revival_wave",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary];
