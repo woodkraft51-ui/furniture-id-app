@@ -48,7 +48,15 @@ export function isWoodPrimary(clueKeys: Iterable<string>): boolean {
   ];
   return (
     WOOD_PRIMARY_KEYS.some((k) => set.has(k)) ||
-    Array.from(set).some((k) => k.startsWith("wood_species_"))
+    // Wood species, veneer over a wood substrate, or a named secondary wood all
+    // mean the piece is wood — a veneered burl-walnut escritoire is wood-primary
+    // even with no "solid_wood_construction" key (T2a).
+    Array.from(set).some(
+      (k) =>
+        k.startsWith("wood_species_") ||
+        k.startsWith("secondary_wood") ||
+        k.endsWith("_veneer")
+    )
   );
 }
 

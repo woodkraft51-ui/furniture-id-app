@@ -247,6 +247,33 @@ test("Phase 4: the commode wins end-to-end on all 5 runs (not Stool, not Brass b
   }
 });
 
+// ── T2a: incidental metal on a wood-primary piece must not add metal forms ───
+test("T2a: a wood-primary chair with incidental cast iron gets NO metal/Toledo form candidates", () => {
+  // Oak banker's chair: cast-iron tilt mechanism + brass — but solid oak.
+  const ranked = scoreForms(digestFromRun([
+    "armchair_form", "seating_surface", "solid_wood_construction", "wood_species_oak",
+    "cast_iron", "wrought_iron", "swivel_mechanism",
+  ]));
+  assert.ok(!ranked.some((r) => /Metal furniture|Iron furniture|Brass bed/.test(r.form)),
+    `wood-primary piece must not score metal furniture forms (got ${ranked.map(r=>r.form).join(", ")})`);
+  assert.ok(!ranked.some((r) => /Toledo-style/.test(r.form)),
+    "wood-primary piece must not score a Toledo industrial task chair");
+});
+
+test("T2a guard: a genuinely metal piece STILL scores metal furniture forms", () => {
+  const ranked = scoreForms(digestFromRun([
+    "seating_surface", "metal_frame", "cast_iron", "wrought_iron",
+  ]));
+  assert.ok(ranked.some((r) => /Iron furniture|Metal furniture/.test(r.form)),
+    `a metal piece should still score metal furniture (got ${ranked.map(r=>r.form).join(", ")})`);
+});
+
+test("T2a: a veneered piece reads as wood-primary (escritoire)", () => {
+  assert.equal(isWoodPrimary(new Set(["burl_walnut_veneer"])), true);
+  assert.equal(isWoodPrimary(new Set(["secondary_wood_interior"])), true);
+  assert.equal(isWoodPrimary(new Set(["thick_veneer"])), true);
+});
+
 // ── Stage 1 / Component A: canonical vocabulary generation ───────────────────
 test("Vocab: committed artifact is in sync with its sources (drift guard)", () => {
   const rebuilt = buildCanonicalVocabulary();

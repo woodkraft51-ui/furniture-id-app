@@ -3341,6 +3341,12 @@ export type ScoredForm = {
 
 export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
+  // T2a: on a wood-primary piece, incidental metal hardware (a cast-iron tilt
+  // mechanism, brass hinges/locks, an enameled-steel basin) must not add
+  // "Metal/Iron/Brass furniture" or "Toledo-style industrial" form candidates —
+  // those mis-drive the form, the style-context label, and value. Genuinely-metal
+  // pieces (woodPrimary false) keep them.
+  const woodPrimary = isWoodPrimary(clues);
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
   const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
@@ -4737,8 +4743,11 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   } else if (industrialStationForm) {
     add("Industrial station", 88, "Factory/industrial work or assembly/packing station.");
   }
- // Industrial / Toledo-style task chair
+ // Industrial / Toledo-style task chair. Gated on !woodPrimary (T2a): a wooden
+ // banker's/office chair with a cast-iron tilt mechanism (swivel_mechanism) is not
+ // a metal Toledo task chair.
 if (
+  !woodPrimary &&
   hasAny(
     "toledo_industrial_style",
     "mid_century_industrial_office",
@@ -5094,19 +5103,19 @@ if (
 
      // Non-wood and mixed-material form families. Gated on !lampSignal so a lamp's
      // metal/brass base does not register as bed/metal furniture (#14).
-  if (!lampSignal && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+  if (!lampSignal && !woodPrimary && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
     add("Metal furniture", 62, "Metal frame or metal furniture construction is visible.");
   }
 
-  if (!lampSignal && hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
+  if (!lampSignal && !woodPrimary && hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
     add("Modernist / chrome-frame furniture", 74, "Tubular steel, chrome, or chrome-and-laminate construction supports a modernist or mid-century furniture reading.");
   }
 
-  if (!lampSignal && hasAny("wrought_iron", "cast_iron")) {
+  if (!lampSignal && !woodPrimary && hasAny("wrought_iron", "cast_iron")) {
     add("Iron furniture", 72, "Iron or cast/wrought metal construction is visible.");
   }
 
-  if (!lampSignal && hasAny("brass_frame")) {
+  if (!lampSignal && !woodPrimary && hasAny("brass_frame")) {
     add("Brass bed or brass-frame furniture", 70, "Brass frame or brass rail construction is visible.");
   }
 
