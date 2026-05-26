@@ -18,7 +18,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -695,4 +695,28 @@ test("#111-b: a continuing-technique onset (wire_nail/circular_saw_arcs ≤1900)
   const p2 = { range: "broad", date_floor: null, date_ceiling: null, confidence: "Low" };
   const r = refineDatingFromConvergence(p2, overlap, /* hasModernConstructionEvidence */ true);
   assert.ok((r.date_ceiling ?? 0) > 1900, `onset clues must not cap a modern piece, got ${r.date_ceiling}`);
+});
+
+// ── #10: seating-verb false-positive — "seat" as a verb of fitting ───────────
+const _perc = (raw_text: string): any => ({
+  labels: [], maker_names: [], materials: [], forms: [], functional_features: [],
+  style_cues: [], construction_cues: [], condition_cues: [], visible_text: [], raw_text,
+});
+const _synthesizesSeating = (raw_text: string): boolean =>
+  promotePerceptionObservations([], _perc(raw_text)).some((o: any) => o.clue === "seating_surface");
+
+test("#10: the VERB 'seat (into/cleanly into/in)' does NOT synthesize seating", () => {
+  assert.equal(_synthesizesSeating("drawer runners and dividers seat into the case sides"), false);
+  assert.equal(_synthesizesSeating("turned tenons seat into the mortises in the posts"), false);
+  assert.equal(_synthesizesSeating("shelf edges appear to seat cleanly into the case walls"), false);
+  assert.equal(_synthesizesSeating("the floating panel seats in the groove"), false);
+  assert.equal(_synthesizesSeating("a drawer bottom seated in the frame"), false); // 'seated' already excluded
+});
+
+test("#10: genuine NOUN seating still synthesizes", () => {
+  assert.equal(_synthesizesSeating("rush-woven seat surface visible across all views"), true);
+  assert.equal(_synthesizesSeating("a two-seat parlor bench with arms"), true);
+  assert.equal(_synthesizesSeating("deep reclined sitting posture"), true);
+  assert.equal(_synthesizesSeating("the caned seat is worn through"), true);
+  assert.equal(_synthesizesSeating("upholstered seat cushion spanning the frame"), true);
 });

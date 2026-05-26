@@ -1824,7 +1824,7 @@ function normalizePerception(parsed: any, observations: Observation[]): Percepti
 
   return perception;
 }
-function promotePerceptionObservations(
+export function promotePerceptionObservations(
   observations: Observation[],
   perception: Perception
 ): Observation[] {
@@ -1866,9 +1866,17 @@ function promotePerceptionObservations(
   // Word-boundary seating detection. Substring matching previously fired on
   // "seated" (e.g. a drawer bottom "seated in the frame"), deriving phantom
   // seating_surface / seating_present clues on desks and other non-seating
-  // forms. \bseat\b matches seat/seats but not "seated"/"seating"; the explicit
-  // alternatives cover the genuine seating words.
-  const hasSeatingWord = /\b(seat|seats|seating|bench|benches|sitting)\b/.test(text);
+  // forms. \bseat\b matches seat/seats but not "seated"/"seating".
+  //
+  // #10: "seat"/"seats" is ALSO a joinery VERB of fitting — "tenons seat into
+  // mortises", "shelf edges seat cleanly into the case", "runners seat into the
+  // case sides". That verb sense hijacked form ID (rope bed → bench, etc.). The
+  // negative lookahead drops "seat(s)" when followed (optionally past one adverb)
+  // by a fitting preposition (into/in/onto/against/flush/cleanly/down/within),
+  // while keeping NOUN seating ("seat surface", "seat rail", "the seat is caned")
+  // and the unambiguous bench/sitting/seating words.
+  const hasSeatingWord =
+    /\b(?:seats?(?!\s+(?:\w+\s+)?(?:in|into|onto|against|flush|cleanly|down|within)\b)|seating|benches?|sitting)\b/.test(text);
 
   if (
     hasSeatingWord &&

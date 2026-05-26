@@ -11,8 +11,13 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { PE } from "../lib/engine";
+import { PE, promotePerceptionObservations } from "../lib/engine";
 import { SESSION_SCANS, type ScanFixture } from "../tests/fixtures/sessionScans";
+
+// Clues synthesized by promotePerceptionObservations — stripped before re-running
+// the derivation so a fixture's rawText drives synthesis (lets us validate the
+// P0-derivation seating-verb fix, which the p0 stub otherwise bypasses).
+const PROMOTE_DERIVED = new Set(["seating_surface", "seating_present"]);
 
 const BASELINE = path.resolve(process.cwd(), "scripts/.scanCorpus.baseline.json");
 
@@ -31,10 +36,12 @@ function summarize(result: any) {
   const p3 = so.p3 || {};
   const p6 = so.p6 || {};
   const recon = findRecon(so);
+  const clueKeys: string[] = result?.evidence_digest?.clue_keys || [];
   const zones = (p6.dating_overlap?.convergence_zones || []).map(
     (z: any) => `${z.date_floor}–${z.date_ceiling}[${z.specific_layer_count ?? z.layer_count}L]`
   );
   return {
+    seatingSynth: clueKeys.includes("seating_surface"),
     formId: p3.form ?? p3.form_id ?? p3.best_form ?? null,
     display: p3.display_form ?? p3.display ?? null,
     styleContext: p3.style_context ?? p3.styleContext ?? null,
@@ -50,8 +57,18 @@ function summarize(result: any) {
 }
 
 async function runFixture(fx: ScanFixture) {
-  const observations = fx.observations.map((o) => ({ ...o }));
-  const perception = fx.perception ?? { raw_text: "" };
+  let observations = fx.observations.map((o) => ({ ...o }));
+  const perception: any = fx.perception ?? { raw_text: "" };
+  // When a fixture supplies rawText, re-run the P0 seating/spindle derivation on
+  // it (after stripping the previously-synthesized clues) so the seating-verb
+  // fix is exercised end-to-end rather than bypassed by the p0 stub.
+  if ((fx as any).rawText) {
+    perception.raw_text = (fx as any).rawText;
+    observations = promotePerceptionObservations(
+      observations.filter((o) => !PROMOTE_DERIVED.has(o.clue as string)),
+      perception
+    );
+  }
   // Stub the model phase; everything downstream is deterministic.
   (PE as any).p0 = async () => ({ observations, perception, recovered: true });
   const caseData: any = { id: fx.label, images: [], analysis_mode: "full_analysis" };
@@ -83,7 +100,7 @@ async function main() {
     console.log(`   form   : ${got.formId}  |  display: ${got.display}`);
     console.log(`   style  : attr=${got.styleAttribution}  context=${got.styleContext}  final=${got.finalStyleLabel} (${got.finalStyleKind})`);
     console.log(`   date   : ${got.dateRange}  [floor ${got.dateFloor} / ceil ${got.dateCeiling}]  conf=${got.confidence}`);
-    console.log(`   zones  : ${got.convergence.join(", ") || "none"}`);
+    console.log(`   zones  : ${got.convergence.join(", ") || "none"}  |  seating_surface synth: ${got.seatingSynth}`);
     const fid = fidelity(got, fx.asSeen);
     if (fid.ok) {
       console.log(`   FIDELITY: ✓ reproduces as-seen`);
