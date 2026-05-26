@@ -356,4 +356,62 @@ const art_deco_candelabrum: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum];
+// Italian Renaissance Revival sgabello hall chair (carved walnut/oak, octagonal
+// plank seat, trestle base, grotesque mask). Primary ID is CORRECT (Side chair).
+// TRACKED: (a) NARRATIVE-vs-WORKING-RANGE contradiction (#4) — a supported attr
+// (Renaissance Revival, conf 0.82, 1860–1885) AND a formed convergence zone
+// (1860–1885, 3 layers) coexist with a "Broad, not tightly dated"/Low frame range,
+// and the dating narrative still leads with "Evidence converges at c. 1860–1885";
+// (b) M6 phantom upholstery — fully_upholstered (conf 74) on a hard plank seat →
+// "Upholstery present" section + bogus "Upholstered seating/armchair" alts;
+// (c) key-vs-content — armchair_form (wt 0.93, top form clue) described as "no
+// armrests... side chair". Date is broad (no floor/ceiling) so those are null.
+const renaissance_revival_sgabello: ScanFixture = {
+  label: "renaissance_revival_sgabello",
+  note: "Renaissance Revival sgabello; tracks the narrative/working-range contradiction (convergence claimed yet range Broad) + M6 phantom upholstery on a plank seat (#4/M6).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Octagonal solid plank seat visible in overall_side and joinery_closeup images; no upholstery; carved concentric circle medallion on seat surface." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall, elaborately carved backrest panel rising well above seat height; urn-form splat with scrollwork, acanthus, grotesque mask, and crest carving visible in overall_front and joinery_closeup images." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "No armrests visible; piece is a side chair or hall chair form without arms." },
+    { type: "style", clue: "grotesque_mask_carving", confidence: 52, description: "Prominent grotesque bearded male mask (Green Man / mascaron) carved in high relief on the lower back support / trestle section, visible in overall_front and joinery_closeup images. Classic Renaissance Revival / Baroque decorative motif." },
+    { type: "style", clue: "urn_form_splat", confidence: 52, description: "Upper backrest carved in the form of a vase or urn with scrolled volutes, acanthus leaves, floral rosette, oval cartouche medallion, and fish-scale / imbrication crest. Characteristic of Italian Renaissance-inspired sgabello or hall chair form." },
+    { type: "style", clue: "acanthus_carving", confidence: 52, description: "Acanthus leaf carving visible throughout: on the lower back support, on the trestle base, and on the crest of the backrest. Deeply undercut relief carving." },
+    { type: "style", clue: "gadrooning_egg_dart", confidence: 52, description: "Egg-and-dart or leaf-and-dart border carved along the seat edge apron; gadrooning / lobed molding visible on the seat apron and lower back support. Visible in overall_side and joinery_closeup." },
+    { type: "style", clue: "paw_feet", confidence: 52, description: "Carved paw or claw feet visible at the base of the trestle supports in overall_front image. Consistent with Renaissance Revival and Baroque seating." },
+    { type: "style", clue: "strapwork_scrollwork", confidence: 52, description: "Interlaced strapwork and C-scroll / S-scroll ornament visible throughout the backrest and trestle base. Characteristic of Mannerist and Renaissance Revival decorative vocabulary." },
+    { type: "style", clue: "oval_cartouche_medallion", confidence: 52, description: "Smooth oval medallion / cartouche carved in relief at the center of the upper backrest splat, surrounded by floral and scroll ornament. Visible in joinery_closeup (upper back image)." },
+    { type: "style", clue: "fish_scale_imbrication_crest", confidence: 52, description: "Fish-scale or imbrication pattern carved on the crest rail / pediment of the backrest, flanked by scrolled volutes. Visible in joinery_closeup (upper back image). Characteristic of Italian Renaissance and Baroque revival carving." },
+    { type: "style", clue: "sgabello_hall_chair_form", confidence: 52, description: "Overall form consistent with an Italian sgabello or Renaissance-style hall chair: solid plank octagonal seat, trestle-form base with carved supports, tall carved panel backrest with urn-form splat. No upholstery. This form was popular in Italian Renaissance originals and widely revived in the 19th century." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "Seat plank appears to be solid wood with visible grain and a board join line visible in the joinery_closeup (seat top view). Backrest and base also appear to be solid carved wood throughout. No veneer or laminate visible." },
+    { type: "materials", clue: "wood_species_walnut_or_oak", confidence: 45, description: "Wood color is a warm medium-dark brown with reddish undertones visible on the seat surface in the joinery_closeup (seat top). Grain visible on seat surface appears relatively open and coarse, possibly oak; however the warm brown tone and depth of color could also indicate walnut or a dark-stained hardwood. Species uncertain without closer examination." },
+    { type: "construction", clue: "octagonal_seat_plank", confidence: 96, description: "Seat is an octagonal solid plank with chamfered corners, carved concentric circle medallion on the surface, and leaf-and-dart carved apron edge. Visible clearly in joinery_closeup (seat top view) and overall_side." },
+    { type: "construction", clue: "trestle_base_construction", confidence: 90, description: "Base consists of trestle-form carved supports rather than four individual legs. The supports are heavily carved with grotesque mask, scrollwork, acanthus, and terminate in paw feet. Visible in overall_front and joinery_closeup." },
+    { type: "construction", clue: "backrest_panel_separate_from_seat", confidence: 45, description: "The carved backrest panel appears to be a separate carved element attached to the seat plank at its base, consistent with sgabello construction where the back is a distinct carved board. The junction between back and seat is visible in overall_side." },
+    { type: "construction", clue: "board_join_on_seat", confidence: 45, description: "A faint board join line is visible on the seat surface in the joinery_closeup (seat top view), suggesting the seat plank may be composed of two boards edge-glued together rather than a single wide board." },
+    { type: "condition", clue: "shellac_intact", confidence: 45, description: "Seat surface shows a warm amber-brown finish with age-consistent mellowing and wear. Finish appears to be an older oil or shellac-type surface rather than a thick modern plastic coating. No obvious polyurethane pooling or plastic sheen visible." },
+    { type: "condition", clue: "darkening_in_carved_recesses", confidence: 54, description: "Carved recesses throughout the backrest and base show accumulated dark patina / dirt consistent with age. The high-relief carved surfaces show lighter wear on the peaks and darker accumulation in the valleys, consistent with genuine age rather than artificial distressing." },
+    { type: "condition", clue: "wear_on_seat_surface", confidence: 54, description: "Seat surface shows uneven wear and color variation consistent with use over time. The central medallion area appears slightly lighter/more worn than the surrounding field." },
+    { type: "condition", clue: "no_visible_breaks_or_repairs", confidence: 54, description: "No obvious breaks, cracks, repairs, or replaced elements visible in the photographs. Carving appears intact throughout." },
+    { type: "style", clue: "renaissance_revival_style", confidence: 52, description: "The overall decorative vocabulary is consistent with Renaissance Revival or Baroque Revival decorative style. This style was popular in Europe and America c. 1840–1900, with Italian Renaissance-inspired hall chairs (sgabello form) particularly associated with the second half of the 19th century." },
+    { type: "style", clue: "carving_depth_and_quality", confidence: 52, description: "Carving throughout is deeply undercut with high relief, suggesting skilled hand carving. However, some repetitive elements could be consistent with either skilled hand carving or late 19th-century factory carving with hand finishing." },
+    { type: "style", clue: "bead_and_reel_border", confidence: 52, description: "Repeating bead-and-reel or circle-and-dot border visible on the lower back support section flanking the grotesque mask. Consistent with Renaissance Revival decorative vocabulary." },
+    { type: "style", clue: "tassel_carving", confidence: 52, description: "Carved tassels or pendant drops visible flanking the grotesque mask on the lower back support. Consistent with Renaissance Revival and Baroque decorative carving." },
+    { type: "style", clue: "fleur_de_lis_motif", confidence: 52, description: "Fleur-de-lis or similar heraldic motif visible at the base of the trestle support in overall_front image." },
+    { type: "function", clue: "sitting", confidence: 70, description: "Piece is a chair with seating surface and backrest; primary function is sitting. The hard unupholstered seat and tall decorative back suggest a hall or ceremonial chair rather than a comfort seating piece." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "materials", clue: "fully_upholstered", confidence: 74, description: "Upholstered or cushioned surfaces are visible." },
+  ],
+  asSeen: {
+    formId: "Side chair",
+    display: "Renaissance Revival Side chair (also commonly called: Dining chair, Armless chair)",
+    finalStyleKind: "unresolved",
+    dateRange: "Broad, not tightly dated",
+    dateFloor: null,
+    dateCeiling: null,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello];
