@@ -8863,6 +8863,20 @@ if (p6.dating_overlap) {
     }
   }
 
+  // T1b: p6.supported_findings is built (line ~8770) BEFORE the convergence
+  // refinement and parseLabelDate finalize p2.range, so its "Current dating
+  // evidence supports …" line captured the stale pre-refinement range and could
+  // contradict the headline working range (e.g. a c.1914 signed-date clock whose
+  // supported-findings still read "Broadly late 19th to 20th century"). Re-point
+  // it at the final p2.range now that dating is settled.
+  if (stage_outputs.p6 && Array.isArray(stage_outputs.p6.supported_findings)) {
+    stage_outputs.p6.supported_findings = stage_outputs.p6.supported_findings.map((line: string) =>
+      typeof line === "string" && /^Current dating evidence supports /.test(line)
+        ? `Current dating evidence supports ${p2.range}.`
+        : line
+    );
+  }
+
   // Re-cap identification confidence on ACTUAL dating contribution. The p1 gate
   // caps on dating-structural category PRESENCE, but a category full of undated
   // / open observations (joinery "spans eras", wood "species unidentified")

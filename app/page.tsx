@@ -1038,7 +1038,16 @@ function EvidenceRankedList({
   if (rows.length === 0 && noSignal.length === 0) return null;
 
   const agreeCount = datable.filter((r) => r.agrees).length;
-  const windowText = haveWindow ? `c. ${winFloor}–${winCeiling}` : null;
+  // T1c: winFloor (from p2) and winCeiling (from a fallback zone/envelope) can come
+  // from mismatched sources and invert ("c. 1945–1910") or collapse ("c. 1910–1910").
+  // Render the floor as the binding terminus instead of a backwards/degenerate span.
+  const windowText = !haveWindow
+    ? null
+    : (winFloor as number) > (winCeiling as number)
+    ? `post-${winFloor}`
+    : (winFloor as number) === (winCeiling as number)
+    ? `c. ${winFloor}`
+    : `c. ${winFloor}–${winCeiling}`;
 
   const C = {
     ink: "#3d2d1f", muted: "#6a5845", faint: "#a89e90", line: "#eadfcf",

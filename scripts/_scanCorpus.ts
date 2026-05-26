@@ -57,6 +57,10 @@ function summarize(result: any) {
     // phantom-upholstery and metal-alt-form fixes are visible in --diff.
     upholsteryId: p2.upholstery_layer?.identification ?? null,
     altForms: (p3.alternatives as string[]) ?? [],
+    // T1b: the "Current dating evidence supports X" line must track the final
+    // working range (no stale pre-refinement date).
+    supportedDate: (so.p6?.supported_findings || []).find((s: string) =>
+      /Current dating evidence supports/.test(s)) ?? null,
   };
 }
 

@@ -679,6 +679,46 @@ test("#13: a null working range never renders 'at uncertain'", () => {
   assert.doesNotMatch(n!.headline, /at uncertain/);
 });
 
+// ── T1c: never render inverted / degenerate ranges; 0-layer zone is not a convergence
+test("T1c: an inverted working range (floor>ceiling) renders post-floor, not a backwards span", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    finalStyle: { kind: "context_only", final_style_label: "Toledo-style", final_style_reason: "" },
+    finalDatingFloor: 1945, finalDatingCeiling: 1910, // mismatched sources → inverted
+  }));
+  assert.match(n!.headline, /post-1945/);
+  assert.doesNotMatch(n!.headline, /1945[–-]1910/);
+});
+
+test("T1c: a 0-corroborating-layer zone is NOT presented as a convergence", () => {
+  // Woodard chair: a degenerate 1910–1910 zone with specific_layer_count 0.
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: {
+      layers: [],
+      convergence_zones: [_zone({ date_floor: 1910, date_ceiling: 1910, specific_layer_count: 0, specific_layers: [] })],
+      overall_floor: 1910, overall_ceiling: 1910,
+    },
+    finalStyle: { kind: "context_only", final_style_label: "Toledo-style", final_style_reason: "" },
+    finalDatingFloor: 1945, finalDatingCeiling: null,
+  }));
+  assert.doesNotMatch(JSON.stringify(n), /corroborating layer/);
+  assert.doesNotMatch(JSON.stringify(n), /1910[–-]1910/);
+});
+
+test("T1c: a degenerate (single-year) zone renders 'c. 1910', not 'c. 1910–1910'", () => {
+  const n = buildDatingFindingNarrative(_narrInput({
+    data: {
+      layers: [],
+      convergence_zones: [_zone({ date_floor: 1910, date_ceiling: 1910, specific_layer_count: 2 })],
+      overall_floor: 1910, overall_ceiling: 1910,
+    },
+    finalStyle: { kind: "original_period", final_style_label: "X", final_style_reason: "" },
+    styleAttribution: { name: "X", date_floor: 1900, date_ceiling: 1920, style_family_id: "x", confidence: 0.8 },
+    finalDatingFloor: 1910, finalDatingCeiling: 1910,
+  }));
+  assert.doesNotMatch(n!.headline, /1910[–-]1910/);
+  assert.match(n!.headline, /c\. 1910\b/);
+});
+
 // ── #111-b: early pre-machine termini cap a runaway style-wave date ──────────
 // Models the country-Chippendale ladderback: a synthetic style-wave zone
 // (1920–1930) vs a genuine construction zone, where cut_nail (≤1890) and
