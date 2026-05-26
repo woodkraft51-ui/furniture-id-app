@@ -18,7 +18,7 @@ import {
   commodeEvidencePresent,
 } from "../lib/engineReportHelpers";
 import { COMMODE_RUNS } from "./fixtures/commodeRuns";
-import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations, detectUpholsteryLayer } from "../lib/engine";
+import { buildEvidenceDigest, buildFrameDigest, scoreForms, deriveDustCoverClues, parseLabelDate, matchMakerMarks, promotePerceptionObservations, detectUpholsteryLayer, parseStyleProseDate } from "../lib/engine";
 import { buildCanonicalVocabulary } from "../scripts/generateCanonicalVocabulary";
 import { CANONICAL_VOCABULARY } from "../lib/constraints/canonicalVocabulary.generated";
 import { snapToCanonical, isCanonicalKey } from "../lib/engineVocabulary";
@@ -856,6 +856,47 @@ test("fix#1 guard: a committed (non-placeholder) date is NOT overridden by the e
   const r = refineDatingFromConvergence(p2, overlap, false);
   assert.ok(!r.refined, "a committed date must not be overridden");
   assert.equal(r.date_floor, 1830, "the committed floor must stand");
+});
+
+// ── #6 Phase 1: parseStyleProseDate — dated era prose as a corroborated signal ─
+const _styleObs = (...descs: string[]) =>
+  descs.map((description) => ({ type: "style", clue: "", description, confidence: 55, negated: false } as any));
+
+test("#6: corroborated decade-range prose ('1920s-1950s' + '1930s-1950s') → intersection 1930–1959", () => {
+  const r = parseStyleProseDate(_styleObs(
+    "American production circa 1920s-1950s, folk/craft quality.",
+    "consistent with American rocking chairs of the 1930s-1950s, Tell City or similar.",
+  ));
+  assert.deepEqual(r, { floor: 1930, ceiling: 1959 });
+});
+
+test("#6: corroborated year-range prose ('c. 1890-1915' ×2) → 1890–1915", () => {
+  const r = parseStyleProseDate(_styleObs(
+    "Golden Oak / Chippendale Revival production c. 1890-1915.",
+    "characteristic of American china cabinet production c. 1890-1915.",
+  ));
+  assert.deepEqual(r, { floor: 1890, ceiling: 1915 });
+});
+
+test("#6 guard: a single dated obs does NOT anchor (needs ≥2 corroborating windows)", () => {
+  assert.equal(parseStyleProseDate(_styleObs("Golden Oak era production c. 1890-1915.")), null);
+});
+
+test("#6 guard: disagreeing windows (no common era) → null", () => {
+  assert.equal(parseStyleProseDate(_styleObs("c. 1890-1915 Golden Oak.", "modern reissue c. 1960-1980.")), null);
+});
+
+test("#6 guard: a hedged 'or later' obs is skipped", () => {
+  // "1920s-1950s or later" must not contribute; with only one other (single) window → null.
+  assert.equal(parseStyleProseDate(_styleObs("Art Deco vocabulary, c. 1925-1940 or later.", "c. 1925-1940 production.")), null);
+});
+
+test("#6 guard: non-style observations are ignored", () => {
+  const obs = [
+    { type: "materials", clue: "", description: "c. 1890-1915 oak.", confidence: 50, negated: false },
+    { type: "condition", clue: "", description: "c. 1890-1915 patina.", confidence: 50, negated: false },
+  ] as any;
+  assert.equal(parseStyleProseDate(obs), null);
 });
 
 // ── T1a: bare-seat guard — rush/cane/plank/mesh seats are NOT upholstery ─────

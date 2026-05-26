@@ -2189,6 +2189,44 @@ export function parseLabelDate(observations: Observation[]): LabelDate | null {
   return null;
 }
 
+// #6 Phase 1: the model frequently writes an explicit production era in STYLE
+// observation prose ("c. 1890-1915", "American production circa 1920s-1950s") that
+// the engine otherwise discards (the style dating layer reads only a formal
+// attribution). Parse those windows and, ONLY as a last resort (see the call site:
+// no hard construction/joinery/fastener/toolmark/wood/hardware layer dated the piece,
+// no maker date, no convergence), use them as a Low-confidence anchor instead of the
+// hardcoded catch-all. Requires ≥2 windows that AGREE (non-empty intersection) so a
+// single offhand mention can't drive the date; hedged "or later" obs are skipped.
+export function parseStyleProseDate(
+  observations: Observation[]
+): { floor: number; ceiling: number } | null {
+  const windows: Array<[number, number]> = [];
+  for (const o of observations) {
+    if (o.negated || o.type !== "style") continue;
+    const d = String(o.description || "");
+    if (/\bor later\b|\bnot\b|reproduction of/i.test(d)) continue;
+    // decade range: "1920s-1950s" → [1920, 1959]
+    let m = d.match(/\b(1[789]\d0)s\s*[–-]\s*(1[789]\d0)s\b/);
+    if (m) { windows.push([parseInt(m[1], 10), parseInt(m[2], 10) + 9]); continue; }
+    // year range: "c. 1890-1915" → [1890, 1915]
+    m = d.match(/\b(1[789]\d{2}|20\d{2})\s*[–-]\s*(1[789]\d{2}|20\d{2})\b/);
+    if (m) {
+      const a = parseInt(m[1], 10), b = parseInt(m[2], 10);
+      if (b > a) { windows.push([a, b]); continue; }
+    }
+    // single decade: "1920s" → [1920, 1929]
+    m = d.match(/\b(1[789]\d0)s\b/);
+    if (m) { windows.push([parseInt(m[1], 10), parseInt(m[1], 10) + 9]); continue; }
+  }
+  if (windows.length < 2) return null;
+  // Intersection — the era all parsed windows agree on. Empty ⇒ they disagree ⇒
+  // too noisy to anchor on.
+  const floor = Math.max(...windows.map((w) => w[0]));
+  const ceiling = Math.min(...windows.map((w) => w[1]));
+  if (floor > ceiling) return null;
+  return { floor, ceiling };
+}
+
 function detectStructuralPatterns(observations: Observation[]): Observation[] {
   const hasClue = (clue: string) =>
     observations.some((o) => o.clue === clue);
@@ -8867,6 +8905,36 @@ if (p6.dating_overlap) {
         const kindWord = labelDate.kind === "founding" ? "company-founding" : labelDate.kind === "patent" ? "patent/registration" : "label";
         s.push(`The label's ${labelDate.year} ${kindWord} date is a terminus post quem (the piece cannot predate it), applied as a floor only — not as the production date.`);
         p2.support = s;
+        stage_outputs.p2 = p2;
+      }
+    }
+  }
+
+  // #6 Phase 1: style-prose date as a last-resort anchor. Fires ONLY when the date is
+  // not backed by anything stronger — no convergence override, no maker/label date,
+  // and NO hard construction layer (joinery/fastener/toolmark/wood/hardware) produced
+  // a date — yet the model wrote a corroborated production era in style prose. This is
+  // the vernacular/craft case (e.g. a mid-century carved-rose rocker whose only datable
+  // signal is "circa 1920s-1950s") that otherwise falls to the hardcoded c.1890-1920
+  // catch-all. Low confidence; cannot override construction (the gate guarantees none
+  // dated the piece), so it can't repeat the M11 revival-wave late-pull on real evidence.
+  if (!refined.refined && !labelDate) {
+    const HARD_LAYERS = ["joinery", "fastener", "toolmark", "wood", "hardware"];
+    const hardConstructionDated = (frameOverlap.layers || []).some(
+      (l: any) => HARD_LAYERS.includes(l.layer) && (l.date_floor != null || l.date_ceiling != null)
+    );
+    if (!hardConstructionDated) {
+      const prose = parseStyleProseDate(digest.observations);
+      if (prose) {
+        p2.date_floor = prose.floor;
+        p2.date_ceiling = prose.ceiling;
+        p2.range = prose.floor === prose.ceiling ? `c. ${prose.floor}` : `c. ${prose.floor}–${prose.ceiling}`;
+        p2.confidence = "Low";
+        const s2 = Array.isArray(p2.support) ? [...p2.support] : [];
+        s2.push(
+          `No datable construction evidence, but the style reads consistently as ${p2.range} across multiple observations; the working range is anchored there (style-derived, low confidence) rather than a generic default.`
+        );
+        p2.support = s2;
         stage_outputs.p2 = p2;
       }
     }
