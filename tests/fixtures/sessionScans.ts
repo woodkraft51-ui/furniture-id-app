@@ -1314,4 +1314,62 @@ const rococo_revival_parlor_armchair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair];
+const hollywood_regency_cane_wing_chair: ScanFixture = {
+  label: "hollywood_regency_cane_wing_chair",
+  // Cane-paneled button-tufted wingback chair — Hollywood Regency / transitional
+  // traditional, ~1960s–80s. Date c.1900–1980 OK (contains truth); form correct (Wing
+  // chair); upholstery dating excellent (button-tufted, c.1955–1980, flagged as later
+  // reupholstery via foam_padding). TWO tracked items: (1) M11 keyword style-family
+  // mis-attribution (n=3+) — "French Provincial" prose matched ["french","revival",
+  // "provincial"] → "Louis XVI / French Neoclassical" → label "French Louis XVI
+  // Revival" on a Hollywood Regency chair (mitigated: revival-wave reconciliation kept
+  // the date right). (2) cane→wicker overreach — genuine cane panels → "Wicker/rattan
+  // furniture" alt-form + wicker limitation on a wood-frame chair. CONTRAST/GUARD: the
+  // convergence override WORKED here (P2 adopted the 1900–1980 zone) because real
+  // post-1900 layers exist (foam 1930–1960, lacquer 1920–1980) — unlike escritoire/
+  // Biedermeier where the placeholder blocked the zone.
+  note: "Hollywood Regency cane wing chair (~1960s–80s); date c.1900–1980 OK, form correct, upholstery dating excellent (later reupholstery flagged). M11 keyword mis-attribution (French Provincial → 'French Louis XVI Revival', n=3+; date unharmed). cane→wicker overreach. CONTRAST: convergence override WORKED (real post-1900 layers).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 71, description: "Fully upholstered tufted seat cushion visible from front and overhead views; broad padded seat surface." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall high-back upholstered backrest with button tufting visible; wingback silhouette with pronounced ear/wing extensions at top." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has wing extensions flanking the high back; classic wingback/porter's chair form with cane-paneled wings and sides." },
+    { type: "structure", clue: "cane_panels", confidence: 82, description: "Large woven cane panels fill the wing areas on both sides of the backrest and the lower side panels below the seat rail; cane is machine-woven open-hexagonal pattern (not hand-caned peg-hole style)." },
+    { type: "structure", clue: "woven_body", confidence: 82, description: "Cane weave body panels visible on wings and side panels; open hexagonal weave pattern consistent with machine-pressed sheet cane rather than hand-caned individual strands." },
+    { type: "structure", clue: "rattan_frame", confidence: 45, description: "Frame is solid wood (appears to be walnut or mahogany stained hardwood), not rattan; cane panels are inset into the wood frame." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Curved serpentine wood frame members visible at wings, seat rail, and legs; dark reddish-brown finish consistent with walnut or mahogany-stained hardwood; smooth molded profile on frame edges." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Combination of high wingback form, cane-paneled wings and sides, curved serpentine frame, and button-tufted upholstery is characteristic of Hollywood Regency / Colonial Revival / transitional traditional style popular c. 1960s-1980s." },
+    { type: "structure", clue: "vertical_supports", confidence: 82, description: "Four tapered straight legs visible; front legs appear slightly splayed/tapered; rear legs visible in back view as dark tapered members." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "Cover fabric shows upright pile with nap-direction shading visible across tufted surfaces; olive/gold-green color with matte pile sheen consistent with cut-pile velvet or chenille velvet. Best-fit classification: velvet_cover (chenille-type velvet)." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "Regular grid of deep tufted dimples visible across both the seat cushion and the back panel; small covered buttons visible at each tuft intersection. Button tufting confirmed on back panel closeup images." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "Seat and back cushions show puffy rounded tufted squares with uniform resilience and rounded edges consistent with polyurethane foam or foam-over-spring construction rather than traditional horsehair or cotton batting alone; cushions retain shape suggesting foam substrate." },
+    { type: "condition", clue: "condition_cues", confidence: 57, description: "Upholstery fabric shows significant soiling, staining, and pile crush across seat and back; back exterior panel shows heavy soiling and possible small tear/snag at center. Cane panels appear intact but darkened with age/dirt. Wood frame shows minor scuffs and wear at edges but no major damage visible." },
+    { type: "condition", clue: "refinished_surface", confidence: 54, description: "Wood frame finish appears original or lightly maintained; no obvious stripping or modern polyurethane overcoat visible; finish shows age-consistent wear at contact points." },
+    { type: "construction", clue: "frame_and_panel_sides", confidence: 92, description: "Wing and side panels are constructed as wood frame members holding inset cane panels; the curved wood stile/rail framework is visible surrounding each cane panel section." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Frame shows pronounced S-curve or serpentine profile on the wing/back stiles visible in side view; curved molded wood frame is a decorative feature associated with French Provincial, Hollywood Regency, and Colonial Revival chair forms." },
+    { type: "materials", clue: "lacquer_finish", confidence: 60, description: "Wood frame shows a smooth, hard, uniform dark finish consistent with lacquer or catalyzed finish; no shellac crazing visible; finish appears factory-applied." },
+    { type: "construction", clue: "wicker_weave_close", confidence: 85, description: "Cane panels show a close, tight hexagonal weave pattern; the regularity and uniformity of the weave pattern is consistent with machine-pressed sheet cane rather than hand-caned individual strand work." },
+    { type: "condition", clue: "wicker_strand_breakage", confidence: 54, description: "Cane panels appear largely intact with no obvious broken or missing strands visible in the available images; cane is darkened but structurally present." },
+    { type: "form", clue: "seating_surface", confidence: 48, description: "Seat cushion is a separate tufted pad sitting within the seat frame; appears to be a drop-in or tied cushion rather than fully attached upholstery." },
+    { type: "style", clue: "style_cues", confidence: 58, description: "Front legs appear to be straight tapered legs without cabriole curve; rear legs are straight tapered; leg style is consistent with transitional traditional or Colonial Revival chair production c. 1960s-1980s." },
+    { type: "condition", clue: "condition_cues", confidence: 57, description: "Back exterior upholstery panel shows heavy soiling, staining, and a small snag or tear at center-back; fabric appears original and unrestored." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered back exterior" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "context", clue: "french_provincial_style", confidence: 48, description: "Frame shows pronounced S-curve or serpentine profile on the wing/back stiles visible in side view; curved molded wood frame is a decorative feature associated with French Provincial, Hollywood Regency, and Colonial Revival chair forms." },
+    { type: "style", clue: "cabriole_leg", confidence: 72, description: "Cabriole legs are visible." },
+    { type: "form", clue: "wingback_form", confidence: 80, description: "Structural side wings extending forward from upper back indicate wing-chair form. Canonical: form_wing_chair." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Wing chair",
+    display: "French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1900–1980",
+    dateFloor: 1900,
+    dateCeiling: 1980,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair];
