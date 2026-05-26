@@ -343,11 +343,22 @@ export function refineDatingFromConvergence(
   // replacement risk, and style/style_wave are the very signals being bounded.
   // Low-confidence layers don't veto (the ceiling clue may be a tentative read).
   const HARD_CEILING_LAYERS = new Set<LayerName>(["joinery", "fastener", "toolmark"]);
+  // Moderate+ bounded ceilings always bind. A LOW-confidence fastener/toolmark
+  // ceiling ALSO binds, but only when it is an EARLY, pre-machine-diagnostic
+  // terminus (≤1900) — cut nails (≤1890), hand-plane chatter (≤1880). Those are
+  // diagnostic of "old" even at low per-clue confidence (they capped a country
+  // chair that style-waves had floated to 1920–1930). A BROAD fastener ceiling
+  // like slotted_screw (1850–1940) is NOT a terminus — it says nothing about
+  // "old" and must not cap a genuinely modern piece — so ≤1900 excludes it.
+  const EARLY_TERMINUS_LAYERS = new Set<LayerName>(["fastener", "toolmark"]);
+  const EARLY_TERMINUS_MAX = 1900;
   let constructionCeiling: number | null = null;
   for (const l of overlap.layers) {
     if (!HARD_CEILING_LAYERS.has(l.layer)) continue;
     if (l.date_ceiling == null) continue;
-    if (l.confidence !== "moderate" && l.confidence !== "high") continue;
+    const moderatePlus = l.confidence === "moderate" || l.confidence === "high";
+    const earlyTerminus = EARLY_TERMINUS_LAYERS.has(l.layer) && l.date_ceiling <= EARLY_TERMINUS_MAX;
+    if (!moderatePlus && !earlyTerminus) continue;
     if (constructionCeiling == null || l.date_ceiling < constructionCeiling) {
       constructionCeiling = l.date_ceiling;
     }
