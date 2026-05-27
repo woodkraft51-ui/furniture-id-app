@@ -11,7 +11,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { PE, promotePerceptionObservations } from "../lib/engine";
+import { PE, promotePerceptionObservations, descriptionNegatesClue } from "../lib/engine";
 import { SESSION_SCANS, type ScanFixture } from "../tests/fixtures/sessionScans";
 
 // Clues synthesized by promotePerceptionObservations — stripped before re-running
@@ -77,6 +77,11 @@ async function runFixture(fx: ScanFixture) {
       perception
     );
   }
+  // Re-derive `negated` exactly as production does (normalizeObservationsFromParsed
+  // sets `negated: descriptionNegatesClue(clue, description)` inside p0, which this
+  // harness stubs). Without this the corpus uses stale hand-baked flags and is blind
+  // to any negation-detection change.
+  for (const o of observations) o.negated = descriptionNegatesClue(o.clue, o.description);
   // Stub the model phase; everything downstream is deterministic.
   (PE as any).p0 = async () => ({ observations, perception, recovered: true });
   const caseData: any = { id: fx.label, images: [], analysis_mode: "full_analysis" };

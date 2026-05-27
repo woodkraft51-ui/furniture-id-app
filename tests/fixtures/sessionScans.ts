@@ -206,10 +206,15 @@ const sears1960sDresser: ScanFixture = {
     display: "Dresser (also commonly called: bureau, bedroom dresser)",
     styleContext: "American Empire / late Classical Revival",
     finalStyleKind: "context_only",
-    dateRange: "post-1920",
+    // Negation re-baseline: hand_plane_chatter is now correctly negated ("machine
+    // planing rather than hand planing"), and the Sears freight label is retained
+    // (quoted-transcription rule) despite "...not a maker's mark". The hand-tool
+    // floor drops out, so the date widens to post-1940 and the label-vs-machine
+    // conflict lowers confidence to Moderate.
+    dateRange: "post-1940",
     dateFloor: null, // reconstruction replays floor 1940 vs live 1920 (hard-negative floor calibration) — not asserted
     dateCeiling: null,
-    confidence: "High",
+    confidence: "Moderate",
   },
 };
 
@@ -345,6 +350,14 @@ const art_deco_candelabrum: ScanFixture = {
     { type: "materials", clue: "painted_metal_finish", confidence: 80, description: "The dark surface finish does not appear to be painted enamel. The patina shows natural oxidation and verdigris consistent with chemical patination or natural aging of brass/bronze." },
     { type: "style", clue: "scandinavian_modern_design_influence", confidence: 45, description: "The combination of fluted spherical knop, octagonal base, clean urn cups, and dark patinated bronze is consistent with Scandinavian Art Deco and early Modern metalwork c. 1920-1940. Design influence only; no maker mark or provenance visible." },
   ],
+  // KNOWN-RED (deferred): the negation re-baseline correctly negates
+  // painted_metal_finish ("does not appear to be painted enamel … patina/verdigris
+  // … bronze/brass"), but that finish clue's `dateHint: post-1900` was the ONLY hard
+  // 20th-c anchor — the deco style cues (art_deco_style_cues etc.) carry no date hint
+  // and contribute 0, so dating collapses to "c. 1850 onward / unresolved". This is a
+  // separate downstream root cause (style cues don't anchor dating), tracked for a
+  // future pass; the asSeen below is left at the PRE-negation expectation on purpose
+  // so the gate flags it until the downstream fix lands.
   asSeen: {
     formId: "Candelabrum",
     display: "Art Deco Candelabrum (also commonly called: Candelabrum, Candelabra)",
@@ -526,12 +539,13 @@ const swivit_space_age_pedestal_chair: ScanFixture = {
     display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
     finalStyleKind: "context_only",
     // Post-Fix2: the hallucinated Sligh window no longer slams the floor to its 2005
-    // closing year; the date now falls to the real molded-plastic evidence (floor
-    // 1935, "early-to-mid 20th century or later"). Was floor 2005 pre-fix. The range
-    // string is raw_text-dependent narrative (live rendered "Broad, not tightly dated").
-    dateRange: "c. 1935 onward (early-to-mid 20th century or later)",
-    dateFloor: 1935,
-    dateCeiling: null,
+    // closing year. Negation re-baseline: bent_molded_plywood and metal_frame are now
+    // correctly negated ("not bent plywood … single-piece molded plastic"; "No
+    // visible metal frame"), removing the bogus Eames-era 1935 floor; the date now
+    // sits on the space-age molded-plastic evidence (c. 1960–1979). Was floor 1935.
+    dateRange: "c. 1960–1979",
+    dateFloor: 1960,
+    dateCeiling: 1979,
     confidence: "Low",
   },
 };
@@ -691,17 +705,16 @@ const golden_oak_curved_glass_china_cabinet: ScanFixture = {
     formId: "China cabinet",
     display: "China cabinet",
     finalStyleKind: "context_only",
-    // Reduced fidelity: live rendered "Broadly late 19th to 20th century"/1900–2000/Low
-    // (convergence zone 1840–1920); this obs-only reconstruction (no raw_text) renders
-    // 1900–1930/Moderate (zone 1800–1940). The range/ceiling/confidence delta is
-    // raw_text-dependent and NOT the tracked bug. What reproduces deterministically and
-    // IS the bug: the 9 style_cues observations contribute 0 to the style dating layer
-    // (M1 collapse / #6 dated-prose-ignored) and the floor sits at 1900, not the
-    // evidence-supported ~1890. Pinned to the harness's deterministic output.
-    dateRange: "late 19th to early 20th century",
-    dateFloor: 1900,
-    dateCeiling: 1930,
-    confidence: "Moderate",
+    // Negation re-baseline: frame_and_panel_sides is now correctly negated ("curved
+    // bent glass … frame-and-glass rather than frame-and-panel wood sides"), removing
+    // a corroborating construction clue. Floor shifts 1900→1880 and confidence drops
+    // Moderate→Low (less corroboration). The 9 style_cues observations still contribute
+    // 0 to the style dating layer (M1 collapse / #6 dated-prose-ignored) — the tracked
+    // bug. Pinned to the harness's deterministic output.
+    dateRange: "c. 1880–1920",
+    dateFloor: 1880,
+    dateCeiling: 1920,
+    confidence: "Low",
   },
 };
 
