@@ -115,4 +115,5 @@ Counted once per specimen (not per note-mention).
 | painted_gilt_rococo_revival_settee | — | — | — | #5 #9 | Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa) | c. 1920–1930 | Moderate |
 | victorian_spindle_gallery_parlor_rocker | — | — | — | #17 | Rocking chair | c. 1890–1920 | Moderate |
 | hollywood_regency_rococo_lounge_chair | — | M13 | — | #3 #5 #9 | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
+| eastlake_spindle_gallery_parlor_settee | — | — | — | — | Settee (also commonly called: Settee, Small sofa) | c. 1890–1920 | Moderate |
 

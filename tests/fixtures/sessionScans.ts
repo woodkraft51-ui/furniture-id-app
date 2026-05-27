@@ -2233,4 +2233,71 @@ const hollywood_regency_rococo_lounge_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair];
+const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
+  label: "eastlake_spindle_gallery_parlor_settee",
+  note:
+    "Eastlake / Aesthetic Movement Victorian parlor SETTEE (turned spindle gallery + " +
+    "ball finials, fan/sunburst carved medallions, walnut; ~1870-1895). Form settee " +
+    "CORRECT — armchair_form self-negated ('rather than a single armchair') and was " +
+    "dropped, so settee won cleanly (lounge_chair_form 78 didn't derail). RECURS the " +
+    "parlor rocker's 'Spindle Gallery' non-style fallback (n=2), with a SHARPER root " +
+    "cause: the piece is saturated with Eastlake vocabulary (eastlake_hardware, " +
+    "turned_spindle_gallery, carved_medallion_back, fan_sunburst_carving all cite " +
+    "'Eastlake Aesthetic Movement c.1870-1895' in prose) but the ONLY Eastlake-" +
+    "ATTRIBUTING clue is eastlake_hardware — and its description self-negates ('No " +
+    "Eastlake hardware visible, but the ornament is Eastlake'), so it is correctly " +
+    "dropped and Eastlake attribution is LOST. The Eastlake ORNAMENT clues don't " +
+    "attribute the family, so style falls back to 'Spindle Gallery' (context_only). " +
+    "GAP: need Eastlake/Aesthetic attribution from ORNAMENT, not just hardware. " +
+    "CLOCK-DOMAIN CLUE COLLISION (n=2): turned_spindle_gallery AND scrolled_side_" +
+    "corbels are both authored for Victorian shelf CLOCKS (date hints cite 'shelf " +
+    "clock case' and 'flanking the dial of a shelf clock') yet fire on this settee. " +
+    "MINOR: round_wood_knob fired on turned ball FINIALS ('not functional knobs') — " +
+    "clue misfire, but replacement-risk-excluded from dating so benign. negated:true " +
+    "on eastlake_hardware / barley_twist / button_tufting / armchair_form (all " +
+    "self-negate with the canonical phrase contiguous), matching the as-seen run.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Wide upholstered seat cushion spanning the full width of the settee frame, accommodating two or more sitters." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Arched crest rail backrest with upholstered back cushion set within an open carved and turned wood frame." },
+    { type: "form", clue: "armchair_form", confidence: 68, negated: true, description: "Piece has two scroll-terminal arms extending from the back frame, characteristic of a parlor settee or loveseat form rather than a single armchair." },
+    { type: "style", clue: "eastlake_hardware", confidence: 52, negated: true, description: "No Eastlake hardware visible, but the overall decorative vocabulary — turned ball finials in a gallery row, incised carved ornament, geometric open fretwork, sunburst/fan medallions, and rectilinear-influenced proportions — is strongly consistent with the Eastlake Aesthetic Movement style, c. 1870–1895." },
+    { type: "style", clue: "turned_spindle_gallery", confidence: 52, description: "A row of turned ball-topped spindles runs along the top of the back crest rail, a hallmark of Victorian Eastlake/Aesthetic Movement parlor seating, c. 1875–1900." },
+    { type: "style", clue: "scrolled_side_corbels", confidence: 52, description: "Scroll-volute arm terminals visible at both ends of the crest rail / arm junction, consistent with Victorian parlor seating ornament." },
+    { type: "style", clue: "barley_twist", confidence: 52, negated: true, description: "No barley twist turnings visible; instead, straight turned legs with reeding and ball-turned front leg tops are present." },
+    { type: "structure", clue: "spindle_back", confidence: 82, description: "Open back frame incorporates multiple turned spindles in fan/sunburst arrangements within the side panels of the back, flanking the central upholstered back cushion." },
+    { type: "structure", clue: "vertical_supports", confidence: 82, description: "Turned front legs visible in side view; reeded or ring-turned profile consistent with late Victorian production." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 55, description: "Frame construction of back rails, spindles, and arm posts is consistent with mortise-and-tenon joinery typical of Victorian parlor seating; no direct exposure of joint visible but construction quality and period suggest this method." },
+    { type: "construction", clue: "round_tenon", confidence: 60, description: "Turned spindles in the fan/sunburst back panels are likely seated in round-tenon sockets in the rails, consistent with Victorian chair and settee construction." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members appear to be solid wood throughout — crest rail, arm posts, spindles, legs, and carved elements all show solid wood profiles with no visible veneer edges or lamination." },
+    { type: "materials", clue: "wood_species", confidence: 45, description: "Frame wood shows warm medium-to-dark brown coloration with subtle grain visible on flat surfaces; consistent with black walnut or a walnut-stained hardwood (possibly gumwood or birch stained to imitate walnut). Walnut was the dominant parlor seating wood in the Eastlake/Renaissance Revival era." },
+    { type: "condition", clue: "refinished_surface", confidence: 45, description: "Arm post surfaces show finish wear and some loss/chipping visible in the joinery closeup image, suggesting the current finish may be aged original or a later refinish. Surface appears somewhat uniform in sheen, which could indicate a later coating." },
+    { type: "condition", clue: "shellac_intact", confidence: 45, description: "Warm amber-brown surface sheen on frame members is consistent with intact or lightly refreshed shellac finish; no obvious plastic-like polyurethane build visible, though confirmation requires closer inspection." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "Seat and back cushions are covered in a mauve/dusty rose fabric with a regular repeating fan/palmette motif in two-tone (lighter pink pattern on darker ground). The pattern complexity, machine regularity, and woven structure are consistent with a jacquard-woven upholstery fabric. Could also be a brocade; best fit is jacquard given the flat woven appearance without obvious raised supplementary weft floats." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, negated: true, description: "No button tufting visible on either the seat or back cushion surfaces; upholstery appears smooth and untufted." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "The relatively flat, even profile of the seat cushion is consistent with modern foam padding rather than traditional horsehair or coil-spring construction; this would indicate later reupholstery." },
+    { type: "style", clue: "carved_medallion_back", confidence: 52, description: "Central lower back rail features a carved foliate/acanthus medallion motif; flanking side panels have carved circular medallions with incised geometric detail — all consistent with Eastlake Aesthetic Movement ornament, c. 1870–1895." },
+    { type: "style", clue: "fan_sunburst_carving", confidence: 52, description: "Fan/sunburst radiating spindle arrangements visible in both side back panels, with circular carved medallion at the base of each fan — a characteristic Eastlake/Aesthetic Movement decorative motif." },
+    { type: "hardware", clue: "round_wood_knob", confidence: 62, description: "Multiple turned ball finials (sphere-topped turnings) are mounted along the top crest rail gallery and at arm post junctions — these are turned wooden ball ornaments, not functional knobs, but share the same turned-wood vocabulary." },
+    { type: "condition", clue: "finish_wear_on_arms", confidence: 54, description: "Visible finish loss and surface chipping on the arm post/arm pad junction area visible in the joinery closeup; consistent with age-related wear at a high-contact zone." },
+    { type: "style", clue: "arched_crest_rail", confidence: 52, description: "The crest rail of the back describes a gentle arch from side post to side post, framing the upholstered back cushion — a common Victorian parlor seating form element." },
+    { type: "structure", clue: "legs", confidence: 82, description: "Front legs are turned with ring/reel profile and appear to taper toward the foot; visible in the side view image. Consistent with late Victorian parlor seating leg forms." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "woven upholstery fabric" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "Victorian seating" },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Settee",
+    display: "Settee (also commonly called: Settee, Small sofa)",
+    styleContext: "Spindle Gallery",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee];
