@@ -81,7 +81,7 @@ p("| **S-scan ids** | S001–S017 | inline tags in fixture notes + engine commen
 p("| **Corpus fixtures** | 32 | `tests/fixtures/sessionScans.ts` | regression specimens (outgrew the S-series) |");
 p("| **Stress-test issues** | #1–#17 | `docs/stress-test-findings.md` | ranked fix queue (NOT scans) |");
 p("| **Fix-queue / GitHub** | #1–#10, #111-b, … | fixture notes + commits | candidate + shipped fixes |");
-p("| **Mechanisms / triage** | M1–M17, T1a–T2b | fixture notes | failure mechanisms + triage batches |");
+p("| **Mechanisms / triage** | M1–M18, T1a–T2b | fixture notes | failure mechanisms + triage batches |");
 p();
 p("The phantom \"17 vs 28\": **S-numbering froze at S017** (the original scan");
 p("session) while the corpus kept growing to **32** as later mechanism-isolation");

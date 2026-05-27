@@ -15,7 +15,7 @@ which source you parse. This ledger is the single forward-reconciled view.
 | **Corpus fixtures** | 32 | `tests/fixtures/sessionScans.ts` | regression specimens (outgrew the S-series) |
 | **Stress-test issues** | #1–#17 | `docs/stress-test-findings.md` | ranked fix queue (NOT scans) |
 | **Fix-queue / GitHub** | #1–#10, #111-b, … | fixture notes + commits | candidate + shipped fixes |
-| **Mechanisms / triage** | M1–M17, T1a–T2b | fixture notes | failure mechanisms + triage batches |
+| **Mechanisms / triage** | M1–M18, T1a–T2b | fixture notes | failure mechanisms + triage batches |
 
 The phantom "17 vs 28": **S-numbering froze at S017** (the original scan
 session) while the corpus kept growing to **32** as later mechanism-isolation
@@ -60,7 +60,7 @@ Counted once per specimen (not per note-mention).
 |---|---|---|
 | M8 | 8 | china_import_cedar_chest, swivit_space_age_pedestal_chair, logan_1914_tall_case_clock, jacobean_revival_tall_case_clock, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, victorian_barrel_back_parlor_chair, porter_balloon_canopy_chair |
 | M6 | 7 | renaissance_revival_sgabello, china_import_cedar_chest, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker |
-| M11 | 4 | william_mary_burl_escritoire_on_stand, hollywood_regency_cane_wing_chair, rococo_renaissance_carved_settee, porter_balloon_canopy_chair |
+| M11 | 4 | william_mary_burl_escritoire_on_stand, biedermeier_flame_walnut_secretary, rococo_renaissance_carved_settee, porter_balloon_canopy_chair |
 | M12 | 3 | china_import_cedar_chest, swivit_space_age_pedestal_chair, phoenix_chair_co_windsor_rocker |
 | M7 | 3 | peacock_emmanuelle_rattan_chair, barley_twist_rush_seat_rocker, rococo_revival_parlor_armchair |
 | M1 | 2 | golden_oak_curved_glass_china_cabinet, midcentury_craft_panel_back_rocker |
@@ -68,6 +68,7 @@ Counted once per specimen (not per note-mention).
 | M13 | 2 | victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair |
 | M12-adjacent | 1 | peacock_emmanuelle_rattan_chair |
 | M5 | 1 | barley_twist_rush_seat_rocker |
+| M18 | 1 | hollywood_regency_cane_wing_chair |
 | M14 | 1 | renaissance_revival_tufted_armchair |
 | M15 | 1 | modern_louis_xvi_repro_lounge_chair |
 | M16 | 1 | modern_louis_xvi_repro_lounge_chair |
@@ -97,10 +98,10 @@ Counted once per specimen (not per note-mention).
 | peacock_emmanuelle_rattan_chair | — | M12-adjacent M6 M7 M8 | — | #2 | Mid-Century Modern / American Modernism Loom (also commonly called: Loom, Weaving loom) | c. 1940–1950 | Moderate |
 | woodard_wrought_iron_patio_chair | — | M6 M8 | T1a | #4b #8 | Upholstered armchair (also commonly called: Arm chair, Easy chair) | post-1945 | Moderate |
 | barley_twist_rush_seat_rocker | — | M5 M6 M7 | T1a | #1 | Rocking chair | c. 1890–1920 | Moderate |
-| biedermeier_flame_walnut_secretary | — | — | — | #1 | Biedermeier Revival Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase) | Broadly late 19th to 20th century | Low |
+| biedermeier_flame_walnut_secretary | — | M11 | — | #1 | Biedermeier Revival Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase) | Broadly late 19th to 20th century | Low |
 | phoenix_chair_co_windsor_rocker | S001 | M12 M9 | — | #10 | Windsor chair (also commonly called: Spindle chair, Sack-back chair) | c. 1890–1920 | Moderate |
 | rococo_revival_parlor_armchair | — | M7 | T1a | #6 | Rococo Revival / Naturalistic Victorian Upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1850–1890 | Low |
-| hollywood_regency_cane_wing_chair | — | M11 | — | — | French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair) | c. 1900–1980 | Moderate |
+| hollywood_regency_cane_wing_chair | — | M18 | — | — | French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair) | c. 1900–1980 | Moderate |
 | victorian_barrel_back_parlor_chair | — | M8 | — | #1 #6 | Lounge chair (also commonly called: Easy chair, Club chair) | Broadly late 19th to 20th century | Low |
 | eastlake_oak_settee | — | — | — | — | Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa) | c. 1870–1890 | Moderate |
 | rococo_renaissance_carved_settee | — | M11 | — | — | French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa) | c. 1920–1925 | Moderate |

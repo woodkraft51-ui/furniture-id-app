@@ -911,7 +911,7 @@ const midcentury_craft_panel_back_rocker: ScanFixture = {
 // Metal furniture" alt-forms (brass_frame correctly PARKED in wood layer by shipped fix#1).
 const william_mary_burl_escritoire_on_stand: ScanFixture = {
   label: "william_mary_burl_escritoire_on_stand",
-  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. T2a: veneer now reads wood-primary → brass_frame 'Brass bed'/'Metal furniture' alt-forms suppressed; form is the synonymous 'Slant-front desk' (Escritoire now alt #1). The wrong-late date (M11/width-cap) is still open.",
+  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. T2a: veneer now reads wood-primary → brass_frame 'Brass bed'/'Metal furniture' alt-forms suppressed; form is the synonymous 'Slant-front desk' (Escritoire now alt #1). The wrong-late date (M11 revival late-pull; the 160y width-cap is a separate co-occurring root, not M11 itself) is still open.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1149,10 +1149,11 @@ const barley_twist_rush_seat_rocker: ScanFixture = {
 // the unsupported placeholder (width 100) is "tighter" than the evidence zone (width
 // 120). The catch-all blocks the real convergence on a width technicality. Plus the
 // fix#1 pre-1850 edge (max real floor 1800 < OPEN_FLOOR_MIN_YEAR 1850 → anchor bails),
-// same as the escritoire. The M11/convergence-override cluster (deferred) is now n=2.
+// same as the escritoire. M11 dating-convergence cluster, n=2 — the M11 tag now lives
+// in this fixture's note (it was comment-only before, so the tally undercounted it).
 const biedermeier_flame_walnut_secretary: ScanFixture = {
   label: "biedermeier_flame_walnut_secretary",
-  note: "Biedermeier flame-walnut secretary; genuine-period evidence → 'Biedermeier Revival' 1900–2000 (n=2 with escritoire). Mechanism: a qualifying 1800–1920 convergence zone (120y, under the cap) is blocked because the unsupported 1900–2000 placeholder is 'tighter' → refineDatingFromConvergence won't override. fix#1 pre-1850 edge again (floor 1800<1850). Form correct.",
+  note: "Biedermeier flame-walnut secretary; M11 dating-convergence failure (genuine-period evidence → 'Biedermeier Revival' 1900–2000; n=2 with escritoire). Mechanism: a qualifying 1800–1920 convergence zone (120y, under the cap) is blocked because the unsupported 1900–2000 placeholder is 'tighter' → refineDatingFromConvergence won't override. fix#1 pre-1850 edge again (floor 1800<1850). Form correct.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1319,7 +1320,7 @@ const hollywood_regency_cane_wing_chair: ScanFixture = {
   // Cane-paneled button-tufted wingback chair — Hollywood Regency / transitional
   // traditional, ~1960s–80s. Date c.1900–1980 OK (contains truth); form correct (Wing
   // chair); upholstery dating excellent (button-tufted, c.1955–1980, flagged as later
-  // reupholstery via foam_padding). TWO tracked items: (1) M11 keyword style-family
+  // reupholstery via foam_padding). TWO tracked items: (1) M18 keyword style-family
   // mis-attribution (n=3+) — "French Provincial" prose matched ["french","revival",
   // "provincial"] → "Louis XVI / French Neoclassical" → label "French Louis XVI
   // Revival" on a Hollywood Regency chair (mitigated: revival-wave reconciliation kept
@@ -1328,7 +1329,9 @@ const hollywood_regency_cane_wing_chair: ScanFixture = {
   // convergence override WORKED here (P2 adopted the 1900–1980 zone) because real
   // post-1900 layers exist (foam 1930–1960, lacquer 1920–1980) — unlike escritoire/
   // Biedermeier where the placeholder blocked the zone.
-  note: "Hollywood Regency cane wing chair (~1960s–80s); date c.1900–1980 OK, form correct, upholstery dating excellent (later reupholstery flagged). M11 keyword mis-attribution (French Provincial → 'French Louis XVI Revival', n=3+; date unharmed). cane→wicker overreach. CONTRAST: convergence override WORKED (real post-1900 layers).",
+  // TAG HISTORY: item (1) was originally filed as M11; split to M18 on 2026-05-27 —
+  // M11 is reserved for the dating-convergence late-pull, this is a label-only bug.
+  note: "Hollywood Regency cane wing chair (~1960s–80s); date c.1900–1980 OK, form correct, upholstery dating excellent (later reupholstery flagged). M18 keyword/style-family mis-attribution (French Provincial → 'French Louis XVI Revival', n=3+; wrong-LABEL only, date unharmed). cane→wicker overreach. CONTRAST: convergence override WORKED (real post-1900 layers).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
