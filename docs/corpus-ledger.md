@@ -12,13 +12,13 @@ which source you parse. This ledger is the single forward-reconciled view.
 | scheme | range | home | counts |
 |---|---|---|---|
 | **S-scan ids** | S001–S017 | inline tags in fixture notes + engine comments | the original 17 stress scans |
-| **Corpus fixtures** | 30 | `tests/fixtures/sessionScans.ts` | regression specimens (outgrew the S-series) |
+| **Corpus fixtures** | 32 | `tests/fixtures/sessionScans.ts` | regression specimens (outgrew the S-series) |
 | **Stress-test issues** | #1–#17 | `docs/stress-test-findings.md` | ranked fix queue (NOT scans) |
 | **Fix-queue / GitHub** | #1–#10, #111-b, … | fixture notes + commits | candidate + shipped fixes |
-| **Mechanisms / triage** | M1–M14, T1a–T2b | fixture notes | failure mechanisms + triage batches |
+| **Mechanisms / triage** | M1–M17, T1a–T2b | fixture notes | failure mechanisms + triage batches |
 
 The phantom "17 vs 28": **S-numbering froze at S017** (the original scan
-session) while the corpus kept growing to **30** as later mechanism-isolation
+session) while the corpus kept growing to **32** as later mechanism-isolation
 and control fixtures were authored without S-ids. The two counts were never
 meant to match.
 
@@ -65,12 +65,15 @@ Counted once per specimen (not per note-mention).
 | M7 | 3 | peacock_emmanuelle_rattan_chair, barley_twist_rush_seat_rocker, rococo_revival_parlor_armchair |
 | M1 | 2 | golden_oak_curved_glass_china_cabinet, midcentury_craft_panel_back_rocker |
 | M9 | 2 | logan_1914_tall_case_clock, phoenix_chair_co_windsor_rocker |
+| M13 | 2 | victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair |
 | M12-adjacent | 1 | peacock_emmanuelle_rattan_chair |
 | M5 | 1 | barley_twist_rush_seat_rocker |
 | M14 | 1 | renaissance_revival_tufted_armchair |
-| M13 | 1 | victorian_platform_rocker_armchair |
+| M15 | 1 | modern_louis_xvi_repro_lounge_chair |
+| M16 | 1 | modern_louis_xvi_repro_lounge_chair |
+| M17 | 1 | eastlake_renaissance_revival_rocker |
 
-## Per-fixture map (30)
+## Per-fixture map (32)
 
 | fixture | S | M | T | # | as-seen form | as-seen date | conf |
 |---|---|---|---|---|---|---|---|
@@ -102,6 +105,8 @@ Counted once per specimen (not per note-mention).
 | eastlake_oak_settee | — | — | — | — | Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa) | c. 1870–1890 | Moderate |
 | rococo_renaissance_carved_settee | — | M11 | — | — | French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa) | c. 1920–1925 | Moderate |
 | porter_balloon_canopy_chair | — | M11 M8 | — | — | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
-| renaissance_revival_tufted_armchair | — | M14 | — | — | Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table) | c. 1850–1920 | Moderate |
+| renaissance_revival_tufted_armchair | — | M14 | — | — | Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table) | c. 1850–1920 | Low |
 | victorian_platform_rocker_armchair | — | M13 | — | — | Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1875–1899 | Low |
+| modern_louis_xvi_repro_lounge_chair | — | M13 M15 M16 | — | — | Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair) | Broadly late 19th to 20th century | Low |
+| eastlake_renaissance_revival_rocker | — | M17 | — | — | Rocking chair | c. 1890–1920 | Moderate |
 
