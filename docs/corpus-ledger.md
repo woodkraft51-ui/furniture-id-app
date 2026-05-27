@@ -12,13 +12,13 @@ which source you parse. This ledger is the single forward-reconciled view.
 | scheme | range | home | counts |
 |---|---|---|---|
 | **S-scan ids** | S001–S017 | inline tags in fixture notes + engine comments | the original 17 stress scans |
-| **Corpus fixtures** | 29 | `tests/fixtures/sessionScans.ts` | regression specimens (outgrew the S-series) |
+| **Corpus fixtures** | 30 | `tests/fixtures/sessionScans.ts` | regression specimens (outgrew the S-series) |
 | **Stress-test issues** | #1–#17 | `docs/stress-test-findings.md` | ranked fix queue (NOT scans) |
 | **Fix-queue / GitHub** | #1–#10, #111-b, … | fixture notes + commits | candidate + shipped fixes |
 | **Mechanisms / triage** | M1–M14, T1a–T2b | fixture notes | failure mechanisms + triage batches |
 
 The phantom "17 vs 28": **S-numbering froze at S017** (the original scan
-session) while the corpus kept growing to **29** as later mechanism-isolation
+session) while the corpus kept growing to **30** as later mechanism-isolation
 and control fixtures were authored without S-ids. The two counts were never
 meant to match.
 
@@ -68,8 +68,9 @@ Counted once per specimen (not per note-mention).
 | M12-adjacent | 1 | peacock_emmanuelle_rattan_chair |
 | M5 | 1 | barley_twist_rush_seat_rocker |
 | M14 | 1 | renaissance_revival_tufted_armchair |
+| M13 | 1 | victorian_platform_rocker_armchair |
 
-## Per-fixture map (29)
+## Per-fixture map (30)
 
 | fixture | S | M | T | # | as-seen form | as-seen date | conf |
 |---|---|---|---|---|---|---|---|
@@ -102,4 +103,5 @@ Counted once per specimen (not per note-mention).
 | rococo_renaissance_carved_settee | — | M11 | — | — | French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa) | c. 1920–1925 | Moderate |
 | porter_balloon_canopy_chair | — | M11 M8 | — | — | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
 | renaissance_revival_tufted_armchair | — | M14 | — | — | Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table) | c. 1850–1920 | Moderate |
+| victorian_platform_rocker_armchair | — | M13 | — | — | Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1875–1899 | Low |
 

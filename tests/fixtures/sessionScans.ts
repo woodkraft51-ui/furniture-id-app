@@ -1625,9 +1625,10 @@ const renaissance_revival_tufted_armchair: ScanFixture = {
     "contains 'parlor table' (first list entry). Candidate fixes: (a) require the " +
     "table noun in the trigger; (b) guard all table forms when strong seating " +
     "clues are present and no table clue is. asSeen records the PRODUCTION (main) " +
-    "outcome the user saw: c.1850-1920 / Moderate / original_period — a reasonable " +
-    "read for a ~1865-1885 piece. DATING DIVERGENCE (fidelity gate ✗ on " +
-    "dateRange/dateFloor/confidence/finalStyleKind; formId still ✓): this branch's " +
+    "outcome: c.1850-1920 / original_period, frame conf Low (the 'Moderate' the " +
+    "user saw is the separate P1 display cap) — a reasonable read for a ~1865-1885 " +
+    "piece. DATING DIVERGENCE (fidelity gate ✗ on dateRange/dateFloor/" +
+    "finalStyleKind; confidence matches at Low; formId ✓): this branch's " +
     "engine returns c.1900-1920 / Low / late_period — floor pulled to 1900 and " +
     "relabeled 'late-period production'. The branch's dating-fix stack " +
     "(evidence-floor / pre-machine-termini-cap / style-prose-anchor) appears to " +
@@ -1678,8 +1679,87 @@ const renaissance_revival_tufted_armchair: ScanFixture = {
     dateRange: "c. 1850–1920",
     dateFloor: 1850,
     dateCeiling: 1920,
-    confidence: "Moderate",
+    confidence: "Low",
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair];
+const victorian_platform_rocker_armchair: ScanFixture = {
+  label: "victorian_platform_rocker_armchair",
+  note:
+    "Green-upholstered Victorian platform-rocker ARMCHAIR (swept-wing back, " +
+    "scrolled open arm brackets, reeded legs, claw feet; ~1875-1899). Form and " +
+    "date both land ~right (form_armchair; c.1875-1899) but for the WRONG reasons. " +
+    "M13 (new mechanism): an intrinsically-datable construction clue carries no " +
+    "date envelope, so the tightest signal is sidelined and confidence is " +
+    "under-credited. platform_rocker_mechanism is the highest-signal observation " +
+    "(conf 95, type construction) and its own prose says the mechanism was " +
+    "'patented and popularized in the 1870s-1890s' — a tight construction date " +
+    "band. But P4 weights it 0.580 with NO date annotation, and the Dating overlap " +
+    "shows construction joinery/fastener/toolmark all '0 contributing clues' -> " +
+    "Convergence zones: none. The date is instead reconstructed from the WEAKEST " +
+    "classes: style attribution (1810-1850, the original Empire period — wrong " +
+    "band), the 1860-1935 style_waves, and a broad cover-only upholstery signal, " +
+    "landing c.1875-1899 at Low frame confidence with zero convergence. Root " +
+    "cause: platform_rocker is wired only as a FORM keyword (engine.ts ~4961, the " +
+    "'Rocking chair' alternative); there is no construction-clue -> date-band " +
+    "mapping for platform_rocker_mechanism. This is the INVERSE of the " +
+    "revival-late-pull cluster (escritoire/settee): there a weak revival signal " +
+    "wrongly DOMINATES and pulls late; here a strong construction signal wrongly " +
+    "contributes NOTHING. A confidence-calibration defect, not a date-accuracy " +
+    "one. Candidate fix: give patent-era mechanism clues (platform_rocker_" +
+    "mechanism, etc.) a construction date envelope (~1870-1895) so they anchor " +
+    "dating and form a real convergence (construction + style_wave + upholstery), " +
+    "tightening the range and lifting the confidence cap. Secondary: spindle_back " +
+    "(78) and spindle_gallery (70) read like perception false-positives on a " +
+    "fully-upholstered platform rocker (no spindle structure; nothing else " +
+    "corroborates) — undated so harmless to the date, but they pollute the form " +
+    "alternatives.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion present, integrated into the chair frame with no separate loose cushion." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall upholstered backrest with swept-back wing-like upper sides, fully upholstered front and back surfaces." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has open wooden arms with scrolled volute bracket supports connecting arm rail to seat rail on both sides." },
+    { type: "form", clue: "platform_rocker_base", confidence: 68, description: "Chair sits on a platform rocker base — a flat sled-like lower platform with curved legs ending in claw feet, connected to the upper chair frame via a rocking mechanism. This is the defining platform rocker form, distinct from a standard rocking chair with curved runners." },
+    { type: "style", clue: "scrolled_volute_arm_bracket", confidence: 52, description: "Open scrolled volute (C-scroll or S-scroll) carved bracket visible on both arm supports, connecting the arm rail to the seat rail. This is a characteristic Victorian-era decorative element seen on platform rockers and parlor chairs c. 1870–1900." },
+    { type: "style", clue: "claw_foot", confidence: 52, description: "Carved claw-and-ball or paw feet visible on all four legs of the platform base. Feet appear to be carved wooden paw/claw forms, consistent with Victorian parlor furniture c. 1860–1900." },
+    { type: "style", clue: "reeded_leg", confidence: 52, description: "Front legs of the platform base show vertical reeding (parallel carved channels) on the leg shaft above the claw foot, consistent with Empire Revival and late Victorian decorative vocabulary." },
+    { type: "style", clue: "swept_wing_back", confidence: 52, description: "The upper backrest has swept outward wing-like extensions at the top corners, giving a wingback silhouette. The back curves gracefully from a wide top to a narrower lower section." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members including arms, back stiles, seat rail, and platform base appear to be solid wood throughout — no veneer or laminate visible at any exposed edge or wear point." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 60, description: "Frame wood shows deep reddish-brown color with warm undertones and fine grain visible at worn areas. Consistent with mahogany or walnut; the reddish-brown tone and fine texture lean toward mahogany. Could also be walnut stained darker. Moderate confidence given photo lighting." },
+    { type: "materials", clue: "wood_species_walnut_group", confidence: 45, description: "Frame wood could alternatively be black walnut — the deep brown with warm reddish tones is consistent with walnut. Cannot definitively distinguish from mahogany without closer inspection of grain pore structure." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "The green upholstery fabric shows a repeating small-scale leaf/vine pattern woven into the fabric surface. The pattern has high complexity with tonal variation (darker green pattern on lighter green ground), consistent with a jacquard-woven fabric. The pattern repeats with machine regularity. Could potentially be a damask (same-color reversible weave) but the leaf motif and tonal contrast suggest jacquard. Classified as jacquard_cover; damask_cover is the close alternative." },
+    { type: "upholstery", clue: "damask_cover", confidence: 50, description: "The green fabric could alternatively be a damask — single-color woven figured fabric with reversible pattern. The tonal leaf pattern is consistent with damask weave. Cannot definitively distinguish jacquard from damask without examining the reverse side. Jacquard_cover is the primary classification." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "No button tufting visible on seat or back surfaces. The upholstery is smooth and flat without dimples or buttons." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "The seat appears relatively flat without the crowned dome profile typical of hand-tied coil springs. However, the upholstery is intact and the seat construction cannot be confirmed without removing the cover. Classified as possible no-spring or drop-in unit seat." },
+    { type: "upholstery", clue: "refinished_upholstery", confidence: 50, description: "The green jacquard/damask fabric appears relatively clean and unworn compared to the aged wooden frame with visible scratches and finish wear. The fabric shows no significant soiling, fading, or period-consistent wear. This strongly suggests the chair has been reupholstered at some point after original manufacture, likely within the last few decades." },
+    { type: "condition", clue: "frame_wear", confidence: 54, description: "Visible scratches, scuffs, and finish wear on the arm surfaces, seat rail, and platform base. Wear patterns are consistent with age and use. Some areas show lighter wood color beneath the finish at high-contact points." },
+    { type: "condition", clue: "upholstery_debris", confidence: 54, description: "Lint, dust, and small debris particles visible on the upholstered seat and arm areas, consistent with normal use." },
+    { type: "construction", clue: "platform_rocker_mechanism", confidence: 95, description: "The chair uses a platform rocker construction: the upper chair body (seat, back, arms) is mounted on a separate lower platform base via a spring or pivot mechanism that allows rocking motion without curved runners. The platform base has its own legs with claw feet. This mechanism was patented and popularized in the 1870s–1890s." },
+    { type: "construction", clue: "open_carved_arm_bracket", confidence: 96, description: "The arm supports are open carved scrolled brackets rather than solid panels or turned spindles. The scroll/volute form is cut through the wood creating an open decorative silhouette. Visible on both sides from front and side views." },
+    { type: "construction", clue: "upholstered_back_exterior", confidence: 96, description: "The back of the chair is fully upholstered on the exterior surface with the same green fabric, with a welt/piping trim at the edges. This is visible in the back view image." },
+    { type: "construction", clue: "welt_cord_trim", confidence: 90, description: "Welt cord (piping) trim visible along the edges of the back upholstery panel, creating a defined border between the fabric and the wooden frame. Consistent with professional upholstery work." },
+    { type: "style", clue: "victorian_platform_rocker_style", confidence: 52, description: "The combination of platform rocker base, scrolled open arm brackets, claw feet, reeded legs, and swept wingback silhouette is characteristic of American Victorian parlor platform rockers, c. 1875–1900. This form was mass-produced by numerous American furniture factories during this period." },
+    { type: "style", clue: "empire_revival_influence", confidence: 52, description: "The swept-back wing silhouette, scrolled arm supports, and platform base with claw feet show some Empire Revival influence, which was common in American Victorian parlor furniture of the 1870s–1890s. However, the overall form is more specifically a platform rocker type than a pure Empire Revival piece." },
+    { type: "hardware", clue: "claw_foot_carved", confidence: 62, description: "All four feet of the platform base are carved wooden claw/paw forms. The front feet show more detail with visible carved toe/claw articulation. The rear feet are also claw forms. These are integral carved wood, not applied metal hardware." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "No maker label, stamp, stencil, or mark visible in any of the provided images." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back panel" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "structure", clue: "spindle_back", confidence: 78, description: "Spindles are visible in the back or side rail." },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "structure", clue: "colonial_georgian_revival_upholstered_armchair_pattern", confidence: 86, description: "Fluted or reeded legs, exposed curved arm supports, and full upholstery form a Colonial / Georgian Revival upholstered armchair pattern." },
+    { type: "form", clue: "wingback_form", confidence: 80, description: "Structural side wings extending forward from upper back indicate wing-chair form. Canonical: form_wing_chair." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Colonial / Georgian Revival upholstered armchair",
+    display: "Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1875–1899",
+    dateFloor: 1875,
+    dateCeiling: 1899,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair];
