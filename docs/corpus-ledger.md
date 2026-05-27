@@ -96,7 +96,7 @@ Counted once per specimen (not per note-mention).
 | jacobean_revival_tall_case_clock | — | M8 | — | #3 #8 | Tudor Revival / Jacobean Revival / Elizabethan Revival Trunk (also commonly called: travel trunk, steamer trunk) | c. 1920–1925 | Moderate |
 | midcentury_craft_panel_back_rocker | — | M1 | — | #10 #6 | Rocking chair | c. 1930–1959 | Low |
 | william_mary_burl_escritoire_on_stand | — | M11 | T2a | #1 | Late 20th-Century Formal Traditional Slant-front desk (also commonly called: Slant-front desk, Slant-lid desk) | Broadly late 19th to 20th century | Low |
-| peacock_emmanuelle_rattan_chair | — | M12-adjacent M6 M7 M8 | — | #2 | Mid-Century Streamlined Wicker Loom (also commonly called: Loom, Weaving loom) | c. 1920–1930 | Low |
+| peacock_emmanuelle_rattan_chair | — | M12-adjacent M6 M7 M8 | — | #2 | Mid-Century Modern / American Modernism Loom (also commonly called: Loom, Weaving loom) | c. 1940–1950 | Moderate |
 | woodard_wrought_iron_patio_chair | — | M6 M8 | T1a | #4b #8 | Upholstered armchair (also commonly called: Arm chair, Easy chair) | post-1945 | Moderate |
 | barley_twist_rush_seat_rocker | — | M5 M6 M7 | T1a | #1 | Rocking chair | c. 1890–1920 | Moderate |
 | biedermeier_flame_walnut_secretary | — | M11 | — | #1 | Biedermeier Revival Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase) | Broadly late 19th to 20th century | Low |
@@ -104,18 +104,18 @@ Counted once per specimen (not per note-mention).
 | rococo_revival_parlor_armchair | — | M7 | T1a | #6 | Rococo Revival / Naturalistic Victorian Upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1850–1890 | Low |
 | hollywood_regency_cane_wing_chair | — | M18 | — | — | French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair) | c. 1900–1980 | Moderate |
 | victorian_barrel_back_parlor_chair | — | M8 | — | #1 #6 | Lounge chair (also commonly called: Easy chair, Club chair) | Broadly late 19th to 20th century | Low |
-| eastlake_oak_settee | — | — | — | — | Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa) | c. 1870–1895 | Moderate |
+| eastlake_oak_settee | — | — | — | — | Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa) | c. 1870–1890 | Moderate |
 | rococo_renaissance_carved_settee | — | M11 | — | — | French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa) | c. 1920–1925 | Moderate |
 | porter_balloon_canopy_chair | — | M11 M8 | — | — | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
 | renaissance_revival_tufted_armchair | — | M14 | — | — | Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table) | c. 1850–1920 | Low |
 | victorian_platform_rocker_armchair | — | M13 | — | — | Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1875–1899 | Low |
 | modern_louis_xvi_repro_lounge_chair | — | M13 M15 M16 | — | — | Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair) | Broadly late 19th to 20th century | Low |
 | eastlake_renaissance_revival_rocker | — | M17 | — | — | Rocking chair | c. 1890–1920 | Moderate |
-| wicker_rattan_barrel_lounge_chair | — | M13 | — | #15 #18 | Mid-Century Streamlined Wicker Lounge chair (also commonly called: Easy chair, Club chair) | Broad, not tightly dated | Low |
+| wicker_rattan_barrel_lounge_chair | — | M13 | — | #15 #18 | Lounge chair (also commonly called: Easy chair, Club chair) | Broad, not tightly dated | Low |
 | french_bistro_iron_faux_stone_table | — | M13 | — | #1 #11 | Louis XVI / French Neoclassical Bistro table (also commonly called: Bistro table, Bistro café table) | c. 1900 onward (early-to-mid 20th century or later) | Low |
 | painted_gilt_rococo_revival_settee | — | — | — | #5 #9 | Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa) | c. 1920–1930 | Moderate |
 | victorian_spindle_gallery_parlor_rocker | — | — | — | #17 | Rocking chair | c. 1890–1920 | Moderate |
-| hollywood_regency_rococo_lounge_chair | — | M13 | — | #3 #5 #9 | French Provincial / Rococo Domestic Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
-| eastlake_spindle_gallery_parlor_settee | — | — | — | — | Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa) | c. 1890–1920 | Moderate |
+| hollywood_regency_rococo_lounge_chair | — | M13 | — | #3 #5 #9 | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
+| eastlake_spindle_gallery_parlor_settee | — | — | — | — | Settee (also commonly called: Settee, Small sofa) | c. 1890–1920 | Moderate |
 | midcentury_neoclassical_cane_lounge_chair | — | M12 M13-class M16 | — | #5 | Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair) | c. 1900–2000 | Low |
 

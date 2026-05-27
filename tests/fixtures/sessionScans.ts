@@ -982,8 +982,7 @@ const william_mary_burl_escritoire_on_stand: ScanFixture = {
 // Wicker clues are CORRECT here (it IS wicker — not the woven-on-solid-wood M6).
 const peacock_emmanuelle_rattan_chair: ScanFixture = {
   label: "peacock_emmanuelle_rattan_chair",
-  note: "[Fix 3 — STYLE RESOLVED, date path B: now attributes 'Mid-Century Streamlined Wicker' via the positive mid_century_streamlined_wicker structural clue (routed to style_family_mid_century_wicker). Per the label-now/date-path-B decision the wicker family carries no period envelope, so the old MCM 1940–1950 anchor drops and the date falls to c.1920–1930 (Low) — still the false-positive-lloyd-loom wood-date artifact, to be corrected in path B. STILL UNFIXED here (out of scope): the chair→'Loom' FORM misclass (M8) and the hallucinated Lloyd Flanders mark, both from the 'Lloyd loom' token.] " +
-    "Peacock/Emmanuelle rattan chair (~1960s–80s) → 'Loom' c.1940–1950. M7→M6: NEGATED lloyd_loom_paper_fiber (0.910, 'NOT Lloyd loom') consumed as positive drives the 1920–1950 wood date. M8 chair→loom + M12-adjacent hallucinated Lloyd Flanders mark (both from the 'Lloyd loom' token; word-boundary fix can't catch a real-word wrong-entity match). fix#2 held.",
+  note: "Peacock/Emmanuelle rattan chair (~1960s–80s) → 'Loom' c.1940–1950. M7→M6: NEGATED lloyd_loom_paper_fiber (0.910, 'NOT Lloyd loom') consumed as positive drives the 1920–1950 wood date. M8 chair→loom + M12-adjacent hallucinated Lloyd Flanders mark (both from the 'Lloyd loom' token; word-boundary fix can't catch a real-word wrong-entity match). fix#2 held.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1017,12 +1016,12 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
   ],
   asSeen: {
     formId: "Loom",
-    display: "Mid-Century Streamlined Wicker Loom (also commonly called: Loom, Weaving loom)",
+    display: "Mid-Century Modern / American Modernism Loom (also commonly called: Loom, Weaving loom)",
     finalStyleKind: "original_period",
-    dateRange: "c. 1920–1930",
-    dateFloor: 1920,
-    dateCeiling: 1930,
-    confidence: "Low",
+    dateRange: "c. 1940–1950",
+    dateFloor: 1940,
+    dateCeiling: 1950,
+    confidence: "Moderate",
   },
 };
 
@@ -1477,11 +1476,11 @@ const eastlake_oak_settee: ScanFixture = {
   ],
   asSeen: {
     formId: "Settee",
-    display: "Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa)",
+    display: "Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa)",
     finalStyleKind: "original_period",
-    dateRange: "c. 1870–1895",
+    dateRange: "c. 1870–1890",
     dateFloor: 1870,
-    dateCeiling: 1895,
+    dateCeiling: 1890,
     confidence: "Moderate",
   },
 };
@@ -1905,14 +1904,6 @@ const eastlake_renaissance_revival_rocker: ScanFixture = {
 const wicker_rattan_barrel_lounge_chair: ScanFixture = {
   label: "wicker_rattan_barrel_lounge_chair",
   note:
-    "[Fix 3 — STYLE RESOLVED, date path B: now attributes 'Mid-Century Streamlined " +
-    "Wicker' via the positive mid_century_streamlined_wicker structural clue. The other " +
-    "three wicker traditions are authored but INERT (inert_until_wired) and the family " +
-    "is requires_structural_routing, so the self-negating victorian_curlicue_wicker / " +
-    "bar_harbor_style_wicker clues no longer mis-steer and incidental wicker mentions on " +
-    "other pieces (e.g. the iron bistro table) don't auto-route to wicker. Dating still " +
-    "deferred to path B — date stays 'Broad, not tightly dated' (the wicker-era dating " +
-    "gap below is unchanged).] " +
     "Dark-painted wicker/rattan barrel-back lounge chair (loose ticking-stripe " +
     "cushion). Form lounge_chair CORRECT (lounge_chair_form conf 78 fired and won — " +
     "posture path working, contrast the Louis XVI repro where it didn't fire). But " +
@@ -1969,7 +1960,7 @@ const wicker_rattan_barrel_lounge_chair: ScanFixture = {
   ],
   asSeen: {
     formId: "Lounge chair",
-    display: "Mid-Century Streamlined Wicker Lounge chair (also commonly called: Easy chair, Club chair)",
+    display: "Lounge chair (also commonly called: Easy chair, Club chair)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: null,
@@ -2181,11 +2172,6 @@ const victorian_spindle_gallery_parlor_rocker: ScanFixture = {
 const hollywood_regency_rococo_lounge_chair: ScanFixture = {
   label: "hollywood_regency_rococo_lounge_chair",
   note:
-    "[RESOLVED — Fix 2: now attributes the Rococo Revival family -> 'French Provincial / " +
-    "Rococo Domestic Revival (revival_wave)' (date-consistent c.1920-1930). The HR cue + " +
-    "cabriole synthesizes rococo_revival_pattern, breaking the 3-way 0.82 tie away from " +
-    "Louis XVI (the least-apt winner). Date left unchanged per owner (label-only); the " +
-    "HR-glam wave (1930-1970) is out of date-range, hence the French Provincial wave.] " +
     "Cream/gold painted carved-wood lounge chair, Rococo Revival / Louis XV " +
     "vocabulary with Hollywood Regency execution (pierced acanthus crest, cabriole " +
     "scroll-foot legs, tufted jacquard, foam) — a mid-century (c.1950s-1980s) " +
@@ -2237,8 +2223,8 @@ const hollywood_regency_rococo_lounge_chair: ScanFixture = {
   ],
   asSeen: {
     formId: "Lounge chair",
-    display: "French Provincial / Rococo Domestic Revival Lounge chair (also commonly called: Easy chair, Club chair)",
-    styleContext: "Rococo Revival / Naturalistic Victorian",
+    display: "French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair)",
+    styleContext: "Louis XVI / French Neoclassical",
     finalStyleKind: "revival_wave",
     dateRange: "c. 1920–1930",
     dateFloor: 1920,
@@ -2250,9 +2236,6 @@ const hollywood_regency_rococo_lounge_chair: ScanFixture = {
 const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
   label: "eastlake_spindle_gallery_parlor_settee",
   note:
-    "[RESOLVED — Fix 1 (Eastlake-from-ornament): now attributes Eastlake / Aesthetic " +
-    "Movement (original_period) from the >=2-ornament-category package; previously fell " +
-    "back to 'Spindle Gallery' context_only.] " +
     "Eastlake / Aesthetic Movement Victorian parlor SETTEE (turned spindle gallery + " +
     "ball finials, fan/sunburst carved medallions, walnut; ~1870-1895). Form settee " +
     "CORRECT — armchair_form self-negated ('rather than a single armchair') and was " +
@@ -2307,9 +2290,9 @@ const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
   ],
   asSeen: {
     formId: "Settee",
-    display: "Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa)",
-    styleContext: "Eastlake / Aesthetic Movement",
-    finalStyleKind: "original_period",
+    display: "Settee (also commonly called: Settee, Small sofa)",
+    styleContext: "Spindle Gallery",
+    finalStyleKind: "context_only",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,

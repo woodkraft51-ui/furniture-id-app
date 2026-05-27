@@ -8068,51 +8068,7 @@ if (missing.label_photo) {
     const styleDescriptions = (frameDigest.observations || [])
       .filter((o) => o.type !== "label")
       .map((o) => o.description || "");
-    // Eastlake/Aesthetic attribution from ORNAMENT (authoring-gaps A1 + C). The P0
-    // model emits granular Eastlake ornament clues but not the
-    // victorian_eastlake_pattern that STRUCTURAL_PATTERN_FAMILY routes to the family,
-    // so an ornament-only Eastlake piece fell back to "Spindle Gallery". Synthesize
-    // that pattern when >=2 DISTINCT Eastlake-ornament categories co-occur (spindle
-    // gallery variants collapse to one) — the "not from spindle alone" gate: a lone
-    // spindle gallery (Windsor/ladderback/generic parlor) must NOT fire Eastlake.
-    const EASTLAKE_ORNAMENT_CATEGORY: Record<string, string> = {
-      spindle_gallery: "spindle",
-      turned_spindle_gallery: "spindle",
-      carved_medallion_back: "medallion_sunburst",
-      fan_sunburst_carving: "medallion_sunburst",
-      sunburst_fan_medallion: "medallion_sunburst",
-      chamfered_top_corners: "chamfer",
-      chamfered_edges: "chamfer",
-      incised_geometric_carving: "incised_geometric",
-      eastlake_hardware: "eastlake_hardware",
-    };
-    const eastlakeOrnamentCats = new Set(
-      (frameDigest.observations || [])
-        .filter((o) => !o.negated && o.clue && EASTLAKE_ORNAMENT_CATEGORY[o.clue])
-        .map((o) => EASTLAKE_ORNAMENT_CATEGORY[o.clue as string])
-    );
-    const synthesizedPatternKeys: string[] = [];
-    if (eastlakeOrnamentCats.size >= 2) synthesizedPatternKeys.push("victorian_eastlake_pattern");
-
-    // Hollywood Regency Rococo-Glam (Fix 2). A structured hollywood_regency_style_cue on a
-    // Rococo / Louis-XV form (cabriole) is a mid-century Rococo-glam reproduction. Route to
-    // Rococo Revival (rococo_revival_pattern already maps there in STRUCTURAL_PATTERN_FAMILY)
-    // so the generic louis/french/provincial prose tokens can't win the 3-way 0.82 family
-    // tie — Louis XVI was the least apt of the three. Rule 3 then resolves the
-    // date-appropriate Rococo Revival revival-wave (French Provincial / Rococo Domestic
-    // Revival, 1920-1965, for this late-1920s piece). Gate requires the EXPLICIT HR cue:
-    // prose-only HR pieces and genuine neoclassical reproductions lack it and are untouched.
-    const styleObs = frameDigest.observations || [];
-    const hasNonNegatedClue = (clue: string) =>
-      styleObs.some((o) => o.clue === clue && !o.negated);
-    if (hasNonNegatedClue("hollywood_regency_style_cue") && hasNonNegatedClue("cabriole_leg")) {
-      synthesizedPatternKeys.push("rococo_revival_pattern");
-    }
-
-    const styleClueKeys = synthesizedPatternKeys.length
-      ? [...(frameDigest.clue_keys || []), ...synthesizedPatternKeys]
-      : frameDigest.clue_keys || [];
-    const styleRanked = attributeStyle(styleClueKeys, styleDescriptions);
+    const styleRanked = attributeStyle(frameDigest.clue_keys || [], styleDescriptions);
 
     // Distinctiveness gate (2026-05-20): only attributions that rest on real
     // style evidence (a distinctive token or a structured clue key) are

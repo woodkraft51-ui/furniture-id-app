@@ -136,21 +136,6 @@ export interface StyleFamilyEntry extends CanonicalEntry {
   assessment_layer: "style_and_waves";
   canonical_source_aliases?: string[];
   maker_associations?: StyleFamilyMakerAssociation[];
-  // When true the family is authored (exists for documentation + future wiring)
-  // but is EXCLUDED from the attributeStyle token index, so it cannot win or
-  // surface as an attribution. Used for the wicker traditions authored alongside
-  // Mid-Century Streamlined Wicker but not yet wired (Fix 3): their only corpus
-  // signals self-negate, and their generic name tokens (wicker/bar/harbor/
-  // victorian/curlicue) would otherwise mis-match unrelated pieces. Drop this
-  // flag (and add a STRUCTURAL_PATTERN_FAMILY route) when path B wires them.
-  inert_until_wired?: boolean;
-  // When true the family attributes ONLY when its structural-pattern clue fired
-  // (it is in STRUCTURAL_PATTERN_FAMILY and was routed), never off loose alias
-  // tokens scraped from observation prose. Used by Mid-Century Streamlined Wicker
-  // (Fix 3) so a piece must carry the mid_century_streamlined_wicker structural
-  // clue to be called wicker — incidental "Not wicker" comparisons or a
-  // hallucinated woven_body on a non-wicker piece must not auto-route here.
-  requires_structural_routing?: boolean;
 }
 
 /**
@@ -627,14 +612,14 @@ export const STYLE_FAMILIES: StyleFamilyEntry[] = [
     hard_negative_authority: 4,
     indicator_text: "Rectilinear forms, incised lines, shallow carving, geometric ornament, turned spindles, brackets, chamfers, visible construction logic; c.1870-1890.",
     notes: "Per Styles_and_Waves.docx style #13. 4/4 per D-SW41-6. canonical_source_aliases per D-SW41-11 (slash-separated canonical name). family_description defensible-default. maker_associations: [] per D-SW41-9.",
-    name: "Eastlake / Aesthetic Movement",
+    name: "Eastlake / Modern Gothic",
     family_description: "The rectilinear reform style of the late 19th century — incised lines, shallow geometric carving, and honest, visible construction logic.",
-    core_visual_identity: "Rectilinear late-Victorian design vocabulary: incised line carving, shallow geometric relief, chamfered edges, turned spindles, spindle galleries, pierced or jigsaw-cut gallery panels, brackets, trestle-like supports, sunburst/fan medallions, stylized floral or leaf incising, ebonized grounds, gilt-incised accents. Spindle galleries plus angular incised ornament are a positive attribution package, not hardware-only Eastlake. Lower relief than Rococo or Renaissance Revival.",
+    core_visual_identity: "Rectilinear forms, incised lines, shallow carving, geometric ornament, turned spindles, brackets, chamfers, visible construction logic, lower relief than Rococo or Renaissance Revival.",
     period_associations: [
-      { period_label: "Original Eastlake / Aesthetic period", date_floor: 1870, date_ceiling: 1895 },
+      { period_label: "Original Eastlake period", date_floor: 1870, date_ceiling: 1890 },
     ],
     original_emergence_summary: "Original emergence: c. 1870",
-    original_conclusion_summary: "Original conclusion: c. 1895",
+    original_conclusion_summary: "Original conclusion: c. 1890",
     assessment_layer: "style_and_waves",
     canonical_source_aliases: ["Modern Gothic", "Eastlake"],
     maker_associations: [],
@@ -813,87 +798,6 @@ export const STYLE_FAMILIES: StyleFamilyEntry[] = [
     original_conclusion_summary: "Conclusion as dominant wave: c. 1970, with later revivals",
     assessment_layer: "style_and_waves",
     canonical_source_aliases: ["American Modernism", "Mid-Century Modern"],
-    maker_associations: [],
-  },
-  // Wicker / rattan material traditions (authoring-gaps.md A3). Fix 3 authors all
-  // four as separate families but LABEL-ONLY: period_associations are deferred to
-  // path B (the "wicker-era dating gap" — tradition date bands live only in clue
-  // PROSE and reach no dating layer; Lloyd loom's 1917 hard floor is likewise path B).
-  // Only Mid-Century Streamlined Wicker is wired into STRUCTURAL_PATTERN_FAMILY this
-  // pass — it is the sole tradition with a POSITIVE corpus signal. The other three
-  // appear in the corpus only as SELF-NEGATING clues ("does NOT exhibit Bar Harbor",
-  // "NO curlicues") that the M15 absent-attribute negation gap lets enter as false
-  // positives; wiring them must wait for that negation fix so they do not mis-steer.
-  {
-    id: "style_family_mid_century_wicker",
-    category: "style_family",
-    requires_structural_routing: true,
-    positive_authority: 4,
-    hard_negative_authority: 4,
-    indicator_text: "Streamlined post-war wicker — simplified curves, barrel lounge, peacock/fan backs, egg/basket silhouettes, low visual weight, imported rattan/cane/reed; c.1945-1970 (dating path B).",
-    notes: "Wicker/rattan tradition per authoring-gaps.md A3 (mid-century streamlined wicker). Fix 3: LABEL-only, period_associations deferred to path B. Routed via STRUCTURAL_PATTERN_FAMILY[mid_century_streamlined_wicker] — the only positively-attested wicker tradition in the corpus (peacock + barrel-lounge fixtures).",
-    name: "Mid-Century Streamlined Wicker",
-    family_description: "The post-war streamlined wicker idiom — simplified barrel, peacock, and basket silhouettes in imported rattan, cane, and reed, with far less ornament than Victorian wicker.",
-    core_visual_identity: "Simplified rounded curves, barrel-back lounge chairs, oversized peacock/fan backs, egg and basket forms, open diamond or close weave, low visual weight; often imported rattan, cane, or reed.",
-    period_associations: [],
-    original_emergence_summary: "Original emergence: dating deferred to path B",
-    original_conclusion_summary: "Conclusion: dating deferred to path B",
-    assessment_layer: "style_and_waves",
-    canonical_source_aliases: ["Mid-Century Wicker", "Streamlined Wicker"],
-    maker_associations: [],
-  },
-  {
-    id: "style_family_victorian_curlicue_wicker",
-    inert_until_wired: true,
-    category: "style_family",
-    positive_authority: 4,
-    hard_negative_authority: 4,
-    indicator_text: "Dense ornamental Victorian wicker — heavy scrolls, curlicues, hearts, fans, looped crests, skirted aprons, rolled arms, photo-frame insets, elaborate showy parlor/porch backs; c.1880-1900 (dating path B).",
-    notes: "Wicker/rattan tradition per authoring-gaps.md A3 (Victorian curlicue wicker). Fix 3: authored LABEL-only and UNWIRED — its only corpus instances self-negate ('NO scrolls, curlicues visible') and enter as false positives via the M15 absent-attribute negation gap. Wire into STRUCTURAL_PATTERN_FAMILY once that negation fix lands and a genuine positive fixture exists. period_associations deferred to path B.",
-    name: "Victorian Curlicue Wicker",
-    family_description: "The dense, showy Victorian wicker idiom — heavy scrollwork, curlicues, hearts, and fans on elaborate parlor and porch furniture.",
-    core_visual_identity: "Dense ornamental weave, heavy scrolls and curlicues, hearts, fans, looped crests, skirted aprons, rolled arms, photo-frame insets, elaborate showy backs.",
-    period_associations: [],
-    original_emergence_summary: "Original emergence: dating deferred to path B",
-    original_conclusion_summary: "Conclusion: dating deferred to path B",
-    assessment_layer: "style_and_waves",
-    canonical_source_aliases: ["Victorian Wicker", "Curlicue Wicker"],
-    maker_associations: [],
-  },
-  {
-    id: "style_family_bar_harbor_wicker",
-    inert_until_wired: true,
-    category: "style_family",
-    positive_authority: 4,
-    hard_negative_authority: 4,
-    indicator_text: "Open airy geometric wicker — diamond/crisscross lattice, braided borders, restrained ornament, rectilinear or gently rounded porch-resort frames, often painted; c.1900-1925 (dating path B).",
-    notes: "Wicker/rattan tradition per authoring-gaps.md A3 (Bar Harbor wicker). Fix 3: authored LABEL-only and UNWIRED — its only corpus instances self-negate ('does NOT exhibit the Bar Harbor weave') and enter as false positives via the M15 absent-attribute negation gap. Wire into STRUCTURAL_PATTERN_FAMILY once that negation fix lands and a genuine positive fixture exists. period_associations deferred to path B.",
-    name: "Bar Harbor Wicker",
-    family_description: "The open, airy resort-porch wicker idiom — geometric lattice weave, braided borders, and restrained ornament, often painted.",
-    core_visual_identity: "Open airy geometric weave, diamond and crisscross lattice, braided borders, restrained ornament, rectilinear or gently rounded frames, porch-resort character, often painted.",
-    period_associations: [],
-    original_emergence_summary: "Original emergence: dating deferred to path B",
-    original_conclusion_summary: "Conclusion: dating deferred to path B",
-    assessment_layer: "style_and_waves",
-    canonical_source_aliases: ["Bar Harbor"],
-    maker_associations: [],
-  },
-  {
-    id: "style_family_lloyd_loom",
-    inert_until_wired: true,
-    category: "style_family",
-    positive_authority: 4,
-    hard_negative_authority: 4,
-    indicator_text: "Machine-woven paper-fiber loom — twisted paper-and-wire woven over a frame, smoother and more uniform than hand-woven reed/rattan, continuous sheet-like panels; post-1917 (1917 hard floor + dating path B).",
-    notes: "Wicker/rattan tradition per authoring-gaps.md A3 (Lloyd loom paper fiber). Fix 3: authored LABEL-only and UNWIRED — its only corpus instance self-negates ('not uniform extruded paper-fiber strands of Lloyd loom') and enters as a false positive via the M15 absent-attribute negation gap. Wire into STRUCTURAL_PATTERN_FAMILY once that negation fix lands and a genuine positive fixture exists. period_associations (incl. the 1917 hard floor) deferred to path B.",
-    name: "Lloyd Loom",
-    family_description: "The machine-woven paper-fiber loom idiom — twisted paper-and-wire woven over a frame, smoother and more uniform than hand-woven reed or rattan.",
-    core_visual_identity: "Machine-woven paper fiber or twisted paper-and-wire loom over a frame; smoother, more uniform, continuous sheet-like panels distinct from hand-woven reed or rattan.",
-    period_associations: [],
-    original_emergence_summary: "Original emergence: dating deferred to path B",
-    original_conclusion_summary: "Conclusion: dating deferred to path B",
-    assessment_layer: "style_and_waves",
-    canonical_source_aliases: ["Lloyd Loom Wicker"],
     maker_associations: [],
   },
   {

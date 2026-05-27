@@ -170,8 +170,8 @@ export const CANONICAL_VOCABULARY = {
     },
     "unclassifiedKeys": [],
     "crosswalk": {
-      "mapped": 161,
-      "unmapped": 94
+      "mapped": 159,
+      "unmapped": 96
     }
   },
   "evidence": {
@@ -13631,18 +13631,6 @@ export const CANONICAL_VOCABULARY = {
         "score": 1
       }
     ],
-    "bar_harbor_style_wicker": [
-      {
-        "taxonomyId": "style_family_bar_harbor_wicker",
-        "lib": "styleFamilies",
-        "score": 1
-      },
-      {
-        "taxonomyId": "style_family_mid_century_wicker",
-        "lib": "styleFamilies",
-        "score": 0.5
-      }
-    ],
     "brass_frame": [
       {
         "taxonomyId": "joinery_category_frame",
@@ -14323,13 +14311,13 @@ export const CANONICAL_VOCABULARY = {
     ],
     "mid_century_streamlined_wicker": [
       {
-        "taxonomyId": "style_family_mid_century_wicker",
-        "lib": "styleFamilies",
-        "score": 1
-      },
-      {
         "taxonomyId": "hardware_type_mid_century_modern_hardware",
         "lib": "hardware",
+        "score": 0.5
+      },
+      {
+        "taxonomyId": "style_family_mid_century_modern",
+        "lib": "styleFamilies",
         "score": 0.5
       }
     ],
@@ -14892,16 +14880,9 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       },
       {
-        "taxonomyId": "style_family_victorian_curlicue_wicker",
+        "taxonomyId": "style_revival_wave_late_victorian_jacobean_elizabethan_revival",
         "lib": "styleFamilies",
         "score": 0.5
-      }
-    ],
-    "victorian_curlicue_wicker": [
-      {
-        "taxonomyId": "style_family_victorian_curlicue_wicker",
-        "lib": "styleFamilies",
-        "score": 1
       }
     ],
     "victorian_eastlake_pattern": [
@@ -15355,6 +15336,7 @@ export const CANONICAL_VOCABULARY = {
     "arched_glazed_dial_door",
     "armchair_form",
     "backrest_present",
+    "bar_harbor_style_wicker",
     "barley_twist",
     "barrel_tub_back",
     "bent_molded_plywood",
@@ -15435,6 +15417,7 @@ export const CANONICAL_VOCABULARY = {
     "tubular_steel",
     "turned_finials_on_posts",
     "turned_spindle_gallery",
+    "victorian_curlicue_wicker",
     "visible_text",
     "weld_repair_visible",
     "wicker_paint_buildup",
