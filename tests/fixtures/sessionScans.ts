@@ -911,7 +911,7 @@ const midcentury_craft_panel_back_rocker: ScanFixture = {
 // Metal furniture" alt-forms (brass_frame correctly PARKED in wood layer by shipped fix#1).
 const william_mary_burl_escritoire_on_stand: ScanFixture = {
   label: "william_mary_burl_escritoire_on_stand",
-  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. T2a: veneer now reads wood-primary → brass_frame 'Brass bed'/'Metal furniture' alt-forms suppressed; form is the synonymous 'Slant-front desk' (Escritoire now alt #1). The wrong-late date (M11/width-cap) is still open.",
+  note: "W&M burl escritoire-on-stand; genuine-early evidence MISDATED as 'Late 20th-C Formal Traditional' 1900–2000. Root: 7-layer convergence (1650–1920) rejected by 160y width cap + revival-wave late-pull. fix#1 edge: floor 1840 < OPEN_FLOOR_MIN_YEAR 1850 → can't help pre-1850. T2a: veneer now reads wood-primary → brass_frame 'Brass bed'/'Metal furniture' alt-forms suppressed; form is the synonymous 'Slant-front desk' (Escritoire now alt #1). The wrong-late date (M11 revival late-pull; the 160y width-cap is a separate co-occurring root, not M11 itself) is still open.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1149,10 +1149,11 @@ const barley_twist_rush_seat_rocker: ScanFixture = {
 // the unsupported placeholder (width 100) is "tighter" than the evidence zone (width
 // 120). The catch-all blocks the real convergence on a width technicality. Plus the
 // fix#1 pre-1850 edge (max real floor 1800 < OPEN_FLOOR_MIN_YEAR 1850 → anchor bails),
-// same as the escritoire. The M11/convergence-override cluster (deferred) is now n=2.
+// same as the escritoire. M11 dating-convergence cluster, n=2 — the M11 tag now lives
+// in this fixture's note (it was comment-only before, so the tally undercounted it).
 const biedermeier_flame_walnut_secretary: ScanFixture = {
   label: "biedermeier_flame_walnut_secretary",
-  note: "Biedermeier flame-walnut secretary; genuine-period evidence → 'Biedermeier Revival' 1900–2000 (n=2 with escritoire). Mechanism: a qualifying 1800–1920 convergence zone (120y, under the cap) is blocked because the unsupported 1900–2000 placeholder is 'tighter' → refineDatingFromConvergence won't override. fix#1 pre-1850 edge again (floor 1800<1850). Form correct.",
+  note: "Biedermeier flame-walnut secretary; M11 dating-convergence failure (genuine-period evidence → 'Biedermeier Revival' 1900–2000; n=2 with escritoire). Mechanism: a qualifying 1800–1920 convergence zone (120y, under the cap) is blocked because the unsupported 1900–2000 placeholder is 'tighter' → refineDatingFromConvergence won't override. fix#1 pre-1850 edge again (floor 1800<1850). Form correct.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1319,7 +1320,7 @@ const hollywood_regency_cane_wing_chair: ScanFixture = {
   // Cane-paneled button-tufted wingback chair — Hollywood Regency / transitional
   // traditional, ~1960s–80s. Date c.1900–1980 OK (contains truth); form correct (Wing
   // chair); upholstery dating excellent (button-tufted, c.1955–1980, flagged as later
-  // reupholstery via foam_padding). TWO tracked items: (1) M11 keyword style-family
+  // reupholstery via foam_padding). TWO tracked items: (1) M18 keyword style-family
   // mis-attribution (n=3+) — "French Provincial" prose matched ["french","revival",
   // "provincial"] → "Louis XVI / French Neoclassical" → label "French Louis XVI
   // Revival" on a Hollywood Regency chair (mitigated: revival-wave reconciliation kept
@@ -1328,7 +1329,9 @@ const hollywood_regency_cane_wing_chair: ScanFixture = {
   // convergence override WORKED here (P2 adopted the 1900–1980 zone) because real
   // post-1900 layers exist (foam 1930–1960, lacquer 1920–1980) — unlike escritoire/
   // Biedermeier where the placeholder blocked the zone.
-  note: "Hollywood Regency cane wing chair (~1960s–80s); date c.1900–1980 OK, form correct, upholstery dating excellent (later reupholstery flagged). M11 keyword mis-attribution (French Provincial → 'French Louis XVI Revival', n=3+; date unharmed). cane→wicker overreach. CONTRAST: convergence override WORKED (real post-1900 layers).",
+  // TAG HISTORY: item (1) was originally filed as M11; split to M18 on 2026-05-27 —
+  // M11 is reserved for the dating-convergence late-pull, this is a label-only bug.
+  note: "Hollywood Regency cane wing chair (~1960s–80s); date c.1900–1980 OK, form correct, upholstery dating excellent (later reupholstery flagged). M18 keyword/style-family mis-attribution (French Provincial → 'French Louis XVI Revival', n=3+; wrong-LABEL only, date unharmed). cane→wicker overreach. CONTRAST: convergence override WORKED (real post-1900 layers).",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1426,4 +1429,476 @@ const victorian_barrel_back_parlor_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair];
+const eastlake_oak_settee: ScanFixture = {
+  label: "eastlake_oak_settee",
+  // Eastlake / Modern Gothic oak settee — SUCCESS / control. Everything correct:
+  // form Settee (beat lounge_chair_form), style Eastlake (supported, original_period),
+  // date c.1870–1890 (convergence zone 1870–1895 ADOPTED). The "convergence-worked"
+  // counterpart to the escritoire/Biedermeier disjoint-late failures: succeeds because
+  // a real BOUNDED in-era dating layer exists (eastlake_hardware → 1870–1895) to anchor
+  // the zone. IRONY worth logging: eastlake_hardware is really a STYLE obs ("Not hardware
+  // per se…") mis-keyed to hardware — that mislabel is what gave the bounded anchor;
+  // routing it correctly to style (wt 0.37, no date) could REMOVE the anchor. So this is
+  // a guard against both convergence regressions AND over-eager style→hardware re-routing.
+  note: "Eastlake oak settee — SUCCESS/control. Correct: Settee, Eastlake (orig), c.1870–1890 (convergence 1870–1895 adopted). Convergence-worked because eastlake_hardware gives a bounded in-era anchor (vs escritoire/Biedermeier pre-1850-only). Irony: eastlake_hardware is a mis-keyed STYLE obs whose mislabel supplied the anchor — guard against re-routing it.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Wide upholstered seat accommodating two persons; consistent with settee or loveseat form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Fully upholstered backrest with carved crest rail above; arched top profile framed by carved oak." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Two open arms with scrolled volute terminals and pierced carved brackets beneath arm rails; settee (two-seat) form with full arms on both sides." },
+    { type: "style", clue: "eastlake_hardware", confidence: 52, description: "Overall decorative vocabulary strongly consistent with Eastlake Aesthetic Movement: incised linear carving, fan/feather motifs on crest rail, beaded molding border around back panel, ball finials at crest corners, geometric and stylized plant ornament. Not hardware per se but the carved ornamental language is canonical Eastlake c. 1870-1895." },
+    { type: "style", clue: "style_cues", confidence: 52, description: "Fan/feather carved crest rail with ball finials, beaded molding border, scrolled volute arm terminals, pierced carved arm brackets, and saber-style front legs are all characteristic of American Eastlake or Late Victorian parlor seating c. 1875-1900." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members visible at arms, legs, crest rail, and side rails show solid wood construction with visible grain consistent with oak. No veneer or laminate visible on structural members." },
+    { type: "materials", clue: "wood_species_oak_group", confidence: 82, description: "Warm honey-amber color, visible open grain pattern on arm rails and leg surfaces, and ray fleck visible on flat-sawn surfaces consistent with oak. Golden Oak era finish tone." },
+    { type: "style", clue: "carved_crest_rail", confidence: 52, description: "Crest rail features deeply carved fan/feather or acanthus-leaf motifs with repeating incised vertical elements and ball finials at the corners; highly ornate Eastlake/Late Victorian decorative carving." },
+    { type: "construction", clue: "scrolled_side_corbels", confidence: 88, description: "Scrolled volute corbels visible at the lower corners of the backrest where it meets the seat rail; characteristic Victorian parlor seating ornament c. 1870-1900." },
+    { type: "construction", clue: "pierced_carved_arm_bracket", confidence: 92, description: "Arm brackets beneath the arm rails are pierced (fretwork/cutout) with scrolled foliate motifs; visible on both side views. Characteristic Eastlake/Late Victorian decorative construction detail." },
+    { type: "construction", clue: "beaded_molding_border", confidence: 93, description: "Continuous beaded (rope-bead) molding runs along the inner edge of the backrest frame surrounding the upholstered panel; visible in front and angled closeup views. Characteristic Eastlake decorative molding detail." },
+    { type: "hardware", clue: "nailhead_trim", confidence: 62, description: "Continuous row of brass-colored nailheads visible along the perimeter of both the seat and back upholstered panels; nailheads appear individually placed with slight spacing variation consistent with hand-tacked application rather than modern strip nailhead." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "Cover fabric shows cut-pile velvet characteristics: raised pile surface with blue floral/foliate pattern on cream/tan ground, visible pile direction shading, and soft matte texture consistent with cotton or rayon velvet. Confidence moderate — could be a chenille or jacquard weave with similar appearance." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 45, description: "Alternative classification: the blue floral pattern on cream ground could be a jacquard-woven fabric rather than velvet; the pattern regularity and two-color contrast are consistent with jacquard upholstery. Best-fit classification remains velvet_cover but jacquard_cover is a plausible alternative." },
+    { type: "condition", clue: "upholstery_wear", confidence: 54, description: "Seat upholstery shows sagging and distortion at the front edge, with fabric pulling away slightly from the seat rail; visible in side and overhead views. Back upholstery appears in better condition." },
+    { type: "condition", clue: "frame_condition", confidence: 54, description: "Wood frame appears structurally sound with no visible breaks, cracks, or major repairs. Finish shows age-consistent patina and slight darkening at wear points on arm rails. No obvious refinishing evidence." },
+    { type: "construction", clue: "saber_front_legs", confidence: 80, description: "Front legs show a curved saber or scroll profile rather than straight turned legs; visible in side view. Rear legs appear straight. This leg form is consistent with Late Victorian parlor seating." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 60, description: "Arm rail to back post and seat rail to leg connections appear to use mortise-and-tenon joinery based on the tight shoulder-line fits visible at arm-to-post junctions in closeup views; no visible mechanical fasteners at these joints. Confidence moderate — joinery is hidden by upholstery and finish." },
+    { type: "construction", clue: "ball_finials", confidence: 95, description: "Turned ball finials visible at the top corners of the crest rail; characteristic Late Victorian/Eastlake parlor seating ornament." },
+    { type: "construction", clue: "back_panel_upholstered_both_sides", confidence: 92, description: "Back view shows the reverse of the back panel is also upholstered with the same fabric and nailhead trim; the back of the settee is finished for display, consistent with parlor/reception room use." },
+    { type: "construction", clue: "rear_legs_straight", confidence: 85, description: "Rear legs visible in back view appear straight and square-sectioned, contrasting with the curved front legs; consistent with Late Victorian parlor seating construction." },
+    { type: "style", clue: "fan_feather_carving", confidence: 52, description: "Crest rail features repeating carved fan or feather motifs with incised vertical striations and rounded tops; this specific ornamental vocabulary is strongly associated with Eastlake Aesthetic Movement furniture c. 1875-1895." },
+    { type: "upholstery", clue: "hand_tacks", confidence: 50, description: "Nailhead spacing along seat and back perimeter shows slight irregularity consistent with individually hand-placed upholstery tacks rather than modern strip nailhead application." },
+    { type: "form", clue: "settee_two_seat_form", confidence: 68, description: "Seat width accommodates two persons; backrest spans full width; arms on both sides; consistent with parlor settee or loveseat form rather than single armchair." },
+    { type: "construction", clue: "arm_rail_scroll_terminal", confidence: 90, description: "Arm rails terminate at the front in carved scrolled volutes (ram's-head or scroll form); visible in front and side views. Characteristic Late Victorian/Eastlake parlor seating arm treatment." },
+    { type: "construction", clue: "seat_rail_carved_apron", confidence: 78, description: "Seat rail below the seat cushion shows carved decorative treatment visible in the angled closeup; consistent with Eastlake incised or relief-carved apron decoration." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating_surface" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Settee",
+    display: "Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1870–1890",
+    dateFloor: 1870,
+    dateCeiling: 1890,
+    confidence: "Moderate",
+  },
+};
+
+const rococo_renaissance_carved_settee: ScanFixture = {
+  label: "rococo_renaissance_carved_settee",
+  // Heavily-carved mid-Victorian (~1860–1880) Rococo/Renaissance Revival settee
+  // (dragons, grotesque mask, heraldic shield, paw feet). Form correct (Settee), style
+  // FAMILY correct (Rococo Revival), but dated c.1920–1925 — ~50yr late. THE CLEAREST
+  // M11/revival cluster specimen: two zones formed — 1845–1910 (REAL evidence: finish +
+  // upholstery + style + style_wave) and 1920–1925 (style_wave-only revival overlap) —
+  // and the convergence PICKER chose the LATER revival-wave zone (higher weighted
+  // authority from a synthetic revival-wave intersection / narrower tiebreak), then
+  // labeled it a 1920s "French Provincial / Rococo Domestic Revival." Unifies the
+  // cluster: escritoire/Biedermeier = revival+placeholder beat a (pre-1850) zone;
+  // THIS = revival style_wave-only zone beats a real multi-layer zone. Controls
+  // (Eastlake, cane-wing) succeed because real IN-ERA layers win. The head-on fix:
+  // real construction/material/finish/upholstery layers must outweigh style_wave/
+  // revival zones in both the picker and the placeholder-override.
+  note: "Mid-Victorian (~1860–80) carved Rococo/Renaissance settee dated c.1920–1925 (~50yr late). CLEAREST M11/revival case: convergence picker chose a style_wave-only revival zone (1920–1925) OVER the real-evidence zone (1845–1910: finish+upholstery+style). Form/style-family correct; date + revival label wrong. Unifies the cluster; head-on fix = real-evidence layers must outweigh revival style_waves.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion visible across the full width of the settee/loveseat form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Upholstered back panel present, framed by heavily carved crest rail above and scrolled side supports." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Two open arms with scrolled terminals and carved figural arm posts visible on both sides of the seating form; this is a settee or parlor sofa with arms rather than a single armchair." },
+    { type: "style", clue: "rococo_revival_ornament", confidence: 52, description: "Heavily carved crest rail with scrolling acanthus leaves, C-scrolls, and figural elements (dragons/griffins, heraldic shield) strongly consistent with Rococo Revival or Renaissance Revival parlor furniture, c. 1845-1880." },
+    { type: "style", clue: "renaissance_revival_ornament", confidence: 52, description: "Heraldic shield cartouche in crest rail center, grotesque mask arm terminal, and dragon/griffin figural carvings are characteristic of Renaissance Revival high-style parlor furniture, c. 1860-1880, as well as Rococo Revival. Both style waves are plausible." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Front legs visible in overall_front image show cabriole-style curved form terminating in carved paw feet, consistent with Rococo Revival seating." },
+    { type: "style", clue: "paw_feet", confidence: 52, description: "Carved paw feet visible at the base of the front cabriole legs, a characteristic ornamental feature of Rococo Revival and Renaissance Revival parlor seating." },
+    { type: "style", clue: "figural_carved_crest", confidence: 52, description: "Crest rail features deeply carved figural elements including what appear to be dragons or griffins flanking a central heraldic cartouche, with scrolling acanthus foliage throughout. High-relief figural carving of this quality is associated with high-style Victorian parlor furniture, c. 1850-1885." },
+    { type: "style", clue: "grotesque_mask_arm_terminal", confidence: 52, description: "Arm terminal carved as a full human/classical face (grotesque mask or caryatid bust) with surrounding foliage, visible in overall_side closeup. This is a Renaissance Revival and high Rococo Revival ornamental motif, c. 1855-1880." },
+    { type: "style", clue: "dragon_griffin_carving", confidence: 52, description: "Carved creature with open mouth, scaled body, and leonine features visible in joinery_closeup of crest rail — consistent with dragon, griffin, or chimera motif used in Renaissance Revival and high Victorian carved furniture." },
+    { type: "style", clue: "heraldic_shield_cartouche", confidence: 52, description: "Central crest rail features a carved heraldic shield or cartouche flanked by scrollwork and figural creatures, consistent with Renaissance Revival heraldic ornament." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "Frame appears to be solid hardwood throughout — the depth and complexity of the carved relief work on crest rail, arm terminals, and legs is consistent with solid wood carving rather than applied composition ornament. Dark reddish-brown color and finish sheen suggest mahogany or walnut." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 60, description: "Deep reddish-brown color with warm undertones and high-polish finish visible on frame is consistent with mahogany (Honduran or Cuban). Walnut is also possible. The color and finish sheen lean toward mahogany. Confidence is moderate as species identification from finish color alone is provisional." },
+    { type: "finish", clue: "shellac_intact", confidence: 55, description: "Frame surface shows warm amber-reddish high-gloss finish with deep color saturation consistent with intact shellac or early varnish. No obvious plastic-film buildup or polyurethane pooling visible. Finish appears well-preserved and integrated with the carved surfaces." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 45, description: "Seat and back upholstery shows a repeating floral pattern (daisy/flower sprigs on a textured ground) with high pattern complexity and machine-loomed regularity. The fabric appears to be a jacquard-woven textile in gold/champagne tones. Damask is also possible. Best-fit classification: jacquard_cover." },
+    { type: "upholstery", clue: "nailhead_trim", confidence: 50, description: "Continuous row of small brass-colored nailheads visible along the perimeter of the seat, back, and arm upholstery panels. Nailheads appear relatively uniform in spacing and size, consistent with decorative nailhead trim used in Victorian parlor upholstery." },
+    { type: "upholstery", clue: "damask_cover", confidence: 45, description: "Alternative classification to jacquard_cover: the fabric could be a damask with a woven floral repeat in a single color family (gold on gold). The ground texture and pattern are consistent with damask weave. Uncertainty between jacquard and damask noted; jacquard selected as primary classification due to pattern complexity." },
+    { type: "condition", clue: "upholstery_condition", confidence: 45, description: "Upholstery fabric appears intact with no obvious tears or major staining visible in the photos. Some slight color variation or soiling may be present on the seat surface but overall condition appears good for the age of the piece." },
+    { type: "condition", clue: "frame_condition", confidence: 54, description: "Carved wood frame appears intact with no visible breaks, losses, or repairs to the carving. Finish is well-preserved and polished. No obvious structural damage visible." },
+    { type: "hardware", clue: "nailhead_trim", confidence: 62, description: "Decorative brass-colored nailhead trim applied along upholstery edges; consistent with Victorian parlor upholstery practice. Spacing appears relatively uniform suggesting possible strip-nailhead application rather than individually hand-driven tacks, but individual placement cannot be ruled out at this resolution." },
+    { type: "construction", clue: "carved_solid_frame", confidence: 45, description: "The depth and three-dimensionality of the carved ornament on the crest rail (dragons, scrolls, heraldic shield), arm terminals (grotesque mask), and legs (paw feet) is consistent with solid wood carving rather than applied composition or cast ornament. The carving appears to be integral to the frame members." },
+    { type: "style", clue: "scrolled_arm_supports", confidence: 52, description: "Arm supports show scrolled volute form at the arm terminal and scrolled bracket at the junction with the seat rail, consistent with Rococo Revival and Renaissance Revival seating design vocabulary." },
+    { type: "style", clue: "acanthus_leaf_carving", confidence: 52, description: "Acanthus leaf and C-scroll ornament visible throughout the crest rail carving, consistent with Rococo Revival and Renaissance Revival decorative vocabulary, c. 1845-1885." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back panels" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "carved seating" },
+  ],
+  asSeen: {
+    formId: "Settee",
+    display: "French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1920–1925",
+    dateFloor: 1920,
+    dateCeiling: 1925,
+    confidence: "Moderate",
+  },
+};
+
+const porter_balloon_canopy_chair: ScanFixture = {
+  label: "porter_balloon_canopy_chair",
+  note:
+    "Mahogany Balloon/Porter (canopy) chair — fauteuil de portier — w/ wood-rib " +
+    "dome back, individually-upholstered velvet panels, gimp/braid trim, carved " +
+    "cabriole legs + scroll feet. M8 + M11/revival cluster. (a) M8 form: the " +
+    "definitive `porter_chair_form`/`dome_canopy_back` clues lose to generic " +
+    "`armchair_form`(0.93)/`seating_surface`(0.85)/`lounge_chair_form`(0.78) → " +
+    "P3 picks form_lounge_chair (\"Lounge chair\"); porter chair never surfaces, " +
+    "even in alternatives. (b) Date driven by the M11/revival cluster, NOT the " +
+    "frame: the only convergence zones are 1920–1930 (style_wave-only, 2 layers) " +
+    "and 1920–1970 (finish + LATER REUPHOLSTERY velvet/foam + style_wave). The " +
+    "velvet_cover/foam_padding upholstery is flagged itself as a c.1955–1980 " +
+    "reupholstery (originality cannot be inferred) yet still floors the frame " +
+    "date; revival style_waves anchor 1920–1930. Result \"French Louis XVI " +
+    "Revival Lounge chair, c.1920–1930\". User's read: a high-construction porter " +
+    "chair with individually-upholstered panels is clearly NOT a reproduction → " +
+    "genuine period piece, short window; the engine missed it. Same root as the " +
+    "carved-settee / Biedermeier / china-cabinet revival-wave-beats-real-evidence " +
+    "and reupholstery-confounds-frame-date cluster. No in-era construction layer " +
+    "(joinery/fastener/toolmark all empty) so nothing anchors an early date.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion visible on front view; loose seat cushion with velvet cover present." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall dome-shaped canopy back (porter's chair / fauteuil de portier form) with wood rib framework dividing upholstered panels; back rises well above seated occupant's head." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Open armrests with carved wood arm supports and upholstered arm pads visible on both front and side views." },
+    { type: "form", clue: "dome_canopy_back", confidence: 68, description: "Distinctive balloon/dome-shaped canopy back characteristic of a porter's chair (fauteuil de portier); wood ribs radiate from crest to form segmented dome structure upholstered in velvet panels." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Four cabriole legs visible with carved knees and scroll/pad feet; consistent with Louis XV / Rococo Revival style vocabulary." },
+    { type: "style", clue: "shell_crest_carving", confidence: 52, description: "Carved shell (coquille) motif at the apex of the dome crest rail, a hallmark of Louis XV Rococo vocabulary." },
+    { type: "style", clue: "rococo_revival_style_cues", confidence: 52, description: "Combination of cabriole legs, carved shell crest, serpentine apron, acanthus-carved arm supports, and scrolled arm terminals all consistent with Louis XV / Rococo Revival design influence. Domestic American or European commercial production of this look is equally plausible; no country of origin can be confirmed from form alone." },
+    { type: "style", clue: "carved_serpentine_apron", confidence: 52, description: "Shaped/serpentine front apron rail with carved floral or foliate detail visible at center; consistent with Louis XV-influenced frame construction." },
+    { type: "construction", clue: "wood_rib_dome_framework", confidence: 96, description: "Dome canopy back constructed with multiple curved wood ribs radiating from crest, creating segmented bays filled with upholstered velvet panels; ribs trimmed with braid/gimp. Visible on front, back, and joinery closeup images." },
+    { type: "construction", clue: "solid_wood_construction", confidence: 88, description: "Frame members including legs, arm supports, apron, and dome ribs appear to be solid wood (likely mahogany or mahogany-stained hardwood) based on visible grain, carving depth, and finish behavior." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 65, description: "Frame wood shows warm reddish-brown color with high-gloss finish consistent with mahogany or mahogany-stained hardwood; carving depth and surface sheen support this identification provisionally. Could also be walnut or stained beech/birch." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "All upholstered surfaces — seat, interior back panels, exterior back panels, arm pads, and loose lumbar pillow — covered in a smooth pile velvet fabric. Front interior appears black/very dark; back exterior appears deep navy/midnight blue. Nap-direction shading and pile sheen visible confirming velvet classification. Likely synthetic or cotton velvet given the context; rayon or polyester velvet consistent with mid-to-late 20th century or contemporary production." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "Seat cushion appears to be a drop-in or loose cushion with relatively flat profile; no visible coil spring crown or serpentine spring evidence. Likely foam-padded loose cushion construction." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "Seat cushion has uniform flat profile consistent with foam padding rather than traditional spring-and-stuffing construction; consistent with mid-to-late 20th century or contemporary upholstery." },
+    { type: "upholstery", clue: "gimp_braid_trim", confidence: 45, description: "Decorative braid/gimp trim applied along all wood rib edges on both interior and exterior dome surfaces; trim appears to be a matching dark navy/black color. Visible on front, back, and side images." },
+    { type: "condition", clue: "velvet_wear_scuffing", confidence: 54, description: "Exterior back velvet panels show visible scuff marks, directional pile disturbance, and surface soiling — particularly in the lower back panels. Interior seat also shows dust/lint accumulation." },
+    { type: "condition", clue: "frame_finish_intact", confidence: 54, description: "Wood frame finish appears largely intact with high gloss; minor wear visible at arm support edges and apron corners. No significant finish loss or crazing observed." },
+    { type: "condition", clue: "upholstery_edge_wear", confidence: 54, description: "Side view shows slight fraying or wear at the outer edge of the dome canopy where upholstery meets the frame; braid trim shows minor separation at one point on the side." },
+    { type: "finish", clue: "lacquer_finish", confidence: 55, description: "Frame surfaces show a hard, high-gloss finish with uniform sheen across all carved and flat surfaces; behavior more consistent with lacquer or polyurethane than shellac. No crazing or amber patina typical of aged shellac observed." },
+    { type: "hardware", clue: "no_visible_hardware", confidence: 45, description: "No pulls, locks, casters, or other hardware visible on this seating form. Arm pad appears to have a small upholstered button at the front scroll terminal." },
+    { type: "construction", clue: "carved_arm_support", confidence: 94, description: "Arm supports are carved solid wood with acanthus-leaf or egg-and-dart style carved detail at the top; scrolled arm terminal at front. Visible in joinery closeup." },
+    { type: "construction", clue: "scroll_foot", confidence: 90, description: "Cabriole legs terminate in small scroll or pad feet; visible on front and side views. No casters present." },
+    { type: "style", clue: "porter_chair_form", confidence: 52, description: "Overall form is a classic porter's chair (fauteuil de portier / balloon-back hall chair): tall dome canopy back with wood rib framework, open arms, cabriole legs, and serpentine apron. This form originated in 18th-century France and England and has been widely reproduced through the 19th, 20th, and 21st centuries." },
+    { type: "upholstery", clue: "loose_lumbar_pillow", confidence: 50, description: "Small loose lumbar/accent pillow in matching black velvet visible resting against the interior back of the chair." },
+    { type: "construction", clue: "upholstered_panel_segments", confidence: 96, description: "Both interior and exterior dome surfaces divided into discrete upholstered panel segments by the wood rib framework; each panel independently upholstered and trimmed with braid. This segmented panel construction is characteristic of the porter's chair form." },
+    { type: "context", clue: "french_provincial_style", confidence: 48, description: "Louis XV / Rococo Revival" },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered panels between ribs" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1920–1930",
+    dateFloor: 1920,
+    dateCeiling: 1930,
+    confidence: "Moderate",
+  },
+};
+
+const renaissance_revival_tufted_armchair: ScanFixture = {
+  label: "renaissance_revival_tufted_armchair",
+  note:
+    "Terracotta button-tufted barrel-back Victorian parlor ARMCHAIR (Renaissance " +
+    "Revival, ~1865-1885) misidentified as a 'Renaissance Revival Parlor TABLE'. " +
+    "M14 (new mechanism): style-prefix form-ID text bleed. scoreForms builds its " +
+    "match haystack from clue+description text; the parlor-table block " +
+    "(engine.ts ~4228-4233) matches bare style-prefixes with NO table noun — " +
+    "'renaissance revival parlor', 'rococo revival parlor', 'golden oak parlor'. " +
+    "The shaped_apron_carved observation says '...consistent with Renaissance " +
+    "Revival parlor chair construction', whose substring 'renaissance revival " +
+    "parlor' fires add('Parlor table', 90). That 90 beats the genuine seating " +
+    "forms — Lounge chair (86: lounge_chair_form+armchair_form) and Upholstered " +
+    "armchair (62) — taking the primary slot by 4 points, even though all 31 " +
+    "clues and all 3 alternative forms are seating. INTERMITTENT: only fires when " +
+    "perception writes '<style> revival parlor' adjacently; sibling parlor " +
+    "fixtures phrase it differently and ID correctly. Blast radius: any Victorian " +
+    "SEATING piece whose prose says '<style> Revival parlor ...'. The 3 " +
+    "bare-prefix triggers are redundant — a real parlor table's prose already " +
+    "contains 'parlor table' (first list entry). Candidate fixes: (a) require the " +
+    "table noun in the trigger; (b) guard all table forms when strong seating " +
+    "clues are present and no table clue is. asSeen records the PRODUCTION (main) " +
+    "outcome: c.1850-1920 / original_period, frame conf Low (the 'Moderate' the " +
+    "user saw is the separate P1 display cap) — a reasonable read for a ~1865-1885 " +
+    "piece. DATING (resolved — NOT an engine regression): the earlier fidelity ✗ " +
+    "was a fixture-faithfulness artifact. The modern_caster obs self-negates ('no " +
+    "modern caster evidence visible'); a real scan's p0 sets negated:true " +
+    "(descriptionNegatesClue matches 'no modern caster' / 'rather than modern'), " +
+    "excluding it from weighted_clues. The corpus harness STUBS p0, so that flag " +
+    "was missing — modern_caster's post-1900 envelope then drove the hardware " +
+    "layer to a 1900 floor, which the evidence-floor anchor latched onto → " +
+    "c.1900-1920 / late_period. With negated:true now set on the obs (as a real " +
+    "scan produces), the branch reproduces main EXACTLY: c.1850-1920 / " +
+    "original_period. The 1960-1990 style_wave exists but was not the binding " +
+    "constraint. SYSTEMIC NOTE: the harness skips p0 negation normalization for " +
+    "stubbed fixtures — fixtures must carry `negated` explicitly (or the harness " +
+    "should apply descriptionNegatesClue); tracked as a corpus-infra follow-up.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Large rounded upholstered seat cushion visible; chair has a full seating surface." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall upholstered barrel/tub-style back with button tufting and carved crest rail above." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has fully developed arms with carved scroll supports and turned finials at arm terminals; classic Victorian parlor armchair form." },
+    { type: "style", clue: "renaissance_revival_crest", confidence: 52, description: "Pierced carved crest rail with central cartouche/shield motif flanked by scrolled volutes and a fan/shell element above; characteristic Renaissance Revival ornament, c. 1860–1885." },
+    { type: "style", clue: "scrolled_side_corbels", confidence: 52, description: "Scrolled volute corbels visible on the back stiles flanking the crest rail; Victorian parlor chair ornament consistent with Renaissance Revival / Rococo Revival transition, c. 1860–1885." },
+    { type: "style", clue: "incised_scroll_decoration", confidence: 52, description: "Incised scroll and volute decoration visible on arm supports and lower back stile area; characteristic of Renaissance Revival and Eastlake-adjacent Victorian carving vocabulary." },
+    { type: "style", clue: "turned_arm_finials", confidence: 52, description: "Turned wooden finials at the front of each arm terminal; pyramid/cone-shaped turning visible; common Victorian parlor chair detail c. 1860–1890." },
+    { type: "style", clue: "barrel_back_form", confidence: 52, description: "Chair back is curved/barrel-shaped in plan view, wrapping around the sitter; visible clearly in back and side views; common in Victorian parlor seating c. 1860–1890." },
+    { type: "style", clue: "shaped_apron_carved", confidence: 52, description: "Front seat rail has a shaped/scalloped apron with carved cartouche element at center; consistent with Renaissance Revival parlor chair construction." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members visible at crest rail, stiles, arm supports, legs, and apron appear to be solid wood throughout; no veneer or laminate visible on structural members." },
+    { type: "materials", clue: "walnut_probable", confidence: 72, description: "Frame wood is dark brown with warm undertones and fine grain visible at carved surfaces; consistent with black walnut, the dominant Victorian parlor chair wood c. 1860–1890. Could also be stained mahogany or cherry but walnut is most probable given color and grain." },
+    { type: "hardware", clue: "porcelain_caster", confidence: 62, description: "Small casters visible on front legs; appear to be small wheel casters with brass/metal housing; at this scale difficult to confirm porcelain vs. early rubber, but the small size and period context suggest porcelain or early brass-cup casters consistent with Victorian parlor furniture c. 1840–1910." },
+    { type: "hardware", clue: "modern_caster", confidence: 60, negated: true, description: "Casters appear to be period-appropriate small wheel type rather than modern rubber or plastic casters; no modern caster evidence visible." },
+    { type: "construction", clue: "turned_front_legs", confidence: 90, description: "Front legs are turned with ring/reel turnings visible; consistent with Victorian parlor chair construction c. 1860–1890." },
+    { type: "construction", clue: "saber_rear_legs", confidence: 88, description: "Rear legs are curved/saber-style, splaying outward and backward; visible in side and back views; common in Victorian parlor seating." },
+    { type: "condition", clue: "wood_cracking_apron", confidence: 45, description: "Significant wood cracking and checking visible on the front seat apron/rail; wood appears to have split along grain lines, consistent with age-related drying and stress; supports genuine age rather than reproduction." },
+    { type: "condition", clue: "finish_darkened_aged", confidence: 45, description: "Wood finish is deeply darkened with age patina; surface appears to have original or early shellac/varnish finish that has oxidized and darkened over decades; no evidence of modern polyurethane coating." },
+    { type: "condition", clue: "shellac_intact", confidence: 54, description: "Frame surfaces show warm amber-brown aged finish consistent with intact original shellac or early varnish; no plastic-like polyurethane sheen visible; finish appears integrated with age wear." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "Cover fabric shows upright pile with nap-direction shading visible across the seat, back, and arms; the terracotta/dusty rose color and pile texture are consistent with cotton or rayon velvet; some areas show pile compression and wear consistent with age. Could be a chenille-weave fabric rather than true cut-pile velvet — the texture appears slightly looped/chenille-like in close-up views — but velvet_cover is the best-fit classification. Confidence moderate." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "Regular grid of deep tufted dimples visible across the back upholstery; dimples appear to be held by covered buttons (small round protrusions visible at each dimple center); classic Victorian button tufting pattern." },
+    { type: "upholstery", clue: "gimp_trim_border", confidence: 50, description: "Decorative gimp/braid trim visible along all upholstery edges on back, seat, and arms; Greek-key or scroll pattern gimp in matching terracotta color; consistent with Victorian parlor upholstery finishing practice." },
+    { type: "upholstery", clue: "upholstery_wear", confidence: 50, description: "Upholstery shows soiling, pile compression, and fraying at edges; consistent with age and use; some areas of gimp trim appear loose or frayed." },
+    { type: "style", clue: "victorian_parlor_chair", confidence: 52, description: "Overall form, ornament vocabulary (pierced crest, scrolled volutes, incised carving, turned finials, barrel back, button tufting, gimp trim, casters) is consistent with American Victorian parlor armchair production c. 1865–1885, most likely Renaissance Revival style." },
+    { type: "construction", clue: "carved_pierced_crest_rail", confidence: 88, description: "Crest rail features pierced/fretwork carving with central cartouche, flanking scrolls, and fan/shell element; carving appears hand-finished with some tool mark variation visible; consistent with Victorian factory-assisted hand carving c. 1865–1885." },
+    { type: "construction", clue: "round_tenon", confidence: 45, description: "Arm support construction and back stile connections suggest mortise-and-tenon or round tenon joinery typical of Victorian chair frame construction; joints not directly visible but implied by structural integrity and period construction norms." },
+    { type: "condition", clue: "upholstery_likely_replaced", confidence: 45, description: "The current velvet/chenille cover in terracotta color with matching gimp trim appears to be a reupholstery campaign rather than original Victorian fabric; the fabric and trim style are consistent with mid-to-late 20th century reupholstery work, though the frame is clearly Victorian period." },
+    { type: "style", clue: "tufted_upholstery", confidence: 50, description: "button tufted back" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "upholstered seating" },
+    { type: "materials", clue: "fully_upholstered", confidence: 74, description: "Upholstered or cushioned surfaces are visible." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+    { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
+  ],
+  asSeen: {
+    formId: "Parlor table",
+    display: "Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1850–1920",
+    dateFloor: 1850,
+    dateCeiling: 1920,
+    confidence: "Low",
+  },
+};
+
+const victorian_platform_rocker_armchair: ScanFixture = {
+  label: "victorian_platform_rocker_armchair",
+  note:
+    "Green-upholstered Victorian platform-rocker ARMCHAIR (swept-wing back, " +
+    "scrolled open arm brackets, reeded legs, claw feet; ~1875-1899). Form and " +
+    "date both land ~right (form_armchair; c.1875-1899) but for the WRONG reasons. " +
+    "M13 (new mechanism): an intrinsically-datable construction clue carries no " +
+    "date envelope, so the tightest signal is sidelined and confidence is " +
+    "under-credited. platform_rocker_mechanism is the highest-signal observation " +
+    "(conf 95, type construction) and its own prose says the mechanism was " +
+    "'patented and popularized in the 1870s-1890s' — a tight construction date " +
+    "band. But P4 weights it 0.580 with NO date annotation, and the Dating overlap " +
+    "shows construction joinery/fastener/toolmark all '0 contributing clues' -> " +
+    "Convergence zones: none. The date is instead reconstructed from the WEAKEST " +
+    "classes: style attribution (1810-1850, the original Empire period — wrong " +
+    "band), the 1860-1935 style_waves, and a broad cover-only upholstery signal, " +
+    "landing c.1875-1899 at Low frame confidence with zero convergence. Root " +
+    "cause: platform_rocker is wired only as a FORM keyword (engine.ts ~4961, the " +
+    "'Rocking chair' alternative); there is no construction-clue -> date-band " +
+    "mapping for platform_rocker_mechanism. This is the INVERSE of the " +
+    "revival-late-pull cluster (escritoire/settee): there a weak revival signal " +
+    "wrongly DOMINATES and pulls late; here a strong construction signal wrongly " +
+    "contributes NOTHING. A confidence-calibration defect, not a date-accuracy " +
+    "one. Candidate fix: give patent-era mechanism clues (platform_rocker_" +
+    "mechanism, etc.) a construction date envelope (~1870-1895) so they anchor " +
+    "dating and form a real convergence (construction + style_wave + upholstery), " +
+    "tightening the range and lifting the confidence cap. Secondary: spindle_back " +
+    "(78) and spindle_gallery (70) read like perception false-positives on a " +
+    "fully-upholstered platform rocker (no spindle structure; nothing else " +
+    "corroborates) — undated so harmless to the date, but they pollute the form " +
+    "alternatives.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion present, integrated into the chair frame with no separate loose cushion." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall upholstered backrest with swept-back wing-like upper sides, fully upholstered front and back surfaces." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has open wooden arms with scrolled volute bracket supports connecting arm rail to seat rail on both sides." },
+    { type: "form", clue: "platform_rocker_base", confidence: 68, description: "Chair sits on a platform rocker base — a flat sled-like lower platform with curved legs ending in claw feet, connected to the upper chair frame via a rocking mechanism. This is the defining platform rocker form, distinct from a standard rocking chair with curved runners." },
+    { type: "style", clue: "scrolled_volute_arm_bracket", confidence: 52, description: "Open scrolled volute (C-scroll or S-scroll) carved bracket visible on both arm supports, connecting the arm rail to the seat rail. This is a characteristic Victorian-era decorative element seen on platform rockers and parlor chairs c. 1870–1900." },
+    { type: "style", clue: "claw_foot", confidence: 52, description: "Carved claw-and-ball or paw feet visible on all four legs of the platform base. Feet appear to be carved wooden paw/claw forms, consistent with Victorian parlor furniture c. 1860–1900." },
+    { type: "style", clue: "reeded_leg", confidence: 52, description: "Front legs of the platform base show vertical reeding (parallel carved channels) on the leg shaft above the claw foot, consistent with Empire Revival and late Victorian decorative vocabulary." },
+    { type: "style", clue: "swept_wing_back", confidence: 52, description: "The upper backrest has swept outward wing-like extensions at the top corners, giving a wingback silhouette. The back curves gracefully from a wide top to a narrower lower section." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members including arms, back stiles, seat rail, and platform base appear to be solid wood throughout — no veneer or laminate visible at any exposed edge or wear point." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 60, description: "Frame wood shows deep reddish-brown color with warm undertones and fine grain visible at worn areas. Consistent with mahogany or walnut; the reddish-brown tone and fine texture lean toward mahogany. Could also be walnut stained darker. Moderate confidence given photo lighting." },
+    { type: "materials", clue: "wood_species_walnut_group", confidence: 45, description: "Frame wood could alternatively be black walnut — the deep brown with warm reddish tones is consistent with walnut. Cannot definitively distinguish from mahogany without closer inspection of grain pore structure." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "The green upholstery fabric shows a repeating small-scale leaf/vine pattern woven into the fabric surface. The pattern has high complexity with tonal variation (darker green pattern on lighter green ground), consistent with a jacquard-woven fabric. The pattern repeats with machine regularity. Could potentially be a damask (same-color reversible weave) but the leaf motif and tonal contrast suggest jacquard. Classified as jacquard_cover; damask_cover is the close alternative." },
+    { type: "upholstery", clue: "damask_cover", confidence: 50, description: "The green fabric could alternatively be a damask — single-color woven figured fabric with reversible pattern. The tonal leaf pattern is consistent with damask weave. Cannot definitively distinguish jacquard from damask without examining the reverse side. Jacquard_cover is the primary classification." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "No button tufting visible on seat or back surfaces. The upholstery is smooth and flat without dimples or buttons." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "The seat appears relatively flat without the crowned dome profile typical of hand-tied coil springs. However, the upholstery is intact and the seat construction cannot be confirmed without removing the cover. Classified as possible no-spring or drop-in unit seat." },
+    { type: "upholstery", clue: "refinished_upholstery", confidence: 50, description: "The green jacquard/damask fabric appears relatively clean and unworn compared to the aged wooden frame with visible scratches and finish wear. The fabric shows no significant soiling, fading, or period-consistent wear. This strongly suggests the chair has been reupholstered at some point after original manufacture, likely within the last few decades." },
+    { type: "condition", clue: "frame_wear", confidence: 54, description: "Visible scratches, scuffs, and finish wear on the arm surfaces, seat rail, and platform base. Wear patterns are consistent with age and use. Some areas show lighter wood color beneath the finish at high-contact points." },
+    { type: "condition", clue: "upholstery_debris", confidence: 54, description: "Lint, dust, and small debris particles visible on the upholstered seat and arm areas, consistent with normal use." },
+    { type: "construction", clue: "platform_rocker_mechanism", confidence: 95, description: "The chair uses a platform rocker construction: the upper chair body (seat, back, arms) is mounted on a separate lower platform base via a spring or pivot mechanism that allows rocking motion without curved runners. The platform base has its own legs with claw feet. This mechanism was patented and popularized in the 1870s–1890s." },
+    { type: "construction", clue: "open_carved_arm_bracket", confidence: 96, description: "The arm supports are open carved scrolled brackets rather than solid panels or turned spindles. The scroll/volute form is cut through the wood creating an open decorative silhouette. Visible on both sides from front and side views." },
+    { type: "construction", clue: "upholstered_back_exterior", confidence: 96, description: "The back of the chair is fully upholstered on the exterior surface with the same green fabric, with a welt/piping trim at the edges. This is visible in the back view image." },
+    { type: "construction", clue: "welt_cord_trim", confidence: 90, description: "Welt cord (piping) trim visible along the edges of the back upholstery panel, creating a defined border between the fabric and the wooden frame. Consistent with professional upholstery work." },
+    { type: "style", clue: "victorian_platform_rocker_style", confidence: 52, description: "The combination of platform rocker base, scrolled open arm brackets, claw feet, reeded legs, and swept wingback silhouette is characteristic of American Victorian parlor platform rockers, c. 1875–1900. This form was mass-produced by numerous American furniture factories during this period." },
+    { type: "style", clue: "empire_revival_influence", confidence: 52, description: "The swept-back wing silhouette, scrolled arm supports, and platform base with claw feet show some Empire Revival influence, which was common in American Victorian parlor furniture of the 1870s–1890s. However, the overall form is more specifically a platform rocker type than a pure Empire Revival piece." },
+    { type: "hardware", clue: "claw_foot_carved", confidence: 62, description: "All four feet of the platform base are carved wooden claw/paw forms. The front feet show more detail with visible carved toe/claw articulation. The rear feet are also claw forms. These are integral carved wood, not applied metal hardware." },
+    { type: "label", clue: "maker_label", confidence: 85, description: "No maker label, stamp, stencil, or mark visible in any of the provided images." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back panel" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "structure", clue: "spindle_back", confidence: 78, description: "Spindles are visible in the back or side rail." },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+    { type: "structure", clue: "colonial_georgian_revival_upholstered_armchair_pattern", confidence: 86, description: "Fluted or reeded legs, exposed curved arm supports, and full upholstery form a Colonial / Georgian Revival upholstered armchair pattern." },
+    { type: "form", clue: "wingback_form", confidence: 80, description: "Structural side wings extending forward from upper back indicate wing-chair form. Canonical: form_wing_chair." },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Colonial / Georgian Revival upholstered armchair",
+    display: "Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1875–1899",
+    dateFloor: 1875,
+    dateCeiling: 1899,
+    confidence: "Low",
+  },
+};
+
+const modern_louis_xvi_repro_lounge_chair: ScanFixture = {
+  label: "modern_louis_xvi_repro_lounge_chair",
+  note:
+    "Modern Louis XVI / French Neoclassical REPRODUCTION lounge chair (CNC/machine-" +
+    "assisted carving, foam cushion, jacquard). The final answer is RIGHT (modern " +
+    "repro, c.1900-2000) but the REASONING is garbage — that is the goldmine. M15 " +
+    "(new): the narrative's 'strongest layer convergence' is decoupled from the " +
+    "working range and asserts FALSE consistency. The revival_wave headline " +
+    "template (datingFindingNarrative.ts:220) hardcodes '...consistent with the " +
+    "working range {workingRange}' with no check that the zone overlaps " +
+    "[finalDatingFloor, finalDatingCeiling]; here it prints 'strongest convergence " +
+    "c.1800-1810 ... consistent with the working range c.1900-2000' — disjoint by a " +
+    "century. The dating engine (refineDatingFromConvergence) CORRECTLY rejected " +
+    "the 1800-1810 zone and kept P2's 1900-2000, but the narrative's independent " +
+    "findStrongestZone (:137) resurfaces the rejected zone as 'strongest'. A " +
+    "sibling guard is needed next to the zero-corroborating-layer null (:142): " +
+    "null/suppress strongest when it does not overlap the working range. M13 " +
+    "(root): the modern-production construction clues (carved_ornament_machine_" +
+    "assisted '20th-21st c.', reeded_rail_detail 'machine') carry NO date envelope " +
+    "and are not hard_negative+post-19xx, so hasModernConstruction=false " +
+    "(engine.ts:8850) and no modern convergence zone forms — P2 reads them " +
+    "qualitatively to floor 1900 but the convergence machinery is blind; same " +
+    "no-date-envelope mechanism as the platform rocker. Underneath: style " +
+    "attribution's ORIGINAL period (1770-1810) is admitted as a 'high'-authority " +
+    "dating layer that seeds the bogus 1800-1810 zone (the early-direction twin of " +
+    "the revival-late-pull cluster; style is low-weight in the ranked display but " +
+    "high-authority in convergence). M16 (user principle): the working range " +
+    "'Broadly late 19th to 20th century' = c.1900-2000 is a ~100-YEAR span on a " +
+    "recent piece — unacceptable/garbage even when technically correct (a 100y band " +
+    "is only defensible for pieces several centuries old). The same 100y span " +
+    "recurs on the escritoire / biedermeier / barrel-back fixtures. Fidelity: the " +
+    "final date/form reproduce; the corruption is in the narrative layer, which the " +
+    "gate does not assert on.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Upholstered seat cushion present; chair is clearly a seating form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Upholstered back panel set within carved wood frame; loose lumbar/bolster cushion rests against it." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Both arms present with scrolled volute terminals; chair is a fully-armed lounge/accent chair." },
+    { type: "style", clue: "scrolled_arm_volute", confidence: 52, description: "Arm terminals terminate in large carved scrolled volutes (ram's-head / cornucopia scroll style), characteristic of Neoclassical, Regency, and Empire-revival seating vocabulary." },
+    { type: "style", clue: "leaf_carved_crest_rail", confidence: 52, description: "Top crest rail carries a continuous row of carved leaf/acanthus-tip ornament running its full width, a Neoclassical / Regency / Colonial Revival decorative motif." },
+    { type: "style", clue: "reeded_back_post", confidence: 52, description: "Rear view and close-up show multiple parallel reeds running the length of the back post/rail — a Neoclassical / Regency / Federal-revival ornamental detail." },
+    { type: "style", clue: "carved_apron_seat_rail", confidence: 52, description: "Front seat rail carries a carved leaf-and-rosette motif centered on the apron, consistent with Neoclassical revival ornament." },
+    { type: "style", clue: "carved_rosette_leg_top", confidence: 52, description: "Carved sunburst/rosette medallions visible at the upper leg/arm junction on both sides, a Neoclassical decorative accent." },
+    { type: "style", clue: "tapered_carved_leg", confidence: 52, description: "Front legs are tapered and carry carved leaf ornament near the top, consistent with Neoclassical / Regency / Empire revival leg treatment." },
+    { type: "style", clue: "saber_leg_rear", confidence: 52, description: "Rear legs show a pronounced outward saber curve, a hallmark of Regency and American Empire seating forms and their 20th-century revivals." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members — arms, legs, crest rail, seat rail — appear to be solid wood throughout; no veneer or laminate visible on structural members." },
+    { type: "finish", clue: "shellac_intact", confidence: 55, description: "Frame finish shows warm amber-brown tone with darkening in carved recesses; consistent with intact shellac or lacquer. No obvious polyurethane plastic sheen visible. Moderate confidence — could be lacquer or varnish." },
+    { type: "condition", clue: "finish_wear_in_recesses", confidence: 54, description: "Carved recesses show accumulated darkening and minor wear consistent with age and use; no active damage or flaking observed." },
+    { type: "construction", clue: "reeded_rail_detail", confidence: 85, description: "Close-up of back rail shows multiple parallel rounded reeds machined or carved into the rail surface; reeds are uniform and consistent, suggesting machine-assisted production rather than hand-carved individual reeds." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "Seat, back panel, and loose cushions are covered in a large-scale floral pattern fabric with complex repeat; the pattern shows high complexity with multi-tone olive, gold, and brown coloration consistent with machine-loomed jacquard upholstery fabric. Could also be classified as damask (single-color reversible woven figure) but the multi-tone color variation and pile-like texture suggest jacquard rather than true damask." },
+    { type: "upholstery", clue: "loose_seat_cushion", confidence: 45, description: "Seat has a loose drop-in cushion rather than a tight-seat construction; cushion appears to have some loft suggesting foam or spring interior." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "Loose seat cushion shows consistent loft and shape retention consistent with polyurethane foam fill; no visible coil spring crown or feather-down softness. Consistent with post-1960 upholstery construction." },
+    { type: "upholstery", clue: "loose_back_cushion", confidence: 50, description: "A loose lumbar/bolster pillow in matching fabric rests against the upholstered back panel; this is a decorative accessory cushion, not the primary back upholstery." },
+    { type: "style", clue: "neoclassical_revival_style", confidence: 52, description: "Overall vocabulary — scrolled volute arms, reeded back posts, leaf-carved crest rail, carved apron with rosette, tapered legs with leaf carving, saber rear legs — is consistent with Neoclassical / Regency / Empire revival design. This vocabulary was popular in original Regency/Empire period (c. 1800–1840) and extensively revived in American furniture production c. 1890–1940 and again c. 1980–2010 in traditional-style upholstered seating." },
+    { type: "construction", clue: "upholstered_back_panel_in_frame", confidence: 85, description: "Back upholstery is set within the carved wood frame rather than over it; the fabric is tacked or stapled to the inner face of the back frame members, visible from the rear view." },
+    { type: "condition", clue: "upholstery_condition_good", confidence: 54, description: "Upholstery fabric appears clean, intact, and without visible tears, stains, or significant wear; consistent with relatively recent upholstery or well-maintained original." },
+    { type: "construction", clue: "carved_ornament_machine_assisted", confidence: 70, description: "Carved details (leaf crest rail, apron rosette, leg ornament) show consistent depth and regularity across multiple elements; likely machine-routed or CNC-assisted carving with possible hand-finishing, consistent with 20th–21st century production-quality traditional furniture rather than fully hand-carved antique work." },
+    { type: "style", clue: "open_arm_chair_form", confidence: 52, description: "Arms are open (exposed wood frame arms, not fully upholstered); the arm pad/rest area is not upholstered — arms are entirely carved wood, consistent with a fauteuil or open-arm lounge chair form." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered back panel set within frame" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+const eastlake_renaissance_revival_rocker: ScanFixture = {
+  label: "eastlake_renaissance_revival_rocker",
+  note:
+    "Eastlake-influenced Renaissance Revival Victorian rocking chair (carved " +
+    "lion-head medallion, incised V-groove, walnut burl panels; truly c.1870-1895). " +
+    "Engine returned 'Rocking chair', style UNRESOLVED, c.1890-1920. M17 (new): " +
+    "keyless-observation routing. Perception emitted 21 observations but 8 carry NO " +
+    "clue_key (clue=''), and ALL FOUR style observations are among them — the " +
+    "explicit 'American Renaissance Revival / Eastlake c.1870-1890' reads. Net is a " +
+    "double failure: (a) the keyless style evidence is dropped from attribution, so " +
+    "style_attribution=none, style_wave=none, final_style='Unresolved' on a piece " +
+    "screaming Eastlake/Renaissance Revival; and (b) the same keyless observations " +
+    "are still carried into P4 weighting and the Block-14 frame/upholstery split " +
+    "using their ENTIRE description STRING as the clue id (see the frame-clue list, " +
+    "and 'present but undated: ...Close-up of the arm post...'). So keyless obs are " +
+    "half-ignored (no attribution/dating contribution) and half-mangled " +
+    "(description-as-key). Secondary date issue: the working range c.1890-1920 RUNS " +
+    "PAST its own strongest fastener — cut_nail (1790-1890, authority 8/10, which " +
+    "P5 correctly favored over the post-1950 foam) caps at 1890, and every style " +
+    "read centers 1870-1890, yet the frame floor/ceiling is 1890-1920. With style " +
+    "lost, the date defaults later than the evidence supports (an Eastlake/RenRev " +
+    "piece is ~1875-1890, not 1890-1920). Fixing the keyless routing should restore " +
+    "the style attribution and pull the date back onto the evidence.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Overall front view shows a Victorian-era rocking chair with upholstered back and seat, open arms with carved terminals, turned front legs, and curved rocker runners. The chair has a tall upholstered back panel and a rounded upholstered seat." },
+    { type: "style", clue: "", confidence: 58, description: "Front view: The crest rail features a central carved lion-head or floral medallion roundel flanked by carved foliate/acanthus corner blocks. The lower apron shows a carved fan/shell motif with a central carved rosette. These are characteristic of American Renaissance Revival or Eastlake-influenced furniture, circa 1870-1890." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 45, description: "Front and side views show a solid walnut or walnut-stained hardwood frame. The crest rail and apron areas show what appears to be burl veneer panels inset into the solid wood frame, visible as a lighter, figured wood grain pattern on the crest rail." },
+    { type: "style", clue: "", confidence: 58, description: "Side view clearly shows the curved rocker runners extending well beyond the front and rear legs. The back post is straight and tall, the seat is circular/oval. The overall silhouette is consistent with an American Victorian platform or standard rocking chair, c. 1875-1895." },
+    { type: "condition", clue: "", confidence: 45, description: "Underside view shows the seat bottom is heavily worn, with significant finish loss, dark staining, and what appears to be old varnish crazing and surface degradation. The wood grain is exposed in many areas. This is consistent with age-related wear on an unfinished or minimally finished interior surface." },
+    { type: "fasteners", clue: "cut_nail", confidence: 50, description: "Underside view shows multiple small nail or tack heads visible in the seat platform wood. The pattern and size suggest cut tacks or wire tacks used to secure the original upholstery foundation. Some appear to be staples from a later reupholstery." },
+    { type: "condition", clue: "polyurethane_foam", confidence: 54, description: "Joinery closeup (seat underside detail) shows the seat platform is a solid wood panel, heavily aged and darkened, with visible grain running across the width. A yellow foam pad is visible sitting on top of the original seat platform, indicating a later reupholstery added modern foam over the original foundation." },
+    { type: "construction_cues", clue: "mortise_and_tenon", confidence: 45, description: "Joinery closeup showing turned front leg meeting the seat rail and stretcher. The turned leg appears to enter the seat rail via a mortise-and-tenon or round tenon joint. The stretcher similarly enters the leg with a round tenon. This is consistent with standard Victorian chair construction." },
+    { type: "style", clue: "", confidence: 58, description: "Top-down view of the chair laid flat shows the carved apron detail clearly: a central carved rosette medallion flanked by carved foliate/acanthus corner blocks at the arm terminals, and a fan/shell carved motif at the center bottom of the apron. The burl veneer inset panels on the crest rail are also visible. This ornamental vocabulary is consistent with American Renaissance Revival furniture, c. 1870-1890." },
+    { type: "hardware", clue: "nailhead_trim", confidence: 45, description: "Close-up of the arm/back junction shows the nailhead trim in detail. The nailheads are round, domed, and appear to be oxidized brass or japanned metal. They are set into a blue woven gimp/braid trim. The nailheads show faceted or patterned tops, suggesting they may be decorative reproduction or period nailheads. The blue gimp trim appears to be a later reupholstery addition." },
+    { type: "joinery", clue: "", confidence: 72, description: "Close-up of the arm post where it meets the seat rail shows a rectangular tenon or bridle joint. A small incised decorative V-groove or chamfer mark is visible on the arm post face, which is a characteristic Eastlake decorative incised line detail. The joint appears tight with no visible gap." },
+    { type: "style", clue: "", confidence: 58, description: "The incised V-groove/chamfer decoration visible on the arm post in the joinery closeup is a hallmark of the Eastlake style (Charles Locke Eastlake influence), popular in American furniture c. 1876-1890. This, combined with the carved medallions and burl veneer panels, strongly suggests an Eastlake-influenced Renaissance Revival American rocking chair." },
+    { type: "finish", clue: "shellac_intact", confidence: 45, description: "The arm and back post wood surfaces visible in the joinery closeup show a warm amber-brown finish with some surface scratches but overall intact. The sheen and color are consistent with an original or early shellac/varnish finish, possibly touched up. No evidence of polyurethane (which would appear more plastic-like)." },
+    { type: "condition", clue: "fully_upholstered", confidence: 54, description: "Back view shows the back of the upholstered panel with the same blue gimp and nailhead border. The back of the crest rail shows the wood is solid and intact. The rocker runners visible at bottom show wear consistent with use. The back post shows some surface scratches but no major structural damage visible." },
+    { type: "materials", clue: "fully_upholstered", confidence: 45, description: "The upholstery fabric on both seat and back is a cream/ivory ground with a small-scale repeating floral/sprig pattern in pink/rose. This appears to be a woven cotton or cotton-blend fabric, likely a later replacement upholstery (not original Victorian). The blue gimp trim is also a later addition consistent with a mid-to-late 20th century reupholstery." },
+    { type: "materials", clue: "", confidence: 45, description: "The primary wood appears to be walnut based on the dark reddish-brown color, straight grain visible on the arm posts and legs, and the overall warm tone. The burl veneer panels on the crest rail show a figured, swirling grain pattern consistent with walnut burl. Secondary/interior wood on the seat platform appears to be a lighter, less figured wood possibly poplar or pine used as a secondary wood." },
+    { type: "construction_cues", clue: "", confidence: 50, description: "Side view shows the turned front legs with multiple ring turnings and a vase-shaped element near the top. The stretchers between legs are also turned with ring details. This lathe-turned work is consistent with factory production of the Victorian era, not hand-turned artisan work, suggesting a commercially manufactured piece." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "foam over original seat platform" },
+    { type: "upholstery", clue: "jute_webbing", confidence: 50, description: "burlap/jute webbing" },
+    { type: "structure", clue: "backrest_present", confidence: 50, description: "backrest_present" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating_surface" },
+  ],
+  asSeen: {
+    formId: "Rocking chair",
+    display: "Rocking chair",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker];

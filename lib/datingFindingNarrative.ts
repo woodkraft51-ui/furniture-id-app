@@ -140,6 +140,20 @@ export function buildDatingFindingNarrative(input: {
   // convergence. Don't let it be presented as "the strongest layer convergence"
   // (which produced "c. 1910–1910 (0 corroborating layers)" on the Woodard chair).
   if (strongest && corroboratingCount(strongest.zone) <= 0) strongest = null;
+  // M15: a "strongest" zone that does NOT overlap the final working range must
+  // not be surfaced as the dating basis. refineDatingFromConvergence can
+  // correctly REJECT an early style-driven zone and keep p2's range; the
+  // narrative must not then resurface that rejected zone and claim it is
+  // "consistent with the working range" (e.g. strongest c.1800–1810 paired with
+  // a c.1900–2000 working range — disjoint by a century).
+  if (
+    strongest &&
+    finalDatingFloor != null &&
+    finalDatingCeiling != null &&
+    (strongest.zone.date_ceiling < finalDatingFloor || strongest.zone.date_floor > finalDatingCeiling)
+  ) {
+    strongest = null;
+  }
   const workingRange = formatRange(finalDatingFloor, finalDatingCeiling);
   const kind = finalStyle?.kind;
   const styleName = styleAttribution?.name ?? null;

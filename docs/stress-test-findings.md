@@ -36,6 +36,8 @@
 
 ### 2. "Academic" qualifier overreach
 
+> **FIXED** — see the Already-Fixed table below (`softenAcademicLabel` applied across all reconcileFinalStyle rules).
+
 **Surfaced by:** French Provincial Revival upholstered armchair scan.
 
 **Issue:** The "Academic" prefix on style attribution labels (e.g., "Academic French Louis XVI Revival") implies stylistic purity, carving sophistication, formal execution — qualities the piece often doesn't actually exhibit. Currently applied without gating on evidence.
@@ -72,6 +74,8 @@
 ---
 
 ### 4. Confidence cap too high when structural unknowns exist
+
+> **FIXED** — see the Already-Fixed table below. P1 gate caps confidence on the count of dating-structural categories present: 0 → 72, 1 → 80, 2 → 86, 3+ → 94 (the `62/75/85` figures in the proposal below were the original draft, superseded by the shipped ladder).
 
 **Surfaced by:**
 - French Provincial Revival upholstered armchair scan (95% confidence cap with major unknowns: no underside, no joinery visibility, no fastener evidence, no rail structure)
@@ -288,6 +292,8 @@ Per appraiser: "The subtype system is still over-prioritizing 'has arms + expose
 
 ### 14. Lamp form-routing failure — orphaned lamp form + material "trap" routing (MAJOR LOGIC ERROR)
 
+> **FIXED** — see the Already-Fixed table below (lamp scoring path + metal/brass-trap gating).
+
 **Surfaced by:** Slag-glass table lamp scan, 2026-05-20 (final identification returned "Brass bed or brass-frame furniture", subtype "Victorian brass bed", confidence 1.0).
 
 **Issue:** The perception layer correctly identified a slag-glass table lamp. The LLM emitted `lamp_form` (conf 68) and `clock_case_form` (conf 68, see #15). But the final form reconciliation returned **"Brass bed or brass-frame furniture."** Per appraiser: "the final form reconciliation catastrophically collapses... a downstream canonical-resolution failure overriding overwhelmingly correct upstream perception."
@@ -309,6 +315,8 @@ Per appraiser: "The subtype system is still over-prioritizing 'has arms + expose
 ---
 
 ### 15. Negated observations preserved as positive clues — form routing ignores negation (MAJOR ARCHITECTURE LOGIC ERROR)
+
+> **FIXED** — see the Already-Fixed table below (`negated` detection excludes self-rejected clues from clue_keys / scoreForms / weighting).
 
 **Surfaced by:** Slag-glass table lamp scan, 2026-05-20.
 
@@ -386,6 +394,24 @@ Per appraiser: "Functional identity should always outrank stylistic resemblance 
 
 ---
 
+### 18. Construction/mechanism evidence excluded from dating (M13) — DEFERRED ENGINE TASK
+
+**Surfaced by:** corpus fixtures — platform-rocker armchair (`platform_rocker_mechanism`, conf 95, "patented & popularized 1870s–90s") and Louis XVI repro lounge chair (`carved_ornament_machine_assisted`, "machine/CNC carving, 20th–21st c."). Both clues carry an intrinsically datable signal yet contribute **nothing** to the date.
+
+**Issue:** `CATEGORY_TO_LAYER` (`engineDatingOverlap.ts:493`) maps only joinery / fasteners / toolmarks / finish / hardware / materials / upholstery to dating layers. Observations the P0 model types as `construction` have no mapping, so they are dropped from dating entirely (`engineDatingOverlap.ts:648`) — even when the signal can pin a decade (a patented mechanism). At the weighted-clue level the category is `meta?.category || o.type` (`engine.ts:8275`), so a *single* clue can be rescued by authoring a `CLUE_LIBRARY` entry in a mapped category — but that is per-clue and reactive.
+
+**Why deferred, not point-fixed:** authoring clues one at a time (e.g. `platform_rocker_mechanism` → `hardware`) fixes one clue per pass. The leverage is systemic — let authored *construction* envelopes count toward dating directly. The catch: several construction clues already carry date hints (`slant_front` 1700–1860, `cylinder_roll` 1870–1920, `drop_leaf_hinged` 1720–1930, `gateleg_support`…) that would suddenly start contributing across many pieces, so this needs a deliberate design (e.g. only construction clues with an *authored* envelope date, or a curated mechanism-dating subset) plus corpus validation. Tracked as its own engine task — deliberately **not** bundled into a deploy.
+
+**Code locations:**
+- `lib/engineDatingOverlap.ts:493` — `CATEGORY_TO_LAYER` (no `construction` key)
+- `lib/engineDatingOverlap.ts:648` — unmapped categories dropped from dating
+- `lib/engine.ts:8275` — weighted-clue category = `meta?.category || o.type`
+- `lib/engine.ts:330` — `CLUE_LIBRARY` (where authored envelopes live)
+
+**Scope:** Medium engine task + authoring. Logic/architecture gap, not calibration.
+
+---
+
 ### Recorded but DEFERRED from the lamp rerun (reinforce existing open issues)
 
 The same lamp scan reinforced two existing calibration/synthesis issues (appraiser: "the remaining weakness is mainly overclassification"):
@@ -396,6 +422,8 @@ The same lamp scan reinforced two existing calibration/synthesis issues (apprais
 ---
 
 ## Already-Fixed During This Stress Test (for reference)
+
+> **Note on commit refs:** the short hashes below are *pre-squash* references. Each fix landed via a squash-merged PR, which retires the granular commit, so these hashes no longer resolve in `git`. The fixes are verified present at the code locations cited in each issue above.
 
 | Issue | Commit | Fix |
 |---|---|---|
@@ -408,7 +436,8 @@ The same lamp scan reinforced two existing calibration/synthesis issues (apprais
 | "Academic" qualifier overreach (#2) | `1557d2a` + `c396be8` | softenAcademicLabel applied across all 5 reconcileFinalStyle rules (incl. Rule 3 wave names) |
 | Adjacent revival-family bleed (#10, partial) | `c13cc43` | Confidence floor 0.55 + matched-term distinctness filter on user-facing alternatives |
 | Lamp routed to brass-bed trap; negated clues scored as positive (#14, #15) | `5934dea` | Lamp scoring path + metal/brass-trap gating; `negated` detection excludes self-rejected clues from clue_keys / scoreForms text / weighting |
-| Functional evidence overridden by fuel-word / styling resemblance (#16) | _this commit_ | Electric-first lamp routing; evaluateSubtype functional-contradiction guard + tie→null ambiguity guard |
+| Functional evidence overridden by fuel-word / styling resemblance (#16) | _(squashed PR)_ | Electric-first lamp routing; evaluateSubtype functional-contradiction guard + tie→null ambiguity guard |
+| "Strongest convergence" narrative claimed a century-disjoint zone (M15) | `21c2660` | Null the strongest zone in `datingFindingNarrative` when it doesn't overlap `[finalDatingFloor, finalDatingCeiling]` (narrative-only; corpus fidelity unchanged) |
 
 ---
 
