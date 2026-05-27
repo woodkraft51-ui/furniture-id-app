@@ -96,7 +96,7 @@ function tokenize(s: string): string[] {
 }
 
 function buildIndex(): FamilyIndex[] {
-  return STYLE_FAMILIES.map((family) => {
+  return STYLE_FAMILIES.filter((family) => !(family as any).inert_until_wired).map((family) => {
     const sources = [
       family.name ?? "",
       ...((family as any).canonical_source_aliases ?? []),
@@ -220,6 +220,11 @@ const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
   louis_xvi_revival_pattern: "style_family_louis_xvi_french_neoclassical",
   queen_anne_revival_pattern: "style_family_queen_anne",
   american_empire_style: "style_family_american_classical",
+  // Fix 3 (wicker): only the mid-century tradition is wired — it is the sole
+  // wicker tradition with a POSITIVE corpus signal. Bar Harbor / Victorian
+  // curlicue / Lloyd loom families exist but stay unwired until the M15
+  // absent-attribute negation fix (their corpus instances self-negate).
+  mid_century_streamlined_wicker: "style_family_mid_century_wicker",
 };
 
 export function attributeStyle(
@@ -259,6 +264,16 @@ export function attributeStyle(
   // confidence the stronger raw signal should take the label.
   const rawScoreById = new Map<string, number>();
   for (const { family, tokens } of getIndex()) {
+    // Structural-only families (e.g. Mid-Century Streamlined Wicker) attribute
+    // ONLY when their structural-pattern clue fired — never off loose alias
+    // tokens scraped from prose. Without this, generic name tokens (mid/century/
+    // wicker) catch pieces that merely mention wicker in passing (a negated
+    // "Not wicker" comparison, a hallucinated woven_body on an iron table). This
+    // enforces the authoring-gaps cane/wicker gating: incidental wicker mentions
+    // must not auto-route to the wicker tradition.
+    if ((family as any).requires_structural_routing && !structuralFamiliesPresent.has(family.id)) {
+      continue;
+    }
     const matched: string[] = [];
     let weightedScore = 0;
     tokens.forEach((t) => {

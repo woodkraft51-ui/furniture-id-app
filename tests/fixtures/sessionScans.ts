@@ -982,7 +982,8 @@ const william_mary_burl_escritoire_on_stand: ScanFixture = {
 // Wicker clues are CORRECT here (it IS wicker — not the woven-on-solid-wood M6).
 const peacock_emmanuelle_rattan_chair: ScanFixture = {
   label: "peacock_emmanuelle_rattan_chair",
-  note: "Peacock/Emmanuelle rattan chair (~1960s–80s) → 'Loom' c.1940–1950. M7→M6: NEGATED lloyd_loom_paper_fiber (0.910, 'NOT Lloyd loom') consumed as positive drives the 1920–1950 wood date. M8 chair→loom + M12-adjacent hallucinated Lloyd Flanders mark (both from the 'Lloyd loom' token; word-boundary fix can't catch a real-word wrong-entity match). fix#2 held.",
+  note: "[Fix 3 — STYLE RESOLVED, date path B: now attributes 'Mid-Century Streamlined Wicker' via the positive mid_century_streamlined_wicker structural clue (routed to style_family_mid_century_wicker). Per the label-now/date-path-B decision the wicker family carries no period envelope, so the old MCM 1940–1950 anchor drops and the date falls to c.1920–1930 (Low) — still the false-positive-lloyd-loom wood-date artifact, to be corrected in path B. STILL UNFIXED here (out of scope): the chair→'Loom' FORM misclass (M8) and the hallucinated Lloyd Flanders mark, both from the 'Lloyd loom' token.] " +
+    "Peacock/Emmanuelle rattan chair (~1960s–80s) → 'Loom' c.1940–1950. M7→M6: NEGATED lloyd_loom_paper_fiber (0.910, 'NOT Lloyd loom') consumed as positive drives the 1920–1950 wood date. M8 chair→loom + M12-adjacent hallucinated Lloyd Flanders mark (both from the 'Lloyd loom' token; word-boundary fix can't catch a real-word wrong-entity match). fix#2 held.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1016,12 +1017,12 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
   ],
   asSeen: {
     formId: "Loom",
-    display: "Mid-Century Modern / American Modernism Loom (also commonly called: Loom, Weaving loom)",
+    display: "Mid-Century Streamlined Wicker Loom (also commonly called: Loom, Weaving loom)",
     finalStyleKind: "original_period",
-    dateRange: "c. 1940–1950",
-    dateFloor: 1940,
-    dateCeiling: 1950,
-    confidence: "Moderate",
+    dateRange: "c. 1920–1930",
+    dateFloor: 1920,
+    dateCeiling: 1930,
+    confidence: "Low",
   },
 };
 
@@ -1904,6 +1905,14 @@ const eastlake_renaissance_revival_rocker: ScanFixture = {
 const wicker_rattan_barrel_lounge_chair: ScanFixture = {
   label: "wicker_rattan_barrel_lounge_chair",
   note:
+    "[Fix 3 — STYLE RESOLVED, date path B: now attributes 'Mid-Century Streamlined " +
+    "Wicker' via the positive mid_century_streamlined_wicker structural clue. The other " +
+    "three wicker traditions are authored but INERT (inert_until_wired) and the family " +
+    "is requires_structural_routing, so the self-negating victorian_curlicue_wicker / " +
+    "bar_harbor_style_wicker clues no longer mis-steer and incidental wicker mentions on " +
+    "other pieces (e.g. the iron bistro table) don't auto-route to wicker. Dating still " +
+    "deferred to path B — date stays 'Broad, not tightly dated' (the wicker-era dating " +
+    "gap below is unchanged).] " +
     "Dark-painted wicker/rattan barrel-back lounge chair (loose ticking-stripe " +
     "cushion). Form lounge_chair CORRECT (lounge_chair_form conf 78 fired and won — " +
     "posture path working, contrast the Louis XVI repro where it didn't fire). But " +
@@ -1960,7 +1969,7 @@ const wicker_rattan_barrel_lounge_chair: ScanFixture = {
   ],
   asSeen: {
     formId: "Lounge chair",
-    display: "Lounge chair (also commonly called: Easy chair, Club chair)",
+    display: "Mid-Century Streamlined Wicker Lounge chair (also commonly called: Easy chair, Club chair)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: null,
