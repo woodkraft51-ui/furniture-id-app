@@ -60,8 +60,8 @@ Counted once per specimen (not per note-mention).
 |---|---|---|
 | M8 | 8 | china_import_cedar_chest, swivit_space_age_pedestal_chair, logan_1914_tall_case_clock, jacobean_revival_tall_case_clock, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, victorian_barrel_back_parlor_chair, porter_balloon_canopy_chair |
 | M6 | 7 | renaissance_revival_sgabello, china_import_cedar_chest, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker |
+| M13 | 5 | victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, hollywood_regency_rococo_lounge_chair |
 | M11 | 4 | william_mary_burl_escritoire_on_stand, biedermeier_flame_walnut_secretary, rococo_renaissance_carved_settee, porter_balloon_canopy_chair |
-| M13 | 4 | victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table |
 | M12 | 3 | china_import_cedar_chest, swivit_space_age_pedestal_chair, phoenix_chair_co_windsor_rocker |
 | M7 | 3 | peacock_emmanuelle_rattan_chair, barley_twist_rush_seat_rocker, rococo_revival_parlor_armchair |
 | M1 | 2 | golden_oak_curved_glass_china_cabinet, midcentury_craft_panel_back_rocker |
@@ -114,4 +114,5 @@ Counted once per specimen (not per note-mention).
 | french_bistro_iron_faux_stone_table | — | M13 | — | #1 #11 | Louis XVI / French Neoclassical Bistro table (also commonly called: Bistro table, Bistro café table) | c. 1900 onward (early-to-mid 20th century or later) | Low |
 | painted_gilt_rococo_revival_settee | — | — | — | #5 #9 | Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa) | c. 1920–1930 | Moderate |
 | victorian_spindle_gallery_parlor_rocker | — | — | — | #17 | Rocking chair | c. 1890–1920 | Moderate |
+| hollywood_regency_rococo_lounge_chair | — | M13 | — | #3 #5 #9 | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
 
