@@ -342,6 +342,24 @@ Per appraiser: "Your engine currently appears to preserve rejected candidate lan
 
 ---
 
+### 15a. Style cues don't anchor dating — correct negation can erase the only date anchor (DOWNSTREAM of #15, KNOWN-RED)
+
+> **OPEN / DEFERRED** — pinned by the `KNOWN_RED` allowlist in `tests/corpus.test.ts` so the corpus gate flags it until fixed. Do not re-baseline the `art_deco_candelabrum` fixture to hide it.
+
+**Surfaced by:** the #15 negation hardening, 2026-05-27 (corpus negation re-baseline).
+
+**Two-part fix that exposed this (both landed):**
+1. **Harness faithfulness** — the scan corpus stubs `PE.p0`, the only place `normalizeObservationsFromParsed` (and thus `descriptionNegatesClue`) runs, so it had been consuming **stale hand-baked `negated` flags** and was blind to detector changes. `scripts/_scanCorpus.ts` now re-derives `negated` exactly as production does (one line in `runFixture`), and the corpus is now a real test (`tests/corpus.test.ts`, in CI) rather than a manual script. This surfaced 28 negations the corpus had been treating as positive.
+2. **Detector precision** — `descriptionNegatesClue` (engine.ts) now distinguishes a negated *presence* from a contrasted *subtype*: (a) a **quote rule** — a label/mark/text clue carrying a transcribed quote is affirmed even when prose adds "...not a maker's mark" (kept the Sears freight label's dating); (b) an **affirmation guard** — a term asserted present ("Backrest is integral", "nailheads visible") survives a later subtype contrast, while a leading no/not disqualifies self-affirmation so "No Eastlake hardware visible" still negates.
+
+**The remaining bug (`art_deco_candelabrum`, KNOWN-RED):** with `painted_metal_finish` now correctly negated ("does not appear to be painted enamel … patina/verdigris … bronze/brass"), the piece loses its **only** hard 20th-century anchor — that clue's `dateHint: post-1900`. The Art Deco style observations (`art_deco_style_cues` etc.) carry **no `dateHint` and are not in `CLUE_LIBRARY`**, so they contribute 0 to the dating layer; dating collapses from `c. 1925–1995 / original_period` to `c. 1850 onward / unresolved`. Same class as the open style-prose-ignored cluster (#6): **dated style evidence doesn't anchor dating.**
+
+**Proposed approach:** give the deco/period style-cue clues a date envelope (CLUE_LIBRARY `dateHint`/range) or let corroborated style-prose dates anchor a floor when no construction/material anchor survives — the #6 Phase-1 mechanism, generalized to named-period style cues. Re-confirm `art_deco_candelabrum` reproduces `c. 1925–1995 / original_period`, then remove it from `KNOWN_RED`.
+
+**Scope:** Small-medium. Calibration + small library authoring; shares a root with #6.
+
+---
+
 ### 16. Functional evidence overridden by fuel-word / decorative resemblance (MAJOR LOGIC ERROR — FIXED)
 
 **Surfaced by:** Slag-glass electric table lamp scan, 2026-05-20 (rerun after #14/#15). Form held in the lamp family correctly (#14/#15 confirmed working) but resolved to **"French Louis XVI Revival Kerosene lamp"**, subtype "Center-draft kerosene lamp" (conf 1.0) — despite `electric_table_lamp` (conf 70), electric cord, standard E26 socket, and explicit "electric rather than oil/kerosene function" observations.

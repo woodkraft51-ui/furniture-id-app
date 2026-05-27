@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit -p tsconfig.dev.json",
-    "test:fixes": "node --import tsx --test tests/fixes.test.ts"
+    "test": "node --import tsx --test tests/fixes.test.ts tests/corpus.test.ts",
+    "test:fixes": "node --import tsx --test tests/fixes.test.ts",
+    "test:corpus": "node --import tsx --test tests/corpus.test.ts"
   },
   "dependencies": {
     "heic2any": "^0.0.4",
