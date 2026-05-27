@@ -2300,4 +2300,74 @@ const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee];
+const midcentury_neoclassical_cane_lounge_chair: ScanFixture = {
+  label: "midcentury_neoclassical_cane_lounge_chair",
+  note:
+    "Mid-century (c.1960s-70s) Hollywood Regency / neoclassical-revival LOUNGE/CLUB " +
+    "chair: wood frame with machine-pressed CANE side+back panels, fluted tapered " +
+    "legs, carved rosette corner blocks, velvet button-tufted cushions, foam. " +
+    "CONTRAST WIN on style: 'Modern Louis XVI / French Neoclassical Reproduction' is " +
+    "DEFENSIBLE here — fluted tapered legs are genuinely Louis XVI/neoclassical " +
+    "(matched 'xvi','neoclassical'), unlike the Rococo settee/lounge that were Louis " +
+    "XV mislabeled as XVI. So Louis XVI attribution works when the evidence is " +
+    "really neoclassical (useful contrast for the #5 sub-style thread). Recurring " +
+    "gaps: (1) M16 100-YEAR SPAN (n=2): working range c.1900-2000 on an obviously " +
+    "1960s-70s piece — a 1900-1930 convergence (wood/upholstery/style_wave) exists " +
+    "but P2 reports 'No layer convergence' and anchors the evidence-floor at 1900 " +
+    "with an open ceiling -> 2000. (2) M13-class: the strongest mid-century signals " +
+    "(carved_rosette_ornament '1960s-70s' [hardware], style_cues '1960s-70s' " +
+    "[style]) carry no dated layer, so they never pin the date later. (3) CANE-> " +
+    "WICKER OVERREACH (n=2 with HR cane wing chair): cane PANELS set in a routed " +
+    "wood-frame groove trigger woven_body/cane_panels -> 'Wicker/rattan furniture' " +
+    "alt-form + the 'Wicker, reed, or rattan construction...' limitation on a " +
+    "WOOD-framed chair; cane_panels also dates the WOOD/substrate layer (1900-2000). " +
+    "POSITIVE control (M12): visible_text + maker_label fired on ambiguous incised " +
+    "corner-block marks but NO maker was hallucinated (maker_label negated via " +
+    "'rather than a maker mark', conf 30). negated:true on maker_label, matching the " +
+    "as-seen run.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Loose tufted seat cushion resting on a wood-framed seat platform; chair is clearly a seating form." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has full arms with upholstered arm pads, cane side panels filling the arm/side area, and a barrel-curved back — consistent with a barrel-back armchair or club chair form." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Curved barrel back with cane panel and a separate loose back cushion resting against it." },
+    { type: "structure", clue: "cane_panels", confidence: 82, description: "Machine-woven cane panels visible on both side panels and the back panel of the chair. Cane is set into a routed groove in the wood frame rail. Pattern is the standard hexagonal open-weave cane." },
+    { type: "structure", clue: "woven_body", confidence: 82, description: "Cane weave body panels on sides and back; close-weave hexagonal pattern consistent with machine-pressed sheet cane set into a routed groove rather than hand-pegged strand cane." },
+    { type: "construction", clue: "wicker_weave_close", confidence: 80, description: "Cane panel weave is tight and close with a regular hexagonal pattern; consistent with machine-pressed sheet cane common in mid-20th-century production." },
+    { type: "structure", clue: "vertical_supports", confidence: 82, description: "Four tapered, fluted legs visible — front legs are square-sectioned with fluting, rear legs visible in side and back views. Legs taper toward the foot." },
+    { type: "style", clue: "carved_corner_block", confidence: 52, description: "Square corner blocks at the arm-to-back-post junction carry a cast or carved floral rosette motif — a sunflower/daisy pattern in relief. Visible on both front arm corners. This is a decorative hardware or carved-wood accent consistent with neoclassical revival or Hollywood Regency styling." },
+    { type: "style", clue: "style_cues", confidence: 52, description: "Combination of barrel back, fluted tapered legs, carved rosette corner blocks, cane panels, and gold striped velvet tufted cushions is consistent with Hollywood Regency or neoclassical revival styling popular in American furniture c. 1960s–1970s." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 55, description: "The square corner block at the arm-to-post junction in the joinery closeup shows a through-block construction where the arm rail meets the back post. The block geometry and the way the rail seats into it suggests mortise-and-tenon or through-tenon joinery at this junction, though the joint itself is not fully exposed." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 82, description: "Frame members — legs, rails, back rail, arm rails — appear to be solid wood (likely walnut or walnut-stained hardwood) based on visible grain, color, and the way the carved rosette block is rendered. No visible veneer peeling or laminate edges." },
+    { type: "materials", clue: "wood_species", confidence: 55, description: "Frame is medium-to-dark brown with warm undertones. Could be black walnut, walnut-stained mahogany, or walnut-stained poplar/gumwood. Grain visible on the back rail in the back-view image shows a diffuse-porous hardwood. Species not definitively identifiable from photos alone." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "Seat and back cushions are covered in a gold/olive-green striped cut-pile velvet. Upright pile is visible at angle; nap-direction shading creates the stripe pattern (alternating cut-pile direction stripes). Consistent with rayon or synthetic velvet common in 1960s–1970s American furniture. The striped pattern is created by alternating pile direction, not by woven color stripes — this is still classified as velvet_cover." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "Both seat and back cushions show deep regular button tufting with covered fabric buttons visible at each dimple. Buttons are covered in the same striped velvet as the cushion face. Regular grid pattern of tufting across the seat cushion; back cushion has a smaller grid of buttons." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "Cushion profile and the way the tufting pulls into the cushion surface is consistent with polyurethane foam fill rather than traditional spring or horsehair construction. Cushions are loose (not attached) and have a modern foam-like profile." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "The seat appears to be a loose drop-in cushion resting on the wood frame platform rather than a sprung seat. No coil spring or serpentine spring evidence visible through the cane side panels or frame." },
+    { type: "condition", clue: "condition_cues", confidence: 54, description: "Wood frame shows minor surface wear and darkening at contact points. Cane panels appear intact with no visible breaks or sagging. Cushion velvet shows minor soiling and a small stain visible on the seat cushion in the closeup. Arm pad velvet shows slight fraying at one edge (visible in back view). Overall condition is good for age." },
+    { type: "condition", clue: "refinished_surface", confidence: 50, description: "Wood frame finish appears relatively uniform and smooth without significant shellac crazing or deep patina. Could be original lacquer or a later refinish. No definitive evidence of stripping or sanding loss, but the finish reads as a mid-century lacquer or varnish rather than aged shellac." },
+    { type: "hardware", clue: "carved_rosette_ornament", confidence: 45, description: "Cast or carved floral rosette (sunflower/daisy motif) applied to or carved into the square corner block at the front arm-to-post junction. Appears to be a separate applied metal or carved wood ornament with a central boss and radiating petals. Consistent with neoclassical revival decorative hardware c. 1960s–1970s." },
+    { type: "style", clue: "fluted_legs", confidence: 52, description: "Front legs are square-sectioned with vertical fluting — a neoclassical motif associated with Louis XVI, Federal, and neoclassical revival styles. Legs taper toward the foot." },
+    { type: "form", clue: "barrel_back_form", confidence: 68, description: "The back rail curves in a continuous barrel arc from one arm post to the other, visible clearly in the back-view image. This barrel-back form is characteristic of certain neoclassical and mid-century club chair designs." },
+    { type: "visible_text", clue: "visible_text", confidence: 40, description: "No maker labels, stamps, stencils, or legible text visible in any of the submitted images. The joinery closeup of the corner block shows incised marks that could be a maker's stamp or assembly mark, but the characters are not clearly legible — possibly 'H' or similar letter forms incised into the wood block." },
+    { type: "label", clue: "maker_label", confidence: 30, negated: true, description: "The joinery closeup of the rear arm corner block shows what appears to be incised or stamped characters on the face of the square block — possibly a maker's mark, model number, or assembly mark. Characters appear to include vertical and horizontal strokes but are not clearly legible in the image. Low confidence; could be tool marks or decorative incising rather than a maker mark." },
+    { type: "context", clue: "french_provincial_style", confidence: 48, description: "Louis XVI influence" },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "small stain on seat cushion" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+    { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
+    { type: "form", clue: "club_chair_form", confidence: 76, description: "Club-chair vocabulary with deep upholstery indicates club chair variant. Canonical: form_lounge_chair / subtype_lounge_club." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair)",
+    styleContext: "Louis XVI / French Neoclassical",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1900–2000",
+    dateFloor: 1900,
+    dateCeiling: 2000,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee, midcentury_neoclassical_cane_lounge_chair];
