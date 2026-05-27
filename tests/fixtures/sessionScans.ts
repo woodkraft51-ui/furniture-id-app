@@ -2172,6 +2172,11 @@ const victorian_spindle_gallery_parlor_rocker: ScanFixture = {
 const hollywood_regency_rococo_lounge_chair: ScanFixture = {
   label: "hollywood_regency_rococo_lounge_chair",
   note:
+    "[RESOLVED — Fix 2: now attributes the Rococo Revival family -> 'French Provincial / " +
+    "Rococo Domestic Revival (revival_wave)' (date-consistent c.1920-1930). The HR cue + " +
+    "cabriole synthesizes rococo_revival_pattern, breaking the 3-way 0.82 tie away from " +
+    "Louis XVI (the least-apt winner). Date left unchanged per owner (label-only); the " +
+    "HR-glam wave (1930-1970) is out of date-range, hence the French Provincial wave.] " +
     "Cream/gold painted carved-wood lounge chair, Rococo Revival / Louis XV " +
     "vocabulary with Hollywood Regency execution (pierced acanthus crest, cabriole " +
     "scroll-foot legs, tufted jacquard, foam) — a mid-century (c.1950s-1980s) " +
@@ -2223,8 +2228,8 @@ const hollywood_regency_rococo_lounge_chair: ScanFixture = {
   ],
   asSeen: {
     formId: "Lounge chair",
-    display: "French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair)",
-    styleContext: "Louis XVI / French Neoclassical",
+    display: "French Provincial / Rococo Domestic Revival Lounge chair (also commonly called: Easy chair, Club chair)",
+    styleContext: "Rococo Revival / Naturalistic Victorian",
     finalStyleKind: "revival_wave",
     dateRange: "c. 1920–1930",
     dateFloor: 1920,

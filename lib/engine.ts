@@ -8091,10 +8091,27 @@ if (missing.label_photo) {
         .filter((o) => !o.negated && o.clue && EASTLAKE_ORNAMENT_CATEGORY[o.clue])
         .map((o) => EASTLAKE_ORNAMENT_CATEGORY[o.clue as string])
     );
-    const styleClueKeys =
-      eastlakeOrnamentCats.size >= 2
-        ? [...(frameDigest.clue_keys || []), "victorian_eastlake_pattern"]
-        : frameDigest.clue_keys || [];
+    const synthesizedPatternKeys: string[] = [];
+    if (eastlakeOrnamentCats.size >= 2) synthesizedPatternKeys.push("victorian_eastlake_pattern");
+
+    // Hollywood Regency Rococo-Glam (Fix 2). A structured hollywood_regency_style_cue on a
+    // Rococo / Louis-XV form (cabriole) is a mid-century Rococo-glam reproduction. Route to
+    // Rococo Revival (rococo_revival_pattern already maps there in STRUCTURAL_PATTERN_FAMILY)
+    // so the generic louis/french/provincial prose tokens can't win the 3-way 0.82 family
+    // tie — Louis XVI was the least apt of the three. Rule 3 then resolves the
+    // date-appropriate Rococo Revival revival-wave (French Provincial / Rococo Domestic
+    // Revival, 1920-1965, for this late-1920s piece). Gate requires the EXPLICIT HR cue:
+    // prose-only HR pieces and genuine neoclassical reproductions lack it and are untouched.
+    const styleObs = frameDigest.observations || [];
+    const hasNonNegatedClue = (clue: string) =>
+      styleObs.some((o) => o.clue === clue && !o.negated);
+    if (hasNonNegatedClue("hollywood_regency_style_cue") && hasNonNegatedClue("cabriole_leg")) {
+      synthesizedPatternKeys.push("rococo_revival_pattern");
+    }
+
+    const styleClueKeys = synthesizedPatternKeys.length
+      ? [...(frameDigest.clue_keys || []), ...synthesizedPatternKeys]
+      : frameDigest.clue_keys || [];
     const styleRanked = attributeStyle(styleClueKeys, styleDescriptions);
 
     // Distinctiveness gate (2026-05-20): only attributions that rest on real
