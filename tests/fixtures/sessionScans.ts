@@ -1630,16 +1630,19 @@ const renaissance_revival_tufted_armchair: ScanFixture = {
     "clues are present and no table clue is. asSeen records the PRODUCTION (main) " +
     "outcome: c.1850-1920 / original_period, frame conf Low (the 'Moderate' the " +
     "user saw is the separate P1 display cap) — a reasonable read for a ~1865-1885 " +
-    "piece. DATING DIVERGENCE (fidelity gate ✗ on dateRange/dateFloor/" +
-    "finalStyleKind; confidence matches at Low; formId ✓): this branch's " +
-    "engine returns c.1900-1920 / Low / late_period — floor pulled to 1900 and " +
-    "relabeled 'late-period production'. The branch's dating-fix stack " +
-    "(evidence-floor / pre-machine-termini-cap / style-prose-anchor) appears to " +
-    "push this genuinely-original-period frame LATE and flip its kind — a candidate " +
-    "dating REGRESSION vs main, worth reviewing before the branch syncs to main. " +
-    "Likely contributor: the 1960-1990 style_wave spawned by the " +
-    "upholstery_likely_replaced reupholstery note (the revival-wave-from-" +
-    "reupholstery pattern, escritoire/settee cluster).",
+    "piece. DATING (resolved — NOT an engine regression): the earlier fidelity ✗ " +
+    "was a fixture-faithfulness artifact. The modern_caster obs self-negates ('no " +
+    "modern caster evidence visible'); a real scan's p0 sets negated:true " +
+    "(descriptionNegatesClue matches 'no modern caster' / 'rather than modern'), " +
+    "excluding it from weighted_clues. The corpus harness STUBS p0, so that flag " +
+    "was missing — modern_caster's post-1900 envelope then drove the hardware " +
+    "layer to a 1900 floor, which the evidence-floor anchor latched onto → " +
+    "c.1900-1920 / late_period. With negated:true now set on the obs (as a real " +
+    "scan produces), the branch reproduces main EXACTLY: c.1850-1920 / " +
+    "original_period. The 1960-1990 style_wave exists but was not the binding " +
+    "constraint. SYSTEMIC NOTE: the harness skips p0 negation normalization for " +
+    "stubbed fixtures — fixtures must carry `negated` explicitly (or the harness " +
+    "should apply descriptionNegatesClue); tracked as a corpus-infra follow-up.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -1655,7 +1658,7 @@ const renaissance_revival_tufted_armchair: ScanFixture = {
     { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members visible at crest rail, stiles, arm supports, legs, and apron appear to be solid wood throughout; no veneer or laminate visible on structural members." },
     { type: "materials", clue: "walnut_probable", confidence: 72, description: "Frame wood is dark brown with warm undertones and fine grain visible at carved surfaces; consistent with black walnut, the dominant Victorian parlor chair wood c. 1860–1890. Could also be stained mahogany or cherry but walnut is most probable given color and grain." },
     { type: "hardware", clue: "porcelain_caster", confidence: 62, description: "Small casters visible on front legs; appear to be small wheel casters with brass/metal housing; at this scale difficult to confirm porcelain vs. early rubber, but the small size and period context suggest porcelain or early brass-cup casters consistent with Victorian parlor furniture c. 1840–1910." },
-    { type: "hardware", clue: "modern_caster", confidence: 60, description: "Casters appear to be period-appropriate small wheel type rather than modern rubber or plastic casters; no modern caster evidence visible." },
+    { type: "hardware", clue: "modern_caster", confidence: 60, negated: true, description: "Casters appear to be period-appropriate small wheel type rather than modern rubber or plastic casters; no modern caster evidence visible." },
     { type: "construction", clue: "turned_front_legs", confidence: 90, description: "Front legs are turned with ring/reel turnings visible; consistent with Victorian parlor chair construction c. 1860–1890." },
     { type: "construction", clue: "saber_rear_legs", confidence: 88, description: "Rear legs are curved/saber-style, splaying outward and backward; visible in side and back views; common in Victorian parlor seating." },
     { type: "condition", clue: "wood_cracking_apron", confidence: 45, description: "Significant wood cracking and checking visible on the front seat apron/rail; wood appears to have split along grain lines, consistent with age-related drying and stress; supports genuine age rather than reproduction." },
