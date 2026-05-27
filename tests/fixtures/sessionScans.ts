@@ -1901,4 +1901,135 @@ const eastlake_renaissance_revival_rocker: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker];
+const wicker_rattan_barrel_lounge_chair: ScanFixture = {
+  label: "wicker_rattan_barrel_lounge_chair",
+  note:
+    "Dark-painted wicker/rattan barrel-back lounge chair (loose ticking-stripe " +
+    "cushion). Form lounge_chair CORRECT (lounge_chair_form conf 78 fired and won — " +
+    "posture path working, contrast the Louis XVI repro where it didn't fire). But " +
+    "date = 'Broad, not tightly dated' and style UNRESOLVED on a piece that is " +
+    "datable BY TRADITION. WICKER-ERA DATING GAP (extends M13/#18): the engine " +
+    "captured every wicker-era clue — victorian_curlicue_wicker (c.1880-1900), " +
+    "bar_harbor_style_wicker (c.1900-1920), mid_century_streamlined_wicker " +
+    "(c.1945-1970), wicker_weave_open (c.1900-1920) — but each carries its date band " +
+    "only in DESCRIPTION PROSE and is typed style/construction, so NONE reach a " +
+    "dating layer: overlap is form-only (1700->open), 0 convergence zones. NEGATION " +
+    "(#15) DETECTION-WINDOW GAP: bar_harbor_style_wicker ('does NOT exhibit the Bar " +
+    "Harbor weave') and victorian_curlicue_wicker ('NO scrolls, curlicues visible') " +
+    "self-negate yet enter as POSITIVE 0.64, and bar_harbor even STEERS the P5 " +
+    "conflict toward Bar Harbor (1900-1920) over mid-century. descriptionNegatesClue " +
+    "misses them because the negation names ABSENT ATTRIBUTES ('no scrolls') not the " +
+    "clue's canonical phrase ('victorian curlicue wicker'), which never appears " +
+    "contiguous with the negation cue. Contrast: solid_wood_construction / " +
+    "maker_label / painted_metal_finish / chintz_cover DID negate (canonical phrase " +
+    "IS contiguous with 'no'/'not') — hence negated:true on those four, matching the " +
+    "as-seen run (they were dropped from the frame split). STYLE UNRESOLVED + form " +
+    "headline drops 'wicker' (just 'Lounge chair'; Wicker/rattan only an alternative). " +
+    "DATA HYGIENE: rattan_frame emitted twice (construction conf 88 + materials conf " +
+    "84) double-counts in P4 + the undated bucket (dedupe keys on type|clue|description).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Wicker-woven seat surface present; loose ticking-stripe cushion placed on top in one image." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Large rounded barrel-style backrest with arched crest rail, fully wicker-woven, visible in all images." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Chair has integrated wicker armrests on both sides with open cutout holes at the arm-to-back junction, confirming armchair form." },
+    { type: "function", clue: "sitting", confidence: 70, description: "Piece is a seating chair designed for sitting; loose cushion present in one view." },
+    { type: "materials", clue: "woven_body", confidence: 84, description: "Entire chair body — seat, back, arms, apron — is wicker-woven over a structural rattan or reed frame." },
+    { type: "materials", clue: "rattan_frame", confidence: 84, description: "Structural frame members visible at legs, stretcher, and arm/back crest are rattan poles, dark-painted, with characteristic node rings visible at leg wraps." },
+    { type: "style", clue: "mid_century_streamlined_wicker", confidence: 52, description: "Chair exhibits streamlined rounded barrel-back form, relatively simple curves without Victorian curlicue ornament, consistent with mid-century or later wicker production c. 1945–1980. No scrolls, fans, or heavy Victorian ornament visible." },
+    { type: "style", clue: "wicker_weave_close", confidence: 52, description: "Weave on seat, back panel, and arm panels is tight and close with minimal gaps between strands, indicating quality production weave." },
+    { type: "style", clue: "wicker_weave_open", confidence: 52, description: "Lower apron band shows a more open basket-weave pattern with visible gaps, contrasting with the tighter weave above." },
+    { type: "style", clue: "wicker_weave_basket", confidence: 52, description: "Lower apron section exhibits a basket-weave over-under pattern in groups, visible in the front image." },
+    { type: "construction", clue: "rattan_frame", confidence: 88, description: "Legs are rattan poles with visible node-ring wrapping at joints; front legs show turned/wrapped decorative banding; stretcher bar connects front legs at base." },
+    { type: "condition", clue: "wicker_strand_breakage", confidence: 54, description: "Fraying and loose strand ends visible at the open cutout edges of the arm-to-back junction on both sides; minor strand breakage at rear leg wrap area visible in side view." },
+    { type: "condition", clue: "painted_metal_finish", confidence: 54, negated: true, description: "Frame is not metal; rattan poles appear dark-painted or stained rather than painted metal. No metal frame members detected." },
+    { type: "condition", clue: "wicker_paint_buildup", confidence: 45, description: "The dark brown/black coloration on the outer arm panels, crest rail, and legs appears to be a painted or stained finish applied over the wicker and rattan; the natural tan interior weave suggests either selective painting or a two-tone intentional design. Multiple paint layers cannot be confirmed from photos." },
+    { type: "style", clue: "bar_harbor_style_wicker", confidence: 52, description: "Chair does not exhibit the open airy geometric Bar Harbor weave; weave is close and the form is more rounded/barrel-back than the angular Bar Harbor style." },
+    { type: "style", clue: "victorian_curlicue_wicker", confidence: 52, description: "No scrolls, curlicues, fans, hearts, or heavy Victorian ornament visible. Form is clean and streamlined." },
+    { type: "upholstery", clue: "chintz_cover", confidence: 40, negated: true, description: "Loose seat cushion visible in joinery_closeup image shows a blue-and-white ticking stripe pattern on what appears to be a cotton fabric. This is a ticking stripe cotton cover, not chintz. Best classified as a plain woven cotton stripe — no glaze visible. Cushion is a loose drop-in pad, not integral upholstery." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "Loose seat cushion shows regular grid of tufted dimples across its surface; buttons or stitching hold the tufting. Appears stitch-tufted with visible button or tie points at regular intervals." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 50, description: "The wicker seat base has no spring construction; it is a flat woven surface. The loose cushion is a simple padded drop-in with no spring lift." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 92, negated: true, description: "No solid wood construction detected; piece is rattan-framed wicker throughout." },
+    { type: "label", clue: "maker_label", confidence: 85, negated: true, description: "No maker label, stamp, tag, or visible text detected in any of the three images." },
+    { type: "structure", clue: "vertical_supports", confidence: 82, description: "Four rattan pole legs visible; front legs show decorative wrapped banding; rear legs visible in side view as straight dark rattan poles." },
+    { type: "structure", clue: "stretchers", confidence: 82, description: "A horizontal stretcher bar connects the two front legs at the base, visible in the front image." },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "loose seat cushion" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+    { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "Lounge chair (also commonly called: Easy chair, Club chair)",
+    finalStyleKind: "unresolved",
+    dateRange: "Broad, not tightly dated",
+    dateFloor: null,
+    dateCeiling: null,
+    confidence: "Low",
+  },
+};
+
+const french_bistro_iron_faux_stone_table: ScanFixture = {
+  label: "french_bistro_iron_faux_stone_table",
+  note:
+    "French bistro/garden IRON table: scrolled wrought/cast-iron trestle base, oval " +
+    "faux-stone top (painted MDF/laminate, NOT natural stone). Form bistro_cafe_table " +
+    "CORRECT. Three failures stacked. (1) WICKER VOCAB MISFIRES ON IRON: " +
+    "victorian_curlicue_wicker fired (its own prose says 'NOT wicker; however the " +
+    "scrollwork...') AND woven_body ('Woven wicker or reed body construction is " +
+    "visible') conf 76 — there is NO wicker on this iron table. Both enter POSITIVE: " +
+    "victorian_curlicue_wicker (0.64) becomes a style clue + drives the P5 conflict; " +
+    "woven_body seeds the 'Wicker/rattan furniture' alt-form + the bogus 'Wicker, " +
+    "reed, or rattan construction...' limitation. The 'Not wicker' negation is missed " +
+    "(canonical phrase not contiguous with the cue — same window gap as the wicker " +
+    "chair). (2) THIN-TOKEN STYLE MISFIRE (#1/#11): attribution matched the single " +
+    "token 'french' (from french_bistro_garden_table_influence) -> 'Louis XVI / " +
+    "French Neoclassical' conf 0.6, leaking that formal-style label into the form " +
+    "display ('Louis XVI / French Neoclassical Bistro table') on a garden/bistro " +
+    "table that is NOT Louis XVI. (3) MODERN-MATERIAL CLUE NOT DATED (M13 class): the " +
+    "faux-stone laminate/MDF top (top_material_ambiguous, refinished_surface) is the " +
+    "strongest 'later-20th-c reproduction' signal but carries no date envelope, so " +
+    "the date rests on the partly-bogus wicker-driven style_wave (1880-1930) + " +
+    "welded_joint (post-1910) and lands c.1900-1930 — too early for a welded, " +
+    "laminate-topped repro. seating_surface ('No seating surface present') correctly " +
+    "negated:true (dropped in the as-seen run). door_present (conf 58, 'Door evidence " +
+    "is visible') is a hallucination on a table — left positive (as-seen).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "flat_surface", confidence: 68, description: "Oval tabletop visible in both overall_front and overall_side images; substantial thickness approximately 1.5-2 inches at edge." },
+    { type: "form", clue: "seating_surface", confidence: 68, negated: true, description: "No seating surface present; this is a table form only." },
+    { type: "structure", clue: "metal_frame", confidence: 82, description: "Entire base structure is metal — two trestle-style end supports with scrolled volutes connected by a central horizontal stretcher bar, all in dark iron-toned metal." },
+    { type: "style", clue: "victorian_curlicue_wicker", confidence: 52, description: "Not wicker; however, the scrollwork ornament vocabulary (volutes, C-scrolls, S-scrolls, foliate terminals) is consistent with Victorian garden furniture or French bistro/jardinière iron table aesthetic, c. 1880–1940." },
+    { type: "materials", clue: "wrought_iron", confidence: 45, description: "Base appears to be wrought or cast iron with dark brown-black finish showing surface oxidation. The scrolled rod elements suggest wrought iron or tubular steel bent and assembled; cast iron more likely for the flat decorative panels visible in joinery_closeup." },
+    { type: "materials", clue: "painted_metal_finish", confidence: 84, description: "Metal base shows a dark brown-black painted or powder-coated finish with visible surface oxidation and rust patina over the paint layer." },
+    { type: "materials", clue: "rust_pitting", confidence: 80, description: "Active iron oxidation visible on base members, particularly at lower scrolled feet and stretcher areas visible in underside and joinery_closeup images." },
+    { type: "materials", clue: "refinished_surface", confidence: 45, description: "Tabletop surface shows a mottled faux-stone or decorative painted finish in gray-brown-mauve tones. The surface appears to be a painted or laminate faux-marble/stone treatment rather than natural stone — the pattern is too uniform and soft-edged for natural stone, and the top appears lightweight relative to its size. Could be painted MDF, painted wood, or a laminate panel." },
+    { type: "construction", clue: "welded_joint", confidence: 60, description: "Joints between scrolled iron members and structural uprights visible in joinery_closeup images. The junction points appear to be welded or brazed rather than hand-forged; no visible rivet heads. Weld or braze fillet visible at scroll-to-upright junctions." },
+    { type: "construction", clue: "brazed_metal_joint", confidence: 45, description: "At scroll junctions visible in joinery_closeup, the joining method appears to be brazing or welding — a fillet of material is visible at the joint corners. No rivet heads visible. Consistent with late 19th to mid 20th century decorative iron furniture production." },
+    { type: "style", clue: "scrollwork_ornament", confidence: 52, description: "Elaborate C-scroll and S-scroll ornament throughout the base: scrolled volutes at top apron connecting to tabletop, scrolled feet at base, central decorative panel with symmetrical scroll composition. Style vocabulary consistent with French garden/bistro table tradition or Victorian decorative ironwork, c. 1880–1950." },
+    { type: "structure", clue: "frame_members", confidence: 82, description: "Two trestle-style end supports, each composed of vertical uprights with scrolled feet and scrolled top apron, connected by a horizontal stretcher bar at mid-height. The stretcher is visible in the underside closeup." },
+    { type: "structure", clue: "stretchers", confidence: 82, description: "Horizontal stretcher bar connecting the two trestle end supports visible in underside and joinery_closeup images." },
+    { type: "condition", clue: "joint_corrosion", confidence: 54, description: "Corrosion concentrated at metal joints and lower base members visible in underside and joinery_closeup images; surface rust and oxidation present throughout base." },
+    { type: "condition", clue: "condition_overall", confidence: 54, description: "Base shows moderate oxidation and surface rust consistent with age or outdoor/semi-outdoor use. Tabletop surface shows wear and mottling but is structurally intact. No major structural damage visible." },
+    { type: "materials", clue: "top_material_ambiguous", confidence: 65, description: "Tabletop surface texture in overall_side closeup shows a mottled gray-brown-mauve pattern that reads as faux-stone painting or decorative laminate rather than natural stone. The edge profile appears relatively thin and uniform. Natural stone of this size would typically show more weight and a crisper edge profile. Most likely a painted wood, MDF, or laminate panel with faux-stone decorative finish." },
+    { type: "style", clue: "french_bistro_garden_table_influence", confidence: 52, description: "The combination of oval top, scrolled iron trestle base with decorative apron and feet, and overall proportions is consistent with French bistro table or garden table design influence. This form was popular in American decorative furniture from c. 1890 through the mid-20th century and continues in reproduction production. Domestic American commercial production of this look is equally plausible as French origin." },
+    { type: "hardware", clue: "top_attachment", confidence: 45, description: "In joinery_closeup (back image), a flat metal bracket or plate is visible at the top of the iron apron where it meets the underside of the tabletop. This appears to be the attachment point for the top to the iron base." },
+    { type: "construction", clue: "cast_iron_decorative_panel", confidence: 45, description: "The central decorative panel visible in the joinery_closeup (back image) — showing a symmetrical scroll composition with a central fleur-de-lis-like element — appears to be a cast iron or cast metal decorative insert rather than bent rod work. The complexity and symmetry of the pattern suggests casting." },
+    { type: "function", clue: "display_or_dining", confidence: 70, description: "Table height and oval top proportions suggest use as a dining table, side table, or display table. The form is consistent with a bistro-style dining table or decorative hall/entry table." },
+    { type: "materials", clue: "woven_body", confidence: 76, description: "Woven wicker or reed body construction is visible." },
+    { type: "construction", clue: "door_present", confidence: 58, description: "Door evidence is visible." },
+  ],
+  asSeen: {
+    formId: "Bistro table",
+    display: "Louis XVI / French Neoclassical Bistro table (also commonly called: Bistro table, Bistro café table)",
+    styleContext: "Louis XVI / French Neoclassical",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1900 onward (early-to-mid 20th century or later)",
+    dateFloor: 1900,
+    dateCeiling: null,
+    confidence: "Low",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table];

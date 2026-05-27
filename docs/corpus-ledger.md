@@ -61,11 +61,11 @@ Counted once per specimen (not per note-mention).
 | M8 | 8 | china_import_cedar_chest, swivit_space_age_pedestal_chair, logan_1914_tall_case_clock, jacobean_revival_tall_case_clock, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, victorian_barrel_back_parlor_chair, porter_balloon_canopy_chair |
 | M6 | 7 | renaissance_revival_sgabello, china_import_cedar_chest, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker |
 | M11 | 4 | william_mary_burl_escritoire_on_stand, biedermeier_flame_walnut_secretary, rococo_renaissance_carved_settee, porter_balloon_canopy_chair |
+| M13 | 4 | victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table |
 | M12 | 3 | china_import_cedar_chest, swivit_space_age_pedestal_chair, phoenix_chair_co_windsor_rocker |
 | M7 | 3 | peacock_emmanuelle_rattan_chair, barley_twist_rush_seat_rocker, rococo_revival_parlor_armchair |
 | M1 | 2 | golden_oak_curved_glass_china_cabinet, midcentury_craft_panel_back_rocker |
 | M9 | 2 | logan_1914_tall_case_clock, phoenix_chair_co_windsor_rocker |
-| M13 | 2 | victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair |
 | M12-adjacent | 1 | peacock_emmanuelle_rattan_chair |
 | M5 | 1 | barley_twist_rush_seat_rocker |
 | M18 | 1 | hollywood_regency_cane_wing_chair |
@@ -110,4 +110,6 @@ Counted once per specimen (not per note-mention).
 | victorian_platform_rocker_armchair | — | M13 | — | — | Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1875–1899 | Low |
 | modern_louis_xvi_repro_lounge_chair | — | M13 M15 M16 | — | — | Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair) | Broadly late 19th to 20th century | Low |
 | eastlake_renaissance_revival_rocker | — | M17 | — | — | Rocking chair | c. 1890–1920 | Moderate |
+| wicker_rattan_barrel_lounge_chair | — | M13 | — | #15 #18 | Lounge chair (also commonly called: Easy chair, Club chair) | Broad, not tightly dated | Low |
+| french_bistro_iron_faux_stone_table | — | M13 | — | #1 #11 | Louis XVI / French Neoclassical Bistro table (also commonly called: Bistro table, Bistro café table) | c. 1900 onward (early-to-mid 20th century or later) | Low |
 
