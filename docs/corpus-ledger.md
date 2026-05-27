@@ -104,7 +104,7 @@ Counted once per specimen (not per note-mention).
 | rococo_revival_parlor_armchair | — | M7 | T1a | #6 | Rococo Revival / Naturalistic Victorian Upholstered armchair (also commonly called: Arm chair, Easy chair) | c. 1850–1890 | Low |
 | hollywood_regency_cane_wing_chair | — | M18 | — | — | French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair) | c. 1900–1980 | Moderate |
 | victorian_barrel_back_parlor_chair | — | M8 | — | #1 #6 | Lounge chair (also commonly called: Easy chair, Club chair) | Broadly late 19th to 20th century | Low |
-| eastlake_oak_settee | — | — | — | — | Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa) | c. 1870–1890 | Moderate |
+| eastlake_oak_settee | — | — | — | — | Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa) | c. 1870–1895 | Moderate |
 | rococo_renaissance_carved_settee | — | M11 | — | — | French Provincial / Rococo Domestic Revival Settee (also commonly called: Settee, Small sofa) | c. 1920–1925 | Moderate |
 | porter_balloon_canopy_chair | — | M11 M8 | — | — | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
 | renaissance_revival_tufted_armchair | — | M14 | — | — | Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table) | c. 1850–1920 | Low |
@@ -116,6 +116,6 @@ Counted once per specimen (not per note-mention).
 | painted_gilt_rococo_revival_settee | — | — | — | #5 #9 | Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa) | c. 1920–1930 | Moderate |
 | victorian_spindle_gallery_parlor_rocker | — | — | — | #17 | Rocking chair | c. 1890–1920 | Moderate |
 | hollywood_regency_rococo_lounge_chair | — | M13 | — | #3 #5 #9 | French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair) | c. 1920–1930 | Moderate |
-| eastlake_spindle_gallery_parlor_settee | — | — | — | — | Settee (also commonly called: Settee, Small sofa) | c. 1890–1920 | Moderate |
+| eastlake_spindle_gallery_parlor_settee | — | — | — | — | Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa) | c. 1890–1920 | Moderate |
 | midcentury_neoclassical_cane_lounge_chair | — | M12 M13-class M16 | — | #5 | Modern Louis XVI / French Neoclassical Reproduction Lounge chair (also commonly called: Easy chair, Club chair) | c. 1900–2000 | Low |
 

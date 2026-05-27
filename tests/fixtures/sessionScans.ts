@@ -1476,11 +1476,11 @@ const eastlake_oak_settee: ScanFixture = {
   ],
   asSeen: {
     formId: "Settee",
-    display: "Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa)",
+    display: "Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa)",
     finalStyleKind: "original_period",
-    dateRange: "c. 1870–1890",
+    dateRange: "c. 1870–1895",
     dateFloor: 1870,
-    dateCeiling: 1890,
+    dateCeiling: 1895,
     confidence: "Moderate",
   },
 };
@@ -2236,6 +2236,9 @@ const hollywood_regency_rococo_lounge_chair: ScanFixture = {
 const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
   label: "eastlake_spindle_gallery_parlor_settee",
   note:
+    "[RESOLVED — Fix 1 (Eastlake-from-ornament): now attributes Eastlake / Aesthetic " +
+    "Movement (original_period) from the >=2-ornament-category package; previously fell " +
+    "back to 'Spindle Gallery' context_only.] " +
     "Eastlake / Aesthetic Movement Victorian parlor SETTEE (turned spindle gallery + " +
     "ball finials, fan/sunburst carved medallions, walnut; ~1870-1895). Form settee " +
     "CORRECT — armchair_form self-negated ('rather than a single armchair') and was " +
@@ -2290,9 +2293,9 @@ const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
   ],
   asSeen: {
     formId: "Settee",
-    display: "Settee (also commonly called: Settee, Small sofa)",
-    styleContext: "Spindle Gallery",
-    finalStyleKind: "context_only",
+    display: "Eastlake / Aesthetic Movement Settee (also commonly called: Settee, Small sofa)",
+    styleContext: "Eastlake / Aesthetic Movement",
+    finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,

@@ -8068,7 +8068,34 @@ if (missing.label_photo) {
     const styleDescriptions = (frameDigest.observations || [])
       .filter((o) => o.type !== "label")
       .map((o) => o.description || "");
-    const styleRanked = attributeStyle(frameDigest.clue_keys || [], styleDescriptions);
+    // Eastlake/Aesthetic attribution from ORNAMENT (authoring-gaps A1 + C). The P0
+    // model emits granular Eastlake ornament clues but not the
+    // victorian_eastlake_pattern that STRUCTURAL_PATTERN_FAMILY routes to the family,
+    // so an ornament-only Eastlake piece fell back to "Spindle Gallery". Synthesize
+    // that pattern when >=2 DISTINCT Eastlake-ornament categories co-occur (spindle
+    // gallery variants collapse to one) — the "not from spindle alone" gate: a lone
+    // spindle gallery (Windsor/ladderback/generic parlor) must NOT fire Eastlake.
+    const EASTLAKE_ORNAMENT_CATEGORY: Record<string, string> = {
+      spindle_gallery: "spindle",
+      turned_spindle_gallery: "spindle",
+      carved_medallion_back: "medallion_sunburst",
+      fan_sunburst_carving: "medallion_sunburst",
+      sunburst_fan_medallion: "medallion_sunburst",
+      chamfered_top_corners: "chamfer",
+      chamfered_edges: "chamfer",
+      incised_geometric_carving: "incised_geometric",
+      eastlake_hardware: "eastlake_hardware",
+    };
+    const eastlakeOrnamentCats = new Set(
+      (frameDigest.observations || [])
+        .filter((o) => !o.negated && o.clue && EASTLAKE_ORNAMENT_CATEGORY[o.clue])
+        .map((o) => EASTLAKE_ORNAMENT_CATEGORY[o.clue as string])
+    );
+    const styleClueKeys =
+      eastlakeOrnamentCats.size >= 2
+        ? [...(frameDigest.clue_keys || []), "victorian_eastlake_pattern"]
+        : frameDigest.clue_keys || [];
+    const styleRanked = attributeStyle(styleClueKeys, styleDescriptions);
 
     // Distinctiveness gate (2026-05-20): only attributions that rest on real
     // style evidence (a distinctive token or a structured clue key) are
