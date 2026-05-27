@@ -2032,4 +2032,77 @@ const french_bistro_iron_faux_stone_table: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table];
+const painted_gilt_rococo_revival_settee: ScanFixture = {
+  label: "painted_gilt_rococo_revival_settee",
+  note:
+    "Painted/gilt carved-wood two-seat settee in Louis XV / Rococo Revival " +
+    "vocabulary (cabriole legs, serpentine floral crest, scrolled arms, button + " +
+    "channel tufting, foam) — a 20th-c reproduction. Form settee CORRECT (beat " +
+    "lounge_chair_form conf 78). The 'reproduction / impossible_pair' verdict is " +
+    "RIGHT in spirit but reached for the WRONG reason — two style-attribution token " +
+    "bugs. (1) THIN-TOKEN MISFIRE DRIVES IMPOSSIBLE_PAIR: 'Postmodern / Memphis / " +
+    "Radical Design Influence' attributes at conf 0.60 on the SINGLE generic token " +
+    "'influence', which leaks from clue names/descriptions (louis_xv_revival_" +
+    "INFLUENCE, 'design influence'). That bogus Postmodern (1980s) vs Rococo Revival " +
+    "(Victorian) pairing is what trips the P5 impossible-pair conflict; the " +
+    "reproduction conclusion rides on a generic-word collision, not real " +
+    "incompatible-style evidence. (2) SUB-STYLE MISLABEL (#5/#9): the piece is Louis " +
+    "XV / Rococo Revival but the PRIMARY label is 'Louis XVI / French Neoclassical' — " +
+    "the 'louis' token (from louis_xv_revival_influence, i.e. Louis XV) plus " +
+    "tapered_leg (a Louis XVI/neoclassical signal that misfired on CABRIOLE legs, " +
+    "conf 82, its own prose says 'tapered cabriole form') pushed Louis XVI. Rococo " +
+    "Revival tied at 0.82 but lost the primary slot. DATE c.1920-1930 likely ~20y " +
+    "early — frame reads mid-century commercial (louis_xv_revival_influence " +
+    "'c.1940s-1970s'; upholstery c.1955-1980); the style-wave revival-overlap " +
+    "anchored 1920-1930. Only nailhead_trim negated ('No decorative nailhead trim " +
+    "visible'), matching the as-seen drop; painted_metal_finish ('Frame is wood, not " +
+    "metal') stays POSITIVE — the negation targets 'metal', not the clue's term, so " +
+    "it isn't caught and it supplies the post-1900 finish floor on a wood frame.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat platform present; single integrated seat cushion without loose cushion, typical of parlor settee construction." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall serpentine-shaped upholstered backrest with channel tufting and button tufting visible; fan/shell radiating channel pattern from center crest downward." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Two-seat settee (loveseat/canapé) with fully upholstered scrolled arms on both sides; arm fronts show rolled upholstered pads." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Cabriole legs visible on front corners and rear; painted/gilded cream-gold finish; legs terminate in scroll or pad foot form consistent with Louis XV / Rococo Revival style." },
+    { type: "style", clue: "rococo_revival_style", confidence: 52, description: "Serpentine crest rail with carved floral and foliate bouquet at center top crest; scrolled arm terminals; cabriole legs; overall Louis XV / Rococo Revival design vocabulary strongly present." },
+    { type: "style", clue: "carved_floral_crest", confidence: 52, description: "Prominent carved floral and leaf bouquet applied to center of crest rail; roses and foliage visible; painted cream-gold to match frame finish." },
+    { type: "style", clue: "serpentine_crest_rail", confidence: 52, description: "Crest rail has pronounced serpentine double-curve (S-curve) silhouette with scrolled ends; characteristic of Louis XV revival and Victorian parlor seating." },
+    { type: "upholstery", clue: "button_tufting", confidence: 50, description: "Regular grid of button tufting visible across the lower back panel; buttons appear covered with matching fabric; combined with vertical channel tufting in upper back creating a hybrid channel-and-button tufted back." },
+    { type: "upholstery", clue: "jacquard_cover", confidence: 50, description: "Upholstery fabric shows a repeating small floral pattern with woven figure visible on both the seat and exterior back panels; pattern complexity and machine-loomed regularity suggest jacquard weave; could also be a damask — the pattern appears woven-in rather than printed, with slight sheen variation. Best-fit classification: jacquard_cover. Uncertainty: damask_cover also possible." },
+    { type: "upholstery", clue: "damask_cover", confidence: 45, description: "Alternative cover classification: the fabric may be a damask with single-color woven floral repeat; the reversible-contrast characteristic of damask is plausible given the tone-on-tone appearance. Confidence lower than jacquard_cover classification; both are possible." },
+    { type: "upholstery", clue: "nailhead_trim", confidence: 50, negated: true, description: "No decorative nailhead trim visible; upholstery edges are finished with gimp/braid cord trim rather than nailheads." },
+    { type: "upholstery", clue: "gimp_braid_trim", confidence: 50, description: "Woven gimp or braid trim visible along the upholstery-to-frame transition on the back exterior and seat rail; consistent with mid-20th century or later upholstery finishing practice." },
+    { type: "condition", clue: "upholstery_tears_seat", confidence: 45, description: "Significant fabric tears and splitting visible on the seat surface; underlying fill material (appears to be cotton batting or foam) exposed through tears; staining also present." },
+    { type: "condition", clue: "upholstery_wear_arms", confidence: 54, description: "Arm front upholstery shows splitting and fraying; fabric deteriorating at the rolled arm pad areas on both sides." },
+    { type: "condition", clue: "frame_paint_wear", confidence: 54, description: "Painted/gilded cream-gold frame shows wear and chipping at legs, arm scrolls, and lower rail areas; underlying wood visible at wear points." },
+    { type: "materials", clue: "painted_metal_finish", confidence: 84, description: "Frame is wood, not metal; the cream-gold finish is paint or gesso-and-gilt applied to a carved wood frame." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 82, description: "Frame members visible at wear points and leg areas appear to be solid wood (likely beech, poplar, or similar secondary hardwood) with painted/gilded surface finish; no lamination or veneer visible on frame." },
+    { type: "style", clue: "louis_xv_revival_influence", confidence: 52, description: "Overall design vocabulary — cabriole legs, serpentine crest, carved floral crest, scrolled arms, painted/gilded frame — is consistent with Louis XV revival or French Provincial revival design influence. This describes design influence, not country of manufacture; American commercial production of this style was widespread c. 1940s–1970s." },
+    { type: "construction", clue: "upholstered_exterior_back", confidence: 95, description: "Exterior back panel is fully upholstered with the same or similar floral fabric; gimp trim borders the upholstered back panel where it meets the frame; visible in side and back views." },
+    { type: "construction", clue: "channel_tufting_back", confidence: 94, description: "Vertical channel tufting (parallel vertical channels of fabric) visible in the upper back radiating from center in a fan/shell pattern; combined with button tufting in the lower back zone." },
+    { type: "upholstery", clue: "foam_padding", confidence: 45, description: "Tears in seat fabric reveal what appears to be a relatively flat, compressed fill material; could be foam padding or compressed cotton batting; the flat profile of the seat and the way tears expose fill suggests foam or thick cotton batting rather than coil springs with deep crown." },
+    { type: "condition", clue: "general_soiling_staining", confidence: 54, description: "General soiling and staining visible across seat surface and arm areas; pink/red staining visible on seat and lower arm areas; fabric faded and discolored overall." },
+    { type: "structure", clue: "tapered_leg", confidence: 82, description: "Four cabriole legs visible (two front, two rear); painted cream-gold finish matching frame; front legs more elaborately shaped with scroll detail at knee; rear legs simpler tapered cabriole form." },
+    { type: "style", clue: "scrolled_arm_terminals", confidence: 52, description: "Arm terminals scroll outward and downward in a C-scroll form; painted/gilded wood visible at arm scroll ends; consistent with Louis XV / Rococo Revival seating vocabulary." },
+    { type: "construction", clue: "gimp_cord_upholstery_edge", confidence: 85, description: "Woven cord gimp trim applied along the perimeter of the upholstered back exterior and seat rail junction; this finishing method is consistent with mid-20th century commercial upholstery practice." },
+    { type: "condition", clue: "back_panel_upholstery_intact", confidence: 54, description: "Exterior back upholstery panel appears mostly intact with minor wear; some small tears or punctures visible in back panel fabric; overall better condition than seat and arms." },
+    { type: "style", clue: "beaded_molding_frame", confidence: 52, description: "Fine beaded or rope-twist molding visible along the inner edge of the crest rail frame where it meets the upholstery; decorative detail consistent with Louis XV revival frame carving." },
+    { type: "context", clue: "french_provincial_style", confidence: 48, description: "Louis XV revival" },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered exterior back panel" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Settee",
+    display: "Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa)",
+    styleContext: "Louis XVI / French Neoclassical",
+    finalStyleKind: "impossible_pair",
+    dateRange: "c. 1920–1930",
+    dateFloor: 1920,
+    dateCeiling: 1930,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee];

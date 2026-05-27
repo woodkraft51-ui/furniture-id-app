@@ -112,4 +112,5 @@ Counted once per specimen (not per note-mention).
 | eastlake_renaissance_revival_rocker | — | M17 | — | — | Rocking chair | c. 1890–1920 | Moderate |
 | wicker_rattan_barrel_lounge_chair | — | M13 | — | #15 #18 | Lounge chair (also commonly called: Easy chair, Club chair) | Broad, not tightly dated | Low |
 | french_bistro_iron_faux_stone_table | — | M13 | — | #1 #11 | Louis XVI / French Neoclassical Bistro table (also commonly called: Bistro table, Bistro café table) | c. 1900 onward (early-to-mid 20th century or later) | Low |
+| painted_gilt_rococo_revival_settee | — | — | — | #5 #9 | Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa) | c. 1920–1930 | Moderate |
 
