@@ -1538,4 +1538,69 @@ const rococo_renaissance_carved_settee: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee];
+const porter_balloon_canopy_chair: ScanFixture = {
+  label: "porter_balloon_canopy_chair",
+  note:
+    "Mahogany Balloon/Porter (canopy) chair — fauteuil de portier — w/ wood-rib " +
+    "dome back, individually-upholstered velvet panels, gimp/braid trim, carved " +
+    "cabriole legs + scroll feet. M8 + M11/revival cluster. (a) M8 form: the " +
+    "definitive `porter_chair_form`/`dome_canopy_back` clues lose to generic " +
+    "`armchair_form`(0.93)/`seating_surface`(0.85)/`lounge_chair_form`(0.78) → " +
+    "P3 picks form_lounge_chair (\"Lounge chair\"); porter chair never surfaces, " +
+    "even in alternatives. (b) Date driven by the M11/revival cluster, NOT the " +
+    "frame: the only convergence zones are 1920–1930 (style_wave-only, 2 layers) " +
+    "and 1920–1970 (finish + LATER REUPHOLSTERY velvet/foam + style_wave). The " +
+    "velvet_cover/foam_padding upholstery is flagged itself as a c.1955–1980 " +
+    "reupholstery (originality cannot be inferred) yet still floors the frame " +
+    "date; revival style_waves anchor 1920–1930. Result \"French Louis XVI " +
+    "Revival Lounge chair, c.1920–1930\". User's read: a high-construction porter " +
+    "chair with individually-upholstered panels is clearly NOT a reproduction → " +
+    "genuine period piece, short window; the engine missed it. Same root as the " +
+    "carved-settee / Biedermeier / china-cabinet revival-wave-beats-real-evidence " +
+    "and reupholstery-confounds-frame-date cluster. No in-era construction layer " +
+    "(joinery/fastener/toolmark all empty) so nothing anchors an early date.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Fully upholstered seat cushion visible on front view; loose seat cushion with velvet cover present." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Tall dome-shaped canopy back (porter's chair / fauteuil de portier form) with wood rib framework dividing upholstered panels; back rises well above seated occupant's head." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Open armrests with carved wood arm supports and upholstered arm pads visible on both front and side views." },
+    { type: "form", clue: "dome_canopy_back", confidence: 68, description: "Distinctive balloon/dome-shaped canopy back characteristic of a porter's chair (fauteuil de portier); wood ribs radiate from crest to form segmented dome structure upholstered in velvet panels." },
+    { type: "style", clue: "cabriole_leg", confidence: 52, description: "Four cabriole legs visible with carved knees and scroll/pad feet; consistent with Louis XV / Rococo Revival style vocabulary." },
+    { type: "style", clue: "shell_crest_carving", confidence: 52, description: "Carved shell (coquille) motif at the apex of the dome crest rail, a hallmark of Louis XV Rococo vocabulary." },
+    { type: "style", clue: "rococo_revival_style_cues", confidence: 52, description: "Combination of cabriole legs, carved shell crest, serpentine apron, acanthus-carved arm supports, and scrolled arm terminals all consistent with Louis XV / Rococo Revival design influence. Domestic American or European commercial production of this look is equally plausible; no country of origin can be confirmed from form alone." },
+    { type: "style", clue: "carved_serpentine_apron", confidence: 52, description: "Shaped/serpentine front apron rail with carved floral or foliate detail visible at center; consistent with Louis XV-influenced frame construction." },
+    { type: "construction", clue: "wood_rib_dome_framework", confidence: 96, description: "Dome canopy back constructed with multiple curved wood ribs radiating from crest, creating segmented bays filled with upholstered velvet panels; ribs trimmed with braid/gimp. Visible on front, back, and joinery closeup images." },
+    { type: "construction", clue: "solid_wood_construction", confidence: 88, description: "Frame members including legs, arm supports, apron, and dome ribs appear to be solid wood (likely mahogany or mahogany-stained hardwood) based on visible grain, carving depth, and finish behavior." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 65, description: "Frame wood shows warm reddish-brown color with high-gloss finish consistent with mahogany or mahogany-stained hardwood; carving depth and surface sheen support this identification provisionally. Could also be walnut or stained beech/birch." },
+    { type: "upholstery", clue: "velvet_cover", confidence: 50, description: "All upholstered surfaces — seat, interior back panels, exterior back panels, arm pads, and loose lumbar pillow — covered in a smooth pile velvet fabric. Front interior appears black/very dark; back exterior appears deep navy/midnight blue. Nap-direction shading and pile sheen visible confirming velvet classification. Likely synthetic or cotton velvet given the context; rayon or polyester velvet consistent with mid-to-late 20th century or contemporary production." },
+    { type: "upholstery", clue: "no_spring_seat", confidence: 45, description: "Seat cushion appears to be a drop-in or loose cushion with relatively flat profile; no visible coil spring crown or serpentine spring evidence. Likely foam-padded loose cushion construction." },
+    { type: "upholstery", clue: "foam_padding", confidence: 50, description: "Seat cushion has uniform flat profile consistent with foam padding rather than traditional spring-and-stuffing construction; consistent with mid-to-late 20th century or contemporary upholstery." },
+    { type: "upholstery", clue: "gimp_braid_trim", confidence: 45, description: "Decorative braid/gimp trim applied along all wood rib edges on both interior and exterior dome surfaces; trim appears to be a matching dark navy/black color. Visible on front, back, and side images." },
+    { type: "condition", clue: "velvet_wear_scuffing", confidence: 54, description: "Exterior back velvet panels show visible scuff marks, directional pile disturbance, and surface soiling — particularly in the lower back panels. Interior seat also shows dust/lint accumulation." },
+    { type: "condition", clue: "frame_finish_intact", confidence: 54, description: "Wood frame finish appears largely intact with high gloss; minor wear visible at arm support edges and apron corners. No significant finish loss or crazing observed." },
+    { type: "condition", clue: "upholstery_edge_wear", confidence: 54, description: "Side view shows slight fraying or wear at the outer edge of the dome canopy where upholstery meets the frame; braid trim shows minor separation at one point on the side." },
+    { type: "finish", clue: "lacquer_finish", confidence: 55, description: "Frame surfaces show a hard, high-gloss finish with uniform sheen across all carved and flat surfaces; behavior more consistent with lacquer or polyurethane than shellac. No crazing or amber patina typical of aged shellac observed." },
+    { type: "hardware", clue: "no_visible_hardware", confidence: 45, description: "No pulls, locks, casters, or other hardware visible on this seating form. Arm pad appears to have a small upholstered button at the front scroll terminal." },
+    { type: "construction", clue: "carved_arm_support", confidence: 94, description: "Arm supports are carved solid wood with acanthus-leaf or egg-and-dart style carved detail at the top; scrolled arm terminal at front. Visible in joinery closeup." },
+    { type: "construction", clue: "scroll_foot", confidence: 90, description: "Cabriole legs terminate in small scroll or pad feet; visible on front and side views. No casters present." },
+    { type: "style", clue: "porter_chair_form", confidence: 52, description: "Overall form is a classic porter's chair (fauteuil de portier / balloon-back hall chair): tall dome canopy back with wood rib framework, open arms, cabriole legs, and serpentine apron. This form originated in 18th-century France and England and has been widely reproduced through the 19th, 20th, and 21st centuries." },
+    { type: "upholstery", clue: "loose_lumbar_pillow", confidence: 50, description: "Small loose lumbar/accent pillow in matching black velvet visible resting against the interior back of the chair." },
+    { type: "construction", clue: "upholstered_panel_segments", confidence: 96, description: "Both interior and exterior dome surfaces divided into discrete upholstered panel segments by the wood rib framework; each panel independently upholstered and trimmed with braid. This segmented panel construction is characteristic of the porter's chair form." },
+    { type: "context", clue: "french_provincial_style", confidence: 48, description: "Louis XV / Rococo Revival" },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered panels between ribs" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
+    { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
+  ],
+  asSeen: {
+    formId: "Lounge chair",
+    display: "French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair)",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1920–1930",
+    dateFloor: 1920,
+    dateCeiling: 1930,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair];
