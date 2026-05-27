@@ -15,10 +15,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
+      # package-lock.json is intentionally gitignored (see .gitignore), so there is
+      # no lockfile to drive `npm ci` or setup-node's npm cache — use `npm install`.
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
