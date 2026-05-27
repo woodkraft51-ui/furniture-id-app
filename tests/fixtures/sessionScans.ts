@@ -2105,4 +2105,68 @@ const painted_gilt_rococo_revival_settee: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee];
+const victorian_spindle_gallery_parlor_rocker: ScanFixture = {
+  label: "victorian_spindle_gallery_parlor_rocker",
+  note:
+    "Victorian parlor rocking chair (turned spindle gallery + ball finials above an " +
+    "upholstered back, swept arms, curved rockers, needlepoint/jacquard cover, hand " +
+    "nailhead tacks; ~1870-1910). Form rocking_chair CORRECT — good #17 control that " +
+    "rocking chair is reachable (rocking_chair + rocker_runners won; armchair_form " +
+    "did not derail it). Date c.1890-1920 reasonable. KEY ISSUE — a NON-STYLE " +
+    "FEATURE BECOMES THE STYLE via a CROSS-DOMAIN clue: there is no Victorian / " +
+    "Eastlake parlor style family, so style attribution is empty and the final label " +
+    "falls back to 'Spindle Gallery' (context_only) — a construction/ornament " +
+    "feature, not a style. Worse, the contributing clues spindle_gallery / " +
+    "turned_spindle_gallery are authored for Victorian shelf CLOCKS " +
+    "(turned_spindle_gallery date hint: 'turned-spindle gallery at the top of a " +
+    "shelf CLOCK case ... kitchen CLOCK production c.1875-1900') — a clock-domain " +
+    "clue firing on a chair's spindle row and then surfacing as the piece's STYLE. " +
+    "Two threads: (a) missing Victorian-parlor/Eastlake style family for a very " +
+    "common form; (b) clue-domain collision (a clock-specific clue matches a chair " +
+    "feature). Secondary: needlepoint_cover (c.1600-1899) pulls the upholstery floor " +
+    "to 1600 — loose. No clues negated (all 28 P0 keys present in the as-seen run).",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "seating_surface", confidence: 68, description: "Upholstered seat panel present, supported on a wooden frame with stretchers below." },
+    { type: "form", clue: "backrest_present", confidence: 68, description: "Upholstered back panel present, framed by turned spindles above and a curved crest rail with ball finials." },
+    { type: "form", clue: "spindle_back", confidence: 68, description: "Row of turned decorative spindles visible between the crest rail and the top of the upholstered back panel; spindles are vase/baluster-turned." },
+    { type: "form", clue: "armchair_form", confidence: 68, description: "Curved swept arms extend from the back posts forward and downward to the front seat rail area, forming an open armchair configuration." },
+    { type: "function", clue: "rocking_chair", confidence: 70, description: "Curved rocker runners visible beneath the legs; chair is clearly a rocking chair form." },
+    { type: "structure", clue: "rocker_runners", confidence: 82, description: "Curved bentwood-style rocker runners visible at base; runners are wide and flat-profiled with a slight upward curl at each end, finished in the same dark red-brown as the frame." },
+    { type: "structure", clue: "stretchers", confidence: 82, description: "Multiple turned stretcher rails visible connecting front legs and side rails beneath the seat." },
+    { type: "style", clue: "ball_finials", confidence: 52, description: "Prominent turned ball finials cap both back posts; finials are large, round, and well-defined — a characteristic Victorian parlor rocker ornament." },
+    { type: "style", clue: "victorian_parlor_rocker_form", confidence: 52, description: "Overall form — ball finials, turned spindle gallery above upholstered back, swept curved arms, upholstered seat and back with decorative tack trim, curved rockers — is consistent with Victorian-era American parlor rocking chair production, c. 1870–1910." },
+    { type: "construction", clue: "round_tenon", confidence: 80, description: "Turned spindles and stretchers appear to be joined via round tenon joinery into mortised sockets in the rails and posts, consistent with chair-frame construction of the period." },
+    { type: "materials", clue: "solid_wood_construction", confidence: 84, description: "Frame members appear to be solid wood throughout — posts, arms, rockers, spindles, and stretchers all show consistent solid-wood profiles with no visible veneer or lamination." },
+    { type: "materials", clue: "wood_species_mahogany_group", confidence: 45, description: "Frame wood is a warm red-brown with fine grain and smooth surface; color and finish are consistent with mahogany or a mahogany-stained hardwood (possibly walnut or cherry). Grain detail visible on rocker runner suggests a diffuse-porous hardwood. Species uncertain from photos alone." },
+    { type: "materials", clue: "needlepoint_cover", confidence: 72, description: "Both the seat and back upholstery panels show a dense floral pattern with visible stitch texture — the surface has a looped/cut pile texture with clearly defined floral motifs in pink, rust, green, and gold on a tan ground. The texture and pattern density are consistent with needlepoint or a needlepoint-style carpet/tapestry weave rather than printed fabric. Stitch direction and density are visible at the hardware closeup." },
+    { type: "materials", clue: "jacquard_cover", confidence: 55, description: "Alternative classification: the cover could be a machine-woven Jacquard tapestry fabric rather than hand-stitched needlepoint. The regularity of the pattern and the looped pile texture visible in the closeup are consistent with machine-woven tapestry/Jacquard upholstery fabric common in Victorian parlor furniture. Confidence in needlepoint_cover is moderate; jacquard_cover is a plausible alternative." },
+    { type: "hardware", clue: "nailhead_trim", confidence: 62, description: "Rows of decorative tack/nailhead trim visible along all four edges of both the seat and back upholstery panels. Tack heads are dark (oxidized brass or iron), domed, with a slightly floral/rosette embossed pattern visible in the hardware closeup. Spacing appears hand-placed with slight irregularity." },
+    { type: "hardware", clue: "hand_tacks", confidence: 62, description: "Tack heads show slight irregularity in spacing and alignment consistent with hand-driven placement rather than machine stapling. Multiple tack heads visible along back panel edges with oxidized dark patina." },
+    { type: "condition", clue: "upholstery_wear", confidence: 54, description: "Upholstery fabric shows significant wear: fading, pile loss in central areas of seat, fraying at front edge of seat, and general soiling. The fabric is intact but clearly aged." },
+    { type: "condition", clue: "finish_wear_at_contact_points", confidence: 54, description: "Wood finish shows wear and lightening at arm tops and high-contact areas visible in side view; consistent with long-term use wear." },
+    { type: "condition", clue: "green_corrosion_on_hardware", confidence: 45, description: "A small area of green corrosion (verdigris) is visible on what appears to be a bolt or tack at the front lower rail of the seat — consistent with brass hardware oxidation over extended time." },
+    { type: "condition", clue: "shellac_intact", confidence: 54, description: "Wood surfaces show a warm amber-brown finish with moderate sheen; no plastic-like thick film visible. Finish appears consistent with shellac or early varnish rather than polyurethane. Some surface wear and dulling at contact points." },
+    { type: "structure", clue: "no_spring_seat", confidence: 45, description: "The seat upholstery panel appears relatively flat and thin without the crowned dome profile typical of coil-spring construction. The seat fabric appears to be stretched over a flat or lightly padded surface, suggesting no-spring or minimal-padding construction." },
+    { type: "style", clue: "turned_spindle_gallery", confidence: 52, description: "A row of turned vase/baluster spindles forms a decorative gallery between the crest rail and the top of the upholstered back panel — a characteristic Victorian gingerbread/parlor rocker ornamental feature, c. 1875–1900." },
+    { type: "structure", clue: "curved_arms", confidence: 82, description: "Arms are gracefully curved in a sweeping arc from the back post down to the front, with no flat horizontal arm pad — consistent with Victorian sewing rocker or platform rocker arm style." },
+    { type: "structure", clue: "rocker_runner_profile", confidence: 80, description: "Rocker runners are wide, flat-profiled, and slightly tapered at the ends with a gentle upward curl. The runners appear to be steam-bent or shaped solid wood rather than laminated. This wide flat runner profile is associated with late Victorian and Edwardian-era American rocking chairs." },
+    { type: "construction", clue: "mortise_and_tenon", confidence: 70, description: "The junction of the back post with the crest rail and the spindle insertions are consistent with mortise-and-tenon or round-tenon socket joinery typical of Victorian chair construction." },
+    { type: "materials", clue: "fully_upholstered", confidence: 50, description: "upholstered seat and back panel" },
+    { type: "form", clue: "seating_present", confidence: 50, description: "seating" },
+    { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
+  ],
+  asSeen: {
+    formId: "Rocking chair",
+    display: "Rocking chair",
+    styleContext: "Spindle Gallery",
+    finalStyleKind: "context_only",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker];
