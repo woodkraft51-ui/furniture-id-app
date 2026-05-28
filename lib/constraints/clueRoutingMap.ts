@@ -50,6 +50,15 @@
 export type ClueRouting = {
   /** Canonical form_id (e.g., "form_armchair") this clue routes to, or null. */
   form?: string | null;
+  /** Specificity tier (1-3) for form routes — diagnostic power of the clue
+   *  itself, NOT the narrowness of the target form_id.
+   *  Tier 3 = specific / dominant (should outrank broader clues when both fire).
+   *  Tier 2 = valid form signal (should yield to a more specific clue).
+   *  Tier 1 = broad / support-only (rarely wins against more precise evidence).
+   *  Authored 2026-05-28. Consumed by future arbitration logic — see
+   *  PARKING_LOT.md "CLUE_ROUTING consumption redesign" for the consumption
+   *  mechanics that this field will feed. */
+  tier?: 1 | 2 | 3;
   /** Canonical style_family_id (e.g., "style_family_colonial_revival"), or null. */
   style?: string | null;
   /** Optional human note (subtype hint, variant, reasoning). */
@@ -60,19 +69,19 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   // ── Batch 1 — form clues (35 total, locked 2026-05-28) ──────────────────
   // 13 route to a form. The rest are anatomy/feature/generic per Guardrail 3.
 
-  armchair_form:        { form: "form_armchair" },
-  lounge_chair_form:    { form: "form_lounge_chair" },
-  rocking_chair_form:   { form: "form_rocking_chair" },
-  wingback_form:        { form: "form_wing_chair" },
-  dome_top_trunk:       { form: "form_trunk", note: "camelback / dome-top subtype" },
-  candelabra_form:      { form: "form_candelabrum" },
-  stool_form:           { form: "form_stool" },
-  clock_case_form:      { form: "form_tall_case_clock" },
-  settee_two_seat_form: { form: "form_settee" },
-  club_chair_form:      { form: "form_lounge_chair", note: "club-chair variant per LLM canonical note (form_lounge_chair / subtype_lounge_club)" },
-  slant_front:          { form: "form_slant_front_desk", note: "anatomy but strongly form-defining when context is a writing case/desk" },
-  drop_front_desk:      { form: "form_fall_front_desk", note: "taxonomy-faithful: 'drop-front desk' lives as a subtype under form_fall_front_desk, not under secretary" },
-  platform_rocker_base: { form: "form_rocking_chair", note: "platform-rocker variant; no canonical form_platform_rocker exists yet" },
+  armchair_form:        { form: "form_armchair", tier: 1 },
+  lounge_chair_form:    { form: "form_lounge_chair", tier: 1 },
+  rocking_chair_form:   { form: "form_rocking_chair", tier: 2 },
+  wingback_form:        { form: "form_wing_chair", tier: 3 },
+  dome_top_trunk:       { form: "form_trunk", tier: 3, note: "camelback / dome-top subtype" },
+  candelabra_form:      { form: "form_candelabrum", tier: 3 },
+  stool_form:           { form: "form_stool", tier: 2 },
+  clock_case_form:      { form: "form_tall_case_clock", tier: 3 },
+  settee_two_seat_form: { form: "form_settee", tier: 3 },
+  club_chair_form:      { form: "form_lounge_chair", tier: 3, note: "club-chair variant per LLM canonical note (form_lounge_chair / subtype_lounge_club)" },
+  slant_front:          { form: "form_slant_front_desk", tier: 3, note: "anatomy but strongly form-defining when context is a writing case/desk" },
+  drop_front_desk:      { form: "form_fall_front_desk", tier: 3, note: "taxonomy-faithful: 'drop-front desk' lives as a subtype under form_fall_front_desk, not under secretary" },
+  platform_rocker_base: { form: "form_rocking_chair", tier: 2, note: "platform-rocker variant; no canonical form_platform_rocker exists yet" },
 
   // Anatomy / feature / too-generic — explicit null per Guardrail 3.
   seating_surface:        { form: null },
@@ -105,7 +114,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   // Treated like the existing structural-pattern detectors in
   // STRUCTURAL_PATTERN_FAMILY (engineStyleEvaluator.ts:182).
   colonial_georgian_revival_upholstered_armchair_pattern: {
-    form: "form_armchair",
+    form: "form_armchair", tier: 2,
     style: "style_family_colonial_revival",
     note: "named structural pattern; explicit form+style by design",
   },
@@ -163,8 +172,8 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   // ── Batch 3 — function clues (8 total, locked 2026-05-28) ───────────────
   // 2 route, 6 null.
 
-  commode_chamber_pot_cabinet: { form: "form_commode", note: "clue name and description both unambiguously name a commode / close stool" },
-  rocking_chair:               { form: "form_rocking_chair" },
+  commode_chamber_pot_cabinet: { form: "form_commode", tier: 3, note: "clue name and description both unambiguously name a commode / close stool" },
+  rocking_chair:               { form: "form_rocking_chair", tier: 2 },
 
   sitting:           { form: null, note: "generic function; any seating form" },
   // writing_surface, multiple_drawer_case, style_cues already null above
@@ -208,18 +217,18 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   mid_century_streamlined_wicker:{ form: null, style: null, note: "'mid-century' alone is era signal not distinctive; wicker not a family in taxonomy" },
   bar_harbor_style_wicker:       { form: null, style: null, note: "wicker tradition; no wicker family in taxonomy" },
   tufted_upholstery:             { form: null, style: null },
-  pierced_splat_ladder_back:     { form: "form_ladderback_chair", style: null, note: "audit-correction 2026-05-28: 'ladder-back chair' — identifies form" },
+  pierced_splat_ladder_back:     { form: "form_ladderback_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'ladder-back chair' — identifies form" },
   no_armrest:                    { form: null, style: null },
-  ladder_back_three_slat:        { form: "form_ladderback_chair", style: null, note: "audit-correction 2026-05-28: 'ladder configuration... ladder-back chair tradition' — identifies form" },
-  dome_top_victorian_trunk:      { form: "form_trunk", style: null, note: "audit-correction 2026-05-28: 'American Victorian trunk c. 1860-1900' — object IS a trunk; style null per 'victorian' era" },
+  ladder_back_three_slat:        { form: "form_ladderback_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'ladder configuration... ladder-back chair tradition' — identifies form" },
+  dome_top_victorian_trunk:      { form: "form_trunk", tier: 3, style: null, note: "audit-correction 2026-05-28: 'American Victorian trunk c. 1860-1900' — object IS a trunk; style null per 'victorian' era" },
   applied_decoration:            { form: null, style: null },
   bobbin_turned_spindles:        { form: null, style: null },
   bobbin_turned_legs:            { form: null, style: null },
   bobbin_turned_stretchers:      { form: null, style: null },
   scrolled_crest_ends:           { form: null, style: null },
-  victorian_windsor_rocker_style:{ form: "form_rocking_chair", style: null, note: "audit-correction 2026-05-28: 'Windsor-tradition... Victorian decorative elements' — Windsor rocker; style stays null per 'victorian' era + 'windsor' is a form" },
+  victorian_windsor_rocker_style:{ form: "form_rocking_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'Windsor-tradition... Victorian decorative elements' — Windsor rocker; style stays null per 'victorian' era + 'windsor' is a form" },
   foliate_carved_crest:          { form: null, style: null },
-  victorian_utilitarian_form:    { form: "form_commode", style: null, note: "audit-correction 2026-05-28: prose specifies 'Victorian-era bedroom commode / close stool furniture' — clear commode (form_commode exists). Style null per 'victorian' era + 'utilitarian' generic" },
+  victorian_utilitarian_form:    { form: "form_commode", tier: 2, style: null, note: "audit-correction 2026-05-28: prose specifies 'Victorian-era bedroom commode / close stool furniture' — clear commode (form_commode exists). Style null per 'victorian' era + 'utilitarian' generic" },
   fluted_spherical_knop:         { form: null, style: null, note: "appears across Art Deco, Arts & Crafts, Scandinavian Modern — multi-family overlap" },
 
   // ── Batch 4b — style clues, positions 31-70 (locked 2026-05-28) ─────────
@@ -260,7 +269,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   gadrooning_egg_dart:                { form: null, style: null },
   oval_cartouche_medallion:           { form: null, style: null },
   fish_scale_imbrication_crest:       { form: null, style: null },
-  sgabello_hall_chair_form:           { form: "form_side_chair", style: null, note: "audit-correction 2026-05-28: Italian sgabello = hall/side chair; routed to form_side_chair because form_hall_chair doesn't exist in taxonomy" },
+  sgabello_hall_chair_form:           { form: "form_side_chair", tier: 3, style: null, note: "audit-correction 2026-05-28: Italian sgabello = hall/side chair; routed to form_side_chair because form_hall_chair doesn't exist in taxonomy" },
   carving_depth_and_quality:          { form: null, style: null },
   bead_and_reel_border:               { form: null, style: null },
   tassel_carving:                     { form: null, style: null, note: "appears across Renaissance Revival and Baroque — multi-family" },
@@ -290,7 +299,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
 
   // Route to a family — distinctive token in clue name per Guardrail 1.
   biedermeier_style_cues:       { style: "style_family_biedermeier" },
-  colonial_revival_windsor:     { form: "form_windsor_chair", style: "style_family_colonial_revival", note: "audit-correction 2026-05-28: added form route — 'bow-back Windsor form' clearly identifies Windsor chair; style was already routed via Task B" },
+  colonial_revival_windsor:     { form: "form_windsor_chair", tier: 2, style: "style_family_colonial_revival", note: "audit-correction 2026-05-28: added form route — 'bow-back Windsor form' clearly identifies Windsor chair; style was already routed via Task B" },
   rococo_revival_vocabulary:    { style: "style_family_rococo_revival" },
   rococo_revival_ornament:      { style: "style_family_rococo_revival" },
   renaissance_revival_ornament: { style: "style_family_renaissance_revival" },
@@ -311,13 +320,13 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   chamfered_top_corners:               { form: null, style: null, note: "Biedermeier vocabulary in prose but clue name is anatomy; biedermeier_style_cues carries the routing" },
   rounded_cock_bead_rails:             { form: null, style: null, note: "Biedermeier/Empire vocabulary in prose but clue name is anatomy" },
   minimal_carved_ornament:             { form: null, style: null, note: "Biedermeier vocabulary in prose but clue name is generic" },
-  windsor_rocker_form:                 { form: "form_rocking_chair", style: null, note: "audit-correction 2026-05-28: clue name + prose ('Windsor-style rocking chair') clearly identify the form; style stays null because 'windsor' is a form, not a family" },
+  windsor_rocker_form:                 { form: "form_rocking_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: clue name + prose ('Windsor-style rocking chair') clearly identify the form; style stays null because 'windsor' is a form, not a family" },
   central_splat_incised_motif:         { form: null, style: null },
   serpentine_arm:                      { form: null, style: null },
   oval_cartouche_back:                 { form: null, style: null },
   reeded_crest_rail:                   { form: null, style: null },
   pierced_splat:                       { form: null, style: null },
-  victorian_edwardian_parlor_chair:    { form: "form_armchair", style: null, note: "audit-correction 2026-05-28: prose identifies 'Victorian or Edwardian parlor seating' — generic armchair route. Style null because 'victorian'/'edwardian'/'parlor' don't route a family (Edwardian not in our 28 families)" },
+  victorian_edwardian_parlor_chair:    { form: "form_armchair", tier: 1, style: null, note: "audit-correction 2026-05-28: prose identifies 'Victorian or Edwardian parlor seating' — generic armchair route. Style null because 'victorian'/'edwardian'/'parlor' don't route a family (Edwardian not in our 28 families)" },
   fan_feather_carving:                 { form: null, style: null, note: "Eastlake vocabulary in prose but clue name is generic; eastlake_hardware carries the Eastlake routing" },
   figural_carved_crest:                { form: null, style: null },
   grotesque_mask_arm_terminal:         { form: null, style: null },
@@ -355,12 +364,12 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
 
   // Null — anatomy / generic / multi-family.
   shaped_apron_carved:                { form: null, style: null },
-  victorian_parlor_chair:             { form: "form_armchair", style: null, note: "audit-correction 2026-05-28: prose says 'American Victorian parlor armchair' — safe generic armchair route. Style null because 'victorian' / 'parlor' are generic per Guardrails 1 + previous batches" },
+  victorian_parlor_chair:             { form: "form_armchair", tier: 1, style: null, note: "audit-correction 2026-05-28: prose says 'American Victorian parlor armchair' — safe generic armchair route. Style null because 'victorian' / 'parlor' are generic per Guardrails 1 + previous batches" },
   scrolled_volute_arm_bracket:        { form: null, style: null },
   claw_foot:                          { form: null, style: null },
   reeded_leg:                         { form: null, style: null },
   swept_wing_back:                    { form: null, style: null },
-  victorian_platform_rocker_style:    { form: "form_rocking_chair", style: null, note: "audit-correction 2026-05-28: 'Victorian parlor platform rockers' — rocking chair; consistent with platform_rocker_base routing" },
+  victorian_platform_rocker_style:    { form: "form_rocking_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'Victorian parlor platform rockers' — rocking chair; consistent with platform_rocker_base routing" },
   scrolled_arm_volute:                { form: null, style: null },
   leaf_carved_crest_rail:             { form: null, style: null, note: "multi-family (Neoclassical, Regency, Colonial Revival)" },
   reeded_back_post:                   { form: null, style: null, note: "multi-family (Neoclassical, Regency, Federal Revival)" },
@@ -368,7 +377,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   carved_rosette_leg_top:             { form: null, style: null },
   tapered_carved_leg:                 { form: null, style: null, note: "multi-family (Neoclassical, Regency, Empire Revival)" },
   neoclassical_revival_style:         { form: null, style: null, note: "too broad; crosses Federal / American Classical / Louis XVI / Regency-derived / later revival waves — do not route alone" },
-  open_arm_chair_form:                { form: "form_lounge_chair", style: null, note: "audit-correction 2026-05-28: 'fauteuil or open-arm lounge chair form' — identifies lounge chair" },
+  open_arm_chair_form:                { form: "form_lounge_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'fauteuil or open-arm lounge chair form' — identifies lounge chair" },
   wicker_weave_close:                 { form: null, style: null, note: "no wicker family in taxonomy" },
   wicker_weave_open:                  { form: null, style: null, note: "no wicker family in taxonomy" },
   wicker_weave_basket:                { form: null, style: null, note: "no wicker family in taxonomy" },
@@ -378,7 +387,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   scrolled_arm_terminals:             { form: null, style: null, note: "multi-family (Louis XV / Rococo Revival)" },
   beaded_molding_frame:               { form: null, style: null },
   ball_finials:                       { form: null, style: null },
-  victorian_parlor_rocker_form:       { form: "form_rocking_chair", style: null, note: "audit-correction 2026-05-28: 'Victorian-era American parlor rocking chair' — clear rocking chair; style null per 'victorian' era + 'parlor' generic" },
+  victorian_parlor_rocker_form:       { form: "form_rocking_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'Victorian-era American parlor rocking chair' — clear rocking chair; style null per 'victorian' era + 'parlor' generic" },
   pierced_carved_crest:               { form: null, style: null },
   gadrooned_or_rope_twist_molding:    { form: null, style: null },
   carved_medallion_back:              { form: null, style: null, note: "Eastlake vocabulary in prose but clue name is generic; eastlake_hardware carries Eastlake routing" },
@@ -460,7 +469,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   open_carved_arm_bracket:                          { form: null, style: null },
   pegged_mortise_and_tenon:                         { form: null, style: null },
   pierced_carved_arm_bracket:                       { form: null, style: null },
-  platform_rocker_mechanism:           { form: "form_rocking_chair", style: null, note: "audit-correction 2026-05-28: platform rocker = rocking chair variant; consistent with batch 1 platform_rocker_base routing" },
+  platform_rocker_mechanism:           { form: "form_rocking_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: platform rocker = rocking chair variant; consistent with batch 1 platform_rocker_base routing" },
   plywood_structural:                               { form: null, style: null },
   rear_legs_straight:                               { form: null, style: null },
   reeded_rail_detail:                               { form: null, style: null },
