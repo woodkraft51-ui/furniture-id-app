@@ -360,6 +360,29 @@ Per appraiser: "Your engine currently appears to preserve rejected candidate lan
 
 ---
 
+### 15b. Hyphenated intervening words break the negation gap regex (DOWNSTREAM of #15, FIXED)
+
+> **FIXED 2026-05-28** — corpus diff confirms zero outward-verdict regressions and one positive internal cleanup. Same root family as #15; shipped via the fast-path workflow (see `docs/WAYS_OF_WORKING.md`) since the fix was small, additive, traceable, and clean against the corpus.
+
+**Surfaced by:** Art Deco waterfall vanity scan, 2026-05-28 (kneehole/twin-pedestal vanity with rounded waterfall corners, reeded pilasters, geometric brass inlay center drawer, lion-head ring pulls).
+
+**Issue:** The engine returned `c. 1860–1910 / Art Deco vocabulary (post-1860 reproduction)` for a textbook American Art Deco waterfall vanity (correct: c. 1935–1948, original_period). Mis-dated by ~65 years AND mis-labeled "reproduction" because the date fell outside Art Deco's 1925–1945 window.
+
+**Root cause:** the `thick_veneer` observation self-negates — "Veneer appears relatively thin and uniform, consistent with factory production **rather than hand-sawn thick veneer**" — but `descriptionNegatesClue` returned false. Its gap regex `W = (?:\w+\s+){0,3}` allows up to 3 intervening words between the negation cue ("rather than") and the clue subject ("thick veneer"). `\w+` doesn't match hyphens, so `\w+\s+` fails on "hand-sawn ". With W=0, the pattern needs "thick veneer" immediately after "rather than" (it isn't). No match → no negation → `thick_veneer`'s `pre-1910` dateHint anchored the wood layer at 1900–1910 and built a tighter 4-layer `1860–1910` convergence zone that beat the real 3-layer Art Deco `1925–1945` zone.
+
+**Fix:** widen the gap to `[\w-]+\s+` so hyphenated tokens like "hand-sawn" / "machine-cut" parse as a single word. One-character change, strictly additive (every previously-matched string still matches — `\w+` is a subset of `[\w-]+`).
+
+**Code location:** `lib/engine.ts:1587` — the `W` constant inside `descriptionNegatesClue`.
+
+**Validation (full 39-fixture corpus diff vs snapshot baseline):**
+- **38/39** fixtures: bit-for-bit unchanged.
+- **1/39** (`renaissance_revival_tufted_armchair`): outward verdict identical (`c. 1850–1920 / Renaissance Revival / Parlor table`), but internal convergence zones tightened from `1850–1920[3L]` + ghost `1960–1970[2L]` to a single clean `1860–1885[2L]` — a hyphen-blocked negation in this fixture's prose was silently inflating its evidence and is now correctly suppressed.
+- **125/125** tests pass (86 unit + 39 corpus fidelity).
+
+**Scope:** Tiny / fast-path.
+
+---
+
 ### 16. Functional evidence overridden by fuel-word / decorative resemblance (MAJOR LOGIC ERROR — FIXED)
 
 **Surfaced by:** Slag-glass electric table lamp scan, 2026-05-20 (rerun after #14/#15). Form held in the lamp family correctly (#14/#15 confirmed working) but resolved to **"French Louis XVI Revival Kerosene lamp"**, subtype "Center-draft kerosene lamp" (conf 1.0) — despite `electric_table_lamp` (conf 70), electric cord, standard E26 socket, and explicit "electric rather than oil/kerosene function" observations.

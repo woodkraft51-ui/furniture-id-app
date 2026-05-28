@@ -97,15 +97,16 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
 
 ## Ops / process
 
-- **Stale Vercel integration on the repo (RESOLVED 2026-05-28, pending owner dashboard click).**
+- **Stale Vercel integration on the repo (RESOLVED 2026-05-28).**
   Migrated to Render (`render.yaml`). Deploy 002 retargeted all repo-side Vercel references
-  (README, `.env.local.example`, `app/page.tsx` comments) to Render. To stop the
-  "Vercel Preview Comments" check on PRs, the owner disconnects the integration:
-  Vercel dashboard → project → **Settings → Git → Disconnect** (or Delete Project), AND
-  GitHub → repo **Settings → GitHub Apps → Vercel → Configure** → remove this repo (or
-  Uninstall). The junk `vercel/react-server-components-cve-vu-265dd9` branch (downgrades
-  Next.js, deletes the codebase — not a real CVE fix) should be deleted via the Branches
-  UI; recovery tip `ec86cd3` if ever needed.
+  (README, `.env.local.example`, `app/page.tsx` comments) to Render, and the owner deleted
+  **both** Vercel projects (`furniture-id-app`, `project-hdjvz`) on 2026-05-28 — so the
+  "Vercel Preview Comments" check no longer runs on PRs. Optional remaining tidy: uninstall
+  the Vercel GitHub App entirely (GitHub → Settings → GitHub Apps → Vercel → Uninstall); it
+  is inert now that no project is linked. Separately, the junk
+  `vercel/react-server-components-cve-vu-265dd9` branch (downgrades Next.js, deletes the
+  codebase — not a real CVE fix) still needs deleting via the Branches UI; recovery tip
+  `ec86cd3` if ever needed.
 - **Squash-merge branch hygiene.** Each follow-up PR needs a rebase-onto-`main`
   + force-push because prior PRs were squash-merged (branch tip isn't an ancestor
   of the squash commit). Expected, just noting the dance.
