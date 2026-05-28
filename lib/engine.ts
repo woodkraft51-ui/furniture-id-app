@@ -348,6 +348,23 @@ export const CLUE_LIBRARY: Record<string, { category: string; hardNegative?: boo
   armchair_form: { category: "form", formHint: "Armchair", weight: 0.86 },
   upholstered_back: { category: "materials", weight: 0.72 },
 
+  // Phase 0 Part A direct object-form clues (2026-05-28). Each clue is
+  // routed to an existing canonical form_id in engineCanonicalMap.ts and
+  // CLUE_ROUTING; weights match peer form-defining structural clues
+  // (cabinet_form 0.74, multiple_drawer_case 0.78, drop_front_desk 0.88).
+  settee_two_seat_form: { category: "form", formHint: "Settee", weight: 0.85 },
+  windsor_chair_form: { category: "form", formHint: "Windsor chair", weight: 0.85 },
+  rocking_chair_form: { category: "form", formHint: "Rocking chair", weight: 0.85 },
+  windsor_rocker_form: { category: "form", formHint: "Windsor rocker", weight: 0.85 },
+  parlor_rocker_form: { category: "form", formHint: "Parlor rocker", weight: 0.85 },
+  platform_rocker_form: { category: "form", formHint: "Platform rocker", weight: 0.85 },
+  chest_of_drawers_form: { category: "form", formHint: "Chest of drawers", weight: 0.85 },
+  dresser_form: { category: "form", formHint: "Dresser", weight: 0.85 },
+  bistro_table_form: { category: "form", formHint: "Bistro / café table", weight: 0.85 },
+  china_cabinet_form: { category: "form", formHint: "China cabinet", weight: 0.85 },
+  dressing_table_form: { category: "form", formHint: "Dressing table", weight: 0.85 },
+  milking_stool_form: { category: "form", formHint: "Milking stool", weight: 0.85 },
+
   drawer_present: { category: "construction", weight: 0.45 },
   multiple_drawer_case: { category: "construction", formHint: "Chest of drawers / dresser", weight: 0.78 },
   door_present: { category: "construction", weight: 0.5 },
@@ -7240,6 +7257,91 @@ inside or alongside other forms):
 - cedar lining (aromatic red cedar interior; defines cedar/hope
   chest form)
   → key: cedar_lining
+- two-seat settee / loveseat (two-person upholstered seating with a
+  CONTINUOUS back across both seats — single back panel OR matched
+  left+right back sections joined as one piece — two cushions or one
+  bench cushion, and two armrests AT THE OUTER ENDS ONLY. Block if
+  three or more seat cushions visible (→ sofa), single chair only
+  (→ lounge / armchair), or a console / table separates the two seats
+  (→ tête-à-tête, different form).)
+  → key: settee_two_seat_form
+- Windsor chair (solid one-piece WOODEN PLANK SEAT, no upholstery,
+  multiple turned spindles forming the back (typically 5–9), splayed
+  turned legs entering the seat through round mortises. Bow-back /
+  hoop-back / comb-back / sack-back all acceptable. Block if rockers
+  attached to the leg bottoms (→ windsor_rocker_form instead) or the
+  seat is upholstered (→ not Windsor).)
+  → key: windsor_chair_form
+- Windsor rocker (Windsor anatomy — plank seat, turned spindles,
+  splayed turned legs — WITH paired curved wooden rockers attached
+  to the leg bottoms. Block if the seat is upholstered or the legs
+  end in metal casters (→ not a rocker).)
+  → key: windsor_rocker_form
+- rocking chair (paired curved wooden rockers attached to the leg
+  bottoms of any one-person chair with a backrest. Block if the
+  chair has Windsor anatomy (plank seat + turned spindles + splayed
+  legs) → use windsor_rocker_form instead; block if the chair sits
+  on a stationary base with a hinge/spring pivot and no curved
+  rockers → use platform_rocker_form instead.)
+  → key: rocking_chair_form
+- parlor rocker (UPHOLSTERED or partially upholstered Victorian-era
+  rocker with carriage-style frame, often with carved crest rail and
+  curved arms — lighter / more decorative than a household kitchen
+  rocker. Block heavy turned-spindle Windsor anatomy; block
+  mid-century / Danish modern silhouettes.)
+  → key: parlor_rocker_form
+- platform rocker (chair body PIVOTS on a STATIONARY base — no
+  curved rockers under the legs; flat base with internal springs and
+  a hinge / pivot mechanism. Block if paired curved wooden rockers
+  are visible under the legs (→ rocking_chair_form or
+  windsor_rocker_form).)
+  → key: platform_rocker_form
+- chest of drawers (VERTICAL-FORMAT case piece consisting primarily
+  of stacked drawers, typically 3–6, with NO mirror and NO doors;
+  stands taller than wide; drawer fronts span the case width. Block
+  if an attached or surmounted mirror is present (→ dresser_form);
+  block if doors are present below or beside the drawers (→ cabinet
+  / dresser-combination); block low/wide two-drawer formats (→
+  lowboy).)
+  → key: chest_of_drawers_form
+- dresser (HORIZONTAL-FORMAT case with stacked drawers AND a mirror
+  surmounted on top OR attached via mirror supports; the case alone
+  stands wider than tall. Block if no mirror present (→
+  chest_of_drawers_form); block if doors are the primary front
+  feature (→ cabinet variants).)
+  → key: dresser_form
+- bistro / café table (small ROUND or SQUARE table, café/restaurant
+  scale, ~24–32 in. wide, with a thin metal or wire base — iron,
+  brass, or steel — and a stone, marble, faux-stone, wood, or
+  laminate top. Block large dining-table footprints (≥ ~48 in.);
+  block pedestal-column dining-table bases (→ pedestal_column);
+  block turned-wood gallery occasional tables.)
+  → key: bistro_table_form
+- china cabinet / display cabinet / vitrine (TALL glazed display
+  case, typically ≥ 60 in. tall, with one or more glass doors AND
+  interior shelves visible through the glass — designed for
+  displaying dinnerware / curios / glass. Curved or flat glass
+  acceptable. Block a glass top on a metal/wire base (→
+  bistro_table_form or display table); block a single small glazed
+  door on a small case; block cases where no interior shelves are
+  visible (→ wardrobe / armoire).)
+  → key: china_cabinet_form
+- dressing table / vanity (LOW horizontal-format case, ~28–32 in.
+  case height, typically with a CENTRAL KNEEHOLE opening flanked by
+  side drawer pedestals, AND a mirror surmounted on top — often a
+  three-panel / trifold mirror. "Vanity" and "dressing table" are
+  the same form. Block desk-scale writing surfaces with NO mirror
+  (→ kneehole desk); block chests of drawers with no kneehole (→
+  chest_of_drawers_form).)
+  → key: dressing_table_form
+- milking stool (LOW backless stool, ~12–16 in. tall, with three
+  or four splayed turned or hand-cut legs entering a circular or
+  sub-circular solid wooden seat; often vernacular / hand-tool
+  joinery; sometimes with a single hand-hole through the seat.
+  Block tall bar/counter stools (→ different stool subtype); block
+  upholstered tops (→ tabouret / ottoman); block presence of a
+  backrest (→ chair, not stool).)
+  → key: milking_stool_form
 
 CRITICAL: When multiple form-defining features are visible (e.g., cylinder
 closure WITH interior pigeonholes), emit ALL of them as separate
@@ -7445,7 +7547,7 @@ Important reasoning rules:
 - Material identification from a distance is provisional. For cover materials especially (vinyl_cover vs a very smooth woven fabric; leather vs faux leather/bonded leather), keep confidence at moderate or lower unless a close-up shows texture, grain, sheen, seams, or wear that confirms it — and name the alternative material in the description. Still emit the best-fit cover key (see the upholstery contract above); just calibrate confidence and state the uncertainty.
 
 Preferred form-signal keys:
-seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, clock_case_form, roos_label, lane_label, maker_label.
+seating_surface, backrest_present, spindle_back, secondary_surface, writing_surface, telephone_shelf, drop_front_desk, pigeonholes, mirror_present, drawer_present, door_present, open_shelving, pedestal_column, metal_bed_frame, armchair_form, cabriole_leg, barley_twist, clock_case_form, roos_label, lane_label, maker_label, settee_two_seat_form, windsor_chair_form, windsor_rocker_form, rocking_chair_form, parlor_rocker_form, platform_rocker_form, chest_of_drawers_form, dresser_form, bistro_table_form, china_cabinet_form, dressing_table_form, milking_stool_form.
 
 Preferred clock-evidence keys (use whenever the piece is a clock — mantel, shelf, kitchen, parlor, tall case, or wall clock):
 clock_case_form (any clock case), arched_glazed_dial_door (round-top/arch-top mantel clock, c. 1870-1910), turned_spindle_gallery (Victorian gingerbread, c. 1875-1900), scrolled_side_corbels (Victorian shelf clock ornament, c. 1870-1900), reverse_painted_lower_tablet (American Victorian shelf clock, c. 1850-1900), winding_arbors (2 = 8-day time-and-strike, 1 = time-only, 3 = time-strike-chime), striking_mechanism (mechanical strike train), pendulum_bob_cast (decorative cast brass pendulum bob, c. 1860-1910), brass_dial_bezel (American mantel clock, c. 1860-1920), roman_numeral_dial (Roman numerals on paper/enamel dial, pre-1920 dominant), metal_hands (steel or blued-steel clock hands).
@@ -7565,6 +7667,22 @@ ${MAKER_MARK_CANONICAL_APPENDIX}
 
 let observations = normalizeObservationsFromParsed(parsedForEvidence);
 let perception = normalizePerception(parsedForEvidence, observations);
+
+if (process.env.CLUE_EMISSION_TRACE === "1") {
+  // Phase 0 Part A direct object-form clues authored 2026-05-28.
+  const PART_A_NOVEL = new Set<string>([
+    "settee_two_seat_form", "windsor_chair_form", "windsor_rocker_form",
+    "rocking_chair_form", "parlor_rocker_form", "platform_rocker_form",
+    "chest_of_drawers_form", "dresser_form", "bistro_table_form",
+    "china_cabinet_form", "dressing_table_form", "milking_stool_form",
+  ]);
+  const novel: string[] = [];
+  for (const o of observations) {
+    const k = (o as any).clue;
+    if (typeof k === "string" && PART_A_NOVEL.has(k)) novel.push(k);
+  }
+  console.log(`[p0] CLUE_EMISSION: total=${observations.length} novel=[${novel.join(",")}]`);
+}
 
 observations = addIntakeObservations(intake, observations);
 observations = promotePerceptionObservations(observations, perception);

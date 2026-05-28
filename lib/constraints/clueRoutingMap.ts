@@ -78,7 +78,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
 
   armchair_form:        { form: "form_armchair", tier: 1 },
   lounge_chair_form:    { form: "form_lounge_chair", tier: 1 },
-  rocking_chair_form:   { form: "form_rocking_chair", tier: 2 },
+  rocking_chair_form:   { form: "form_rocking_chair", tier: 3 },
   wingback_form:        { form: "form_wing_chair", tier: 3 },
   dome_top_trunk:       { form: "form_trunk", tier: 3, formSubtype: "subtype_dome_top_trunk", note: "camelback / dome-top subtype" },
   candelabra_form:      { form: "form_candelabrum", tier: 3 },
@@ -89,6 +89,21 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   slant_front:          { form: "form_slant_front_desk", tier: 3, note: "anatomy but strongly form-defining when context is a writing case/desk" },
   drop_front_desk:      { form: "form_fall_front_desk", tier: 3, formSubtype: "subtype_fall_front_desk_drop_front", note: "taxonomy-faithful: 'drop-front desk' lives as a subtype under form_fall_front_desk, not under secretary" },
   platform_rocker_base: { form: "form_rocking_chair", tier: 2, note: "platform-rocker variant; no canonical form_platform_rocker exists yet" },
+
+  // ── Phase 0 Part A — direct object-form clue authoring (2026-05-28) ─────
+  // Nine new Tier 3 form-signal clues authored alongside the P0 prompt
+  // additions in lib/engine.ts. Each routes to an EXISTING canonical
+  // form_id; no new taxonomy ids referenced. Subtype attachments and the
+  // peacock chair are held back to Part B pending owner taxonomy approval.
+  windsor_chair_form:    { form: "form_windsor_chair", tier: 3 },
+  parlor_rocker_form:    { form: "form_rocking_chair", tier: 3 },
+  platform_rocker_form:  { form: "form_rocking_chair", tier: 3 },
+  chest_of_drawers_form: { form: "form_chest_of_drawers", tier: 3 },
+  dresser_form:          { form: "form_dresser", tier: 3 },
+  bistro_table_form:     { form: "form_bistro_cafe_table", tier: 3 },
+  china_cabinet_form:    { form: "form_china_cabinet", tier: 3 },
+  dressing_table_form:   { form: "form_dressing_table", tier: 3 },
+  milking_stool_form:    { form: "form_stool", tier: 3, formSubtype: "subtype_stool_milking" },
 
   // Anatomy / feature / too-generic — explicit null per Guardrail 3.
   seating_surface:        { form: null },
@@ -327,7 +342,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   chamfered_top_corners:               { form: null, style: null, note: "Biedermeier vocabulary in prose but clue name is anatomy; biedermeier_style_cues carries the routing" },
   rounded_cock_bead_rails:             { form: null, style: null, note: "Biedermeier/Empire vocabulary in prose but clue name is anatomy" },
   minimal_carved_ornament:             { form: null, style: null, note: "Biedermeier vocabulary in prose but clue name is generic" },
-  windsor_rocker_form:                 { form: "form_rocking_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: clue name + prose ('Windsor-style rocking chair') clearly identify the form; style stays null because 'windsor' is a form, not a family" },
+  windsor_rocker_form:                 { form: "form_rocking_chair", tier: 3, style: null, note: "Phase 0 Part A: upgraded Tier 2 → Tier 3 alongside direct-form clue authoring. Subtype attach (subtype_rocking_windsor) deferred to Part B taxonomy expansion." },
   central_splat_incised_motif:         { form: null, style: null },
   serpentine_arm:                      { form: null, style: null },
   oval_cartouche_back:                 { form: null, style: null },
