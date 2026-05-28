@@ -112,6 +112,16 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   of the squash commit). Expected, just noting the dance.
 - **Engine trace "remove before launch."** The diagnostic trace block rendered in
   reports is marked for removal before launch.
+- **Peacock chair / wicker chair / rattan chair subtype taxonomy review (Task B audit 2026-05-28).**
+  During the Task B audit pass, `peacock_fan_back_form` was kept null because the
+  taxonomy has no `form_peacock_chair`, `form_wicker_chair`, or `form_rattan_chair`.
+  The classic mid-century imported "peacock" / "Emmanuelle" chair form (c. 1960s-80s)
+  is a recognized furniture form but currently has no canonical home. Same situation
+  as Porter chair. Decision: do NOT flatten peacock/wicker chair clues to
+  `form_lounge_chair` during Task B; instead, review whether to author
+  `form_peacock_chair` (or a `form_wicker_seating` umbrella with peacock as a subtype)
+  as proper taxonomy work. Originated from the `peacock_emmanuelle_rattan_chair`
+  corpus fixture. Not Task B scope.
 - **Mirror French Provincial → Rococo Revival into family vocabulary (Task B 2026-05-28).**
   Task B batch 5 routed the explicit clue `french_provincial_style` →
   `style_family_rococo_revival` at the dictionary level (Cluster B canonical
