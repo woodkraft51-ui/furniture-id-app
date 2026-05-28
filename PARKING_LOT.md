@@ -3,6 +3,104 @@
 Tracking list for deferred work surfaced during the commode-determinism fix and
 the Stage 1 vocabulary migration. Newest context at top of each section.
 
+## Task B Step 6 — CLUE_ROUTING consumption attempt #2 outcome (2026-05-28)
+
+**Conclusion (owner-locked):** Before CLUE_ROUTING consumption can ship,
+Phase 0 must emit stronger direct object-form clues for the forms currently
+being rescued by legacy substring / membership rules. The dictionary
+architecture is sound; the gating is correct; the engine is not yet ready
+because too many corpus fixtures still depend on legacy substring or
+membership shortcuts instead of explicit P0 object-form clue emission.
+
+**What was tried.** Wired the owner-approved Step 6 consumption design into
+`scoreForms` and `attributeStyle`:
+- Form pre-pass with centralized tier multipliers
+  (`CLUE_ROUTING_TIER_MULT = {3:1.5, 2:1.0, 1:0.5}`, Clarification #1).
+- Conservative-first multi-clue legacy-rule gating: a Step-4 SUPPRESS-list
+  rule is skipped when ANY referenced clue is in `CLUE_ROUTING` with
+  `form: null` (Clarification #3).
+- Haystack suppression: dictionary-mapped clues (route OR null) excluded
+  from `scoreForms`'s substring `text` and from `attributeStyle`'s token /
+  phrase haystack (Clarification #2).
+- Trace output gated on `CLUE_ROUTING_TRACE=1` OR `unmapped > 0`:
+  `formRoute / formNull / styleRoute / styleNull / unmapped /
+  suppressedLegacy / hayfiltered / winners / losers` (Clarification #7).
+- Style direct-route merge into `attributeStyle` results, layered with
+  Task A's existing distinctive/shared phrase gate.
+- `formIdToLabel(form_id)` reverse-lookup helper + `"Armchair"` /
+  `"Commode"` plain-label additions to `FORM_LABEL_TO_CANONICAL`.
+
+The WIP wiring is preserved as commit `94bd9b7` on
+`claude/zen-gauss-91qvM` as evidence; **runtime files have been rolled back
+to byte-identical `origin/main` (Deploy 005) state.** Typecheck clean,
+126/126 tests, **no fixtures re-baselined.**
+
+**What the validation showed.** Corpus diff vs `origin/main` baseline:
+13/40 unchanged, 27/40 diverged. Trace `unmapped=0` on every fixture
+(architectural integrity check held). `suppressedLegacy` fired as
+designed. Wins included `logan_1914_tall_case_clock` (clock→trunk closed)
+and `jacobean_revival_tall_case_clock` (same pattern). One unit test —
+`tests/fixes.test.ts:263` T2a guard — broke because it asserts that bare
+material clues (`metal_frame`, `cast_iron`, `wrought_iron` — all
+explicit-null in the dictionary) must still score "Metal furniture" /
+"Iron furniture". That assertion encodes the pre-Step-6 behavior the
+Step-4 audit explicitly forbade.
+
+**Why we did NOT ship.** Regressions cluster into three patterns, all of
+which trace back to missing upstream coverage rather than to a flaw in
+the dictionary / gating architecture:
+
+1. *"Closes-via-Tier-3" doesn't fire when the Tier 3 clue isn't emitted
+   by P0.* Settee, Windsor chair, Windsor rocker, parlor rocker fixtures
+   still flip to substring-fallback forms (Lounge chair / Rocking chair /
+   Upholstered armchair) because the appropriate Tier 3 clues
+   (`settee_two_seat_form`, `windsor_rocker_form` at Tier 3) weren't
+   in those fixtures' P0 emissions. The substring fallback that used to
+   catch "settee" / "windsor" is correctly suppressed by haystack
+   filtering on the dictionary-mapped clues that DID fire.
+2. *Gated legacy rules with no Tier-routed replacement leave fixtures
+   "Unclassified".* The Sears dresser and bistro table fixtures lose
+   their identity because `multiple_drawer_case` / `drawer_present` /
+   "bistro" substring paths are all suppressed and nothing else
+   identifies the form.
+3. *Step 5 D gaps confirmed.* China cabinet, vanity, peacock chair,
+   milking stool — these were expected NOT to close per Step 6 §8.
+
+**Affirmations (owner-locked, do not relax in future attempts):**
+- Explicit-null suppression remains CORRECT (Clarification #2). Do not
+  loosen mapped-and-null clues into form attribution.
+- Step 4 material / anatomy / member-rule suppression remains CORRECT
+  (Clarifications #3 + #5). Do not relax to "rescue" any single fixture.
+- Do NOT add a Tier-0 substring fallback. That would recreate the same
+  unsafe substring back door the dictionary is meant to replace.
+- The failed outcomes are mostly missing P0 clue-emission and
+  taxonomy / subtype gaps, NOT proof that the dictionary architecture
+  is wrong.
+- No fixtures were re-baselined.
+- No runtime code remains changed after rollback.
+
+**Priority P0 clue-emission gaps exposed by this attempt (in priority
+order — these are the prerequisites for a Step 6 retry):**
+- settee / loveseat / two-seat settee
+- Windsor chair vs Windsor rocker (distinct object-form clues)
+- rocking chair / parlor rocker / platform rocker
+- chest of drawers / dresser
+- bistro table
+- china cabinet / display cabinet / vitrine
+- vanity / dressing table
+- peacock / Emmanuelle / rattan chair
+- milking stool / stool subtypes
+
+These are P0-prompt and taxonomy work, not consumption-layer work. Each
+should be addressed in a separate owner-approved formal-loop session
+before a Step 6 retry is scoped.
+
+**Pointers.** Owner-approved consumption design plan + design rationale
+remain in the session plan file
+`/root/.claude/plans/i-am-nearing-the-unified-hopcroft.md`. WIP wiring
+diff readable at commit `94bd9b7` on `claude/zen-gauss-91qvM`. Step 4
+audit decisions remain canonical for any future retry.
+
 ## Observed on live scans (instrumentation stage — logged, not fixed)
 
 - **Material-consistency / form contradictions go uncaught (P5).** Hallucinated
