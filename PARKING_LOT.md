@@ -112,6 +112,15 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   of the squash commit). Expected, just noting the dance.
 - **Engine trace "remove before launch."** The diagnostic trace block rendered in
   reports is marked for removal before launch.
+- **Mirror Louis XV → Rococo Revival into distinctive_tokens (Task B 2026-05-28).**
+  Task B batch 4d routed `louis_xv_revival_influence` → `style_family_rococo_revival`
+  at the dictionary level (the canonical Cluster B correction case: Louis XV Revival
+  vocabulary is closely tied to Rococo Revival). This dictionary-level route should
+  be **mirrored back** into `style_family_rococo_revival.distinctive_tokens` by
+  adding `"louis xv revival"` (and possibly `"louis xv"`) — but only after review,
+  because adding "louis xv" alone could over-trigger Rococo Revival on pieces that
+  use Louis XV vocabulary loosely. See `lib/constraints/clueRoutingMap.ts` entry
+  for `louis_xv_revival_influence` and the Task A authoring discussion.
 - **Porter chair subtype taxonomy review (Task B 2026-05-28).** During Task B
   clue dictionary authoring, `dome_canopy_back` was left null because Porter
   chair is currently only an alias under `form_wing_chair` rather than its own

@@ -330,4 +330,63 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   porter_chair_form:                   { form: null, style: null, note: "consistent with dome_canopy_back null decision; Porter chair pending subtype authoring (see PARKING_LOT.md)" },
   incised_scroll_decoration:           { form: null, style: null },
   turned_arm_finials:                  { form: null, style: null },
+
+  // ── Batch 4d — style clues, positions 111-153 (locked 2026-05-28) ───────
+  // 8 route to a family. 35 null. Style clues authoring is now COMPLETE.
+
+  // Route to a family.
+  saber_leg_rear:               { style: "style_family_american_classical", note: "'saber leg' is in American Classical / Empire's distinctive_tokens" },
+  rococo_revival_style:         { style: "style_family_rococo_revival" },
+  style_cue_rococo_revival:     { style: "style_family_rococo_revival" },
+  hollywood_regency_style_cue:  { style: "style_family_hollywood_regency", note: "'hollywood regency' is distinctive" },
+  style_cue_art_deco:           { style: "style_family_art_deco", note: "'art deco' is distinctive" },
+  empire_revival_influence:     {
+    style: "style_family_american_classical",
+    note: "'Empire Revival' is the wave name for Wave 2 of American Classical (Empire / Duncan Phyfe Revival); full phrase is specific enough to route even though 'empire' alone is shared",
+  },
+  louis_xv_revival_influence:   {
+    style: "style_family_rococo_revival",
+    note: "Cluster B correction case: Louis XV Revival is closely tied to Rococo Revival vocabulary. This dictionary-level route should be mirrored later by adding 'louis xv revival' (and possibly 'louis xv') to style_family_rococo_revival's distinctive_tokens — tracked in PARKING_LOT.md",
+  },
+  style_cue_waterfall_corners:  {
+    style: "style_family_art_deco",
+    note: "'waterfall corners' is more specific than the generic 'waterfall' shared token — recognizable Art Deco / waterfall moderne signature",
+  },
+
+  // Null — anatomy / generic / multi-family.
+  shaped_apron_carved:                { form: null, style: null },
+  victorian_parlor_chair:             { form: null, style: null, note: "'victorian' era + 'parlor chair' generic per Guardrail 1" },
+  scrolled_volute_arm_bracket:        { form: null, style: null },
+  claw_foot:                          { form: null, style: null },
+  reeded_leg:                         { form: null, style: null },
+  swept_wing_back:                    { form: null, style: null },
+  victorian_platform_rocker_style:    { form: null, style: null, note: "'victorian' era + 'platform rocker' form" },
+  scrolled_arm_volute:                { form: null, style: null },
+  leaf_carved_crest_rail:             { form: null, style: null, note: "multi-family (Neoclassical, Regency, Colonial Revival)" },
+  reeded_back_post:                   { form: null, style: null, note: "multi-family (Neoclassical, Regency, Federal Revival)" },
+  carved_apron_seat_rail:             { form: null, style: null },
+  carved_rosette_leg_top:             { form: null, style: null },
+  tapered_carved_leg:                 { form: null, style: null, note: "multi-family (Neoclassical, Regency, Empire Revival)" },
+  neoclassical_revival_style:         { form: null, style: null, note: "too broad; crosses Federal / American Classical / Louis XVI / Regency-derived / later revival waves — do not route alone" },
+  open_arm_chair_form:                { form: null, style: null },
+  wicker_weave_close:                 { form: null, style: null, note: "no wicker family in taxonomy" },
+  wicker_weave_open:                  { form: null, style: null, note: "no wicker family in taxonomy" },
+  wicker_weave_basket:                { form: null, style: null, note: "no wicker family in taxonomy" },
+  scrollwork_ornament:                { form: null, style: null },
+  french_bistro_garden_table_influence:{ form: null, style: null, note: "'french' / 'bistro' / 'garden' / 'influence' all generic per Guardrail 1" },
+  carved_floral_crest:                { form: null, style: null },
+  scrolled_arm_terminals:             { form: null, style: null, note: "multi-family (Louis XV / Rococo Revival)" },
+  beaded_molding_frame:               { form: null, style: null },
+  ball_finials:                       { form: null, style: null },
+  victorian_parlor_rocker_form:       { form: null, style: null, note: "'victorian' era + form" },
+  pierced_carved_crest:               { form: null, style: null },
+  gadrooned_or_rope_twist_molding:    { form: null, style: null },
+  carved_medallion_back:              { form: null, style: null, note: "Eastlake vocabulary in prose but clue name is generic; eastlake_hardware carries Eastlake routing" },
+  fan_sunburst_carving:               { form: null, style: null, note: "Eastlake vocabulary in prose but clue name is generic" },
+  arched_crest_rail:                  { form: null, style: null },
+  carved_corner_block:                { form: null, style: null },
+  fluted_legs:                        { form: null, style: null, note: "multi-family (Louis XVI, Federal, neoclassical revival)" },
+  style_cue_reeded_pilasters:         { form: null, style: null, note: "multi-family (Art Deco, late Colonial Revival)" },
+  style_cue_carved_scroll_corbels:    { form: null, style: null, note: "multi-family (Art Deco, late Empire Revival)" },
+  style_cue_geometric_brass_inlay:    { form: null, style: null, note: "Art Deco vocabulary in prose but clue name is generic" },
 };
