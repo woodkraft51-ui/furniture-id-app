@@ -171,4 +171,54 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   // (function-category appearances of clues authored in earlier batches)
   candle_holding:    { form: null, note: "function 'holds candles' is ambiguous between candelabrum / candle_stand / candlestick / sconce — supports function interpretation without forcing form" },
   display_or_dining: { form: null, note: "literally names two ambiguous forms (display table / dining table / bistro / hall)" },
+
+  // ── Batch 4a — style clues, top 30 by frequency (locked 2026-05-28) ─────
+  // 4 route to a family. 25 null per Guardrail 1 (generic / era / anatomy
+  // words don't route by themselves). Style clues are the largest category
+  // (153 total) and being split into 4a–4d sub-batches.
+  // Parsing artifact: the empty-string clue id ("") seen 11× in 4 fixtures is
+  // the upstream M17 keyless-observation bug, NOT an authoring decision —
+  // explicitly excluded from this map.
+
+  // Route to a family — clue clearly names a recognized style family per Guardrail 1.
+  barley_twist: {
+    style: "style_family_tudor_revival",
+    note: "Tudor Revival here is the COMBINED Tudor/Jacobean/Elizabethan Revival family per styleFamilies.ts; W&M is separate and unaffected (no barley twist in its distinctive_tokens)",
+  },
+  eastlake_hardware: {
+    style: "style_family_eastlake",
+    note: "negation handled separately by descriptionNegatesClue when prose self-negates",
+  },
+  country_provincial_chippendale_influence: {
+    style: "style_family_chippendale",
+    note: "'chippendale' is the distinctive token; 'country/provincial/influence' are generic and do not route per Guardrail 1",
+  },
+  art_deco_style_cues: {
+    style: "style_family_art_deco",
+  },
+
+  // Null — anatomy, era-only ('victorian'), or generic vocabulary per Guardrail 1.
+  spindle_gallery:               { form: null, style: null, note: "anatomy; cross-domain (authored for shelf clocks, fires on chairs/settees — see corpus Cluster E)" },
+  carved_crest_rail:             { form: null, style: null },
+  turned_spindle_gallery:        { form: null, style: null, note: "anatomy; cross-domain (clock vocabulary firing on chair forms)" },
+  scrolled_side_corbels:         { form: null, style: null, note: "anatomy; cross-domain (clock vocabulary firing on settees)" },
+  victorian_curlicue_wicker:     { form: null, style: null, note: "'victorian' is era language per Guardrail 1; no wicker family in taxonomy" },
+  serpentine_crest_rail:         { form: null, style: null },
+  paw_feet:                      { form: null, style: null, note: "anatomy; appears across Renaissance Revival, Baroque, American Empire" },
+  mid_century_streamlined_wicker:{ form: null, style: null, note: "'mid-century' alone is era signal not distinctive; wicker not a family in taxonomy" },
+  bar_harbor_style_wicker:       { form: null, style: null, note: "wicker tradition; no wicker family in taxonomy" },
+  tufted_upholstery:             { form: null, style: null },
+  pierced_splat_ladder_back:     { form: null, style: null },
+  no_armrest:                    { form: null, style: null },
+  ladder_back_three_slat:        { form: null, style: null },
+  dome_top_victorian_trunk:      { form: null, style: null, note: "'victorian' is era per Guardrail 1" },
+  applied_decoration:            { form: null, style: null },
+  bobbin_turned_spindles:        { form: null, style: null },
+  bobbin_turned_legs:            { form: null, style: null },
+  bobbin_turned_stretchers:      { form: null, style: null },
+  scrolled_crest_ends:           { form: null, style: null },
+  victorian_windsor_rocker_style:{ form: null, style: null, note: "'victorian' era + 'windsor' is a form; no style family signal" },
+  foliate_carved_crest:          { form: null, style: null },
+  victorian_utilitarian_form:    { form: null, style: null, note: "'victorian' era; 'utilitarian_form' generic" },
+  fluted_spherical_knop:         { form: null, style: null, note: "appears across Art Deco, Arts & Crafts, Scandinavian Modern — multi-family overlap" },
 };
