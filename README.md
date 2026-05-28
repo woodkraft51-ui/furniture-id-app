@@ -14,12 +14,17 @@ npm run dev
 # Open http://localhost:3000
 ```
 
-## Vercel Deployment
+## Render Deployment
+
+Deploy config lives in the repo as a Render Blueprint (`render.yaml`): a long-running
+Node web service (`next start`) that auto-deploys on every push to `main`.
 
 1. Push this repo to GitHub
-2. Import the repo at vercel.com/new
-3. In **Project Settings → Environment Variables** add:
-   - `ANTHROPIC_API_KEY` = your key (all environments)
+2. Render Dashboard → **Blueprints → New Blueprint Instance**, pointed at this repo
+   (if a Web Service already exists, give it the same `name` as in `render.yaml` so the
+   Blueprint manages it instead of creating a duplicate)
+3. Set `ANTHROPIC_API_KEY` in the Render dashboard (it is `sync: false` in `render.yaml`,
+   so it is never committed)
 4. Deploy — no other configuration needed
 
 ## Architecture

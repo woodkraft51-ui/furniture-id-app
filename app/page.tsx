@@ -156,9 +156,9 @@ const INITIAL_INTAKE: IntakeState = {
   suggests_prior_function: false,
 };
 
-// Block 11 P4-1: client-side image downscaling. Removes Vercel's 4.5MB
-// FUNCTION_PAYLOAD_TOO_LARGE failure on Full Analysis. Modern phone photos
-// are typically 2-4MB each; 5-photo Full Analysis blew the cap. Downscale
+// Block 11 P4-1: client-side image downscaling. Keeps request payloads small
+// and reliable for Full Analysis. Modern phone photos are typically 2-4MB each;
+// a 5-photo Full Analysis can blow request size limits. Downscale
 // to max 1600px longer edge, JPEG quality 0.82 → typical ~300-600KB/photo.
 // Skip re-encoding when image is already small (<1.5MB AND ≤1600px longer
 // edge) — avoids unnecessary processing time + potential quality loss
@@ -275,7 +275,7 @@ async function downscaleImageFile(file: File): Promise<File> {
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise(async (resolve, reject) => {
     try {
-      // Block 11: downscale first to stay under Vercel's 4.5MB payload cap.
+      // Block 11: downscale first to keep the upload payload small.
       const processed = await downscaleImageFile(file);
       const reader = new FileReader();
       reader.onload = () => resolve(String(reader.result || ""));
