@@ -1565,10 +1565,19 @@ function clueSubjectTerms(clue?: string | null): string[] {
 // "rather than a clock", "no clock case"). Matching against the clue's own
 // subject term — not bare "not"/"no" — keeps positive clues whose prose merely
 // contrasts a different thing ("Cabriole legs, not straight") from being dropped.
-function descriptionNegatesClue(clue: string | null | undefined, description: string): boolean {
+export function descriptionNegatesClue(clue: string | null | undefined, description: string): boolean {
   const terms = clueSubjectTerms(clue);
   if (!terms.length || !description) return false;
   const text = ` ${description.toLowerCase()} `;
+  // A label/mark/text clue is AFFIRMED by a transcribed quote: if the model
+  // copied characters off the object, the document exists even when the prose
+  // adds "...not a maker's mark" (Sears freight label, 'Made in China' stamp).
+  if (
+    /label|mark|stamp|signature|inscription|maker|placard|decal|stencil/.test(clue || "") &&
+    /['"“”‘’][^'"“”‘’]{3,}['"“”‘’]/.test(description)
+  ) {
+    return false;
+  }
   // Allow a few intervening qualifier words between the negation cue and the
   // clue's subject term so common phrasings are caught — e.g. "No decorative
   // nailhead trim visible" (no -> nailhead) and "not true turned spindles"
@@ -1576,8 +1585,17 @@ function descriptionNegatesClue(clue: string | null | undefined, description: st
   // (not a bare "no"/"not"), which keeps contrastive prose about a DIFFERENT
   // thing — "Hand-cut dovetails, not machine cut" — from dropping the clue.
   const W = `(?:\\w+\\s+){0,3}`;
+  // Affirming predicate, but NOT one that is itself negated: a leading "no/not"
+  // before the term ("No Eastlake hardware visible") and a trailing "is not"
+  // both disqualify it, so only a genuine presence assertion affirms.
+  const NEG_BEHIND = `(?<!\\b(?:no|not|without|never)\\b(?:\\s+\\w+){0,3}\\s*)`;
+  const AFFIRM_PRED = `(?:is|are|was|were|visible|present|shown|observed|intact|remain\\w*)(?!\\s+(?:not|no)\\b)`;
   for (const t of terms) {
     const esc = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // Affirmation guard: if THIS term is asserted present elsewhere, the prose is
+    // contrasting a subtype, not negating presence ("Backrest is integral … no
+    // separate backrest"; "nailheads visible … rather than modern strip nailhead").
+    if (new RegExp(`${NEG_BEHIND}\\b${esc}s?\\b[\\s,]*${AFFIRM_PRED}\\b`).test(text)) continue;
     const patterns = [
       new RegExp(`\\bnot (?:a |an |the )?(?:${W})?${esc}s?\\b`),
       new RegExp(`\\b(?:rather than|instead of|as opposed to) (?:a |an |the )?(?:${W})?${esc}s?\\b`),

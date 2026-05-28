@@ -11,7 +11,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { PE, promotePerceptionObservations } from "../lib/engine";
+import { pathToFileURL } from "node:url";
+import { PE, promotePerceptionObservations, descriptionNegatesClue } from "../lib/engine";
 import { SESSION_SCANS, type ScanFixture } from "../tests/fixtures/sessionScans";
 
 // Clues synthesized by promotePerceptionObservations — stripped before re-running
@@ -64,7 +65,7 @@ function summarize(result: any) {
   };
 }
 
-async function runFixture(fx: ScanFixture) {
+export async function runFixture(fx: ScanFixture) {
   let observations: any[] = fx.observations.map((o) => ({ ...o }));
   const perception: any = fx.perception ?? { raw_text: "" };
   // When a fixture supplies rawText, re-run the P0 seating/spindle derivation on
@@ -77,6 +78,11 @@ async function runFixture(fx: ScanFixture) {
       perception
     );
   }
+  // Re-derive `negated` exactly as production does (normalizeObservationsFromParsed
+  // sets `negated: descriptionNegatesClue(clue, description)` inside p0, which this
+  // harness stubs). Without this the corpus uses stale hand-baked flags and is blind
+  // to any negation-detection change.
+  for (const o of observations) o.negated = descriptionNegatesClue(o.clue, o.description);
   // Stub the model phase; everything downstream is deterministic.
   (PE as any).p0 = async () => ({ observations, perception, recovered: true });
   const caseData: any = { id: fx.label, images: [], analysis_mode: "full_analysis" };
@@ -84,7 +90,7 @@ async function runFixture(fx: ScanFixture) {
   return summarize(result);
 }
 
-function fidelity(got: any, asSeen: ScanFixture["asSeen"]) {
+export function fidelity(got: any, asSeen: ScanFixture["asSeen"]) {
   const checks: [string, any, any][] = [
     ["formId", got.formId, asSeen.formId],
     ["dateRange", got.dateRange, asSeen.dateRange],
@@ -133,4 +139,7 @@ async function main() {
   }
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+// Only run the CLI when invoked directly (node … _scanCorpus.ts), not when
+// imported by tests/corpus.test.ts.
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) main().catch((e) => { console.error(e); process.exit(1); });
