@@ -112,6 +112,21 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   of the squash commit). Expected, just noting the dance.
 - **Engine trace "remove before launch."** The diagnostic trace block rendered in
   reports is marked for removal before launch.
+- **Mirror French Provincial → Rococo Revival into family vocabulary (Task B 2026-05-28).**
+  Task B batch 5 routed the explicit clue `french_provincial_style` →
+  `style_family_rococo_revival` at the dictionary level (Cluster B canonical
+  correction — French Provincial belongs to Rococo Revival's Wave 3 "French
+  Provincial / Rococo Domestic Revival, 1920–1965"). Review whether
+  **"French Provincial," "French Provincial Revival,"** and related domestic
+  Rococo Revival language should be added to one of:
+    (a) `style_family_rococo_revival.distinctive_tokens` — strongest signal but
+        risks over-triggering on pieces that use "French Provincial" loosely;
+    (b) `style_family_rococo_revival.shared_tokens` — corroboration only;
+    (c) a separate **wave-alias field** scoped to Wave 3 specifically — the
+        cleanest semantic match but requires schema work.
+  CRITICAL: keep the existing distinction sharp — the loose tokens "french" and
+  "provincial" must NOT route by themselves (they stay in Louis XVI's
+  shared_tokens per Task A). Only the explicit named recognition routes.
 - **Mirror Louis XV → Rococo Revival into distinctive_tokens (Task B 2026-05-28).**
   Task B batch 4d routed `louis_xv_revival_influence` → `style_family_rococo_revival`
   at the dictionary level (the canonical Cluster B correction case: Louis XV Revival

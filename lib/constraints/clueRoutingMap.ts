@@ -389,4 +389,19 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   style_cue_reeded_pilasters:         { form: null, style: null, note: "multi-family (Art Deco, late Colonial Revival)" },
   style_cue_carved_scroll_corbels:    { form: null, style: null, note: "multi-family (Art Deco, late Empire Revival)" },
   style_cue_geometric_brass_inlay:    { form: null, style: null, note: "Art Deco vocabulary in prose but clue name is generic" },
+
+  // ── Batch 5 — context / visible_text / construction_cues (locked 2026-05-28) ─
+  // 5 clues across 3 small categories. 1 route (the Cluster B correction
+  // case), 3 null, 1 duplicate skipped.
+
+  // The canonical Cluster B correction.
+  french_provincial_style: {
+    style: "style_family_rococo_revival",
+    note: "Cluster B correction case. CRITICAL DISTINCTION: the LOOSE TOKENS 'french' and 'provincial' must NOT route by themselves (they are shared/generic per Task A authoring + Guardrail 1). The EXPLICIT NAMED CLUE 'french_provincial_style' is a different thing — a named recognition clue for French Provincial vocabulary, which canonically lives in Rococo Revival Wave 3 ('French Provincial / Rococo Domestic Revival, 1920–1965'). Routing here is the original intent of the translator architecture. See PARKING_LOT.md re mirroring French Provincial back into Rococo Revival distinctive_tokens or wave-alias field after review.",
+  },
+
+  // Null per Guardrail 4 (labels in their own layer) and joinery anatomy.
+  visible_text:     { form: null, style: null, note: "Guardrail 4 — label/text stays null pending separate maker/model layer" },
+  maker_label:      { form: null, style: null, note: "Guardrail 4 — label stays null pending separate maker/model layer" },
+  mortise_and_tenon:{ form: null, style: null, note: "joinery anatomy; dates construction but doesn't classify form or style" },
 };
