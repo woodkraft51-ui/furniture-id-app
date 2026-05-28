@@ -155,6 +155,59 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   `lib/engineCanonicalMap.ts` restored to Deploy-004 state. Dictionary file
   preserved with 525 authored entries including 14 audit-pass form-route
   corrections (commit `7aa9226`). Production behavior unchanged.
+- **Step 5 missing-form-routes audit — conclusion + gap list (2026-05-28).**
+  Audit of corpus clues against the 243 canonical form_ids for form evidence
+  not yet represented in CLUE_ROUTING. Owner approved Group A = 0, Group B
+  already covered, Group C all 8 borderlines stay null per Guardrail 5
+  (hardware/mechanism/construction shouldn't force form alone), Group D all
+  items parked. **No dictionary entries added in Step 5.**
+
+  **ARCHITECTURAL CONCLUSION (owner-locked):**
+  The remaining form-routing failures should be addressed primarily by
+  improving Phase 0 (P0) clue emission and taxonomy coverage, NOT by
+  over-authoring weak construction/material/anatomy clues into form routes.
+  When a form fails to identify, the right intervention is upstream (give
+  the LLM a form-naming clue, or extend the canonical taxonomy), not
+  downstream (back-door a feature clue into routing what its description
+  hints at).
+
+  **STEP 5 GAP LIST** — each item needs either P0 clue emission improvement,
+  canonical taxonomy authoring, or both:
+  1. **China cabinet / display cabinet / vitrine** — P0 clue gap. No corpus
+     clue names this form; the LLM emits component features (open_shelving,
+     door_present, glass_top) but no `china_cabinet_form` clue. Canonical
+     forms exist; needs P0 emission.
+  2. **Vanity / dressing table** — P0 clue gap. Same pattern; LLM emits
+     anatomy (raised_back_gallery, writing_surface, multiple_drawer_case)
+     but no vanity/dressing-table form clue. Canonical forms exist; needs P0.
+  3. **Peacock chair / wicker chair / rattan chair** — taxonomy gap AND P0
+     clue gap. Corpus clues exist for features (`mid_century_streamlined_
+     wicker`, `ring_loop_border`, `scrollwork_medallion`, `coiled_spiral_seat`,
+     `victorian_curlicue_wicker`) but `form_peacock_chair`, `form_wicker_chair`,
+     `form_rattan_chair` don't exist canonically. Both layers need work.
+     (Already parked in Step 3 + Task A audit.)
+  4. **Sconce / candlestick / candle stand** — future corpus / P0 clue gap.
+     Canonical forms (`form_sconce`, `form_candlestick`, `form_candle_stand`)
+     exist but no corpus fixtures use them — no clues exist yet. Authorable
+     when corpus grows to include these object types.
+  5. **Lamps (table / floor / desk)** — future corpus / P0 clue gap. Same
+     as #4; canonical lamp forms exist, no corpus presence.
+  6. **Grandfather / grandmother / granddaughter clock subtypes** — subtype
+     discrimination gap. `subtype_tall_case_clock_grandfather_clock`,
+     `_grandmother_clock`, `_granddaughter_clock` exist in taxonomy, but no
+     corpus clue distinguishes the three by size/proportion. `clock_case_
+     form` correctly routes the parent form. Needs P0 emission of a
+     dimensional/proportion clue or owner authoring of a derived rule.
+  7. **Milking stool / vanity stool / bar stool subtypes** — subtype clue
+     gap. Stool subtypes (`subtype_stool_milking`, `subtype_stool_vanity`,
+     `subtype_stool_bar`, etc.) exist in taxonomy, but no corpus clue
+     specifically names a stool subtype variant. `stool_form` correctly
+     routes form_stool. Needs P0 clue emission.
+
+  **No code or dictionary changes in Step 5.** The dictionary's 30
+  form-routing entries (with tiers + subtypes from Steps 2–3) remain the
+  complete current authoring. Future consumption design (Step 6) consumes
+  what's authored; gap items above are tracked for future authoring sessions.
 - **Step 4 `scoreForms` rule audit — owner decisions for future consumption design (2026-05-28).**
   Audit of 23 `clues.has()` / `hasAny()` form-routing rules in `scoreForms`
   (high-risk categories: beds, wicker, cabinet/shelving, trunk/chest, dresser,
