@@ -155,6 +155,36 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   `lib/engineCanonicalMap.ts` restored to Deploy-004 state. Dictionary file
   preserved with 525 authored entries including 14 audit-pass form-route
   corrections (commit `7aa9226`). Production behavior unchanged.
+- **Subtype taxonomy gaps surfaced by Task B Step 3 (2026-05-28).** The
+  subtype-qualifier authoring pass over the 30 form-routing dictionary entries
+  cleanly matched 6 to existing canonical subtypes but surfaced **5 gaps where
+  clues clearly point to a subtype that doesn't exist yet** in
+  `lib/constraints/canonicalVocabulary.generated.ts`. Per Step 3 guardrails,
+  no subtype ids were invented; the affected entries route to the parent form
+  only. Each gap is independently authorable as proper taxonomy work:
+  1. **Platform rocker subtype under `form_rocking_chair`.** Affected clues:
+     `platform_rocker_base`, `platform_rocker_mechanism`,
+     `victorian_platform_rocker_style`. Note that `form_rocking_chair`
+     currently has ZERO subtypes — this is the deeper gap.
+  2. **Windsor rocker subtype under `form_rocking_chair`.** Affected clues:
+     `windsor_rocker_form`, `victorian_windsor_rocker_style`. Cross-form
+     question: should Windsor rockers sit under `form_rocking_chair`
+     (functional taxonomy) or under `form_windsor_chair` (chair-family
+     taxonomy)? `form_windsor_chair` has subtype variants (bow-back,
+     sack-back, etc.) but no "rocker" qualifier.
+  3. **Parlor rocker subtype under `form_rocking_chair`.** Affected clue:
+     `victorian_parlor_rocker_form`.
+  4. **Close stool / chamber-pot commode subtype under `form_commode`.**
+     Affected clues: `commode_chamber_pot_cabinet`, `victorian_utilitarian_form`.
+     `form_commode` currently has ZERO subtypes.
+  5. **Italian sgabello subtype under `form_side_chair`** (or nested under
+     `subtype_side_chair_hall` if the taxonomy supports nested subtype
+     treatment). `sgabello_hall_chair_form` currently routes to
+     `subtype_side_chair_hall` (generic hall side chair); the Italian
+     Renaissance sgabello specificity is lost.
+  Authoring these subtypes is taxonomy work — NOT part of Task B consumption
+  redesign, but a prerequisite-adjacent task that will let Step 3 subtype
+  routing reach full diagnostic precision when the consumption layer ships.
 - **Peacock chair / wicker chair / rattan chair subtype taxonomy review (Task B audit 2026-05-28).**
   During the Task B audit pass, `peacock_fan_back_form` was kept null because the
   taxonomy has no `form_peacock_chair`, `form_wicker_chair`, or `form_rattan_chair`.

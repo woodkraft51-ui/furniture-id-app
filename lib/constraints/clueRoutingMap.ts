@@ -59,6 +59,13 @@ export type ClueRouting = {
    *  PARKING_LOT.md "CLUE_ROUTING consumption redesign" for the consumption
    *  mechanics that this field will feed. */
   tier?: 1 | 2 | 3;
+  /** Canonical subtype_id (e.g., "subtype_dome_top_trunk") that further qualifies
+   *  the parent form. The parent `form` route ALWAYS stays — subtype is
+   *  additive, not a replacement. Use only existing subtype_ids from
+   *  canonicalVocabulary.generated.ts; do NOT invent new ones (taxonomy gaps
+   *  are tracked in PARKING_LOT.md). Authored 2026-05-28 as Step 3 of the
+   *  Task B consumption-redesign track. */
+  formSubtype?: string;
   /** Canonical style_family_id (e.g., "style_family_colonial_revival"), or null. */
   style?: string | null;
   /** Optional human note (subtype hint, variant, reasoning). */
@@ -73,14 +80,14 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   lounge_chair_form:    { form: "form_lounge_chair", tier: 1 },
   rocking_chair_form:   { form: "form_rocking_chair", tier: 2 },
   wingback_form:        { form: "form_wing_chair", tier: 3 },
-  dome_top_trunk:       { form: "form_trunk", tier: 3, note: "camelback / dome-top subtype" },
+  dome_top_trunk:       { form: "form_trunk", tier: 3, formSubtype: "subtype_dome_top_trunk", note: "camelback / dome-top subtype" },
   candelabra_form:      { form: "form_candelabrum", tier: 3 },
   stool_form:           { form: "form_stool", tier: 2 },
   clock_case_form:      { form: "form_tall_case_clock", tier: 3 },
-  settee_two_seat_form: { form: "form_settee", tier: 3 },
-  club_chair_form:      { form: "form_lounge_chair", tier: 3, note: "club-chair variant per LLM canonical note (form_lounge_chair / subtype_lounge_club)" },
+  settee_two_seat_form: { form: "form_settee", tier: 3, formSubtype: "subtype_settee_loveseat_like" },
+  club_chair_form:      { form: "form_lounge_chair", tier: 3, formSubtype: "subtype_lounge_club", note: "club-chair variant per LLM canonical note (form_lounge_chair / subtype_lounge_club)" },
   slant_front:          { form: "form_slant_front_desk", tier: 3, note: "anatomy but strongly form-defining when context is a writing case/desk" },
-  drop_front_desk:      { form: "form_fall_front_desk", tier: 3, note: "taxonomy-faithful: 'drop-front desk' lives as a subtype under form_fall_front_desk, not under secretary" },
+  drop_front_desk:      { form: "form_fall_front_desk", tier: 3, formSubtype: "subtype_fall_front_desk_drop_front", note: "taxonomy-faithful: 'drop-front desk' lives as a subtype under form_fall_front_desk, not under secretary" },
   platform_rocker_base: { form: "form_rocking_chair", tier: 2, note: "platform-rocker variant; no canonical form_platform_rocker exists yet" },
 
   // Anatomy / feature / too-generic — explicit null per Guardrail 3.
@@ -220,7 +227,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   pierced_splat_ladder_back:     { form: "form_ladderback_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'ladder-back chair' — identifies form" },
   no_armrest:                    { form: null, style: null },
   ladder_back_three_slat:        { form: "form_ladderback_chair", tier: 2, style: null, note: "audit-correction 2026-05-28: 'ladder configuration... ladder-back chair tradition' — identifies form" },
-  dome_top_victorian_trunk:      { form: "form_trunk", tier: 3, style: null, note: "audit-correction 2026-05-28: 'American Victorian trunk c. 1860-1900' — object IS a trunk; style null per 'victorian' era" },
+  dome_top_victorian_trunk:      { form: "form_trunk", tier: 3, formSubtype: "subtype_dome_top_trunk", style: null, note: "audit-correction 2026-05-28: 'American Victorian trunk c. 1860-1900' — object IS a trunk; style null per 'victorian' era" },
   applied_decoration:            { form: null, style: null },
   bobbin_turned_spindles:        { form: null, style: null },
   bobbin_turned_legs:            { form: null, style: null },
@@ -269,7 +276,7 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   gadrooning_egg_dart:                { form: null, style: null },
   oval_cartouche_medallion:           { form: null, style: null },
   fish_scale_imbrication_crest:       { form: null, style: null },
-  sgabello_hall_chair_form:           { form: "form_side_chair", tier: 3, style: null, note: "audit-correction 2026-05-28: Italian sgabello = hall/side chair; routed to form_side_chair because form_hall_chair doesn't exist in taxonomy" },
+  sgabello_hall_chair_form:           { form: "form_side_chair", tier: 3, formSubtype: "subtype_side_chair_hall", style: null, note: "audit-correction 2026-05-28: Italian sgabello = hall/side chair; routed to form_side_chair because form_hall_chair doesn't exist in taxonomy" },
   carving_depth_and_quality:          { form: null, style: null },
   bead_and_reel_border:               { form: null, style: null },
   tassel_carving:                     { form: null, style: null, note: "appears across Renaissance Revival and Baroque — multi-family" },
