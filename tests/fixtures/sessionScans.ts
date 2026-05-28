@@ -2383,4 +2383,77 @@ const midcentury_neoclassical_cane_lounge_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee, midcentury_neoclassical_cane_lounge_chair];
+// ── Art Deco waterfall vanity — keystone for #15b (hyphenated-negation gap regex) ──
+// As-seen pre-fix was c. 1860–1910 / "Art Deco vocabulary (post-1860 reproduction)" —
+// thick_veneer's self-negation ("...rather than hand-sawn thick veneer") was missed
+// because the W gap regex didn't traverse "hand-sawn", so its pre-1910 dateHint
+// anchored a false ceiling on the wood layer. Fix shipped in Deploy 003. This fixture
+// pins the post-fix verdict; if a future regression re-breaks hyphenated-negation
+// detection, this is the canary.
+const art_deco_waterfall_vanity: ScanFixture = {
+  label: "art_deco_waterfall_vanity",
+  note:
+    "American Art Deco / Streamlined Moderne waterfall vanity, c. 1935-1948, " +
+    "original-period — twin-pedestal kneehole vanity with rounded waterfall corners, " +
+    "reeded pilasters, geometric brass-inlay center drawer, lion-head ring pulls, " +
+    "walnut/gumwood veneer over plywood, machine dovetails, broken scroll corbel. " +
+    "Surfacing case for #15b: thick_veneer observation self-negates in prose " +
+    "(\"relatively thin and uniform... rather than hand-sawn thick veneer\") but " +
+    "the negation detector's gap regex (W = `(?:\\w+\\s+){0,3}`) failed on " +
+    "\"hand-sawn\" because `\\w+` doesn't cross hyphens. Fix widens W to " +
+    "`[\\w-]+\\s+`. Pre-fix verdict: c. 1860-1910 / reproduction. Post-fix verdict " +
+    "encoded in asSeen below.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "flat_surface", confidence: 68, description: "Flat writing/vanity surface visible on top of the kneehole desk with raised back gallery rail." },
+    { type: "form", clue: "drawer_present", confidence: 68, description: "Multiple drawers visible: one upper center drawer, two drawers per pedestal side (four total pedestal drawers), plus lower drawers with horizontal bar pulls. Consistent with kneehole desk form." },
+    { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "Two pedestal banks each containing at least two drawers, plus a center drawer, totaling five or more drawers in a kneehole desk configuration." },
+    { type: "style", clue: "style_cue_art_deco", confidence: 52, description: "Strongly rounded waterfall corners on pedestal tops and sides, reeded pilaster columns flanking pedestals, stepped molding profiles, geometric diamond/lattice brass inlay accents on center drawer front, and overall streamlined horizontal emphasis are canonical Art Deco / Streamlined Moderne design vocabulary, c. 1925–1945." },
+    { type: "style", clue: "style_cue_waterfall_corners", confidence: 52, description: "Rounded waterfall-style corners on pedestal tops and outer edges — a defining Streamlined Moderne / Art Deco furniture feature common in American factory production c. 1930–1945." },
+    { type: "style", clue: "style_cue_reeded_pilasters", confidence: 52, description: "Vertical reeded (multi-groove) pilaster columns visible flanking the outer edges of both pedestals, a decorative motif common in Art Deco and late Colonial Revival furniture c. 1925–1945." },
+    { type: "style", clue: "style_cue_carved_scroll_corbels", confidence: 52, description: "Carved scroll/volute corbels with rosette/wheel motif visible at the base of each pedestal outer corner — decorative carved feet with scroll and circular carved detail, consistent with Art Deco or late Empire Revival ornament." },
+    { type: "hardware", clue: "ring_pull", confidence: 62, description: "Cast brass lion-head ring pulls on upper pedestal drawers. Lion-head with suspended ring is a classical motif associated with Empire Revival, Colonial Revival, and Art Deco furniture hardware. Visible verdigris patina on the cast brass head indicates age-consistent oxidation." },
+    { type: "hardware", clue: "cast_escutcheon", confidence: 62, description: "Lion-head backplate is cast brass with detailed relief modeling of mane, face, and ring mount — cast hardware rather than stamped, consistent with quality production hardware." },
+    { type: "condition", clue: "hardware_verdigris_patina", confidence: 54, description: "Green verdigris oxidation visible on the cast brass lion-head pull, indicating genuine age-consistent patina on brass hardware rather than new reproduction hardware." },
+    { type: "construction", clue: "machine_dovetails", confidence: 80, description: "Drawer corner joinery visible in open drawer closeup shows uniform, evenly-spaced dovetail pins and tails consistent with machine-cut dovetails. Spacing and geometry appear repetitive and mechanically precise rather than hand-cut irregular." },
+    { type: "construction", clue: "factory_case_construction", confidence: 85, description: "Back panel view shows plywood or thin panel construction on case back with visible layered edges; secondary wood drawer sides are lighter-colored softwood or poplar consistent with factory production. Construction prioritizes speed and material economy." },
+    { type: "materials", clue: "possible_plywood_or_laminated_panel", confidence: 85, hard_negative: true, description: "Back panel visible in rear view shows thin panel construction with what appears to be plywood or hardboard sheet back panels on the case. Layered edge visible at case back opening." },
+    { type: "materials", clue: "thick_veneer", confidence: 45, description: "Veneer on show surfaces (drawer fronts, pedestal sides, top) appears to be factory-applied rotary-cut or plain-sliced veneer over a substrate. Veneer appears relatively thin and uniform, consistent with factory production rather than hand-sawn thick veneer." },
+    { type: "materials", clue: "wood_species_identification", confidence: 45, description: "Show surfaces display warm brown coloration with subtle figure. The grain pattern on drawer fronts and pedestal sides shows broad cathedral-like figure consistent with flat-sawn walnut veneer or gumwood stained dark. Hardware closeup shows open straight grain on the drawer face suggesting possible walnut or stained gumwood. Secondary wood on drawer sides appears to be a lighter-colored wood (poplar or basswood)." },
+    { type: "construction", clue: "sheet_back_panel", confidence: 82, description: "Rear view shows thin sheet back panels on both pedestal cases, consistent with factory production using plywood or hardboard back panels rather than solid plank backs." },
+    { type: "condition", clue: "surface_wear", confidence: 54, description: "Top surface shows significant wear, scratches, water staining, and finish degradation. Veneer surface on top is heavily worn with dark staining and surface crazing/checking visible." },
+    { type: "condition", clue: "shellac_crazing", confidence: 54, description: "Top surface shows fine network of finish crazing/checking consistent with aged shellac or early lacquer finish degradation. The craze pattern and darkening are consistent with original finish aging rather than polyurethane." },
+    { type: "condition", clue: "veneer_damage", confidence: 54, description: "Veneer lifting and edge damage visible at multiple locations including top edges and pedestal corners. Some veneer loss visible at wear points." },
+    { type: "condition", clue: "carved_foot_damage", confidence: 54, description: "Carved scroll corbel foot at lower pedestal corner shows breakage/damage — the carved scroll element is partially broken away from the base, with raw wood exposed at the break." },
+    { type: "label", clue: "visible_text", confidence: 45, description: "Back panel shows chalk or pencil markings '300' on left pedestal back and what appears to be 'mm' or similar notation — likely factory batch/inventory/shipping marks rather than maker attribution. Insufficient for maker identification." },
+    { type: "structure", clue: "kneehole_opening", confidence: 82, description: "Central kneehole opening between two pedestal banks with shaped apron/bracket above the opening featuring ogee or cyma-recta profile cutout — characteristic kneehole desk form." },
+    { type: "structure", clue: "raised_back_gallery", confidence: 82, description: "A raised back rail/gallery is visible at the rear of the top surface, slightly elevated above the main writing surface — common on vanity desks and dressing tables of this era." },
+    { type: "style", clue: "style_cue_geometric_brass_inlay", confidence: 52, description: "Two vertical rectangular panels with geometric diamond/lattice brass or gilt inlay decoration visible on the center drawer front — a characteristic Art Deco decorative accent motif, c. 1925–1945." },
+    { type: "hardware", clue: "horizontal_bar_pull", confidence: 62, description: "Lower drawers on both pedestals have horizontal carved/applied bar pulls with geometric incised decoration — a simpler pull type consistent with Art Deco / Streamlined Moderne production hardware." },
+    { type: "construction", clue: "secondary_wood_drawer_sides", confidence: 72, description: "Drawer sides visible in open drawer closeup are a pale, light-colored secondary wood — consistent with poplar or basswood used as secondary structural wood in factory case production of this era." },
+    { type: "materials", clue: "veneer_substrate", confidence: 84, description: "Show surfaces on pedestal sides, drawer fronts, and top appear to be veneered over a substrate (likely plywood or solid secondary wood core). The grain pattern on the curved waterfall corners suggests bent or shaped substrate with veneer applied over it." },
+    { type: "form", clue: "writing_surface", confidence: 68, description: "Flat top surface functions as a writing or vanity surface. The raised back gallery and kneehole configuration are consistent with either a writing desk or a vanity/dressing table." },
+    { type: "condition", clue: "overall_condition", confidence: 54, description: "Overall condition is fair. Significant surface wear on top, veneer damage at edges and corners, broken carved foot element, hardware patina/verdigris, and finish degradation throughout. Structurally appears intact but cosmetically requires restoration work." },
+    { type: "structure", clue: "backrest_present", confidence: 78, description: "A backrest or back rail is visible." },
+    { type: "form", clue: "pedestal_column", confidence: 84, description: "Single-column pedestal form is visible." },
+  ],
+  asSeen: {
+    // Post-#15b verdict (Deploy 003). The fix moved the dating +25 years toward
+    // the true Art Deco window (was c. 1860–1910/reproduction pre-fix) and flipped
+    // finalStyleKind from "reproduction" to "revival_wave". Still not at the ideal
+    // original-period c. 1925–1945 because ring_pull (c.1840–1900) and
+    // shellac_crazing (1800–1920) library dates drag the floor — same family as
+    // #15a (clue library calibration for 20th-c usage), tracked separately.
+    formId: "Converted dressing table desk",
+    display: "High Art Deco Converted dressing table desk (also commonly called: Converted dressing table desk, Converted vanity desk)",
+    styleContext: "Art Deco",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1880–1935",
+    dateFloor: 1880,
+    dateCeiling: 1935,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee, midcentury_neoclassical_cane_lounge_chair, art_deco_waterfall_vanity];

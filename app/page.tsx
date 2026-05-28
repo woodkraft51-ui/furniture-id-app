@@ -2238,6 +2238,7 @@ function AppraiserReviewCTA({ triggers }: { triggers: { reason: string }[] }) {
 }
 
 function ResaleValuationSection({ valuation, formLabel }: { valuation?: ValuationShape; formLabel?: string }) {
+  const { isMobile } = useViewport();
   if (valuation?.insufficient_evidence) {
     return (
       <div style={emptyText}>
@@ -2269,22 +2270,39 @@ function ResaleValuationSection({ valuation, formLabel }: { valuation?: Valuatio
         {laneOrder.map((key, idx) => {
           const lane = breakdown[key];
           const isHeadline = key === "marketplace";
+          // Mobile (<= 640px): stack as "label | range" on top row with the note
+          // wrapping below at full width — the desktop 3-column layout squeezed the
+          // note column to near-zero on phones (the first two cols locked in ~250px+).
           return (
             <div
               key={key}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(140px, 1fr) minmax(110px, 140px) minmax(0, 2fr)",
-                gap: 12,
-                padding: "10px 14px",
-                borderTop: idx === 0 ? "none" : "1px solid #efe4d0",
-                background: isHeadline ? "#fbf3e3" : "transparent",
-                alignItems: "baseline",
-              }}
+              style={
+                isMobile
+                  ? {
+                      display: "grid",
+                      gridTemplateColumns: "1fr auto",
+                      gridTemplateAreas: '"label range" "note note"',
+                      columnGap: 12,
+                      rowGap: 4,
+                      padding: "10px 14px",
+                      borderTop: idx === 0 ? "none" : "1px solid #efe4d0",
+                      background: isHeadline ? "#fbf3e3" : "transparent",
+                      alignItems: "baseline",
+                    }
+                  : {
+                      display: "grid",
+                      gridTemplateColumns: "minmax(140px, 1fr) minmax(110px, 140px) minmax(0, 2fr)",
+                      gap: 12,
+                      padding: "10px 14px",
+                      borderTop: idx === 0 ? "none" : "1px solid #efe4d0",
+                      background: isHeadline ? "#fbf3e3" : "transparent",
+                      alignItems: "baseline",
+                    }
+              }
             >
-              <div style={{ fontSize: 13, fontWeight: isHeadline ? 700 : 600, color: "#3d2d1f" }}>{lane.label}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#3d2d1f", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{lane.range}</div>
-              <div style={{ fontSize: 12.5, color: "#5c4a37", lineHeight: 1.5 }}>{lane.note}</div>
+              <div style={{ gridArea: isMobile ? "label" : undefined, fontSize: 13, fontWeight: isHeadline ? 700 : 600, color: "#3d2d1f" }}>{lane.label}</div>
+              <div style={{ gridArea: isMobile ? "range" : undefined, fontSize: 14, fontWeight: 700, color: "#3d2d1f", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{lane.range}</div>
+              <div style={{ gridArea: isMobile ? "note" : undefined, fontSize: 12.5, color: "#5c4a37", lineHeight: 1.5 }}>{lane.note}</div>
             </div>
           );
         })}
