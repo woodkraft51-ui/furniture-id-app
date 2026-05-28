@@ -24,7 +24,6 @@
 
 import { STYLE_FAMILIES, STYLE_REVIVAL_WAVES } from "./constraints/styleFamilies";
 import type { StyleFamilyEntry, StyleRevivalWaveEntry } from "./constraints/styleFamilies";
-import { CLUE_ROUTING } from "./constraints/clueRoutingMap";
 
 export type StyleAttribution = {
   style_family_id: string;
@@ -251,38 +250,13 @@ export function attributeStyle(
   clueKeys: string[],
   observationDescriptions: string[]
 ): StyleAttribution[] {
-  // CLUE_ROUTING (Task B): dictionary is authoritative for clues it maps.
-  // Direct style routes accumulate per family below; mapped clues are
-  // suppressed from the legacy token/IDF haystack so the dictionary fully
-  // replaces substring/token interpretation for them.
-  const dictMappedClues = new Set<string>();
-  const directStyleRoutes = new Map<string, number>(); // style_family_id -> accumulated weight
-  for (const k of clueKeys) {
-    const routing = (CLUE_ROUTING as Record<string, { form?: string | null; style?: string | null }>)[k];
-    if (!routing) continue;
-    dictMappedClues.add(k);
-    if (typeof routing.style === "string") {
-      // Each clue match counts as one unit of weight. Confidence isn't
-      // available here (descriptions aren't paired with clues at this layer),
-      // so we use a fixed unit and let scoring stack via multi-clue hits.
-      directStyleRoutes.set(routing.style, (directStyleRoutes.get(routing.style) ?? 0) + 1);
-    }
-  }
-  // Filtered clueKeys: drop dictionary-mapped clues from the token haystack
-  // entirely (per the user's Task B Q3 decision — dictionary replaces, not
-  // supplements, substring interpretation for mapped clues).
-  const filteredClueKeys = clueKeys.filter((k) => !dictMappedClues.has(k));
-
   // Count token APPEARANCES across clue keys + descriptions. Repeated tokens
   // (e.g., "eastlake" in both victorian_eastlake_pattern + eastlake_pull) carry
   // more weight than singletons, biasing attribution toward the appraiser's
   // most-emphasized style signal.
   const haystack = new Map<string, number>();
   const bump = (t: string) => haystack.set(t, (haystack.get(t) ?? 0) + 1);
-  for (const k of filteredClueKeys) for (const t of tokenize(k)) bump(t);
-  // Note: observationDescriptions are passed without per-clue provenance, so
-  // they cannot be precisely suppressed by clue. They contribute to the token
-  // haystack as before; the clue-key suppression above is the primary mechanism.
+  for (const k of clueKeys) for (const t of tokenize(k)) bump(t);
   for (const d of observationDescriptions) for (const t of tokenize(d)) bump(t);
 
   // Provenance: tokens sourced from structured CLUE KEYS, kept separate from
@@ -448,43 +422,6 @@ export function attributeStyle(
       matched_terms: matched,
       supported,
     });
-  }
-
-  // CLUE_ROUTING merge: for any family that got a direct style route from the
-  // dictionary, ensure it appears in results with `supported: true` (per the
-  // Task B plan Q2 — dictionary routes pass the supported check). If the
-  // family is already in results from the token/IDF pass, boost its confidence
-  // and mark supported. If not present, synthesize an entry.
-  for (const [familyId, weight] of directStyleRoutes.entries()) {
-    const fam = (getIndex().find((i) => i.family.id === familyId) || {}).family as StyleFamilyEntry | undefined;
-    if (!fam) continue; // family_id not in STYLE_FAMILIES — skip safely
-    const existing = results.find((r) => r.style_family_id === familyId);
-    if (existing) {
-      // Boost: each direct route hit adds 0.15, capped to push above the floor
-      // but not blow past 1.0. Mark as supported regardless of token path.
-      const boost = Math.min(0.15 * weight, 0.30);
-      existing.confidence = Math.min(1.0, Number((existing.confidence + boost).toFixed(2)));
-      existing.supported = true;
-      if (!existing.matched_terms.includes("CLUE_ROUTING")) existing.matched_terms.push("CLUE_ROUTING");
-    } else {
-      // Synthesize a new attribution from the dictionary route alone.
-      const { date_floor, date_ceiling } = periodEnvelope(fam);
-      const authority = typeof (fam as any).positive_authority === "number"
-        ? (fam as any).positive_authority / 10
-        : 0.5;
-      // Base confidence per-hit; multi-hit families get more.
-      const base = Math.min(1.0, 0.50 + 0.15 * weight);
-      const confidence = Number((base * (0.7 + 0.3 * authority)).toFixed(2));
-      results.push({
-        style_family_id: familyId,
-        name: fam.name,
-        date_floor,
-        date_ceiling,
-        confidence,
-        matched_terms: ["CLUE_ROUTING"],
-        supported: true,
-      });
-    }
   }
 
   return results.sort((a, b) => {

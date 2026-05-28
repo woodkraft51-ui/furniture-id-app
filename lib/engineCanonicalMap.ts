@@ -972,14 +972,6 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Antique clock": "form_shelf_clock",
 
 
-  // Plain canonical labels — added 2026-05-28 for Task B CLUE_ROUTING
-  // consumption. Previously these form_ids only had styled compound labels
-  // ("Renaissance Revival upholstered armchair" etc.); the dictionary needs
-  // simple labels so a clue like armchair_form -> form_armchair resolves to
-  // a generic "Armchair" rather than over-specifying the style prefix.
-  "Armchair": "form_armchair",
-  "Commode": "form_commode",
-
   // Seating — form_id resolution depends on style attribution (Block 2)
   "Toledo-style mid-century industrial task chair": NO_MATCH, // form_office_chair / form_task_chair not yet authored
   "Renaissance Revival upholstered armchair": "form_armchair",

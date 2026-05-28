@@ -8,8 +8,7 @@ import { AUTHORED_MAKER_ENTRIES } from "./constraints/makersAuthored.generated";
 // changes to canonical rule_statement prose require both the canonical
 // edit and a code edit (intentional — the rule prose is appraiser-canon
 // and code edits should track canonical changes deliberately).
-import { canonicalFormIdForLabel, NO_MATCH, FORM_LABEL_TO_CANONICAL } from "./engineCanonicalMap";
-import { CLUE_ROUTING } from "./constraints/clueRoutingMap";
+import { canonicalFormIdForLabel, NO_MATCH } from "./engineCanonicalMap";
 import { recommendationFromValue, isLargeForm, hasRepairSignals } from "./fieldRecommendation";
 import { getClueMetaFromCanonical, ClueMeta, getCanonicalCautionText, parseRangeToNumeric, getReplacementLikelihood, buildUpholsteryCanonicalAppendix, buildJoineryCanonicalAppendix, buildFastenerCanonicalAppendix, buildHardwareCanonicalAppendix, buildFinishCanonicalAppendix, buildToolmarkCanonicalAppendix, buildWoodIdentificationCanonicalAppendix, buildWoodEvidenceCanonicalAppendix, buildMakerMarkCanonicalAppendix } from "./engineClueResolver";
 
@@ -3400,43 +3399,6 @@ export type ScoredForm = {
   support: string[];
 };
 
-// CLUE_ROUTING (Task B) consumption — reverse-lookup form_id → primary engine
-// label so dictionary form routes can be applied through `add()` (which keys
-// on labels and respects existing blocking/sort logic). Built lazily.
-//
-// Selection rule: prefer the canonical "plain" label derived from the form_id
-// (e.g., form_armchair → "Armchair", form_tall_case_clock → "Tall case clock")
-// when that label exists in FORM_LABEL_TO_CANONICAL. Otherwise, fall back to
-// the SHORTEST mapped label (more generic preferred over styled compounds
-// like "Renaissance Revival upholstered armchair").
-let _formIdToLabel: Record<string, string> | null = null;
-function formIdToLabel(formId: string): string | null {
-  if (!_formIdToLabel) {
-    _formIdToLabel = {};
-    // Pass 1: collect all candidate labels per form_id.
-    const candidatesByFormId = new Map<string, string[]>();
-    for (const [label, canonical] of Object.entries(FORM_LABEL_TO_CANONICAL)) {
-      if (typeof canonical !== "string" || canonical === NO_MATCH) continue;
-      const arr = candidatesByFormId.get(canonical) ?? [];
-      arr.push(label);
-      candidatesByFormId.set(canonical, arr);
-    }
-    // Pass 2: pick the preferred label per form_id.
-    for (const [canonical, labels] of candidatesByFormId.entries()) {
-      const derived = canonical.replace(/^form_/, "").replace(/_/g, " ").replace(/\b(\w)/, (_, c: string) => c.toUpperCase());
-      const derivedIdx = labels.findIndex((l) => l.toLowerCase() === derived.toLowerCase());
-      if (derivedIdx >= 0) {
-        _formIdToLabel[canonical] = labels[derivedIdx];
-      } else {
-        // Shortest as fallback (prefers "Settee" over "Parlor settee").
-        const shortest = labels.slice().sort((a, b) => a.length - b.length)[0];
-        _formIdToLabel[canonical] = shortest;
-      }
-    }
-  }
-  return _formIdToLabel[formId] ?? null;
-}
-
 export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const clues = new Set(digest.clue_keys);
   // T2a: on a wood-primary piece, incidental metal hardware (a cast-iron tilt
@@ -3445,51 +3407,9 @@ export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   // those mis-drive the form, the style-context label, and value. Genuinely-metal
   // pieces (woodPrimary false) keep them.
   const woodPrimary = isWoodPrimary(clues);
-
-  // CLUE_ROUTING (Task B): the dictionary is authoritative for clues it maps.
-  // Two-pass: collect direct form routes + the set of clue-ids that are
-  // dictionary-mapped (any routing decision present). Mapped clues are then
-  // EXCLUDED from the legacy substring `text` haystack below, so substring
-  // rules can no longer interpret them. Membership checks (`clues.has(...)`)
-  // for specific maker labels (roos_label, lane_label, etc.) still fire — those
-  // are narrow explicit rules and remain useful as a maker→form signal.
-  const dictMappedClues = new Set<string>();
-  const routingSummary = { formRoute: 0, formNull: 0, styleRoute: 0, styleNull: 0, unmapped: 0 };
-  const directFormRoutes: Array<{ label: string; weight: number; clue: string }> = [];
-  for (const o of digest.observations) {
-    if (o.negated) continue;
-    // Skip the empty-string clue id (M17 keyless-observation parsing artifact;
-    // tracked separately, NOT a dictionary authoring gap).
-    if (!o.clue) continue;
-    const routing = (CLUE_ROUTING as Record<string, { form?: string | null; style?: string | null }>)[o.clue];
-    if (!routing) {
-      routingSummary.unmapped++;
-      if (process.env.CLUE_ROUTING_TRACE === "1") {
-        console.log(`  unmapped: ${o.clue}`);
-      }
-      continue;
-    }
-    dictMappedClues.add(o.clue);
-    if (typeof routing.form === "string") {
-      const label = formIdToLabel(routing.form);
-      if (label) {
-        directFormRoutes.push({ label, weight: o.confidence ?? 50, clue: o.clue });
-        routingSummary.formRoute++;
-      } else {
-        console.warn(`[CLUE_ROUTING] form_id "${routing.form}" not in FORM_LABEL_TO_CANONICAL (clue=${o.clue})`);
-      }
-    } else if (routing.form === null) {
-      routingSummary.formNull++;
-    }
-    if (typeof routing.style === "string") routingSummary.styleRoute++;
-    else if (routing.style === null) routingSummary.styleNull++;
-  }
-
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
-  // Task B: also exclude dictionary-mapped clues — the dictionary speaks for
-  // them and they must not also feed the legacy substring rules.
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated && !dictMappedClues.has(o.clue)).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
@@ -3539,17 +3459,6 @@ const add = (form: string, score: number, support: string) => {
   scores[form].score += score;
   if (!scores[form].support.includes(support)) scores[form].support.push(support);
 };
-
-// Apply CLUE_ROUTING direct form routes through add() (respects existing
-// blocking/sort discipline). Per Task B, dictionary routes are authoritative.
-for (const r of directFormRoutes) {
-  add(r.label, r.weight, `CLUE_ROUTING: ${r.clue}`);
-}
-// Routing summary — corpus runs MUST show unmapped=0 (100% coverage). A
-// non-zero unmapped means a new clue surfaced that needs authoring.
-if (process.env.CLUE_ROUTING_TRACE === "1" || routingSummary.unmapped > 0) {
-  console.log(`[scoreForms] CLUE_ROUTING: formRoute=${routingSummary.formRoute} formNull=${routingSummary.formNull} styleRoute=${routingSummary.styleRoute} styleNull=${routingSummary.styleNull} unmapped=${routingSummary.unmapped}${routingSummary.unmapped > 0 ? " ⚠️ UNMAPPED CLUE(S) — AUTHORING GAP" : ""}`);
-}
 
 const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
 

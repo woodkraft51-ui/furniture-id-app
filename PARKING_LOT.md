@@ -112,6 +112,49 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   of the squash commit). Expected, just noting the dance.
 - **Engine trace "remove before launch."** The diagnostic trace block rendered in
   reports is marked for removal before launch.
+- **CLUE_ROUTING consumption redesign (Task B 2026-05-28, deferred).**
+  Task B authoring is complete and shipped (`lib/constraints/clueRoutingMap.ts`,
+  525 entries). The first attempt at runtime consumption (wiring `scoreForms` +
+  `attributeStyle` to consult the dictionary first, suppress mapped clues from
+  legacy substring matching) was developed under formal-loop discipline and
+  ROLLED BACK on 2026-05-28 after corpus-diff inspection surfaced 12 documented
+  regressions vs. 8 wins. The dictionary itself remains valid as authoring data;
+  the consumption strategy needs a more sophisticated design. Requirements for
+  the next consumption attempt:
+  - **Multi-clue form arbitration.** When multiple form-routing clues fire on
+    the same scan (e.g., `settee_two_seat_form` AND `lounge_chair_form`), the
+    most specific clue must win. Simple confidence-weighted addition lets the
+    generic outvote the specific. Possible mechanisms: clue specificity tier,
+    suppression rules ("this clue suppresses that one"), or explicit
+    `weight_modifier` on dictionary entries.
+  - **Specific-form-over-generic-form priority.** A piece with `settee_two_seat_form`
+    must resolve to Settee, not Lounge chair, even when both clues are present.
+    A piece with `wingback_form` must resolve to Wing chair, not Lounge chair.
+    Etc.
+  - **Subtype-aware routing.** `Milking stool` is a subtype of `form_stool`,
+    `Converted dressing table desk` is a subtype of vanity/dressing-table forms,
+    `China cabinet` is its own form (not generic Cabinet). Routing to the parent
+    form loses these distinctions. The dictionary should support subtype
+    qualification, OR more specific clue routes need authoring.
+  - **Protection against unrelated `clues.has()` membership rules.** The
+    consumption rollback found that suppressing a clue's substring text removes
+    it from legacy substring matching but does NOT prevent independent
+    `clues.has(...)` rules in `scoreForms` from firing on the same clue id —
+    producing bizarre results (e.g., `art_deco_candelabrum` → "Brass bed or
+    brass-frame furniture" because brass-related `clues.has()` rules still fired
+    while the legitimate Candelabrum substring evidence was suppressed). Either
+    the membership-check rules need migration into the dictionary too, or the
+    suppression mechanism needs to cover both substring and membership paths
+    cleanly.
+  - **Clear handling of form routes vs style routes as separate layers.** The
+    Task B authoring established the dictionary covers both, but the rollback
+    showed that mixing concerns at consumption time creates interactions. Two
+    separate consumption passes (one for form, one for style) with separate
+    suppression semantics may be cleaner than a unified pre-pass.
+  Rollback state: `lib/engine.ts`, `lib/engineStyleEvaluator.ts`, and
+  `lib/engineCanonicalMap.ts` restored to Deploy-004 state. Dictionary file
+  preserved with 525 authored entries including 14 audit-pass form-route
+  corrections (commit `7aa9226`). Production behavior unchanged.
 - **Peacock chair / wicker chair / rattan chair subtype taxonomy review (Task B audit 2026-05-28).**
   During the Task B audit pass, `peacock_fan_back_form` was kept null because the
   taxonomy has no `form_peacock_chair`, `form_wicker_chair`, or `form_rattan_chair`.
