@@ -24,6 +24,7 @@
 
 import { STYLE_FAMILIES, STYLE_REVIVAL_WAVES } from "./constraints/styleFamilies";
 import type { StyleFamilyEntry, StyleRevivalWaveEntry } from "./constraints/styleFamilies";
+import { CLUE_ROUTING } from "./constraints/clueRoutingMap";
 
 export type StyleAttribution = {
   style_family_id: string;
@@ -246,9 +247,91 @@ const STRUCTURAL_PATTERN_FAMILY: Record<string, string> = {
   american_empire_style: "style_family_american_classical",
 };
 
+/** Minimal observation shape consumed by attributeStyle's CLUE_ROUTING
+ *  pre-pass. Mirrors the Observation type in engine.ts; defined locally to
+ *  avoid a cross-module type import. */
+export type StyleAttrObservation = {
+  clue?: string | null;
+  description?: string | null;
+  type?: string;
+  negated?: boolean;
+};
+
 export function attributeStyle(
   clueKeys: string[],
-  observationDescriptions: string[]
+  observationDescriptions: string[],
+  observations?: StyleAttrObservation[],
+): StyleAttribution[] {
+  // ── Step 6 — CLUE_ROUTING style pre-pass ───────────────────────────────
+  // When `observations` is provided, we can identify which clues are
+  // dictionary-mapped. Style-routed clues vote directly for their authored
+  // style_family_id; null-mapped style clues are excluded from the token /
+  // phrase haystack entirely (Clarification #2: mapped+null must not enter
+  // style attribution). Unmapped clues pass through to the existing token
+  // attribution path unchanged.
+  const dictMappedStyleClues = new Set<string>();
+  const styleVotes = new Map<string, number>(); // family_id → direct-vote hit count
+  let styleRouteHits = 0;
+  let styleNullHits = 0;
+  let unmappedStyle = 0;
+  if (observations && observations.length) {
+    for (const o of observations) {
+      if (o.negated) continue;
+      if (o.type === "label") continue; // labels excluded from style attribution
+      const k = o.clue || "";
+      if (!k) continue;
+      const routing = CLUE_ROUTING[k];
+      if (!routing) { unmappedStyle += 1; continue; }
+      dictMappedStyleClues.add(k);
+      if (routing.style === null) styleNullHits += 1;
+      else if (typeof routing.style === "string") {
+        styleRouteHits += 1;
+        styleVotes.set(routing.style, (styleVotes.get(routing.style) ?? 0) + 1);
+      }
+    }
+  }
+
+  // Filter the inputs to the existing IDF/phrase pipeline: drop any clue key
+  // (and its corresponding description, when index-aligned) whose owning clue
+  // is dictionary-mapped (route OR null). Index alignment is best-effort: when
+  // descriptions and clue_keys are passed as parallel arrays from a digest,
+  // they are 1:1; the observations array drives both filters identically.
+  let filteredClueKeys = clueKeys;
+  let filteredDescs = observationDescriptions;
+  if (dictMappedStyleClues.size > 0 && observations && observations.length) {
+    filteredClueKeys = clueKeys.filter((k) => !dictMappedStyleClues.has(k));
+    // Descriptions are dropped per-observation, matched by clue identity.
+    // (When the caller passes descriptions from the same observation array, we
+    // know which to drop; when called legacy-style with bare arrays, we keep all.)
+    const dropDescIdx = new Set<number>();
+    observations.forEach((o, i) => {
+      const k = o.clue || "";
+      if (k && dictMappedStyleClues.has(k)) dropDescIdx.add(i);
+    });
+    filteredDescs = observationDescriptions.filter((_, i) => !dropDescIdx.has(i));
+  }
+  const _styleHayfiltered = (clueKeys.length - filteredClueKeys.length) + (observationDescriptions.length - filteredDescs.length);
+  // Trace (Clarification #7): emitted unconditionally when unmapped>0, else
+  // gated on CLUE_ROUTING_TRACE=1.
+  const _crsTraceOn = typeof process !== "undefined" && process.env && process.env.CLUE_ROUTING_TRACE === "1";
+  if (_crsTraceOn || unmappedStyle > 0) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `[attributeStyle] CLUE_ROUTING: styleRoute=${styleRouteHits} styleNull=${styleNullHits} ` +
+        `unmapped=${unmappedStyle} hayfiltered=${_styleHayfiltered}`,
+    );
+  }
+
+  return _attributeStyleCore(filteredClueKeys, filteredDescs, styleVotes);
+}
+
+/** Internal: the original IDF/phrase attribution body, factored out so the
+ *  Step 6 pre-pass can drive it with a filtered haystack and merge direct
+ *  dictionary routes into the final result. */
+function _attributeStyleCore(
+  clueKeys: string[],
+  observationDescriptions: string[],
+  styleVotes: Map<string, number>,
 ): StyleAttribution[] {
   // Count token APPEARANCES across clue keys + descriptions. Repeated tokens
   // (e.g., "eastlake" in both victorian_eastlake_pattern + eastlake_pull) carry
@@ -422,6 +505,36 @@ export function attributeStyle(
       matched_terms: matched,
       supported,
     });
+  }
+
+  // ── Step 6 — CLUE_ROUTING style direct routes merge ─────────────────
+  // Synthesize / boost attributions from dictionary-routed clues. Boost cap
+  // mirrors Task A's distinctive-token cap (+0.30). Marked supported:true
+  // because a direct dictionary route is an authored verdict.
+  if (styleVotes.size > 0) {
+    for (const [familyId, hits] of styleVotes) {
+      const fam = STYLE_FAMILIES.find((f) => f.id === familyId);
+      if (!fam) continue;
+      const existing = results.find((r) => r.style_family_id === familyId);
+      const boost = Math.min(0.30, 0.10 * hits);
+      if (existing) {
+        existing.confidence = Number(Math.min(1.0, existing.confidence + boost).toFixed(2));
+        existing.supported = true;
+        if (!existing.matched_terms.includes("clue_routing")) existing.matched_terms.push("clue_routing");
+      } else {
+        const { date_floor, date_ceiling } = periodEnvelope(fam);
+        results.push({
+          style_family_id: fam.id,
+          name: fam.name,
+          date_floor,
+          date_ceiling,
+          confidence: Number(Math.min(0.85, 0.30 + boost).toFixed(2)),
+          matched_terms: ["clue_routing"],
+          supported: true,
+        });
+        rawScoreById.set(fam.id, (rawScoreById.get(fam.id) ?? 0) + hits);
+      }
+    }
   }
 
   return results.sort((a, b) => {

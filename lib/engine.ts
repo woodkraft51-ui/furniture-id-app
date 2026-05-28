@@ -87,6 +87,119 @@ import { reconcileFinalStyle, type FinalStyleReconciliation } from "./engineStyl
 import { pickNamePrefixStyle, subtypeDisjointFromDating, isWoodPrimary, falseTwinMaterialsToSuppress, canonicalClueKey, commodeEvidencePresent } from "./engineReportHelpers";
 import { snapToCanonical, type SnapMethod } from "./engineVocabulary";
 import { parseRangeToNumeric as _parseRangeForCompare } from "./engineClueResolver";
+import { CLUE_ROUTING } from "./constraints/clueRoutingMap";
+import { FORM_LABEL_TO_CANONICAL } from "./engineCanonicalMap";
+
+// ── Task B Step 6 — CLUE_ROUTING consumption (form layer) ───────────────────
+//
+// Centralized tier multipliers (Clarification #1, owner-locked 2026-05-28).
+// Tunable from corpus-diff evidence only. Tier 3 = specific/dominant clue;
+// Tier 1 = broad support-only. Multiplier applied to observation confidence
+// when accumulating dictionary form votes in scoreForms.
+const CLUE_ROUTING_TIER_MULT: Record<1 | 2 | 3, number> = {
+  3: 1.5,
+  2: 1.0,
+  1: 0.5,
+};
+const CLUE_ROUTING_DEFAULT_TIER: 1 | 2 | 3 = 2;
+
+// Step 4 SUPPRESS / GATE list (Clarification #3 — conservative semantics).
+// Each entry maps to the legacy scoreForms rule it gates. When the rule's
+// referenced clues include ANY clue that is in CLUE_ROUTING with form:null
+// (explicit-null), the rule is skipped — a single explicit-null is enough to
+// disqualify it, even if other referenced clues are not yet authored. This
+// prevents one unmapped clue from reviving a dangerous rule whose force comes
+// from an explicitly-nulled material/anatomy clue.
+const CLUE_ROUTING_STEP4_RULE_CLUES: Record<string, string[]> = {
+  // Material → form
+  "Metal furniture":                       ["metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame"],
+  "Modernist / chrome-frame furniture":    ["tubular_steel", "chrome_frame", "chrome_and_laminate"],
+  "Iron furniture":                        ["wrought_iron", "cast_iron"],
+  "Brass bed or brass-frame furniture":    ["brass_frame"],
+  "Wicker / rattan furniture":             ["woven_body", "rattan_frame"],
+  "Caned seating or caned-back furniture": ["cane_panels"],
+  "Glass-top table or mixed-material table": ["glass_top"],
+  "Mid-century laminate / dinette furniture": ["laminate_surface", "formica_surface", "chrome_and_laminate"],
+  "Modern plastic / acrylic furniture":    ["molded_plastic", "acrylic_clear"],
+  // Anatomy / generic feature → form
+  "Cabinet / dresser combination":         ["door_present"],
+  "Cabinet":                               ["cabinet_form"],
+  "Bookcase / open shelving unit":         ["open_shelving"],
+  "Chest of drawers / dresser":            ["multiple_drawer_case"],
+  "Dresser / drawer case":                 ["drawer_present"],
+  "Secretary desk / writing desk":         ["pigeonholes"],
+  "Bench / seating furniture":             ["seating_surface", "seating_present"],
+  // Dictionary-conflicting form route
+  "Secretary desk / drop-front desk":      ["drop_front_desk"],
+};
+
+/** Conservative-first multi-clue legacy-rule gate (Clarification #3).
+ *  Returns true → skip the legacy rule. ANY explicit-null in the referenced
+ *  clue set is enough to disqualify it. */
+function clueRoutingLegacyRuleSuppressed(ruleLabel: string): boolean {
+  const refs = CLUE_ROUTING_STEP4_RULE_CLUES[ruleLabel];
+  if (!refs) return false;
+  for (const k of refs) {
+    const r = CLUE_ROUTING[k];
+    if (r && r.form === null) return true;
+  }
+  return false;
+}
+
+// Lazy reverse-lookup: form_id → engine label.
+// Resolution order:
+//  1. Derived label from form_id (strip "form_", "_" → " ", Title Case).
+//     Returned only if it actually exists as a key in FORM_LABEL_TO_CANONICAL
+//     (so an invented label like "Form Foo" cannot leak through).
+//  2. Shortest label in FORM_LABEL_TO_CANONICAL whose value === form_id.
+let _formIdToLabelCache: Map<string, string | null> | null = null;
+let _formIdToShortestLabel: Map<string, string> | null = null;
+function _buildFormIdReverseIndex(): void {
+  if (_formIdToShortestLabel) return;
+  _formIdToShortestLabel = new Map();
+  for (const [label, fid] of Object.entries(FORM_LABEL_TO_CANONICAL)) {
+    if (typeof fid !== "string") continue;
+    const cur = _formIdToShortestLabel.get(fid);
+    if (cur == null || label.length < cur.length) {
+      _formIdToShortestLabel.set(fid, label);
+    }
+  }
+}
+function _deriveLabelFromFormId(formId: string): string {
+  const tail = formId.startsWith("form_") ? formId.slice(5) : formId;
+  return tail
+    .split("_")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+function formIdToLabel(formId: string): string | null {
+  if (!_formIdToLabelCache) _formIdToLabelCache = new Map();
+  const cached = _formIdToLabelCache.get(formId);
+  if (cached !== undefined) return cached;
+  _buildFormIdReverseIndex();
+  const derived = _deriveLabelFromFormId(formId);
+  if (FORM_LABEL_TO_CANONICAL[derived] === formId) {
+    _formIdToLabelCache.set(formId, derived);
+    return derived;
+  }
+  const shortest = _formIdToShortestLabel!.get(formId) ?? null;
+  _formIdToLabelCache.set(formId, shortest);
+  return shortest;
+}
+
+/** Trace output (Clarification #7). Emitted from scoreForms once per call. */
+type ClueRoutingFormTrace = {
+  formRoute: number;
+  formNull: number;
+  styleRoute: number; // counted here for parity with attributeStyle's trace
+  styleNull: number;
+  unmapped: number;
+  suppressedLegacy: number;
+  hayfiltered: number;
+  winners: Array<{ form_id: string; label: string | null; weight: number }>;
+  losers: Array<{ form_id: string; label: string | null; weight: number }>;
+};
 
 // Block 8 helper: estimate width of a date-hint string for tighter-wins
 // selection. Returns Infinity when unparseable (so inline KEPT_IN_ENGINE
@@ -3397,6 +3510,10 @@ export type ScoredForm = {
   form_id: string | null;
   score: number;
   support: string[];
+  /** CLUE_ROUTING-derived formSubtype carried forward from a dictionary vote
+   *  (Step 6). Set only when the winning form had at least one routed
+   *  observation whose entry carried `formSubtype`. */
+  subtype_id?: string | null;
 };
 
 export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
@@ -3407,9 +3524,59 @@ export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   // those mis-drive the form, the style-context label, and value. Genuinely-metal
   // pieces (woodPrimary false) keep them.
   const woodPrimary = isWoodPrimary(clues);
+
+  // ── Step 6 — CLUE_ROUTING form pre-pass: discovery ───────────────────
+  // First, identify which observations are dictionary-mapped (route OR null).
+  // Mapped clues' clue+description text is excluded from the substring haystack
+  // below (Clarification #2: explicit-null mapped clues do not enter form
+  // attribution); their dictionary verdict votes (route only) are accumulated
+  // and emitted via add() further down. The trace counters are populated here
+  // and at the legacy-rule gating site.
+  const dictMappedClues = new Set<string>();
+  const formVotes = new Map<string, number>();
+  const formSubtypes = new Map<string, { subtype_id: string; tier: 1 | 2 | 3 }>();
+  const traceWinnerCandidates: Array<{ form_id: string; weight: number }> = [];
+  const crTrace: ClueRoutingFormTrace = {
+    formRoute: 0, formNull: 0, styleRoute: 0, styleNull: 0,
+    unmapped: 0, suppressedLegacy: 0, hayfiltered: 0,
+    winners: [], losers: [],
+  };
+  for (const o of digest.observations) {
+    if (o.negated) continue;
+    const k = o.clue || "";
+    if (!k) continue; // skip M17 keyless-parse artifacts from unmapped count
+    const routing = CLUE_ROUTING[k];
+    if (!routing) { crTrace.unmapped += 1; continue; }
+    dictMappedClues.add(k);
+    if (routing.form === null) crTrace.formNull += 1;
+    else if (typeof routing.form === "string") {
+      crTrace.formRoute += 1;
+      const tier: 1 | 2 | 3 = (routing.tier ?? CLUE_ROUTING_DEFAULT_TIER) as 1 | 2 | 3;
+      const conf = typeof o.confidence === "number" ? o.confidence : 0;
+      const weight = conf * CLUE_ROUTING_TIER_MULT[tier];
+      formVotes.set(routing.form, (formVotes.get(routing.form) ?? 0) + weight);
+      if (typeof routing.formSubtype === "string" && routing.formSubtype) {
+        const cur = formSubtypes.get(routing.form);
+        if (!cur || tier > cur.tier) {
+          formSubtypes.set(routing.form, { subtype_id: routing.formSubtype, tier });
+        }
+      }
+    }
+    if (routing.style === null) crTrace.styleNull += 1;
+    else if (typeof routing.style === "string") crTrace.styleRoute += 1;
+  }
+
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  // Step 6: also exclude dictionary-mapped observations (route or null). Their
+  // clue+description text must not vote a second time via substring matching.
+  const filteredObs = digest.observations.filter((o) => {
+    if (o.negated) return false;
+    const k = o.clue || "";
+    if (k && dictMappedClues.has(k)) { crTrace.hayfiltered += 1; return false; }
+    return true;
+  });
+  const text = `${digest.perception?.raw_text || ""} ${filteredObs.map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
@@ -3461,6 +3628,16 @@ const add = (form: string, score: number, support: string) => {
 };
 
 const hasAny = (...keys: string[]) => keys.some((k) => clues.has(k));
+
+  // ── Step 6 — CLUE_ROUTING form pre-pass: emission ────────────────────
+  // For each form_id with accumulated dictionary votes, emit a single add()
+  // into the existing scoring table. Reverse-lookup the engine label via
+  // formIdToLabel(). Subtype attachment is performed at return time.
+  for (const [form_id, weight] of formVotes) {
+    const label = formIdToLabel(form_id);
+    traceWinnerCandidates.push({ form_id, weight });
+    if (label) add(label, weight, "Dictionary clue route (CLUE_ROUTING).");
+  }
 
   // Chamber-pot commode / close stool. Computed once up front because it both
   // adds the commode form (below) and suppresses cousin forms whose text-matches
@@ -3602,8 +3779,19 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   ]);
   const fallFrontFamilyActive = abattantDesk || gradinsDesk || escritoireDesk || fallFrontDesk;
   const deskFormDominant = cylinderActive || slantActive || coverClusterActive || fallFrontFamilyActive;
-  if (clues.has("drop_front_desk") && !deskFormDominant) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
-  if (clues.has("pigeonholes") && !deskFormDominant) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
+  // Step 6 gated (Step-4 SUPPRESS list): skip when any referenced clue is
+  // explicit-null in CLUE_ROUTING. `drop_front_desk` also routes Tier 3 to
+  // form_fall_front_desk in the dictionary — the dictionary wins by design.
+  if (clueRoutingLegacyRuleSuppressed("Secretary desk / drop-front desk")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("drop_front_desk") && !deskFormDominant) {
+    add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
+  }
+  if (clueRoutingLegacyRuleSuppressed("Secretary desk / writing desk")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("pigeonholes") && !deskFormDominant) {
+    add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
+  }
   if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
     if (cylinderActive) {
     add(
@@ -4270,24 +4458,34 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
     );
   }
 
-  // Case furniture forms
-  if (clues.has("multiple_drawer_case")) {
+  // Case furniture forms — Step 6 gated (Step-4 SUPPRESS list)
+  if (clueRoutingLegacyRuleSuppressed("Chest of drawers / dresser")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("multiple_drawer_case")) {
     add("Chest of drawers / dresser", 70, "Multiple stacked drawers are visible.");
   }
 
-  if (clues.has("drawer_present") && !hasAny("seating_present", "seating_surface", "telephone_shelf", "secondary_surface", "writing_surface")) {
+  if (clueRoutingLegacyRuleSuppressed("Dresser / drawer case")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("drawer_present") && !hasAny("seating_present", "seating_surface", "telephone_shelf", "secondary_surface", "writing_surface")) {
     add("Dresser / drawer case", 42, "Drawer evidence is visible without stronger competing functional features.");
   }
 
-  if (clues.has("door_present") && clues.has("drawer_present")) {
+  if (clueRoutingLegacyRuleSuppressed("Cabinet / dresser combination")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("door_present") && clues.has("drawer_present")) {
     add("Cabinet / dresser combination", 48, "Doors and drawers are both visible.");
   }
 
-  if (clues.has("cabinet_form")) {
+  if (clueRoutingLegacyRuleSuppressed("Cabinet")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("cabinet_form")) {
     add("Cabinet", 35, "Cabinet form is visible.");
   }
 
-  if (clues.has("open_shelving")) {
+  if (clueRoutingLegacyRuleSuppressed("Bookcase / open shelving unit")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (clues.has("open_shelving")) {
     add("Bookcase / open shelving unit", 60, "Open shelving is visible.");
   }
 
@@ -4948,7 +5146,11 @@ if (
     );
   }
 
-  if (hasAny("seating_surface", "seating_present") && !hasAny("secondary_surface", "writing_surface", "telephone_shelf", "drop_front_desk", "pigeonholes")) {
+  // Step 6 gated (Step-4 SUPPRESS list): generic seating must not flip a
+  // specific form (bed, clock, apothecary) into a bench.
+  if (clueRoutingLegacyRuleSuppressed("Bench / seating furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (hasAny("seating_surface", "seating_present") && !hasAny("secondary_surface", "writing_surface", "telephone_shelf", "drop_front_desk", "pigeonholes")) {
     add("Bench / seating furniture", 55, "Seating surface is visible without stronger desk or telephone features.");
   }
 
@@ -5163,19 +5365,29 @@ if (
 
      // Non-wood and mixed-material form families. Gated on !lampSignal so a lamp's
      // metal/brass base does not register as bed/metal furniture (#14).
-  if (!lampSignal && !woodPrimary && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
+     // Step 6 (Step-4 SUPPRESS list): each rule is also gated against
+     // CLUE_ROUTING explicit-null on any referenced clue.
+  if (clueRoutingLegacyRuleSuppressed("Metal furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (!lampSignal && !woodPrimary && hasAny("metal_frame", "tubular_steel", "wrought_iron", "cast_iron", "brass_frame", "chrome_frame")) {
     add("Metal furniture", 62, "Metal frame or metal furniture construction is visible.");
   }
 
-  if (!lampSignal && !woodPrimary && hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
+  if (clueRoutingLegacyRuleSuppressed("Modernist / chrome-frame furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (!lampSignal && !woodPrimary && hasAny("tubular_steel", "chrome_frame", "chrome_and_laminate")) {
     add("Modernist / chrome-frame furniture", 74, "Tubular steel, chrome, or chrome-and-laminate construction supports a modernist or mid-century furniture reading.");
   }
 
-  if (!lampSignal && !woodPrimary && hasAny("wrought_iron", "cast_iron")) {
+  if (clueRoutingLegacyRuleSuppressed("Iron furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (!lampSignal && !woodPrimary && hasAny("wrought_iron", "cast_iron")) {
     add("Iron furniture", 72, "Iron or cast/wrought metal construction is visible.");
   }
 
-  if (!lampSignal && !woodPrimary && hasAny("brass_frame")) {
+  if (clueRoutingLegacyRuleSuppressed("Brass bed or brass-frame furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (!lampSignal && !woodPrimary && hasAny("brass_frame")) {
     add("Brass bed or brass-frame furniture", 70, "Brass frame or brass rail construction is visible.");
   }
 
@@ -5186,23 +5398,33 @@ if (
     add("Upholstered seating", 76, "Upholstery, cushion, spring, or upholstery-tack evidence is visible.");
   }
 
-  if (hasAny("woven_body", "rattan_frame")) {
+  if (clueRoutingLegacyRuleSuppressed("Wicker / rattan furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (hasAny("woven_body", "rattan_frame")) {
     add("Wicker / rattan furniture", 78, "Woven wicker, reed, or rattan construction is visible.");
   }
 
-  if (hasAny("cane_panels")) {
+  if (clueRoutingLegacyRuleSuppressed("Caned seating or caned-back furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (hasAny("cane_panels")) {
     add("Caned seating or caned-back furniture", 62, "Cane panel, cane seat, or cane back construction is visible.");
   }
 
-  if (hasAny("glass_top")) {
+  if (clueRoutingLegacyRuleSuppressed("Glass-top table or mixed-material table")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (hasAny("glass_top")) {
     add("Glass-top table or mixed-material table", 48, "Glass top or glass shelf evidence is visible.");
   }
 
-  if (hasAny("laminate_surface", "formica_surface", "chrome_and_laminate")) {
+  if (clueRoutingLegacyRuleSuppressed("Mid-century laminate / dinette furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (hasAny("laminate_surface", "formica_surface", "chrome_and_laminate")) {
     add("Mid-century laminate / dinette furniture", 72, "Laminate, Formica, chrome, or utility-surface evidence supports mid-century or later furniture.");
   }
 
-  if (hasAny("molded_plastic", "acrylic_clear")) {
+  if (clueRoutingLegacyRuleSuppressed("Modern plastic / acrylic furniture")) {
+    crTrace.suppressedLegacy += 1;
+  } else if (hasAny("molded_plastic", "acrylic_clear")) {
     add("Modern plastic / acrylic furniture", 74, "Molded plastic, acrylic, or Lucite-style furniture material is visible.");
   }
   // Style-context forms
@@ -5422,7 +5644,43 @@ const withCanonical: ScoredForm[] = results.map((r) => {
   };
 });
 
-return withCanonical.sort((a, b) => b.score - a.score);
+const sorted = withCanonical.sort((a, b) => b.score - a.score);
+
+// Step 6: attach CLUE_ROUTING formSubtype to any result whose form_id was
+// voted by the dictionary pre-pass with a tracked subtype. Iterate all so the
+// winner AND its alternatives both surface the routed subtype where relevant.
+for (const r of sorted) {
+  if (r.form_id && formSubtypes.has(r.form_id)) {
+    r.subtype_id = formSubtypes.get(r.form_id)!.subtype_id;
+  }
+}
+
+// Step 6: trace emission. Winners = top 3 scoring forms; losers = the
+// dictionary-voted form_ids that did NOT win the top slot. Useful for
+// diagnosing arbitration outcomes.
+crTrace.winners = sorted.slice(0, 3).map((r) => ({
+  form_id: r.form_id || "",
+  label: r.form,
+  weight: r.score,
+}));
+const topId = sorted[0]?.form_id || "";
+crTrace.losers = traceWinnerCandidates
+  .filter((c) => c.form_id !== topId)
+  .map((c) => ({ form_id: c.form_id, label: formIdToLabel(c.form_id), weight: c.weight }));
+const _crTraceOn = typeof process !== "undefined" && process.env && process.env.CLUE_ROUTING_TRACE === "1";
+if (_crTraceOn || crTrace.unmapped > 0) {
+  const w = crTrace.winners.map((x) => `${x.label || x.form_id}=${Math.round(x.weight)}`).join(",");
+  const l = crTrace.losers.map((x) => `${x.label || x.form_id}=${Math.round(x.weight)}`).join(",");
+  // eslint-disable-next-line no-console
+  console.log(
+    `[scoreForms] CLUE_ROUTING: formRoute=${crTrace.formRoute} formNull=${crTrace.formNull} ` +
+      `styleRoute=${crTrace.styleRoute} styleNull=${crTrace.styleNull} unmapped=${crTrace.unmapped} ` +
+      `suppressedLegacy=${crTrace.suppressedLegacy} hayfiltered=${crTrace.hayfiltered} ` +
+      `winners=[${w}] losers=[${l}]`,
+  );
+}
+
+return sorted;
 }
 function buildReportEvidenceSupport(digest: EvidenceDigest, formSupport: string[]): string[] {
   const priorityOrder: Record<string, number> = {
@@ -8087,10 +8345,14 @@ if (missing.label_photo) {
     // the token "new", which matched the contemporary family's "New Traditional"
     // alias and mislabeled a Victorian clock as a post-1990 reproduction. Exclude
     // [label]-type observations from style attribution (subtype eval still gets all).
-    const styleDescriptions = (frameDigest.observations || [])
-      .filter((o) => o.type !== "label")
-      .map((o) => o.description || "");
-    const styleRanked = attributeStyle(frameDigest.clue_keys || [], styleDescriptions);
+    const styleFrameObservations = (frameDigest.observations || [])
+      .filter((o) => o.type !== "label");
+    const styleDescriptions = styleFrameObservations.map((o) => o.description || "");
+    // Step 6: pass observations alongside the legacy (clueKeys, descriptions)
+    // inputs so attributeStyle's CLUE_ROUTING pre-pass can identify which
+    // clues are dictionary-mapped. Bare-array inputs preserved exactly for
+    // backward compatibility with the existing IDF/phrase pipeline.
+    const styleRanked = attributeStyle(frameDigest.clue_keys || [], styleDescriptions, styleFrameObservations);
 
     // Distinctiveness gate (2026-05-20): only attributions that rest on real
     // style evidence (a distinctive token or a structured clue key) are
