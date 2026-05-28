@@ -1584,7 +1584,11 @@ export function descriptionNegatesClue(clue: string | null | undefined, descript
   // (not -> spindle). The window stays anchored to the clue's OWN subject term
   // (not a bare "no"/"not"), which keeps contrastive prose about a DIFFERENT
   // thing — "Hand-cut dovetails, not machine cut" — from dropping the clue.
-  const W = `(?:\\w+\\s+){0,3}`;
+  // `[\w-]+` (not `\w+`) so hyphenated intervening words like "hand-sawn" or
+  // "machine-cut" parse as a single gap token — otherwise `\w+\s+` stops at the
+  // hyphen and a legitimate "rather than hand-sawn X" misses the X subject term.
+  // See finding #15b in docs/stress-test-findings.md.
+  const W = `(?:[\\w-]+\\s+){0,3}`;
   // Affirming predicate, but NOT one that is itself negated: a leading "no/not"
   // before the term ("No Eastlake hardware visible") and a trailing "is not"
   // both disqualify it, so only a genuine presence assertion affirms.
