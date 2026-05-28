@@ -112,3 +112,13 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   of the squash commit). Expected, just noting the dance.
 - **Engine trace "remove before launch."** The diagnostic trace block rendered in
   reports is marked for removal before launch.
+- **Porter chair subtype taxonomy review (Task B 2026-05-28).** During Task B
+  clue dictionary authoring, `dome_canopy_back` was left null because Porter
+  chair is currently only an alias under `form_wing_chair` rather than its own
+  canonical form or subtype. Flattening dome/canopy-back observations to generic
+  Wing chair would lose the porter-chair specificity. Decision: review whether
+  to author **Porter chair as a subtype under `form_wing_chair`**, with
+  `dome_canopy_back` as a high-authority subtype clue. Originated from the
+  `porter_balloon_canopy_chair` corpus fixture (currently routes to Lounge
+  chair, then to Wing chair via Task A). Not in Task B scope; proper taxonomy
+  authoring task.
