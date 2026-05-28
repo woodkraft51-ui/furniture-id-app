@@ -155,6 +155,84 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   `lib/engineCanonicalMap.ts` restored to Deploy-004 state. Dictionary file
   preserved with 525 authored entries including 14 audit-pass form-route
   corrections (commit `7aa9226`). Production behavior unchanged.
+- **Step 4 `scoreForms` rule audit — owner decisions for future consumption design (2026-05-28).**
+  Audit of 23 `clues.has()` / `hasAny()` form-routing rules in `scoreForms`
+  (high-risk categories: beds, wicker, cabinet/shelving, trunk/chest, dresser,
+  desk, seating, table, material→form). Authoring decisions captured here as
+  the canonical reference for the future CLUE_ROUTING consumption redesign
+  (Step 6+). **NO RUNTIME CODE CHANGED IN STEP 4.**
+
+  **ARCHITECTURAL PRINCIPLE (owner-locked):**
+  A `clues.has(X)` legacy rule must NOT fire when X is in CLUE_ROUTING with
+  `form: null`. The dictionary's explicit null is a considered decision
+  ("this clue does not classify a form") and a membership rule firing the
+  same clue as form evidence is a back-door violation of that decision.
+
+  **KEEP LEGACY (5 rules) — narrow, correct, safe.** These guard on clues that
+  are NOT in CLUE_ROUTING; they are mechanically diagnostic (mechanism/feature
+  rules) or maker-label rules. They remain valid until the maker/model layer
+  or finer-grained mechanical-form routing is authored:
+  - `clues.has("roos_label")` → "Roos cedar chest / hope chest" (weight 120)
+  - `clues.has("lane_label")` → "Lane cedar chest / hope chest" (weight 120)
+  - `clues.has("drop_leaf_hinged")` → "Drop-leaf table" (weight 90)
+  - `clues.has("gateleg_support")` → "Gateleg table" (weight 100)
+  - `clues.has("extension_mechanism")` → "Extension table" (weight 82)
+
+  **SUPPRESS / GATE (18 rules) — must not back-door the dictionary.** Each
+  rule guards on a clue that is in CLUE_ROUTING with `form: null` (or the
+  clue is a material/anatomy/feature clue that should not force form per
+  Guardrails 5/6). The future consumption design MUST gate these:
+
+  *Material → form (must not fire on material alone):*
+  - `brass_frame` → "Brass bed or brass-frame furniture" (caused
+    art_deco_candelabrum regression)
+  - `metal_frame` / `tubular_steel` / `wrought_iron` / `cast_iron` /
+    `brass_frame` / `chrome_frame` → "Metal furniture"
+  - `tubular_steel` / `chrome_frame` / `chrome_and_laminate` →
+    "Modernist / chrome-frame furniture"
+  - `wrought_iron` / `cast_iron` → "Iron furniture"
+  - `laminate_surface` / `formica_surface` / `chrome_and_laminate` →
+    "Mid-century laminate / dinette furniture"
+  - `molded_plastic` / `acrylic_clear` → "Modern plastic / acrylic furniture"
+  - `glass_top` → "Glass-top table or mixed-material table"
+  - `cane_panels` → "Caned seating or caned-back furniture"
+  - `woven_body` / `rattan_frame` → "Wicker / rattan furniture" (caused
+    french_bistro_iron_faux_stone_table regression)
+
+  *Anatomy / generic feature → form (must not fire on feature alone):*
+  - `door_present` → "Cabinet / dresser combination"
+  - `cabinet_form` → "Cabinet"
+  - `open_shelving` → "Bookcase / open shelving unit" (caused golden_oak
+    china cabinet regression)
+  - `multiple_drawer_case` → "Chest of drawers / dresser" (caused
+    art_deco_waterfall_vanity regression)
+  - `drawer_present` → "Dresser / drawer case"
+  - `pigeonholes` → "Secretary desk / writing desk"
+  - `seating_surface` / `seating_present` → "Bench / seating furniture"
+    (caused rococo_renaissance_carved_settee regression)
+
+  *Dictionary-conflicting form route (must not fire when dictionary disagrees):*
+  - `drop_front_desk` → "Secretary desk / drop-front desk" — conflicts with
+    CLUE_ROUTING.drop_front_desk → form_fall_front_desk (Tier 3, subtype
+    drop_front). Dictionary wins.
+
+  *Bug-prone rule — suppress entirely:*
+  - `brass_frame` → "Upholstered seating" — guard mentions brass_frame but
+    rule reason describes upholstery (apparent label/guard mismatch). Treat
+    as unsafe; do not fire.
+
+  **CONSUMPTION DESIGN OBLIGATIONS** (carried forward to Step 6):
+  - For each suppressed rule above, the future consumption code must check
+    CLUE_ROUTING before letting the legacy `clues.has()` rule fire.
+  - When the dictionary has `form: null` for a referenced clue, the legacy
+    rule is silently skipped. (When the dictionary routes the clue to a
+    form, the dictionary route is authoritative — legacy rule is also
+    skipped to avoid double-counting.)
+  - The 5 keep-legacy rules continue firing as today.
+  - 40 additional `clues.has()` / `hasAny()` calls in `scoreForms` are
+    sub-conditions inside larger composite guards (not direct rules);
+    deferred to a separate pass once these 23 are wired into the
+    consumption design.
 - **Subtype taxonomy gaps surfaced by Task B Step 3 (2026-05-28).** The
   subtype-qualifier authoring pass over the 30 form-routing dictionary entries
   cleanly matched 6 to existing canonical subtypes but surfaced **5 gaps where
