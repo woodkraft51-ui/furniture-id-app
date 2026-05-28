@@ -112,3 +112,90 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   of the squash commit). Expected, just noting the dance.
 - **Engine trace "remove before launch."** The diagnostic trace block rendered in
   reports is marked for removal before launch.
+- **CLUE_ROUTING consumption redesign (Task B 2026-05-28, deferred).**
+  Task B authoring is complete and shipped (`lib/constraints/clueRoutingMap.ts`,
+  525 entries). The first attempt at runtime consumption (wiring `scoreForms` +
+  `attributeStyle` to consult the dictionary first, suppress mapped clues from
+  legacy substring matching) was developed under formal-loop discipline and
+  ROLLED BACK on 2026-05-28 after corpus-diff inspection surfaced 12 documented
+  regressions vs. 8 wins. The dictionary itself remains valid as authoring data;
+  the consumption strategy needs a more sophisticated design. Requirements for
+  the next consumption attempt:
+  - **Multi-clue form arbitration.** When multiple form-routing clues fire on
+    the same scan (e.g., `settee_two_seat_form` AND `lounge_chair_form`), the
+    most specific clue must win. Simple confidence-weighted addition lets the
+    generic outvote the specific. Possible mechanisms: clue specificity tier,
+    suppression rules ("this clue suppresses that one"), or explicit
+    `weight_modifier` on dictionary entries.
+  - **Specific-form-over-generic-form priority.** A piece with `settee_two_seat_form`
+    must resolve to Settee, not Lounge chair, even when both clues are present.
+    A piece with `wingback_form` must resolve to Wing chair, not Lounge chair.
+    Etc.
+  - **Subtype-aware routing.** `Milking stool` is a subtype of `form_stool`,
+    `Converted dressing table desk` is a subtype of vanity/dressing-table forms,
+    `China cabinet` is its own form (not generic Cabinet). Routing to the parent
+    form loses these distinctions. The dictionary should support subtype
+    qualification, OR more specific clue routes need authoring.
+  - **Protection against unrelated `clues.has()` membership rules.** The
+    consumption rollback found that suppressing a clue's substring text removes
+    it from legacy substring matching but does NOT prevent independent
+    `clues.has(...)` rules in `scoreForms` from firing on the same clue id —
+    producing bizarre results (e.g., `art_deco_candelabrum` → "Brass bed or
+    brass-frame furniture" because brass-related `clues.has()` rules still fired
+    while the legitimate Candelabrum substring evidence was suppressed). Either
+    the membership-check rules need migration into the dictionary too, or the
+    suppression mechanism needs to cover both substring and membership paths
+    cleanly.
+  - **Clear handling of form routes vs style routes as separate layers.** The
+    Task B authoring established the dictionary covers both, but the rollback
+    showed that mixing concerns at consumption time creates interactions. Two
+    separate consumption passes (one for form, one for style) with separate
+    suppression semantics may be cleaner than a unified pre-pass.
+  Rollback state: `lib/engine.ts`, `lib/engineStyleEvaluator.ts`, and
+  `lib/engineCanonicalMap.ts` restored to Deploy-004 state. Dictionary file
+  preserved with 525 authored entries including 14 audit-pass form-route
+  corrections (commit `7aa9226`). Production behavior unchanged.
+- **Peacock chair / wicker chair / rattan chair subtype taxonomy review (Task B audit 2026-05-28).**
+  During the Task B audit pass, `peacock_fan_back_form` was kept null because the
+  taxonomy has no `form_peacock_chair`, `form_wicker_chair`, or `form_rattan_chair`.
+  The classic mid-century imported "peacock" / "Emmanuelle" chair form (c. 1960s-80s)
+  is a recognized furniture form but currently has no canonical home. Same situation
+  as Porter chair. Decision: do NOT flatten peacock/wicker chair clues to
+  `form_lounge_chair` during Task B; instead, review whether to author
+  `form_peacock_chair` (or a `form_wicker_seating` umbrella with peacock as a subtype)
+  as proper taxonomy work. Originated from the `peacock_emmanuelle_rattan_chair`
+  corpus fixture. Not Task B scope.
+- **Mirror French Provincial → Rococo Revival into family vocabulary (Task B 2026-05-28).**
+  Task B batch 5 routed the explicit clue `french_provincial_style` →
+  `style_family_rococo_revival` at the dictionary level (Cluster B canonical
+  correction — French Provincial belongs to Rococo Revival's Wave 3 "French
+  Provincial / Rococo Domestic Revival, 1920–1965"). Review whether
+  **"French Provincial," "French Provincial Revival,"** and related domestic
+  Rococo Revival language should be added to one of:
+    (a) `style_family_rococo_revival.distinctive_tokens` — strongest signal but
+        risks over-triggering on pieces that use "French Provincial" loosely;
+    (b) `style_family_rococo_revival.shared_tokens` — corroboration only;
+    (c) a separate **wave-alias field** scoped to Wave 3 specifically — the
+        cleanest semantic match but requires schema work.
+  CRITICAL: keep the existing distinction sharp — the loose tokens "french" and
+  "provincial" must NOT route by themselves (they stay in Louis XVI's
+  shared_tokens per Task A). Only the explicit named recognition routes.
+- **Mirror Louis XV → Rococo Revival into distinctive_tokens (Task B 2026-05-28).**
+  Task B batch 4d routed `louis_xv_revival_influence` → `style_family_rococo_revival`
+  at the dictionary level (the canonical Cluster B correction case: Louis XV Revival
+  vocabulary is closely tied to Rococo Revival). This dictionary-level route should
+  be **mirrored back** into `style_family_rococo_revival.distinctive_tokens` by
+  adding `"louis xv revival"` (and possibly `"louis xv"`) — but only after review,
+  because adding "louis xv" alone could over-trigger Rococo Revival on pieces that
+  use Louis XV vocabulary loosely. See `lib/constraints/clueRoutingMap.ts` entry
+  for `louis_xv_revival_influence` and the Task A authoring discussion.
+- **Porter chair subtype taxonomy review (Task B 2026-05-28).** During Task B
+  clue dictionary authoring, `dome_canopy_back` was left null because Porter
+  chair is currently only an alias under `form_wing_chair` rather than its own
+  canonical form or subtype. Flattening dome/canopy-back observations to generic
+  Wing chair would lose the porter-chair specificity. Decision: review whether
+  to author **Porter chair as a subtype under `form_wing_chair`**, with
+  `dome_canopy_back` as a high-authority subtype clue. Originated from the
+  `porter_balloon_canopy_chair` corpus fixture (currently routes to Lounge
+  chair, then to Wing chair via Task A). Not in Task B scope; proper taxonomy
+  authoring task.
