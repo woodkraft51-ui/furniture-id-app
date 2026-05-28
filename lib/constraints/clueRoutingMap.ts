@@ -221,4 +221,67 @@ export const CLUE_ROUTING: Record<string, ClueRouting> = {
   foliate_carved_crest:          { form: null, style: null },
   victorian_utilitarian_form:    { form: null, style: null, note: "'victorian' era; 'utilitarian_form' generic" },
   fluted_spherical_knop:         { form: null, style: null, note: "appears across Art Deco, Arts & Crafts, Scandinavian Modern — multi-family overlap" },
+
+  // ── Batch 4b — style clues, positions 31-70 (locked 2026-05-28) ─────────
+  // 6 route to a family. 33 null. 1 duplicate (door_present) skipped.
+
+  // Route to a family — clue name contains a distinctive token per Guardrail 1.
+  renaissance_revival_style: {
+    style: "style_family_renaissance_revival",
+    note: "'renaissance revival' is in distinctive_tokens",
+  },
+  colonial_revival_influence: {
+    style: "style_family_colonial_revival",
+    note: "'colonial revival' distinctive; 'influence' generic per Guardrail 1",
+  },
+  colonial_revival_style_cue: {
+    style: "style_family_colonial_revival",
+  },
+  jacobean_revival_style: {
+    style: "style_family_tudor_revival",
+    note: "'jacobean revival' is in Tudor Revival's distinctive_tokens (combined Tudor/Jacobean/Elizabethan Revival family)",
+  },
+  william_and_mary_style: {
+    style: "style_family_william_and_mary",
+    note: "'william and mary' is distinctive",
+  },
+  design_influence_william_and_mary_continental: {
+    style: "style_family_william_and_mary",
+    note: "'william and mary' distinctive; 'design influence' / 'continental' generic per Guardrail 1",
+  },
+
+  // Null — anatomy / decoration motifs / multi-family vocabulary / era-only.
+  swept_curved_arms:                  { form: null, style: null },
+  five_arm_symmetry:                  { form: null, style: null },
+  scandinavian_modern_design_influence:{ form: null, style: null, note: "'scandinavian' not in any family's distinctive_tokens; MCM has a 'Scandinavian-Influenced' wave but no distinctive token for it" },
+  grotesque_mask_carving:             { form: null, style: null },
+  urn_form_splat:                     { form: null, style: null },
+  acanthus_carving:                   { form: null, style: null, note: "anatomy/decoration; appears across Renaissance Revival, Federal, American Empire" },
+  gadrooning_egg_dart:                { form: null, style: null },
+  oval_cartouche_medallion:           { form: null, style: null },
+  fish_scale_imbrication_crest:       { form: null, style: null },
+  sgabello_hall_chair_form:           { form: null, style: null, note: "Italian Renaissance form vocabulary but 'sgabello' not in any family's distinctive_tokens; sits in style category yet ends _form" },
+  carving_depth_and_quality:          { form: null, style: null },
+  bead_and_reel_border:               { form: null, style: null },
+  tassel_carving:                     { form: null, style: null, note: "appears across Renaissance Revival and Baroque — multi-family" },
+  fleur_de_lis_motif:                 { form: null, style: null, note: "heraldic motif; could be French neoclassical or many other traditions" },
+  tapered_block_feet:                 { form: null, style: null },
+  raised_panel_decoration:            { form: null, style: null },
+  strapwork_scrollwork:               { form: null, style: null, note: "cross-family vocabulary (Jacobean, Tudor Revival, Renaissance Revival, Mannerist); routing to Jacobean alone would misroute on Italian Renaissance Revival pieces — keep shared until multi-family handling exists" },
+  style_cue_space_age_pedestal:       { form: null, style: null, note: "'Space Age' not in any family's distinctive_tokens; straddles MCM and post-MCM" },
+  teal_turquoise_color:               { form: null, style: null },
+  patents_pending_mark:               { form: null, style: null, note: "label/mark, not style" },
+  geometric_faceted_shell_back:       { form: null, style: null },
+  maple_plain_minnesota_origin:       { form: null, style: null, note: "maker location, not style" },
+  bow_front_case:                     { form: null, style: null },
+  vernacular_country_primitive:       { form: null, style: null, note: "no vernacular/primitive family in taxonomy" },
+  carved_decorative_panel:            { form: null, style: null },
+  rope_molding:                       { form: null, style: null },
+  broken_pediment_hood:               { form: null, style: null },
+  brass_spandrel_ornaments:           { form: null, style: null },
+  open_waist_design:                  { form: null, style: null },
+  carved_hood_side_panel:             { form: null, style: null },
+  no_arch_top_dial:                   { form: null, style: null },
+  serpentine_stretcher:               { form: null, style: null, note: "'william and mary' context but not distinctive on its own" },
+  peacock_fan_back_form:              { form: null, style: null, note: "mid-century imported wicker; no wicker family in taxonomy" },
 };
