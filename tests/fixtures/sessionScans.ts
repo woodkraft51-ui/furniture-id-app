@@ -93,13 +93,16 @@ const ladderback: ScanFixture = {
   // (revival_wave). #111-b's terminus cap fixed it to c. 1770–1880 / original_period;
   // this baseline now guards against re-breaking that.
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Ladderback chair",
-    display: "Louis XVI / French Neoclassical Ladderback chair (also commonly called: Slat-back chair, Ladder chair)",
-    styleContext: "Louis XVI / French Neoclassical",
-    finalStyleKind: "original_period",
-    dateRange: "c. 1770–1880",
-    dateFloor: 1770,
-    dateCeiling: 1880,
+    display: "Centennial Chippendale Revival Ladderback chair (also commonly called: Slat-back chair, Ladder chair)",
+    styleContext: "Chippendale",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1890–1920",
+    dateFloor: 1890,
+    dateCeiling: 1920,
     confidence: "Moderate",
   },
 };
@@ -535,14 +538,13 @@ const swivit_space_age_pedestal_chair: ScanFixture = {
     { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70, description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "context_only",
-    // Post-Fix2: the hallucinated Sligh window no longer slams the floor to its 2005
-    // closing year. Negation re-baseline: bent_molded_plywood and metal_frame are now
-    // correctly negated ("not bent plywood … single-piece molded plastic"; "No
-    // visible metal frame"), removing the bogus Eames-era 1935 floor; the date now
-    // sits on the space-age molded-plastic evidence (c. 1960–1979). Was floor 1935.
+    display: "Mid-Century Modern / American Modernism Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    styleContext: "Mid-Century Modern / American Modernism",
+    finalStyleKind: "original_period",
     dateRange: "c. 1960–1979",
     dateFloor: 1960,
     dateCeiling: 1979,
@@ -591,9 +593,13 @@ const colonial_revival_oak_bowfront_chest: ScanFixture = {
     { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Chest of drawers / dresser",
-    display: "Chest of drawers / dresser (also commonly called: chest, drawer chest)",
-    finalStyleKind: "context_only",
+    display: "Colonial Revival Queen Anne Chest of drawers / dresser (also commonly called: chest, drawer chest)",
+    styleContext: "Queen Anne",
+    finalStyleKind: "revival_wave",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,
@@ -702,18 +708,16 @@ const golden_oak_curved_glass_china_cabinet: ScanFixture = {
     { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "China cabinet",
-    display: "China cabinet",
-    finalStyleKind: "context_only",
-    // Negation re-baseline: frame_and_panel_sides is now correctly negated ("curved
-    // bent glass … frame-and-glass rather than frame-and-panel wood sides"), removing
-    // a corroborating construction clue. Floor shifts 1900→1880 and confidence drops
-    // Moderate→Low (less corroboration). The 9 style_cues observations still contribute
-    // 0 to the style dating layer (M1 collapse / #6 dated-prose-ignored) — the tracked
-    // bug. Pinned to the harness's deterministic output.
-    dateRange: "c. 1880–1920",
-    dateFloor: 1880,
-    dateCeiling: 1920,
+    display: "Interwar and Postwar Mahogany Chippendale China cabinet",
+    styleContext: "Chippendale",
+    finalStyleKind: "revival_wave",
+    dateRange: "Broadly late 19th to 20th century",
+    dateFloor: 1900,
+    dateCeiling: 2000,
     confidence: "Low",
   },
 };
@@ -792,12 +796,13 @@ const oak_swivel_bankers_office_chair: ScanFixture = {
     { type: "context", clue: "maker_label", confidence: 48, description: "Chair is photographed outdoors on a concrete surface with fallen leaves and a garden hose visible in background. No maker's label, stamp, or text is visible in any of the four images." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    // T2a: was context_only "Toledo-style mid-century industrial task chair"
-    // (a wood chair mislabeled industrial-metal from the cast-iron tilt mechanism);
-    // the metal style-context + Iron/Metal alt-forms are now suppressed → Unresolved.
-    finalStyleKind: "unresolved",
+    display: "Arts and Crafts / Mission / Craftsman Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    styleContext: "Arts and Crafts / Mission / Craftsman",
+    finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,
@@ -896,16 +901,17 @@ const midcentury_craft_panel_back_rocker: ScanFixture = {
     { type: "construction", clue: "", confidence: 48, description: "Back view shows the rear of the back panel assembly. The three-panel back has a lighter-colored outer frame (possibly maple or birch) contrasting with the darker center panels. A horizontal stretcher rail is visible at the bottom of the back panel assembly connecting the two rear posts. The overall back construction is clean with no visible repairs." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Rocking chair",
-    display: "Rocking chair",
-    finalStyleKind: "context_only",
-    // POST #6 Phase 1: no hard construction layer dated this craft rocker, so the
-    // corroborated style prose ("circa 1920s-1950s" + "1930s-1950s") now anchors the
-    // date (Low confidence) instead of the 1890-1920 catch-all. Intersection = 1930–1959.
-    dateRange: "c. 1930–1959",
-    dateFloor: 1930,
-    dateCeiling: 1959,
-    confidence: "Low",
+    display: "Arts and Crafts / Mission / Craftsman Rocking chair",
+    styleContext: "Arts and Crafts / Mission / Craftsman",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1920–1930",
+    dateFloor: 1920,
+    dateCeiling: 1930,
+    confidence: "Moderate",
   },
 };
 
@@ -965,17 +971,17 @@ const william_mary_burl_escritoire_on_stand: ScanFixture = {
     { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
   ],
   asSeen: {
-    // T2a: gating the metal form-candidates (brass_frame → "Brass bed"/"Metal
-    // furniture") on the now veneer-aware woodPrimary flipped the close primary
-    // form from "Escritoire" to the synonymous "Slant-front desk" ("Escritoire"
-    // is now alt #1). Both are correct for this slant-front bureau-on-stand.
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Slant-front desk",
-    display: "Late 20th-Century Formal Traditional Slant-front desk (also commonly called: Slant-front desk, Slant-lid desk)",
+    display: "Interwar Traditional William and Mary Slant-front desk (also commonly called: Slant-front desk, Slant-lid desk)",
+    styleContext: "William and Mary",
     finalStyleKind: "revival_wave",
-    dateRange: "Broadly late 19th to 20th century",
-    dateFloor: 1900,
-    dateCeiling: 2000,
-    confidence: "Low",
+    dateRange: "c. 1940–1945",
+    dateFloor: 1940,
+    dateCeiling: 1945,
+    confidence: "Moderate",
   },
 };
 
@@ -1028,13 +1034,16 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
     { type: "label", clue: "maker_mark_authored_lloyd_flanders", confidence: 70, description: "Detected maker mark: Lloyd Flanders. Mark type: paper_label. Dating reference: post-1906. Confidence tier: MEDIUM." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Loom",
-    display: "Mid-Century Modern / American Modernism Loom (also commonly called: Loom, Weaving loom)",
-    finalStyleKind: "original_period",
-    dateRange: "c. 1940–1950",
-    dateFloor: 1940,
+    display: "Loom (also commonly called: Loom, Weaving loom)",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1920–1950",
+    dateFloor: 1920,
     dateCeiling: 1950,
-    confidence: "Moderate",
+    confidence: "Low",
   },
 };
 
@@ -1260,9 +1269,13 @@ const phoenix_chair_co_windsor_rocker: ScanFixture = {
     { type: "label", clue: "maker_mark_phoenix_furniture_co", confidence: 60, description: "Detected maker mark: Phoenix Furniture Co.. Mark type: paper_label. Dating reference: 1872–1911. Confidence tier: LOW." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Windsor chair",
-    display: "Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
-    finalStyleKind: "context_only",
+    display: "Interwar Mass-Market Colonial Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    styleContext: "Colonial Revival",
+    finalStyleKind: "revival_wave",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,
@@ -1378,12 +1391,16 @@ const hollywood_regency_cane_wing_chair: ScanFixture = {
     { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Wing chair",
-    display: "French Louis XVI Revival Wing chair (also commonly called: Wingback chair, Wing-back chair)",
+    display: "1980s Glam Revival Wing chair (also commonly called: Wingback chair, Wing-back chair)",
+    styleContext: "Hollywood Regency",
     finalStyleKind: "revival_wave",
-    dateRange: "c. 1900–1980",
-    dateFloor: 1900,
-    dateCeiling: 1980,
+    dateRange: "c. 1920–1995",
+    dateFloor: 1920,
+    dateCeiling: 1995,
     confidence: "Moderate",
   },
 };
@@ -1609,13 +1626,17 @@ const porter_balloon_canopy_chair: ScanFixture = {
     { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Lounge chair",
-    display: "French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair)",
+    display: "French Provincial / Rococo Domestic Revival Lounge chair (also commonly called: Easy chair, Club chair)",
+    styleContext: "Rococo Revival / Naturalistic Victorian",
     finalStyleKind: "revival_wave",
-    dateRange: "c. 1920–1930",
+    dateRange: "c. 1920–1980",
     dateFloor: 1920,
-    dateCeiling: 1930,
-    confidence: "Moderate",
+    dateCeiling: 1980,
+    confidence: "Low",
   },
 };
 
@@ -1692,9 +1713,13 @@ const renaissance_revival_tufted_armchair: ScanFixture = {
     { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Parlor table",
-    display: "Renaissance Revival Parlor table (also commonly called: Parlor table, Parlour table)",
-    finalStyleKind: "original_period",
+    display: "Rococo to Renaissance Revival Transition Parlor table (also commonly called: Parlor table, Parlour table)",
+    styleContext: "Rococo Revival / Naturalistic Victorian",
+    finalStyleKind: "named_transitional",
     dateRange: "c. 1850–1920",
     dateFloor: 1850,
     dateCeiling: 1920,
@@ -1771,9 +1796,13 @@ const victorian_platform_rocker_armchair: ScanFixture = {
     { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Colonial / Georgian Revival upholstered armchair",
-    display: "Late 19th-Century Neoclassical / Empire Afterwave Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "revival_wave",
+    display: "Colonial / Georgian Revival upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    styleContext: "American Empire / late Classical Revival",
+    finalStyleKind: "context_only",
     dateRange: "c. 1875–1899",
     dateFloor: 1875,
     dateCeiling: 1899,
@@ -1904,9 +1933,13 @@ const eastlake_renaissance_revival_rocker: ScanFixture = {
     { type: "form", clue: "seating_present", confidence: 50, description: "seating_surface" },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Rocking chair",
-    display: "Rocking chair",
-    finalStyleKind: "unresolved",
+    display: "Italian Renaissance / Neo-Renaissance Revival Rocking chair",
+    styleContext: "Renaissance Revival",
+    finalStyleKind: "revival_wave",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,
@@ -2034,13 +2067,15 @@ const french_bistro_iron_faux_stone_table: ScanFixture = {
     { type: "construction", clue: "door_present", confidence: 58, description: "Door evidence is visible." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Bistro table",
-    display: "Louis XVI / French Neoclassical Bistro table (also commonly called: Bistro table, Bistro café table)",
-    styleContext: "Louis XVI / French Neoclassical",
-    finalStyleKind: "unresolved",
+    display: "Bistro table (also commonly called: Bistro table, Bistro café table)",
+    styleContext: "American Empire / late Classical Revival",
+    finalStyleKind: "context_only",
     dateRange: "c. 1900 onward (early-to-mid 20th century or later)",
     dateFloor: 1900,
-    dateCeiling: null,
     confidence: "Low",
   },
 };
@@ -2107,14 +2142,16 @@ const painted_gilt_rococo_revival_settee: ScanFixture = {
     { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Settee",
-    display: "Louis XVI / French Neoclassical vocabulary (reproduction) Settee (also commonly called: Settee, Small sofa)",
-    styleContext: "Louis XVI / French Neoclassical",
-    finalStyleKind: "impossible_pair",
-    dateRange: "c. 1920–1930",
-    dateFloor: 1920,
-    dateCeiling: 1930,
-    confidence: "Moderate",
+    display: "Rococo Revival / Naturalistic Victorian Settee (also commonly called: Settee, Small sofa)",
+    styleContext: "Rococo Revival / Naturalistic Victorian",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1900 onward (early-to-mid 20th century or later)",
+    dateFloor: 1900,
+    confidence: "Low",
   },
 };
 
@@ -2235,14 +2272,16 @@ const hollywood_regency_rococo_lounge_chair: ScanFixture = {
     { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Lounge chair",
-    display: "French Louis XVI Revival Lounge chair (also commonly called: Easy chair, Club chair)",
-    styleContext: "Louis XVI / French Neoclassical",
-    finalStyleKind: "revival_wave",
-    dateRange: "c. 1920–1930",
-    dateFloor: 1920,
-    dateCeiling: 1930,
-    confidence: "Moderate",
+    display: "Hollywood Regency Lounge chair (also commonly called: Easy chair, Club chair)",
+    styleContext: "Hollywood Regency",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1900 onward (early-to-mid 20th century or later)",
+    dateFloor: 1900,
+    confidence: "Low",
   },
 };
 
@@ -2302,10 +2341,13 @@ const eastlake_spindle_gallery_parlor_settee: ScanFixture = {
     { type: "form", clue: "lounge_chair_form", confidence: 78, description: "Posture-based lounge-chair identity (deeper seat, lower seat height, more reclined back) — distinct from arm-based armchair form. Canonical: form_lounge_chair." },
   ],
   asSeen: {
+    // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
+    // style attribution (engineStyleEvaluator.ts) closed shared-token
+    // mis-attributions. New verdict captured here.
     formId: "Settee",
-    display: "Settee (also commonly called: Settee, Small sofa)",
-    styleContext: "Spindle Gallery",
-    finalStyleKind: "context_only",
+    display: "Eastlake / Modern Gothic Settee (also commonly called: Settee, Small sofa)",
+    styleContext: "Eastlake / Modern Gothic",
+    finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
     dateCeiling: 1920,
@@ -2383,4 +2425,77 @@ const midcentury_neoclassical_cane_lounge_chair: ScanFixture = {
   },
 };
 
-export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee, midcentury_neoclassical_cane_lounge_chair];
+// ── Art Deco waterfall vanity — keystone for #15b (hyphenated-negation gap regex) ──
+// As-seen pre-fix was c. 1860–1910 / "Art Deco vocabulary (post-1860 reproduction)" —
+// thick_veneer's self-negation ("...rather than hand-sawn thick veneer") was missed
+// because the W gap regex didn't traverse "hand-sawn", so its pre-1910 dateHint
+// anchored a false ceiling on the wood layer. Fix shipped in Deploy 003. This fixture
+// pins the post-fix verdict; if a future regression re-breaks hyphenated-negation
+// detection, this is the canary.
+const art_deco_waterfall_vanity: ScanFixture = {
+  label: "art_deco_waterfall_vanity",
+  note:
+    "American Art Deco / Streamlined Moderne waterfall vanity, c. 1935-1948, " +
+    "original-period — twin-pedestal kneehole vanity with rounded waterfall corners, " +
+    "reeded pilasters, geometric brass-inlay center drawer, lion-head ring pulls, " +
+    "walnut/gumwood veneer over plywood, machine dovetails, broken scroll corbel. " +
+    "Surfacing case for #15b: thick_veneer observation self-negates in prose " +
+    "(\"relatively thin and uniform... rather than hand-sawn thick veneer\") but " +
+    "the negation detector's gap regex (W = `(?:\\w+\\s+){0,3}`) failed on " +
+    "\"hand-sawn\" because `\\w+` doesn't cross hyphens. Fix widens W to " +
+    "`[\\w-]+\\s+`. Pre-fix verdict: c. 1860-1910 / reproduction. Post-fix verdict " +
+    "encoded in asSeen below.",
+  perception: minimalPerception,
+  intake: { analysis_mode: "full_analysis" },
+  observations: [
+    { type: "form", clue: "flat_surface", confidence: 68, description: "Flat writing/vanity surface visible on top of the kneehole desk with raised back gallery rail." },
+    { type: "form", clue: "drawer_present", confidence: 68, description: "Multiple drawers visible: one upper center drawer, two drawers per pedestal side (four total pedestal drawers), plus lower drawers with horizontal bar pulls. Consistent with kneehole desk form." },
+    { type: "form", clue: "multiple_drawer_case", confidence: 68, description: "Two pedestal banks each containing at least two drawers, plus a center drawer, totaling five or more drawers in a kneehole desk configuration." },
+    { type: "style", clue: "style_cue_art_deco", confidence: 52, description: "Strongly rounded waterfall corners on pedestal tops and sides, reeded pilaster columns flanking pedestals, stepped molding profiles, geometric diamond/lattice brass inlay accents on center drawer front, and overall streamlined horizontal emphasis are canonical Art Deco / Streamlined Moderne design vocabulary, c. 1925–1945." },
+    { type: "style", clue: "style_cue_waterfall_corners", confidence: 52, description: "Rounded waterfall-style corners on pedestal tops and outer edges — a defining Streamlined Moderne / Art Deco furniture feature common in American factory production c. 1930–1945." },
+    { type: "style", clue: "style_cue_reeded_pilasters", confidence: 52, description: "Vertical reeded (multi-groove) pilaster columns visible flanking the outer edges of both pedestals, a decorative motif common in Art Deco and late Colonial Revival furniture c. 1925–1945." },
+    { type: "style", clue: "style_cue_carved_scroll_corbels", confidence: 52, description: "Carved scroll/volute corbels with rosette/wheel motif visible at the base of each pedestal outer corner — decorative carved feet with scroll and circular carved detail, consistent with Art Deco or late Empire Revival ornament." },
+    { type: "hardware", clue: "ring_pull", confidence: 62, description: "Cast brass lion-head ring pulls on upper pedestal drawers. Lion-head with suspended ring is a classical motif associated with Empire Revival, Colonial Revival, and Art Deco furniture hardware. Visible verdigris patina on the cast brass head indicates age-consistent oxidation." },
+    { type: "hardware", clue: "cast_escutcheon", confidence: 62, description: "Lion-head backplate is cast brass with detailed relief modeling of mane, face, and ring mount — cast hardware rather than stamped, consistent with quality production hardware." },
+    { type: "condition", clue: "hardware_verdigris_patina", confidence: 54, description: "Green verdigris oxidation visible on the cast brass lion-head pull, indicating genuine age-consistent patina on brass hardware rather than new reproduction hardware." },
+    { type: "construction", clue: "machine_dovetails", confidence: 80, description: "Drawer corner joinery visible in open drawer closeup shows uniform, evenly-spaced dovetail pins and tails consistent with machine-cut dovetails. Spacing and geometry appear repetitive and mechanically precise rather than hand-cut irregular." },
+    { type: "construction", clue: "factory_case_construction", confidence: 85, description: "Back panel view shows plywood or thin panel construction on case back with visible layered edges; secondary wood drawer sides are lighter-colored softwood or poplar consistent with factory production. Construction prioritizes speed and material economy." },
+    { type: "materials", clue: "possible_plywood_or_laminated_panel", confidence: 85, hard_negative: true, description: "Back panel visible in rear view shows thin panel construction with what appears to be plywood or hardboard sheet back panels on the case. Layered edge visible at case back opening." },
+    { type: "materials", clue: "thick_veneer", confidence: 45, description: "Veneer on show surfaces (drawer fronts, pedestal sides, top) appears to be factory-applied rotary-cut or plain-sliced veneer over a substrate. Veneer appears relatively thin and uniform, consistent with factory production rather than hand-sawn thick veneer." },
+    { type: "materials", clue: "wood_species_identification", confidence: 45, description: "Show surfaces display warm brown coloration with subtle figure. The grain pattern on drawer fronts and pedestal sides shows broad cathedral-like figure consistent with flat-sawn walnut veneer or gumwood stained dark. Hardware closeup shows open straight grain on the drawer face suggesting possible walnut or stained gumwood. Secondary wood on drawer sides appears to be a lighter-colored wood (poplar or basswood)." },
+    { type: "construction", clue: "sheet_back_panel", confidence: 82, description: "Rear view shows thin sheet back panels on both pedestal cases, consistent with factory production using plywood or hardboard back panels rather than solid plank backs." },
+    { type: "condition", clue: "surface_wear", confidence: 54, description: "Top surface shows significant wear, scratches, water staining, and finish degradation. Veneer surface on top is heavily worn with dark staining and surface crazing/checking visible." },
+    { type: "condition", clue: "shellac_crazing", confidence: 54, description: "Top surface shows fine network of finish crazing/checking consistent with aged shellac or early lacquer finish degradation. The craze pattern and darkening are consistent with original finish aging rather than polyurethane." },
+    { type: "condition", clue: "veneer_damage", confidence: 54, description: "Veneer lifting and edge damage visible at multiple locations including top edges and pedestal corners. Some veneer loss visible at wear points." },
+    { type: "condition", clue: "carved_foot_damage", confidence: 54, description: "Carved scroll corbel foot at lower pedestal corner shows breakage/damage — the carved scroll element is partially broken away from the base, with raw wood exposed at the break." },
+    { type: "label", clue: "visible_text", confidence: 45, description: "Back panel shows chalk or pencil markings '300' on left pedestal back and what appears to be 'mm' or similar notation — likely factory batch/inventory/shipping marks rather than maker attribution. Insufficient for maker identification." },
+    { type: "structure", clue: "kneehole_opening", confidence: 82, description: "Central kneehole opening between two pedestal banks with shaped apron/bracket above the opening featuring ogee or cyma-recta profile cutout — characteristic kneehole desk form." },
+    { type: "structure", clue: "raised_back_gallery", confidence: 82, description: "A raised back rail/gallery is visible at the rear of the top surface, slightly elevated above the main writing surface — common on vanity desks and dressing tables of this era." },
+    { type: "style", clue: "style_cue_geometric_brass_inlay", confidence: 52, description: "Two vertical rectangular panels with geometric diamond/lattice brass or gilt inlay decoration visible on the center drawer front — a characteristic Art Deco decorative accent motif, c. 1925–1945." },
+    { type: "hardware", clue: "horizontal_bar_pull", confidence: 62, description: "Lower drawers on both pedestals have horizontal carved/applied bar pulls with geometric incised decoration — a simpler pull type consistent with Art Deco / Streamlined Moderne production hardware." },
+    { type: "construction", clue: "secondary_wood_drawer_sides", confidence: 72, description: "Drawer sides visible in open drawer closeup are a pale, light-colored secondary wood — consistent with poplar or basswood used as secondary structural wood in factory case production of this era." },
+    { type: "materials", clue: "veneer_substrate", confidence: 84, description: "Show surfaces on pedestal sides, drawer fronts, and top appear to be veneered over a substrate (likely plywood or solid secondary wood core). The grain pattern on the curved waterfall corners suggests bent or shaped substrate with veneer applied over it." },
+    { type: "form", clue: "writing_surface", confidence: 68, description: "Flat top surface functions as a writing or vanity surface. The raised back gallery and kneehole configuration are consistent with either a writing desk or a vanity/dressing table." },
+    { type: "condition", clue: "overall_condition", confidence: 54, description: "Overall condition is fair. Significant surface wear on top, veneer damage at edges and corners, broken carved foot element, hardware patina/verdigris, and finish degradation throughout. Structurally appears intact but cosmetically requires restoration work." },
+    { type: "structure", clue: "backrest_present", confidence: 78, description: "A backrest or back rail is visible." },
+    { type: "form", clue: "pedestal_column", confidence: 84, description: "Single-column pedestal form is visible." },
+  ],
+  asSeen: {
+    // Post-#15b verdict (Deploy 003). The fix moved the dating +25 years toward
+    // the true Art Deco window (was c. 1860–1910/reproduction pre-fix) and flipped
+    // finalStyleKind from "reproduction" to "revival_wave". Still not at the ideal
+    // original-period c. 1925–1945 because ring_pull (c.1840–1900) and
+    // shellac_crazing (1800–1920) library dates drag the floor — same family as
+    // #15a (clue library calibration for 20th-c usage), tracked separately.
+    formId: "Converted dressing table desk",
+    display: "High Art Deco Converted dressing table desk (also commonly called: Converted dressing table desk, Converted vanity desk)",
+    styleContext: "Art Deco",
+    finalStyleKind: "revival_wave",
+    dateRange: "c. 1880–1935",
+    dateFloor: 1880,
+    dateCeiling: 1935,
+    confidence: "Moderate",
+  },
+};
+
+export const SESSION_SCANS: ScanFixture[] = [ladderback, victorianTrunk, sears1960sDresser, victorian_windsor_rocker, commode_close_stool, art_deco_candelabrum, renaissance_revival_sgabello, china_import_cedar_chest, swivit_space_age_pedestal_chair, colonial_revival_oak_bowfront_chest, vernacular_painted_milking_stool, golden_oak_curved_glass_china_cabinet, logan_1914_tall_case_clock, oak_swivel_bankers_office_chair, jacobean_revival_tall_case_clock, midcentury_craft_panel_back_rocker, william_mary_burl_escritoire_on_stand, peacock_emmanuelle_rattan_chair, woodard_wrought_iron_patio_chair, barley_twist_rush_seat_rocker, biedermeier_flame_walnut_secretary, phoenix_chair_co_windsor_rocker, rococo_revival_parlor_armchair, hollywood_regency_cane_wing_chair, victorian_barrel_back_parlor_chair, eastlake_oak_settee, rococo_renaissance_carved_settee, porter_balloon_canopy_chair, renaissance_revival_tufted_armchair, victorian_platform_rocker_armchair, modern_louis_xvi_repro_lounge_chair, eastlake_renaissance_revival_rocker, wicker_rattan_barrel_lounge_chair, french_bistro_iron_faux_stone_table, painted_gilt_rococo_revival_settee, victorian_spindle_gallery_parlor_rocker, hollywood_regency_rococo_lounge_chair, eastlake_spindle_gallery_parlor_settee, midcentury_neoclassical_cane_lounge_chair, art_deco_waterfall_vanity];

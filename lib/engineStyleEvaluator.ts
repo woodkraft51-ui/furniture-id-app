@@ -95,6 +95,30 @@ function tokenize(s: string): string[] {
     .filter((t) => t.length >= 3);
 }
 
+// Normalize a string into a flat lowercase phrase-haystack for substring
+// matching of authored multi-word tokens. Hyphens/slashes become spaces (so
+// "hand-sawn thick veneer" becomes "hand sawn thick veneer" — matching the
+// same authored phrase whether the source uses hyphens or spaces). Whitespace
+// is collapsed so a phrase is exactly one inter-word space.
+function normalizeForPhrase(s: string): string {
+  return String(s).toLowerCase().replace(/[-/]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+// Find authored phrases present in the haystack as whole-token sequences (no
+// substring-of-word matches). Padded with leading/trailing spaces so a phrase
+// at the very start or end still matches with the word-boundary spaces.
+function findPhraseHits(haystackText: string, phrases: string[] | undefined): string[] {
+  if (!phrases?.length) return [];
+  const padded = ` ${haystackText} `;
+  const hits: string[] = [];
+  for (const p of phrases) {
+    const normP = normalizeForPhrase(p);
+    if (normP.length < 3) continue;
+    if (padded.includes(` ${normP} `)) hits.push(p);
+  }
+  return hits;
+}
+
 function buildIndex(): FamilyIndex[] {
   return STYLE_FAMILIES.map((family) => {
     const sources = [
@@ -242,6 +266,16 @@ export function attributeStyle(
   const clueKeyTokens = new Set<string>();
   for (const k of clueKeys) for (const t of tokenize(k)) clueKeyTokens.add(t);
 
+  // Phrase-level haystack for matching authored multi-word tokens
+  // (distinctive_tokens / shared_tokens on STYLE_FAMILIES). Built separately
+  // from the single-token haystack above because authored phrases like
+  // "louis xvi", "directoire", "french neoclassical" must match as whole
+  // phrases — not as substrings of individual tokens. See Task A authoring
+  // commit + the Louis XVI / French Provincial conflation discussion.
+  const haystackText = [...clueKeys, ...observationDescriptions]
+    .map(normalizeForPhrase)
+    .join(" ");
+
   // Block 10a: identify structural-pattern families that fired in the digest.
   // Style attributions to families OTHER than these get a competitive penalty
   // (structural pattern detection is higher-authority than alias token matching).
@@ -297,6 +331,40 @@ export function attributeStyle(
       confidence = Math.min(confidence, SINGLE_TOKEN_CONFIDENCE_FLOOR);
     }
 
+    // Task A — distinctive vs. shared phrase gate.
+    //
+    // For families that author distinctive_tokens / shared_tokens, attribution
+    // confidence is adjusted based on which lists matched the prose. A
+    // distinctive phrase hit ("louis xvi", "directoire", "rococo revival")
+    // boosts confidence; a haystack that matches only shared phrases ("french",
+    // "provincial", "revival" — words that appear across many families) gets
+    // halved. This closes Cluster B (Louis XVI conflation et al.) by making
+    // attribution require family-identifying vocabulary, not just generic
+    // overlapping vocabulary. Backward-compatible: families without authored
+    // tokens skip this gate entirely.
+    const distinctive = (family as any).distinctive_tokens as string[] | undefined;
+    const shared = (family as any).shared_tokens as string[] | undefined;
+    const hasAuthoredTokens = !!(distinctive?.length || shared?.length);
+    let distinctiveHits: string[] = [];
+    let sharedHits: string[] = [];
+    if (hasAuthoredTokens) {
+      distinctiveHits = findPhraseHits(haystackText, distinctive);
+      sharedHits = findPhraseHits(haystackText, shared);
+      if (distinctiveHits.length > 0) {
+        // Boost: each distinctive hit adds 0.10 confidence, capped at +0.25
+        // overall so a single distinctive phrase doesn't push past a clean
+        // structural-pattern attribution.
+        const boost = Math.min(0.10 * distinctiveHits.length, 0.25);
+        confidence = Math.min(1.0, Number((confidence + boost).toFixed(2)));
+      } else if (sharedHits.length > 0) {
+        // Penalty: only shared phrases matched. Drop confidence by half so the
+        // attribution drops below the floor in most cases (mis-IDs get
+        // eliminated entirely; legitimate-but-thin attributions survive only
+        // when their base score was already strong).
+        confidence = Number((confidence * 0.5).toFixed(2));
+      }
+    }
+
     // Block 10a: soft confidence floor. Single-token matches must be
     // high-confidence (deep token match, dominant family); multi-token can
     // pass at lower floor. EXCEPTION: a family whose structural-pattern clue
@@ -329,9 +397,19 @@ export function attributeStyle(
     // Genuine attributions are unaffected: they carry a structural pattern
     // (e.g. mcm_structural_pattern) or a clue-key token (e.g. "jacobean" from
     // jacobean_colonial_revival_style).
-    const supported =
+    // Task A — supported requires distinctive evidence for families with
+    // authored tokens. When the family has authored distinctive_tokens AND
+    // none matched, the attribution is NOT considered supported even if the
+    // legacy clue-key heuristic would have approved it — because the only
+    // matching tokens are family-name aliases or shared vocabulary, not
+    // identifying vocabulary. (Families without authored tokens keep the
+    // legacy path verbatim.)
+    const legacySupported =
       structuralFamiliesPresent.has(family.id) ||
       matched.some((t) => clueKeyTokens.has(t) && !GENERIC_STYLE_TOKENS.has(t));
+    const supported = hasAuthoredTokens
+      ? distinctiveHits.length > 0 || structuralFamiliesPresent.has(family.id)
+      : legacySupported;
 
     const { date_floor, date_ceiling } = periodEnvelope(family);
     rawScoreById.set(family.id, weightedScore);
