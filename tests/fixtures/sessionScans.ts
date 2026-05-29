@@ -482,9 +482,13 @@ const china_import_cedar_chest: ScanFixture = {
     // The value of this fixture is the date/maker/style anchor, which reproduces exactly.
     finalStyleKind: "context_only",
     dateRange: "1933–2005",
-    // Post-Fix2: TPQ floor is the maker-window FLOOR (founding 1933), not the
-    // collapsed closing year (was 2005). Ceiling remains the window end.
-    dateFloor: 1933,
+    // Post-Fix2: TPQ floor was the maker-window FLOOR (founding 1933).
+    // M9 fix (2026-05-29): "post-1940s cedar chest hardware" prose in the
+    // stamped_metal_bracket description is now extracted as an explicit
+    // terminus-post-quem FLOOR via parseLabelDate's expanded decade-suffix
+    // FLOOR pattern, pushing the floor 1933→1940. Ceiling 2005 unchanged
+    // (still the maker-window end). Date string unchanged.
+    dateFloor: 1940,
     dateCeiling: 2005,
     confidence: "Moderate",
   },
@@ -2500,7 +2504,7 @@ const art_deco_waterfall_vanity: ScanFixture = {
 
 const knight_garrard_french_provincial_radio_phonograph_console: ScanFixture = {
   label: "knight_garrard_french_provincial_radio_phonograph_console",
-  note: "S018 mid-1950s American console radio-phonograph (KNIGHT amp + GARRARD RC80 1952-1958 + AM/FM KC/MC pre-1975 + 6-8 vacuum tubes pre-1960 + 1950s French Provincial cabinet vocab). Header date c. 1920-1980 is the CONVERGENCE-ZONE WIDTH, not the engine's frame_floor/ceiling 1975-1980 — and 1975-1980 itself is wrong. Two failures stack: (M9) GARRARD RC80 1952-1958 explicit-date prose in the label description never extracted to date_floor/ceiling, and (M11) art_deco_hardware → style_family_art_deco conf 0.92 by matched_terms ['art','deco'] → 1970s Deco Revival wave 1970-1985 anchored late. The post-1964 'Made in England' TPQ from maker_mark_authored_england is also being applied piece-wide rather than to the English chassis only. New: M12 — P2 'Frame range' string (1920-1980) is wider than the engine's own frame_floor/ceiling (1975-1980); the broader convergence-zone string surfaces in the header.",
+  note: "S018 mid-1950s American console radio-phonograph (KNIGHT amp + GARRARD RC80 1952-1958 + AM/FM KC/MC pre-1975 + 6-8 vacuum tubes pre-1960 + 1950s French Provincial cabinet vocab). M9 fix LANDED (2026-05-29): parseLabelDate now (a) recognizes 'produced YYYY-YYYY' as a PRODUCTION WINDOW (floor+ceiling both anchored), (b) reads 'pre-YYYY' as a terminus-ANTE-quem CEILING not a misparsed FLOOR. Garrard 'produced approximately 1952-1958' now anchors floor 1952 / ceil 1958 / conf High; pre-1975 nomenclature now caps ceiling at 1975 (compatible with the tighter Garrard window). Date narrowed from c. 1920-1980 (60-yr window, M11+M12 stack) → c. 1952-1958. Style kind correctly flipped from revival_wave '1970s Deco Revival' (wrong era) to late_period 'Art Deco (late-period production)' (correct: 1950s was the tail-end of original-period Art Deco production). M11 art_deco_hardware → Art Deco family attribution still fires but no longer mis-anchors via the 1970-1985 revival wave (the 1952 production date is incompatible). M12 header-display-range bug is no longer visible on this piece because the frame range string matches floor/ceiling now. Open: maker_mark_authored_england post-1964 sub-component TPQ scoping (the English chassis label is being applied piece-wide; tracked at n=2 with S019). Original failure stack documented for archaeology: header was the convergence-zone width 1920-1980; floor 1975 came from parseLabelDate misparsing 'pre-1975' as a TPQ floor.",
   perception: minimalPerception,
   intake: { analysis_mode: "full_analysis" },
   observations: [
@@ -2538,11 +2542,23 @@ const knight_garrard_french_provincial_radio_phonograph_console: ScanFixture = {
   ],
   asSeen: {
     formId: "Media console",
-    display: "1970s Deco Revival Media console (also commonly called: Media console, Entertainment console)",
-    finalStyleKind: "revival_wave",
-    dateRange: "c. 1920–1980",
-    dateFloor: 1975,
-    dateCeiling: 1980,
+    // M9 fix (2026-05-29) landed: the GARRARD RC80 "produced approximately
+    // 1952-1958" description now anchors as a production WINDOW (floor 1952,
+    // ceiling 1958, conf High), AND the visible_text "pre-1975 American radio
+    // nomenclature" is now correctly interpreted as a terminus-ANTE-quem ceiling
+    // (1975) rather than a misparsed terminus-post-quem floor that drove the
+    // original 1975 anchor. Style kind now resolves to late_period "Art Deco
+    // (late-period production)" because the 1952 production date no longer
+    // aligns with the 1970-1985 revival wave; the engine correctly identifies
+    // this as the tail end of original-period Art Deco production rather than
+    // a 1970s revival. Date narrowed from a 60-yr window (c. 1920-1980) to a
+    // 6-yr window (c. 1952-1958) — the M9 fix's intended outcome on this piece.
+    display: "Art Deco (late-period production) Media console (also commonly called: Media console, Entertainment console)",
+    styleContext: "Art Deco",
+    finalStyleKind: "late_period",
+    dateRange: "c. 1952–1958",
+    dateFloor: 1952,
+    dateCeiling: 1958,
     confidence: "High",
   },
 };

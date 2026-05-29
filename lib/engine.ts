@@ -2168,17 +2168,21 @@ export function deriveDustCoverClues(observations: Observation[]): Observation[]
 
 export type LabelDate = {
   year: number;
-  kind: "production" | "founding" | "patent" | "bare";
-  floor: number;
+  kind: "production" | "founding" | "patent" | "bare" | "active_period" | "ceiling";
+  floor: number | null;
   ceiling: number | null;
 };
 
-// M9a: read a YEAR off a maker label / inscription and weigh it by ROLE. A year
-// is usually NOT the production date — "Est. 1847" / "Since 1852" / "Pat. 1893"
-// are founding/patent dates → a terminus-post-quem FLOOR only (the piece is
-// at-or-after, possibly much later). Only a signed, dated piece ("fecit / made /
-// dated / anno 19XX") is an actual production date → a tight floor=ceiling. A
-// bare year with no qualifying context is treated conservatively as a floor.
+// M9a: read a YEAR (or year range) off a maker label / inscription and weigh it
+// by ROLE. A year is usually NOT the production date — "Est. 1847" / "Since 1852"
+// / "Pat. 1893" are founding/patent dates → a terminus-post-quem FLOOR only (the
+// piece is at-or-after, possibly much later). A signed, dated piece ("fecit /
+// made / dated / anno 19XX") is a tight production date (floor = ceiling). A
+// PRODUCTION RANGE ("produced 1952–1958") is a production WINDOW (floor + ceiling
+// both set). An ACTIVE-PERIOD window ("active 1890s–1930s", "operated 1850–1910")
+// brackets the maker's lifespan — tightens ceilings but does not anchor floors.
+// A PRE-YYYY marker ("pre-1975 nomenclature", "before 1920") is a terminus ANTE
+// quem → CEILING only. A bare year with no qualifying context is a floor.
 // (Maker/line recognition — e.g. Hooker "Seven Seas" → 1990s — is M9b, not here.)
 export function parseLabelDate(observations: Observation[]): LabelDate | null {
   const text = observations
@@ -2201,30 +2205,163 @@ export function parseLabelDate(observations: Observation[]): LabelDate | null {
     .toLowerCase();
   if (!text) return null;
 
-  const matches = [...text.matchAll(/\b(1[789]\d\d|20\d\d)\b/g)];
-  if (matches.length === 0) return null;
+  // Fix 9.1: pre-/before-/prior-to YYYY[s] → CEILING (terminus ante quem). Scrub
+  // matches out of `scrubbed` so they don't double-count as bare floors later.
+  // Decade-suffix forms ("pre-1940s") are recognized via two passes: decade form
+  // first (so the "s" doesn't break the year boundary), then bare year form.
+  let scrubbed = text;
+  const CEILING_DECADE_RE = /\b(?:pre[-\s]+|before\s+|prior\s+to\s+|no\s+later\s+than\s+|earlier\s+than\s+)(1[789]\d0)s\b/g;
+  const CEILING_YEAR_RE = /\b(?:pre[-\s]+|before\s+|prior\s+to\s+|no\s+later\s+than\s+|earlier\s+than\s+)(1[789]\d\d|20\d\d)\b/g;
+  let ceiling: number | null = null;
+  for (const m of [...text.matchAll(CEILING_DECADE_RE)]) {
+    const y = parseInt(m[1], 10);
+    if (ceiling == null || y < ceiling) ceiling = y;
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
+  for (const m of [...scrubbed.matchAll(CEILING_YEAR_RE)]) {
+    const y = parseInt(m[1], 10);
+    if (ceiling == null || y < ceiling) ceiling = y;
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
+  // Fix 9.1: post-/after- YYYY[s] → explicit FLOOR (terminus post quem)
+  const FLOOR_DECADE_RE = /\b(?:post[-\s]+|after\s+|no\s+earlier\s+than\s+|later\s+than\s+)(1[789]\d0)s\b/g;
+  const FLOOR_YEAR_RE = /\b(?:post[-\s]+|after\s+|no\s+earlier\s+than\s+|later\s+than\s+)(1[789]\d\d|20\d\d)\b/g;
+  let explicitFloor: number | null = null;
+  for (const m of [...scrubbed.matchAll(FLOOR_DECADE_RE)]) {
+    const y = parseInt(m[1], 10);
+    if (explicitFloor == null || y > explicitFloor) explicitFloor = y;
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
+  for (const m of [...scrubbed.matchAll(FLOOR_YEAR_RE)]) {
+    const y = parseInt(m[1], 10);
+    if (explicitFloor == null || y > explicitFloor) explicitFloor = y;
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
 
+  const PRODUCTION = /fecit|\bmade\b|\bdated\b|\banno\b|crafted|completed|wrought|produced|manufactured|built|issued|released/;
   const FOUNDING = /establish|\best\.?\b|\bsince\b|founded|in business|serving|quality[^.]*\bsince\b|company[^.]*\b1[789]\d\d/;
   const PATENT = /\bpat\.?\b|patent|copyright|©|reg(\.|istered)|design no/;
-  const PRODUCTION = /fecit|\bmade\b|\bdated\b|\banno\b|crafted|completed|wrought/;
+  const ACTIVE_PERIOD = /\bactive\b|operated|in operation|\bproducing\b|\boperating\b|in production|production span/;
 
-  let production: number | null = null;
-  let floorOnly: { year: number; kind: "founding" | "patent" | "bare" } | null = null;
+  type Range = { y1: number; y2: number; kind: "production" | "active_period" | "bare" };
+  const ranges: Range[] = [];
+  const classifyRange = (win: string): Range["kind"] =>
+    PRODUCTION.test(win) && !FOUNDING.test(win)
+      ? "production"
+      : ACTIVE_PERIOD.test(win) && !FOUNDING.test(win)
+        ? "active_period"
+        : "bare";
 
-  for (const m of matches) {
+  // Fix 9.2: decade-range "1890s-1930s" → [1890, 1939] (use 60-char window for
+  // role classification; ranges deserve wider context than singletons).
+  const DECADE_RANGE_RE = /\b(1[789]\d0)s\s*(?:[\-–—]|to)+\s*(1[789]\d0)s\b/g;
+  for (const m of [...scrubbed.matchAll(DECADE_RANGE_RE)]) {
+    const y1 = parseInt(m[1], 10);
+    const y2 = parseInt(m[2], 10) + 9;
+    if (y2 <= y1) continue;
+    const i = m.index ?? 0;
+    const win = scrubbed.slice(Math.max(0, i - 60), i + m[0].length + 60);
+    ranges.push({ y1, y2, kind: classifyRange(win) });
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
+  // Fix 9.4: bare year-range "1952-1958" → [1952, 1958]
+  const YEAR_RANGE_RE = /\b(1[789]\d\d|20\d\d)\s*(?:[\-–—]|to)+\s*(1[789]\d\d|20\d\d)\b/g;
+  for (const m of [...scrubbed.matchAll(YEAR_RANGE_RE)]) {
+    const y1 = parseInt(m[1], 10);
+    const y2 = parseInt(m[2], 10);
+    if (y2 <= y1) continue;
+    const i = m.index ?? 0;
+    const win = scrubbed.slice(Math.max(0, i - 60), i + m[0].length + 60);
+    ranges.push({ y1, y2, kind: classifyRange(win) });
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
+
+  // Fix 9.2: single decade "1920s" → treat decade-start as a year. Singles get
+  // founding/patent/bare classification only — PRODUCTION/ACTIVE_PERIOD is reserved
+  // for explicit RANGES (Y1-Y2 or Y1s-Y2s) because a single decade + a stray
+  // "produced/manufactured" verb in nearby description prose is too noisy to
+  // anchor a tight production date on (china_import-style false positive).
+  type Single = { year: number; kind: "founding" | "patent" | "bare" };
+  const singles: Single[] = [];
+  const classifySingle = (win: string): Single["kind"] =>
+    FOUNDING.test(win) ? "founding" : PATENT.test(win) ? "patent" : "bare";
+  // Add 'fecit/anno/dated' as PRODUCTION-anchor for SINGLE years (the literal
+  // signed-and-dated piece is the one S009-style case we DO want as production).
+  const PRODUCTION_STRICT_SINGLE = /\bfecit\b|\banno\b|\bdated\b/;
+  let productionSingle: number | null = null;
+
+  const DECADE_SINGLE_RE = /\b(1[789]\d0)s(?!\w)/g;
+  for (const m of [...scrubbed.matchAll(DECADE_SINGLE_RE)]) {
     const year = parseInt(m[1], 10);
     const i = m.index ?? 0;
-    const win = text.slice(Math.max(0, i - 40), i + 40);
-    if (PRODUCTION.test(win) && !FOUNDING.test(win)) {
-      production = production == null ? year : Math.max(production, year);
+    const win = scrubbed.slice(Math.max(0, i - 40), i + m[0].length + 40);
+    singles.push({ year, kind: classifySingle(win) });
+    scrubbed = scrubbed.replace(m[0], " ");
+  }
+  // Bare singletons (existing semantics, plus strict-single PRODUCTION trigger)
+  for (const m of [...scrubbed.matchAll(/\b(1[789]\d\d|20\d\d)\b/g)]) {
+    const year = parseInt(m[1], 10);
+    const i = m.index ?? 0;
+    const win = scrubbed.slice(Math.max(0, i - 40), i + 40);
+    if (PRODUCTION_STRICT_SINGLE.test(win) && !FOUNDING.test(win)) {
+      productionSingle = productionSingle == null ? year : Math.max(productionSingle, year);
     } else {
-      const kind = FOUNDING.test(win) ? "founding" : PATENT.test(win) ? "patent" : "bare";
-      if (!floorOnly || year > floorOnly.year) floorOnly = { year, kind }; // latest TPQ wins
+      singles.push({ year, kind: classifySingle(win) });
     }
   }
 
-  if (production != null) return { year: production, kind: "production", floor: production, ceiling: production };
-  if (floorOnly) return { year: floorOnly.year, kind: floorOnly.kind, floor: floorOnly.year, ceiling: null };
+  // Priority order:
+  // 1. Production RANGE — highest authority window
+  const prodRange = ranges.find((r) => r.kind === "production");
+  if (prodRange) {
+    const finalCeiling =
+      ceiling != null && ceiling < prodRange.y2 ? ceiling : prodRange.y2;
+    return { year: prodRange.y2, kind: "production", floor: prodRange.y1, ceiling: finalCeiling };
+  }
+  // 2. Production SINGLE — existing tight floor=ceiling semantics for signed
+  // pieces ("anno 1914", "fecit 1820", "dated 1894").
+  if (productionSingle != null) {
+    const finalCeiling =
+      ceiling != null && ceiling < productionSingle ? ceiling : productionSingle;
+    return { year: productionSingle, kind: "production", floor: productionSingle, ceiling: finalCeiling };
+  }
+  // 3. Active-period RANGE — bracket the maker's lifespan
+  const activeRange = ranges.find((r) => r.kind === "active_period");
+  if (activeRange) {
+    const finalCeiling =
+      ceiling != null && ceiling < activeRange.y2 ? ceiling : activeRange.y2;
+    return { year: activeRange.y2, kind: "active_period", floor: activeRange.y1, ceiling: finalCeiling };
+  }
+  // 4. Ceiling-only (pre-YYYY with no floor evidence)
+  if (
+    ceiling != null &&
+    explicitFloor == null &&
+    singles.length === 0 &&
+    ranges.length === 0
+  ) {
+    return { year: ceiling, kind: "ceiling", floor: null, ceiling };
+  }
+  // 5. Latest TPQ wins for founding/patent/bare + explicit post-YYYY + bare-range y2.
+  // Bare ranges contribute y2 (NOT y1) — a range like "Sears catalog c. 1900-1940"
+  // is a span of possible production years; the latest TPQ wins keeps the previous
+  // floor-only semantics intact for bare ranges. Production / active ranges are
+  // handled above with floor=y1, ceiling=y2 since they describe a documented window.
+  let floorCandidate: { year: number; kind: "founding" | "patent" | "bare" } | null = null;
+  if (explicitFloor != null) floorCandidate = { year: explicitFloor, kind: "bare" };
+  for (const s of singles) {
+    if (!floorCandidate || s.year > floorCandidate.year) {
+      floorCandidate = { year: s.year, kind: s.kind };
+    }
+  }
+  for (const r of ranges) {
+    if (r.kind !== "bare") continue;
+    if (!floorCandidate || r.y2 > floorCandidate.year) {
+      floorCandidate = { year: r.y2, kind: "bare" };
+    }
+  }
+  if (floorCandidate) {
+    return { year: floorCandidate.year, kind: floorCandidate.kind, floor: floorCandidate.year, ceiling };
+  }
   return null;
 }
 
@@ -9014,27 +9151,67 @@ if (p6.dating_overlap) {
     stage_outputs.p2 = p2;
   }
 
-  // M9a: weigh a maker-label year by ROLE. A signed/dated production year is the
-  // highest-authority date and anchors floor=ceiling directly — UNLESS modern
-  // construction contradicts it (then the label is suspect/later; defer to
-  // construction and flag it). A founding/patent/bare year is only a terminus
-  // post quem: clamp the FLOOR up to it, never a ceiling, never a tight date.
+  // M9a: weigh a maker-label year by ROLE. A signed/dated production year (or
+  // production WINDOW) is the highest-authority date and anchors floor + ceiling
+  // directly — UNLESS modern construction contradicts it (then the label is
+  // suspect/later; defer to construction and flag it). An ACTIVE-PERIOD window
+  // brackets the maker's lifespan: tighten ceilings, optionally seed an absent
+  // floor — but don't over-anchor (the maker label may be on a sub-component).
+  // A pre-YYYY mention is a terminus ANTE quem: CEILING only. A founding /
+  // patent / bare year is only a terminus POST quem: clamp the FLOOR up.
   const labelDate = parseLabelDate(digest.observations);
   if (labelDate) {
     const s = Array.isArray(p2.support) ? [...p2.support] : [];
-    if (labelDate.kind === "production" && !hasModernConstruction) {
+    if (labelDate.kind === "production" && !hasModernConstruction && labelDate.floor != null && labelDate.ceiling != null) {
       p2.date_floor = labelDate.floor;
-      p2.date_ceiling = labelDate.ceiling ?? undefined;
-      p2.range = `c. ${labelDate.floor}`;
+      p2.date_ceiling = labelDate.ceiling;
+      p2.range = labelDate.floor === labelDate.ceiling
+        ? `c. ${labelDate.floor}`
+        : `c. ${labelDate.floor}–${labelDate.ceiling}`;
       p2.confidence = "High";
-      s.push(`A signed/dated maker inscription gives an explicit production year of ${labelDate.floor}; a literal made-date is the highest-authority dating evidence and anchors the date directly.`);
+      if (labelDate.floor === labelDate.ceiling) {
+        s.push(`A signed/dated maker inscription gives an explicit production year of ${labelDate.floor}; a literal made-date is the highest-authority dating evidence and anchors the date directly.`);
+      } else {
+        s.push(`The label/inscription states a production window of ${labelDate.floor}–${labelDate.ceiling}; an explicit made-window is the highest-authority dating evidence and anchors the working range directly.`);
+      }
       p2.support = s;
       stage_outputs.p2 = p2;
     } else if (labelDate.kind === "production" && hasModernConstruction) {
-      s.push(`Caution: the label reads a production year of ${labelDate.year}, but modern construction evidence is present — the inscription may be a later addition or the part replaced; dated by construction rather than the label.`);
+      s.push(`Caution: the label reads a production date of ${labelDate.year}, but modern construction evidence is present — the inscription may be a later addition or the part replaced; dated by construction rather than the label.`);
       p2.support = s;
       stage_outputs.p2 = p2;
-    } else {
+    } else if (labelDate.kind === "active_period" && labelDate.floor != null && labelDate.ceiling != null) {
+      // Conservative routing: tighten the CEILING (the maker can't have produced
+      // after they stopped operating) and seed a FLOOR only if none exists. Does
+      // not over-anchor, in case the label is on a sub-component (a still-open
+      // M9 concern, tracked at n=2).
+      const curFloor = typeof p2.date_floor === "number" ? p2.date_floor : null;
+      const curCeiling = typeof p2.date_ceiling === "number" ? p2.date_ceiling : null;
+      let changed = false;
+      if (curCeiling == null || labelDate.ceiling < curCeiling) {
+        p2.date_ceiling = labelDate.ceiling;
+        changed = true;
+      }
+      if (curFloor == null) {
+        p2.date_floor = labelDate.floor;
+        changed = true;
+      }
+      if (changed) {
+        s.push(`The maker's documented active period (${labelDate.floor}–${labelDate.ceiling}) brackets the working range — the piece can't post-date the maker's operation.`);
+        p2.support = s;
+        stage_outputs.p2 = p2;
+      }
+    } else if (labelDate.kind === "ceiling" && labelDate.ceiling != null) {
+      // pre-YYYY semantics: tighten the ceiling only.
+      const curCeiling = typeof p2.date_ceiling === "number" ? p2.date_ceiling : null;
+      if (curCeiling == null || labelDate.ceiling < curCeiling) {
+        p2.date_ceiling = labelDate.ceiling;
+        s.push(`The label/text indicates a pre-${labelDate.ceiling} terminus ante quem; the piece can't post-date it.`);
+        p2.support = s;
+        stage_outputs.p2 = p2;
+      }
+    } else if (labelDate.floor != null) {
+      // founding / patent / bare — floor only, existing semantics
       const cur = typeof p2.date_floor === "number" ? p2.date_floor : null;
       if (cur == null || labelDate.floor > cur) {
         p2.date_floor = labelDate.floor;

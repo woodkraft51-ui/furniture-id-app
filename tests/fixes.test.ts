@@ -520,6 +520,85 @@ test("M9a: with multiple non-production years, the latest terminus-post-quem win
   assert.equal(r?.ceiling, null);
 });
 
+// ── M9a expanded (2026-05-28): pre-/decade/range/active-period extraction ────
+// S018/S019 promoted M9 to n≥3. The four discrete bugs each get a regression here.
+
+test("M9a (pre-YYYY): 'pre-1975' parses as CEILING, NOT a floor", () => {
+  // S018 bug: the visible_text 'pre-1975 American radio nomenclature' was being
+  // read as a 1975 floor (terminus POST quem), anchoring a 1950s piece to 1975.
+  // Should be a 1975 CEILING (terminus ante quem) instead.
+  const r = parseLabelDate(lbl("The use of 'KC' rather than 'kHz' is consistent with pre-1975 American radio nomenclature."));
+  assert.equal(r?.kind, "ceiling");
+  assert.equal(r?.floor, null);
+  assert.equal(r?.ceiling, 1975);
+});
+
+test("M9a (pre-YYYY): tightest ceiling wins when multiple pre-markers appear", () => {
+  const r = parseLabelDate(lbl("Consistent with pre-1975 nomenclature and pre-1950 dial markings."));
+  assert.equal(r?.kind, "ceiling");
+  assert.equal(r?.ceiling, 1950);
+});
+
+test("M9a (decade): '1920s' parses as a bare floor at decade-start (1920)", () => {
+  // The original \\b(YYYY)\\b regex couldn't see decade-suffix forms because
+  // 's' is a word char. Now decade-singletons are captured.
+  const r = parseLabelDate(lbl("label reads 1920s"));
+  assert.equal(r?.kind, "bare");
+  assert.equal(r?.floor, 1920);
+});
+
+test("M9a (decade range): '1890s-1930s' parses as active_period 1890-1939 with 'producing/active' context", () => {
+  // S019 bug: 'active in Moundsville, WV producing enameled ware c. 1890s-1930s'
+  // returned null because '1890s'/'1930s' didn't match \\b(YYYY)\\b. Now it's
+  // captured as an active-period range with conservative routing.
+  const r = parseLabelDate(lbl("United States Stamping Co. was active in Moundsville, WV producing enameled ware c. 1890s-1930s."));
+  assert.equal(r?.kind, "active_period");
+  assert.equal(r?.floor, 1890);
+  assert.equal(r?.ceiling, 1939);
+});
+
+test("M9a (PRODUCTION verbs): 'produced approximately 1952-1958' parses as production WINDOW", () => {
+  // S018 bug: PRODUCTION regex didn't include 'produced' so the year range was
+  // collapsed to a single bare floor (1958). Now both 'produced' triggers
+  // production-kind AND the year range is preserved as floor+ceiling.
+  const r = parseLabelDate(lbl("The RC80 was produced approximately 1952-1958, supporting a mid-1950s date for the electronics."));
+  assert.equal(r?.kind, "production");
+  assert.equal(r?.floor, 1952);
+  assert.equal(r?.ceiling, 1958);
+});
+
+test("M9a (production single year): 'anno 1914' still anchors floor=ceiling=1914 (no regression)", () => {
+  // Guard against the LabelDate.floor nullability change accidentally relaxing
+  // the existing single-year production semantics.
+  const r = parseLabelDate(lbl("A. Sydney Logan fecit Philadae anno 1914"));
+  assert.equal(r?.kind, "production");
+  assert.equal(r?.floor, 1914);
+  assert.equal(r?.ceiling, 1914);
+});
+
+test("M9a (production + pre-marker): production window intersects with a tighter pre-YYYY ceiling", () => {
+  // When BOTH a production-window and a pre-YYYY marker appear, the tighter of
+  // the two ceilings wins (the maker-stated window can't extend past a known TAQ).
+  const r = parseLabelDate(lbl("Produced 1880-1920. Consistent with pre-1900 manufacturing methods."));
+  assert.equal(r?.kind, "production");
+  assert.equal(r?.floor, 1880);
+  assert.equal(r?.ceiling, 1900); // pre-1900 tightens the production ceiling 1920
+});
+
+test("M9a (active_period + tighter pre-ceiling)", () => {
+  const r = parseLabelDate(lbl("Active 1890s-1930s. Consistent with pre-1910 nomenclature."));
+  assert.equal(r?.kind, "active_period");
+  assert.equal(r?.floor, 1890);
+  assert.equal(r?.ceiling, 1910); // pre-1910 tightens active-period ceiling 1939
+});
+
+test("M9a (no false-positive on stray years inside maker_mark_* descriptions): unchanged", () => {
+  // The maker_mark_* filter at parseLabelDate's start still excludes the engine's
+  // own maker-matcher output, so the M12 fix #2 guard remains intact.
+  const obs = [{ type: "label", clue: "maker_mark_authored_acme_co", description: "Dating reference: 1933-2005", confidence: 70, negated: false } as any];
+  assert.equal(parseLabelDate(obs), null);
+});
+
 // ── M9b-core: matched maker dates reach the engine (with role-nuance) ────────
 const makerLabelObs = [{ type: "label", clue: "maker_label", description: "x", confidence: 85, source_image: "label_makers_mark", negated: false } as any];
 
