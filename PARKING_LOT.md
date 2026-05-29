@@ -3,6 +3,104 @@
 Tracking list for deferred work surfaced during the commode-determinism fix and
 the Stage 1 vocabulary migration. Newest context at top of each section.
 
+## Task B Step 6 — CLUE_ROUTING consumption attempt #2 outcome (2026-05-28)
+
+**Conclusion (owner-locked):** Before CLUE_ROUTING consumption can ship,
+Phase 0 must emit stronger direct object-form clues for the forms currently
+being rescued by legacy substring / membership rules. The dictionary
+architecture is sound; the gating is correct; the engine is not yet ready
+because too many corpus fixtures still depend on legacy substring or
+membership shortcuts instead of explicit P0 object-form clue emission.
+
+**What was tried.** Wired the owner-approved Step 6 consumption design into
+`scoreForms` and `attributeStyle`:
+- Form pre-pass with centralized tier multipliers
+  (`CLUE_ROUTING_TIER_MULT = {3:1.5, 2:1.0, 1:0.5}`, Clarification #1).
+- Conservative-first multi-clue legacy-rule gating: a Step-4 SUPPRESS-list
+  rule is skipped when ANY referenced clue is in `CLUE_ROUTING` with
+  `form: null` (Clarification #3).
+- Haystack suppression: dictionary-mapped clues (route OR null) excluded
+  from `scoreForms`'s substring `text` and from `attributeStyle`'s token /
+  phrase haystack (Clarification #2).
+- Trace output gated on `CLUE_ROUTING_TRACE=1` OR `unmapped > 0`:
+  `formRoute / formNull / styleRoute / styleNull / unmapped /
+  suppressedLegacy / hayfiltered / winners / losers` (Clarification #7).
+- Style direct-route merge into `attributeStyle` results, layered with
+  Task A's existing distinctive/shared phrase gate.
+- `formIdToLabel(form_id)` reverse-lookup helper + `"Armchair"` /
+  `"Commode"` plain-label additions to `FORM_LABEL_TO_CANONICAL`.
+
+The WIP wiring is preserved as commit `94bd9b7` on
+`claude/zen-gauss-91qvM` as evidence; **runtime files have been rolled back
+to byte-identical `origin/main` (Deploy 005) state.** Typecheck clean,
+126/126 tests, **no fixtures re-baselined.**
+
+**What the validation showed.** Corpus diff vs `origin/main` baseline:
+13/40 unchanged, 27/40 diverged. Trace `unmapped=0` on every fixture
+(architectural integrity check held). `suppressedLegacy` fired as
+designed. Wins included `logan_1914_tall_case_clock` (clock→trunk closed)
+and `jacobean_revival_tall_case_clock` (same pattern). One unit test —
+`tests/fixes.test.ts:263` T2a guard — broke because it asserts that bare
+material clues (`metal_frame`, `cast_iron`, `wrought_iron` — all
+explicit-null in the dictionary) must still score "Metal furniture" /
+"Iron furniture". That assertion encodes the pre-Step-6 behavior the
+Step-4 audit explicitly forbade.
+
+**Why we did NOT ship.** Regressions cluster into three patterns, all of
+which trace back to missing upstream coverage rather than to a flaw in
+the dictionary / gating architecture:
+
+1. *"Closes-via-Tier-3" doesn't fire when the Tier 3 clue isn't emitted
+   by P0.* Settee, Windsor chair, Windsor rocker, parlor rocker fixtures
+   still flip to substring-fallback forms (Lounge chair / Rocking chair /
+   Upholstered armchair) because the appropriate Tier 3 clues
+   (`settee_two_seat_form`, `windsor_rocker_form` at Tier 3) weren't
+   in those fixtures' P0 emissions. The substring fallback that used to
+   catch "settee" / "windsor" is correctly suppressed by haystack
+   filtering on the dictionary-mapped clues that DID fire.
+2. *Gated legacy rules with no Tier-routed replacement leave fixtures
+   "Unclassified".* The Sears dresser and bistro table fixtures lose
+   their identity because `multiple_drawer_case` / `drawer_present` /
+   "bistro" substring paths are all suppressed and nothing else
+   identifies the form.
+3. *Step 5 D gaps confirmed.* China cabinet, vanity, peacock chair,
+   milking stool — these were expected NOT to close per Step 6 §8.
+
+**Affirmations (owner-locked, do not relax in future attempts):**
+- Explicit-null suppression remains CORRECT (Clarification #2). Do not
+  loosen mapped-and-null clues into form attribution.
+- Step 4 material / anatomy / member-rule suppression remains CORRECT
+  (Clarifications #3 + #5). Do not relax to "rescue" any single fixture.
+- Do NOT add a Tier-0 substring fallback. That would recreate the same
+  unsafe substring back door the dictionary is meant to replace.
+- The failed outcomes are mostly missing P0 clue-emission and
+  taxonomy / subtype gaps, NOT proof that the dictionary architecture
+  is wrong.
+- No fixtures were re-baselined.
+- No runtime code remains changed after rollback.
+
+**Priority P0 clue-emission gaps exposed by this attempt (in priority
+order — these are the prerequisites for a Step 6 retry):**
+- settee / loveseat / two-seat settee
+- Windsor chair vs Windsor rocker (distinct object-form clues)
+- rocking chair / parlor rocker / platform rocker
+- chest of drawers / dresser
+- bistro table
+- china cabinet / display cabinet / vitrine
+- vanity / dressing table
+- peacock / Emmanuelle / rattan chair
+- milking stool / stool subtypes
+
+These are P0-prompt and taxonomy work, not consumption-layer work. Each
+should be addressed in a separate owner-approved formal-loop session
+before a Step 6 retry is scoped.
+
+**Pointers.** Owner-approved consumption design plan + design rationale
+remain in the session plan file
+`/root/.claude/plans/i-am-nearing-the-unified-hopcroft.md`. WIP wiring
+diff readable at commit `94bd9b7` on `claude/zen-gauss-91qvM`. Step 4
+audit decisions remain canonical for any future retry.
+
 ## Observed on live scans (instrumentation stage — logged, not fixed)
 
 - **Material-consistency / form contradictions go uncaught (P5).** Hallucinated
@@ -155,6 +253,167 @@ the Stage 1 vocabulary migration. Newest context at top of each section.
   `lib/engineCanonicalMap.ts` restored to Deploy-004 state. Dictionary file
   preserved with 525 authored entries including 14 audit-pass form-route
   corrections (commit `7aa9226`). Production behavior unchanged.
+- **Step 5 missing-form-routes audit — conclusion + gap list (2026-05-28).**
+  Audit of corpus clues against the 243 canonical form_ids for form evidence
+  not yet represented in CLUE_ROUTING. Owner approved Group A = 0, Group B
+  already covered, Group C all 8 borderlines stay null per Guardrail 5
+  (hardware/mechanism/construction shouldn't force form alone), Group D all
+  items parked. **No dictionary entries added in Step 5.**
+
+  **ARCHITECTURAL CONCLUSION (owner-locked):**
+  The remaining form-routing failures should be addressed primarily by
+  improving Phase 0 (P0) clue emission and taxonomy coverage, NOT by
+  over-authoring weak construction/material/anatomy clues into form routes.
+  When a form fails to identify, the right intervention is upstream (give
+  the LLM a form-naming clue, or extend the canonical taxonomy), not
+  downstream (back-door a feature clue into routing what its description
+  hints at).
+
+  **STEP 5 GAP LIST** — each item needs either P0 clue emission improvement,
+  canonical taxonomy authoring, or both:
+  1. **China cabinet / display cabinet / vitrine** — P0 clue gap. No corpus
+     clue names this form; the LLM emits component features (open_shelving,
+     door_present, glass_top) but no `china_cabinet_form` clue. Canonical
+     forms exist; needs P0 emission.
+  2. **Vanity / dressing table** — P0 clue gap. Same pattern; LLM emits
+     anatomy (raised_back_gallery, writing_surface, multiple_drawer_case)
+     but no vanity/dressing-table form clue. Canonical forms exist; needs P0.
+  3. **Peacock chair / wicker chair / rattan chair** — taxonomy gap AND P0
+     clue gap. Corpus clues exist for features (`mid_century_streamlined_
+     wicker`, `ring_loop_border`, `scrollwork_medallion`, `coiled_spiral_seat`,
+     `victorian_curlicue_wicker`) but `form_peacock_chair`, `form_wicker_chair`,
+     `form_rattan_chair` don't exist canonically. Both layers need work.
+     (Already parked in Step 3 + Task A audit.)
+  4. **Sconce / candlestick / candle stand** — future corpus / P0 clue gap.
+     Canonical forms (`form_sconce`, `form_candlestick`, `form_candle_stand`)
+     exist but no corpus fixtures use them — no clues exist yet. Authorable
+     when corpus grows to include these object types.
+  5. **Lamps (table / floor / desk)** — future corpus / P0 clue gap. Same
+     as #4; canonical lamp forms exist, no corpus presence.
+  6. **Grandfather / grandmother / granddaughter clock subtypes** — subtype
+     discrimination gap. `subtype_tall_case_clock_grandfather_clock`,
+     `_grandmother_clock`, `_granddaughter_clock` exist in taxonomy, but no
+     corpus clue distinguishes the three by size/proportion. `clock_case_
+     form` correctly routes the parent form. Needs P0 emission of a
+     dimensional/proportion clue or owner authoring of a derived rule.
+  7. **Milking stool / vanity stool / bar stool subtypes** — subtype clue
+     gap. Stool subtypes (`subtype_stool_milking`, `subtype_stool_vanity`,
+     `subtype_stool_bar`, etc.) exist in taxonomy, but no corpus clue
+     specifically names a stool subtype variant. `stool_form` correctly
+     routes form_stool. Needs P0 clue emission.
+
+  **No code or dictionary changes in Step 5.** The dictionary's 30
+  form-routing entries (with tiers + subtypes from Steps 2–3) remain the
+  complete current authoring. Future consumption design (Step 6) consumes
+  what's authored; gap items above are tracked for future authoring sessions.
+- **Step 4 `scoreForms` rule audit — owner decisions for future consumption design (2026-05-28).**
+  Audit of 23 `clues.has()` / `hasAny()` form-routing rules in `scoreForms`
+  (high-risk categories: beds, wicker, cabinet/shelving, trunk/chest, dresser,
+  desk, seating, table, material→form). Authoring decisions captured here as
+  the canonical reference for the future CLUE_ROUTING consumption redesign
+  (Step 6+). **NO RUNTIME CODE CHANGED IN STEP 4.**
+
+  **ARCHITECTURAL PRINCIPLE (owner-locked):**
+  A `clues.has(X)` legacy rule must NOT fire when X is in CLUE_ROUTING with
+  `form: null`. The dictionary's explicit null is a considered decision
+  ("this clue does not classify a form") and a membership rule firing the
+  same clue as form evidence is a back-door violation of that decision.
+
+  **KEEP LEGACY (5 rules) — narrow, correct, safe.** These guard on clues that
+  are NOT in CLUE_ROUTING; they are mechanically diagnostic (mechanism/feature
+  rules) or maker-label rules. They remain valid until the maker/model layer
+  or finer-grained mechanical-form routing is authored:
+  - `clues.has("roos_label")` → "Roos cedar chest / hope chest" (weight 120)
+  - `clues.has("lane_label")` → "Lane cedar chest / hope chest" (weight 120)
+  - `clues.has("drop_leaf_hinged")` → "Drop-leaf table" (weight 90)
+  - `clues.has("gateleg_support")` → "Gateleg table" (weight 100)
+  - `clues.has("extension_mechanism")` → "Extension table" (weight 82)
+
+  **SUPPRESS / GATE (18 rules) — must not back-door the dictionary.** Each
+  rule guards on a clue that is in CLUE_ROUTING with `form: null` (or the
+  clue is a material/anatomy/feature clue that should not force form per
+  Guardrails 5/6). The future consumption design MUST gate these:
+
+  *Material → form (must not fire on material alone):*
+  - `brass_frame` → "Brass bed or brass-frame furniture" (caused
+    art_deco_candelabrum regression)
+  - `metal_frame` / `tubular_steel` / `wrought_iron` / `cast_iron` /
+    `brass_frame` / `chrome_frame` → "Metal furniture"
+  - `tubular_steel` / `chrome_frame` / `chrome_and_laminate` →
+    "Modernist / chrome-frame furniture"
+  - `wrought_iron` / `cast_iron` → "Iron furniture"
+  - `laminate_surface` / `formica_surface` / `chrome_and_laminate` →
+    "Mid-century laminate / dinette furniture"
+  - `molded_plastic` / `acrylic_clear` → "Modern plastic / acrylic furniture"
+  - `glass_top` → "Glass-top table or mixed-material table"
+  - `cane_panels` → "Caned seating or caned-back furniture"
+  - `woven_body` / `rattan_frame` → "Wicker / rattan furniture" (caused
+    french_bistro_iron_faux_stone_table regression)
+
+  *Anatomy / generic feature → form (must not fire on feature alone):*
+  - `door_present` → "Cabinet / dresser combination"
+  - `cabinet_form` → "Cabinet"
+  - `open_shelving` → "Bookcase / open shelving unit" (caused golden_oak
+    china cabinet regression)
+  - `multiple_drawer_case` → "Chest of drawers / dresser" (caused
+    art_deco_waterfall_vanity regression)
+  - `drawer_present` → "Dresser / drawer case"
+  - `pigeonholes` → "Secretary desk / writing desk"
+  - `seating_surface` / `seating_present` → "Bench / seating furniture"
+    (caused rococo_renaissance_carved_settee regression)
+
+  *Dictionary-conflicting form route (must not fire when dictionary disagrees):*
+  - `drop_front_desk` → "Secretary desk / drop-front desk" — conflicts with
+    CLUE_ROUTING.drop_front_desk → form_fall_front_desk (Tier 3, subtype
+    drop_front). Dictionary wins.
+
+  *Bug-prone rule — suppress entirely:*
+  - `brass_frame` → "Upholstered seating" — guard mentions brass_frame but
+    rule reason describes upholstery (apparent label/guard mismatch). Treat
+    as unsafe; do not fire.
+
+  **CONSUMPTION DESIGN OBLIGATIONS** (carried forward to Step 6):
+  - For each suppressed rule above, the future consumption code must check
+    CLUE_ROUTING before letting the legacy `clues.has()` rule fire.
+  - When the dictionary has `form: null` for a referenced clue, the legacy
+    rule is silently skipped. (When the dictionary routes the clue to a
+    form, the dictionary route is authoritative — legacy rule is also
+    skipped to avoid double-counting.)
+  - The 5 keep-legacy rules continue firing as today.
+  - 40 additional `clues.has()` / `hasAny()` calls in `scoreForms` are
+    sub-conditions inside larger composite guards (not direct rules);
+    deferred to a separate pass once these 23 are wired into the
+    consumption design.
+- **Subtype taxonomy gaps surfaced by Task B Step 3 (2026-05-28).** The
+  subtype-qualifier authoring pass over the 30 form-routing dictionary entries
+  cleanly matched 6 to existing canonical subtypes but surfaced **5 gaps where
+  clues clearly point to a subtype that doesn't exist yet** in
+  `lib/constraints/canonicalVocabulary.generated.ts`. Per Step 3 guardrails,
+  no subtype ids were invented; the affected entries route to the parent form
+  only. Each gap is independently authorable as proper taxonomy work:
+  1. **Platform rocker subtype under `form_rocking_chair`.** Affected clues:
+     `platform_rocker_base`, `platform_rocker_mechanism`,
+     `victorian_platform_rocker_style`. Note that `form_rocking_chair`
+     currently has ZERO subtypes — this is the deeper gap.
+  2. **Windsor rocker subtype under `form_rocking_chair`.** Affected clues:
+     `windsor_rocker_form`, `victorian_windsor_rocker_style`. Cross-form
+     question: should Windsor rockers sit under `form_rocking_chair`
+     (functional taxonomy) or under `form_windsor_chair` (chair-family
+     taxonomy)? `form_windsor_chair` has subtype variants (bow-back,
+     sack-back, etc.) but no "rocker" qualifier.
+  3. **Parlor rocker subtype under `form_rocking_chair`.** Affected clue:
+     `victorian_parlor_rocker_form`.
+  4. **Close stool / chamber-pot commode subtype under `form_commode`.**
+     Affected clues: `commode_chamber_pot_cabinet`, `victorian_utilitarian_form`.
+     `form_commode` currently has ZERO subtypes.
+  5. **Italian sgabello subtype under `form_side_chair`** (or nested under
+     `subtype_side_chair_hall` if the taxonomy supports nested subtype
+     treatment). `sgabello_hall_chair_form` currently routes to
+     `subtype_side_chair_hall` (generic hall side chair); the Italian
+     Renaissance sgabello specificity is lost.
+  Authoring these subtypes is taxonomy work — NOT part of Task B consumption
+  redesign, but a prerequisite-adjacent task that will let Step 3 subtype
+  routing reach full diagnostic precision when the consumption layer ships.
 - **Peacock chair / wicker chair / rattan chair subtype taxonomy review (Task B audit 2026-05-28).**
   During the Task B audit pass, `peacock_fan_back_form` was kept null because the
   taxonomy has no `form_peacock_chair`, `form_wicker_chair`, or `form_rattan_chair`.

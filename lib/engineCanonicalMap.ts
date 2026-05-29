@@ -301,6 +301,24 @@ export const CLUE_TO_CANONICAL: Record<string, CanonicalLookup> = {
   multiple_drawer_case: "form_chest_of_drawers",
   metal_bed_frame: "form_iron_bed",
 
+  // ── Phase 0 Part A direct object-form clues (2026-05-28) ────────────────
+  // Twelve new form-signal clue keys authored alongside the P0 prompt
+  // additions. Each routes to an EXISTING canonical form_id; settee, three
+  // rocker variants, the case forms, and the dressing table all land here.
+  // Subtype attachments and the peacock chair are held back to Part B.
+  settee_two_seat_form:  "form_settee",
+  windsor_chair_form:    "form_windsor_chair",
+  rocking_chair_form:    "form_rocking_chair",
+  windsor_rocker_form:   "form_rocking_chair",
+  parlor_rocker_form:    "form_rocking_chair",
+  platform_rocker_form:  "form_rocking_chair",
+  chest_of_drawers_form: "form_chest_of_drawers",
+  dresser_form:          "form_dresser",
+  bistro_table_form:     "form_bistro_cafe_table",
+  china_cabinet_form:    "form_china_cabinet",
+  dressing_table_form:   "form_dressing_table",
+  milking_stool_form:    "form_stool",
+
   // ── CLOCK CLUE ROUTES (stress-test fix #4, 2026-05-20) ────────────────────
   // form_shelf_clock + form_tall_case_clock + form_wall_clock canonicals
   // already exist in forms.ts (user-authored); the gap was that NO clue
