@@ -1081,6 +1081,34 @@ function stripLeadingContextWords(name: string): string {
   return words.slice(i).join(" ");
 }
 
+// Detect caveat phrases in label observation prose indicating the captured
+// firm name is for a sub-component or accessory, not the main piece. The LLM
+// often writes these caveats explicitly ("This is the maker label for the
+// enameled insert, not the wooden cabinet itself"). When present, the wire
+// should NOT surface the firm name as the piece's maker.
+//
+// Examples this catches:
+//   - "This is the maker label for the enameled insert, not the wooden cabinet itself"
+//   - "label for the chassis, not the cabinet"
+//   - "marker on the basin, not the stand"
+//   - "label of the insert"
+//   - "the radio chassis manufacturer" (note: KEEPS for radio-cabinet
+//      pieces where chassis IS the primary piece — caveat requires explicit
+//      "not the X" or "for the insert/accessory" framing)
+function hasComponentCaveat(description: string): boolean {
+  if (!description) return false;
+  const lower = description.toLowerCase();
+  // Explicit negation framings — the label is for a component, NOT the piece
+  if (/\bnot the (?:wooden |main |primary |actual |whole )?(?:cabinet|case|stand|table|chair|frame|piece|chest|cupboard|desk|bed)\s+(?:itself\b|frame\b)?/.test(lower)) return true;
+  if (/\bnot the [a-z]+ itself\b/.test(lower)) return true;
+  // "for the [component], not..." — explicit component scoping
+  if (/\bfor the (?:enameled |porcelain |brass |iron |steel |metal |glass |plastic )?(?:insert|liner|basin|pot|pan|tray|drawer|shelf|chassis|component|accessory|fitting)\b/.test(lower)) return true;
+  if (/\blabel\s+(?:for|of|on)\s+the\s+(?:enameled |porcelain |brass |iron |steel |metal |glass |plastic )?(?:insert|liner|basin|pot|pan|tray|drawer|shelf|chassis|component|accessory|fitting)\b/.test(lower)) return true;
+  // "made the [component]" — firm made a part, not the piece
+  if (/\b(?:made|produced|manufactured)\s+(?:only )?the (?:insert|liner|basin|pot|chassis|hardware|fittings?)\b/.test(lower)) return true;
+  return false;
+}
+
 // Parse the maker name and tier out of a matchMakerMarks synthetic observation.
 // The descriptions follow two known formats produced by matchMakerMarks() at
 // lib/engine.ts:7189–7191. Returns null when neither format matches.
@@ -1166,7 +1194,10 @@ function resolveMakerAttribution(
 
   // Priority 2: LLM-captured firm name in maker_label / visible_text obs prose.
   // Skips synthetic matchMakerMarks observations (handled above) and any
-  // observation marked negated.
+  // observation marked negated. Also skips observations whose description
+  // explicitly states the captured firm name is for a component/insert, not
+  // the main piece ("This is the maker label for the enameled insert, not the
+  // wooden cabinet itself" on the commode chamber pot).
   for (const o of observations) {
     if (!o || o.negated) continue;
     const isLabelLike =
@@ -1175,7 +1206,11 @@ function resolveMakerAttribution(
     // Skip synthetic matchMakerMarks observations — their descriptions are
     // engine-generated boilerplate, not LLM-captured firm name text.
     if (parseMakerMarkObservation(String(o.description || ""))) continue;
-    const extracted = extractFirmNameFromText(String(o.description || ""));
+    const description = String(o.description || "");
+    // Skip observations whose own prose says this is a component label, not
+    // a label for the main piece.
+    if (hasComponentCaveat(description)) continue;
+    const extracted = extractFirmNameFromText(description);
     if (extracted && !isGenericMakerName(extracted)) {
       const source = o.clue === "visible_text" ? "visible_text" : "maker_label";
       return { name: extracted, tier: "captured", source };
