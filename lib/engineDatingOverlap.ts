@@ -18,6 +18,7 @@ import { parseRangeToNumeric } from "./engineClueResolver";
 
 export type LayerName =
   | "form"
+  | "construction"
   | "joinery"
   | "fastener"
   | "wood"
@@ -498,7 +499,32 @@ const CATEGORY_TO_LAYER: Record<string, LayerName> = {
   hardware: "hardware",
   materials: "wood",
   upholstery: "upholstery",
+  // #18 unblock: construction/mechanism evidence (slant_front, drop_leaf_hinged,
+  // cylinder_roll, gateleg_support…) was dropped from dating entirely. It now
+  // feeds a dedicated "construction" layer — but admitted deliberately throttled:
+  // only the curated datable-MECHANISM subset contributes a band (see
+  // CONSTRUCTION_DATING_CLUES + the bucket loop), and the layer carries MODERATE
+  // convergence authority (LAYER_AUTHORITY below) rather than its native top-tier
+  // rank, so broad construction bands corroborate a zone instead of dominating it.
+  construction: "construction",
 };
+
+// #18 curated mechanism-dating subset. A construction clue anchors dating ONLY
+// if it names a genuinely datable BUILD MECHANISM — a slant front, a roll-top
+// cylinder, a drop-leaf / gateleg mechanism. These are exactly the construction
+// clues the owner authored with an explicit CLUE_LIBRARY dateHint. Membership is
+// the gate (see the bucket loop); boundedness alone is NOT enough, because soft
+// material/weave traits that happen to be typed "construction" carry loose
+// canonical period associations (e.g. wicker_weave_open ~Bar Harbor 1900–1920)
+// that would stamp a confident early date on, say, a mid-century wicker chair
+// where the weave is its only dated signal. Extend this set when a new datable
+// mechanism is authored with a CLUE_LIBRARY dateHint.
+const CONSTRUCTION_DATING_CLUES = new Set<string>([
+  "slant_front",
+  "cylinder_roll",
+  "drop_leaf_hinged",
+  "gateleg_support",
+]);
 
 // Material clues that are METAL or GLASS, not wood/substrate. The `materials`
 // category maps to the "wood" layer above, so without this guard a brass mount,
@@ -540,6 +566,14 @@ const LAYER_AUTHORITY: Record<LayerName, number> = {
   fastener: 8,
   toolmark: 8,
   form: 7,
+  // Construction is the engine's highest-authority evidence in the p4
+  // authorityCap table (96, above joinery). For DATING convergence we
+  // deliberately seat it at the hardware/wood tier (moderate) — its authored
+  // envelopes are often broad (slant_front 1700–1860, drop_leaf 1720–1930), and
+  // pairing a broad band with top-tier authority would let it dominate tighter
+  // physical-evidence zones. Moderate authority + the existing specificity
+  // discount keeps it corroborative.
+  construction: 6,
   hardware: 6,
   wood: 6,
   upholstery: 5,
@@ -669,6 +703,15 @@ export function buildDatingOverlap(
       continue;
     }
     const { date_floor, date_ceiling } = parseRangeToNumeric(wc.date_hint ?? null);
+    // Construction admission throttle (#18): a construction clue contributes a
+    // band only if it is in the curated datable-mechanism subset AND carries a
+    // BOUNDED envelope (both floor and ceiling). Everything else — soft
+    // weave/material traits typed "construction", and open-ended hints that
+    // would drag convergence with a half-line — is recorded present-but-undated.
+    if (layer === "construction" && (!CONSTRUCTION_DATING_CLUES.has(wc.clue) || date_floor === null || date_ceiling === null)) {
+      (undatedBuckets[layer] ||= []).push(wc.clue);
+      continue;
+    }
     if (date_floor === null && date_ceiling === null) {
       (undatedBuckets[layer] ||= []).push(wc.clue);
       continue;
@@ -690,8 +733,8 @@ export function buildDatingOverlap(
     undated_clues: [],
   });
 
-  // 7 evidence-library layers (Block 12 added upholstery)
-  for (const layerName of ["joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery"] as LayerName[]) {
+  // Evidence-library layers (Block 12 added upholstery; #18 added construction)
+  for (const layerName of ["construction", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery"] as LayerName[]) {
     const items = buckets[layerName] ?? [];
     const undated = undatedBuckets[layerName] ?? [];
     const { floor, ceiling } = aggregateRange(items.map((i) => ({ floor: i.floor, ceiling: i.ceiling })));
