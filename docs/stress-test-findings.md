@@ -453,6 +453,155 @@ Per appraiser: "Functional identity should always outrank stylistic resemblance 
 
 ---
 
+### 19. Logically-impossible date — reconciliation produces date claims that violate temporal logic (MAJOR LOGIC ERROR)
+
+**Surfaced by:**
+- S052 Art Deco walnut waterfall dresser (true c. 1925–1945) → "Art Deco vocabulary (post-1870 reproduction) Dresser, c. 1870–1910, HIGH conf, kind=reproduction"
+- S054 Colonial Revival William and Mary drop-front secretary on stand (true c. 1910–1935) → "New Traditional / Grandmillennial Colonial Secretary desk, c. 1990–**2100**, HIGH conf, kind=revival_wave"
+
+**Issue:** Reconciliation generates date claims that cannot exist in reality and then anchors HIGH confidence on them. S052 claims an Art Deco "reproduction" predating Art Deco by 55 years (you cannot reproduce a future style). S054 projects the date 74 years past today's real-world date (2026-06-04). In both cases the engine had correct style attribution conf 0.82–0.92 and a convergence zone matching the actual production period, but the reconciliation logic preferred a competing zone / wave that produced the incoherent claim.
+
+S054 also surfaces a separate hard-negative-floor clamp bug: P2 reasoning says "hard-negative post-floor evidence clamps the floor to 1990" but `plywood_structural` HARD NEGATIVE dateHint is `c. 1905–1930`. The clamp landed at 1990 — possibly reading the convergence-zone ceiling (1870–1990) or the unparseable style_wave 1990-null as the floor anchor instead of the dateHint.
+
+**Code locations:**
+- `lib/engineStyleReconciliation.ts` — revival_wave and reproduction-kind reasons; needs temporal-logic guard
+- `lib/engine.ts` P2 frame-dating path — hard-negative floor clamp computation (likely reading wrong source)
+- `lib/engineStyleEvaluator.ts` — revival-wave selection picks open-ended `1990-null` waves whose null ceiling defaults to year 2100
+
+**Proposed approach:**
+1. **Temporal-logic guard on reconciliation reasons** — never emit `kind=reproduction` when working_range_floor < style_floor (you can't reproduce a future style). Never emit a frame_ceiling > current_year.
+2. **Hard-negative clamp must read dateHint** — not convergence-zone ceiling, not style_wave ceiling. Audit the clamp code path; tighten to dateHint floor only.
+3. **Revival-wave ceiling cap** — when a style_wave has a null ceiling, cap at current_year before using it as a date range.
+4. **When style attribution is well-supported (conf ≥ 0.7) and convergence zones split**, prefer the zone whose period overlaps the style's date range rather than the older zone built on weak open-ended layer floors.
+
+**Scope:** Medium engine task. Multiple distinct logic bugs (temporal guard + clamp source + ceiling cap). All three need to land together for the symptom to fully clear.
+
+---
+
+### 20. M7 negation form-routing — clue-key-substring-match across multiple clue keys (ARCHITECTURE PATTERN, extends #15)
+
+> **#15's structural fix landed**, but the symptom recurs because the LLM emits clue keys with descriptions that negate the clue in linguistic forms the `descriptionNegatesClue` regex doesn't catch. n=4 across 3 different clue keys confirms this is an architectural issue at the form-routing layer, not specific to any one clue.
+
+**Surfaced by:**
+- `peacock_emmanuelle_rattan_chair` → form_loom via `lloyd_loom_paper_fiber` (description: "natural rattan… **NOT** Lloyd loom")
+- S045 Victorian curlicue wicker rocker → form_loom via same `lloyd_loom_paper_fiber` negation
+- S050 vernacular pine lift-lid storage chest → form_slant_front_desk via `slant_front` clue (description: "the lid is flat (horizontal), **NOT** a slanted writing surface")
+- S053 Mission Arts & Crafts library-writing table → form_secretary_desk via `drop_front_desk` clue (description: "Drop-front writing surface is visible" — but parallel writing_surface obs explicitly states "no tilt, **no** drop-front, no cylinder closure")
+
+**Issue:** All four specimens share an identical mechanism shape: (a) clue KEY whose name substring-matches a target form alias (`lloyd_loom_paper_fiber` → form_loom, `slant_front` → form_slant_front_desk, `drop_front_desk` → form_secretary_desk); (b) description NEGATES the clue's identity OR another observation explicitly contradicts it; (c) engine consumes the negation as positive form evidence anyway; (d) form_X catastrophically selected over the legitimate form clue. Phase 0 Part A direct-form clues (`rocking_chair_form`, `parlor_rocker_form` Tier 3 wt 0.92) fire positively on S045/S051 but lose because the KEY-substring path wins.
+
+**Code locations:**
+- `lib/engine.ts` `scoreForms` — form-routing logic that substring-matches clue KEYS against form aliases
+- `lib/engine.ts` `descriptionNegatesClue` — current detector misses these linguistic forms
+- `lib/engine.ts` cross-observation negation — no logic recognizes that one observation can negate another (e.g., `writing_surface` saying "no drop-front" should negate `drop_front_desk` firing in parallel)
+
+**Proposed approach:**
+1. **Per-observation negation broadening** — extend `descriptionNegatesClue` to catch the linguistic forms seen here: "is/are flat, not a [X]", "not a [X] in original construction", "no [X] visible" with various intervening words/punctuation.
+2. **Cross-observation contradiction detection** — when observation A's description explicitly states the absence of feature X and observation B's clue KEY is X, treat B as negated. Audit the scoring path so contradictions get resolved before scoring.
+3. **Clue-KEY-substring form-routing guard** — never let a clue whose KEY substring-matches a form alias drive that form's selection without a positive description (architectural defense in depth).
+
+**Scope:** Medium engine task. Architectural — affects EVERY form whose alias substring-matches a clue KEY. Other clue keys likely affected (per audit): `barley_twist`, `cabriole_leg`, `mid_century_streamlined_wicker`, `bar_harbor_style_wicker`, `pedestal_column`, `parlor_rocker_form`.
+
+---
+
+### 21. M13 — high-authority maker label captured verbatim but not propagated to display (HIGH USER-VISIBLE IMPACT)
+
+**Surfaced by 7 specimens, all with the full firm name in the `maker_label` observation prose:**
+- S022 Globe-Wernicke Co. Cincinnati (paper labels + two HIGH-tier detector clues) → display "Bookcase / open shelving unit"
+- S023 General Motors Radio Corp Dayton OH (full firm + serial 56020A + context obs "dates this piece to approximately 1929-1933") → display "Queen Anne Media console"
+- S024 Regina Music Box Co. Rahway NJ (full firm + Sousa disc + patent dates + 4 corroborating clues) → display "Brass bed or brass-frame furniture"
+- S027 Bassett Upholstery Division Newton NC (full firm captured 3× + MEDIUM-tier maker_mark_bassett) → display "Windsor chair"
+- S030 Automatic File & Index Co. 'OK' sectional barrister (full firm + sectional construction) → display "Bookcase / open shelving unit"
+- S039 Sligh Furniture Co. Grand Rapids MI (medallion + MEDIUM-tier maker_mark_sligh + LOW-tier Grand Rapids Association) → display "Colonial Revival Writing box"
+- S044 Goldstrom Bros / Baltimore handwritten cursive retailer inscription → display drops the retailer entirely (new sub-variant: handwritten dealer/retailer marks)
+
+**Issue:** When a piece carries a full firm name in the `maker_label` observation prose (and frequently in multiple corroborating clues including `maker_mark_*` detectors at MEDIUM or HIGH tier), the engine consistently surfaces the form name without the maker. The display reads "Bookcase / open shelving unit" instead of "Globe-Wernicke Co. Cincinnati Bookcase." Sibling of #9 / M9 (M9 = maker DATE not parsed; M13 = maker NAME not surfaced). Form is often also wrong (M8 on S024 Regina, S027 Bassett, S039 Sligh — see #20), but even where form is correct (S022, S030) the maker is dropped.
+
+**Code locations:**
+- `lib/engine.ts` form-display string assembly — currently `<style_context> <form_label>` template, no maker injection
+- `lib/engine.ts` `matchMakerMarks` — has detector hits but the matched firm name isn't read by the display layer
+- `lib/engineCanonicalMap.ts` `FORM_LABEL_TO_CANONICAL` — display labels don't carry maker placeholder
+
+**Proposed approach:**
+1. **Surface maker when matchMakerMarks fires at MEDIUM+ tier** — prepend or append the matched firm name to the display label (e.g., `"Globe-Wernicke Co. Bookcase"` or `"Bookcase by Globe-Wernicke Co."`).
+2. **Also surface maker_label observation prose when it captures a firm name** even without a matchMakerMarks detector — needs a firm-name-extraction pass on label prose (a small NER-style regex set).
+3. **Handwritten dealer/retailer marks** (S044 Goldstrom Bros) need separate handling — could be a sub-display line ("Retailer: …") rather than the primary maker attribution.
+
+**Scope:** Small-medium. Calibration + display-string work; high user-visible payoff (the piece's most valuable identification anchor is currently invisible).
+
+---
+
+### 22. TAXONOMY-GAP form misclassification — form doesn't exist in canonical, fallback to closest-in-scope is most-confident-wrong answer (ARCHITECTURE GAP, distinct from #17)
+
+**Surfaced by:**
+- S026 modern walnut workshop harpsichord → form_music_stand (no `form_harpsichord` in canonical; `harpsichord_form` + `keyboard_instrument_case` fire as [form] clues with no canonical home; `music_desk_present` describing the sheet-music rack accessory wins by being the closest in-scope match)
+- S036 mid-century fiberglass cachepot planter → "Wicker / rattan furniture" (no `form_planter` / `form_cachepot` in canonical; M0 `woven_body` false-positive on fiberglass surface + `mid_century_streamlined_wicker` route)
+- S038 Space Age cone chair (Verner Panton derivative c. 1965–75) → form_bench (no `form_cone_chair` / `form_swivel_chair` / `form_pedestal_chair` / `form_space_age_chair` in canonical; seven explicit Space Age clue keys all bucket [structure] or [style] at wt 0.37–0.55; generic `pedestal_column` 0.97 + `seating_surface` 0.85 win to form_bench)
+
+**Issue:** Distinct from #17 (orphaned forms that exist in canonical but aren't reachable via `scoreForms`). #22 is forms that DON'T EXIST in canonical at all — the piece type isn't in the engine's vocabulary, so even if the LLM correctly identifies the piece (S026: explicit "harpsichord, grand form"; S038: explicit "Verner Panton's Cone Chair"), the form-selection logic has nowhere to route it. Falls back to the closest in-scope canonical form. Worst case: the answer LOOKS confident (form correctly identified at primary-form level — "Music stand," "Bench") but is catastrophically wrong (a harpsichord is not a music stand).
+
+**Code locations:**
+- `lib/constraints/canonicalVocabulary.generated.ts` — taxonomy authoring (the gap)
+- `lib/engine.ts` `scoreForms` — fallback logic when no in-scope form matches
+
+**Proposed approach:**
+1. **Author missing canonical forms** for the surfaced gaps: `form_harpsichord` (under musical_mechanical), `form_planter` / `form_cachepot` (under entry_support or new category), `form_cone_chair` / `form_swivel_chair` / `form_pedestal_chair` (under seating).
+2. **Or: out-of-scope detection** — when no in-scope canonical form gets reasonable weight (best score < threshold) AND P0 emits a clue with no canonical home (`harpsichord_form`, `cone_chair_form`), surface "Out of scope — possible [piece type]" rather than forcing a fallback identification.
+3. **Audit P0 output for `*_form` clue keys with no `CLUE_TO_CANONICAL` entry** — these are the canary signals that the engine's vocabulary is short.
+
+**Scope:** Medium taxonomy + small engine. Distinct from #17 but related. The "out-of-scope" detection path (option 2) is the architectural fix; canonical authoring (option 1) is per-form.
+
+---
+
+### 23. CLUE_LIBRARY semantic-too-broad cluster — clues fire on pieces where they don't structurally apply (CALIBRATION CLUSTER)
+
+**Surfaced by promotion-bar specimens (each n=3):**
+- `writing_surface` (n=3: S044 marble-top pedestal stand, S046 library table, S050 storage chest) — fires at conf 84 wt 0.94 [function] on a pedestal stand with "consistent with a desk, secretary, or writing table"
+- `secondary_surface` (n=3: S049 cast-iron radiator visible in background, S050 chest back gallery rail, S053 library table side shelves) — fires on background objects or primary structural features
+- `drop_front_desk` (n=3: S039 Sligh flat-top console table, S048 Colonial Revival pair, S053 Mission library table) — fires on flat-top pieces with no drop-front; description literally "Drop-front writing surface is visible" while parallel writing_surface obs states "no drop-front"
+- `pedestal_column` (multiple: S038 cone chair → form_bench, S044 marble-top, S047 curio cabinet, S053 4-leg library table) — fires on any centered structural support including 4-leg bases
+
+**Issue:** The clue KEYS are useful when correctly applied, but the LLM emits them on pieces where the structural feature isn't present. Each clue carries high enough weight (drop_front_desk 0.98, writing_surface 0.94, pedestal_column 0.97) to drive form selection when it fires falsely. Drop_front_desk shows the cleanest pattern: it's genuine ~50% of the time (correctly fires on S054, S048 right-half, S053) and false ~50% of the time (S039 flat-top console table, S048 secretary attached to china cabinet, S053 library table).
+
+Adjacent pattern noted but not promoted: `barley_twist` clue firing on spool/bobbin turning (description acknowledges "sometimes called barley-twist variant" — not actually barley twist), `tripod_base` firing on a 4-leg quadripod base (description literally "making this a quadripod rather than true tripod"), `cabriole_leg` firing on splayed scrolled legs that aren't cabriole. KEY-vs-content mismatch is a broader CLUE_LIBRARY discipline issue.
+
+**Code locations:**
+- `lib/engine.ts` P0 prompt — needs tighter trigger conditions for these clue keys
+- `lib/engine.ts` `CLUE_LIBRARY` — the affected entries' description templates and trigger guidance
+
+**Proposed approach:**
+1. **Tighten P0 prompt for the worst offenders** (drop_front_desk, writing_surface, secondary_surface, pedestal_column) — explicit block conditions ("only emit drop_front_desk if you can see the front panel hinged DOWN to a horizontal writing surface AND visible hinges at the bottom edge") parallel to Phase 0 Part A authoring.
+2. **CLUE_LIBRARY weight calibration** — for clues with confirmed semantic-too-broad pattern, lower the default weight or add a confidence-floor requirement.
+3. **Description-conflict guard** — when two observations in the same scan structurally contradict (drop_front_desk fires while writing_surface explicitly says "no drop-front"), trust the more-specific obs and downweight the conflicting one. Same shape as the #20 architectural fix.
+
+**Scope:** Medium calibration. Mostly P0 prompt tightening; can be authored cleanly per-clue. Highest impact: drop_front_desk gate (closes #20 partially since `drop_front_desk` is one of the three negation-form-routing offenders).
+
+---
+
+### 24. M0 spindle-synthesis on non-Windsor pieces drives form_windsor_chair (CALIBRATION CLUSTER, distinct from #15)
+
+**Surfaced by 3 specimens, all with NO actual spindles:**
+- S001 black country rocker (flat-slat back) → "Spindle Gallery Windsor chair"
+- S027 Bassett upholstered platform rocker (flat-slat back) → "Windsor chair" (post-Phase-0-Deploy)
+- S051 Mission/Arts & Crafts oak armchair (solid upholstered back panel; `solid_plank_back` at conf 82 wt 0.91 describes broad solid panel) → "Arts and Crafts / Mission / Craftsman Windsor chair"
+
+**Issue:** P0 perception auto-emits `spindle_back` (conf 78) and `spindle_gallery` (conf 70) on any chair back regardless of whether spindles are actually present. The two clue keys substring-match against `form_windsor_chair` aliases (`"Spindle chair"`, `"Sack-back chair"`) → form_windsor_chair wins via the same KEY-substring-match path documented in #20. On S027 + S051, Phase 0 Part A's correct `rocking_chair_form` Tier 3 clue (wt 0.92) fires positively but loses to the spindle FPs. CLUE_ROUTING dictionary consumption is rolled back (see PARKING_LOT.md Step 6 retry), so the Tier 3 weight alone is insufficient to defeat KEY-substring routing.
+
+**Distinct from #20:** #20 is about clue keys whose DESCRIPTIONS negate the clue's identity. #24 is about the synthesizer over-emitting positive spindle observations on backs that don't have spindles. Same downstream consequence (form_windsor_chair selected via alias substring-match), different upstream cause.
+
+**Code locations:**
+- `lib/engine.ts` P0 prompt — spindle_back / spindle_gallery emission triggers (currently fires on any chair back)
+- `lib/engine.ts` `scoreForms` — form_windsor_chair alias substring-match path
+
+**Proposed approach:**
+1. **Tighten spindle_back / spindle_gallery P0 emission** — only emit when the back is constructed from multiple discrete vertical members (turned spindles, splats, or sticks), NOT on solid panel backs or flat-slat slat-backs.
+2. **Mutual-exclusion guard** — when `solid_plank_back` fires at high weight (S051: conf 82, wt 0.91), suppress spindle_back / spindle_gallery as semantically incompatible.
+3. **Windsor form-routing gate** — require Windsor-specific anatomy (`plank_seat` + `splayed_turned_legs` + spindles) for form_windsor_chair selection, not just substring-match against spindle keys. Phase 0 Part A authored `windsor_chair_form` Tier 3 clue — wire it via Step 6 consumption to gate form_windsor_chair properly.
+
+**Scope:** Medium calibration + small engine. Closes a major M8 misclassification pattern. Pairs naturally with the Step 6 consumption retry (PARKING_LOT.md) — both need Phase 0 Part A clues to actually win form selection over substring-match paths.
+
+---
+
 ### Recorded but DEFERRED from the lamp rerun (reinforce existing open issues)
 
 The same lamp scan reinforced two existing calibration/synthesis issues (appraiser: "the remaining weakness is mainly overclassification"):

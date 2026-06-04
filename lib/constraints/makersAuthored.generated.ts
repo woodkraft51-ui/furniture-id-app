@@ -4289,7 +4289,7 @@ export const AUTHORED_MAKER_ENTRIES: MakerMarkEntry[] = [
     "positive_authority": 7,
     "hard_negative_authority": 7,
     "migration_status": "complete",
-    "notes": "Important wicker and outdoor furniture maker.",
+    "notes": "Important wicker and outdoor furniture maker. Note: Lloyd loom is a construction type (twisted kraft paper around wire core",
     "maker_name": "Lloyd Flanders",
     "region": "Menominee MI USA",
     "furniture_categories": [
@@ -4308,13 +4308,11 @@ export const AUTHORED_MAKER_ENTRIES: MakerMarkEntry[] = [
     ],
     "known_wording": [
       "Lloyd Flanders",
-      "Lloyd Loom",
       "Lloyd Manufacturing"
     ],
-    "visual_traits": "Important wicker and outdoor furniture maker.",
+    "visual_traits": "Important wicker and outdoor furniture maker. Note: Lloyd loom is a construction type (twisted kraft paper around wire core",
     "mark_text_patterns": [
       "lloyd flanders",
-      "lloyd loom",
       "lloyd manufacturing"
     ],
     "period_associations": [

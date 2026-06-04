@@ -238,6 +238,13 @@ type Phase3Result = {
   confidence_pct?: number; // numeric pct behind `confidence`, so p6 can re-cap on dating contribution
   support: string[];
   alternatives: string[];
+  // Maker attribution surfaced from observations. Closes M13 by routing the
+  // captured firm name to the display layer. Null when no maker resolved.
+  maker_attribution?: {
+    name: string;
+    tier: "canonical-high" | "canonical-medium" | "canonical-low" | "captured" | "intake";
+    source: "matchMakerMarks" | "maker_label" | "visible_text" | "intake";
+  } | null;
   // Block 1 additive fields:
   form_id?: string | null;          // canonical form_id or null if NO_MATCH
   alternative_form_ids?: string[];  // canonical IDs for alternatives where they resolve
@@ -937,6 +944,309 @@ function composeStyledForm(stylePrefix: string | null | undefined, formBase: str
   }
   const rest = b.slice(overlap).join(" ");
   return rest ? `${prefix} ${rest}` : prefix;
+}
+
+// Maker attribution surfacing. Closes M13 "maker captured but not propagated to
+// display" by reading the firm name from three storage locations in priority
+// order and routing it through to the display title.
+//
+// Priority chain:
+//   1. matchMakerMarks synthetic observations — canonical detector hit; HIGH/
+//      MEDIUM/LOW tier embedded in description text.
+//   2. LLM-captured firm name in maker_label / visible_text observation prose,
+//      no canonical detector hit — extracted via conservative regex patterns.
+//   3. intake-supplied maker names from digest.maker_names[0].
+//
+// Returns null when no maker can be resolved. The display layer falls back to
+// the existing style-prefix composition in that case.
+type MakerAttribution = {
+  name: string;
+  tier: "canonical-high" | "canonical-medium" | "canonical-low" | "captured" | "intake";
+  source: "matchMakerMarks" | "maker_label" | "visible_text" | "intake";
+};
+
+// Conservative firm-name extractor. Pulls only what's clearly a firm name from
+// label/text observation prose; returns null on ambiguity. False positives
+// surfacing "Antique Dealer" or "Period Piece" as a maker would be worse than
+// no maker, so the patterns require strong company-name signals.
+function extractFirmNameFromText(text: string): string | null {
+  if (!text || typeof text !== "string") return null;
+  // Strip noise that confuses the patterns. The LLM tends to embed firm names
+  // inside quoted transcriptions ("'Globe-Wernicke Co. Cincinnati'") and
+  // inside slash-separated line transcriptions of multi-line labels
+  // ("MANUFACTURED BY / The Globe-Wernicke Co. / CINCINNATI").
+  const cleaned = text
+    .replace(/[‘’“”'"`]/g, "")  // strip curly + straight quotes
+    .replace(/[\/|]+/g, " ")                          // slash/pipe → space
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Pattern 1: "Manufactured by" / "Made by" / "Produced by" / "MFD. by".
+  // Captures: the firm name string up to the next sentence boundary, comma, or
+  // location-shift phrase (CITY, STATE, "BRANCHES OR AGENCIES").
+  //
+  // No /i flag — the all-caps city alternatives ("GREEN BAY", "DAYTON") are
+  // case-sensitive ALL-CAPS to distinguish printed-label transcriptions from
+  // mixed-case prose. The verb itself uses explicit case alternatives.
+  const mfgMatch = cleaned.match(
+    /\b(?:MANUFACTURED|Manufactured|manufactured|MADE|Made|made|PRODUCED|Produced|produced|MFD\.|Mfd\.|mfd\.)\s+(?:BY|By|by)\s+(?:THE\s+|The\s+|the\s+)?([A-Z][A-Za-z0-9.&\-'\s]{2,80}?)(?:\s+(?:CINCINNATI|Cincinnati|GRAND\s+RAPIDS|Grand\s+Rapids|RAHWAY|Rahway|DAYTON|Dayton|NEWTON|Newton|BALTIMORE|Baltimore|GREEN\s+BAY|Green\s+Bay|WISCONSIN|Wisconsin|OHIO|Ohio|MICHIGAN|Michigan|VIRGINIA|Virginia|NEW\s+YORK|New\s+York|BOSTON|Boston|PHILADELPHIA|Philadelphia|CHICAGO|Chicago|BRANCHES|Branches)|[,.;]|\s+(?:ESTABLISHED|Established|PATENTED|Patented)|$)/,
+  );
+  if (mfgMatch && mfgMatch[1]) {
+    const raw = mfgMatch[1].trim().replace(/^the\s+/i, "").replace(/\.$/, "");
+    const candidate = stripLeadingContextWords(raw);
+    if (looksLikeFirmName(candidate)) return candidate;
+  }
+
+  // Pattern 2: explicit Co. / Company / Corp. / Corporation / Bros. / Brothers
+  // / & Sons / Inc. Periods optional on the suffix. NO /i flag — the leading
+  // `[A-Z]` must literally require an uppercase letter, otherwise the
+  // non-greedy walk latches onto sentence prose ("engraved with..." would
+  // become a firm name if any letter could start the capture). The suffix
+  // alternation explicitly lists both Title Case ("Corp.") and ALL CAPS
+  // ("CORP.") variants so all-caps printed-label transcriptions match.
+  // Inner word-repeat is NON-GREEDY ({0,4}?) so "Goldstrom Bros" matches with
+  // 0 inner repeats and "Bros" picked up as the suffix.
+  const corpMatch = cleaned.match(
+    /\b((?:[A-Z][A-Za-z0-9.&'\-]+(?:\s+[A-Z][A-Za-z0-9.&'\-]+){0,4}?)\s+(?:Furniture\s+(?:Co\.?|CO\.?|Company|COMPANY)|Co\.?|CO\.?|Company|COMPANY|Corp\.?|CORP\.?|Corporation|CORPORATION|Bros\.?|BROS\.?|Brothers|BROTHERS|&\s+(?:Sons|SONS)|Inc\.?|INC\.?))\b/,
+  );
+  if (corpMatch && corpMatch[1]) {
+    const raw = corpMatch[1].trim().replace(/\.$/, "");
+    const candidate = stripLeadingContextWords(raw);
+    if (looksLikeFirmName(candidate)) return candidate;
+  }
+
+  return null;
+}
+
+// Guard against false-positive captures from the conservative extractor. The
+// extractor's regexes are tight, but a few generic phrases could still slip
+// through (e.g. "American Furniture Company" as a descriptive phrase rather
+// than a maker). Reject candidates that contain blacklisted descriptor words.
+function looksLikeFirmName(s: string): boolean {
+  if (!s || s.length < 2 || s.length > 80) return false;
+  const lower = s.toLowerCase();
+  const blacklist = [
+    "antique",
+    "period",
+    "vintage",
+    "reproduction",
+    "revival",
+    "american furniture",
+    "factory production",
+    "unknown",
+    "various",
+    "multiple",
+    "candidate",
+    "possible",
+  ];
+  if (blacklist.some((w) => lower === w || lower.startsWith(w + " "))) return false;
+  // Reject candidates that are all-lowercase (real firm names have at least
+  // one capitalized word per the patterns, but a regex slip could capture a
+  // run of lowercase prose).
+  if (s === lower) return false;
+  return true;
+}
+
+// Strip leading context/stop words from a captured firm name. The non-greedy
+// Pattern 2 regex can latch onto a position before the actual firm name in
+// label transcriptions like "NOTIFY US FROM SEARS ROEBUCK CO." or "Enameled
+// Ware United States Stamping Co." — capturing the entire phrase up to the
+// corp suffix. Stripping common context words from the left edge recovers the
+// real firm name. Words are checked case-insensitively.
+function stripLeadingContextWords(name: string): string {
+  if (!name) return name;
+  const STOP_WORDS = new Set([
+    // Imperative / instructional verbs
+    "notify", "return", "ship", "send", "reads", "labeled", "marked", "stamped",
+    "engraved", "branded", "inscribed", "imprinted", "embossed", "etched",
+    // Pronouns / connectives
+    "us", "we", "you", "they", "this", "that", "these", "those", "from", "for",
+    "by", "in", "on", "at", "to", "with", "and", "or", "but", "if", "not",
+    "no", "any", "every", "all", "the",
+    // Logistics / shipping label terms
+    "freight", "express", "agent", "agents", "days", "called",
+    // Material / product descriptors that precede maker labels
+    "enameled", "ware", "wares", "porcelain", "metal", "brass", "steel",
+    "iron", "copper", "tin", "aluminum",
+    // Catalog / retail terms
+    "catalog", "retail", "wholesale", "trade", "brand",
+  ]);
+  const words = name.split(/\s+/);
+  let i = 0;
+  while (i < words.length && STOP_WORDS.has(words[i].toLowerCase())) i++;
+  // Leave at least 2 words (so a single-word capture like "Bassett" isn't
+  // accidentally stripped to nothing if it happens to coincide with a stop
+  // word — though no canonical maker in the corpus matches the stop list).
+  if (i >= words.length) return name;
+  return words.slice(i).join(" ");
+}
+
+// Detect caveat phrases in label observation prose indicating the captured
+// firm name is for a sub-component or accessory, not the main piece. The LLM
+// often writes these caveats explicitly ("This is the maker label for the
+// enameled insert, not the wooden cabinet itself"). When present, the wire
+// should NOT surface the firm name as the piece's maker.
+//
+// Examples this catches:
+//   - "This is the maker label for the enameled insert, not the wooden cabinet itself"
+//   - "label for the chassis, not the cabinet"
+//   - "marker on the basin, not the stand"
+//   - "label of the insert"
+//   - "the radio chassis manufacturer" (note: KEEPS for radio-cabinet
+//      pieces where chassis IS the primary piece — caveat requires explicit
+//      "not the X" or "for the insert/accessory" framing)
+function hasComponentCaveat(description: string): boolean {
+  if (!description) return false;
+  const lower = description.toLowerCase();
+  // Explicit negation framings — the label is for a component, NOT the piece
+  if (/\bnot the (?:wooden |main |primary |actual |whole )?(?:cabinet|case|stand|table|chair|frame|piece|chest|cupboard|desk|bed)\s+(?:itself\b|frame\b)?/.test(lower)) return true;
+  if (/\bnot the [a-z]+ itself\b/.test(lower)) return true;
+  // "for the [component], not..." — explicit component scoping
+  if (/\bfor the (?:enameled |porcelain |brass |iron |steel |metal |glass |plastic )?(?:insert|liner|basin|pot|pan|tray|drawer|shelf|chassis|component|accessory|fitting)\b/.test(lower)) return true;
+  if (/\blabel\s+(?:for|of|on)\s+the\s+(?:enameled |porcelain |brass |iron |steel |metal |glass |plastic )?(?:insert|liner|basin|pot|pan|tray|drawer|shelf|chassis|component|accessory|fitting)\b/.test(lower)) return true;
+  // "made the [component]" — firm made a part, not the piece
+  if (/\b(?:made|produced|manufactured)\s+(?:only )?the (?:insert|liner|basin|pot|chassis|hardware|fittings?)\b/.test(lower)) return true;
+  return false;
+}
+
+// Parse the maker name and tier out of a matchMakerMarks synthetic observation.
+// The descriptions follow two known formats produced by matchMakerMarks() at
+// lib/engine.ts:7189–7191. Returns null when neither format matches.
+//
+// Note on the regex: canonical maker_name strings often end in a period ("Globe-
+// Wernicke Co.", "Sligh Furniture Co.") and the template at line 7191 appends
+// its own period, producing a double-period sequence ("Co.. Mark type: ..."). The
+// capture group is non-greedy `(.+?)` so it can include periods, and the
+// trailing-period match is `\.?` so it tolerates the maker_name's own period.
+function parseMakerMarkObservation(
+  description: string,
+): { name: string; tier: "HIGH" | "MEDIUM" | "LOW" } | null {
+  if (!description) return null;
+  // Normal format: "Detected maker mark: <Maker>. Mark type: ...
+  //                 Confidence tier: <TIER>."
+  const normalMatch = description.match(
+    /^Detected maker mark:\s+(.+?)\.?\s*\.?\s+Mark type:.+Confidence tier:\s+(HIGH|MEDIUM|LOW)/,
+  );
+  if (normalMatch) {
+    return { name: normalMatch[1].trim().replace(/\.$/, ""), tier: normalMatch[2] as any };
+  }
+  // Suppressed format: "Possible <Maker> match (low confidence; <TIER> per
+  //                     Confidence Ladder). <caveat>"
+  const suppressedMatch = description.match(
+    /^Possible\s+(.+?)\s+match.+?(HIGH|MEDIUM|LOW)\s+per Confidence Ladder/,
+  );
+  if (suppressedMatch) {
+    return { name: suppressedMatch[1].trim().replace(/\.$/, ""), tier: suppressedMatch[2] as any };
+  }
+  return null;
+}
+
+// Reject canonical-detector matches whose maker_name is a generic placeholder
+// or an association mark rather than an actual firm identity. These exist in
+// the canonical library as last-resort catch-alls ("Cabinetmaker paper labels
+// and inscriptions (generic)") or context indicators ("Grand Rapids Furniture
+// Association triangle mark") — useful as dating/region anchors but misleading
+// when displayed as the piece's maker.
+function isGenericMakerName(name: string): boolean {
+  if (!name) return true;
+  const lower = name.toLowerCase();
+  return (
+    lower.includes("(generic)") ||
+    /\bassociation\b/.test(lower) ||
+    /\bunknown\b/.test(lower) ||
+    /\bcabinetmaker\b.+\binscriptions?\b/.test(lower) ||
+    /\bpaper labels?\s+and\b/.test(lower)
+  );
+}
+
+function resolveMakerAttribution(
+  observations: ReadonlyArray<any>,
+  makerNames: ReadonlyArray<string>,
+): MakerAttribution | null {
+  // Priority 1: matchMakerMarks synthetic observations at HIGH or MEDIUM tier.
+  // LOW-tier matches are catch-all detectors (generic cabinetmaker labels,
+  // association marks) and produce misleading display titles when treated as
+  // the maker. LOW tier is excluded from the canonical priority — those scans
+  // fall through to the LLM-captured prose path on the original maker_label
+  // observation, which usually has the actual firm name verbatim.
+  type Candidate = { name: string; tier: "HIGH" | "MEDIUM"; confidence: number };
+  const candidates: Candidate[] = [];
+  for (const o of observations) {
+    if (!o || o.type !== "label") continue;
+    if (o.negated) continue;
+    const parsed = parseMakerMarkObservation(String(o.description || ""));
+    if (!parsed) continue;
+    if (parsed.tier === "LOW") continue;
+    if (isGenericMakerName(parsed.name)) continue;
+    candidates.push({
+      name: parsed.name,
+      tier: parsed.tier,
+      confidence: typeof o.confidence === "number" ? o.confidence : 0,
+    });
+  }
+  if (candidates.length > 0) {
+    const rank = (t: "HIGH" | "MEDIUM") => (t === "HIGH" ? 2 : 1);
+    candidates.sort((a, b) => rank(b.tier) - rank(a.tier) || b.confidence - a.confidence);
+    const best = candidates[0];
+    const tier = best.tier === "HIGH" ? "canonical-high" : "canonical-medium";
+    return { name: best.name, tier, source: "matchMakerMarks" };
+  }
+
+  // Priority 2: LLM-captured firm name in maker_label / visible_text obs prose.
+  // Skips synthetic matchMakerMarks observations (handled above) and any
+  // observation marked negated. Also skips observations whose description
+  // explicitly states the captured firm name is for a component/insert, not
+  // the main piece ("This is the maker label for the enameled insert, not the
+  // wooden cabinet itself" on the commode chamber pot).
+  for (const o of observations) {
+    if (!o || o.negated) continue;
+    const isLabelLike =
+      o.type === "label" || o.clue === "maker_label" || o.clue === "visible_text";
+    if (!isLabelLike) continue;
+    // Skip synthetic matchMakerMarks observations — their descriptions are
+    // engine-generated boilerplate, not LLM-captured firm name text.
+    if (parseMakerMarkObservation(String(o.description || ""))) continue;
+    const description = String(o.description || "");
+    // Skip observations whose own prose says this is a component label, not
+    // a label for the main piece.
+    if (hasComponentCaveat(description)) continue;
+    const extracted = extractFirmNameFromText(description);
+    if (extracted && !isGenericMakerName(extracted)) {
+      const source = o.clue === "visible_text" ? "visible_text" : "maker_label";
+      return { name: extracted, tier: "captured", source };
+    }
+  }
+
+  // Priority 3: intake-supplied maker names.
+  if (Array.isArray(makerNames) && makerNames.length > 0) {
+    const intakeName = String(makerNames[0] || "").trim();
+    if (intakeName && looksLikeFirmName(intakeName) && !isGenericMakerName(intakeName)) {
+      return { name: intakeName, tier: "intake", source: "intake" };
+    }
+  }
+
+  return null;
+}
+
+// Compose the display title with maker, style prefix, and form base. When a
+// maker resolves, the maker name leads the title and the style prefix is
+// suppressed from the title (style still surfaces in the report's
+// style_context field). When no maker is present, falls back to the existing
+// style-prefix composition via composeStyledForm.
+function composeFormDisplay(
+  maker: MakerAttribution | null,
+  stylePrefix: string | null | undefined,
+  formBase: string,
+): string {
+  const trimmedMaker = String(maker?.name ?? "").trim();
+  if (!trimmedMaker) {
+    return composeStyledForm(stylePrefix, formBase);
+  }
+  // Avoid duplication when the form base happens to already contain the maker.
+  if (formBase.toLowerCase().includes(trimmedMaker.toLowerCase())) {
+    return formBase;
+  }
+  return `${trimmedMaker} ${formBase}`;
 }
 
 function cleanJsonText(raw: string): string {
@@ -8454,11 +8764,21 @@ if (missing.label_photo) {
     // the hedged style-context field.
     const namePrefixStyle = pickNamePrefixStyle(style_attribution);
 
+    // Maker attribution. Resolves the firm name from matchMakerMarks synthetic
+    // observations (canonical tier), or from LLM-captured firm name in label
+    // observation prose (captured tier), or from intake (intake tier). Surfaces
+    // the captured name to the display title so the user actually sees the
+    // maker the engine identified. Closes M13.
+    const maker_attribution = resolveMakerAttribution(
+      frameDigest.observations || [],
+      digest.perception?.maker_names || [],
+    );
+
     // Block 2c D-PH3-10: append common_aliases parenthetical to display_form when
     // canonical form has aliases. Surfaces user-trust language without surrendering
     // canonical identification ("Identified as buffet (also commonly called sideboard)").
     const aliases = getCommonAliasesForDisplay(form_id, 2);
-    const styledForm = composeStyledForm(namePrefixStyle, form);
+    const styledForm = composeFormDisplay(maker_attribution, namePrefixStyle, form);
     const display_form = aliases.length
       ? `${styledForm} (also commonly called: ${aliases.join(", ")})`
       : styledForm;
@@ -8483,6 +8803,7 @@ if (missing.label_photo) {
       regional_period_notes,
       cousin_form_contrasts,
       style_supporting_evidence,
+      maker_attribution,
     };
   },
 
