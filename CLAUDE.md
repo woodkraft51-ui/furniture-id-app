@@ -133,6 +133,9 @@ ratification — until then, read them in context from the fixture notes.
 
 - `docs/handoffs/<date>.md` — session handoffs (latest = current state).
 - `docs/WAYS_OF_WORKING.md` — engine-fix process.
+- `docs/reapplication-matrix.md` — the reusable pattern (principle + procedure +
+  rails) for widening a thin-slice read into a labeled, low-confidence fallback
+  rung. Read before building the next wire (style-prose, form-prose).
 - `docs/stress-test-findings.md` — fix queue (#1–#24), the live problem list.
 - `docs/corpus-ledger.md` — generated; `node --import tsx scripts/_tagmap.ts --write`.
 - `PARKING_LOT.md` — deferred work.

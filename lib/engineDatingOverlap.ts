@@ -237,7 +237,13 @@ export function refineDatingFromConvergence(
   // date may only be claimed when positive modern-construction evidence is
   // present. Threaded from the call site (hard-negative post-1920+ clues).
   // Default false = conservative (no modern claim without evidence).
-  hasModernConstructionEvidence: boolean = false
+  hasModernConstructionEvidence: boolean = false,
+  // #15a: when the caller's style-prose anchor (parseStyleProseDate) would fire,
+  // defer to it — it reads an explicit era written in the observation prose
+  // ("reads consistently as c. 1875–1895") and is a better thin-evidence answer
+  // than a near-miss convergence zone. Last resort only rescues the cases
+  // style-prose can't (e.g. a piece whose only physical layer blocks that path).
+  deferToStyleProse: boolean = false
 ): RefinedDating {
   const fallback: RefinedDating = {
     range: original.range,
@@ -279,18 +285,44 @@ export function refineDatingFromConvergence(
   // zone — replaces the old raw "≥3 layers" so that three genuinely specific
   // layers qualify but a zone padded out by broad/open-ended containers does not.
   const EFFECTIVE_LAYER_THRESHOLD = 2.5;
-  const qualifying = overlap.convergence_zones
-    .filter((z) => {
-      const widthOk = (z.date_ceiling - z.date_floor) <= ABSOLUTE_WIDTH_CAP;
-      if (!widthOk) return false;
-      const isSyntheticIntersection = z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR;
-      return isSyntheticIntersection || z.effective_layer_count >= EFFECTIVE_LAYER_THRESHOLD;
-    })
-    .sort((a, b) => {
-      if (b.weighted_authority !== a.weighted_authority) return b.weighted_authority - a.weighted_authority;
-      if (b.effective_layer_count !== a.effective_layer_count) return b.effective_layer_count - a.effective_layer_count;
-      return (a.date_ceiling - a.date_floor) - (b.date_ceiling - b.date_floor);
-    });
+  const byStrength = (a: ConvergenceZone, b: ConvergenceZone) => {
+    if (b.weighted_authority !== a.weighted_authority) return b.weighted_authority - a.weighted_authority;
+    if (b.effective_layer_count !== a.effective_layer_count) return b.effective_layer_count - a.effective_layer_count;
+    return (a.date_ceiling - a.date_floor) - (b.date_ceiling - b.date_floor);
+  };
+  const withinWidth = overlap.convergence_zones.filter(
+    (z) => (z.date_ceiling - z.date_floor) <= ABSOLUTE_WIDTH_CAP
+  );
+  const qualifyingStrict = withinWidth
+    .filter((z) => z.authority_sum >= SYNTHETIC_INTERSECTION_AUTHORITY_FLOOR || z.effective_layer_count >= EFFECTIVE_LAYER_THRESHOLD)
+    .sort(byStrength);
+  // Last-resort dating (#15a). When NO zone clears the qualification bar but a
+  // real—if thin—zone exists, don't collapse to "no idea": fall back to the
+  // strongest available (width-capped) zone, pinned to LOW confidence with an
+  // explicit single-basis caveat (set at the final return). This rescues
+  // evidence-thin pieces — e.g. a metal Art Deco candelabrum whose strongest
+  // zone (style + an open-ended joinery floor) lands at effective layers 2.35,
+  // just under 2.5. It stays safe because: the width check below still requires
+  // it to beat p2's broad range; the reproduction and construction-ceiling gates
+  // still apply; and confidence is pinned Low. Normal pieces always have a
+  // qualifying zone, so they never enter this branch and are bit-for-bit
+  // unchanged.
+  // Last-resort rescues only a NEAR-MISS zone — one within 0.5 of the bar. A zone
+  // far below it is genuine junk (a single thin or degenerate-width layer) and
+  // must stay "broad / no idea" rather than assert a confident-looking wrong
+  // date. This is the line between the candelabrum (2.35, a real style+joinery
+  // read that just missed) and a mid-century patio chair whose only zone is a
+  // 1.05-layer 1910–1910 sliver, or a maker-dated console dated before its maker.
+  const LAST_RESORT_MIN_EFFECTIVE = 2.0;
+  const isLastResort = qualifyingStrict.length === 0 && !deferToStyleProse;
+  let qualifying: ConvergenceZone[];
+  if (isLastResort) {
+    const ranked = [...withinWidth].sort(byStrength);
+    if (!ranked.length || ranked[0].effective_layer_count < LAST_RESORT_MIN_EFFECTIVE) return noOverride();
+    qualifying = ranked;
+  } else {
+    qualifying = qualifyingStrict;
+  }
   if (qualifying.length === 0) return noOverride();
 
   let best = qualifying[0];
@@ -466,6 +498,22 @@ export function refineDatingFromConvergence(
     confidence = "Low";
   }
 
+  // Last-resort pieces: no evidence cluster cleared the bar, so pin Low and
+  // state the thin basis honestly (naming the layers the zone actually rests on,
+  // not a blanket "style only").
+  if (isLastResort) {
+    // Reached only when style-prose can't date the piece either (deferToStyleProse
+    // is false). Report the thin zone at Low confidence with an honest basis.
+    return {
+      range: `c. ${zFloor}–${zCeiling}`,
+      date_floor: zFloor,
+      date_ceiling: zCeiling,
+      confidence: "Low",
+      reason: `No evidence cluster cleared the convergence bar; dating rests on limited evidence (${friendlyBasis(best.layers)}) with nothing else to corroborate, so the working range c. ${zFloor}–${zCeiling} is reported at low confidence.`,
+      refined: true,
+    };
+  }
+
   return {
     range: `c. ${zFloor}–${zCeiling}`,
     date_floor: zFloor,
@@ -480,6 +528,21 @@ export function refineDatingFromConvergence(
       : `${best.specific_layer_count} specific evidence layer${best.specific_layer_count === 1 ? "" : "s"} converge on this period (${best.layers.join(", ")}); tighter than the initial broad envelope.`,
     refined: true,
   };
+}
+
+// Render a zone's contributing layers into a plain-language basis phrase for the
+// last-resort caveat. style + style_wave collapse to one "style"; the rest map
+// to readable words. e.g. ["joinery","style","style_wave"] -> "joinery and style".
+function friendlyBasis(layers: LayerName[]): string {
+  const word: Record<string, string> = {
+    style: "style", style_wave: "style", joinery: "joinery", fastener: "fasteners",
+    toolmark: "toolmarks", wood: "wood/material", hardware: "hardware",
+    finish: "finish", upholstery: "upholstery", form: "form", construction: "construction",
+  };
+  const words = Array.from(new Set((layers || []).map((l) => word[l] || l)));
+  if (words.length === 0) return "style";
+  if (words.length === 1) return words[0];
+  return words.slice(0, -1).join(", ") + " and " + words[words.length - 1];
 }
 
 function normalizeConfidence(c: string): "High" | "Moderate" | "Low" {

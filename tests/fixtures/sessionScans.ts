@@ -358,16 +358,18 @@ const art_deco_candelabrum: ScanFixture = {
   // … bronze/brass"), but that finish clue's `dateHint: post-1900` was the ONLY hard
   // 20th-c anchor — the deco style cues (art_deco_style_cues etc.) carry no date hint
   // and contribute 0, so dating collapses to "c. 1850 onward / unresolved". This is a
-  // separate downstream root cause (style cues don't anchor dating), tracked for a
-  // future pass; the asSeen below is left at the PRE-negation expectation on purpose
-  // so the gate flags it until the downstream fix lands.
+  // separate downstream root cause (style cues don't anchor dating). RESOLVED by the
+  // last-resort dating path: with no qualifying convergence and style-prose blocked
+  // by the brass joinery layer, the near-miss Art Deco zone (1925–1945) is now
+  // reported at Low confidence with an explicit basis. asSeen reflects the fix; the
+  // 1940 floor is the pre-existing downstream "phantom floor" quirk (range still 1925–1945).
   asSeen: {
     formId: "Candelabrum",
     display: "Art Deco Candelabrum (also commonly called: Candelabrum, Candelabra)",
     finalStyleKind: "original_period",
-    dateRange: "c. 1925–1995",
+    dateRange: "c. 1925–1945",
     dateFloor: 1940,
-    dateCeiling: 1995,
+    dateCeiling: 1945,
     confidence: "Low",
   },
 };
@@ -422,10 +424,10 @@ const renaissance_revival_sgabello: ScanFixture = {
   asSeen: {
     formId: "Side chair",
     display: "Renaissance Revival Side chair (also commonly called: Dining chair, Armless chair)",
-    finalStyleKind: "unresolved",
-    dateRange: "Broad, not tightly dated",
-    dateFloor: null,
-    dateCeiling: null,
+    finalStyleKind: "original_period",
+    dateRange: "c. 1860–1885",
+    dateFloor: 1860,
+    dateCeiling: 1885,
     confidence: "Low",
   },
 };
@@ -3358,10 +3360,10 @@ const mid_century_lime_vinyl_telephone_gossip_bench: ScanFixture = {
   asSeen: {
     formId: "Lounge chair",
     display: "Mid-Century Modern / American Modernism Lounge chair (also commonly called: Easy chair, Club chair)",
-    finalStyleKind: "unresolved",
-    dateRange: "Broad, not tightly dated",
-    dateFloor: null,
-    dateCeiling: null,
+    finalStyleKind: "original_period",
+    dateRange: "c. 1940–1970",
+    dateFloor: 1940,
+    dateCeiling: 1970,
     confidence: "Low",
   },
 };
@@ -4020,11 +4022,11 @@ const art_deco_depression_era_walnut_waterfall_dresser_inverted_reconciliation: 
   ],
   asSeen: {
     formId: "Dresser",
-    display: "Art Deco vocabulary (post-1870 reproduction) Dresser (also commonly called: bureau, bedroom dresser)",
-    finalStyleKind: "reproduction",
-    dateRange: "c. 1870–1910",
-    dateFloor: 1870,
-    dateCeiling: 1910,
+    display: "Art Deco Dresser (also commonly called: bureau, bedroom dresser)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1925–1945",
+    dateFloor: 1925,
+    dateCeiling: 1945,
     confidence: "Low",
   },
 };

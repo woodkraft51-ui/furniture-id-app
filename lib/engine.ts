@@ -9451,6 +9451,16 @@ if (p6.dating_overlap) {
       typeof w?.date_hint === "string" &&
       /post[-\s]*(19[2-9]\d|20\d\d)/i.test(w.date_hint)
   );
+  // #15a: decide whether the style-prose anchor (parseStyleProseDate, below) will
+  // handle this piece. If so, the convergence near-miss "last resort" defers to it
+  // — style-prose reads an explicit written era and is the better thin-evidence
+  // answer (this keeps contrast anchor S033 on its prose-derived 1875–1895 rather
+  // than a near-miss zone). Mirrors the gate on the parseStyleProseDate block.
+  const PROSE_HARD_LAYERS = ["joinery", "fastener", "toolmark", "wood", "hardware"];
+  const proseHardDated = (frameOverlap.layers || []).some(
+    (l: any) => PROSE_HARD_LAYERS.includes(l.layer) && (l.date_floor != null || l.date_ceiling != null)
+  );
+  const styleProseWouldFire = !proseHardDated && parseStyleProseDate(digest.observations) != null;
   const refined = refineDatingFromConvergence(
     {
       range: p2.range,
@@ -9459,7 +9469,8 @@ if (p6.dating_overlap) {
       confidence: String(p2.confidence ?? ""),
     },
     frameOverlap,
-    hasModernConstruction
+    hasModernConstruction,
+    styleProseWouldFire
   );
   if (refined.refined) {
     p2.range = refined.range;
