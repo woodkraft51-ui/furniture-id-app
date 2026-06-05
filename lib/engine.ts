@@ -3873,7 +3873,20 @@ export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const woodPrimary = isWoodPrimary(clues);
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  // Affirmation gate (form-wire Step 1). Form-name keyword routes read ONLY
+  // form-DETERMINING observations. Material/condition prose ("brass mechanism
+  // components", "woven body", "natural rattan … not Lloyd loom") describes
+  // substance, not form — and letting it feed the keyword cascade is what stamped
+  // "Brass bed" on a disc music box, "Loom" on a rattan chair, and "Wicker
+  // furniture" on a fiberglass planter. Exclude those categories by the
+  // CLUE_LIBRARY canonical category (authoritative even when P0 mis-types a
+  // material clue as "construction"), falling back to the observation's own type.
+  // Negated observations stay excluded (#15); raw_text (uncategorized model
+  // narrative) is kept. This is purely suppressive — it cannot invent a form.
+  const NON_FORM_ROUTING_CATEGORIES = new Set(["materials", "condition"]);
+  const isFormDeterminingObs = (o: any) =>
+    !NON_FORM_ROUTING_CATEGORIES.has((CLUE_LIBRARY as any)[o.clue]?.category ?? o.type);
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated && isFormDeterminingObs(o)).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
