@@ -3886,7 +3886,21 @@ export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const NON_FORM_ROUTING_CATEGORIES = new Set(["materials", "condition"]);
   const isFormDeterminingObs = (o: any) =>
     !NON_FORM_ROUTING_CATEGORIES.has((CLUE_LIBRARY as any)[o.clue]?.category ?? o.type);
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated && isFormDeterminingObs(o)).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  // Form-token contrast scrub (form-wire Step 4). A form name sitting inside a
+  // contrast/negation clause is the model RULING OUT that form — "…parlor rocker
+  // classification rather than heavy turned-spindle WINDSOR anatomy", "the lid is
+  // flat, NOT a slanted writing surface". Word-presence routing reads it as
+  // positive evidence (this is what put Windsor on wicker rockers and slant-front
+  // desk on a flat-lid chest). Strip the clause from the cue to the next clause
+  // boundary before the description enters the form-routing haystack, so the
+  // contrasted form can't be selected. The category/negation filters above handle
+  // the rest of the affirmation gate.
+  const scrubContrastClauses = (s: string) =>
+    s.replace(/\b(?:rather than|instead of|as opposed to|other than|unlike|not|no)\b[^.,;:]*/gi, " ");
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations
+    .filter((o) => !o.negated && isFormDeterminingObs(o))
+    .map((o) => `${o.clue} ${scrubContrastClauses(String(o.description || ""))}`)
+    .join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
@@ -5449,7 +5463,11 @@ if (
   const butterflyForm = includesAny(text, ["butterfly chair", "butterfly sling", "bkf chair", "b.k.f. chair", "hardoy chair", "sling chair", "leather sling chair", "canvas sling chair", "hide sling chair", "cowhide butterfly"]);
   const theaterSeatForm = includesAny(text, ["theater seat", "theatre seat", "auditorium seat", "auditorium chair", "cinema seat", "movie theater seat", "movie theatre seat", "opera seat", "opera house seat", "stadium seat", "arena seat", "lecture hall seat", "folding auditorium seat", "assembly hall seat", "church auditorium seat"]);
   const pewForm = includesAny(text, ["pew", "church pew", "meetinghouse pew", "meetinghouse bench", "chapel pew", "box pew", "sanctuary pew", "congregational pew", "gothic revival pew", "cut-down pew", "salvage pew"]);
-  const windsorForm = includesAny(text, ["windsor chair", "windsor armchair", "windsor settee", "windsor", "sack-back", "bow-back", "hoop-back", "comb-back", "arrow-back", "fan-back", "birdcage windsor", "firehouse windsor", "captain's chair"]);
+  // Windsor chairs are solid turned-wood construction by definition; a woven /
+  // metal / plastic piece cannot be one. Gating on material (anatomy guard,
+  // form-wire Step 4) stops a peacock chair's "fan-back" or a wicker back from
+  // colliding with the Windsor "fan-back" alias.
+  const windsorForm = !blocksTraditionalWoodForms && includesAny(text, ["windsor chair", "windsor armchair", "windsor settee", "windsor", "sack-back", "bow-back", "hoop-back", "comb-back", "arrow-back", "fan-back", "birdcage windsor", "firehouse windsor", "captain's chair"]);
   const ladderbackForm = includesAny(text, ["ladder-back", "ladderback", "ladder back", "slat-back chair", "slat back chair"]);
   const chaiseForm = includesAny(text, ["chaise longue", "chaise lounge", "fainting couch", "fainting sofa", "recamier", "récamier", "meridienne", "méridienne", "duchesse brisée", "duchesse brisee", "long chair", "sun lounger", "pool lounger", "outdoor lounger", "patio chaise", "garden chaise", "chaise"]);
   const daybedForm = includesAny(text, ["daybed", "day bed", "studio couch", "couch bed", "day couch", "trundle daybed", "sleigh daybed", "convertible couch", "backed daybed", "bolster daybed"]);

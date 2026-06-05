@@ -1043,9 +1043,9 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
     // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
     // style attribution (engineStyleEvaluator.ts) closed shared-token
     // mis-attributions. New verdict captured here.
-    formId: "Loom",
-    display: "Loom (also commonly called: Loom, Weaving loom)",
-    finalStyleKind: "unresolved",
+    formId: "Upholstered armchair",
+    display: "Lloyd Flanders Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "context_only",
     dateRange: "c. 1920–1950",
     dateFloor: 1920,
     dateCeiling: 1950,
@@ -2948,8 +2948,8 @@ const bassett_colonial_revival_upholstered_rocker_misid_windsor: ScanFixture = {
     { type: "label", clue: "maker_mark_authored_best_home_furnishings", confidence: 30, description: "Possible Best Home Furnishings match (low confidence; LOW per Confidence Ladder). Detected initials \"best\" alone do not establish Best Home Furnishings attribution. Initials may identify a maker only when they appear within a known maker-specific device, label, stencil, burn mark, paper tag, or model-code format. Surface as low-confidence pending full maker name, branded device, or supporting construction-and-form evidence." },
   ],
   asSeen: {
-    formId: "Windsor chair",
-    display: "Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    formId: "Rocking chair",
+    display: "Bassett Rocking chair",
     styleContext: "Spindle Gallery",
     finalStyleKind: "context_only",
     dateRange: "Broad, not tightly dated",
@@ -3443,8 +3443,8 @@ const sligh_grand_rapids_colonial_revival_writing_console_table_misid_writing_bo
     { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70, description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM." },
   ],
   asSeen: {
-    formId: "Writing box",
-    display: "Colonial Revival Writing box (also commonly called: Writing box, Writing slope)",
+    formId: "Secretary desk / drop-front desk",
+    display: "Sligh Furniture Co Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: 1933,
@@ -3708,8 +3708,8 @@ const victorian_curlicue_wicker_rocker_misid_as_loom: ScanFixture = {
     { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
   ],
   asSeen: {
-    formId: "Loom",
-    display: "Loom (also commonly called: Loom, Weaving loom)",
+    formId: "Rocking chair",
+    display: "Rocking chair",
     finalStyleKind: "context_only",
     dateRange: "c. 1920–1930",
     dateFloor: 1920,
@@ -3977,8 +3977,8 @@ const mission_arts_crafts_oak_armchair_or_rocker_misid_windsor_chair: ScanFixtur
     { type: "form", clue: "armchair_form", confidence: 82, description: "Armchair form is visible." },
   ],
   asSeen: {
-    formId: "Windsor chair",
-    display: "Arts and Crafts / Mission / Craftsman Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    formId: "Rocking chair",
+    display: "Arts and Crafts / Mission / Craftsman Rocking chair",
     finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
