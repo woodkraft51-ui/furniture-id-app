@@ -4044,7 +4044,10 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   // letter-slot observations were boosting Secretary above Cylinder
   // even when cylinder was clearly the dominant structural form.
   const cylinderActive = clues.has("cylinder_roll");
-  const slantActive = clues.has("slant_front");
+  // #26 table-vs-desk: a slant-front desk's lid hinges DOWN to a writing surface;
+  // a lift-lid chest's lid lifts UP for storage — mutually exclusive. A lift_lid
+  // piece is a chest, not a slant-front desk (closes the pine storage chest).
+  const slantActive = clues.has("slant_front") && !clues.has("lift_lid");
   // Cover-mechanism desk cluster, distinct from the rigid-cover cylinder desk.
   // Per each form's cousin_form_contrasts: cylinder = rigid curved cover;
   // Wooton = cabinet-office interior enclosed by outer doors; roll-top =
@@ -4093,7 +4096,23 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   ]);
   const fallFrontFamilyActive = abattantDesk || gradinsDesk || escritoireDesk || fallFrontDesk;
   const deskFormDominant = cylinderActive || slantActive || coverClusterActive || fallFrontFamilyActive;
-  if (clues.has("drop_front_desk") && !deskFormDominant) add("Secretary desk / drop-front desk", 90, "Drop-front writing surface is visible.");
+  // #26 table-vs-desk: a drop-front SECRETARY is a case piece whose defining
+  // feature is the ENCLOSED INTERIOR revealed by the hinged front (pigeonholes,
+  // small interior drawers, lopers). A "writing surface" on a flat-top open-leg
+  // piece is a writing/library/console TABLE, not a secretary. Require interior
+  // corroboration, OR the absence of open-table structure, before routing
+  // Secretary (closes the sligh console table + mission library table; the
+  // genuine biedermeier secretary keeps its interior corroboration).
+  const deskInteriorCorroboration = hasAny(
+    "pigeonholes", "interior_open_compartment", "interior_small_drawers_layout",
+    "drop_front_support_lopers", "ring_pull_on_drop_front", "cylinder_roll", "tambour"
+  );
+  const openTableStructure = hasAny(
+    "flat_surface", "open_shelving", "open_stretcher_with_mirror_panel",
+    "pedestal_column", "vertical_supports", "turned_fluted_legs"
+  );
+  if (clues.has("drop_front_desk") && !deskFormDominant && (deskInteriorCorroboration || !openTableStructure))
+    add("Secretary desk / drop-front desk", 90, "Drop-front writing surface with an enclosed desk interior is visible.");
   if (clues.has("pigeonholes") && !deskFormDominant) add("Secretary desk / writing desk", 65, "Interior cubbies or pigeonholes are visible.");
   if (slantActive) add("Slant-front desk", 100, "Slant-front writing surface is visible.");
     if (cylinderActive) {
