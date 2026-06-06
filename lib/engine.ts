@@ -4851,7 +4851,18 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   //   - armoire/wardrobe/dressing-table also require NO "desk" context so the
   //     armoire-desk / vanity-desk conversions stay on their desk forms.
   const deskContext = includesAny(text, ["desk"]);
-  const trunkForm = includesAny(text, [
+  // A tall-case clock's middle section is horologically a "trunk", which collides
+  // with the steamer-Trunk route's bare "trunk" token (form-wire B.3). A piece
+  // affirmed as a clock is never a travel trunk — suppress Trunk on clock evidence,
+  // which lets the existing clock route (Tall case clock, 98) win the slot.
+  const clockSignal = hasAny("clock_case_form") || includesAny(text, [
+    "tall case clock", "tall-case clock", "longcase clock", "grandfather clock",
+    "grandmother clock", "granddaughter clock", "floor clock", "standing clock",
+    "wall clock", "banjo clock", "regulator clock", "schoolhouse clock",
+    "shelf clock", "mantel clock", "mantle clock", "bracket clock", "ogee clock",
+    "kitchen clock", "clock case", "clock movement", "clock dial",
+  ]);
+  const trunkForm = !clockSignal && includesAny(text, [
     "steamer trunk", "travel trunk", "storage trunk", "footlocker", "wardrobe trunk",
     "shipping trunk", "immigrant trunk", "luggage trunk", "dome-top trunk",
     "camelback trunk", "flat-top trunk", "steamer chest", "trunk",

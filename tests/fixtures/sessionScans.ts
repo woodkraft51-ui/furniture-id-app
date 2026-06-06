@@ -759,8 +759,8 @@ const logan_1914_tall_case_clock: ScanFixture = {
     { type: "visible_text", clue: "", confidence: 50, description: "Full text on the arched dial cartouche: 'I see the Hours, invisible to thee, / And lift my voice lest unperceived they flee. / A. Sydney Logan / fecit Philadae. anno 1914'. The poetic inscription is a motto about time. 'Philadae' is an abbreviation for Philadelphiae (Philadelphia). 'Anno 1914' gives the year of manufacture." },
   ],
   asSeen: {
-    formId: "Trunk",
-    display: "Trunk (also commonly called: travel trunk, steamer trunk)",
+    formId: "Tall case clock",
+    display: "Tall case clock (also commonly called: Tall case clock, Longcase clock)",
     finalStyleKind: "context_only",
     dateRange: "c. 1914",
     dateFloor: 1914,
@@ -862,8 +862,8 @@ const jacobean_revival_tall_case_clock: ScanFixture = {
     { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
   ],
   asSeen: {
-    formId: "Trunk",
-    display: "Tudor Revival / Jacobean Revival / Elizabethan Revival Trunk (also commonly called: travel trunk, steamer trunk)",
+    formId: "Tall case clock",
+    display: "Tudor Revival / Jacobean Revival / Elizabethan Revival Tall case clock (also commonly called: Tall case clock, Longcase clock)",
     finalStyleKind: "original_period",
     dateRange: "c. 1920–1925",
     dateFloor: 1920,
