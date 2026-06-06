@@ -28,6 +28,11 @@ Used for any fix where the blast radius isn't obviously bounded.
    it maps to. This is the audit trail.
 5. **Apply the targeted root-cause fix.** One mechanism, smallest change that
    resolves it. No drive-by cleanups.
+   - **If you added or referenced a clue key in `scoreForms` (or any
+     CLUE_LIBRARY key), regenerate the canonical vocab** —
+     `node --import tsx scripts/generateCanonicalVocabulary.ts` — and stage the
+     result. The `Vocab … drift guard` test mines scoreForms keys and will fail
+     the build otherwise. (Bitten twice in the 2026-06-06 form-wire session.)
 6. **Measure blast radius.**
    - `node --import tsx scripts/_scanCorpus.ts --diff` — shows CHANGED vs
      unchanged for every fixture, including internal field shifts that the
