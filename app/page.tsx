@@ -2856,10 +2856,10 @@ export default function Page() {
       return;
     }
 
-    // Soft count cap: more than 8 photos rarely improves analysis and
+    // Soft count cap: more than 10 photos rarely improves analysis and
     // routinely pushes payloads over the platform limit. Suggest pruning
     // before attempting.
-    const PHOTO_COUNT_SOFT_CAP = 8;
+    const PHOTO_COUNT_SOFT_CAP = 10;
     if (allImages.length > PHOTO_COUNT_SOFT_CAP) {
       setError(
         `${allImages.length} photos is more than the engine can effectively use. Reduce to ${PHOTO_COUNT_SOFT_CAP} or fewer — choose your highest-detail shots (joinery close-ups, label, underside) over wide angle views. Fewer good photos beat more redundant ones.`
