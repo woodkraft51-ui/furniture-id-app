@@ -11,6 +11,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 |---|---|---|---|---|---|
 | 01 | Convertible child's **high chair → toddler desk** (folds down) | **Telephone bench / writing bench combination** (`form_telephone_stand`, subtype "telephone cabinet" conf 1.0) | c. 1900–1935, Mod | 🔴 wrong form | see below |
 | 02 | **Trifold dressing-table mirror** (Globe Bosse; "JAN 22 1924" ink stamp) | **GLOBE BOSSE WORLD FURNITURE CO Dressing table** | c. 1840–1940 (date conf Low) | 🟡 date too broad | hard 1924 stamp demoted to floor → 100-yr range; form acceptable. see below |
+| 03 | **Lyon & Healy parlor reed/pump organ** (Victorian, Chicago) | **Late Victorian Cottage Eastlake Afterwave Upholstered seating** | c. 1880–1990, Mod | 🔴 wrong form + date | organ → "upholstered seating"; felt pedal-covers read as upholstery; plywood *repair patch* dated the piece. see below |
 
 ---
 
@@ -48,3 +49,30 @@ Result: floor 1924 is right, but the ceiling free-floats to 1940 (Phillips-screw
 - Detect a *dated production stamp* in label prose (a specific month/day/year, or "production/manufacture date" language) and treat it as a **point anchor** (both floor AND ceiling ≈ stamp year), at higher confidence — distinct from the maker-operating-span case which stays floor-only. This is the next instantiation of the maker-wire template (`resolveMakerAttribution`), applied to dates.
 
 **Resale note:** a bare trifold vanity mirror (no case) is a slow, low-value item — $111–265 retail is optimistic; realistically a $20–40 flip, better as a paired-up "complete the vanity" piece or a craft/refinish resale. Not a priority flip.
+
+---
+
+## Scan 03 — Lyon & Healy parlor reed organ
+
+**Engine:** Late Victorian Cottage Eastlake Afterwave Upholstered seating · c. 1880–1990 (Moderate) · resale $156–346.
+**Actually:** a Victorian **parlor pump/reed organ** by Lyon & Healy (Chicago) — a musical instrument, not seating.
+
+**Surface verdict is the worst-looking of the batch (organ → "upholstered seating", 110-yr range). But every cause is a gap we've ALREADY named — and P0 read the piece perfectly.** This is not a regression: nothing in Deploys 007–010 touches this code path (organ forms, the upholstery detector, or plywood dating). It would have failed identically before this session. It's a new *category* (musical instrument — outside the American-furniture scope) surfacing the same diseases on a new face.
+
+**P0 nailed perception.** It captured `reed_organ_form`, `bellows_pedals`, `organ_stop_knobs`, `multi_stop_reed_organ`, and the `Lyon & Healy / Chicago, Ill` maker label. The engine *knows* it's a reed organ. The intelligence is present; consumption throws it away. Textbook reframe.
+
+**Four layered mechanisms, all known:**
+1. **#22 taxonomy gap (form).** No `form_reed_organ` / `form_parlor_organ` / instrument family in canonical. The organ clue keys don't route anywhere, so form fell to the nearest neighbor with a hit. Same family as scan 01 (high chair).
+2. **Affirmation gap (upholstery).** `fully_upholstered` fired on **"green fabric/felt pedal covers"** — felt pedal pads, not an upholstered seat. That single mis-affirmed clue (+ `spindle_back`/`spindle_gallery` from the organ's spindle gallery rail) is what produced **Upholstered seating**. Presence, not affirmation, exactly like the telephone bench in scan 01.
+3. **Reframe / date by a REPAIR (the headline date miss).** `plywood_structural` was consumed as an original-construction hard-negative dating signal → clamped the floor and pushed the ceiling toward postwar. But P0's own prose says it is **"a later repair or replacement panel rather than original construction."** The engine read the thin slice ("plywood present → 1905–1930+/postwar") and discarded the word "repair." A repair patch dated the whole instrument. Date-prose wire, inverse of scan 02 (there the prose said *trust me more*; here it says *ignore me* — both ignored).
+4. **Style-wave overreach → 1990 ceiling.** The revival-wave layer ("Late Victorian Cottage Eastlake Afterwave") stretched the ceiling to 1990 (style_wave layer reported 1870–1990 across 5 waves). This is the **style-prose frontier (M11)** already parked as the next big wire.
+
+**Maker handled correctly** — Lyon & Healy captured and surfaced. The maker wire works.
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) Decide scope: author an `instrument`/`reed_organ` form family, OR have out-of-scope categories say so rather than forcing a furniture form. (Step C "wrong-but-real form" Tier-2 again — same as scan 01.)
+- (b) Upholstery affirmation guard: `fully_upholstered` must affirm an actual seat/cushion, not felt pads / pedal covers.
+- (c) Date-prose wire: a clue flagged in prose as a **repair / replacement / later** must not contribute to original-construction dating. High-value, recurs.
+- (d) Style-wave ceiling discipline (M11 frontier).
+
+**Convergence across scans 01–03:** these are not three problems. They are **one** problem — "the answer is in P0's prose; consumption is too narrow to use it" — wearing three masks (taxonomy gap, affirmation gap, prose-discarded dating). The fix pattern (the maker-wire template) is already prototyped. That is good news, not bad.
