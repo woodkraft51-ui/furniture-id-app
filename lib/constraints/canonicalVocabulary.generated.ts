@@ -15,11 +15,11 @@ export const CANONICAL_VOCABULARY = {
       "subforms": 1299,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 97,
+      "routingKeysMined": 99,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 267
+      "allClueKeys": 269
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -63,7 +63,9 @@ export const CANONICAL_VOCABULARY = {
       "gateleg_support",
       "glass_top",
       "gothic_revival_pattern",
+      "harpsichord_form",
       "height_adjustment_mechanism",
+      "jack_rail_bristle_dampers",
       "jacobean_tudor_revival_case_pattern",
       "laminate_surface",
       "lamp_base",
@@ -137,6 +139,8 @@ export const CANONICAL_VOCABULARY = {
         "floor_lamp_form",
         "four_leg_caster_base",
         "gothic_revival_pattern",
+        "harpsichord_form",
+        "jack_rail_bristle_dampers",
         "jacobean_tudor_revival_case_pattern",
         "lamp_base",
         "lamp_finial",
@@ -168,10 +172,13 @@ export const CANONICAL_VOCABULARY = {
         "thick_veneer"
       ]
     },
-    "unclassifiedKeys": [],
+    "unclassifiedKeys": [
+      "harpsichord_form",
+      "jack_rail_bristle_dampers"
+    ],
     "crosswalk": {
       "mapped": 162,
-      "unmapped": 105
+      "unmapped": 107
     }
   },
   "evidence": {
@@ -15575,8 +15582,10 @@ export const CANONICAL_VOCABULARY = {
     "floor_lamp_form",
     "four_leg_caster_base",
     "fully_upholstered",
+    "harpsichord_form",
     "heavy_carving",
     "height_adjustment_mechanism",
+    "jack_rail_bristle_dampers",
     "lamp_base",
     "lamp_finial",
     "lamp_form",

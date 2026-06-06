@@ -5158,6 +5158,15 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   const interactiveConsoleForm = includesAny(text, ["interactive console", "gaming console", "gaming tower", "gaming pc", "vr station", "vr setup", "control console", "digital interface console"]);
   const musicalInstrumentForm = includesAny(text, ["music cabinet", "sheet music cabinet", "music stand cabinet", "instrument storage cabinet"]);
   const basketForm = includesAny(text, ["wicker basket", "sewing basket", "picnic basket", "laundry basket", "market basket", "storage basket", "splint basket", "nantucket basket", "gathering basket", "woven basket", "basketry"]);
+  // Harpsichord (taxonomy-gap form #22, form-wire B.1). Plucked-string keyboard
+  // instrument. Gated on the direct form clue / jack-rail anatomy / explicit name
+  // — all harpsichord-specific, so collision risk is minimal. Independent `if` so
+  // it competes against and outscores the music-stand misroute.
+  const harpsichordForm = hasAny("harpsichord_form", "jack_rail_bristle_dampers") ||
+    includesAny(text, ["harpsichord", "clavecin", "clavicembalo", "clavichord"]);
+  if (harpsichordForm) {
+    add("Harpsichord", 99, "Keyboard instrument with plucked-string jack action (harpsichord, spinet, virginal, clavecin).");
+  }
   if (tallCaseClockForm) {
     add("Tall case clock", 98, "Floor-standing weight-driven clock in a tall case (grandfather/longcase).");
   } else if (wallClockForm) {

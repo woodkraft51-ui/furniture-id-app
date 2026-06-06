@@ -2903,8 +2903,8 @@ const walnut_workshop_harpsichord_misid_music_stand: ScanFixture = {
     { type: "materials", clue: "wood_species_walnut_group", confidence: 80, description: "The case wood shows warm brown coloration, visible open grain, and cathedral figure on the lid consistent with flat-sawn black walnut. The color and grain pattern are characteristic of American black walnut (Juglans nigra), commonly used in 20th-century American workshop harpsichord building." },
   ],
   asSeen: {
-    formId: "Music stand",
-    display: "Music stand (also commonly called: Music stand, Folding music stand)",
+    formId: "Harpsichord",
+    display: "Harpsichord (also commonly called: clavecin, clavicembalo)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: null,
