@@ -24730,4 +24730,236 @@ export const FORMS: FormEntry[] = [
       pre_boundary_classifications: ["form_side_chair", "form_lounge_chair", "form_stool"],
     },
   },
+  // ── Batch 2 taxonomy-gap form (owner-authored): music box. Closes regina. ──
+  {
+    id: "form_music_box",
+    category: "form",
+    name: "music box",
+    parent_category: "musical_mechanical_form",
+    family_id: "family_musical_mechanical",
+    spatial_behavior_id: "spatial_musical_instrument_cabinets",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1700,
+    date_ceiling: 1930,
+    common_conversion_targets: ["cabinet", "side table", "display stand"],
+    distinguishing_features: [
+      "Self-contained mechanical musical machine housed in a case, identified by a tuned steel comb with pinned cylinder or perforated metal disc drive.",
+      "Disc examples use interchangeable metal discs, star wheels, pressure bar, crank or spring motor, and often a visible bedplate movement.",
+      "Cylinder examples use a pinned brass cylinder that plucks comb teeth and usually play a fixed tune set.",
+      "Classify by the music mechanism and case function, not by brass-colored hardware, bedplate metal, or decorative case material.",
+      "Not a bed, brass bed, cabinet, phonograph, or generic instrument case unless the musical mechanism is absent.",
+    ],
+    cousin_form_contrasts: [
+      "form_jukebox is an electric coin-operated record player, while a music box is a spring-driven mechanical comb, disc, or cylinder machine.",
+      "form_pump_organ_cabinet produces sound through reeds and bellows, while a music box plucks tuned comb teeth.",
+      "form_musical_instrument_furniture is a broader instrument or phonograph case category; use music box when the comb, disc, cylinder, crank, or Regina-type mechanism is present.",
+    ],
+    dimensional_thresholds: {
+      notes: "Tabletop examples are often small cabinet boxes; upright disc-cabinet examples may be floor-standing with large disc storage and coin-op fittings.",
+    },
+    common_aliases: ["disc music box", "cylinder music box", "Regina", "Polyphon", "Symphonion", "symphonion", "musical box"],
+    regional_period_notes: "Cylinder music boxes have earlier European and Swiss traditions, especially 18th and 19th century examples. American disc music boxes, including Regina, cluster strongly around the 1890s to early 1910s, with Regina active from the 1890s into the early 20th century.",
+    subtypes: [
+      {
+        id: "subtype_disc_music_box",
+        name: "Disc music box",
+        distinguishing_attributes: [
+          "Interchangeable metal discs, star wheels, and pressure bar.",
+          "Crank or spring motor with an often-visible bedplate movement.",
+        ],
+      },
+      {
+        id: "subtype_cylinder_music_box",
+        name: "Cylinder music box",
+        distinguishing_attributes: [
+          "Pinned brass cylinder that plucks the comb teeth.",
+          "Usually plays a fixed set of tunes.",
+        ],
+      },
+      {
+        id: "subtype_upright_disc_cabinet",
+        name: "Upright / floor disc-cabinet music box",
+        distinguishing_attributes: [
+          "Floor-standing case with large-disc storage.",
+          "Often coin-operated fittings.",
+        ],
+      },
+    ],
+  },
+  // ── Batch 2 taxonomy-gap form (owner-authored): office chair. Closes the
+  //    banker's chairs. anti_classification_guidance field names + open ceiling
+  //    corrected to schema during integration. ──
+  {
+    id: "form_office_chair",
+    category: "form",
+    name: "office chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_motion_seating",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1850,
+    date_ceiling: 2026,
+    common_conversion_targets: [],
+    distinguishing_features: [
+      "Single-occupant task chair designed for desk work, usually with a central swivel, tilt, height-adjusting post, caster base, or mechanical under-seat iron hardware.",
+      "Banker's examples often have wood backs, wood arms, saddle or shaped seats, and a swivel-tilt mechanism on a metal or wood caster base.",
+      "Secretarial and typist examples may be armless, height adjustable, and posture-focused rather than parlor or lounge seating.",
+      "Classify by the work-chair mechanism and task posture, not by upholstery, arms, or general chair silhouette.",
+      "Not a fixed four-leg parlor armchair, side chair, dining chair, lounge chair, or stool unless a swivel or task mechanism is present.",
+    ],
+    cousin_form_contrasts: [
+      "form_pedestal_chair is usually a modern shell or pedestal seat; office chair requires task-chair function or swivel/tilt office hardware.",
+      "form_side_chair is a fixed four-leg chair without swivel or tilt task mechanism.",
+      "form_lounge_chair is reclined comfort seating, while an office chair is upright desk or task seating.",
+      "form_stool lacks a full chair back or is primarily backless seating; office chair has task-chair posture and usually a back.",
+    ],
+    dimensional_thresholds: {
+      notes: "Single occupant, desk-height seating; drafting variants may be taller and often include a foot ring.",
+    },
+    common_aliases: ["banker's chair", "bankers chair", "swivel chair", "tilt chair", "secretarial chair", "typist chair", "task chair", "desk chair", "office swivel chair"],
+    regional_period_notes: "Mechanical office seating emerges in the mid-19th century, with late 19th and early 20th century oak swivel banker's chairs especially common in American office settings.",
+    subtypes: [
+      {
+        id: "subtype_bankers_chair",
+        name: "Banker's chair",
+        distinguishing_attributes: [
+          "Wood back and arms with a saddle or shaped seat.",
+          "Swivel-tilt mechanism on a metal or wood caster base.",
+        ],
+      },
+      {
+        id: "subtype_secretarial_chair",
+        name: "Secretarial / typist chair",
+        distinguishing_attributes: [
+          "Often armless and height adjustable.",
+          "Posture-focused rather than parlor or lounge seating.",
+        ],
+      },
+      {
+        id: "subtype_drafting_chair",
+        name: "Drafting / task stool-chair",
+        distinguishing_attributes: [
+          "Taller drafting variant, often with a foot ring.",
+        ],
+      },
+    ],
+    anti_classification_guidance: {
+      boundary_date: 1850,
+      boundary_type: "form_emergence",
+      guidance_text: "Do not classify pre-1850 seating as an office chair unless there is clear swivel, tilt, caster, or desk-task mechanism evidence.",
+      prominence: "standard",
+      pre_boundary_classifications: ["form_side_chair", "form_lounge_chair", "form_stool"],
+    },
+  },
+  // ── Batch 2 taxonomy-gap form (owner-authored): peacock chair. Closes peacock
+  //    (#25). Open ceiling corrected to schema on integration. ──
+  {
+    id: "form_peacock_chair",
+    category: "form",
+    name: "peacock chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1890,
+    date_ceiling: 2026,
+    common_conversion_targets: [],
+    distinguishing_features: [
+      "Single woven rattan or wicker chair with a very tall flared fan, halo, hood, or peacock-tail back rising dramatically above the sitter.",
+      "Body is structurally woven, usually with rattan, cane, wicker, reed, or similar material forming the frame and back.",
+      "Often has an hourglass, pedestal-like, or splayed woven base with a throne-like lounge posture.",
+      "Classify by the distinctive tall fan or hood back and woven structural body, not merely by the presence of wicker material.",
+      "Not a generic lounge chair, side chair, or pedestal chair when the high woven fan-back throne form is present.",
+    ],
+    cousin_form_contrasts: [
+      "form_lounge_chair is general comfort seating; peacock chair requires the distinctive tall woven fan, halo, or hood back.",
+      "form_pedestal_chair is a molded or modern single-pedestal shell seat, while peacock chair is a woven rattan throne form.",
+      "form_side_chair is lower, simpler fixed seating without the dramatic fan or hood back.",
+    ],
+    dimensional_thresholds: {
+      notes: "Diagnostic examples are single-occupant chairs with backs substantially taller than ordinary side or lounge chairs.",
+    },
+    common_aliases: ["Emmanuelle chair", "fan-back wicker chair", "fan back wicker chair", "rattan throne chair", "hooded wicker chair", "peacock wicker chair"],
+    regional_period_notes: "Earlier wicker and rattan roots predate the 20th century, but the peacock or Emmanuelle chair is especially associated with mid-to-late 20th century bohemian, studio, and tropical revival interiors.",
+    subtypes: [
+      {
+        id: "subtype_classic_peacock",
+        name: "Classic peacock / Emmanuelle",
+        distinguishing_attributes: [
+          "Very tall flared fan or peacock-tail back.",
+          "Hourglass or splayed woven base.",
+        ],
+      },
+      {
+        id: "subtype_hooded_peacock",
+        name: "Hooded / halo peacock",
+        distinguishing_attributes: [
+          "Rounded hood or halo back partly enclosing the head.",
+        ],
+      },
+    ],
+  },
+  // ── Batch 2 taxonomy-gap form (owner-authored): patio chair. Closes woodard.
+  //    Open ceiling corrected to schema on integration. ──
+  {
+    id: "form_patio_chair",
+    category: "form",
+    name: "patio chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_outdoor_specialty_institutional_seating",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1850,
+    date_ceiling: 2026,
+    common_conversion_targets: [],
+    distinguishing_features: [
+      "Single-occupant outdoor chair built for porch, garden, patio, lawn, terrace, or poolside use.",
+      "Weather-resistant construction is central: wrought iron, cast iron, tubular steel, spring steel wire, cast aluminum, tubular aluminum, vinyl strap, mesh, sling, or open metalwork.",
+      "Often has openwork, drainage-friendly seats or backs, removable cushions, rust-resistant finishes, or outdoor-grade frames.",
+      "Classify by outdoor construction and use, not by the presence of a loose cushion.",
+      "Not an upholstered indoor armchair, fixed indoor side chair, or multi-occupant garden bench.",
+    ],
+    cousin_form_contrasts: [
+      "form_lounge_chair is indoor comfort seating unless outdoor construction, weather-resistant frame, or patio use is clear.",
+      "form_side_chair is an indoor dining or parlor frame, while patio chair is built for outdoor exposure and drainage.",
+      "form_bench is multi-occupant garden seating; patio chair is single-occupant seating.",
+    ],
+    dimensional_thresholds: {
+      notes: "Single-occupant outdoor scale; chaise-length outdoor seating should route separately if the body supports full leg extension.",
+    },
+    common_aliases: ["garden chair", "porch chair", "lawn chair", "poolside chair", "bistro chair", "spring chair", "patio armchair", "outdoor chair"],
+    regional_period_notes: "Cast and wrought iron garden seating has 19th-century roots. Postwar American patio furniture expanded into tubular aluminum, vinyl strap, spring steel, wire, and lightweight outdoor frames.",
+    subtypes: [
+      {
+        id: "subtype_wrought_iron_patio_chair",
+        name: "Wrought / cast-iron patio chair",
+        distinguishing_attributes: [
+          "Cast or wrought-iron openwork garden seat.",
+          "Nineteenth-century roots; heavy weather-resistant metal.",
+        ],
+      },
+      {
+        id: "subtype_aluminum_patio_chair",
+        name: "Tubular / cast-aluminum patio chair",
+        distinguishing_attributes: [
+          "Postwar lightweight aluminum frame, often with vinyl strap.",
+        ],
+      },
+      {
+        id: "subtype_wire_patio_chair",
+        name: "Spring-steel / wire / mesh patio chair",
+        distinguishing_attributes: [
+          "Spring-steel, wire-rod, or expanded-metal-mesh outdoor seat.",
+        ],
+      },
+    ],
+  },
 ];

@@ -5178,6 +5178,57 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (harpsichordForm) {
     add("Harpsichord", 99, "Keyboard instrument with plucked-string jack action (harpsichord, spinet, virginal, clavecin).");
   }
+  // Music box (taxonomy-gap form #22, form-wire B.5). Mechanical comb-and-disc or
+  // cylinder music machine. Gated on the direct disc/cylinder mechanism clues or
+  // explicit name — music-box-specific, low collision. Beats the brass-bed trap
+  // that captured the disc/drive metal of the Regina movement.
+  const musicBoxForm = hasAny("disc_music_box_mechanism", "cylinder_music_box_mechanism", "comb_and_disc_mechanism", "music_box_form") ||
+    includesAny(text, ["music box", "musical box", "disc music box", "cylinder music box", "polyphon", "symphonion"]);
+  if (musicBoxForm) {
+    add("Music box", 98, "Mechanical comb-and-disc or cylinder music machine in a case (Regina/Polyphon/cylinder box).");
+  }
+  // Office chair (taxonomy-gap form #22, form-wire B.6). Swivel/tilt task seating
+  // (banker's, secretarial, drafting). Gated on a swivel/tilt/height mechanism +
+  // seating, and EXCLUDES lounge_chair_form so it cannot steal the molded-plywood
+  // swivel office-LOUNGE chair (a contrast anchor that must stay "Lounge chair").
+  const officeChairForm =
+    hasAny("swivel_mechanism", "tilt_mechanism", "height_adjustment_mechanism", "office_chair_form", "bankers_chair_form") &&
+    hasAny("armchair_form", "seating_surface", "seating_present", "backrest_present", "sitting") &&
+    !hasAny("lounge_chair_form") &&
+    // An indoor desk task chair has no outdoor mesh/sling seat — keep the woodard
+    // wrought-iron patio chair (Toledo-style swivel) free for the patio-chair route.
+    !hasAny("expanded_metal_mesh_seat", "sling_seat");
+  if (officeChairForm) {
+    add("Office chair", 90, "Single-occupant swivel/tilt task chair for desk work (banker's, secretarial, drafting).");
+  }
+  // Peacock chair (taxonomy-gap form #25, form-wire B.7). Tall woven fan/hood-back
+  // rattan throne. Gated on a woven material clue AND a peacock-specific token, so
+  // it can't grab the other wicker pieces (rockers, barrel lounge) that lack the
+  // peacock/Emmanuelle/throne signal.
+  const peacockChairForm =
+    hasAny("woven_body", "rattan_frame", "cane_panels", "peacock_chair_form") &&
+    includesAny(text, ["peacock", "emmanuelle", "rattan throne", "wicker throne", "halo back", "fan-back wicker", "hooded wicker", "peacock-tail", "peacock tail"]);
+  if (peacockChairForm) {
+    add("Peacock chair", 95, "Tall woven fan/hood-back rattan or wicker throne chair (peacock / Emmanuelle).");
+  }
+  // Patio chair (taxonomy-gap form #22, form-wire B.8). Single-occupant outdoor
+  // chair. Gated on outdoor-construction signals (mesh/sling/strap/wrought-iron/
+  // aluminum) or explicit outdoor text, + seating. EXCLUDES lounge_chair_form and
+  // all rocker forms so it can't steal an indoor lounge or the bent-iron-sling
+  // rocking chair. NOTE: uses cast_aluminum / wrought_iron, NOT cast_iron (the
+  // banker's office chairs carry cast_iron swivel mechanisms).
+  const patioChairForm =
+    hasAny("seating_surface", "seating_present", "backrest_present", "armchair_form", "sitting") &&
+    !hasAny("lounge_chair_form", "rocking_chair_form", "windsor_rocker_form", "parlor_rocker_form", "platform_rocker_form") &&
+    // Outdoor-SEAT signals (mesh/sling/strap) or explicit outdoor text. Deliberately
+    // NOT wrought_iron/cast_iron — the banker's office chairs carry an iron swivel
+    // mechanism and would otherwise be stolen. A wrought-iron garden chair still
+    // routes here via an outdoor text token or a mesh/sling seat.
+    (hasAny("expanded_metal_mesh_seat", "sling_seat", "vinyl_strap", "patio_chair_form") ||
+      includesAny(text, ["patio chair", "garden chair", "porch chair", "lawn chair", "poolside", "outdoor chair", "bistro chair"]));
+  if (patioChairForm) {
+    add("Patio chair", 92, "Single-occupant outdoor chair (wrought-iron, aluminum, wire/mesh, sling) for porch/garden/patio use.");
+  }
   // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
   // on the direct planter form/function clues or explicit name — planter-specific,
   // low collision. Beats the generic "Wicker/rattan furniture" material fallback.

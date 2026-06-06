@@ -805,8 +805,8 @@ const oak_swivel_bankers_office_chair: ScanFixture = {
     // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
     // style attribution (engineStyleEvaluator.ts) closed shared-token
     // mis-attributions. New verdict captured here.
-    formId: "Upholstered armchair",
-    display: "Arts and Crafts / Mission / Craftsman Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    formId: "Office chair",
+    display: "Arts and Crafts / Mission / Craftsman Office chair (also commonly called: banker's chair, bankers chair)",
     styleContext: "Arts and Crafts / Mission / Craftsman",
     finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
@@ -1043,9 +1043,9 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
     // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
     // style attribution (engineStyleEvaluator.ts) closed shared-token
     // mis-attributions. New verdict captured here.
-    formId: "Upholstered armchair",
-    display: "Lloyd Flanders Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "context_only",
+    formId: "Peacock chair",
+    display: "Lloyd Flanders Peacock chair (also commonly called: Emmanuelle chair, fan-back wicker chair)",
+    finalStyleKind: "unresolved",
     dateRange: "c. 1920–1950",
     dateFloor: 1920,
     dateCeiling: 1950,
@@ -1101,13 +1101,13 @@ const woodard_wrought_iron_patio_chair: ScanFixture = {
     { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
   ],
   asSeen: {
-    formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "context_only",
-    dateRange: "post-1945",
-    dateFloor: 1945,
-    dateCeiling: null,
-    confidence: "Moderate",
+    formId: "Patio chair",
+    display: "Patio chair (also commonly called: garden chair, porch chair)",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1910–2026",
+    dateFloor: 1910,
+    dateCeiling: 2026,
+    confidence: "Low",
   },
 };
 
@@ -2819,8 +2819,8 @@ const regina_music_box_disc_floor_cabinet: ScanFixture = {
     { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
   ],
   asSeen: {
-    formId: "Brass bed or brass-frame furniture",
-    display: "Brass bed or brass-frame furniture (also commonly called: iron bed, iron bedstead)",
+    formId: "Music box",
+    display: "Regina Music Box Co Music box (also commonly called: disc music box, cylinder music box)",
     finalStyleKind: "context_only",
     dateRange: "c. 1893",
     dateFloor: 1893,
@@ -3112,12 +3112,12 @@ const quartersawn_oak_office_bankers_swivel_tilt_chair: ScanFixture = {
     { type: "structure", clue: "backrest_present", confidence: 50, description: "carved crest rail backrest" },
   ],
   asSeen: {
-    formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    formId: "Office chair",
+    display: "Office chair (also commonly called: banker's chair, bankers chair)",
     finalStyleKind: "unresolved",
-    dateRange: "c. 1890–1920",
-    dateFloor: 1890,
-    dateCeiling: 1920,
+    dateRange: "c. 1880–1890",
+    dateFloor: 1880,
+    dateCeiling: 1890,
     confidence: "Moderate",
   },
 };
@@ -3159,9 +3159,9 @@ const golden_oak_bankers_office_swivel_chair_acanthus_crest: ScanFixture = {
     { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
   ],
   asSeen: {
-    formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    styleContext: "Upholstered seating",
+    formId: "Office chair",
+    display: "Office chair (also commonly called: banker's chair, bankers chair)",
+    styleContext: "Spindle Gallery",
     finalStyleKind: "context_only",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,

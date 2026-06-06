@@ -11,15 +11,15 @@ export const CANONICAL_VOCABULARY = {
       "evidenceCategories": 15,
       "disqualifying": 7,
       "woodEvidenceKeys": 34,
-      "forms": 246,
-      "subforms": 1299,
+      "forms": 250,
+      "subforms": 1310,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 110,
+      "routingKeysMined": 126,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 279
+      "allClueKeys": 291
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -28,6 +28,7 @@ export const CANONICAL_VOCABULARY = {
       "art_nouveau_pattern",
       "backrest_present",
       "ball_chair_form",
+      "bankers_chair_form",
       "barley_twist",
       "barrel_tub_back",
       "bowl_planter_form",
@@ -48,8 +49,11 @@ export const CANONICAL_VOCABULARY = {
       "club_chair_form",
       "colonial_georgian_revival_upholstered_armchair_pattern",
       "colonial_revival_pattern",
+      "comb_and_disc_mechanism",
       "cone_chair_form",
+      "cylinder_music_box_mechanism",
       "cylinder_roll",
+      "disc_music_box_mechanism",
       "door_present",
       "drawer_present",
       "drop_front_desk",
@@ -58,6 +62,7 @@ export const CANONICAL_VOCABULARY = {
       "egg_chair_form",
       "electric_lamp",
       "electric_table_lamp",
+      "expanded_metal_mesh_seat",
       "exposed_upholstery_tacks",
       "extension_mechanism",
       "federal_hepplewhite_sheraton_pattern",
@@ -93,16 +98,23 @@ export const CANONICAL_VOCABULARY = {
       "mission_arts_crafts_structural_pattern",
       "molded_plastic",
       "multiple_drawer_case",
+      "music_box_form",
       "no_armrests",
+      "office_chair_form",
       "open_shelving",
       "ormolu_mounts",
+      "parlor_rocker_form",
       "parquetry_veneer",
+      "patio_chair_form",
+      "peacock_chair_form",
       "pedestal_chair_form",
       "pedestal_column",
       "pigeonholes",
       "planter_cachepot_function",
+      "platform_rocker_form",
       "rattan_frame",
       "renaissance_revival_upholstered_armchair_pattern",
+      "rocking_chair_form",
       "rococo_revival_pattern",
       "roos_label",
       "seating_present",
@@ -113,6 +125,7 @@ export const CANONICAL_VOCABULARY = {
       "sitting",
       "slag_glass_shade",
       "slant_front",
+      "sling_seat",
       "slipper_chair_form",
       "spindle_back",
       "spindle_gallery",
@@ -121,13 +134,16 @@ export const CANONICAL_VOCABULARY = {
       "swivel_mechanism",
       "table_lamp_form",
       "telephone_shelf",
+      "tilt_mechanism",
       "toledo_industrial_style",
       "tubular_steel",
       "tufted_upholstery",
       "tulip_chair_form",
       "victorian_eastlake_pattern",
+      "vinyl_strap",
       "visible_springs",
       "william_and_mary_pattern",
+      "windsor_rocker_form",
       "wingback_form",
       "woven_body",
       "writing_surface",
@@ -138,6 +154,7 @@ export const CANONICAL_VOCABULARY = {
         "art_deco_pattern",
         "art_nouveau_pattern",
         "ball_chair_form",
+        "bankers_chair_form",
         "barrel_tub_back",
         "bowl_planter_form",
         "chippendale_pattern",
@@ -145,11 +162,15 @@ export const CANONICAL_VOCABULARY = {
         "club_chair_form",
         "colonial_georgian_revival_upholstered_armchair_pattern",
         "colonial_revival_pattern",
+        "comb_and_disc_mechanism",
         "cone_chair_form",
+        "cylinder_music_box_mechanism",
+        "disc_music_box_mechanism",
         "edwardian_pattern",
         "egg_chair_form",
         "electric_lamp",
         "electric_table_lamp",
+        "expanded_metal_mesh_seat",
         "federal_hepplewhite_sheraton_pattern",
         "floor_lamp_form",
         "four_leg_caster_base",
@@ -170,7 +191,11 @@ export const CANONICAL_VOCABULARY = {
         "mcm_structural_pattern",
         "mid_century_industrial_office",
         "mission_arts_crafts_structural_pattern",
+        "music_box_form",
         "no_armrests",
+        "office_chair_form",
+        "patio_chair_form",
+        "peacock_chair_form",
         "pedestal_chair_form",
         "planter_cachepot_function",
         "renaissance_revival_upholstered_armchair_pattern",
@@ -178,13 +203,16 @@ export const CANONICAL_VOCABULARY = {
         "shaker_pattern",
         "sitting",
         "slag_glass_shade",
+        "sling_seat",
         "slipper_chair_form",
         "stamped_metal_seat_support_bracket",
         "swivel_chair_form",
         "table_lamp_form",
+        "tilt_mechanism",
         "toledo_industrial_style",
         "tulip_chair_form",
         "victorian_eastlake_pattern",
+        "vinyl_strap",
         "william_and_mary_pattern",
         "wingback_form"
       ],
@@ -195,21 +223,33 @@ export const CANONICAL_VOCABULARY = {
     },
     "unclassifiedKeys": [
       "ball_chair_form",
+      "bankers_chair_form",
       "bowl_planter_form",
+      "comb_and_disc_mechanism",
       "cone_chair_form",
+      "cylinder_music_box_mechanism",
+      "disc_music_box_mechanism",
       "egg_chair_form",
+      "expanded_metal_mesh_seat",
       "harpsichord_form",
       "jack_rail_bristle_dampers",
+      "music_box_form",
       "no_armrests",
+      "office_chair_form",
+      "patio_chair_form",
+      "peacock_chair_form",
       "pedestal_chair_form",
       "planter_cachepot_function",
       "sitting",
+      "sling_seat",
       "swivel_chair_form",
-      "tulip_chair_form"
+      "tilt_mechanism",
+      "tulip_chair_form",
+      "vinyl_strap"
     ],
     "crosswalk": {
-      "mapped": 168,
-      "unmapped": 111
+      "mapped": 177,
+      "unmapped": 114
     }
   },
   "evidence": {
@@ -4630,6 +4670,24 @@ export const CANONICAL_VOCABULARY = {
       "has_dimensional_thresholds": true
     },
     {
+      "form_id": "form_music_box",
+      "label": "music box",
+      "aliases": [
+        "Polyphon",
+        "Regina",
+        "Symphonion",
+        "cylinder music box",
+        "disc music box",
+        "musical box",
+        "symphonion"
+      ],
+      "family_id": "family_musical_mechanical",
+      "spatial_behavior_id": "spatial_musical_instrument_cabinets",
+      "date_floor": 1700,
+      "date_ceiling": 1930,
+      "has_dimensional_thresholds": true
+    },
+    {
       "form_id": "form_music_stand",
       "label": "music stand",
       "aliases": [
@@ -4734,6 +4792,26 @@ export const CANONICAL_VOCABULARY = {
       "spatial_behavior_id": "spatial_auxiliary_tables",
       "date_floor": 1750,
       "date_ceiling": null,
+      "has_dimensional_thresholds": true
+    },
+    {
+      "form_id": "form_office_chair",
+      "label": "office chair",
+      "aliases": [
+        "banker's chair",
+        "bankers chair",
+        "desk chair",
+        "office swivel chair",
+        "secretarial chair",
+        "swivel chair",
+        "task chair",
+        "tilt chair",
+        "typist chair"
+      ],
+      "family_id": "family_seating",
+      "spatial_behavior_id": "spatial_motion_seating",
+      "date_floor": 1850,
+      "date_ceiling": 2026,
       "has_dimensional_thresholds": true
     },
     {
@@ -4946,6 +5024,42 @@ export const CANONICAL_VOCABULARY = {
       "spatial_behavior_id": "spatial_shared_double_sided_workstations",
       "date_floor": 1800,
       "date_ceiling": null,
+      "has_dimensional_thresholds": true
+    },
+    {
+      "form_id": "form_patio_chair",
+      "label": "patio chair",
+      "aliases": [
+        "bistro chair",
+        "garden chair",
+        "lawn chair",
+        "outdoor chair",
+        "patio armchair",
+        "poolside chair",
+        "porch chair",
+        "spring chair"
+      ],
+      "family_id": "family_seating",
+      "spatial_behavior_id": "spatial_outdoor_specialty_institutional_seating",
+      "date_floor": 1850,
+      "date_ceiling": 2026,
+      "has_dimensional_thresholds": true
+    },
+    {
+      "form_id": "form_peacock_chair",
+      "label": "peacock chair",
+      "aliases": [
+        "Emmanuelle chair",
+        "fan back wicker chair",
+        "fan-back wicker chair",
+        "hooded wicker chair",
+        "peacock wicker chair",
+        "rattan throne chair"
+      ],
+      "family_id": "family_seating",
+      "spatial_behavior_id": "spatial_single_user_seating",
+      "date_floor": 1890,
+      "date_ceiling": 2026,
       "has_dimensional_thresholds": true
     },
     {
@@ -7010,6 +7124,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Adjustable drafting table"
     },
     {
+      "subtype_id": "subtype_aluminum_patio_chair",
+      "parent_form_id": "form_patio_chair",
+      "name": "Tubular / cast-aluminum patio chair"
+    },
+    {
       "subtype_id": "subtype_aquarium_stand_terrarium_stand",
       "parent_form_id": "form_aquarium_stand",
       "name": "terrarium stand"
@@ -7213,6 +7332,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_bank_fixture_teller_cage",
       "parent_form_id": "form_bank_fixture",
       "name": "teller cage"
+    },
+    {
+      "subtype_id": "subtype_bankers_chair",
+      "parent_form_id": "form_office_chair",
+      "name": "Banker's chair"
     },
     {
       "subtype_id": "subtype_banquet_lamp_bh_or_pairpoint_type",
@@ -8320,6 +8444,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Cinema seat"
     },
     {
+      "subtype_id": "subtype_classic_peacock",
+      "parent_form_id": "form_peacock_chair",
+      "name": "Classic peacock / Emmanuelle"
+    },
+    {
       "subtype_id": "subtype_classical_pier_table",
       "parent_form_id": "form_pier_table",
       "name": "Classical pier table"
@@ -8700,6 +8829,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "tambour cylinder desk"
     },
     {
+      "subtype_id": "subtype_cylinder_music_box",
+      "parent_form_id": "form_music_box",
+      "name": "Cylinder music box"
+    },
+    {
       "subtype_id": "subtype_davenport_desk_campaign",
       "parent_form_id": "form_davenport_desk",
       "name": "campaign Davenport"
@@ -8825,6 +8959,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Sheraton or Hepplewhite demilune table"
     },
     {
+      "subtype_id": "subtype_disc_music_box",
+      "parent_form_id": "form_music_box",
+      "name": "Disc music box"
+    },
+    {
       "subtype_id": "subtype_dome_top_trunk",
       "parent_form_id": "form_trunk",
       "name": "Dome-top trunk"
@@ -8898,6 +9037,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_dower_chest",
       "parent_form_id": "form_blanket_chest",
       "name": "Dower chest / dowry chest"
+    },
+    {
+      "subtype_id": "subtype_drafting_chair",
+      "parent_form_id": "form_office_chair",
+      "name": "Drafting / task stool-chair"
     },
     {
       "subtype_id": "subtype_draw_leaf_table",
@@ -9613,6 +9757,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_historic_tavern_table",
       "parent_form_id": "form_pub_table",
       "name": "Historic tavern table"
+    },
+    {
+      "subtype_id": "subtype_hooded_peacock",
+      "parent_form_id": "form_peacock_chair",
+      "name": "Hooded / halo peacock"
     },
     {
       "subtype_id": "subtype_hoosier_cabinet_classic_flour_sifter",
@@ -11840,6 +11989,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "tall fall-front secretary"
     },
     {
+      "subtype_id": "subtype_secretarial_chair",
+      "parent_form_id": "form_office_chair",
+      "name": "Secretarial / typist chair"
+    },
+    {
       "subtype_id": "subtype_secretary_desk_block_front",
       "parent_form_id": "form_secretary_desk",
       "name": "block-front secretary"
@@ -13050,6 +13204,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Upholstered coffee table"
     },
     {
+      "subtype_id": "subtype_upright_disc_cabinet",
+      "parent_form_id": "form_music_box",
+      "name": "Upright / floor disc-cabinet music box"
+    },
+    {
       "subtype_id": "subtype_utility_cart_food_service_cart",
       "parent_form_id": "form_utility_cart",
       "name": "food service cart"
@@ -13345,6 +13504,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "William and Mary / early Georgian wing chair"
     },
     {
+      "subtype_id": "subtype_wire_patio_chair",
+      "parent_form_id": "form_patio_chair",
+      "name": "Spring-steel / wire / mesh patio chair"
+    },
+    {
       "subtype_id": "subtype_wooton_desk_extra_grade",
       "parent_form_id": "form_wooton_desk",
       "name": "extra-grade Wooton desk"
@@ -13448,6 +13612,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_writing_box_writing_slope",
       "parent_form_id": "form_writing_box",
       "name": "writing slope"
+    },
+    {
+      "subtype_id": "subtype_wrought_iron_patio_chair",
+      "parent_form_id": "form_patio_chair",
+      "name": "Wrought / cast-iron patio chair"
     }
   ],
   "relationships": {
@@ -13859,6 +14028,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 1
       }
     ],
+    "bankers_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "brass_frame": [
       {
         "taxonomyId": "joinery_category_frame",
@@ -14037,6 +14213,13 @@ export const CANONICAL_VOCABULARY = {
       {
         "taxonomyId": "fastener_subcategory_machine_cut_screws",
         "lib": "fasteners",
+        "score": 0.5
+      }
+    ],
+    "cylinder_music_box_mechanism": [
+      {
+        "taxonomyId": "hardware_type_cylinder_desk_mechanism",
+        "lib": "hardware",
         "score": 0.5
       }
     ],
@@ -14618,6 +14801,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 1
       }
     ],
+    "music_box_form": [
+      {
+        "taxonomyId": "joinery_type_finger_box_joint",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "nailhead_trim": [
       {
         "taxonomyId": "hardware_type_decorative_nailhead_trim",
@@ -14656,6 +14846,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "office_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "overhanging_top": [
       {
         "taxonomyId": "hardware_type_tilt_top_lock_hardware",
@@ -14689,6 +14886,20 @@ export const CANONICAL_VOCABULARY = {
       {
         "taxonomyId": "substrate_evidence_composite_veneer_cores",
         "lib": "wood",
+        "score": 0.5
+      }
+    ],
+    "patio_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
+    "peacock_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
         "score": 0.5
       }
     ],
@@ -14931,6 +15142,18 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "sling_seat": [
+      {
+        "taxonomyId": "upholstery_construction_type_stuffed_slip_seat",
+        "lib": "upholsteryConstruction",
+        "score": 0.5
+      },
+      {
+        "taxonomyId": "upholstery_cover_category_cane_rush_splint_and_woven_seat_materials",
+        "lib": "upholsteryCovers",
+        "score": 0.5
+      }
+    ],
     "slipper_chair_form": [
       {
         "taxonomyId": "joinery_category_chair_and_seating",
@@ -15088,6 +15311,18 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "tilt_mechanism": [
+      {
+        "taxonomyId": "hardware_type_tilt_top_lock_hardware",
+        "lib": "hardware",
+        "score": 0.5
+      },
+      {
+        "taxonomyId": "hardware_type_cylinder_desk_mechanism",
+        "lib": "hardware",
+        "score": 0.5
+      }
+    ],
     "toledo_industrial_style": [
       {
         "taxonomyId": "style_revival_wave_modern_rustic_farmhouse_industrial",
@@ -15174,6 +15409,18 @@ export const CANONICAL_VOCABULARY = {
         "taxonomyId": "upholstery_cover_type_vinyl_naugahyde_faux_leather",
         "lib": "upholsteryCovers",
         "score": 1
+      }
+    ],
+    "vinyl_strap": [
+      {
+        "taxonomyId": "hardware_type_strap_hinge",
+        "lib": "hardware",
+        "score": 0.5
+      },
+      {
+        "taxonomyId": "upholstery_cover_type_vinyl_naugahyde_faux_leather",
+        "lib": "upholsteryCovers",
+        "score": 0.5
       }
     ],
     "visible_springs": [
@@ -15640,7 +15887,9 @@ export const CANONICAL_VOCABULARY = {
     "circular_footring_stretcher",
     "claw_or_pad_foot",
     "colonial_georgian_revival_upholstered_armchair_pattern",
+    "comb_and_disc_mechanism",
     "commode_function",
+    "disc_music_box_mechanism",
     "door_present",
     "dresser_form",
     "dressing_table_form",
@@ -15651,6 +15900,7 @@ export const CANONICAL_VOCABULARY = {
     "electric_lamp",
     "electric_table_lamp",
     "enameled_steel_basin",
+    "expanded_metal_mesh_seat",
     "fallback_form",
     "flat_top_overhanging",
     "floor_lamp_form",
