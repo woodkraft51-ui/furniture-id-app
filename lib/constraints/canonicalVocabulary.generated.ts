@@ -15,11 +15,11 @@ export const CANONICAL_VOCABULARY = {
       "subforms": 1299,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 99,
+      "routingKeysMined": 101,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 269
+      "allClueKeys": 271
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -29,6 +29,7 @@ export const CANONICAL_VOCABULARY = {
       "backrest_present",
       "barley_twist",
       "barrel_tub_back",
+      "bowl_planter_form",
       "brass_foot_sabots",
       "brass_frame",
       "button_tufting",
@@ -93,6 +94,7 @@ export const CANONICAL_VOCABULARY = {
       "parquetry_veneer",
       "pedestal_column",
       "pigeonholes",
+      "planter_cachepot_function",
       "rattan_frame",
       "renaissance_revival_upholstered_armchair_pattern",
       "rococo_revival_pattern",
@@ -127,6 +129,7 @@ export const CANONICAL_VOCABULARY = {
         "art_deco_pattern",
         "art_nouveau_pattern",
         "barrel_tub_back",
+        "bowl_planter_form",
         "chippendale_pattern",
         "circular_footring_stretcher",
         "club_chair_form",
@@ -155,6 +158,7 @@ export const CANONICAL_VOCABULARY = {
         "mcm_structural_pattern",
         "mid_century_industrial_office",
         "mission_arts_crafts_structural_pattern",
+        "planter_cachepot_function",
         "renaissance_revival_upholstered_armchair_pattern",
         "rococo_revival_pattern",
         "shaker_pattern",
@@ -173,12 +177,14 @@ export const CANONICAL_VOCABULARY = {
       ]
     },
     "unclassifiedKeys": [
+      "bowl_planter_form",
       "harpsichord_form",
-      "jack_rail_bristle_dampers"
+      "jack_rail_bristle_dampers",
+      "planter_cachepot_function"
     ],
     "crosswalk": {
       "mapped": 162,
-      "unmapped": 107
+      "unmapped": 109
     }
   },
   "evidence": {
@@ -15553,6 +15559,7 @@ export const CANONICAL_VOCABULARY = {
     "bent_molded_plywood",
     "bent_or_sprung_metal",
     "bistro_table_form",
+    "bowl_planter_form",
     "brass_dial_bezel",
     "brass_foot_sabots",
     "bun_feet",
@@ -15610,6 +15617,7 @@ export const CANONICAL_VOCABULARY = {
     "pedestal_column",
     "pendulum_bob_cast",
     "pigeonholes",
+    "planter_cachepot_function",
     "plating_loss",
     "possible_plywood_or_laminated_panel",
     "powder_coat_overspray",

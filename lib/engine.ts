@@ -5167,6 +5167,14 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (harpsichordForm) {
     add("Harpsichord", 99, "Keyboard instrument with plucked-string jack action (harpsichord, spinet, virginal, clavecin).");
   }
+  // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
+  // on the direct planter form/function clues or explicit name — planter-specific,
+  // low collision. Beats the generic "Wicker/rattan furniture" material fallback.
+  const planterForm = hasAny("bowl_planter_form", "planter_cachepot_function") ||
+    includesAny(text, ["planter", "jardiniere", "jardinière", "cachepot", "plant pot", "flower pot", "fernery"]);
+  if (planterForm) {
+    add("Planter", 90, "Vessel or container that holds or conceals a plant or pot (planter, jardinière, cachepot).");
+  }
   if (tallCaseClockForm) {
     add("Tall case clock", 98, "Floor-standing weight-driven clock in a tall case (grandfather/longcase).");
   } else if (wallClockForm) {

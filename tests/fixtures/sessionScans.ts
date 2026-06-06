@@ -3319,13 +3319,13 @@ const mcm_atomic_age_fiberglass_bullet_planter_tripod: ScanFixture = {
     { type: "materials", clue: "woven_body", confidence: 76, description: "Woven wicker or reed body construction is visible." },
   ],
   asSeen: {
-    formId: "Wicker / rattan furniture",
-    display: "Mid-Century Modern / American Modernism Wicker / rattan furniture",
+    formId: "Planter",
+    display: "Mid-Century Modern / American Modernism Planter (also commonly called: jardiniere, jardinière)",
     styleContext: "Mid-Century Modern / American Modernism",
     finalStyleKind: "original_period",
-    dateRange: "c. 1940–1940",
+    dateRange: "c. 1940–1970",
     dateFloor: 1940,
-    dateCeiling: 1940,
+    dateCeiling: 1970,
     confidence: "Moderate",
   },
 };
