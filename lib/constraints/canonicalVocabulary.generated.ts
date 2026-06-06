@@ -11,15 +11,15 @@ export const CANONICAL_VOCABULARY = {
       "evidenceCategories": 15,
       "disqualifying": 7,
       "woodEvidenceKeys": 34,
-      "forms": 248,
-      "subforms": 1305,
+      "forms": 249,
+      "subforms": 1307,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 119,
+      "routingKeysMined": 120,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 288
+      "allClueKeys": 289
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -104,6 +104,7 @@ export const CANONICAL_VOCABULARY = {
       "open_shelving",
       "ormolu_mounts",
       "parquetry_veneer",
+      "peacock_chair_form",
       "pedestal_chair_form",
       "pedestal_column",
       "pigeonholes",
@@ -187,6 +188,7 @@ export const CANONICAL_VOCABULARY = {
         "music_box_form",
         "no_armrests",
         "office_chair_form",
+        "peacock_chair_form",
         "pedestal_chair_form",
         "planter_cachepot_function",
         "renaissance_revival_upholstered_armchair_pattern",
@@ -226,6 +228,7 @@ export const CANONICAL_VOCABULARY = {
       "music_box_form",
       "no_armrests",
       "office_chair_form",
+      "peacock_chair_form",
       "pedestal_chair_form",
       "planter_cachepot_function",
       "sitting",
@@ -235,7 +238,7 @@ export const CANONICAL_VOCABULARY = {
       "tulip_chair_form"
     ],
     "crosswalk": {
-      "mapped": 174,
+      "mapped": 175,
       "unmapped": 114
     }
   },
@@ -5014,6 +5017,23 @@ export const CANONICAL_VOCABULARY = {
       "has_dimensional_thresholds": true
     },
     {
+      "form_id": "form_peacock_chair",
+      "label": "peacock chair",
+      "aliases": [
+        "Emmanuelle chair",
+        "fan back wicker chair",
+        "fan-back wicker chair",
+        "hooded wicker chair",
+        "peacock wicker chair",
+        "rattan throne chair"
+      ],
+      "family_id": "family_seating",
+      "spatial_behavior_id": "spatial_single_user_seating",
+      "date_floor": 1890,
+      "date_ceiling": 2026,
+      "has_dimensional_thresholds": true
+    },
+    {
       "form_id": "form_pedestal",
       "label": "pedestal",
       "aliases": [
@@ -8390,6 +8410,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Cinema seat"
     },
     {
+      "subtype_id": "subtype_classic_peacock",
+      "parent_form_id": "form_peacock_chair",
+      "name": "Classic peacock / Emmanuelle"
+    },
+    {
       "subtype_id": "subtype_classical_pier_table",
       "parent_form_id": "form_pier_table",
       "name": "Classical pier table"
@@ -9698,6 +9723,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_historic_tavern_table",
       "parent_form_id": "form_pub_table",
       "name": "Historic tavern table"
+    },
+    {
+      "subtype_id": "subtype_hooded_peacock",
+      "parent_form_id": "form_peacock_chair",
+      "name": "Hooded / halo peacock"
     },
     {
       "subtype_id": "subtype_hoosier_cabinet_classic_flour_sifter",
@@ -14812,6 +14842,13 @@ export const CANONICAL_VOCABULARY = {
       {
         "taxonomyId": "substrate_evidence_composite_veneer_cores",
         "lib": "wood",
+        "score": 0.5
+      }
+    ],
+    "peacock_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
         "score": 0.5
       }
     ],

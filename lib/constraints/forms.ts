@@ -24855,4 +24855,54 @@ export const FORMS: FormEntry[] = [
       pre_boundary_classifications: ["form_side_chair", "form_lounge_chair", "form_stool"],
     },
   },
+  // ── Batch 2 taxonomy-gap form (owner-authored): peacock chair. Closes peacock
+  //    (#25). Open ceiling corrected to schema on integration. ──
+  {
+    id: "form_peacock_chair",
+    category: "form",
+    name: "peacock chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_single_user_seating",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1890,
+    date_ceiling: 2026,
+    common_conversion_targets: [],
+    distinguishing_features: [
+      "Single woven rattan or wicker chair with a very tall flared fan, halo, hood, or peacock-tail back rising dramatically above the sitter.",
+      "Body is structurally woven, usually with rattan, cane, wicker, reed, or similar material forming the frame and back.",
+      "Often has an hourglass, pedestal-like, or splayed woven base with a throne-like lounge posture.",
+      "Classify by the distinctive tall fan or hood back and woven structural body, not merely by the presence of wicker material.",
+      "Not a generic lounge chair, side chair, or pedestal chair when the high woven fan-back throne form is present.",
+    ],
+    cousin_form_contrasts: [
+      "form_lounge_chair is general comfort seating; peacock chair requires the distinctive tall woven fan, halo, or hood back.",
+      "form_pedestal_chair is a molded or modern single-pedestal shell seat, while peacock chair is a woven rattan throne form.",
+      "form_side_chair is lower, simpler fixed seating without the dramatic fan or hood back.",
+    ],
+    dimensional_thresholds: {
+      notes: "Diagnostic examples are single-occupant chairs with backs substantially taller than ordinary side or lounge chairs.",
+    },
+    common_aliases: ["Emmanuelle chair", "fan-back wicker chair", "fan back wicker chair", "rattan throne chair", "hooded wicker chair", "peacock wicker chair"],
+    regional_period_notes: "Earlier wicker and rattan roots predate the 20th century, but the peacock or Emmanuelle chair is especially associated with mid-to-late 20th century bohemian, studio, and tropical revival interiors.",
+    subtypes: [
+      {
+        id: "subtype_classic_peacock",
+        name: "Classic peacock / Emmanuelle",
+        distinguishing_attributes: [
+          "Very tall flared fan or peacock-tail back.",
+          "Hourglass or splayed woven base.",
+        ],
+      },
+      {
+        id: "subtype_hooded_peacock",
+        name: "Hooded / halo peacock",
+        distinguishing_attributes: [
+          "Rounded hood or halo back partly enclosing the head.",
+        ],
+      },
+    ],
+  },
 ];

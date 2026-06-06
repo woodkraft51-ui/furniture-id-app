@@ -5201,6 +5201,16 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (officeChairForm) {
     add("Office chair", 90, "Single-occupant swivel/tilt task chair for desk work (banker's, secretarial, drafting).");
   }
+  // Peacock chair (taxonomy-gap form #25, form-wire B.7). Tall woven fan/hood-back
+  // rattan throne. Gated on a woven material clue AND a peacock-specific token, so
+  // it can't grab the other wicker pieces (rockers, barrel lounge) that lack the
+  // peacock/Emmanuelle/throne signal.
+  const peacockChairForm =
+    hasAny("woven_body", "rattan_frame", "cane_panels", "peacock_chair_form") &&
+    includesAny(text, ["peacock", "emmanuelle", "rattan throne", "wicker throne", "halo back", "fan-back wicker", "hooded wicker", "peacock-tail", "peacock tail"]);
+  if (peacockChairForm) {
+    add("Peacock chair", 95, "Tall woven fan/hood-back rattan or wicker throne chair (peacock / Emmanuelle).");
+  }
   // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
   // on the direct planter form/function clues or explicit name — planter-specific,
   // low collision. Beats the generic "Wicker/rattan furniture" material fallback.

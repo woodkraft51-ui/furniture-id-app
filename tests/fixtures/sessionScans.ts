@@ -1043,9 +1043,9 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
     // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
     // style attribution (engineStyleEvaluator.ts) closed shared-token
     // mis-attributions. New verdict captured here.
-    formId: "Upholstered armchair",
-    display: "Lloyd Flanders Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "context_only",
+    formId: "Peacock chair",
+    display: "Lloyd Flanders Peacock chair (also commonly called: Emmanuelle chair, fan-back wicker chair)",
+    finalStyleKind: "unresolved",
     dateRange: "c. 1920–1950",
     dateFloor: 1920,
     dateCeiling: 1950,

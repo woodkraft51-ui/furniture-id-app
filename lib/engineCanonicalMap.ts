@@ -460,6 +460,7 @@ export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
   "Pedestal chair": "form_pedestal_chair",
   "Music box": "form_music_box",
   "Office chair": "form_office_chair",
+  "Peacock chair": "form_peacock_chair",
   // Cedar chests
   "Roos cedar chest / hope chest": "form_blanket_chest",
   "Lane cedar chest / hope chest": "form_blanket_chest",
