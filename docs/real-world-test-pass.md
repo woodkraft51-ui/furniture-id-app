@@ -12,6 +12,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 01 | Convertible child's **high chair → toddler desk** (folds down) | **Telephone bench / writing bench combination** (`form_telephone_stand`, subtype "telephone cabinet" conf 1.0) | c. 1900–1935, Mod | 🔴 wrong form | see below |
 | 02 | **Trifold dressing-table mirror** (Globe Bosse; "JAN 22 1924" ink stamp) | **GLOBE BOSSE WORLD FURNITURE CO Dressing table** | c. 1840–1940 (date conf Low) | 🟡 date too broad | hard 1924 stamp demoted to floor → 100-yr range; form acceptable. see below |
 | 03 | **Lyon & Healy parlor reed/pump organ** (Victorian, Chicago) | **Late Victorian Cottage Eastlake Afterwave Upholstered seating** | c. 1880–1990, Mod | 🔴 wrong form + date | organ → "upholstered seating"; felt pedal-covers read as upholstery; plywood *repair patch* dated the piece. see below |
+| 04 | **Colonial/Empire Revival chest of drawers / dresser** (two-section, bow-front, c. 1920–40) | **Colonial Revival Telephone bench / writing bench combination** (`form_telephone_stand`) | post-1939, Mod | 🔴 wrong form (+odd date) | **telephone-bench bug, 2nd sighting** (cf. scan 01); phantom `seating_surface`/`seating_present` (M0) on a dresser; "post-1939" off a label that isn't there. see below |
 
 ---
 
@@ -76,3 +77,27 @@ Result: floor 1924 is right, but the ceiling free-floats to 1940 (Phillips-screw
 - (d) Style-wave ceiling discipline (M11 frontier).
 
 **Convergence across scans 01–03:** these are not three problems. They are **one** problem — "the answer is in P0's prose; consumption is too narrow to use it" — wearing three masks (taxonomy gap, affirmation gap, prose-discarded dating). The fix pattern (the maker-wire template) is already prototyped. That is good news, not bad.
+
+---
+
+## Scan 04 — Colonial/Empire Revival chest of drawers
+
+**Engine:** Colonial Revival Telephone bench / writing bench combination (`form_telephone_stand`, subtype "telephone cabinet" conf 1.0) · post-1939 (Moderate) · resale $127–297.
+**Actually:** a two-section bow-front **chest of drawers / dresser**, American factory Colonial/Empire Revival, c. 1920–1940. ~5 drawers, no seat, no phone shelf.
+
+**The telephone-bench bug, second sighting — and this time on a core in-scope form.** This is the single most important data point in the batch so far, because it converts scan 01 from "a one-off on an out-of-scope kids' piece" into a **repeatable routing defect** (n=2) that strikes a bread-and-butter dresser. That promotes it past the n≥3-ish bar as a clear #1 fix target.
+
+**P0 got it right — the engine overrode it.** Top form clue was `chest_of_drawers_form` at weight **0.92**, and "Chest of drawers / dresser" was the explicit runner-up form. The correct answer was sitting at the top of the list. The router still chose `form_telephone_stand`. Three mechanisms stack:
+
+1. **M0 perception over-emission (phantom seating).** P0 emitted `seating_surface` (conf 82, "a seating surface or bench-like sitting area is visible") and `seating_present` (conf 78, "integrated seating is visible") on a piece that has **no seat at all**. Also likely-spurious `door_present` / `cabinet_form`. These hallucinated clues are the fuel.
+2. **Affirmation gap (telephone bench) — REPEAT of scan 01.** `form_telephone_stand` routes on seating-surface + a secondary/writing surface with **zero telephone evidence** (no phone shelf, no directory). The phantom `seating_surface` + `secondary_surface` is exactly the pattern it grabs. Same root, now twice.
+3. **Routing override.** Telephone-stand out-scored `chest_of_drawers_form` (0.92) despite the dresser clue being heavier — the affirmation gate doesn't cover this route, so phantom seating wins.
+
+**Date is also off, separately:** displayed **"post-1939"** while the convergence zone is 1830–1940 and every real signal says c. 1910–1940. P2 cites *"The label's 1939 label date is a terminus post quem"* — **but there is no maker label in this scan** (no `maker_label` clue anywhere). A phantom 1939 terminus is clamping the floor above the actual evidence. Looks like a templated/stale terminus line, not a real anchor. Flag for triage — possibly a `form_telephone_stand` date attribute or a terminus-template bug. (Note: contrast with scan 02, where a *real* dated stamp was under-used — here a *non-existent* one is over-used.)
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) **Telephone-bench affirmation guard** (now the batch's top priority, n=2): require actual telephone evidence before routing telephone bench; never let a seating-surface clue alone (esp. a phantom one) carry it.
+- (b) **M0 phantom-seating** investigation: why does P0 emit `seating_present` on a drawer case? May need a perception guard or a consumption-side sanity check (seating clues with zero seat-form corroboration).
+- (c) Phantom "1939 label" terminus: trace where the floor 1939 originates with no label clue present.
+
+**Telephone-bench tally so far: scans 01 + 04. This is the fix that will move the most real-world cases.**
