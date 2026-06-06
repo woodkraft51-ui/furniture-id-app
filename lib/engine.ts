@@ -5178,6 +5178,15 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (harpsichordForm) {
     add("Harpsichord", 99, "Keyboard instrument with plucked-string jack action (harpsichord, spinet, virginal, clavecin).");
   }
+  // Music box (taxonomy-gap form #22, form-wire B.5). Mechanical comb-and-disc or
+  // cylinder music machine. Gated on the direct disc/cylinder mechanism clues or
+  // explicit name — music-box-specific, low collision. Beats the brass-bed trap
+  // that captured the disc/drive metal of the Regina movement.
+  const musicBoxForm = hasAny("disc_music_box_mechanism", "cylinder_music_box_mechanism", "comb_and_disc_mechanism", "music_box_form") ||
+    includesAny(text, ["music box", "musical box", "disc music box", "cylinder music box", "polyphon", "symphonion"]);
+  if (musicBoxForm) {
+    add("Music box", 98, "Mechanical comb-and-disc or cylinder music machine in a case (Regina/Polyphon/cylinder box).");
+  }
   // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
   // on the direct planter form/function clues or explicit name — planter-specific,
   // low collision. Beats the generic "Wicker/rattan furniture" material fallback.

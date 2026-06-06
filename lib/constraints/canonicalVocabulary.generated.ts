@@ -11,15 +11,15 @@ export const CANONICAL_VOCABULARY = {
       "evidenceCategories": 15,
       "disqualifying": 7,
       "woodEvidenceKeys": 34,
-      "forms": 246,
-      "subforms": 1299,
+      "forms": 247,
+      "subforms": 1302,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 110,
+      "routingKeysMined": 114,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 279
+      "allClueKeys": 283
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -48,8 +48,11 @@ export const CANONICAL_VOCABULARY = {
       "club_chair_form",
       "colonial_georgian_revival_upholstered_armchair_pattern",
       "colonial_revival_pattern",
+      "comb_and_disc_mechanism",
       "cone_chair_form",
+      "cylinder_music_box_mechanism",
       "cylinder_roll",
+      "disc_music_box_mechanism",
       "door_present",
       "drawer_present",
       "drop_front_desk",
@@ -93,6 +96,7 @@ export const CANONICAL_VOCABULARY = {
       "mission_arts_crafts_structural_pattern",
       "molded_plastic",
       "multiple_drawer_case",
+      "music_box_form",
       "no_armrests",
       "open_shelving",
       "ormolu_mounts",
@@ -145,7 +149,10 @@ export const CANONICAL_VOCABULARY = {
         "club_chair_form",
         "colonial_georgian_revival_upholstered_armchair_pattern",
         "colonial_revival_pattern",
+        "comb_and_disc_mechanism",
         "cone_chair_form",
+        "cylinder_music_box_mechanism",
+        "disc_music_box_mechanism",
         "edwardian_pattern",
         "egg_chair_form",
         "electric_lamp",
@@ -170,6 +177,7 @@ export const CANONICAL_VOCABULARY = {
         "mcm_structural_pattern",
         "mid_century_industrial_office",
         "mission_arts_crafts_structural_pattern",
+        "music_box_form",
         "no_armrests",
         "pedestal_chair_form",
         "planter_cachepot_function",
@@ -196,10 +204,14 @@ export const CANONICAL_VOCABULARY = {
     "unclassifiedKeys": [
       "ball_chair_form",
       "bowl_planter_form",
+      "comb_and_disc_mechanism",
       "cone_chair_form",
+      "cylinder_music_box_mechanism",
+      "disc_music_box_mechanism",
       "egg_chair_form",
       "harpsichord_form",
       "jack_rail_bristle_dampers",
+      "music_box_form",
       "no_armrests",
       "pedestal_chair_form",
       "planter_cachepot_function",
@@ -208,8 +220,8 @@ export const CANONICAL_VOCABULARY = {
       "tulip_chair_form"
     ],
     "crosswalk": {
-      "mapped": 168,
-      "unmapped": 111
+      "mapped": 170,
+      "unmapped": 113
     }
   },
   "evidence": {
@@ -4630,6 +4642,24 @@ export const CANONICAL_VOCABULARY = {
       "has_dimensional_thresholds": true
     },
     {
+      "form_id": "form_music_box",
+      "label": "music box",
+      "aliases": [
+        "Polyphon",
+        "Regina",
+        "Symphonion",
+        "cylinder music box",
+        "disc music box",
+        "musical box",
+        "symphonion"
+      ],
+      "family_id": "family_musical_mechanical",
+      "spatial_behavior_id": "spatial_musical_instrument_cabinets",
+      "date_floor": 1700,
+      "date_ceiling": 1930,
+      "has_dimensional_thresholds": true
+    },
+    {
       "form_id": "form_music_stand",
       "label": "music stand",
       "aliases": [
@@ -8700,6 +8730,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "tambour cylinder desk"
     },
     {
+      "subtype_id": "subtype_cylinder_music_box",
+      "parent_form_id": "form_music_box",
+      "name": "Cylinder music box"
+    },
+    {
       "subtype_id": "subtype_davenport_desk_campaign",
       "parent_form_id": "form_davenport_desk",
       "name": "campaign Davenport"
@@ -8823,6 +8858,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_demilune_sheraton_hepplewhite",
       "parent_form_id": "form_demilune_table",
       "name": "Sheraton or Hepplewhite demilune table"
+    },
+    {
+      "subtype_id": "subtype_disc_music_box",
+      "parent_form_id": "form_music_box",
+      "name": "Disc music box"
     },
     {
       "subtype_id": "subtype_dome_top_trunk",
@@ -13050,6 +13090,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Upholstered coffee table"
     },
     {
+      "subtype_id": "subtype_upright_disc_cabinet",
+      "parent_form_id": "form_music_box",
+      "name": "Upright / floor disc-cabinet music box"
+    },
+    {
       "subtype_id": "subtype_utility_cart_food_service_cart",
       "parent_form_id": "form_utility_cart",
       "name": "food service cart"
@@ -14040,6 +14085,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "cylinder_music_box_mechanism": [
+      {
+        "taxonomyId": "hardware_type_cylinder_desk_mechanism",
+        "lib": "hardware",
+        "score": 0.5
+      }
+    ],
     "cylinder_roll": [
       {
         "taxonomyId": "hardware_type_cylinder_desk_mechanism",
@@ -14616,6 +14668,13 @@ export const CANONICAL_VOCABULARY = {
         "taxonomyId": "joinery_type_through_mortise_and_tenon",
         "lib": "joinery",
         "score": 1
+      }
+    ],
+    "music_box_form": [
+      {
+        "taxonomyId": "joinery_type_finger_box_joint",
+        "lib": "joinery",
+        "score": 0.5
       }
     ],
     "nailhead_trim": [
@@ -15640,7 +15699,9 @@ export const CANONICAL_VOCABULARY = {
     "circular_footring_stretcher",
     "claw_or_pad_foot",
     "colonial_georgian_revival_upholstered_armchair_pattern",
+    "comb_and_disc_mechanism",
     "commode_function",
+    "disc_music_box_mechanism",
     "door_present",
     "dresser_form",
     "dressing_table_form",

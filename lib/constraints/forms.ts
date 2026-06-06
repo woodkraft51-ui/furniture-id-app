@@ -24730,4 +24730,62 @@ export const FORMS: FormEntry[] = [
       pre_boundary_classifications: ["form_side_chair", "form_lounge_chair", "form_stool"],
     },
   },
+  // ── Batch 2 taxonomy-gap form (owner-authored): music box. Closes regina. ──
+  {
+    id: "form_music_box",
+    category: "form",
+    name: "music box",
+    parent_category: "musical_mechanical_form",
+    family_id: "family_musical_mechanical",
+    spatial_behavior_id: "spatial_musical_instrument_cabinets",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1700,
+    date_ceiling: 1930,
+    common_conversion_targets: ["cabinet", "side table", "display stand"],
+    distinguishing_features: [
+      "Self-contained mechanical musical machine housed in a case, identified by a tuned steel comb with pinned cylinder or perforated metal disc drive.",
+      "Disc examples use interchangeable metal discs, star wheels, pressure bar, crank or spring motor, and often a visible bedplate movement.",
+      "Cylinder examples use a pinned brass cylinder that plucks comb teeth and usually play a fixed tune set.",
+      "Classify by the music mechanism and case function, not by brass-colored hardware, bedplate metal, or decorative case material.",
+      "Not a bed, brass bed, cabinet, phonograph, or generic instrument case unless the musical mechanism is absent.",
+    ],
+    cousin_form_contrasts: [
+      "form_jukebox is an electric coin-operated record player, while a music box is a spring-driven mechanical comb, disc, or cylinder machine.",
+      "form_pump_organ_cabinet produces sound through reeds and bellows, while a music box plucks tuned comb teeth.",
+      "form_musical_instrument_furniture is a broader instrument or phonograph case category; use music box when the comb, disc, cylinder, crank, or Regina-type mechanism is present.",
+    ],
+    dimensional_thresholds: {
+      notes: "Tabletop examples are often small cabinet boxes; upright disc-cabinet examples may be floor-standing with large disc storage and coin-op fittings.",
+    },
+    common_aliases: ["disc music box", "cylinder music box", "Regina", "Polyphon", "Symphonion", "symphonion", "musical box"],
+    regional_period_notes: "Cylinder music boxes have earlier European and Swiss traditions, especially 18th and 19th century examples. American disc music boxes, including Regina, cluster strongly around the 1890s to early 1910s, with Regina active from the 1890s into the early 20th century.",
+    subtypes: [
+      {
+        id: "subtype_disc_music_box",
+        name: "Disc music box",
+        distinguishing_attributes: [
+          "Interchangeable metal discs, star wheels, and pressure bar.",
+          "Crank or spring motor with an often-visible bedplate movement.",
+        ],
+      },
+      {
+        id: "subtype_cylinder_music_box",
+        name: "Cylinder music box",
+        distinguishing_attributes: [
+          "Pinned brass cylinder that plucks the comb teeth.",
+          "Usually plays a fixed set of tunes.",
+        ],
+      },
+      {
+        id: "subtype_upright_disc_cabinet",
+        name: "Upright / floor disc-cabinet music box",
+        distinguishing_attributes: [
+          "Floor-standing case with large-disc storage.",
+          "Often coin-operated fittings.",
+        ],
+      },
+    ],
+  },
 ];

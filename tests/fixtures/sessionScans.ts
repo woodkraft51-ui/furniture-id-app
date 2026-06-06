@@ -2819,8 +2819,8 @@ const regina_music_box_disc_floor_cabinet: ScanFixture = {
     { type: "form", clue: "cabinet_form", confidence: 68, description: "Cabinet or cupboard form is visible." },
   ],
   asSeen: {
-    formId: "Brass bed or brass-frame furniture",
-    display: "Brass bed or brass-frame furniture (also commonly called: iron bed, iron bedstead)",
+    formId: "Music box",
+    display: "Regina Music Box Co Music box (also commonly called: disc music box, cylinder music box)",
     finalStyleKind: "context_only",
     dateRange: "c. 1893",
     dateFloor: 1893,
