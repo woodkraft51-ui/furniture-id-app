@@ -13,6 +13,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 02 | **Trifold dressing-table mirror** (Globe Bosse; "JAN 22 1924" ink stamp) | **GLOBE BOSSE WORLD FURNITURE CO Dressing table** | c. 1840–1940 (date conf Low) | 🟡 date too broad | hard 1924 stamp demoted to floor → 100-yr range; form acceptable. see below |
 | 03 | **Lyon & Healy parlor reed/pump organ** (Victorian, Chicago) | **Late Victorian Cottage Eastlake Afterwave Upholstered seating** | c. 1880–1990, Mod | 🔴 wrong form + date | organ → "upholstered seating"; felt pedal-covers read as upholstery; plywood *repair patch* dated the piece. see below |
 | 04 | **Colonial/Empire Revival chest of drawers / dresser** (two-section, bow-front, c. 1920–40) | **Colonial Revival Telephone bench / writing bench combination** (`form_telephone_stand`) | post-1939, Mod | 🔴 wrong form (+odd date) | **telephone-bench bug, 2nd sighting** (cf. scan 01); phantom `seating_surface`/`seating_present` (M0) on a dresser; "post-1939" off a label that isn't there. see below |
+| 05 | **Renaissance Revival dressing table / vanity** (part of a 3-pc bedroom suite: vanity + dresser + full bed) | **Italian Renaissance / Neo-Renaissance Revival Dressing table** | c. 1920–1925, High | 🟢 form right / 🟡 date by style | **form CORRECT** (kneehole→vanity). Date driven *purely* by a style-revival-wave, sidelining the hardware layer. see below |
 
 ---
 
@@ -101,3 +102,41 @@ Result: floor 1924 is right, but the ceiling free-floats to 1940 (Phillips-screw
 - (c) Phantom "1939 label" terminus: trace where the floor 1939 originates with no label clue present.
 
 **Telephone-bench tally so far: scans 01 + 04. This is the fix that will move the most real-world cases.**
+
+---
+
+## Scan 05 — Renaissance Revival dressing table (part of a bedroom suite)
+
+**Engine:** Italian Renaissance / Neo-Renaissance Revival Dressing table · c. 1920–1925 (High overall, date conf Moderate) · resale $111–285.
+**Actually:** a Renaissance Revival **dressing table / vanity** — correctly identified — one of a coordinating 3-piece suite (vanity + dresser + full bed) in the owner's workshop.
+
+**Form is RIGHT (🟢).** P0 read `kneehole_opening` (conf 96) + `dressing_table_form` + mirror superstructure, and routing landed on **Dressing table** at High confidence — over the tempting wrong alternatives it explicitly considered (Kneehole desk, Pedestal stand). This is the second dressing-table form-win of the batch (cf. scan 02) — the vanity-vs-desk logic and the maker/mirror handling are working. Good note to close batch 1 on.
+
+**The date is the issue, and it's a subtle one (🟡).** Final: **c. 1920–1925**. The engine found **two** convergence zones:
+- `1920–1925` — **style_wave layer only** (the "Italian Renaissance Revival wave, 1890–1925")
+- `1840–1940` — **6 layers**: fastener, hardware, finish, style_wave, joinery, style
+
+It picked the **narrower, style-only** zone as "strongest… highest weighted authority" — over the broader zone backed by **hardware** (porcelain casters 1840–1900, ring pulls 1840–1900) and fasteners. In other words: **style dated this piece, and construction/hardware got sidelined** — the exact inversion the canonical guidance warns against ("style alone should not date the form; construction evidence should control").
+
+**Important nuance — the *number* may actually be right, but the *path* is wrong.** A matched 3-piece "Italian/Jacobean Renaissance Revival" bedroom suite is itself a strong **1920s mass-market** signal (coordinated suites like this were a 1920s phenomenon, not a 1870s one), so c. 1920–25 is plausibly correct. But the engine didn't reason from the suite or the construction — it got there by letting a style-revival-wave outvote the hardware. Right answer, forbidden method, not robust. If the same mechanism hit a genuinely Victorian piece it would mis-date it late (and arguably already shaded scan 03's ceiling).
+
+**Lands on parked / protected territory:** this is the **style-prose / revival-wave frontier (M11)** crossed with **convergence-zone selection** in `engineDatingOverlap.ts` — explicitly on the *don't-touch-without-asking* list. So it's a deliberate-design triage item, not a quick guard. Logging, not touching.
+
+**Minor M0 over-emission (didn't change outcome):** `pedestal_column` fired at weight 0.98 ("single-column pedestal form") on a two-pedestal vanity, and `golden_oak_structural_pattern` fired on a walnut/burl piece. Neither overrode the correct form — noted as the same phantom-clue pattern as scan 04, just harmless here.
+
+**Suite / resale note:** a coordinating vanity + dresser + full bed is worth meaningfully more **sold as a matched set** than parted out — "complete Renaissance Revival bedroom suite" is a real listing category. The bed having no rails hurts (beds without rails are hard to sell and to use); sourcing or fabricating rails materially lifts the set's value. Worth scanning the dresser and bed too — if the engine dates all three consistently, that's a useful cross-check on this very date question (a suite should date as one unit).
+
+---
+
+## Batch 1 complete (scans 01–05) — holding
+
+Per "collect all 40, then discuss — don't do anything yet," I am **not** pushing, ingesting corpus fixtures, or fixing. Running log committed locally only. Tally so far:
+
+- **Telephone-bench over-route: 2** (scans 01, 04) — current #1 fix target.
+- **#22 taxonomy gap: 2** (01 high chair, 03 organ — organ also out-of-scope).
+- **Affirmation / M0 phantom-clue: 2–3** (01, 03 felt-pads-as-upholstery, 04 phantom seating).
+- **Prose-discarded / style-driven dating: 3** (02 dated stamp under-used, 03 repair patch over-used, 05 style-wave outvoting hardware).
+- **Clean form wins: 2** (02, 05 — both dressing tables).
+- **Regressions from our shipped work: 0.**
+
+Everything still converges on the one root cause. Branch for the eventual push (`zen-gauss` vs `general-discussion`) still needs the owner's call.
