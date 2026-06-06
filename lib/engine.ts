@@ -5186,6 +5186,17 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (planterForm) {
     add("Planter", 90, "Vessel or container that holds or conceals a plant or pot (planter, jardinière, cachepot).");
   }
+  // Pedestal chair (taxonomy-gap form #22, form-wire B.4). Single-central-base
+  // modern seat (cone / tulip / ball / egg / swivel). Gated on a chair-SPECIFIC
+  // base clue AND seating evidence — deliberately NOT pedestal_column alone (which
+  // fires on 15 pedestal tables/stands), so it can't grab non-seating pedestals.
+  const pedestalChairForm =
+    (hasAny("cone_chair_form", "tulip_chair_form", "ball_chair_form", "egg_chair_form", "pedestal_chair_form", "swivel_chair_form") ||
+      includesAny(text, ["cone chair", "tulip chair", "ball chair", "globe chair", "egg chair", "pod chair", "space-age chair", "space age chair", "pedestal chair"])) &&
+    hasAny("seating_surface", "seating_present", "backrest_present", "sitting", "no_armrests");
+  if (pedestalChairForm) {
+    add("Pedestal chair", 95, "Single-occupant modern seat on one central pedestal/cone/tulip/swivel base (cone, tulip, ball, egg chair).");
+  }
   if (tallCaseClockForm) {
     add("Tall case clock", 98, "Floor-standing weight-driven clock in a tall case (grandfather/longcase).");
   } else if (wallClockForm) {

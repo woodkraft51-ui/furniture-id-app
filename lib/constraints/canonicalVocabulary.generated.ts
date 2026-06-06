@@ -15,11 +15,11 @@ export const CANONICAL_VOCABULARY = {
       "subforms": 1299,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 102,
+      "routingKeysMined": 110,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 271
+      "allClueKeys": 279
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -27,6 +27,7 @@ export const CANONICAL_VOCABULARY = {
       "art_deco_pattern",
       "art_nouveau_pattern",
       "backrest_present",
+      "ball_chair_form",
       "barley_twist",
       "barrel_tub_back",
       "bowl_planter_form",
@@ -47,12 +48,14 @@ export const CANONICAL_VOCABULARY = {
       "club_chair_form",
       "colonial_georgian_revival_upholstered_armchair_pattern",
       "colonial_revival_pattern",
+      "cone_chair_form",
       "cylinder_roll",
       "door_present",
       "drawer_present",
       "drop_front_desk",
       "drop_leaf_hinged",
       "edwardian_pattern",
+      "egg_chair_form",
       "electric_lamp",
       "electric_table_lamp",
       "exposed_upholstery_tacks",
@@ -90,9 +93,11 @@ export const CANONICAL_VOCABULARY = {
       "mission_arts_crafts_structural_pattern",
       "molded_plastic",
       "multiple_drawer_case",
+      "no_armrests",
       "open_shelving",
       "ormolu_mounts",
       "parquetry_veneer",
+      "pedestal_chair_form",
       "pedestal_column",
       "pigeonholes",
       "planter_cachepot_function",
@@ -105,18 +110,21 @@ export const CANONICAL_VOCABULARY = {
       "secondary_surface",
       "shaker_pattern",
       "shell_carving",
+      "sitting",
       "slag_glass_shade",
       "slant_front",
       "slipper_chair_form",
       "spindle_back",
       "spindle_gallery",
       "stamped_metal_seat_support_bracket",
+      "swivel_chair_form",
       "swivel_mechanism",
       "table_lamp_form",
       "telephone_shelf",
       "toledo_industrial_style",
       "tubular_steel",
       "tufted_upholstery",
+      "tulip_chair_form",
       "victorian_eastlake_pattern",
       "visible_springs",
       "william_and_mary_pattern",
@@ -129,6 +137,7 @@ export const CANONICAL_VOCABULARY = {
       "routingKeysNotInClueLibrary": [
         "art_deco_pattern",
         "art_nouveau_pattern",
+        "ball_chair_form",
         "barrel_tub_back",
         "bowl_planter_form",
         "chippendale_pattern",
@@ -136,7 +145,9 @@ export const CANONICAL_VOCABULARY = {
         "club_chair_form",
         "colonial_georgian_revival_upholstered_armchair_pattern",
         "colonial_revival_pattern",
+        "cone_chair_form",
         "edwardian_pattern",
+        "egg_chair_form",
         "electric_lamp",
         "electric_table_lamp",
         "federal_hepplewhite_sheraton_pattern",
@@ -159,15 +170,20 @@ export const CANONICAL_VOCABULARY = {
         "mcm_structural_pattern",
         "mid_century_industrial_office",
         "mission_arts_crafts_structural_pattern",
+        "no_armrests",
+        "pedestal_chair_form",
         "planter_cachepot_function",
         "renaissance_revival_upholstered_armchair_pattern",
         "rococo_revival_pattern",
         "shaker_pattern",
+        "sitting",
         "slag_glass_shade",
         "slipper_chair_form",
         "stamped_metal_seat_support_bracket",
+        "swivel_chair_form",
         "table_lamp_form",
         "toledo_industrial_style",
+        "tulip_chair_form",
         "victorian_eastlake_pattern",
         "william_and_mary_pattern",
         "wingback_form"
@@ -178,14 +194,22 @@ export const CANONICAL_VOCABULARY = {
       ]
     },
     "unclassifiedKeys": [
+      "ball_chair_form",
       "bowl_planter_form",
+      "cone_chair_form",
+      "egg_chair_form",
       "harpsichord_form",
       "jack_rail_bristle_dampers",
-      "planter_cachepot_function"
+      "no_armrests",
+      "pedestal_chair_form",
+      "planter_cachepot_function",
+      "sitting",
+      "swivel_chair_form",
+      "tulip_chair_form"
     ],
     "crosswalk": {
-      "mapped": 162,
-      "unmapped": 109
+      "mapped": 168,
+      "unmapped": 111
     }
   },
   "evidence": {
@@ -13821,6 +13845,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.67
       }
     ],
+    "ball_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "band_saw_lines": [
       {
         "taxonomyId": "toolmark_type_band_saw_lines",
@@ -13971,6 +14002,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.67
       }
     ],
+    "cone_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "cotton_batting": [
       {
         "taxonomyId": "upholstery_construction_type_cotton_batting",
@@ -14087,6 +14125,13 @@ export const CANONICAL_VOCABULARY = {
       {
         "taxonomyId": "upholstery_cover_type_muslin_cambric_dust_cover",
         "lib": "upholsteryCovers",
+        "score": 0.5
+      }
+    ],
+    "egg_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
         "score": 0.5
       }
     ],
@@ -14647,6 +14692,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "pedestal_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "phillips_screw": [
       {
         "taxonomyId": "fastener_subcategory_phillips_head_screws",
@@ -15010,6 +15062,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "swivel_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "swivel_mechanism": [
       {
         "taxonomyId": "hardware_type_cylinder_desk_mechanism",
@@ -15049,6 +15108,13 @@ export const CANONICAL_VOCABULARY = {
       },
       {
         "taxonomyId": "joinery_category_upholstery_structural",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
+    "tulip_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
         "lib": "joinery",
         "score": 0.5
       }
@@ -15611,6 +15677,7 @@ export const CANONICAL_VOCABULARY = {
     "mirror_present",
     "molded_plastic",
     "multiple_drawer_case",
+    "no_armrests",
     "open_shelving",
     "ormolu_mounts",
     "painted_metal_finish",
@@ -15633,6 +15700,7 @@ export const CANONICAL_VOCABULARY = {
     "settee_two_seat_form",
     "sheet_back_panel",
     "shell_carving",
+    "sitting",
     "slag_glass_shade",
     "slant_front",
     "solid_plank_back",
