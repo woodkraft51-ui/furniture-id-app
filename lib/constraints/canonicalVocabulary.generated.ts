@@ -11,15 +11,15 @@ export const CANONICAL_VOCABULARY = {
       "evidenceCategories": 15,
       "disqualifying": 7,
       "woodEvidenceKeys": 34,
-      "forms": 243,
-      "subforms": 1288,
+      "forms": 246,
+      "subforms": 1299,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 97,
+      "routingKeysMined": 110,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 267
+      "allClueKeys": 279
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -27,8 +27,10 @@ export const CANONICAL_VOCABULARY = {
       "art_deco_pattern",
       "art_nouveau_pattern",
       "backrest_present",
+      "ball_chair_form",
       "barley_twist",
       "barrel_tub_back",
+      "bowl_planter_form",
       "brass_foot_sabots",
       "brass_frame",
       "button_tufting",
@@ -42,15 +44,18 @@ export const CANONICAL_VOCABULARY = {
       "chrome_frame",
       "circular_footring_stretcher",
       "claw_or_pad_foot",
+      "clock_case_form",
       "club_chair_form",
       "colonial_georgian_revival_upholstered_armchair_pattern",
       "colonial_revival_pattern",
+      "cone_chair_form",
       "cylinder_roll",
       "door_present",
       "drawer_present",
       "drop_front_desk",
       "drop_leaf_hinged",
       "edwardian_pattern",
+      "egg_chair_form",
       "electric_lamp",
       "electric_table_lamp",
       "exposed_upholstery_tacks",
@@ -63,7 +68,9 @@ export const CANONICAL_VOCABULARY = {
       "gateleg_support",
       "glass_top",
       "gothic_revival_pattern",
+      "harpsichord_form",
       "height_adjustment_mechanism",
+      "jack_rail_bristle_dampers",
       "jacobean_tudor_revival_case_pattern",
       "laminate_surface",
       "lamp_base",
@@ -86,11 +93,14 @@ export const CANONICAL_VOCABULARY = {
       "mission_arts_crafts_structural_pattern",
       "molded_plastic",
       "multiple_drawer_case",
+      "no_armrests",
       "open_shelving",
       "ormolu_mounts",
       "parquetry_veneer",
+      "pedestal_chair_form",
       "pedestal_column",
       "pigeonholes",
+      "planter_cachepot_function",
       "rattan_frame",
       "renaissance_revival_upholstered_armchair_pattern",
       "rococo_revival_pattern",
@@ -100,18 +110,21 @@ export const CANONICAL_VOCABULARY = {
       "secondary_surface",
       "shaker_pattern",
       "shell_carving",
+      "sitting",
       "slag_glass_shade",
       "slant_front",
       "slipper_chair_form",
       "spindle_back",
       "spindle_gallery",
       "stamped_metal_seat_support_bracket",
+      "swivel_chair_form",
       "swivel_mechanism",
       "table_lamp_form",
       "telephone_shelf",
       "toledo_industrial_style",
       "tubular_steel",
       "tufted_upholstery",
+      "tulip_chair_form",
       "victorian_eastlake_pattern",
       "visible_springs",
       "william_and_mary_pattern",
@@ -124,19 +137,25 @@ export const CANONICAL_VOCABULARY = {
       "routingKeysNotInClueLibrary": [
         "art_deco_pattern",
         "art_nouveau_pattern",
+        "ball_chair_form",
         "barrel_tub_back",
+        "bowl_planter_form",
         "chippendale_pattern",
         "circular_footring_stretcher",
         "club_chair_form",
         "colonial_georgian_revival_upholstered_armchair_pattern",
         "colonial_revival_pattern",
+        "cone_chair_form",
         "edwardian_pattern",
+        "egg_chair_form",
         "electric_lamp",
         "electric_table_lamp",
         "federal_hepplewhite_sheraton_pattern",
         "floor_lamp_form",
         "four_leg_caster_base",
         "gothic_revival_pattern",
+        "harpsichord_form",
+        "jack_rail_bristle_dampers",
         "jacobean_tudor_revival_case_pattern",
         "lamp_base",
         "lamp_finial",
@@ -151,14 +170,20 @@ export const CANONICAL_VOCABULARY = {
         "mcm_structural_pattern",
         "mid_century_industrial_office",
         "mission_arts_crafts_structural_pattern",
+        "no_armrests",
+        "pedestal_chair_form",
+        "planter_cachepot_function",
         "renaissance_revival_upholstered_armchair_pattern",
         "rococo_revival_pattern",
         "shaker_pattern",
+        "sitting",
         "slag_glass_shade",
         "slipper_chair_form",
         "stamped_metal_seat_support_bracket",
+        "swivel_chair_form",
         "table_lamp_form",
         "toledo_industrial_style",
+        "tulip_chair_form",
         "victorian_eastlake_pattern",
         "william_and_mary_pattern",
         "wingback_form"
@@ -168,10 +193,23 @@ export const CANONICAL_VOCABULARY = {
         "thick_veneer"
       ]
     },
-    "unclassifiedKeys": [],
+    "unclassifiedKeys": [
+      "ball_chair_form",
+      "bowl_planter_form",
+      "cone_chair_form",
+      "egg_chair_form",
+      "harpsichord_form",
+      "jack_rail_bristle_dampers",
+      "no_armrests",
+      "pedestal_chair_form",
+      "planter_cachepot_function",
+      "sitting",
+      "swivel_chair_form",
+      "tulip_chair_form"
+    ],
     "crosswalk": {
-      "mapped": 162,
-      "unmapped": 105
+      "mapped": 168,
+      "unmapped": 111
     }
   },
   "evidence": {
@@ -3768,6 +3806,23 @@ export const CANONICAL_VOCABULARY = {
       "has_dimensional_thresholds": true
     },
     {
+      "form_id": "form_harpsichord",
+      "label": "harpsichord",
+      "aliases": [
+        "clavecin",
+        "clavicembalo",
+        "double-manual harpsichord",
+        "single-manual harpsichord",
+        "spinet",
+        "virginal"
+      ],
+      "family_id": "family_musical_mechanical",
+      "spatial_behavior_id": "spatial_musical_instrument_cabinets",
+      "date_floor": 1500,
+      "date_ceiling": 2026,
+      "has_dimensional_thresholds": true
+    },
+    {
       "form_id": "form_hat_rack",
       "label": "hat rack",
       "aliases": [
@@ -4913,6 +4968,25 @@ export const CANONICAL_VOCABULARY = {
       "has_dimensional_thresholds": true
     },
     {
+      "form_id": "form_pedestal_chair",
+      "label": "pedestal chair",
+      "aliases": [
+        "ball chair",
+        "cone chair",
+        "egg chair",
+        "globe chair",
+        "pod chair",
+        "space-age chair",
+        "swivel pedestal chair",
+        "tulip chair"
+      ],
+      "family_id": "family_seating",
+      "spatial_behavior_id": "spatial_modern_casual_seating",
+      "date_floor": 1955,
+      "date_ceiling": 2026,
+      "has_dimensional_thresholds": true
+    },
+    {
       "form_id": "form_pedestal_desk",
       "label": "pedestal desk",
       "aliases": [
@@ -5200,6 +5274,26 @@ export const CANONICAL_VOCABULARY = {
       "spatial_behavior_id": "spatial_display_and_plant_support_stands",
       "date_floor": 1750,
       "date_ceiling": null,
+      "has_dimensional_thresholds": true
+    },
+    {
+      "form_id": "form_planter",
+      "label": "planter",
+      "aliases": [
+        "cachepot",
+        "fernery",
+        "flower box",
+        "jardiniere",
+        "jardinière",
+        "plant holder",
+        "plant tub",
+        "planter box",
+        "window box"
+      ],
+      "family_id": "family_entry_support_forms",
+      "spatial_behavior_id": "spatial_display_and_plant_support_stands",
+      "date_floor": 1700,
+      "date_ceiling": 2026,
       "has_dimensional_thresholds": true
     },
     {
@@ -7101,6 +7195,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Bachelor's chest"
     },
     {
+      "subtype_id": "subtype_ball_chair",
+      "parent_form_id": "form_pedestal_chair",
+      "name": "Ball / globe chair"
+    },
+    {
       "subtype_id": "subtype_bank_fixture_bank_vault_front",
       "parent_form_id": "form_bank_fixture",
       "name": "bank vault front"
@@ -7901,6 +8000,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Cabinet sewing table"
     },
     {
+      "subtype_id": "subtype_cachepot",
+      "parent_form_id": "form_planter",
+      "name": "Cachepot"
+    },
+    {
       "subtype_id": "subtype_cafe_table",
       "parent_form_id": "form_pub_table",
       "name": "Café table"
@@ -8356,6 +8460,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "tower-cabinet computer desk"
     },
     {
+      "subtype_id": "subtype_cone_chair",
+      "parent_form_id": "form_pedestal_chair",
+      "name": "Cone chair"
+    },
+    {
       "subtype_id": "subtype_console_game_table",
       "parent_form_id": "form_game_table",
       "name": "Console game table"
@@ -8736,6 +8845,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Double dresser"
     },
     {
+      "subtype_id": "subtype_double_manual_harpsichord",
+      "parent_form_id": "form_harpsichord",
+      "name": "Double-manual harpsichord"
+    },
+    {
       "subtype_id": "subtype_double_pedestal_table",
       "parent_form_id": "form_pedestal_table",
       "name": "Double pedestal table"
@@ -8954,6 +9068,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_educational_fixture_library_card_catalog",
       "parent_form_id": "form_educational_fixture",
       "name": "library card catalog"
+    },
+    {
+      "subtype_id": "subtype_egg_chair",
+      "parent_form_id": "form_pedestal_chair",
+      "name": "Egg chair"
     },
     {
       "subtype_id": "subtype_end_table",
@@ -9759,6 +9878,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_jam_cupboard_tabletop_or_small",
       "parent_form_id": "form_jam_cupboard",
       "name": "Small jam cupboard"
+    },
+    {
+      "subtype_id": "subtype_jardiniere",
+      "parent_form_id": "form_planter",
+      "name": "Jardinière"
     },
     {
       "subtype_id": "subtype_jardiniere_stand",
@@ -11456,6 +11580,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "gondola"
     },
     {
+      "subtype_id": "subtype_revival_harpsichord",
+      "parent_form_id": "form_harpsichord",
+      "name": "Revival harpsichord"
+    },
+    {
       "subtype_id": "subtype_rococo_revival_center_table",
       "parent_form_id": "form_center_table",
       "name": "Rococo Revival parlor table"
@@ -12006,6 +12135,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Single-door chifforobe"
     },
     {
+      "subtype_id": "subtype_single_manual_harpsichord",
+      "parent_form_id": "form_harpsichord",
+      "name": "Single-manual harpsichord"
+    },
+    {
       "subtype_id": "subtype_single_pedestal_table",
       "parent_form_id": "form_pedestal_table",
       "name": "Single pedestal table"
@@ -12159,6 +12293,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_sofa_tuxedo",
       "parent_form_id": "form_sofa",
       "name": "Tuxedo sofa"
+    },
+    {
+      "subtype_id": "subtype_spinet",
+      "parent_form_id": "form_harpsichord",
+      "name": "Spinet harpsichord"
     },
     {
       "subtype_id": "subtype_spinning_wheel_castle_wheel",
@@ -12836,6 +12975,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "Tripod tea table"
     },
     {
+      "subtype_id": "subtype_tulip_chair",
+      "parent_form_id": "form_pedestal_chair",
+      "name": "Tulip chair"
+    },
+    {
       "subtype_id": "subtype_tulip_table",
       "parent_form_id": "form_pedestal_table",
       "name": "Tulip table"
@@ -12969,6 +13113,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_victorian_pier_table",
       "parent_form_id": "form_pier_table",
       "name": "Victorian pier table"
+    },
+    {
+      "subtype_id": "subtype_virginal",
+      "parent_form_id": "form_harpsichord",
+      "name": "Virginal"
     },
     {
       "subtype_id": "subtype_wall_clock_banjo_clock",
@@ -13696,6 +13845,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.67
       }
     ],
+    "ball_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "band_saw_lines": [
       {
         "taxonomyId": "toolmark_type_band_saw_lines",
@@ -13846,6 +14002,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.67
       }
     ],
+    "cone_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "cotton_batting": [
       {
         "taxonomyId": "upholstery_construction_type_cotton_batting",
@@ -13962,6 +14125,13 @@ export const CANONICAL_VOCABULARY = {
       {
         "taxonomyId": "upholstery_cover_type_muslin_cambric_dust_cover",
         "lib": "upholsteryCovers",
+        "score": 0.5
+      }
+    ],
+    "egg_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
         "score": 0.5
       }
     ],
@@ -14522,6 +14692,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "pedestal_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "phillips_screw": [
       {
         "taxonomyId": "fastener_subcategory_phillips_head_screws",
@@ -14885,6 +15062,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "swivel_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "swivel_mechanism": [
       {
         "taxonomyId": "hardware_type_cylinder_desk_mechanism",
@@ -14924,6 +15108,13 @@ export const CANONICAL_VOCABULARY = {
       },
       {
         "taxonomyId": "joinery_category_upholstery_structural",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
+    "tulip_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
         "lib": "joinery",
         "score": 0.5
       }
@@ -15435,6 +15626,7 @@ export const CANONICAL_VOCABULARY = {
     "bent_molded_plywood",
     "bent_or_sprung_metal",
     "bistro_table_form",
+    "bowl_planter_form",
     "brass_dial_bezel",
     "brass_foot_sabots",
     "bun_feet",
@@ -15464,8 +15656,10 @@ export const CANONICAL_VOCABULARY = {
     "floor_lamp_form",
     "four_leg_caster_base",
     "fully_upholstered",
+    "harpsichord_form",
     "heavy_carving",
     "height_adjustment_mechanism",
+    "jack_rail_bristle_dampers",
     "lamp_base",
     "lamp_finial",
     "lamp_form",
@@ -15483,6 +15677,7 @@ export const CANONICAL_VOCABULARY = {
     "mirror_present",
     "molded_plastic",
     "multiple_drawer_case",
+    "no_armrests",
     "open_shelving",
     "ormolu_mounts",
     "painted_metal_finish",
@@ -15490,6 +15685,7 @@ export const CANONICAL_VOCABULARY = {
     "pedestal_column",
     "pendulum_bob_cast",
     "pigeonholes",
+    "planter_cachepot_function",
     "plating_loss",
     "possible_plywood_or_laminated_panel",
     "powder_coat_overspray",
@@ -15504,6 +15700,7 @@ export const CANONICAL_VOCABULARY = {
     "settee_two_seat_form",
     "sheet_back_panel",
     "shell_carving",
+    "sitting",
     "slag_glass_shade",
     "slant_front",
     "solid_plank_back",

@@ -3873,7 +3873,34 @@ export function scoreForms(digest: EvidenceDigest): ScoredForm[] {
   const woodPrimary = isWoodPrimary(clues);
   // Rejected-candidate prose ("...not a clock case") must not drive text-based
   // form matching either — exclude negated observations from the haystack (#15).
-  const text = `${digest.perception?.raw_text || ""} ${digest.observations.filter((o) => !o.negated).map((o) => `${o.clue} ${o.description}`).join(" ")}`.toLowerCase();
+  // Affirmation gate (form-wire Step 1). Form-name keyword routes read ONLY
+  // form-DETERMINING observations. Material/condition prose ("brass mechanism
+  // components", "woven body", "natural rattan … not Lloyd loom") describes
+  // substance, not form — and letting it feed the keyword cascade is what stamped
+  // "Brass bed" on a disc music box, "Loom" on a rattan chair, and "Wicker
+  // furniture" on a fiberglass planter. Exclude those categories by the
+  // CLUE_LIBRARY canonical category (authoritative even when P0 mis-types a
+  // material clue as "construction"), falling back to the observation's own type.
+  // Negated observations stay excluded (#15); raw_text (uncategorized model
+  // narrative) is kept. This is purely suppressive — it cannot invent a form.
+  const NON_FORM_ROUTING_CATEGORIES = new Set(["materials", "condition"]);
+  const isFormDeterminingObs = (o: any) =>
+    !NON_FORM_ROUTING_CATEGORIES.has((CLUE_LIBRARY as any)[o.clue]?.category ?? o.type);
+  // Form-token contrast scrub (form-wire Step 4). A form name sitting inside a
+  // contrast/negation clause is the model RULING OUT that form — "…parlor rocker
+  // classification rather than heavy turned-spindle WINDSOR anatomy", "the lid is
+  // flat, NOT a slanted writing surface". Word-presence routing reads it as
+  // positive evidence (this is what put Windsor on wicker rockers and slant-front
+  // desk on a flat-lid chest). Strip the clause from the cue to the next clause
+  // boundary before the description enters the form-routing haystack, so the
+  // contrasted form can't be selected. The category/negation filters above handle
+  // the rest of the affirmation gate.
+  const scrubContrastClauses = (s: string) =>
+    s.replace(/\b(?:rather than|instead of|as opposed to|other than|unlike|not|no)\b[^.,;:]*/gi, " ");
+  const text = `${digest.perception?.raw_text || ""} ${digest.observations
+    .filter((o) => !o.negated && isFormDeterminingObs(o))
+    .map((o) => `${o.clue} ${scrubContrastClauses(String(o.description || ""))}`)
+    .join(" ")}`.toLowerCase();
 
   const scores: Record<string, { form: string; score: number; support: string[] }> = {};
 
@@ -4824,7 +4851,18 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   //   - armoire/wardrobe/dressing-table also require NO "desk" context so the
   //     armoire-desk / vanity-desk conversions stay on their desk forms.
   const deskContext = includesAny(text, ["desk"]);
-  const trunkForm = includesAny(text, [
+  // A tall-case clock's middle section is horologically a "trunk", which collides
+  // with the steamer-Trunk route's bare "trunk" token (form-wire B.3). A piece
+  // affirmed as a clock is never a travel trunk — suppress Trunk on clock evidence,
+  // which lets the existing clock route (Tall case clock, 98) win the slot.
+  const clockSignal = hasAny("clock_case_form") || includesAny(text, [
+    "tall case clock", "tall-case clock", "longcase clock", "grandfather clock",
+    "grandmother clock", "granddaughter clock", "floor clock", "standing clock",
+    "wall clock", "banjo clock", "regulator clock", "schoolhouse clock",
+    "shelf clock", "mantel clock", "mantle clock", "bracket clock", "ogee clock",
+    "kitchen clock", "clock case", "clock movement", "clock dial",
+  ]);
+  const trunkForm = !clockSignal && includesAny(text, [
     "steamer trunk", "travel trunk", "storage trunk", "footlocker", "wardrobe trunk",
     "shipping trunk", "immigrant trunk", "luggage trunk", "dome-top trunk",
     "camelback trunk", "flat-top trunk", "steamer chest", "trunk",
@@ -5131,6 +5169,34 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   const interactiveConsoleForm = includesAny(text, ["interactive console", "gaming console", "gaming tower", "gaming pc", "vr station", "vr setup", "control console", "digital interface console"]);
   const musicalInstrumentForm = includesAny(text, ["music cabinet", "sheet music cabinet", "music stand cabinet", "instrument storage cabinet"]);
   const basketForm = includesAny(text, ["wicker basket", "sewing basket", "picnic basket", "laundry basket", "market basket", "storage basket", "splint basket", "nantucket basket", "gathering basket", "woven basket", "basketry"]);
+  // Harpsichord (taxonomy-gap form #22, form-wire B.1). Plucked-string keyboard
+  // instrument. Gated on the direct form clue / jack-rail anatomy / explicit name
+  // — all harpsichord-specific, so collision risk is minimal. Independent `if` so
+  // it competes against and outscores the music-stand misroute.
+  const harpsichordForm = hasAny("harpsichord_form", "jack_rail_bristle_dampers") ||
+    includesAny(text, ["harpsichord", "clavecin", "clavicembalo", "clavichord"]);
+  if (harpsichordForm) {
+    add("Harpsichord", 99, "Keyboard instrument with plucked-string jack action (harpsichord, spinet, virginal, clavecin).");
+  }
+  // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
+  // on the direct planter form/function clues or explicit name — planter-specific,
+  // low collision. Beats the generic "Wicker/rattan furniture" material fallback.
+  const planterForm = hasAny("bowl_planter_form", "planter_cachepot_function") ||
+    includesAny(text, ["planter", "jardiniere", "jardinière", "cachepot", "plant pot", "flower pot", "fernery"]);
+  if (planterForm) {
+    add("Planter", 90, "Vessel or container that holds or conceals a plant or pot (planter, jardinière, cachepot).");
+  }
+  // Pedestal chair (taxonomy-gap form #22, form-wire B.4). Single-central-base
+  // modern seat (cone / tulip / ball / egg / swivel). Gated on a chair-SPECIFIC
+  // base clue AND seating evidence — deliberately NOT pedestal_column alone (which
+  // fires on 15 pedestal tables/stands), so it can't grab non-seating pedestals.
+  const pedestalChairForm =
+    (hasAny("cone_chair_form", "tulip_chair_form", "ball_chair_form", "egg_chair_form", "pedestal_chair_form", "swivel_chair_form") ||
+      includesAny(text, ["cone chair", "tulip chair", "ball chair", "globe chair", "egg chair", "pod chair", "space-age chair", "space age chair", "pedestal chair"])) &&
+    hasAny("seating_surface", "seating_present", "backrest_present", "sitting", "no_armrests");
+  if (pedestalChairForm) {
+    add("Pedestal chair", 95, "Single-occupant modern seat on one central pedestal/cone/tulip/swivel base (cone, tulip, ball, egg chair).");
+  }
   if (tallCaseClockForm) {
     add("Tall case clock", 98, "Floor-standing weight-driven clock in a tall case (grandfather/longcase).");
   } else if (wallClockForm) {
@@ -5436,7 +5502,11 @@ if (
   const butterflyForm = includesAny(text, ["butterfly chair", "butterfly sling", "bkf chair", "b.k.f. chair", "hardoy chair", "sling chair", "leather sling chair", "canvas sling chair", "hide sling chair", "cowhide butterfly"]);
   const theaterSeatForm = includesAny(text, ["theater seat", "theatre seat", "auditorium seat", "auditorium chair", "cinema seat", "movie theater seat", "movie theatre seat", "opera seat", "opera house seat", "stadium seat", "arena seat", "lecture hall seat", "folding auditorium seat", "assembly hall seat", "church auditorium seat"]);
   const pewForm = includesAny(text, ["pew", "church pew", "meetinghouse pew", "meetinghouse bench", "chapel pew", "box pew", "sanctuary pew", "congregational pew", "gothic revival pew", "cut-down pew", "salvage pew"]);
-  const windsorForm = includesAny(text, ["windsor chair", "windsor armchair", "windsor settee", "windsor", "sack-back", "bow-back", "hoop-back", "comb-back", "arrow-back", "fan-back", "birdcage windsor", "firehouse windsor", "captain's chair"]);
+  // Windsor chairs are solid turned-wood construction by definition; a woven /
+  // metal / plastic piece cannot be one. Gating on material (anatomy guard,
+  // form-wire Step 4) stops a peacock chair's "fan-back" or a wicker back from
+  // colliding with the Windsor "fan-back" alias.
+  const windsorForm = !blocksTraditionalWoodForms && includesAny(text, ["windsor chair", "windsor armchair", "windsor settee", "windsor", "sack-back", "bow-back", "hoop-back", "comb-back", "arrow-back", "fan-back", "birdcage windsor", "firehouse windsor", "captain's chair"]);
   const ladderbackForm = includesAny(text, ["ladder-back", "ladderback", "ladder back", "slat-back chair", "slat back chair"]);
   const chaiseForm = includesAny(text, ["chaise longue", "chaise lounge", "fainting couch", "fainting sofa", "recamier", "récamier", "meridienne", "méridienne", "duchesse brisée", "duchesse brisee", "long chair", "sun lounger", "pool lounger", "outdoor lounger", "patio chaise", "garden chaise", "chaise"]);
   const daybedForm = includesAny(text, ["daybed", "day bed", "studio couch", "couch bed", "day couch", "trundle daybed", "sleigh daybed", "convertible couch", "backed daybed", "bolster daybed"]);
@@ -9451,6 +9521,16 @@ if (p6.dating_overlap) {
       typeof w?.date_hint === "string" &&
       /post[-\s]*(19[2-9]\d|20\d\d)/i.test(w.date_hint)
   );
+  // #15a: decide whether the style-prose anchor (parseStyleProseDate, below) will
+  // handle this piece. If so, the convergence near-miss "last resort" defers to it
+  // — style-prose reads an explicit written era and is the better thin-evidence
+  // answer (this keeps contrast anchor S033 on its prose-derived 1875–1895 rather
+  // than a near-miss zone). Mirrors the gate on the parseStyleProseDate block.
+  const PROSE_HARD_LAYERS = ["joinery", "fastener", "toolmark", "wood", "hardware"];
+  const proseHardDated = (frameOverlap.layers || []).some(
+    (l: any) => PROSE_HARD_LAYERS.includes(l.layer) && (l.date_floor != null || l.date_ceiling != null)
+  );
+  const styleProseWouldFire = !proseHardDated && parseStyleProseDate(digest.observations) != null;
   const refined = refineDatingFromConvergence(
     {
       range: p2.range,
@@ -9459,7 +9539,8 @@ if (p6.dating_overlap) {
       confidence: String(p2.confidence ?? ""),
     },
     frameOverlap,
-    hasModernConstruction
+    hasModernConstruction,
+    styleProseWouldFire
   );
   if (refined.refined) {
     p2.range = refined.range;

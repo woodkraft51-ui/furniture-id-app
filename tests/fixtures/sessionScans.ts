@@ -358,16 +358,18 @@ const art_deco_candelabrum: ScanFixture = {
   // … bronze/brass"), but that finish clue's `dateHint: post-1900` was the ONLY hard
   // 20th-c anchor — the deco style cues (art_deco_style_cues etc.) carry no date hint
   // and contribute 0, so dating collapses to "c. 1850 onward / unresolved". This is a
-  // separate downstream root cause (style cues don't anchor dating), tracked for a
-  // future pass; the asSeen below is left at the PRE-negation expectation on purpose
-  // so the gate flags it until the downstream fix lands.
+  // separate downstream root cause (style cues don't anchor dating). RESOLVED by the
+  // last-resort dating path: with no qualifying convergence and style-prose blocked
+  // by the brass joinery layer, the near-miss Art Deco zone (1925–1945) is now
+  // reported at Low confidence with an explicit basis. asSeen reflects the fix; the
+  // 1940 floor is the pre-existing downstream "phantom floor" quirk (range still 1925–1945).
   asSeen: {
     formId: "Candelabrum",
     display: "Art Deco Candelabrum (also commonly called: Candelabrum, Candelabra)",
     finalStyleKind: "original_period",
-    dateRange: "c. 1925–1995",
+    dateRange: "c. 1925–1945",
     dateFloor: 1940,
-    dateCeiling: 1995,
+    dateCeiling: 1945,
     confidence: "Low",
   },
 };
@@ -422,10 +424,10 @@ const renaissance_revival_sgabello: ScanFixture = {
   asSeen: {
     formId: "Side chair",
     display: "Renaissance Revival Side chair (also commonly called: Dining chair, Armless chair)",
-    finalStyleKind: "unresolved",
-    dateRange: "Broad, not tightly dated",
-    dateFloor: null,
-    dateCeiling: null,
+    finalStyleKind: "original_period",
+    dateRange: "c. 1860–1885",
+    dateFloor: 1860,
+    dateCeiling: 1885,
     confidence: "Low",
   },
 };
@@ -757,8 +759,8 @@ const logan_1914_tall_case_clock: ScanFixture = {
     { type: "visible_text", clue: "", confidence: 50, description: "Full text on the arched dial cartouche: 'I see the Hours, invisible to thee, / And lift my voice lest unperceived they flee. / A. Sydney Logan / fecit Philadae. anno 1914'. The poetic inscription is a motto about time. 'Philadae' is an abbreviation for Philadelphiae (Philadelphia). 'Anno 1914' gives the year of manufacture." },
   ],
   asSeen: {
-    formId: "Trunk",
-    display: "Trunk (also commonly called: travel trunk, steamer trunk)",
+    formId: "Tall case clock",
+    display: "Tall case clock (also commonly called: Tall case clock, Longcase clock)",
     finalStyleKind: "context_only",
     dateRange: "c. 1914",
     dateFloor: 1914,
@@ -860,8 +862,8 @@ const jacobean_revival_tall_case_clock: ScanFixture = {
     { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
   ],
   asSeen: {
-    formId: "Trunk",
-    display: "Tudor Revival / Jacobean Revival / Elizabethan Revival Trunk (also commonly called: travel trunk, steamer trunk)",
+    formId: "Tall case clock",
+    display: "Tudor Revival / Jacobean Revival / Elizabethan Revival Tall case clock (also commonly called: Tall case clock, Longcase clock)",
     finalStyleKind: "original_period",
     dateRange: "c. 1920–1925",
     dateFloor: 1920,
@@ -1041,9 +1043,9 @@ const peacock_emmanuelle_rattan_chair: ScanFixture = {
     // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
     // style attribution (engineStyleEvaluator.ts) closed shared-token
     // mis-attributions. New verdict captured here.
-    formId: "Loom",
-    display: "Loom (also commonly called: Loom, Weaving loom)",
-    finalStyleKind: "unresolved",
+    formId: "Upholstered armchair",
+    display: "Lloyd Flanders Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    finalStyleKind: "context_only",
     dateRange: "c. 1920–1950",
     dateFloor: 1920,
     dateCeiling: 1950,
@@ -2901,8 +2903,8 @@ const walnut_workshop_harpsichord_misid_music_stand: ScanFixture = {
     { type: "materials", clue: "wood_species_walnut_group", confidence: 80, description: "The case wood shows warm brown coloration, visible open grain, and cathedral figure on the lid consistent with flat-sawn black walnut. The color and grain pattern are characteristic of American black walnut (Juglans nigra), commonly used in 20th-century American workshop harpsichord building." },
   ],
   asSeen: {
-    formId: "Music stand",
-    display: "Music stand (also commonly called: Music stand, Folding music stand)",
+    formId: "Harpsichord",
+    display: "Harpsichord (also commonly called: clavecin, clavicembalo)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: null,
@@ -2946,8 +2948,8 @@ const bassett_colonial_revival_upholstered_rocker_misid_windsor: ScanFixture = {
     { type: "label", clue: "maker_mark_authored_best_home_furnishings", confidence: 30, description: "Possible Best Home Furnishings match (low confidence; LOW per Confidence Ladder). Detected initials \"best\" alone do not establish Best Home Furnishings attribution. Initials may identify a maker only when they appear within a known maker-specific device, label, stencil, burn mark, paper tag, or model-code format. Surface as low-confidence pending full maker name, branded device, or supporting construction-and-form evidence." },
   ],
   asSeen: {
-    formId: "Windsor chair",
-    display: "Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    formId: "Rocking chair",
+    display: "Bassett Rocking chair",
     styleContext: "Spindle Gallery",
     finalStyleKind: "context_only",
     dateRange: "Broad, not tightly dated",
@@ -3317,13 +3319,13 @@ const mcm_atomic_age_fiberglass_bullet_planter_tripod: ScanFixture = {
     { type: "materials", clue: "woven_body", confidence: 76, description: "Woven wicker or reed body construction is visible." },
   ],
   asSeen: {
-    formId: "Wicker / rattan furniture",
-    display: "Mid-Century Modern / American Modernism Wicker / rattan furniture",
+    formId: "Planter",
+    display: "Mid-Century Modern / American Modernism Planter (also commonly called: jardiniere, jardinière)",
     styleContext: "Mid-Century Modern / American Modernism",
     finalStyleKind: "original_period",
-    dateRange: "c. 1940–1940",
+    dateRange: "c. 1940–1970",
     dateFloor: 1940,
-    dateCeiling: 1940,
+    dateCeiling: 1970,
     confidence: "Moderate",
   },
 };
@@ -3358,10 +3360,10 @@ const mid_century_lime_vinyl_telephone_gossip_bench: ScanFixture = {
   asSeen: {
     formId: "Lounge chair",
     display: "Mid-Century Modern / American Modernism Lounge chair (also commonly called: Easy chair, Club chair)",
-    finalStyleKind: "unresolved",
-    dateRange: "Broad, not tightly dated",
-    dateFloor: null,
-    dateCeiling: null,
+    finalStyleKind: "original_period",
+    dateRange: "c. 1940–1970",
+    dateFloor: 1940,
+    dateCeiling: 1970,
     confidence: "Low",
   },
 };
@@ -3399,11 +3401,11 @@ const space_age_cone_chair_panton_derivative_misid_bench: ScanFixture = {
     { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
   ],
   asSeen: {
-    formId: "Bench / seating furniture",
-    display: "Art Deco Bench / seating furniture (also commonly called: Bench, Seat)",
+    formId: "Pedestal chair",
+    display: "Art Deco Pedestal chair (also commonly called: tulip chair, cone chair)",
     finalStyleKind: "unresolved",
-    dateRange: "c. 1900 onward (early-to-mid 20th century or later)",
-    dateFloor: 1900,
+    dateRange: "c. 1955 onward (mid 20th century or later)",
+    dateFloor: 1955,
     dateCeiling: null,
     confidence: "Low",
   },
@@ -3441,8 +3443,8 @@ const sligh_grand_rapids_colonial_revival_writing_console_table_misid_writing_bo
     { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70, description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM." },
   ],
   asSeen: {
-    formId: "Writing box",
-    display: "Colonial Revival Writing box (also commonly called: Writing box, Writing slope)",
+    formId: "Secretary desk / drop-front desk",
+    display: "Sligh Furniture Co Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: 1933,
@@ -3706,8 +3708,8 @@ const victorian_curlicue_wicker_rocker_misid_as_loom: ScanFixture = {
     { type: "structure", clue: "barrel_tub_back", confidence: 76, description: "Textual barrel/tub/cylindrical back vocabulary on a seating form indicates barrel-back construction." },
   ],
   asSeen: {
-    formId: "Loom",
-    display: "Loom (also commonly called: Loom, Weaving loom)",
+    formId: "Rocking chair",
+    display: "Rocking chair",
     finalStyleKind: "context_only",
     dateRange: "c. 1920–1930",
     dateFloor: 1920,
@@ -3975,8 +3977,8 @@ const mission_arts_crafts_oak_armchair_or_rocker_misid_windsor_chair: ScanFixtur
     { type: "form", clue: "armchair_form", confidence: 82, description: "Armchair form is visible." },
   ],
   asSeen: {
-    formId: "Windsor chair",
-    display: "Arts and Crafts / Mission / Craftsman Windsor chair (also commonly called: Spindle chair, Sack-back chair)",
+    formId: "Rocking chair",
+    display: "Arts and Crafts / Mission / Craftsman Rocking chair",
     finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
@@ -4020,11 +4022,11 @@ const art_deco_depression_era_walnut_waterfall_dresser_inverted_reconciliation: 
   ],
   asSeen: {
     formId: "Dresser",
-    display: "Art Deco vocabulary (post-1870 reproduction) Dresser (also commonly called: bureau, bedroom dresser)",
-    finalStyleKind: "reproduction",
-    dateRange: "c. 1870–1910",
-    dateFloor: 1870,
-    dateCeiling: 1910,
+    display: "Art Deco Dresser (also commonly called: bureau, bedroom dresser)",
+    finalStyleKind: "original_period",
+    dateRange: "c. 1925–1945",
+    dateFloor: 1925,
+    dateCeiling: 1945,
     confidence: "Low",
   },
 };

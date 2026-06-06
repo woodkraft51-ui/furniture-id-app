@@ -8,10 +8,11 @@ import { runFixture, fidelity } from "../scripts/_scanCorpus";
 // Each entry must KEEP diverging — the guard below fails if a known-red fixture
 // starts passing, forcing us to delete it from this set (and close the finding).
 const KNOWN_RED = new Set<string>([
-  // art_deco_candelabrum: correct painted_metal_finish negation removes its only
-  // post-1900 date anchor; deco style cues carry no dateHint, so dating collapses.
-  // Tracked as finding #15a. Remove from this set when style cues anchor dating.
-  "art_deco_candelabrum",
+  // (empty) — art_deco_candelabrum was here (#15a): correct painted_metal_finish
+  // negation removed its only post-1900 anchor and dating collapsed. Resolved by
+  // the last-resort dating path (engineDatingOverlap.ts): an evidence-thin piece
+  // whose strongest convergence zone is a near-miss now reports that zone at Low
+  // confidence with an explicit basis instead of "no idea". Now c. 1925–1945.
 ]);
 
 for (const fx of SESSION_SCANS) {

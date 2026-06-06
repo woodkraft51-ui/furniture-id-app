@@ -930,11 +930,11 @@ function DatingFindingCallout({
 // shown but as low-weight context, pinned last. Replaces the timeline
 // DatingOverlapViz (kept dormant below during redesign review).
 const RANK_LAYER_AUTHORITY: Record<string, number> = {
-  joinery: 9, fastener: 8, toolmark: 8, form: 7, hardware: 6,
+  joinery: 9, fastener: 8, toolmark: 8, form: 7, construction: 6, hardware: 6,
   wood: 6, upholstery: 5, finish: 4, style: 3, style_wave: 2,
 };
 const RANK_LAYER_LABELS: Record<string, string> = {
-  form: "Form", joinery: "Joinery", fastener: "Fasteners", toolmark: "Toolmarks",
+  form: "Form", construction: "Construction", joinery: "Joinery", fastener: "Fasteners", toolmark: "Toolmarks",
   wood: "Wood", hardware: "Hardware", finish: "Finish", upholstery: "Upholstery",
 };
 
@@ -1341,9 +1341,9 @@ function DatingOverlapViz({
 
   // ── Row order ───────────────────────────────────────────────────────
   // Top: Style (combined original + waves) + Design Distinctives.
-  // Below: Form / Joinery / Fastener / Toolmark / Wood / Hardware /
-  //        Finish / Upholstery — original ordering preserved.
-  const layerOrder = ["form", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery"];
+  // Below: Form / Construction / Joinery / Fastener / Toolmark / Wood /
+  //        Hardware / Finish / Upholstery (construction added per #18).
+  const layerOrder = ["form", "construction", "joinery", "fastener", "toolmark", "wood", "hardware", "finish", "upholstery"];
   const layersOrdered = layerOrder
     .map((name) => dataLayers.find((l) => l.layer === name))
     .filter((l): l is LayerBand => Boolean(l));
@@ -2856,10 +2856,10 @@ export default function Page() {
       return;
     }
 
-    // Soft count cap: more than 8 photos rarely improves analysis and
+    // Soft count cap: more than 10 photos rarely improves analysis and
     // routinely pushes payloads over the platform limit. Suggest pruning
     // before attempting.
-    const PHOTO_COUNT_SOFT_CAP = 8;
+    const PHOTO_COUNT_SOFT_CAP = 10;
     if (allImages.length > PHOTO_COUNT_SOFT_CAP) {
       setError(
         `${allImages.length} photos is more than the engine can effectively use. Reduce to ${PHOTO_COUNT_SOFT_CAP} or fewer — choose your highest-detail shots (joinery close-ups, label, underside) over wide angle views. Fewer good photos beat more redundant ones.`

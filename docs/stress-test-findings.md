@@ -602,6 +602,30 @@ Adjacent pattern noted but not promoted: `barley_twist` clue firing on spool/bob
 
 ---
 
+### 25. form_peacock_chair taxonomy gap (TAXONOMY GAP, sibling of #22)
+
+**Surfaced by:** `peacock_emmanuelle_rattan_chair` — after the form-wire affirmation
+gate cleared the catastrophic "Loom" misroute, the piece resolves to **Upholstered
+armchair** (its style context correctly reads wicker/rattan). There is no
+`form_peacock_chair` / `form_rattan_lounge_chair` in canonical, so a high-back woven
+peacock/Emmanuelle chair has nowhere to route. Same shape as #22 (harpsichord,
+cone chair, planter). **Fix:** author a peacock/woven-lounge chair form (next
+form-authoring batch, same template as the cone/tulip pedestal-chair work) + a
+`scoreForms` route keyed on woven-body + high fan/hood back. Closes the residual.
+
+### 26. drop_front_desk false-positive routes a table to a desk (M8, table-vs-desk)
+
+**Surfaced by:** `sligh_grand_rapids_colonial_revival_writing_console_table_misid_writing_box`
+— the form-wire affirmation gate cleared the "Writing box" misroute, but the piece
+now resolves to **Secretary desk / drop-front desk** when it is a writing *console
+table*. Driven by the `drop_front_desk` clue firing on a flat-top console (the
+semantic-too-broad cluster, #23). **Fix:** the function clue (`writing_surface`)
+should affirm the desk *family*, but the *specific* desk form must require
+structural corroboration (a hinged drop/slant front, a kneehole, drawers) — a
+flat-top piece on legs is a table. Pairs with #23's `drop_front_desk` gate.
+
+---
+
 ### Recorded but DEFERRED from the lamp rerun (reinforce existing open issues)
 
 The same lamp scan reinforced two existing calibration/synthesis issues (appraiser: "the remaining weakness is mainly overclassification"):
