@@ -10,6 +10,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | # | Piece (owner ground-truth) | Engine verdict | Date | Flag | Mechanism / note |
 |---|---|---|---|---|---|
 | 01 | Convertible child's **high chair → toddler desk** (folds down) | **Telephone bench / writing bench combination** (`form_telephone_stand`, subtype "telephone cabinet" conf 1.0) | c. 1900–1935, Mod | 🔴 wrong form | see below |
+| 02 | **Trifold dressing-table mirror** (Globe Bosse; "JAN 22 1924" ink stamp) | **GLOBE BOSSE WORLD FURNITURE CO Dressing table** | c. 1840–1940 (date conf Low) | 🟡 date too broad | hard 1924 stamp demoted to floor → 100-yr range; form acceptable. see below |
 
 ---
 
@@ -27,3 +28,23 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 **Proposed fixes (for post-batch triage, NOT now):**
 - (a) Author `form_high_chair` + convertible high-chair-desk subtype (the proper fix — makes it *right*, not just uncertain). #22 family.
 - (b) Telephone-bench **affirmation guard**: require actual telephone evidence (phone shelf / directory / telephone) before routing telephone bench — stops it grabbing any seat-with-a-surface.
+
+---
+
+## Scan 02 — Globe Bosse trifold dressing-table mirror
+
+**Engine:** GLOBE BOSSE WORLD FURNITURE CO Dressing table · c. 1840–1940 (High overall, date conf Low) · resale $111–265.
+**Actually:** the standalone trifold dressing-table mirror (mirror superstructure only — the wings + crest that sit atop a vanity case).
+
+**Form is acceptable; the deviation is DATE (M9 / date-prose wire).** P0 itself read the piece correctly — `dressing_table_form`: "the mirror superstructure component of a dressing table / vanity… Not a standalone dresser_form but the mirror element associated with one." With no separate `form_vanity_mirror` in canonical, routing to **Dressing table** is the right neighbor and surfaces the maker cleanly. No complaint there.
+
+**The miss:** the back is ink-stamped **"JAN 22 1924"**, and P0 captured it as a hard anchor — `visible_text`: *"'Jan 22 1924' is the specific production date stamp — an unusually precise date record providing a hard anchor for manufacture."* The engine then printed **c. 1840–1940** — a 100-year range — on a piece that tells you its own birthday to the day.
+
+**Mechanism — the textbook reframe.** The dating layer demoted the stamp to a *terminus post quem* (floor only): P2 says *"The label's 1924 label date is a terminus post quem… applied as a floor only — not as the production date."* That's the correct, conservative rule for a **maker's-operating-span** label (Stickley operated 1900–1916 → floor). But this isn't an operating span; it's a **dated production stamp**. The distinction lives in the observation prose ("specific production date," "to the day") — and the engine reads only the thin metadata slice ("it's a label → treat as floor"), throwing the prose away. Exact reframe pattern, date edition: the answer is in P0's own words; consumption is too narrow to use it.
+
+Result: floor 1924 is right, but the ceiling free-floats to 1940 (Phillips-screw cutoff territory) and the convergence zone reports 1840–1940 because joinery/fastener/hardware are all open-ended. A dated stamp should **collapse the range to the stamp year** (± a small finishing window), not just raise the floor.
+
+**Proposed fix (post-batch triage, NOT now) — date-prose wire, M9 family:**
+- Detect a *dated production stamp* in label prose (a specific month/day/year, or "production/manufacture date" language) and treat it as a **point anchor** (both floor AND ceiling ≈ stamp year), at higher confidence — distinct from the maker-operating-span case which stays floor-only. This is the next instantiation of the maker-wire template (`resolveMakerAttribution`), applied to dates.
+
+**Resale note:** a bare trifold vanity mirror (no case) is a slow, low-value item — $111–265 retail is optimistic; realistically a $20–40 flip, better as a paired-up "complete the vanity" piece or a craft/refinish resale. Not a priority flip.
