@@ -454,6 +454,10 @@ export const KEPT_IN_ENGINE: Record<string, string> = {
 // Block 1: scoreForms emits canonical form_id; display_name retains the engine string per D-PH3-7.
 // NO_MATCH cases keep engine free-text label only (no canonical form yet authored).
 export const FORM_LABEL_TO_CANONICAL: Record<string, CanonicalLookup> = {
+  // Taxonomy-gap forms (#22) — labels for the new scoreForms routes.
+  "Harpsichord": "form_harpsichord",
+  "Planter": "form_planter",
+  "Pedestal chair": "form_pedestal_chair",
   // Cedar chests
   "Roos cedar chest / hope chest": "form_blanket_chest",
   "Lane cedar chest / hope chest": "form_blanket_chest",
