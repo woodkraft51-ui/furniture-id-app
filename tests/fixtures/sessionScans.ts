@@ -1101,13 +1101,13 @@ const woodard_wrought_iron_patio_chair: ScanFixture = {
     { type: "form", clue: "seating_present", confidence: 50, description: "seating surface" },
   ],
   asSeen: {
-    formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    finalStyleKind: "context_only",
-    dateRange: "post-1945",
-    dateFloor: 1945,
-    dateCeiling: null,
-    confidence: "Moderate",
+    formId: "Patio chair",
+    display: "Patio chair (also commonly called: garden chair, porch chair)",
+    finalStyleKind: "unresolved",
+    dateRange: "c. 1910–2026",
+    dateFloor: 1910,
+    dateCeiling: 2026,
+    confidence: "Low",
   },
 };
 

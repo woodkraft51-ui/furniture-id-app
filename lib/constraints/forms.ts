@@ -24905,4 +24905,61 @@ export const FORMS: FormEntry[] = [
       },
     ],
   },
+  // ── Batch 2 taxonomy-gap form (owner-authored): patio chair. Closes woodard.
+  //    Open ceiling corrected to schema on integration. ──
+  {
+    id: "form_patio_chair",
+    category: "form",
+    name: "patio chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_outdoor_specialty_institutional_seating",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1850,
+    date_ceiling: 2026,
+    common_conversion_targets: [],
+    distinguishing_features: [
+      "Single-occupant outdoor chair built for porch, garden, patio, lawn, terrace, or poolside use.",
+      "Weather-resistant construction is central: wrought iron, cast iron, tubular steel, spring steel wire, cast aluminum, tubular aluminum, vinyl strap, mesh, sling, or open metalwork.",
+      "Often has openwork, drainage-friendly seats or backs, removable cushions, rust-resistant finishes, or outdoor-grade frames.",
+      "Classify by outdoor construction and use, not by the presence of a loose cushion.",
+      "Not an upholstered indoor armchair, fixed indoor side chair, or multi-occupant garden bench.",
+    ],
+    cousin_form_contrasts: [
+      "form_lounge_chair is indoor comfort seating unless outdoor construction, weather-resistant frame, or patio use is clear.",
+      "form_side_chair is an indoor dining or parlor frame, while patio chair is built for outdoor exposure and drainage.",
+      "form_bench is multi-occupant garden seating; patio chair is single-occupant seating.",
+    ],
+    dimensional_thresholds: {
+      notes: "Single-occupant outdoor scale; chaise-length outdoor seating should route separately if the body supports full leg extension.",
+    },
+    common_aliases: ["garden chair", "porch chair", "lawn chair", "poolside chair", "bistro chair", "spring chair", "patio armchair", "outdoor chair"],
+    regional_period_notes: "Cast and wrought iron garden seating has 19th-century roots. Postwar American patio furniture expanded into tubular aluminum, vinyl strap, spring steel, wire, and lightweight outdoor frames.",
+    subtypes: [
+      {
+        id: "subtype_wrought_iron_patio_chair",
+        name: "Wrought / cast-iron patio chair",
+        distinguishing_attributes: [
+          "Cast or wrought-iron openwork garden seat.",
+          "Nineteenth-century roots; heavy weather-resistant metal.",
+        ],
+      },
+      {
+        id: "subtype_aluminum_patio_chair",
+        name: "Tubular / cast-aluminum patio chair",
+        distinguishing_attributes: [
+          "Postwar lightweight aluminum frame, often with vinyl strap.",
+        ],
+      },
+      {
+        id: "subtype_wire_patio_chair",
+        name: "Spring-steel / wire / mesh patio chair",
+        distinguishing_attributes: [
+          "Spring-steel, wire-rod, or expanded-metal-mesh outdoor seat.",
+        ],
+      },
+    ],
+  },
 ];

@@ -11,15 +11,15 @@ export const CANONICAL_VOCABULARY = {
       "evidenceCategories": 15,
       "disqualifying": 7,
       "woodEvidenceKeys": 34,
-      "forms": 249,
-      "subforms": 1307,
+      "forms": 250,
+      "subforms": 1310,
       "families": 12,
       "spatialBehaviors": 76,
-      "routingKeysMined": 120,
+      "routingKeysMined": 126,
       "promptKeysMined": 96,
       "foldedEngineKeys": 47,
       "aliases": 24,
-      "allClueKeys": 289
+      "allClueKeys": 291
     },
     "minedRoutingKeys": [
       "acrylic_clear",
@@ -103,14 +103,18 @@ export const CANONICAL_VOCABULARY = {
       "office_chair_form",
       "open_shelving",
       "ormolu_mounts",
+      "parlor_rocker_form",
       "parquetry_veneer",
+      "patio_chair_form",
       "peacock_chair_form",
       "pedestal_chair_form",
       "pedestal_column",
       "pigeonholes",
       "planter_cachepot_function",
+      "platform_rocker_form",
       "rattan_frame",
       "renaissance_revival_upholstered_armchair_pattern",
+      "rocking_chair_form",
       "rococo_revival_pattern",
       "roos_label",
       "seating_present",
@@ -136,8 +140,10 @@ export const CANONICAL_VOCABULARY = {
       "tufted_upholstery",
       "tulip_chair_form",
       "victorian_eastlake_pattern",
+      "vinyl_strap",
       "visible_springs",
       "william_and_mary_pattern",
+      "windsor_rocker_form",
       "wingback_form",
       "woven_body",
       "writing_surface",
@@ -188,6 +194,7 @@ export const CANONICAL_VOCABULARY = {
         "music_box_form",
         "no_armrests",
         "office_chair_form",
+        "patio_chair_form",
         "peacock_chair_form",
         "pedestal_chair_form",
         "planter_cachepot_function",
@@ -205,6 +212,7 @@ export const CANONICAL_VOCABULARY = {
         "toledo_industrial_style",
         "tulip_chair_form",
         "victorian_eastlake_pattern",
+        "vinyl_strap",
         "william_and_mary_pattern",
         "wingback_form"
       ],
@@ -228,6 +236,7 @@ export const CANONICAL_VOCABULARY = {
       "music_box_form",
       "no_armrests",
       "office_chair_form",
+      "patio_chair_form",
       "peacock_chair_form",
       "pedestal_chair_form",
       "planter_cachepot_function",
@@ -235,10 +244,11 @@ export const CANONICAL_VOCABULARY = {
       "sling_seat",
       "swivel_chair_form",
       "tilt_mechanism",
-      "tulip_chair_form"
+      "tulip_chair_form",
+      "vinyl_strap"
     ],
     "crosswalk": {
-      "mapped": 175,
+      "mapped": 177,
       "unmapped": 114
     }
   },
@@ -5017,6 +5027,25 @@ export const CANONICAL_VOCABULARY = {
       "has_dimensional_thresholds": true
     },
     {
+      "form_id": "form_patio_chair",
+      "label": "patio chair",
+      "aliases": [
+        "bistro chair",
+        "garden chair",
+        "lawn chair",
+        "outdoor chair",
+        "patio armchair",
+        "poolside chair",
+        "porch chair",
+        "spring chair"
+      ],
+      "family_id": "family_seating",
+      "spatial_behavior_id": "spatial_outdoor_specialty_institutional_seating",
+      "date_floor": 1850,
+      "date_ceiling": 2026,
+      "has_dimensional_thresholds": true
+    },
+    {
       "form_id": "form_peacock_chair",
       "label": "peacock chair",
       "aliases": [
@@ -7093,6 +7122,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_adjustable_drafting_table",
       "parent_form_id": "form_drafting_table",
       "name": "Adjustable drafting table"
+    },
+    {
+      "subtype_id": "subtype_aluminum_patio_chair",
+      "parent_form_id": "form_patio_chair",
+      "name": "Tubular / cast-aluminum patio chair"
     },
     {
       "subtype_id": "subtype_aquarium_stand_terrarium_stand",
@@ -13470,6 +13504,11 @@ export const CANONICAL_VOCABULARY = {
       "name": "William and Mary / early Georgian wing chair"
     },
     {
+      "subtype_id": "subtype_wire_patio_chair",
+      "parent_form_id": "form_patio_chair",
+      "name": "Spring-steel / wire / mesh patio chair"
+    },
+    {
       "subtype_id": "subtype_wooton_desk_extra_grade",
       "parent_form_id": "form_wooton_desk",
       "name": "extra-grade Wooton desk"
@@ -13573,6 +13612,11 @@ export const CANONICAL_VOCABULARY = {
       "subtype_id": "subtype_writing_box_writing_slope",
       "parent_form_id": "form_writing_box",
       "name": "writing slope"
+    },
+    {
+      "subtype_id": "subtype_wrought_iron_patio_chair",
+      "parent_form_id": "form_patio_chair",
+      "name": "Wrought / cast-iron patio chair"
     }
   ],
   "relationships": {
@@ -14845,6 +14889,13 @@ export const CANONICAL_VOCABULARY = {
         "score": 0.5
       }
     ],
+    "patio_chair_form": [
+      {
+        "taxonomyId": "joinery_category_chair_and_seating",
+        "lib": "joinery",
+        "score": 0.5
+      }
+    ],
     "peacock_chair_form": [
       {
         "taxonomyId": "joinery_category_chair_and_seating",
@@ -15358,6 +15409,18 @@ export const CANONICAL_VOCABULARY = {
         "taxonomyId": "upholstery_cover_type_vinyl_naugahyde_faux_leather",
         "lib": "upholsteryCovers",
         "score": 1
+      }
+    ],
+    "vinyl_strap": [
+      {
+        "taxonomyId": "hardware_type_strap_hinge",
+        "lib": "hardware",
+        "score": 0.5
+      },
+      {
+        "taxonomyId": "upholstery_cover_type_vinyl_naugahyde_faux_leather",
+        "lib": "upholsteryCovers",
+        "score": 0.5
       }
     ],
     "visible_springs": [

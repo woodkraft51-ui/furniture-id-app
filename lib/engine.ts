@@ -5211,6 +5211,24 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (peacockChairForm) {
     add("Peacock chair", 95, "Tall woven fan/hood-back rattan or wicker throne chair (peacock / Emmanuelle).");
   }
+  // Patio chair (taxonomy-gap form #22, form-wire B.8). Single-occupant outdoor
+  // chair. Gated on outdoor-construction signals (mesh/sling/strap/wrought-iron/
+  // aluminum) or explicit outdoor text, + seating. EXCLUDES lounge_chair_form and
+  // all rocker forms so it can't steal an indoor lounge or the bent-iron-sling
+  // rocking chair. NOTE: uses cast_aluminum / wrought_iron, NOT cast_iron (the
+  // banker's office chairs carry cast_iron swivel mechanisms).
+  const patioChairForm =
+    hasAny("seating_surface", "seating_present", "backrest_present", "armchair_form", "sitting") &&
+    !hasAny("lounge_chair_form", "rocking_chair_form", "windsor_rocker_form", "parlor_rocker_form", "platform_rocker_form") &&
+    // Outdoor-SEAT signals (mesh/sling/strap) or explicit outdoor text. Deliberately
+    // NOT wrought_iron/cast_iron — the banker's office chairs carry an iron swivel
+    // mechanism and would otherwise be stolen. A wrought-iron garden chair still
+    // routes here via an outdoor text token or a mesh/sling seat.
+    (hasAny("expanded_metal_mesh_seat", "sling_seat", "vinyl_strap", "patio_chair_form") ||
+      includesAny(text, ["patio chair", "garden chair", "porch chair", "lawn chair", "poolside", "outdoor chair", "bistro chair"]));
+  if (patioChairForm) {
+    add("Patio chair", 92, "Single-occupant outdoor chair (wrought-iron, aluminum, wire/mesh, sling) for porch/garden/patio use.");
+  }
   // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
   // on the direct planter form/function clues or explicit name — planter-specific,
   // low collision. Beats the generic "Wicker/rattan furniture" material fallback.
