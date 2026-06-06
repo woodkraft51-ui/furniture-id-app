@@ -5187,6 +5187,20 @@ if (benchScore >= 65 && hasTelephoneBenchEvidence) {
   if (musicBoxForm) {
     add("Music box", 98, "Mechanical comb-and-disc or cylinder music machine in a case (Regina/Polyphon/cylinder box).");
   }
+  // Office chair (taxonomy-gap form #22, form-wire B.6). Swivel/tilt task seating
+  // (banker's, secretarial, drafting). Gated on a swivel/tilt/height mechanism +
+  // seating, and EXCLUDES lounge_chair_form so it cannot steal the molded-plywood
+  // swivel office-LOUNGE chair (a contrast anchor that must stay "Lounge chair").
+  const officeChairForm =
+    hasAny("swivel_mechanism", "tilt_mechanism", "height_adjustment_mechanism", "office_chair_form", "bankers_chair_form") &&
+    hasAny("armchair_form", "seating_surface", "seating_present", "backrest_present", "sitting") &&
+    !hasAny("lounge_chair_form") &&
+    // An indoor desk task chair has no outdoor mesh/sling seat — keep the woodard
+    // wrought-iron patio chair (Toledo-style swivel) free for the patio-chair route.
+    !hasAny("expanded_metal_mesh_seat", "sling_seat");
+  if (officeChairForm) {
+    add("Office chair", 90, "Single-occupant swivel/tilt task chair for desk work (banker's, secretarial, drafting).");
+  }
   // Planter (taxonomy-gap form #22, form-wire B.2). Plant vessel/container. Gated
   // on the direct planter form/function clues or explicit name — planter-specific,
   // low collision. Beats the generic "Wicker/rattan furniture" material fallback.

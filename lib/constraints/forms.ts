@@ -24788,4 +24788,71 @@ export const FORMS: FormEntry[] = [
       },
     ],
   },
+  // ── Batch 2 taxonomy-gap form (owner-authored): office chair. Closes the
+  //    banker's chairs. anti_classification_guidance field names + open ceiling
+  //    corrected to schema during integration. ──
+  {
+    id: "form_office_chair",
+    category: "form",
+    name: "office chair",
+    parent_category: "chair",
+    family_id: "family_seating",
+    spatial_behavior_id: "spatial_motion_seating",
+    positive_authority: 7,
+    hard_negative_authority: 7,
+    migration_status: "needs_review",
+    date_floor: 1850,
+    date_ceiling: 2026,
+    common_conversion_targets: [],
+    distinguishing_features: [
+      "Single-occupant task chair designed for desk work, usually with a central swivel, tilt, height-adjusting post, caster base, or mechanical under-seat iron hardware.",
+      "Banker's examples often have wood backs, wood arms, saddle or shaped seats, and a swivel-tilt mechanism on a metal or wood caster base.",
+      "Secretarial and typist examples may be armless, height adjustable, and posture-focused rather than parlor or lounge seating.",
+      "Classify by the work-chair mechanism and task posture, not by upholstery, arms, or general chair silhouette.",
+      "Not a fixed four-leg parlor armchair, side chair, dining chair, lounge chair, or stool unless a swivel or task mechanism is present.",
+    ],
+    cousin_form_contrasts: [
+      "form_pedestal_chair is usually a modern shell or pedestal seat; office chair requires task-chair function or swivel/tilt office hardware.",
+      "form_side_chair is a fixed four-leg chair without swivel or tilt task mechanism.",
+      "form_lounge_chair is reclined comfort seating, while an office chair is upright desk or task seating.",
+      "form_stool lacks a full chair back or is primarily backless seating; office chair has task-chair posture and usually a back.",
+    ],
+    dimensional_thresholds: {
+      notes: "Single occupant, desk-height seating; drafting variants may be taller and often include a foot ring.",
+    },
+    common_aliases: ["banker's chair", "bankers chair", "swivel chair", "tilt chair", "secretarial chair", "typist chair", "task chair", "desk chair", "office swivel chair"],
+    regional_period_notes: "Mechanical office seating emerges in the mid-19th century, with late 19th and early 20th century oak swivel banker's chairs especially common in American office settings.",
+    subtypes: [
+      {
+        id: "subtype_bankers_chair",
+        name: "Banker's chair",
+        distinguishing_attributes: [
+          "Wood back and arms with a saddle or shaped seat.",
+          "Swivel-tilt mechanism on a metal or wood caster base.",
+        ],
+      },
+      {
+        id: "subtype_secretarial_chair",
+        name: "Secretarial / typist chair",
+        distinguishing_attributes: [
+          "Often armless and height adjustable.",
+          "Posture-focused rather than parlor or lounge seating.",
+        ],
+      },
+      {
+        id: "subtype_drafting_chair",
+        name: "Drafting / task stool-chair",
+        distinguishing_attributes: [
+          "Taller drafting variant, often with a foot ring.",
+        ],
+      },
+    ],
+    anti_classification_guidance: {
+      boundary_date: 1850,
+      boundary_type: "form_emergence",
+      guidance_text: "Do not classify pre-1850 seating as an office chair unless there is clear swivel, tilt, caster, or desk-task mechanism evidence.",
+      prominence: "standard",
+      pre_boundary_classifications: ["form_side_chair", "form_lounge_chair", "form_stool"],
+    },
+  },
 ];

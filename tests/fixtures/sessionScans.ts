@@ -805,8 +805,8 @@ const oak_swivel_bankers_office_chair: ScanFixture = {
     // Task A re-baseline 2026-05-28: distinctive/shared phrase gate in
     // style attribution (engineStyleEvaluator.ts) closed shared-token
     // mis-attributions. New verdict captured here.
-    formId: "Upholstered armchair",
-    display: "Arts and Crafts / Mission / Craftsman Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    formId: "Office chair",
+    display: "Arts and Crafts / Mission / Craftsman Office chair (also commonly called: banker's chair, bankers chair)",
     styleContext: "Arts and Crafts / Mission / Craftsman",
     finalStyleKind: "original_period",
     dateRange: "c. 1890–1920",
@@ -3112,12 +3112,12 @@ const quartersawn_oak_office_bankers_swivel_tilt_chair: ScanFixture = {
     { type: "structure", clue: "backrest_present", confidence: 50, description: "carved crest rail backrest" },
   ],
   asSeen: {
-    formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
+    formId: "Office chair",
+    display: "Office chair (also commonly called: banker's chair, bankers chair)",
     finalStyleKind: "unresolved",
-    dateRange: "c. 1890–1920",
-    dateFloor: 1890,
-    dateCeiling: 1920,
+    dateRange: "c. 1880–1890",
+    dateFloor: 1880,
+    dateCeiling: 1890,
     confidence: "Moderate",
   },
 };
@@ -3159,9 +3159,9 @@ const golden_oak_bankers_office_swivel_chair_acanthus_crest: ScanFixture = {
     { type: "style", clue: "spindle_gallery", confidence: 70, description: "Spindle gallery or rail detail is visible." },
   ],
   asSeen: {
-    formId: "Upholstered armchair",
-    display: "Upholstered armchair (also commonly called: Arm chair, Easy chair)",
-    styleContext: "Upholstered seating",
+    formId: "Office chair",
+    display: "Office chair (also commonly called: banker's chair, bankers chair)",
+    styleContext: "Spindle Gallery",
     finalStyleKind: "context_only",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
