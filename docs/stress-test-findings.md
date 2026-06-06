@@ -604,6 +604,9 @@ Adjacent pattern noted but not promoted: `barley_twist` clue firing on spool/bob
 
 ### 25. form_peacock_chair taxonomy gap (TAXONOMY GAP, sibling of #22)
 
+> **RESOLVED 2026-06-06 (Deploy 009).** `form_peacock_chair` authored + routed
+> (woven clue + peacock/Emmanuelle token gate). peacock → Peacock chair.
+
 **Surfaced by:** `peacock_emmanuelle_rattan_chair` — after the form-wire affirmation
 gate cleared the catastrophic "Loom" misroute, the piece resolves to **Upholstered
 armchair** (its style context correctly reads wicker/rattan). There is no
@@ -614,6 +617,14 @@ form-authoring batch, same template as the cone/tulip pedestal-chair work) + a
 `scoreForms` route keyed on woven-body + high fan/hood back. Closes the residual.
 
 ### 26. drop_front_desk false-positive routes a table to a desk (M8, table-vs-desk)
+
+> **RESOLVED 2026-06-06 (Deploy 010).** Table-vs-desk guard in `scoreForms`:
+> slant-front suppressed when `lift_lid` present; drop-front secretary requires
+> desk-interior corroboration (pigeonholes/lopers/interior compartment) OR the
+> absence of open-table structure. sligh → Writing table, mission → Library
+> table, pine chest → Box. Residual follow-up: the pine chest lands on generic
+> "Box"; a proper "Blanket chest / storage chest" needs a separate `lift_lid`
+> routing tweak (today `lift_lid` → "Cedar chest", wrong for a pine piece).
 
 **Surfaced by:** `sligh_grand_rapids_colonial_revival_writing_console_table_misid_writing_box`
 — the form-wire affirmation gate cleared the "Writing box" misroute, but the piece

@@ -3443,8 +3443,8 @@ const sligh_grand_rapids_colonial_revival_writing_console_table_misid_writing_bo
     { type: "label", clue: "maker_mark_sligh_furniture_co", confidence: 70, description: "Detected maker mark: Sligh Furniture Co.. Mark type: paper_label. Dating reference: 1933–2005. Confidence tier: MEDIUM." },
   ],
   asSeen: {
-    formId: "Secretary desk / drop-front desk",
-    display: "Sligh Furniture Co Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase)",
+    formId: "Writing table",
+    display: "Sligh Furniture Co Writing table (also commonly called: writing desk, work table)",
     finalStyleKind: "unresolved",
     dateRange: "Broad, not tightly dated",
     dateFloor: 1933,
@@ -3935,8 +3935,8 @@ const vernacular_pine_lift_lid_storage_chest_misid_slant_front_desk: ScanFixture
     { type: "construction", clue: "drawer_present", confidence: 58, description: "Drawer evidence is visible." },
   ],
   asSeen: {
-    formId: "Slant-front desk",
-    display: "Slant-front desk (also commonly called: Slant-front desk, Slant-lid desk)",
+    formId: "Box",
+    display: "Box (also commonly called: Box, Box form)",
     finalStyleKind: "unresolved",
     dateRange: "c. 1890–1920",
     dateFloor: 1890,
@@ -4062,8 +4062,8 @@ const mission_arts_crafts_oak_library_writing_table_misid_secretary_drop_front: 
     { type: "materials", clue: "golden_oak_structural_pattern", confidence: 82, description: "Oak primary wood, flat-sawn or quarter-sawn oak grain, multiple-drawer case, and factory-era hardware (round wood knobs / lock escutcheons / porcelain casters) with no hand-cut joinery indicate Golden Oak Era factory production (c. 1890–1915 peak)." },
   ],
   asSeen: {
-    formId: "Secretary desk / drop-front desk",
-    display: "Arts and Crafts / Mission / Craftsman Secretary desk / drop-front desk (also commonly called: Secretary desk, Secretary bookcase)",
+    formId: "Library table",
+    display: "Arts and Crafts / Mission / Craftsman Library table (also commonly called: study table, reading table)",
     finalStyleKind: "original_period",
     dateRange: "c. 1900–1920",
     dateFloor: 1900,
