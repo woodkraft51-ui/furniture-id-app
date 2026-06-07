@@ -15,6 +15,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 04 | **Colonial/Empire Revival chest of drawers / dresser** (two-section, bow-front, c. 1920–40) | **Colonial Revival Telephone bench / writing bench combination** (`form_telephone_stand`) | post-1939, Mod | 🔴 wrong form (+odd date) | **telephone-bench bug, 2nd sighting** (cf. scan 01); phantom `seating_surface`/`seating_present` (M0) on a dresser; "post-1939" off a label that isn't there. see below |
 | 05 | **Renaissance Revival dressing table / vanity** (part of a 3-pc bedroom suite: vanity + dresser + full bed) | **Italian Renaissance / Neo-Renaissance Revival Dressing table** | c. 1920–1925, High | 🟢 form right / 🟡 date by style | **form CORRECT** (kneehole→vanity). Date driven *purely* by a style-revival-wave, sidelining the hardware layer. see below |
 | 06 | **Wooden full bed** (Colonial Revival, the suite-mate of scan 05; "no rails") | **Colonial Revival Iron bed frame** (`form_iron_bed`) | **post-1989**, High | 🔴 wrong form + 🔴🔴 date catastrophe | wooden bed → "iron bed" (clue-key `metal_bed_frame` over prose "WOODEN…with metal side rails"); a **chalk mover's scrawl "1989"** became a hard date floor → "post-1989" on a c.1920 antique. see below |
+| 07 | **Victorian spring platform rocker** (Golden Oak, c. 1875–1910) — owner: "authored platform-rocker dating is being ignored" | **Rocking chair**, American Empire / late Classical Revival | **c. 1935 onward**, High (date conf Low) | 🟢 form ok / 🔴🔴 date | **owner is right.** Date floor 1935 comes from `bent_molded_plywood` — a clue P0 **explicitly negated** ("NOT molded plywood… 19th-c steam-bent"). Meanwhile the defining `concentric_ring_spring_mounts` (conf 95, "Victorian c.1875–1910") sits "present but undated." see below |
 
 ---
 
@@ -178,3 +179,34 @@ In scan 05 I flagged that the vanity's date was reached by a shaky path and sugg
 - (b) **Wooden-bed routing:** apply the form's own documented rule — wood bed + metal rails → `form_bedstead`, not `form_iron_bed`. Needs P0 to stop mis-keying it `metal_bed_frame`, and/or routing to read "wooden…metal side rails" prose. M7 family.
 
 **Running tally update:** label/inscription-date misfire is now **3** (02, 04, 06) and rivals telephone-bench (2) for top priority — telephone-bench by frequency, inscription-date by severity. Still zero regressions from shipped work; still one root cause.
+
+---
+
+## Scan 07 — Victorian spring platform rocker (owner-flagged)
+
+**Engine:** Rocking chair · American Empire / late Classical Revival · **c. 1935 onward** (High form, date conf Low) · resale $123–272.
+**Actually:** a **Victorian spring/platform rocker**, Golden Oak, **c. 1875–1910**. Owner's clue: *"authored dating guidelines specific to platform rockers that I feel is being ignored."*
+
+**The owner is right — and the trace proves it outright. This is the cleanest "authored answer thrown away" case in the batch.** Form is fine (Rocking chair, High; could be tighter as "platform rocker" but acceptable). The **date is a catastrophe**, and it's the *other half* of the reframe we haven't seen this clearly yet: not P0 prose discarded, but **owner-authored reference data discarded.**
+
+### Why it dated a c.1875–1910 rocker to "1935 onward" — two stacked failures
+
+**1. A NEGATED clue's date set the floor (M7).** The only thing pinning a floor is `bent_molded_plywood` → post-1935 (molded-plywood = Eames-era signal). But read P0's own description of that clue: *"appears to be bent solid wood or thick bent veneer laminate **rather than modern molded plywood**… consistent with **late 19th-century** steam-bent or laminated bent wood."* P0 **explicitly negated molded plywood** — and the engine consumed the clue **key** `bent_molded_plywood` for its post-1935 date anyway, throwing away the sentence that says "this is NOT that." Identical mechanism to scan 06's "metal_bed_frame" key-over-prose. The entire 1935 floor rests on a clue P0 said does not apply.
+
+**2. The authored platform-rocker dating is not wired into the dating layer.** The defining feature — `concentric_ring_spring_mounts` (conf **95**) — P0 describes as *"the defining mechanical feature of Victorian spring platform rockers… c. 1875–1910."* The supporting `style_cue_victorian_spring_rocker` says *"c. 1875–1910."* `porcelain_caster` says *1840–1910.* **Three independent Victorian anchors, the date written right into their text.** Yet in the Dating-overlap section they are all **"present but undated"** — the construction-category clues (and the spring-mount feature specifically) carry **no date_floor/ceiling into the dating computation.** So `Convergence zones (0): none` — there's nothing for them to converge *on*, because the authored platform-rocker window never enters the math. The owner authored "spring platform rocker ⇒ c. 1875–1910"; the engine captured the feature, even recited the date in prose, and then dated by a negated plywood clue instead.
+
+**Net:** the correct date (**c. 1875–1910**) is sitting in the trace in *at least three places* — and the output is **"c. 1935 onward."** The answer is in both P0's words *and* the authored reference; consumption reads neither.
+
+### This is the reframe's second half
+CLAUDE.md frames the fix as widening consumption to include *both* "rich observation prose" *and* "rich (owner-authored) reference fields." Scans 02/03/06 were the prose half. **This is the reference-field half**: the platform-rocker dating exists as authored data but the dating layer doesn't ingest it (construction-layer clues feed form/era reasoning but are marked "undated" for the overlap). That's a wiring gap, not a missing rule — exactly the "the engine has the answer and throws it away at the consumption point" pattern.
+
+### Clusters this joins
+- **Spurious wrong-late floor: now 3** — scan 04 (post-1939, no label), scan 06 (post-1989, chalk mark), scan 07 (post-1935, negated plywood). Common shape: a single weak/negated/absent late signal clamps the floor *above* the true period and overrides (or starves) the real evidence.
+- **M0 phantom `fully_upholstered`: again** — fired here (conf 74, "upholstered/cushioned surfaces") on a chair P0 also flagged `no_upholstery` ("completely stripped… bare wood shell"). Two contradictory clues kept; the phantom drove the "Upholstery present" line. Same phantom as scans 03/04.
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) **Honor negation on dated clues (M7/date):** a clue whose description negates it (`rather than`, `not`, `consistent with [earlier era] instead`) must not contribute its key's date to the floor. Kills the 1935 here and the iron-bed mis-key family.
+- (b) **Wire authored platform-rocker / mechanism dating into the overlap layer:** `concentric_ring_spring_mounts` and the spring-platform-rocker signal should carry their authored c. 1875–1910 window into dating, not sit "undated." This is the owner's specific point — confirmed real.
+- (c) Same inscription/weak-floor discipline as scans 04/06.
+
+**Owner validation:** the authored platform-rocker dating IS being ignored — confirmed from the trace (defining feature "present but undated"; floor sourced from a negated clue). Good catch; logged, not yet fixed.
