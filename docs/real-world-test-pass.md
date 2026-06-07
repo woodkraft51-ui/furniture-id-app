@@ -14,6 +14,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 03 | **Lyon & Healy parlor reed/pump organ** (Victorian, Chicago) | **Late Victorian Cottage Eastlake Afterwave Upholstered seating** | c. 1880–1990, Mod | 🔴 wrong form + date | organ → "upholstered seating"; felt pedal-covers read as upholstery; plywood *repair patch* dated the piece. see below |
 | 04 | **Colonial/Empire Revival chest of drawers / dresser** (two-section, bow-front, c. 1920–40) | **Colonial Revival Telephone bench / writing bench combination** (`form_telephone_stand`) | post-1939, Mod | 🔴 wrong form (+odd date) | **telephone-bench bug, 2nd sighting** (cf. scan 01); phantom `seating_surface`/`seating_present` (M0) on a dresser; "post-1939" off a label that isn't there. see below |
 | 05 | **Renaissance Revival dressing table / vanity** (part of a 3-pc bedroom suite: vanity + dresser + full bed) | **Italian Renaissance / Neo-Renaissance Revival Dressing table** | c. 1920–1925, High | 🟢 form right / 🟡 date by style | **form CORRECT** (kneehole→vanity). Date driven *purely* by a style-revival-wave, sidelining the hardware layer. see below |
+| 06 | **Wooden full bed** (Colonial Revival, the suite-mate of scan 05; "no rails") | **Colonial Revival Iron bed frame** (`form_iron_bed`) | **post-1989**, High | 🔴 wrong form + 🔴🔴 date catastrophe | wooden bed → "iron bed" (clue-key `metal_bed_frame` over prose "WOODEN…with metal side rails"); a **chalk mover's scrawl "1989"** became a hard date floor → "post-1989" on a c.1920 antique. see below |
 
 ---
 
@@ -140,3 +141,40 @@ Per "collect all 40, then discuss — don't do anything yet," I am **not** pushi
 - **Regressions from our shipped work: 0.**
 
 Everything still converges on the one root cause. Branch for the eventual push (`zen-gauss` vs `general-discussion`) still needs the owner's call.
+
+---
+
+## Scan 06 — wooden full bed (suite-mate of scan 05)
+
+**Engine:** Colonial Revival Iron bed frame (`form_iron_bed`) · **post-1989** (High) · resale $94–221.
+**Actually:** the **wooden full bed** that coordinates with scan 05's vanity — same Colonial/Neoclassical Revival bedroom suite, so genuinely **c. 1920s**. Owner notes it has no rails.
+
+**This is the most important scan in the batch. Two serious misses — and on BOTH, P0 wrote the correct answer in plain English and the engine threw it away.** This is the whole thesis caught red-handed, in its most airtight form yet.
+
+### Miss 1 — form: wooden bed → "iron bed" (should be `form_bedstead`)
+- P0's own clue description: *"Complete **wooden** bed frame with headboard, footboard, and **metal side rails**."* It's a wood bed; the only metal is the rails (every bed has metal rails/bolts).
+- But the clue **key** is `metal_bed_frame` (weight 0.98) — P0 mis-keyed a wooden bed under a metal label — and routing trusted the **key**, matching it straight to `form_iron_bed`. Prose discarded again. M7-flavored (key substring drives a form the description contradicts).
+- The engine's **own canonical guidance** for this form literally says: *"A wooden bed with iron hardware routes to form_bedstead."* The right answer is **Bedstead**, and the rule for reaching it is already written in the form's own doc — the engine just didn't apply it because the key said "metal." Two-layer defect: (a) P0 emitted the wrong clue key, (b) routing read the key over the description.
+
+### Miss 2 — date: a chalk mover's mark "1989" → "post-1989" (catastrophe)
+- The convergence zone is **1880–1925** (5 layers: joinery, fastener, finish, style, style_wave). Style is Colonial Revival c. 1900–1940. Everything real says early 20th c.
+- The headboard back has a **chalk/pencil scrawl reading "KEEP" and "1989."** P0 nailed it: *"likely owner, mover, or storage notations — **NOT** maker marks… The year '1989' if accurate would be a use/storage date, **not necessarily a manufacture date. Low authority** as dating evidence."*
+- The engine then printed **"post-1989"** — P2: *"The label's 1989 label date is a terminus post quem… applied as a floor."* It took a mover's chalk scrawl, that P0 explicitly flagged as non-maker/low-authority, and clamped the date floor to 1989 — **overriding a strong, correct 1880–1925 convergence.** The engine had a sentence in its own trace saying *"do not use 1989 as a manufacture date,"* and used 1989 as the manufacture date.
+- This is the **single most provable instance of the consumption disease** so far: not a subtle thin-slice, but the engine contradicting an explicit authority assessment sitting right next to the number it consumed.
+
+### The suite cross-check fired exactly as predicted
+In scan 05 I flagged that the vanity's date was reached by a shaky path and suggested scanning the suite-mates as a consistency check. Here it is: **same bedroom suite, should be one date (~1920s). Vanity → c. 1920–1925. Bed → post-1989.** A 64-year split on two pieces built together. That is direct proof the dating mechanism is not robust — independent of any single piece being coincidentally right.
+
+### Severity
+"post-1989" on an obvious antique is a **credibility-killer** in front of a dealer — arguably higher *severity* than the telephone-bench bug, though lower *frequency* so far. And it clusters with:
+- **Scan 04**: "post-1939" off a label that doesn't exist.
+- **Scan 06**: "post-1989" off a chalk mark P0 said to ignore.
+- **Scan 02** (inverse): a *real* dated stamp under-used (floor-only when it was the date).
+
+→ The **label/inscription-date → terminus** logic is a clear defect cluster (now n=3): it consumes any year-like text as a date floor **without reading P0's authority verdict on that text.** This is the date-prose wire's core job.
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) **Inscription-authority gate (date-prose wire):** a year only sets a terminus if P0 attributes it to the maker/manufacture; explicit "owner/mover/storage notation / low authority / not a maker mark" language must **bar** it from the dating layer. Highest-severity item in the batch.
+- (b) **Wooden-bed routing:** apply the form's own documented rule — wood bed + metal rails → `form_bedstead`, not `form_iron_bed`. Needs P0 to stop mis-keying it `metal_bed_frame`, and/or routing to read "wooden…metal side rails" prose. M7 family.
+
+**Running tally update:** label/inscription-date misfire is now **3** (02, 04, 06) and rivals telephone-bench (2) for top priority — telephone-bench by frequency, inscription-date by severity. Still zero regressions from shipped work; still one root cause.
