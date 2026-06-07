@@ -18,6 +18,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 07 | **Victorian spring platform rocker** (Golden Oak, c. 1875–1910) — owner: "authored platform-rocker dating is being ignored" | **Rocking chair**, American Empire / late Classical Revival | **c. 1935 onward**, High (date conf Low) | 🟢 form ok / 🔴🔴 date | **owner is right.** Date floor 1935 comes from `bent_molded_plywood` — a clue P0 **explicitly negated** ("NOT molded plywood… 19th-c steam-bent"). Meanwhile the defining `concentric_ring_spring_mounts` (conf 95, "Victorian c.1875–1910") sits "present but undated." see below |
 | 08 | **Melodeon / square piano** (keyboard instrument, trestle-lyre base; tag reads "Melodeon"; **no bellows, no treadles, no reed stops**) | **Pump organ cabinet** (`form_pump_organ_cabinet`) | c. 1870–1900, Mod | 🟡 form routed without affirmation | **mirror of scan 03.** Routed pump-organ on generic keyboard-cabinet signals with **none** of the defining pump-organ evidence present. Date fine. Owner's point: absence of reeds/bellows should *disqualify*. see below |
 | 09 | **Eastlake walnut marble-top parlor table** (textbook, c. 1870–1890) | **Eastlake / Modern Gothic Parlor table** | c. 1890–1920, Mod | 🟢 form + 🟢 style / 🟡 date late | **form & style CORRECT.** Date skewed ~20 yr late: narrative states strongest convergence **1860–1895** but working range printed **1890–1920** (barely overlap = M15). Likely a rubber/composition **caster** (post-1900, a replaceable part) clamping the floor late. see below |
+| 10 | **Vernacular painted work/bar STOOL** (tall, round seat, 4 splayed turned legs, 2 stretcher levels, **no back**) | **Bar chair** (`form_bar_chair`, "backed bar stool") | c. 1880 onward, High (date Low) | 🔴 form (no back!) / 🟢 date | **purest key-over-prose yet:** clue `backrest_present` whose description reads *"No backrest present. Stool form only."* drove the *backed* form. Also phantom `woven_body`/wicker (M0) on a solid-wood stool. Date appropriately humble. see below |
 
 ---
 
@@ -272,3 +273,49 @@ All of these are the same root as the affirmation cluster, on the dating axis: *
 - (c) This intersects the **convergence-zone selection** in `engineDatingOverlap.ts` (don't-touch-without-asking) — deliberate-design triage, not a quick guard.
 
 **Net on this scan:** the app got the hard parts right (it's an Eastlake parlor table, ~1870s–90s) and only the date drifted late — by the same mechanism we've now seen four times. Good corroboration, not a new problem.
+
+---
+
+## Scan 10 — vernacular painted bar STOOL called "Bar chair"
+
+**Engine:** Bar chair (`form_bar_chair`, "backed bar stool") · c. 1880 onward (High form, date conf Low) · resale $136–301.
+**Actually:** a **vernacular painted work/bar STOOL** — tall (~28–29"), round multi-board seat, four splayed turned legs, two levels of stretcher rungs, layered paint, **no back of any kind.**
+
+**Form is wrong, and it's the purest "clue key contradicts its own description" case in the entire batch.** The route chose **Bar chair** — a *backed* form — over the "Stool" alternative it explicitly considered. What tipped it? The clue `backrest_present`. Now read that clue's own description:
+
+> `backrest_present` (conf 68): *"**No backrest present.** Stool form only — seat disc on four legs with stretchers, **no back support structure.**"*
+
+The clue is **named** "backrest_present" and its text says the backrest is **absent.** Routing read the key, matched "backrest"→backed seating, and picked **Bar chair** — over the engine's own form-differentiation rule (*"Vs bar stool: bar stool is backless; bar chair has a chair-like back"*). It's the same M7 key-over-prose mechanism as **scan 06** (`metal_bed_frame` whose desc said "wooden") and **scan 07** (`bent_molded_plywood` whose desc said "NOT molded plywood"). Three sightings now — and this is the most glaring, because the key literally asserts the opposite of its own text.
+
+**The deeper issue: P0's boolean clue keys encode polarity in the *name*, and the description carries the actual value.** `backrest_present` / `metal_bed_frame` / `bent_molded_plywood` are emitted even when the finding is the *negative* — the description flips it. Consumption keys on the name. This is the cleanest possible statement of the whole reframe: **the answer is in the prose; the key lies.**
+
+**Also — M0 phantom (wicker) again.** `woven_body` (conf 76, "woven wicker or reed body construction is visible") + `wicker_paint_buildup` fired on a **solid-wood turned stool with a multi-board plank seat.** There is no wicker. The phantom made "Wicker / rattan furniture" the **top alternative form** and pushed `woven_body` (weight 0.75) into the materials layer. Didn't flip the final form, but it's the same hallucination pattern as scans 03/04/07.
+
+**Positive worth recording — the DATE behaved well.** "c. 1880 onward, Low confidence, limited evidence, working range remains broad." On a thin-evidence painted vernacular stool, that humility is exactly right — the engine did **not** over-clamp or invent a tight window. This is the contrast that proves the dating problem elsewhere isn't "the engine is reckless" — it's specifically that *weak/late/replaceable/negated signals* hijack the floor (04/06/07/09). When there's no such bad signal, dating is appropriately cautious. Good behavior, logged as such.
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) **Honor clue-description polarity (M7 / key-over-prose):** a boolean-named clue (`*_present`, `metal_*`, `bent_molded_*`) whose description negates it ("no…", "not…", "absent", "X rather than this clue") must not route/date as if affirmed. One guard fixes scans 06, 07, **10** at once — highest-leverage single fix alongside the affirmation gate (they're the same family).
+- (b) M0 phantom-clue containment (wicker/upholstery/seating emitted with no corroboration) — recurring across 03/04/07/10.
+
+---
+
+## Batch 2 complete (scans 06–10) — holding
+
+Per "collect all 40, then discuss — don't do anything yet": still **no** push, corpus ingest, or fixing. Running log committed locally only.
+
+**Batch 2 was rougher on the surface than batch 1 (more red), but produced ZERO new mechanisms and ZERO regressions.** Every miss is one of the patterns already named. The picture is consolidating hard:
+
+| Mechanism cluster | Scans | n |
+|---|---|---|
+| **Affirmation-blind form routing** (form picked on adjacency, defining feature unchecked) | 01, 03, 04, 08 | 4 |
+| **Key-over-prose / negated clue consumed** (clue name contradicts its description) | 06, 07, 10 | 3 |
+| **Late-skewed dating** (weak/fake/negated/replaceable late signal clamps floor) | 04, 06, 07, 09 | 4 |
+| **M0 phantom clues** (P0 emits features not present) | 03, 04, 07, 10 | 4 |
+| **Style-driven date / M15** (working range ignores strongest convergence) | 05, 09 | 2 |
+| **Taxonomy gaps** (#22 — no correct form to route to) | 01, 03, 08(, 06) | 3–4 |
+
+**Wins:** scans 02, 05, 09 (form right; 09 style right too). **Clean dating behavior:** scan 10 (appropriately humble on thin evidence).
+
+**The unifying root, now overwhelmingly evidenced:** *the engine reads the thin metadata slice (clue key / category) and discards the rich prose (P0 descriptions) and authored reference data that contain the actual answer.* Every cluster above is a face of that one thing. The two highest-leverage fixes — the **affirmation gate** (positive + negative polarity) and the **clue-description-polarity / negation guard** — are the same family and would address roughly half the batch's misses. Both are bounded and additive.
+
+Still need owner's branch call before any push. 10 of 40 — quarter done.
