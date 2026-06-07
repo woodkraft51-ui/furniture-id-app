@@ -319,3 +319,40 @@ Per "collect all 40, then discuss — don't do anything yet": still **no** push,
 **The unifying root, now overwhelmingly evidenced:** *the engine reads the thin metadata slice (clue key / category) and discards the rich prose (P0 descriptions) and authored reference data that contain the actual answer.* Every cluster above is a face of that one thing. The two highest-leverage fixes — the **affirmation gate** (positive + negative polarity) and the **clue-description-polarity / negation guard** — are the same family and would address roughly half the batch's misses. Both are bounded and additive.
 
 Still need owner's branch call before any push. 10 of 40 — quarter done.
+
+---
+
+## Scan 11 — cane-back country rocking chair called "Loom" (owner-flagged: yesterday's fix didn't hold)
+
+**Engine:** Loom (`form_loom`) · "Spindle Gallery" · c. 1900–2000 (Moderate) · resale $121–268.
+**Actually:** a **country/vernacular cane-back rocking chair** — turned stiles with ball finials, woven cane back panel, flat paddle arms, curved wooden rockers, plus a *later* foam/velvet drop-in seat cushion.
+
+**This is the most important scan since #06, because it proves yesterday's form-wire fix was a symptom patch, not a root-cause fix — exactly as the owner called it.** The loom misroute is the *same class* the Deploy-008 affirmation/Windsor-material gate was built to kill (curlicue / bassett / mission rockers → Rocking chair). Those corpus fixtures went green. But a fresh real-world rocker still lands on **Loom**. Fixture-specific, not mechanism-general.
+
+### The engine KNEW it was a rocker and let a magnet form win
+- Top form clue: `rocking_chair_form` weight **0.92**.
+- Alternative forms considered, in order: **Rocking chair**, Lounge chair, Wicker/rattan.
+- The correct answer was the #1 clue **and** the #1 alternative — and `form_loom` still won.
+
+**This is the twin of scan 04** (chest of drawers: `chest_of_drawers_form` 0.92 top clue, lost to the telephone-bench magnet). Same defect: the right form is the strongest clue, and a **magnet form** beats it on adjacency.
+
+### Why "Loom" — affirmation gap, again
+A loom is a "textile-production framework" — a wooden frame holding stretched/woven fiber. This rocker presents a wooden frame + a **woven cane back panel** (`woven_body`, `wicker_weave_close`, `rattan_frame`, `cane_panels`, `cane_back_panel_inset`) + phantom `spindle_back`/`spindle_gallery`. That combination — *frame + woven fiber + uprights* — pattern-matches the loom signature. But **none of the loom-defining features are present**: no heddles, no treadles, no warp beam, no shuttle, no harnesses. A cane back panel is not a warp. `form_loom` routed on adjacency with its defining evidence unchecked — identical root to telephone bench (01/04) and pump organ (08). **Loom is the third confirmed "magnet form."**
+
+### Owner's call — peel back yesterday's fix — is sound. My view:
+The Deploy-008 fix wasn't *wrong* (it resolved real fixtures with zero regressions), but it patched the **Windsor→loom path for specific clue combos** rather than fixing the **root: `form_loom` has no affirmation requirement.** So any *other* path to loom (here: cane-panel + spindle phantoms, a non-Windsor route) still reaches it. The fix lives at the wrong layer.
+
+**When we triage:** build the **general affirmation gate** (a magnet form like loom/telephone-bench/pump-organ must affirm ≥1 defining feature to be selected; absent that, fall to the top-weighted real form — here `rocking_chair_form` 0.92). Then the Windsor-material gate from yesterday should become **redundant** and can be peeled back — *verified against the corpus first*, not removed blind (those fixtures are the safety net; the contrast anchors must not regress). Net: replace a narrow path-patch with one general rule, and the special-case code retires. That's the root-cause move, and it's why the owner is right to want it pulled rather than layered over.
+
+### Good behavior worth recording (don't lose it)
+- **Upholstery layer did this correctly.** It identified the mustard velvet/foam cushion as **a later reupholstery, c. 1955–1980**, flagged `foam_padding`/`velvet_cover` as high-replacement-likelihood, and explicitly did **not** let the late cushion date the frame ("originality cannot be inferred"; "upholstered seat appears to be a later addition"). This is *exactly* the replacement-handling that was MISSING on scan 09's caster. So the engine **has** correct replacement logic in the upholstery layer — it's just not applied consistently to casters / repair parts. That inconsistency is itself the fix lead for the late-skew cluster.
+
+### M0 phantoms (heavy here)
+`spindle_back` + `spindle_gallery` (no spindle gallery on a cane-back rocker — these created the bogus "Spindle Gallery" style AND fed the loom/frame reading), `lounge_chair_form` (conf 78 — it's a rocker), `fully_upholstered`. The spindle phantoms did real damage this time: they weren't harmless, they helped route the loom.
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) **General affirmation gate for magnet forms** (loom / telephone-bench / pump-organ): require ≥1 defining feature; else fall to top-weighted real form. Replaces and retires yesterday's Windsor-path patch (verify-then-peel).
+- (b) **Apply replacement-risk down-weighting consistently** — the upholstery layer's correct logic, generalized to casters (scan 09) and repair parts (scan 03).
+- (c) M0 phantom containment, esp. `spindle_*` emitted without corroboration.
+
+**Owner validation:** yesterday's fix was fixture-tuned, not root-cause; the loom magnet persists via a different path. Confirmed from the trace. Logged for the triage discussion — not touched.
