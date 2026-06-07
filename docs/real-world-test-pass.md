@@ -17,6 +17,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 06 | **Wooden full bed** (Colonial Revival, the suite-mate of scan 05; "no rails") | **Colonial Revival Iron bed frame** (`form_iron_bed`) | **post-1989**, High | 🔴 wrong form + 🔴🔴 date catastrophe | wooden bed → "iron bed" (clue-key `metal_bed_frame` over prose "WOODEN…with metal side rails"); a **chalk mover's scrawl "1989"** became a hard date floor → "post-1989" on a c.1920 antique. see below |
 | 07 | **Victorian spring platform rocker** (Golden Oak, c. 1875–1910) — owner: "authored platform-rocker dating is being ignored" | **Rocking chair**, American Empire / late Classical Revival | **c. 1935 onward**, High (date conf Low) | 🟢 form ok / 🔴🔴 date | **owner is right.** Date floor 1935 comes from `bent_molded_plywood` — a clue P0 **explicitly negated** ("NOT molded plywood… 19th-c steam-bent"). Meanwhile the defining `concentric_ring_spring_mounts` (conf 95, "Victorian c.1875–1910") sits "present but undated." see below |
 | 08 | **Melodeon / square piano** (keyboard instrument, trestle-lyre base; tag reads "Melodeon"; **no bellows, no treadles, no reed stops**) | **Pump organ cabinet** (`form_pump_organ_cabinet`) | c. 1870–1900, Mod | 🟡 form routed without affirmation | **mirror of scan 03.** Routed pump-organ on generic keyboard-cabinet signals with **none** of the defining pump-organ evidence present. Date fine. Owner's point: absence of reeds/bellows should *disqualify*. see below |
+| 09 | **Eastlake walnut marble-top parlor table** (textbook, c. 1870–1890) | **Eastlake / Modern Gothic Parlor table** | c. 1890–1920, Mod | 🟢 form + 🟢 style / 🟡 date late | **form & style CORRECT.** Date skewed ~20 yr late: narrative states strongest convergence **1860–1895** but working range printed **1890–1920** (barely overlap = M15). Likely a rubber/composition **caster** (post-1900, a replaceable part) clamping the floor late. see below |
 
 ---
 
@@ -242,3 +243,32 @@ Forms routed on adjacency without defining-feature affirmation: **scans 01, 03, 
 - (b) **Instrument taxonomy / scope decision** (recurring with 03, 08): melodeon / square piano / reed organ have no clean home; decide author-vs-out-of-scope.
 
 **Owner validation:** the route ignored the defining-feature test that the form's own documentation states. Confirmed real; logged, not fixed.
+
+---
+
+## Scan 09 — Eastlake walnut marble-top parlor table
+
+**Engine:** Eastlake / Modern Gothic Parlor table · c. 1890–1920 (Moderate) · resale $102–260.
+**Actually:** a textbook **Eastlake walnut parlor table** with marble top, ebonized-and-gilt incised linework, fan corbels, turned spindle stretchers — genuinely **c. 1870–1890**.
+
+**Form CORRECT. Style CORRECT. Date skewed ~20 years late — and it's the now-familiar disease.** Two clean wins here: the form routed to **Parlor table** (over the "Pedestal stand" alternative it considered), and the style nailed **Eastlake / Modern Gothic** with Renaissance Revival as the runner-up — exactly right. The perception + form/style stack is working well on in-scope Victorian furniture.
+
+**The date is the one miss, and it's internally self-contradicting (M15).** The narrative literally says: *"The strongest layer convergence is c. **1860–1895** (4 corroborating layers: hardware, finish, design distinctives, style)."* Then it prints a working range of **c. 1890–1920.** Those two windows **barely overlap** (only 1890–1895). The engine stated its own strongest evidence zone and then reported a date that mostly *excludes* it. That is precisely the **M15** mechanism ("a 'strongest' dating zone in the narrative that doesn't overlap the final working range") — which we supposedly have a guard for (shipped Deploy 001/002). Either the guard has a gap, or the working range is derived from a different path (P2 frame) than the convergence narrative and the two aren't reconciled.
+
+**Most likely driver — a replaceable part dating the whole piece (again).** The only late signal is `modern_caster` ("rubber or composition casters… rubber casters post-date c. 1920"). Casters are the **single most-replaced part** on Victorian furniture, and P0 even hedged ("but porcelain or early rubber casters were used… from c. 1870 onward"). Yet `modern_caster` (post-1900) sits in the hardware layer and appears to drag the floor to ~1890 — while the genuinely diagnostic hardware (`eastlake_hardware` 1870–1895, marble chamfered corners 1865–1895, walnut 1865–1895) points earlier. Same shape as scan 03 (plywood **repair** dated the organ) and the spurious-late-floor cluster (04/06/07): **a non-original / replaceable late element clamps the floor late and overrides the strong early convergence.**
+
+**Inconsistency worth flagging:** the engine *does* have replacement-risk down-weighting — it applied "porcelain caster has elevated replacement risk and is down-weighted" in scans 05 and 07. Here it did **not** apply the same logic to a rubber/composition caster, which is *more* obviously a later replacement. So the replacement-risk guard exists but isn't firing on the caster type most likely to be a replacement. That's a concrete, bounded gap.
+
+### The date problem is consolidating
+Across the batch, the date layer fails in one direction far more than the other — **too late** — and always for the same reason: a weak/absent/negated/replaceable *late* signal outranks strong early convergence.
+- **Spurious / replaceable late floor:** scans 04 (fake label), 06 (chalk mark), 07 (negated plywood), 09 (replaceable caster) — **4 of 9.**
+- **Style-wave / later-zone override of hardware convergence:** scans 05, 09 — **2.**
+- **M15 narrative-vs-working-range mismatch:** scan 09 explicitly.
+All of these are the same root as the affirmation cluster, on the dating axis: **read the strong, affirmed, original-construction evidence; discount the weak/late/replaceable/negated.**
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) Extend replacement-risk down-weighting to **rubber/composition casters** (and other commonly-replaced late parts), as already done for porcelain casters. Small, bounded, additive.
+- (b) Reconcile working range to the stated strongest convergence (M15 guard gap): the printed date must overlap the narrative's "strongest convergence," not float later.
+- (c) This intersects the **convergence-zone selection** in `engineDatingOverlap.ts` (don't-touch-without-asking) — deliberate-design triage, not a quick guard.
+
+**Net on this scan:** the app got the hard parts right (it's an Eastlake parlor table, ~1870s–90s) and only the date drifted late — by the same mechanism we've now seen four times. Good corroboration, not a new problem.
