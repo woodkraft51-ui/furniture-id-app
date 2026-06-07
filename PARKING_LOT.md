@@ -3,6 +3,37 @@
 Tracking list for deferred work surfaced during the commode-determinism fix and
 the Stage 1 vocabulary migration. Newest context at top of each section.
 
+## Appraiser-voice for low-confidence dating rationale (2026-06-07, owner, real-world test pass)
+
+**Parked — product/voice, not a bug.** Surfaced on scan 10 (vernacular bar stool, honestly
+dated "c. 1880 onward, Low, limited evidence"). The *date* was correct and appropriately
+humble; the owner's point is the **copy** is cold. A real appraiser explains *why* it's broad
+with warmth and authority, e.g.:
+
+> "Construction for this form hasn't changed much over the past 150 years. There have been
+> subtle differences, but from the evidence available in the photographs submitted, …"
+
+vs. the current terse "Limited evidence — working range remains broad at post-1880."
+
+**Why it's tractable (and on-brand):** brand promise is "the tool professionals use." The
+warm explanation can be **assembled from data the engine already holds** —
+- the authored per-form period-context paragraph (era-span language),
+- the era-spanning clue notes (e.g. `round_tenon` → "spans eras, colonial to present"),
+- the explicit list of dating layers that returned **no datable signal**,
+- replacement/limitation notes.
+This is the *output-side* instantiation of the reframe (authored reference → user-facing
+prose), parallel to the computation-side wires.
+
+**Hard constraint:** compose **deterministically** from authored fields, reusing the maker-wire
+template (`composeFormDisplay` / `resolveMakerAttribution`). **Do NOT** route this through an
+LLM synthesis step — owner has rejected that, and a templated appraiser-voice is *more*
+trustworthy because every sentence traces to an authored basis. Applies especially to the
+"Current limitations" / "How we dated it · Limited evidence" copy on Low-confidence results.
+
+**Next action when unparked:** scope a small "dating-rationale composer" that turns
+(working range + which layers fired + which were era-spanning + limitation notes) into an
+appraiser-voiced paragraph, sourced entirely from authored content.
+
 ## Instrument taxonomy — gaps + overlap (2026-06-07, real-world test pass scans 03/08)
 
 **Parked by owner.** Surfaced by scans 03 (real Lyon & Healy reed organ → "Upholstered
