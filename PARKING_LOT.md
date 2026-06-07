@@ -3,6 +3,29 @@
 Tracking list for deferred work surfaced during the commode-determinism fix and
 the Stage 1 vocabulary migration. Newest context at top of each section.
 
+## Instrument taxonomy — gaps + overlap (2026-06-07, real-world test pass scans 03/08)
+
+**Parked by owner.** Surfaced by scans 03 (real Lyon & Healy reed organ → "Upholstered
+seating") and 08 (melodeon-tagged keyboard → "Pump organ cabinet"). Two separable issues:
+
+1. **Missing forms (owner to author later; Claude to provide a template):**
+   - **Melodeon** — not authored anywhere (no form, subtype, or alias). Nearest bucket
+     today: `form_pump_organ_cabinet` (alias "Parlor organ") or the `reed_organ` subtype.
+   - **Square grand piano** — not authored. Only a `square_piano` *subtype* exists under
+     `form_musical_instrument_furniture`; no top-level square-piano/square-grand form.
+2. **Overlap to rationalize:** two top-level instrument forms cover the same territory —
+   `form_pump_organ_cabinet` AND `form_musical_instrument_furniture` (which itself holds
+   `reed_organ` + `square_piano` subtypes). Competing baskets for generic keyboard-cabinet
+   signals is likely part of why 03/08 routing was erratic.
+
+**Note:** the *routing* defect (affirmation-blind — pump-organ selected without
+bellows/reeds/treadles) is separate from this taxonomy gap and is tracked in the
+real-world test-pass batch triage, not here. This entry is taxonomy only.
+
+**Next action when unparked:** Claude provides an authoring template (prepopulated, like the
+form-wire batch) for melodeon + square grand piano; owner authors details. Also decide
+whether musical instruments are in launch scope at all (American furniture 1850–1940).
+
 ## Task B Step 6 — CLUE_ROUTING consumption attempt #2 outcome (2026-05-28)
 
 **Conclusion (owner-locked):** Before CLUE_ROUTING consumption can ship,
