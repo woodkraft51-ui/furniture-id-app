@@ -16,6 +16,7 @@ Engine under test: `main` @ `bf5d445` (Deploy 010).
 | 05 | **Renaissance Revival dressing table / vanity** (part of a 3-pc bedroom suite: vanity + dresser + full bed) | **Italian Renaissance / Neo-Renaissance Revival Dressing table** | c. 1920–1925, High | 🟢 form right / 🟡 date by style | **form CORRECT** (kneehole→vanity). Date driven *purely* by a style-revival-wave, sidelining the hardware layer. see below |
 | 06 | **Wooden full bed** (Colonial Revival, the suite-mate of scan 05; "no rails") | **Colonial Revival Iron bed frame** (`form_iron_bed`) | **post-1989**, High | 🔴 wrong form + 🔴🔴 date catastrophe | wooden bed → "iron bed" (clue-key `metal_bed_frame` over prose "WOODEN…with metal side rails"); a **chalk mover's scrawl "1989"** became a hard date floor → "post-1989" on a c.1920 antique. see below |
 | 07 | **Victorian spring platform rocker** (Golden Oak, c. 1875–1910) — owner: "authored platform-rocker dating is being ignored" | **Rocking chair**, American Empire / late Classical Revival | **c. 1935 onward**, High (date conf Low) | 🟢 form ok / 🔴🔴 date | **owner is right.** Date floor 1935 comes from `bent_molded_plywood` — a clue P0 **explicitly negated** ("NOT molded plywood… 19th-c steam-bent"). Meanwhile the defining `concentric_ring_spring_mounts` (conf 95, "Victorian c.1875–1910") sits "present but undated." see below |
+| 08 | **Melodeon / square piano** (keyboard instrument, trestle-lyre base; tag reads "Melodeon"; **no bellows, no treadles, no reed stops**) | **Pump organ cabinet** (`form_pump_organ_cabinet`) | c. 1870–1900, Mod | 🟡 form routed without affirmation | **mirror of scan 03.** Routed pump-organ on generic keyboard-cabinet signals with **none** of the defining pump-organ evidence present. Date fine. Owner's point: absence of reeds/bellows should *disqualify*. see below |
 
 ---
 
@@ -210,3 +211,34 @@ CLAUDE.md frames the fix as widening consumption to include *both* "rich observa
 - (c) Same inscription/weak-floor discipline as scans 04/06.
 
 **Owner validation:** the authored platform-rocker dating IS being ignored — confirmed from the trace (defining feature "present but undated"; floor sourced from a negated clue). Good catch; logged, not yet fixed.
+
+---
+
+## Scan 08 — melodeon / square piano called "Pump organ cabinet" (owner-flagged)
+
+**Engine:** Pump organ cabinet (`form_pump_organ_cabinet`) · Queen Anne / Colonial Revival · c. 1870–1900 (Moderate) · resale $116–266.
+**Actually:** a 19th-c. **keyboard instrument** — melodeon or square piano (seller tag literally reads "Melodeon"); trestle/lyre base, folding lid, ~5 octaves. **No bellows, no treadle pedals, no reed stop-knobs** visible. Owner's point: *"absence of reeds… absence of bellows… should be a dead giveaway."*
+
+**Date is fine (c. 1870–1900 is right for the form). The issue is the form route — and it's the exact mirror of scan 03, which together prove the routing reads adjacency, not affirmation.**
+
+### The 03 ↔ 08 mirror (the key insight)
+- **Scan 03** = a *real* Lyon & Healy reed/pump organ — had `reed_organ_form`, `bellows_pedals`, `organ_stop_knobs`. The engine called it **"Upholstered seating"** (missed the organ entirely).
+- **Scan 08** = *not* a confirmable pump organ — has **none** of those defining clues, just generic `keyboard_instrument_case` / `musical_instrument` / `keyboard_range`. The engine called it **"Pump organ cabinet."**
+
+So the pump-organ route **false-negatived a real organ and false-positived a non-organ.** That can only happen if the route is keyed on generic keyboard/cabinet adjacency rather than on the form's defining evidence (bellows / treadles / reeds / stops). The engine's own "How it differs" text even recites the defining test — *"pump organs use foot-powered bellows with two treadle pedals and reed assemblies"* — and then routes without checking any of it. Same disease as the telephone bench (scans 01, 04): **a form selected because adjacent signals are present, not because its defining feature is affirmed.**
+
+### The owner's principle — encode disqualifying absence (affirmation's contrapositive)
+"No bellows + no reeds ⇒ not a pump organ" is the affirmation gate stated as a negative. The affirmation fix has two faces:
+- **Require** the defining feature to *select* a form (positive gate).
+- **Bar** the form when its defining feature is *affirmatively absent* (negative gate) — P0 even captured the absence here (no bellows/treadle/stop clues at all). This is a genuinely good, generalizable design rule and worth encoding as such, not just per-form patches.
+
+### Affirmation is now the batch's dominant theme
+Forms routed on adjacency without defining-feature affirmation: **scans 01, 03, 04, 08 — 4 of 8.** Two forms (telephone bench ×2, pump organ ×2), one mechanism. This is the highest-frequency cluster in the batch and the strongest case for building the affirmation gate as a *general* consumption rule (positive + negative) rather than chasing individual routes.
+
+**Minor:** style "Queen Anne / Colonial Revival" is a loose, text-derived context label; P0's own cues (`georgian_regency_influence`, ball-and-claw, lyre stretcher) point earlier/different. Low-weight, context_only — not the headline.
+
+**Proposed fixes (post-batch triage, NOT now):**
+- (a) **Affirmation gate, both polarities:** a form requires its defining clue(s) to be selected; affirmative absence of those defining clues bars it. Covers pump-organ (08), telephone-bench (01/04), and is the general fix.
+- (b) **Instrument taxonomy / scope decision** (recurring with 03, 08): melodeon / square piano / reed organ have no clean home; decide author-vs-out-of-scope.
+
+**Owner validation:** the route ignored the defining-feature test that the form's own documentation states. Confirmed real; logged, not fixed.
