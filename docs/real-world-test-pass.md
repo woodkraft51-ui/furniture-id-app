@@ -356,3 +356,33 @@ The Deploy-008 fix wasn't *wrong* (it resolved real fixtures with zero regressio
 - (c) M0 phantom containment, esp. `spindle_*` emitted without corroboration.
 
 **Owner validation:** yesterday's fix was fixture-tuned, not root-cause; the loom magnet persists via a different path. Confirmed from the trace. Logged for the triage discussion — not touched.
+
+---
+
+## Scan 12 — peacock chair (CORRECT — the positive control for the loom fix)
+
+**Engine:** Peacock chair (`form_peacock_chair`) · c. 1900–2000 (Moderate; date conf Low) · resale $119–265.
+**Actually:** a **peacock / Emmanuelle fan-back wicker chair** — correctly identified. Owner predicted it'd come back well (resembles a corpus fixture). It did.
+
+**This is the most valuable WIN in the batch, because it proves the affirmation-gate approach already works — and shows exactly what the loom fix must preserve.** This chair is *drenched* in the same magnet-feeding clues that sent scan 11's rocker to Loom — `woven_body`, `rattan_frame`, `cane_panels`, `wicker_weave_open` (95), `wicker_weave_close` (93). By the scan-11 mechanism it could easily have gone to Loom too. It didn't. It routed to **Peacock chair.** Why?
+
+**Because the peacock route is affirmation-gated (Deploy 009, form-wire B.2).** The chair affirms its *defining* features — `peacock_fan_back_form`, `spiral_scroll_decorative_elements` (conf 96), `looped_chain_border` (conf 96), `pedestal_column` — and the dedicated route requires a woven clue **+** a peacock token before firing. So a strong, *affirmed* form out-competed the loom magnet.
+
+### The contrast that defines the fix
+| Scan | Wicker clues present | Affirmation-gated route exists? | Result |
+|---|---|---|---|
+| 11 (cane-back rocker) | yes (cane panel + spindle phantoms) | **no** (rocker route lost to loom magnet) | 🔴 **Loom** |
+| 12 (peacock chair) | yes (full wicker) | **yes** (peacock route, Deploy 009) | 🟢 **Peacock chair** |
+
+Same raw material, opposite outcomes — and the *only* difference is whether an **affirmation-gated route** existed to beat the magnet. That is the entire thesis of the proposed fix, demonstrated live: **give the magnet forms (loom / telephone-bench / pump-organ) the same affirmation discipline the peacock route already has, and they stop stealing pieces.** Deploy 009's peacock route is the working template; the fix is to generalize it (and to make loom *require* loom-defining features, not just add competitors).
+
+### Date behaved well (humble) — second clean example
+"c. 1900–2000, Low, limited evidence, working range remains broad." A peacock chair genuinely spans 1900–present (peaked late 1960s–70s), so broad-low is honest. Like scan 10, when there's no bad signal to hijack the floor, dating is appropriately cautious. (Minor: the prose says "popularized late 1960s–1970s" but the range stayed 1900–2000 — a soft version of prose-not-fully-consumed, but defensible here since the form really is hard to date. Not flagged as a miss.)
+
+### Recurring phantom — `fully_upholstered`, now 5×, elevate it
+`fully_upholstered` fired again (conf 74, "upholstered or cushioned surfaces visible") on a chair P0 also says has **no cushion** ("no cushion present"). It spawned the "Upholstery present (insufficient detail)" layer and put "Upholstered seating / Upholstered armchair" in the alternatives. **`fully_upholstered` is now the single most recurrent M0 phantom: scans 03 (felt pedal pads), 04 (phantom seating sibling), 07 (bare rocker), 10 (bare stool), 12 (cushionless peacock).** It is a serial false-positive that pollutes the upholstery layer and the form alternatives on non-upholstered pieces. Bounded, high-frequency, very fixable — promote to its own fix item.
+
+### Minor — P5 conflict resolution leaned early
+The engine resolved `mid_century_streamlined_wicker` (1945–70) vs `wicker_weave_open` (Bar Harbor 1900–20) in favor of the **earlier** Bar Harbor clue ("greater authority 10/10"). A peacock chair's open weave isn't really Bar Harbor, so the authority ranking pulled toward the wrong era — but since the final date stayed broad (1900–2000), no harm. Noted as a latent authority-ranking quirk, not a miss here.
+
+**Net:** a clean form win and the best evidence yet that the fix is right and already partially built. The peacock route is the proof-of-concept; the loom magnet is what's missing it. Plus a newly-elevated, high-frequency bounded bug (`fully_upholstered` phantom). Logged, not touched.
