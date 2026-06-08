@@ -7,6 +7,14 @@
 > **Reusable beyond the manual:** this same profile drives the future teaching-app copy,
 > the app's appraiser-tone dating rationale, and ad/sales copy. One voice across the line.
 
+## Hard rules (standing, owner-stated, non-negotiable)
+- **No em dashes, ever.** The owner does not, and will not, consider the em dash a
+  traditional punctuation mark. Applies to ALL output for this owner: chat, articles,
+  chapters, docs. Use a period, comma, colon, parentheses, or restructure the sentence
+  instead. Also avoid en dashes; write "to" for ranges (e.g., 1830 to 1860) or use a hyphen.
+- **Traditional punctuation only** in published copy: period, comma, question mark,
+  apostrophe, quotation marks, colon, parentheses, hyphen.
+
 ## Status
 - **Awaiting first signal:** owner's edited **Windsor** chapter (vs. Claude draft
   `phase1b-sample-chapter-windsor.md`). On receipt, diff → populate the sections below.
