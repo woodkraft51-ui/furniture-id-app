@@ -1,8 +1,9 @@
 # Field Guide — Project Plan & Phase Tracker
 
-**Product:** *American Antique Furniture — A Field Guide to Identification & Dating*
-(working title). A curated, complete-in-itself digital field guide (~40 marquee
-forms + evergreen dating-fundamentals chapters), sold as a PDF for Father's Day 2026.
+**Product:** *Field Guide to American Furniture Identification, 1600–1940*
+(owner-approved title). A curated, complete-in-itself digital field guide — a three-part
+structure (Method → 30 Forms → back-of-book Reference Atlases) + short Clocks chapter —
+sold as a PDF for Father's Day 2026.
 
 **Scope of app vs. guide:** the ID engine covers ~250 forms; the Field Guide is a
 **curated subset** of the most commonly-encountered American antique forms

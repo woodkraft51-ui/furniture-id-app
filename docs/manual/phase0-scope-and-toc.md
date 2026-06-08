@@ -19,11 +19,49 @@ pieces. (These belong to a future "Mid-Century" edition, not this one.)
 
 ---
 
+# Phase 0 — Scope & Table of Contents (owner-approved structure 2026-06-08)
+
+> **Title:** *Field Guide to American Furniture Identification, 1600–1940*
+
+## Three-part architecture (owner-directed Q5)
+Walk the reader through the *process*, then the *forms*, then give them the *skills* to
+actually do it. "My advice doesn't matter if they can't identify a wood or a fastener."
+
+- **PART I — THE METHOD** (front; the "how to think")
+  - How to use this guide
+  - The field process (mirrors the engine): **Look → Read the construction → Date by layers
+    → Compare to look-alikes → Estimate value → Call it.**
+  - Style as the *weakest* evidence + **Period-style timeline 1600–1940**
+    (Pilgrim · William & Mary · Queen Anne · Chippendale · Federal · Empire · Victorian
+    revivals · Eastlake/Aesthetic · Golden Oak · Arts & Crafts · Art Deco/Waterfall).
+- **PART II — THE FORMS** (middle; the "what you'll find") — the 30 form chapters + Clocks.
+- **PART III — FIELD REFERENCE ATLASES** (back; the "how to actually see it" — the skill-builders)
+  - **Wood Species ID** (grain/pore/color plates: walnut, oak, mahogany, cherry, maple, pine, poplar, gum…)
+  - **Fastener Types ID** (hand-wrought → cut → wire nails; slotted vs. Phillips screws; the date each pins)
+  - **Joinery Types ID** (hand vs. machine dovetail; mortise-and-tenon; dowel; rabbet; what each dates)
+  - **Hardware & Casters ID** (pull/knob chronology; porcelain → rubber casters; "usually replaced")
+  - **Finishes ID** (shellac/varnish vs. lacquer vs. modern poly; refinish tells)
+  - **Glossary** of terms used throughout.
+  - *These atlases are the most visual section and the direct seed for the future teaching app.*
+
+## SCOPE NOTE — the 1600 start vs. the app's 1850–1940 source
+The app's authored source is ~1850–1940-centric. The 1600 end is honored by:
+(a) the **method/dating content**, which inherently spans 1600–1940 (nail/saw/joinery evolution);
+(b) the **period-style timeline** (adds Pilgrim→Federal);
+(c) **colonial context** written into the early-origin forms (Windsor, gateleg, tilt-top, tea table,
+slant-front desk, candle stand, Pembroke).
+The **form selection deliberately leans Victorian / early-20th** — that's what's actually found in
+the field. We honor "1600" through *method + styles*, not by padding rare colonial forms. (Owner-approved trade-off.)
+
+---
+
 ## DECISIONS (owner-approved 2026-06-08)
 - **Count: 30 forms** (trimmed from 40 for richer, more visual pages — see Design Mandate in PROJECT_PLAN).
 - **Clocks: IN** — one short chapter (tall-case + shelf clock together), enough for confident field calls.
 - **Lighting: OUT** of the FD edition (future title).
 - **Pressed-back / spindle kitchen chairs:** folded into the Windsor/seating chapter as a variant call-out.
+- **Title:** *Field Guide to American Furniture Identification, 1600–1940.*
+- **Structure:** three-part (Method / Forms / Reference Atlases) — above.
 - **Design:** visual-first; see Design Mandate. The chapter template is finalized in Phase 1.
 
 ---
