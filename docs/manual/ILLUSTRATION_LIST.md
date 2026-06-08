@@ -113,6 +113,46 @@
 | BLANK-4 | Original painted decoration (Pennsylvania German) | Close | Value feature | Owner photo or CC0 link | NEEDED |
 | BLANK-5 | Corner joinery: dovetailed vs nailed | Close | Construction and dating | Owner photo | NEEDED |
 
+## Chapter: Rocking Chair
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| ROCK-1 | Rocking chair, profile | Side | Hero | Owner photo | NEEDED |
+| ROCK-2 | Joint where a runner meets the leg | Macro | Original or replaced | Owner photo | NEEDED |
+| ROCK-3 | Rocker types: Boston, ladderback, pressed-back, platform | Silhouettes | Visual key | Claude SVG | NEEDED |
+| ROCK-4 | Original stenciled crest | Close | Surface value | Owner photo or CC0 link | NEEDED |
+
+## Chapter: Morris Chair
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| MORR-1 | Morris chair, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
+| MORR-2 | Back-adjustment rod or pegs | Macro | Defining feature | Owner photo | NEEDED |
+| MORR-3 | Exposed through-tenon and wedge key | Close | Mission construction | Owner photo | NEEDED |
+| MORR-4 | Morris vs recliner vs fixed lounge chair | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+| MORR-5 | Maker label or shopmark, if present | Macro | Attribution | Owner photo | NEEDED |
+
+## Chapter: Wing Chair
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| WING-1 | Wing chair, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
+| WING-2 | Wing silhouette types: scrolled, flat, ogee | Profiles | Visual key | Claude SVG | NEEDED |
+| WING-3 | Leg styles by period | Side by side | Dating centerpiece | Claude SVG | NEEDED |
+| WING-4 | Wing chair vs armchair | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Settee
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| SETT-1 | Settee, full width | Three-quarter | Hero | Owner photo | NEEDED |
+| SETT-2 | Settee vs sofa scale | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+| SETT-3 | Matched parlor suite (settee plus chairs) | Group | Suite-value point | Owner photo | NEEDED |
+
+## Chapter: Victorian Sofa
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| SOFA-1 | Victorian sofa, full length | Three-quarter | Hero | Owner photo | NEEDED |
+| SOFA-2 | Victorian sofa silhouettes: Grecian, Rococo, Renaissance, Eastlake | Profiles | Visual key | Claude SVG | NEEDED |
+| SOFA-3 | Hand-tied coil springs under the frame | Underside | Dating, not the cover | Owner photo | NEEDED |
+| SOFA-4 | Sofa vs settee scale | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
 ---
 
 *More chapters and the back-of-book atlases (Wood, Fasteners, Joinery, Hardware, Finishes) will add
