@@ -24,12 +24,41 @@ forms + evergreen dating-fundamentals chapters), sold as a PDF for Father's Day 
 
 ---
 
+## DESIGN MANDATE (owner-directed 2026-06-08 — governs everything)
+
+Owner is a 30-year curriculum-development professional. Direct quote of intent:
+*"Visual is what works. Visual is what sells. If it looks good, visually friendly,
+visually easy to understand, visually appealing, uses the 3-and-5 color patterns,
+has just the right margins — it will sell way better. Appeal sells better than
+content, even — but we'll have both."*
+
+This is a **first-class requirement**, not finishing polish. It governs the chapter
+template, illustration density, and the production toolchain:
+- **Visual-first per page** — silhouette/recognition imagery and diagrams lead; prose
+  supports. Every dating "tell" wants a diagram (e.g. hand-vs-machine dovetail plate,
+  fastener timeline strip), not a paragraph.
+- **3-and-5 color discipline** — a tight, intentional palette (≈3 core + up to 2 accents),
+  applied consistently; color-code the form categories for at-a-glance navigation.
+- **Generous, consistent margins & whitespace** — readability and "premium feel."
+- **Strong visual hierarchy** — scannable; "field decision in 10 seconds" panels.
+- **Comparison plates** — the "how it differs from look-alikes" content rendered as
+  side-by-side visuals, not text.
+- **Implication for toolchain (Phase 4):** a plain markdown→PDF pipeline will NOT hit
+  this bar. Production needs a designed template (Canva/InDesign/Affinity, owner-side)
+  OR a Claude-driven pipeline capable of real layout. Claude will deliver a **design-system
+  spec** (palette, type scale, grid/margins, repeating page components, per-form
+  wireframes) so production is "pour content into a designed shell," not design-as-you-go.
+
+Trimming to 30 forms (from 40) directly serves this: fewer forms = more page real estate
+and richer visuals per form, and lighter illustration-sourcing load on the 9-day timeline.
+
 ## Phase timeline & review gates (target launch: Jun 17, ~4 days ad runway before FD Jun 21)
 
 | Phase | Deliverable (review artifact) | Target | Status |
 |---|---|---|---|
 | **0 — Scope & TOC** | `phase0-scope-and-toc.md` — recommended 40 + chapter spine + scope judgment calls | Jun 9 | **DRAFT READY — awaiting touch-base** |
-| **1 — Sample chapter** | One fully-built chapter (text + illustration sourcing) as the pattern | Jun 10 | pending Ph0 approval |
+| **1a — Design system** | Palette (3+2), type scale, grid/margins, repeating page components, per-form wireframe | Jun 10 | pending owner template input |
+| **1b — Sample chapter** | One fully-built chapter *designed into the system* (text + illustration sourcing) as the pattern | Jun 10–11 | pending Ph0 approval |
 | **2 — Full manuscript** | All chapter text assembled & edited from source | Jun 13 | — |
 | **3 — Illustration manifest** | Every image sourced (patents / Met / Smithsonian CC0 / Wikimedia PD) w/ URL + license + placement | Jun 14 | — |
 | **4 — Layout / PDF draft** | The formatted product | Jun 16 | — |

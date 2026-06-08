@@ -19,7 +19,50 @@ pieces. (These belong to a future "Mid-Century" edition, not this one.)
 
 ---
 
-## The recommended 40 (grouped = chapter spine)
+## DECISIONS (owner-approved 2026-06-08)
+- **Count: 30 forms** (trimmed from 40 for richer, more visual pages — see Design Mandate in PROJECT_PLAN).
+- **Clocks: IN** — one short chapter (tall-case + shelf clock together), enough for confident field calls.
+- **Lighting: OUT** of the FD edition (future title).
+- **Pressed-back / spindle kitchen chairs:** folded into the Windsor/seating chapter as a variant call-out.
+- **Design:** visual-first; see Design Mandate. The chapter template is finalized in Phase 1.
+
+---
+
+## The recommended 30 (grouped = chapter spine) — TRIMMED, owner-approved count
+
+### SEATING (6)
+1. Windsor chair (+ pressed-back variant call-out) · 2. Rocking chair (incl. platform rocker) ·
+3. Morris chair · 4. Wing chair · 5. Settee · 6. Victorian sofa
+
+### TABLES (7)
+7. Parlor / center table · 8. Drop-leaf table · 9. Gateleg table · 10. Tilt-top table ·
+11. Pembroke table · 12. Candle stand · 13. Work / sewing table
+
+### CASE & STORAGE (10)
+14. Chest of drawers · 15. Dresser · 16. Dressing table / vanity · 17. Washstand ·
+18. Sideboard · 19. China cabinet · 20. Corner cupboard / pie safe · 21. Hoosier cabinet ·
+22. Blanket chest · 23. Armoire / wardrobe
+
+### DESKS (3)
+24. Slant-front desk · 25. Secretary desk · 26. Cylinder / roll-top desk
+
+### BEDS (2)
+27. Iron bed · 28. Wooden bedstead
+
+### EVERYDAY / HIGH-RECOGNITION (2)
+29. Telephone stand / gossip bench · 30. Nightstand
+
+### BONUS SHORT CHAPTER (not counted in the 30)
+Clocks — tall-case (grandfather) + shelf/mantel, treated together; field-decision depth.
+
+**Cut from the 40 → bubble/swap pool:** slipper chair, bench, stool, pedestal table,
+tea table, extension dining table, step-back cupboard (folded into corner-cupboard
+chapter), bookcase/breakfront, writing table/desk, Wooton desk. (Plus the original
+bubble list below.)
+
+---
+
+## (Original) recommended 40 — superseded by the 30 above, kept for reference
 
 ### Front matter — the evergreen value (NOT counted in the 40; the real differentiator)
 These cross-cutting "how to read any piece" chapters are what make the guide worth
