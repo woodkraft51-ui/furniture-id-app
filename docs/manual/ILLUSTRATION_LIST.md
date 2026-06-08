@@ -71,6 +71,48 @@
 | WASH-4 | Water staining and wear on top and rear | Close | Original use evidence | Owner photo | NEEDED |
 | WASH-5 | Washstand vs small dresser | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
 
+## Chapter: Dresser
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| DRESS-1 | Dresser with mirror, full | Three-quarter | Hero | Owner photo | NEEDED |
+| DRESS-2 | Mirror support mounts, or holes where a mirror was | Rear, close | Reading the evidence | Owner photo | NEEDED |
+| DRESS-3 | Dresser vs chest of drawers proportions | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+| DRESS-4 | Drawer dovetails | Close | Dating, ties to Method | Owner photo | NEEDED |
+
+## Chapter: Sideboard
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| SIDE-1 | Sideboard, full width | Three-quarter | Hero | Owner photo | NEEDED |
+| SIDE-2 | Distributed storage zones across the width | Front | Defining feature | Owner photo | NEEDED |
+| SIDE-3 | Sideboard vs buffet vs server | n/a | Teaching | Claude diagram (Mermaid) | DRAFTED (in chapter) |
+| SIDE-4 | Base: long legs vs heavy enclosed cabinet | Side by side | Dating and form call | Owner photos or Claude SVG | NEEDED |
+| SIDE-5 | Cellarette or bottle drawer | Close | Period detail | Owner photo | NEEDED |
+
+## Chapter: China Cabinet
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| CHINA-1 | China cabinet, full | Three-quarter | Hero | Owner photo | NEEDED |
+| CHINA-2 | Curved or bowed glass corner | Close | Key dating and value feature | Owner photo | NEEDED |
+| CHINA-3 | Claw-and-ball foot | Macro | Period detail | Owner photo | NEEDED |
+| CHINA-4 | China cabinet vs hutch vs corner cabinet | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Corner Cabinet
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| CORN-1 | Corner cabinet, three-quarter showing angled sides | Three-quarter | Hero | Owner photo | NEEDED |
+| CORN-2 | Angled or triangular rear geometry | Rear or top-down plan | Defining feature | Owner photo or Claude SVG | NEEDED |
+| CORN-3 | Triangular interior shelf | Inside | Confirm corner build | Owner photo | NEEDED |
+| CORN-4 | Corner cabinet vs flat-back china cabinet | Side by side, from above | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Blanket Chest
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| BLANK-1 | Blanket chest, full, lid and feet | Three-quarter | Hero | Owner photo | NEEDED |
+| BLANK-2 | Lid open, cavity and till | Top down | Defining feature | Owner photo | NEEDED |
+| BLANK-3 | Base feet types: bracket, bun, bootjack | Side by side | Teaching | Claude SVG line diagram | NEEDED |
+| BLANK-4 | Original painted decoration (Pennsylvania German) | Close | Value feature | Owner photo or CC0 link | NEEDED |
+| BLANK-5 | Corner joinery: dovetailed vs nailed | Close | Construction and dating | Owner photo | NEEDED |
+
 ---
 
 *More chapters and the back-of-book atlases (Wood, Fasteners, Joinery, Hardware, Finishes) will add
