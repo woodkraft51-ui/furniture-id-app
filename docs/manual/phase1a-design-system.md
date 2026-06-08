@@ -17,7 +17,11 @@
   uniformly; consistency wins). Silhouettes drawn in Espresso line on a solid palette-tint block;
   same treatment for hero plates, comparison plates, and atlas specimens. Derivable cleanly from
   PD patent drawings. ✓
-- **Hook ("▶ Recognize it in 10 seconds"): PENDING owner (Q4).**
+- **Hook: TWO-STAGE (owner Q4, 2026-06-08).** Replaces the single "recognize in 10" box with
+  the way experts actually work — *eliminate fast, then confirm carefully*:
+  - **⚡ RULE IT OUT IN 10** (top box) — 1–2 quick-kill disqualifiers.
+  - **🔍 ON THE SHORT LIST? CONFIRM IT** — defining features + Date-It strip + comparison plate.
+  Mirrors Part I's process and the engine's eliminate-vs-affirm logic.
 
 ---
 
@@ -51,7 +55,7 @@ Kraft Tan (not a rainbow) so the book stays cohesive — see §5.
 ## 4. Repeating page components (the "kit") — every form chapter is assembled from these
 1. **Category thumb-tab** — color-coded bleed tab on the outer edge (physical thumb-index feel).
 2. **Title block** — form name · "also called…" aliases · era band (a mini 1600–1940 bar with the form's active range highlighted).
-3. **▶ RECOGNIZE IT IN 10 SECONDS** box (outer rail, top) — silhouette icon + the ONE defining feature. The hook; designed to be the first thing the eye lands on.
+3. **⚡ RULE IT OUT IN 10** box (outer rail, top) — 1–2 quick-kill disqualifiers; the hook. Followed lower by **🔍 ON THE SHORT LIST? CONFIRM IT** (defining feature + the careful checks). Two-stage: eliminate fast, confirm slow.
 4. **Hero plate** — silhouette line-art and/or a representative photo.
 5. **DATE IT strip** (Verdigris-keyed) — a horizontal layered band: fastener · joinery · wood · hardware · finish, each with a tiny icon and the date it pins. Mirrors the engine's layered dating.
 6. **DON'T CONFUSE IT WITH… plate** — side-by-side comparison: this vs. its top look-alike, with the 1–2 distinguishing tells circled.
