@@ -9,7 +9,19 @@
 
 ---
 
-## 1. Palette — 3 core + 2 accent (the "3-and-5")
+## DESIGN DECISIONS (owner 2026-06-08)
+- **Palette: WARM** — the warm-wood neutrals + teal(=dating)/oxblood(=caution) scheme below. ✓
+- **Trim: 6×9 portrait** (Claude's lean, owner-delegated) — premium field-guide feel, most phone-friendly book ratio, clean print path for a future physical edition. ✓
+- **Illustration: LINE-ART SILHOUETTES on COLOR-BLOCK panels**, palette-keyed (NOT photo plates).
+  Chosen for consistency + scalability across 30+ forms (sourced photos can't be sustained
+  uniformly; consistency wins). Silhouettes drawn in Espresso line on a solid palette-tint block;
+  same treatment for hero plates, comparison plates, and atlas specimens. Derivable cleanly from
+  PD patent drawings. ✓
+- **Hook ("▶ Recognize it in 10 seconds"): PENDING owner (Q4).**
+
+---
+
+## 1. Palette — 3 core + 2 accent (the "3-and-5") — WARM, approved
 
 | Role | Name | Hex | Use |
 |---|---|---|---|
