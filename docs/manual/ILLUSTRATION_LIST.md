@@ -256,6 +256,23 @@
 
 ---
 
-**All 30 form chapters plus the Clocks bonus chapter are now drafted.** Remaining: Part I (the
-Method section) and the Part III reference atlases (Wood, Fasteners, Joinery, Hardware, Finishes),
-which will add their image needs here.
+## Chapter: Dressing Table and Vanity
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| VAN-1 | Vanity with mirror, full | Three-quarter | Hero | Owner photo | NEEDED |
+| VAN-2 | Knee opening and mirror-mounting evidence | Front and rear | Defining feature and caution | Owner photo | NEEDED |
+| VAN-3 | Vanity vs dresser | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Armoire and Wardrobe
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| ARM-1 | Armoire or wardrobe, full, a door open | Three-quarter | Hero | Owner photo | NEEDED |
+| ARM-2 | Interior: hanging rod, shelves, or drawers | Front, open | Function | Owner photo | NEEDED |
+| ARM-3 | Knock-down joinery at the cornice or side | Macro | The disassembly tell | Owner photo | NEEDED |
+| ARM-4 | Armoire vs wardrobe vs chifferobe | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+---
+
+**All 30 form chapters plus the Clocks bonus chapter are now drafted (verified by recount).**
+Remaining: Part I (the Method section) and the Part III reference atlases (Wood, Fasteners,
+Joinery, Hardware, Finishes), which will add their image needs here.
