@@ -28,7 +28,7 @@
 |---|---|---|---|---|---|
 | WIN-1 | Windsor chair, full | Three-quarter, wide margin | Hero | Owner photo | NEEDED |
 | WIN-2 | Plank seat with legs socketed into underside | Underside or edge | Defining feature | Owner photo or Claude SVG | NEEDED |
-| WIN-3 | Six Windsor back types (sack, comb, bow, fan, continuous-arm, hoop) | Silhouettes | Visual key | Claude SVG line diagrams | NEEDED |
+| WIN-3 | Windsor back types (sack, comb, bow, fan, hoop) | Silhouettes | Visual key | Claude SVG | DRAFTED (`diagrams/windsor-back-types.svg`) |
 | WIN-4 | Windsor vs ladderback | Side by side | Comparison plate | Owner photos or Claude SVG | NEEDED |
 | WIN-5 | Boston rocker, full (rolled seat, spindle back, decorated crest) | Three-quarter | Rocker hero | Owner photo (note: owner's current rocker is a splat-back, a cousin, caption accordingly) | NEEDED |
 
@@ -135,7 +135,7 @@
 |---|---|---|---|---|---|
 | WING-1 | Wing chair, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
 | WING-2 | Wing silhouette types: scrolled, flat, ogee | Profiles | Visual key | Claude SVG | NEEDED |
-| WING-3 | Leg styles by period | Side by side | Dating centerpiece | Claude SVG | NEEDED |
+| WING-3 | Leg styles by period | Side by side | Dating centerpiece | Claude SVG | DRAFTED (`diagrams/legs-by-period.svg`) |
 | WING-4 | Wing chair vs armchair | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
 
 ## Chapter: Settee
@@ -173,7 +173,7 @@
 |---|---|---|---|---|---|
 | GATE-1 | Gateleg, open, a gate swung out | Three-quarter | Hero | Owner photo | NEEDED |
 | GATE-2 | The swinging gate assembly | Close | Defining feature | Owner photo | NEEDED |
-| GATE-3 | Turned-leg types: barley-twist, ring, ball | Side by side | Visual key | Claude SVG | NEEDED |
+| GATE-3 | Turned-leg types: barley-twist, ring, ball, bobbin | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/turned-leg-types.svg`) |
 
 ## Chapter: Tilt-Top Table
 | ID | Shows | View | Purpose | Format | Status |
@@ -230,7 +230,7 @@
 |---|---|---|---|---|---|
 | BED-1 | Wooden bedstead, head and foot | Front | Hero | Owner photo | NEEDED |
 | BED-2 | Rail-to-post joint and hardware | Macro | Construction and alteration | Owner photo | NEEDED |
-| BED-3 | Subtype silhouettes: four-poster, sleigh, spool, panel | Side by side | Visual key | Claude SVG | NEEDED |
+| BED-3 | Subtype silhouettes: four-poster, sleigh, spool, panel | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/bedstead-subtypes.svg`) |
 
 ## Chapter: Telephone Stand
 | ID | Shows | View | Purpose | Format | Status |
@@ -252,7 +252,7 @@
 | CLOCK-1 | Tall-case clock, full height | Front | Hero | Owner photo | NEEDED |
 | CLOCK-2 | Shelf or mantel clock | Front | Hero | Owner photo | NEEDED |
 | CLOCK-3 | Maker's paper label and movement inside | Close | Dating the works | Owner photo or CC0 link | NEEDED |
-| CLOCK-4 | Tall-case vs shelf clock silhouettes | Side by side | Visual key | Claude SVG | NEEDED |
+| CLOCK-4 | Tall-case vs shelf clock silhouettes | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/clock-silhouettes.svg`) |
 
 ---
 
@@ -280,7 +280,7 @@
 | FAST-2 | Slotted vs Phillips screw | Claude SVG | DRAFTED |
 | FAST-3 | Real cut and wire nails from furniture | Owner photo or CC0 link | NEEDED |
 | JOIN-1 | Hand vs machine dovetail | Claude SVG | DRAFTED |
-| JOIN-2 | Mortise and tenon, exploded | Claude SVG | NEEDED |
+| JOIN-2 | Mortise and tenon, exploded | Claude SVG | DRAFTED (`diagrams/mortise-and-tenon.svg`) |
 | JOIN-3 | Real dovetailed drawer corners | Owner photos | NEEDED |
 | WOOD-1 | Grain plates: walnut, oak, mahogany, cherry, maple, pine | Owner photos or CC0 links | NEEDED |
 | WOOD-2 | Quartersawn oak ray fleck | Owner photo | NEEDED |
