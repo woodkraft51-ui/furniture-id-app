@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="380" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Dovetails: hand-cut versus machine-cut</text>
+
+  <!-- Hand-cut (left): uneven tails -->
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <rect x="95" y="80" width="58" height="220"/>
+    <polygon points="153,93 208,85 208,135 153,127"/>
+    <polygon points="153,173 208,165 208,200 153,192"/>
+    <polygon points="153,243 208,235 208,295 153,287"/>
+  </g>
+  <text x="170" y="332" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Hand-cut</text>
+  <text x="170" y="352" text-anchor="middle" font-size="13" fill="#3A2E26">uneven spacing, often narrow pins</text>
+
+  <!-- Machine-cut (right): even tails -->
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <rect x="455" y="80" width="58" height="220"/>
+    <polygon points="513,90 568,84 568,114 513,108"/>
+    <polygon points="513,131 568,125 568,155 513,149"/>
+    <polygon points="513,172 568,166 568,196 513,190"/>
+    <polygon points="513,213 568,207 568,237 513,231"/>
+    <polygon points="513,254 568,248 568,278 513,272"/>
+  </g>
+  <text x="535" y="332" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Machine-cut</text>
+  <text x="535" y="352" text-anchor="middle" font-size="13" fill="#3A2E26">even, identical, evenly spaced</text>
+
+  <text x="360" y="373" text-anchor="middle" font-size="12" fill="#3A2E26">Read the rhythm. Hands are slightly irregular. Machines are perfect.</text>
+</svg>

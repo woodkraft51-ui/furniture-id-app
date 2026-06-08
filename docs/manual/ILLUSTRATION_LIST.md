@@ -19,9 +19,9 @@
 | ID | Shows | Purpose | Format | Status |
 |---|---|---|---|---|
 | MET-1 | Period-or-reproduction decision tree | Core method, reused everywhere | Claude diagram (Mermaid) | DRAFTED (`diagrams/period-or-reproduction.md`) |
-| MET-2 | Three nail types: hand-wrought, cut, wire | Fastener dating | Claude SVG line diagram | NEEDED |
-| MET-3 | Hand-cut vs machine-cut dovetail | Joinery dating | Claude SVG line diagram | NEEDED |
-| MET-4 | Slotted vs Phillips screw | The post-1930s tell | Claude SVG line diagram | NEEDED |
+| MET-2 | Three nail types: hand-wrought, cut, wire | Fastener dating | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-nail-types.svg`) |
+| MET-3 | Hand-cut vs machine-cut dovetail | Joinery dating | Claude SVG line diagram | DRAFTED (`diagrams/joinery-dovetails.svg`) |
+| MET-4 | Slotted vs Phillips screw | The post-1930s tell | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-screws.svg`) |
 
 ## Chapter: Windsor Chair / Windsor Rocker
 | ID | Shows | View | Purpose | Format | Status |

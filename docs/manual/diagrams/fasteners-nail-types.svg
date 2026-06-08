@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="380" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Three nails, three eras</text>
+
+  <!-- Hand-wrought nail -->
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <polygon points="118,92 162,86 172,104 140,112 112,104"/>
+    <path d="M130,110 L150,110 L145,292 L139,304 L133,292 Z"/>
+  </g>
+  <text x="140" y="332" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Hand-wrought</text>
+  <text x="140" y="352" text-anchor="middle" font-size="13" fill="#3A2E26">before about 1800</text>
+  <text x="140" y="370" text-anchor="middle" font-size="12" fill="#3A2E26">irregular head, tapered, a little crooked</text>
+
+  <!-- Cut nail -->
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <rect x="338" y="90" width="44" height="16"/>
+    <polygon points="346,106 374,106 366,296 354,296"/>
+  </g>
+  <text x="360" y="332" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Cut nail</text>
+  <text x="360" y="352" text-anchor="middle" font-size="13" fill="#3A2E26">about 1790 to 1890</text>
+  <text x="360" y="370" text-anchor="middle" font-size="12" fill="#3A2E26">rectangular, tapered on two sides</text>
+
+  <!-- Wire nail -->
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <circle cx="580" cy="100" r="13"/>
+    <rect x="574" y="110" width="12" height="178"/>
+    <polygon points="574,288 586,288 580,304"/>
+  </g>
+  <text x="580" y="332" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Wire nail</text>
+  <text x="580" y="352" text-anchor="middle" font-size="13" fill="#3A2E26">common after 1890</text>
+  <text x="580" y="370" text-anchor="middle" font-size="12" fill="#3A2E26">round shank, uniform, pointed</text>
+</svg>
