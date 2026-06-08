@@ -232,7 +232,30 @@
 | BED-2 | Rail-to-post joint and hardware | Macro | Construction and alteration | Owner photo | NEEDED |
 | BED-3 | Subtype silhouettes: four-poster, sleigh, spool, panel | Side by side | Visual key | Claude SVG | NEEDED |
 
+## Chapter: Telephone Stand
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| PHONE-1 | Telephone stand, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
+| PHONE-2 | Phone-scaled top and directory shelf | Front | The affirmation evidence | Owner photo | NEEDED |
+| PHONE-3 | Telephone stand vs gossip bench | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Nightstand
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| NIGHT-1 | Nightstand, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
+| NIGHT-2 | A matched pair, or nightstand with its suite | Group | Pairing and value | Owner photo | NEEDED |
+| NIGHT-3 | Nightstand vs end table | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Clocks (bonus)
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| CLOCK-1 | Tall-case clock, full height | Front | Hero | Owner photo | NEEDED |
+| CLOCK-2 | Shelf or mantel clock | Front | Hero | Owner photo | NEEDED |
+| CLOCK-3 | Maker's paper label and movement inside | Close | Dating the works | Owner photo or CC0 link | NEEDED |
+| CLOCK-4 | Tall-case vs shelf clock silhouettes | Side by side | Visual key | Claude SVG | NEEDED |
+
 ---
 
-*Remaining chapters (telephone stand, nightstand, clocks) and the back-of-book atlases (Wood,
-Fasteners, Joinery, Hardware, Finishes) will add their needs here as they are drafted.*
+**All 30 form chapters plus the Clocks bonus chapter are now drafted.** Remaining: Part I (the
+Method section) and the Part III reference atlases (Wood, Fasteners, Joinery, Hardware, Finishes),
+which will add their image needs here.
