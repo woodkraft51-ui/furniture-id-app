@@ -273,6 +273,28 @@
 
 ---
 
-**All 30 form chapters plus the Clocks bonus chapter are now drafted (verified by recount).**
-Remaining: Part I (the Method section) and the Part III reference atlases (Wood, Fasteners,
-Joinery, Hardware, Finishes), which will add their image needs here.
+## Part III Atlases (back of book)
+| ID | Shows | Format | Status |
+|---|---|---|---|
+| FAST-1 | Three nail types | Claude SVG | DRAFTED |
+| FAST-2 | Slotted vs Phillips screw | Claude SVG | DRAFTED |
+| FAST-3 | Real cut and wire nails from furniture | Owner photo or CC0 link | NEEDED |
+| JOIN-1 | Hand vs machine dovetail | Claude SVG | DRAFTED |
+| JOIN-2 | Mortise and tenon, exploded | Claude SVG | NEEDED |
+| JOIN-3 | Real dovetailed drawer corners | Owner photos | NEEDED |
+| WOOD-1 | Grain plates: walnut, oak, mahogany, cherry, maple, pine | Owner photos or CC0 links | NEEDED |
+| WOOD-2 | Quartersawn oak ray fleck | Owner photo | NEEDED |
+| WOOD-3 | Primary vs secondary wood in a drawer | Owner photo | NEEDED |
+| HW-1 | Pull and knob styles by period | Owner photos or CC0 links | NEEDED |
+| HW-2 | Caster types: porcelain, cast iron, rubber | Owner photos | NEEDED |
+| HW-3 | Extra and shadow holes from replaced hardware | Owner photo | NEEDED |
+| FIN-1 | Crazing and alligatoring | Owner photo | NEEDED |
+| FIN-2 | Honest wear at high-touch points | Owner photo | NEEDED |
+| FIN-3 | Original painted surface vs stripped wood | Owner photos | NEEDED |
+
+---
+
+**MANUSCRIPT DRAFTING COMPLETE.** Part I (Method), all 30 form chapters plus Clocks, and all five
+Part III atlases plus the Glossary are drafted. What remains is production, not writing: owner
+supplies hero photos, Claude builds the remaining SVG diagrams as needed, then layout into the
+6x9 design and the Phase 5 launch.
