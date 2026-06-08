@@ -1,7 +1,8 @@
 # Field Guide — Project Plan & Phase Tracker
 
-**Product:** *Field Guide to American Furniture Identification, 1600–1940*
-(owner-approved title). A curated, complete-in-itself digital field guide — a three-part
+**Product:** *Field Guide to American Furniture Identification, 1840–1940*
+— *Spotting, Dating & Valuing the Antiques You'll Actually Find — Victorian to Art Deco*
+(title owner-approved; era 1840–1940 set as Claude's market recommendation, owner-delegated). A curated, complete-in-itself digital field guide — a three-part
 structure (Method → 30 Forms → back-of-book Reference Atlases) + short Clocks chapter —
 sold as a PDF for Father's Day 2026.
 

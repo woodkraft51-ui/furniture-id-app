@@ -21,7 +21,8 @@ pieces. (These belong to a future "Mid-Century" edition, not this one.)
 
 # Phase 0 — Scope & Table of Contents (owner-approved structure 2026-06-08)
 
-> **Title:** *Field Guide to American Furniture Identification, 1600–1940*
+> **Title:** *Field Guide to American Furniture Identification, 1840–1940*
+> **Subtitle / ad line:** *Spotting, Dating & Valuing the Antiques You'll Actually Find — Victorian to Art Deco*
 
 ## Three-part architecture (owner-directed Q5)
 Walk the reader through the *process*, then the *forms*, then give them the *skills* to
@@ -31,9 +32,10 @@ actually do it. "My advice doesn't matter if they can't identify a wood or a fas
   - How to use this guide
   - The field process (mirrors the engine): **Look → Read the construction → Date by layers
     → Compare to look-alikes → Estimate value → Call it.**
-  - Style as the *weakest* evidence + **Period-style timeline 1600–1940**
-    (Pilgrim · William & Mary · Queen Anne · Chippendale · Federal · Empire · Victorian
-    revivals · Eastlake/Aesthetic · Golden Oak · Arts & Crafts · Art Deco/Waterfall).
+  - Style as the *weakest* evidence + **Period-style timeline 1840–1940**
+    (late Empire/Gothic Revival · Rococo & Renaissance Revival · Eastlake/Aesthetic ·
+    Golden Oak · Mission/Arts & Crafts · Art Deco/Waterfall), with a brief "earlier
+    styles you might glimpse" nod (Federal/Chippendale) — not full colonial coverage.
 - **PART II — THE FORMS** (middle; the "what you'll find") — the 30 form chapters + Clocks.
 - **PART III — FIELD REFERENCE ATLASES** (back; the "how to actually see it" — the skill-builders)
   - **Wood Species ID** (grain/pore/color plates: walnut, oak, mahogany, cherry, maple, pine, poplar, gum…)
@@ -44,14 +46,15 @@ actually do it. "My advice doesn't matter if they can't identify a wood or a fas
   - **Glossary** of terms used throughout.
   - *These atlases are the most visual section and the direct seed for the future teaching app.*
 
-## SCOPE NOTE — the 1600 start vs. the app's 1850–1940 source
-The app's authored source is ~1850–1940-centric. The 1600 end is honored by:
-(a) the **method/dating content**, which inherently spans 1600–1940 (nail/saw/joinery evolution);
-(b) the **period-style timeline** (adds Pilgrim→Federal);
-(c) **colonial context** written into the early-origin forms (Windsor, gateleg, tilt-top, tea table,
-slant-front desk, candle stand, Pembroke).
-The **form selection deliberately leans Victorian / early-20th** — that's what's actually found in
-the field. We honor "1600" through *method + styles*, not by padding rare colonial forms. (Owner-approved trade-off.)
+## SCOPE DECISION — era set to 1840–1940 (owner delegated the call to Claude, 2026-06-08)
+Changed from the initially-floated 1600–1940 to **1840–1940** as the *market-smart* scope:
+- **Matches what buyers actually find** (thrift/estate/garage = Victorian→Deco; true colonial is rare in the wild).
+- **Honest to the source** (~1850–1940-centric; 1840 is a small, defensible stretch — Gothic Revival/late Empire).
+- **Clean 100-year span** = strong cover/ad hook ("A Century of American Furniture").
+- **Over-delivers vs. over-promises** → better reviews / word-of-mouth than a hollow "1600."
+- **Early end not lost:** the dating-method chapters still teach pre-1840 tells as a *bonus*
+  ("if you find something older, here's how you'd know") — without promising colonial depth.
+Owner may override back to strict 1850–1940 or to 1600 if desired; 1840–1940 is Claude's market recommendation, accepted by owner.
 
 ---
 
