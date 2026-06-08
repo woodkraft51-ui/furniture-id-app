@@ -44,6 +44,33 @@
 | HOO-7 | Hoosier "anatomy" labeled diagram | Schematic front | Teaching overview | Claude SVG line diagram | NEEDED |
 | HOO-8 | Real-Hoosier-or-cupboard decision tree | n/a | Teaching | Claude diagram (Mermaid) | DRAFTED (in chapter) |
 
+## Chapter: Roll-Top and Cylinder Desk
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| ROLL-1 | Roll-top desk, cover open | Three-quarter | Hero | Owner photo | NEEDED |
+| ROLL-2 | Cover closed and locked | Front | Enclosing function | Owner photo | NEEDED |
+| ROLL-3 | Slatted tambour vs rigid cylinder cover | Side by side | Roll-top vs cylinder | Claude SVG | NEEDED |
+| ROLL-4 | Fitted interior, pigeonholes and drawers | Front, close | Office interior | Owner photo | NEEDED |
+| ROLL-5 | Patent lock or roll mechanism | Macro | Dating | Owner photo or CC0 link | NEEDED |
+
+## Chapter: Chest of Drawers
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| CHEST-1 | Chest of drawers, full | Three-quarter, full height | Hero | Owner photo | NEEDED |
+| CHEST-2 | Drawer pulled, dovetails at the corner | Close | Key dating spot | Owner photo | NEEDED |
+| CHEST-3 | Backboards and secondary wood | Rear | Construction and dating | Owner photo | NEEDED |
+| CHEST-4 | Chest vs dresser proportions | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+| CHEST-5 | Extra hardware holes from earlier pulls | Macro | Spotting replaced hardware | Owner photo | NEEDED |
+
+## Chapter: Washstand
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| WASH-1 | Washstand, full, splash back and towel bars | Three-quarter | Hero | Owner photo | NEEDED |
+| WASH-2 | Marble or water-resistant top with splash | Top down or front | Defining feature | Owner photo | NEEDED |
+| WASH-3 | Towel-bar mounts, or holes where bars were | Macro | Reading the scars | Owner photo | NEEDED |
+| WASH-4 | Water staining and wear on top and rear | Close | Original use evidence | Owner photo | NEEDED |
+| WASH-5 | Washstand vs small dresser | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
 ---
 
 *More chapters and the back-of-book atlases (Wood, Fasteners, Joinery, Hardware, Finishes) will add
