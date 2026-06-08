@@ -5,6 +5,28 @@
 
 ---
 
+## 2026-06-08 (later) — MANUSCRIPT DRAFTING COMPLETE
+
+**Done**
+- **Part I (Method)** drafted: how to use the guide, the six-step field process, "style is the
+  weakest evidence," the 1840-1940 period-style timeline, and the home for the four Method diagrams.
+- **All 30 form chapters + the Clocks bonus chapter** drafted from real source, in the final pattern.
+  (Caught and corrected a miscount: dressing-table/vanity and armoire/wardrobe had been skipped;
+  both now drafted.)
+- **All five Part III atlases + Glossary** drafted: Fasteners, Joinery, Wood Species, Hardware and
+  Casters, Finishes.
+- **Diagrams built so far:** 3 decision trees (period-or-reproduction, Hoosier, sideboard) + 3 SVG
+  line diagrams (nails, dovetails, screws).
+- Master illustration list complete with every image need, tagged owner-photo / Claude-diagram / CC0.
+
+**What remains is PRODUCTION, not writing**
+- Owner: supply hero photos from inventory (and swap any Claude diagram he wants).
+- Claude: build the remaining SVG diagrams as called for in the illustration list (back-type
+  silhouettes, leg-by-period, subtype silhouettes, etc.).
+- Then: layout into the 6x9 design, and the Phase 5 launch (Gumroad listing, lead magnet, channels).
+
+**Status:** the writing is done. The book exists as a complete manuscript. Ahead of the Jun 17 target.
+
 ## 2026-06-08
 
 **Done**
