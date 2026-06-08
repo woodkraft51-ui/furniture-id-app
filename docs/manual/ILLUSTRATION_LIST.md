@@ -189,8 +189,50 @@
 | PEMB-2 | Apron drawer and false drawer opposite | Both ends | Defining detail | Owner photo | NEEDED |
 | PEMB-3 | Leg, inlay, and stringing detail | Close | Refinement and dating | Owner photo | NEEDED |
 
+## Chapter: Candle Stand
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| CAND-1 | Candle stand, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
+| CAND-2 | Underside, if it tilts | Underside | Dating | Owner photo | NEEDED |
+| CAND-3 | Candle stand vs tilt-top scale | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
+
+## Chapter: Work Table
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| WORK-1 | Work table, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
+| WORK-2 | Worn top, knife cuts and scrubbing | Close | Honest use evidence | Owner photo | NEEDED |
+| WORK-3 | Refined sewing table with bag | Three-quarter | The refined cousin | Owner photo or CC0 link | NEEDED |
+
+## Chapter: Slant-Front Desk
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| SLANT-1 | Slant-front desk, open | Three-quarter | Hero | Owner photo | NEEDED |
+| SLANT-2 | Fitted interior: pigeonholes, prospect door | Front, close | Defining feature | Owner photo | NEEDED |
+| SLANT-3 | Loper and lid hinge | Macro | Construction and wear | Owner photo | NEEDED |
+
+## Chapter: Secretary Desk
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| SEC-1 | Secretary desk, full height, fall open | Front | Hero | Owner photo | NEEDED |
+| SEC-2 | Fitted writing interior | Close | Defining feature | Owner photo | NEEDED |
+| SEC-3 | Seam where bookcase meets desk | Close | Spotting a marriage | Owner photo | NEEDED |
+
+## Chapter: Iron Bed
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| IRON-1 | Iron or brass bed, head and foot | Front | Hero | Owner photo | NEEDED |
+| IRON-2 | Tubing joint: brazed vs welded | Macro | Dating centerpiece | Owner photo or Claude SVG | NEEDED |
+| IRON-3 | Plating worn through to base metal | Close | Period vs reproduction finish | Owner photo | NEEDED |
+| IRON-4 | Maker stamp or foundry mark | Macro | Attribution | Owner photo or CC0 link | NEEDED |
+
+## Chapter: Wooden Bedstead
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| BED-1 | Wooden bedstead, head and foot | Front | Hero | Owner photo | NEEDED |
+| BED-2 | Rail-to-post joint and hardware | Macro | Construction and alteration | Owner photo | NEEDED |
+| BED-3 | Subtype silhouettes: four-poster, sleigh, spool, panel | Side by side | Visual key | Claude SVG | NEEDED |
+
 ---
 
-*Remaining chapters (candle stand, work table, slant-front desk, secretary, iron bed, wooden
-bedstead, telephone stand, nightstand, clocks) and the back-of-book atlases (Wood, Fasteners,
-Joinery, Hardware, Finishes) will add their needs here as they are drafted.*
+*Remaining chapters (telephone stand, nightstand, clocks) and the back-of-book atlases (Wood,
+Fasteners, Joinery, Hardware, Finishes) will add their needs here as they are drafted.*
