@@ -153,7 +153,44 @@
 | SOFA-3 | Hand-tied coil springs under the frame | Underside | Dating, not the cover | Owner photo | NEEDED |
 | SOFA-4 | Sofa vs settee scale | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
 
+## Chapter: Parlor Table
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| PARL-1 | Parlor table, full | Three-quarter | Hero | Owner photo | NEEDED |
+| PARL-2 | Marble top underside and fit | Underside or edge | Original or married | Owner photo | NEEDED |
+| PARL-3 | Base styles: pedestal, cabriole, turned | Side by side | Visual key | Claude SVG | NEEDED |
+| PARL-4 | Caster | Macro | Replacement caution | Owner photo | NEEDED |
+
+## Chapter: Drop-Leaf Table
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| DROP-1 | Drop-leaf, one leaf up one down | Three-quarter | Hero | Owner photo | NEEDED |
+| DROP-2 | Rule joint at the leaf | Close | Defining detail | Owner photo or Claude SVG | NEEDED |
+| DROP-3 | Leaf-support types: swing leg, bracket, fly rail | Side by side | Visual key | Claude SVG | NEEDED |
+
+## Chapter: Gateleg Table
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| GATE-1 | Gateleg, open, a gate swung out | Three-quarter | Hero | Owner photo | NEEDED |
+| GATE-2 | The swinging gate assembly | Close | Defining feature | Owner photo | NEEDED |
+| GATE-3 | Turned-leg types: barley-twist, ring, ball | Side by side | Visual key | Claude SVG | NEEDED |
+
+## Chapter: Tilt-Top Table
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| TILT-1 | Tilt-top, flat and tilted | Two views | Hero | Owner photo | NEEDED |
+| TILT-2 | Underside: latch, birdcage, wear arc | Underside, close | Dating centerpiece | Owner photo | NEEDED |
+| TILT-3 | Period vs revival tells | Side by side | Teaching | Claude SVG or owner photos | NEEDED |
+
+## Chapter: Pembroke Table
+| ID | Shows | View | Purpose | Format | Status |
+|---|---|---|---|---|---|
+| PEMB-1 | Pembroke, leaves up, drawer open | Three-quarter | Hero | Owner photo | NEEDED |
+| PEMB-2 | Apron drawer and false drawer opposite | Both ends | Defining detail | Owner photo | NEEDED |
+| PEMB-3 | Leg, inlay, and stringing detail | Close | Refinement and dating | Owner photo | NEEDED |
+
 ---
 
-*More chapters and the back-of-book atlases (Wood, Fasteners, Joinery, Hardware, Finishes) will add
-their needs here as they are drafted.*
+*Remaining chapters (candle stand, work table, slant-front desk, secretary, iron bed, wooden
+bedstead, telephone stand, nightstand, clocks) and the back-of-book atlases (Wood, Fasteners,
+Joinery, Hardware, Finishes) will add their needs here as they are drafted.*
