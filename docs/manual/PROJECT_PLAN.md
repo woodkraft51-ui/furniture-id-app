@@ -12,6 +12,33 @@ sold as a PDF for Father's Day 2026.
 
 ---
 
+## Locked decisions, session 2 (2026-06-08)
+These update the design system (phase1a) and the workflow. They govern all chapters going forward.
+- **Voice rewrite loop: DROPPED.** Owner judged it not worth the ROI; the drafts are good as-is.
+  Claude drafts in final voice; owner edits lightly only if he wants. Removes the bottleneck, so
+  chapters can be batched. Only standing voice rule: no em dashes (see VOICE_GUIDE.md).
+- **Icons: OUT.** No little saw, nail, or wood icons. They read as hokey.
+- **Wider visual toolkit: IN.** Use decision trees (Mermaid), comparison tables and matrices,
+  flow diagrams, and side-by-side comparison plates wherever they teach better than bullets.
+  Bullets are the fallback, not the default.
+- **Rule-of-three reinforcement.** The core method (rule it out, stack the tells, read the surface)
+  recurs across the book in different forms: a tree in one place, a table in another, a callback,
+  a photo, a diagram. Say it three times, three ways.
+- **Depth by merit, plus connective tissue.** Each form gets the space it deserves; then balance
+  flow with genuinely useful connective material (recaps, callbacks, shared-trait notes, extra
+  angles), never empty padding.
+- **Value: GUIDANCE, not hard numbers.** Region, condition, and buyer emotion move price more than
+  a book can teach. Use "common and modest" versus "premium when original" language. Keeps it evergreen.
+- **Illustrations: division of labor.**
+  - Hero shots: owner's own pieces (inventory plus PhotoRoom, zero copyright risk, on brand).
+  - Teaching diagrams: Claude builds them (Mermaid trees and flowcharts, tables, hand-built SVG line
+    diagrams). Owner keeps or swaps. Not photoreal.
+  - Supplementary photos: Claude finds CC0 and public-domain links (Met, Smithsonian, Wikimedia)
+    where they exist; owner downloads or swaps with his own.
+  - Claude maintains a running master list, `ILLUSTRATION_LIST.md`, every image need as identified.
+- **Sample decision tree approved** (period-or-reproduction); now a recurring feature.
+- **Website featured-image spec:** 2106 x 1512, about 1.4 to 1 landscape with wide margins. Blog only, not the guide.
+
 ## Positioning decision (owner-approved 2026-06-08)
 
 - This is a **Field Guide** — a complete, respected category in its own right
