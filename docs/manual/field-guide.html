@@ -46,8 +46,23 @@ hr{border:none;border-top:1px solid var(--tan);margin:1em 0}
 pre.mermaid{background:#efe6d6;border:1px solid #e3d6bf;padding:10px;border-radius:4px;text-align:center}
 pre.code{background:#efe6d6;padding:10px;overflow:auto;font-size:12px;border-radius:4px}
 @media print{body{background:#fff}.book{box-shadow:none;max-width:none;width:6in}
+  #bar{display:none}
   @page{size:6in 9in;margin:0.6in}}
+#bar{position:fixed;top:0;left:0;right:0;background:var(--ink);color:var(--paper);
+  padding:8px 14px;z-index:999;font-family:'Barlow Semi Condensed',sans-serif;font-size:13px;
+  display:flex;gap:10px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+#bar button{background:var(--tan);color:#fff;border:none;padding:6px 12px;border-radius:4px;
+  font-size:13px;cursor:pointer;font-family:inherit}
+#bar button:hover{background:#b8965a}
+#bar .hint{opacity:.85}
+.book[contenteditable=true]{outline:2px dashed var(--teal);outline-offset:6px}
+body{padding-top:46px}
 </style></head><body>
+<div id="bar">
+  <button onclick="toggleEdit()">&#9998; Edit: <span id="es">off</span></button>
+  <button onclick="downloadCopy()">&#11015; Download my edited copy</button>
+  <span class="hint">Turn Edit on, click into any text and change it, then Download and send it back.</span>
+</div>
 <div class="book">
 <section class="cover">
   <h1>Field Guide to American Furniture Identification<br>1840&nbsp;&ndash;&nbsp;1940</h1>
@@ -1518,5 +1533,25 @@ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.mi
 mermaid.initialize({startOnLoad:true, theme:'base',
   themeVariables:{primaryColor:'#C9A86A',primaryTextColor:'#3A2E26',lineColor:'#3A2E26',
   primaryBorderColor:'#3A2E26',fontFamily:'Georgia,serif'}});
+</script>
+<script>
+function toggleEdit(){
+  var b=document.querySelector('.book');
+  var on=b.getAttribute('contenteditable')==='true';
+  b.setAttribute('contenteditable', on?'false':'true');
+  document.getElementById('es').textContent=on?'off':'ON';
+  if(!on) b.focus();
+}
+function downloadCopy(){
+  var clone=document.documentElement.cloneNode(true);
+  var bk=clone.querySelector('.book'); if(bk) bk.setAttribute('contenteditable','false');
+  var es=clone.querySelector('#es'); if(es) es.textContent='off';
+  var out='<!doctype html>\n'+clone.outerHTML;
+  var blob=new Blob([out],{type:'text/html'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='field-guide-edited.html';
+  document.body.appendChild(a); a.click(); a.remove();
+}
 </script>
 </body></html>
