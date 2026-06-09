@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="320" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">How a drop leaf is held up</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Swing leg -->
+    <rect x="60" y="90" width="120" height="12"/>
+    <rect x="178" y="90" width="60" height="12"/>
+    <rect x="68" y="102" width="10" height="150"/>
+    <rect x="200" y="102" width="10" height="150"/>
+  </g>
+  <line x1="205" y1="102" x2="205" y2="252" stroke="#9B4B3B" stroke-width="3" stroke-dasharray="6 5"/>
+  <path d="M212,150 q26,0 26,26" fill="none" stroke="#9B4B3B" stroke-width="2.5"/>
+  <polygon points="238,176 232,166 244,168" fill="#9B4B3B"/>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Bracket -->
+    <rect x="300" y="90" width="100" height="12"/>
+    <rect x="398" y="90" width="60" height="12"/>
+    <path d="M392,102 L392,150 L440,150 Z"/>
+
+    <!-- Fly rail -->
+    <rect x="540" y="90" width="100" height="12"/>
+    <rect x="638" y="90" width="40" height="12"/>
+    <rect x="600" y="102" width="60" height="10"/>
+    <rect x="655" y="102" width="10" height="40"/>
+  </g>
+
+  <g text-anchor="middle" fill="#3A2E26">
+    <text x="150" y="288" font-size="15" font-weight="bold">Swing leg (gateleg)</text>
+    <text x="150" y="307" font-size="12">a leg pivots out</text>
+    <text x="380" y="288" font-size="15" font-weight="bold">Bracket</text>
+    <text x="380" y="307" font-size="12">a fold-out bracket</text>
+    <text x="600" y="288" font-size="15" font-weight="bold">Fly rail</text>
+    <text x="600" y="307" font-size="12">a pivoting rail</text>
+  </g>
+</svg>

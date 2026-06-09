@@ -41,7 +41,7 @@
 | HOO-4 | Tambour door with spice rack behind | Front, close | Upper fittings | Owner photo | NEEDED |
 | HOO-5 | Maker tag or patent-stamped hardware | Macro | Dating, attribution | Owner photo or CC0 link | NEEDED |
 | HOO-6 | Ant-proof caster | Macro | Period detail | Owner photo or Claude SVG | NEEDED |
-| HOO-7 | Hoosier "anatomy" labeled diagram | Schematic front | Teaching overview | Claude SVG line diagram | NEEDED |
+| HOO-7 | Hoosier "anatomy" labeled diagram | Schematic front | Teaching overview | Claude SVG | DRAFTED (`diagrams/hoosier-anatomy.svg`) |
 | HOO-8 | Real-Hoosier-or-cupboard decision tree | n/a | Teaching | Claude diagram (Mermaid) | DRAFTED (in chapter) |
 
 ## Chapter: Roll-Top and Cylinder Desk
@@ -49,7 +49,7 @@
 |---|---|---|---|---|---|
 | ROLL-1 | Roll-top desk, cover open | Three-quarter | Hero | Owner photo | NEEDED |
 | ROLL-2 | Cover closed and locked | Front | Enclosing function | Owner photo | NEEDED |
-| ROLL-3 | Slatted tambour vs rigid cylinder cover | Side by side | Roll-top vs cylinder | Claude SVG | NEEDED |
+| ROLL-3 | Slatted tambour vs rigid cylinder cover | Side by side | Roll-top vs cylinder | Claude SVG | DRAFTED (`diagrams/roll-top-covers.svg`) |
 | ROLL-4 | Fitted interior, pigeonholes and drawers | Front, close | Office interior | Owner photo | NEEDED |
 | ROLL-5 | Patent lock or roll mechanism | Macro | Dating | Owner photo or CC0 link | NEEDED |
 
@@ -109,7 +109,7 @@
 |---|---|---|---|---|---|
 | BLANK-1 | Blanket chest, full, lid and feet | Three-quarter | Hero | Owner photo | NEEDED |
 | BLANK-2 | Lid open, cavity and till | Top down | Defining feature | Owner photo | NEEDED |
-| BLANK-3 | Base feet types: bracket, bun, bootjack | Side by side | Teaching | Claude SVG line diagram | NEEDED |
+| BLANK-3 | Base feet types: bracket, bun, bootjack | Side by side | Teaching | Claude SVG | DRAFTED (`diagrams/blanket-chest-feet.svg`) |
 | BLANK-4 | Original painted decoration (Pennsylvania German) | Close | Value feature | Owner photo or CC0 link | NEEDED |
 | BLANK-5 | Corner joinery: dovetailed vs nailed | Close | Construction and dating | Owner photo | NEEDED |
 
@@ -118,7 +118,7 @@
 |---|---|---|---|---|---|
 | ROCK-1 | Rocking chair, profile | Side | Hero | Owner photo | NEEDED |
 | ROCK-2 | Joint where a runner meets the leg | Macro | Original or replaced | Owner photo | NEEDED |
-| ROCK-3 | Rocker types: Boston, ladderback, pressed-back, platform | Silhouettes | Visual key | Claude SVG | NEEDED |
+| ROCK-3 | Rocker types: Boston, ladderback, pressed-back, platform | Silhouettes | Visual key | Claude SVG | DRAFTED (`diagrams/rocker-types.svg`) |
 | ROCK-4 | Original stenciled crest | Close | Surface value | Owner photo or CC0 link | NEEDED |
 
 ## Chapter: Morris Chair
@@ -149,7 +149,7 @@
 | ID | Shows | View | Purpose | Format | Status |
 |---|---|---|---|---|---|
 | SOFA-1 | Victorian sofa, full length | Three-quarter | Hero | Owner photo | NEEDED |
-| SOFA-2 | Victorian sofa silhouettes: Grecian, Rococo, Renaissance, Eastlake | Profiles | Visual key | Claude SVG | NEEDED |
+| SOFA-2 | Victorian sofa silhouettes: Grecian, Rococo, Renaissance, Eastlake | Profiles | Visual key | Claude SVG | DRAFTED (`diagrams/victorian-sofa-silhouettes.svg`) |
 | SOFA-3 | Hand-tied coil springs under the frame | Underside | Dating, not the cover | Owner photo | NEEDED |
 | SOFA-4 | Sofa vs settee scale | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
 
@@ -158,7 +158,7 @@
 |---|---|---|---|---|---|
 | PARL-1 | Parlor table, full | Three-quarter | Hero | Owner photo | NEEDED |
 | PARL-2 | Marble top underside and fit | Underside or edge | Original or married | Owner photo | NEEDED |
-| PARL-3 | Base styles: pedestal, cabriole, turned | Side by side | Visual key | Claude SVG | NEEDED |
+| PARL-3 | Base styles: pedestal, cabriole, turned | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/table-base-styles.svg`) |
 | PARL-4 | Caster | Macro | Replacement caution | Owner photo | NEEDED |
 
 ## Chapter: Drop-Leaf Table
@@ -166,7 +166,7 @@
 |---|---|---|---|---|---|
 | DROP-1 | Drop-leaf, one leaf up one down | Three-quarter | Hero | Owner photo | NEEDED |
 | DROP-2 | Rule joint at the leaf | Close | Defining detail | Owner photo or Claude SVG | NEEDED |
-| DROP-3 | Leaf-support types: swing leg, bracket, fly rail | Side by side | Visual key | Claude SVG | NEEDED |
+| DROP-3 | Leaf-support types: swing leg, bracket, fly rail | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/drop-leaf-supports.svg`) |
 
 ## Chapter: Gateleg Table
 | ID | Shows | View | Purpose | Format | Status |
