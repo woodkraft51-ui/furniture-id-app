@@ -35,13 +35,7 @@ A note on makers: Stickley names carry real value, but **Mission vocabulary alon
 
 ## Do not confuse it with
 
-| Form | What it really is | The tell that separates it |
-|---|---|---|
-| **Morris chair** | Adjustable-back Arts and Crafts lounge chair | Visible manual back mechanism, exposed frame |
-| Recliner | Mechanical reclining chair | Hidden integrated reclining hardware |
-| Lounge chair | Fixed-posture lounge seating | No adjustment, often fully upholstered |
-| Armchair | Fixed upright chair | No recline, upright posture |
-| Wing chair | Upholstered chair with side wings | Wings on the upper back |
+`[VISUAL: the morris chair lookalikes table, from diagrams/morris-chair-lookalikes.png]`
 
 ## What hurts the value
 - **Reproductions** sold as period Mission, and **false Stickley attributions**.
