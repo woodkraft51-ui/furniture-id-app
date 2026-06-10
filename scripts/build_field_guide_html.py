@@ -8,8 +8,8 @@ OUT  = os.path.join(ROOT, "field-guide.html")
 
 # ---- reading order ---------------------------------------------------------
 SECTIONS = [
-    ("PART I — THE METHOD", ["part1-method.md"]),
-    ("PART II — THE FORMS · Seating", [
+    ("PART I · THE METHOD", ["part1-method.md"]),
+    ("PART II · THE FORMS · Seating", [
         "phase1b-sample-chapter-windsor.md","chapters/rocking-chair.md","chapters/morris-chair.md",
         "chapters/wing-chair.md","chapters/settee.md","chapters/victorian-sofa.md"]),
     ("Tables", [
@@ -25,9 +25,11 @@ SECTIONS = [
     ("Beds", ["chapters/iron-bed.md","chapters/wooden-bedstead.md"]),
     ("Everyday Pieces", ["chapters/telephone-stand.md","chapters/nightstand.md"]),
     ("Clocks", ["chapters/clocks.md"]),
-    ("PART III — REFERENCE ATLASES", [
-        "atlases/fasteners.md","atlases/joinery.md","atlases/wood-species.md",
-        "atlases/hardware-casters.md","atlases/finishes.md","atlases/glossary.md"]),
+    ("PART III · REFERENCE ATLASES", [
+        "part3-reference.md",
+        "atlases/fasteners.md","atlases/joinery.md","atlases/saw-and-tool-marks.md",
+        "atlases/wood-species.md","atlases/hardware-casters.md","atlases/finishes.md",
+        "atlases/glossary.md"]),
 ]
 
 def read(p):
@@ -74,7 +76,7 @@ def strip_chapter(md):
     lines = md.split("\n")
     # drop leading "# Chapter Draft:" / "# Atlas:" / "# Part" / "# Glossary" title + blockquote preamble
     out, i = [], 0
-    if lines and re.match(r'^#\s+(Chapter Draft:|Atlas:)', lines[0]):
+    if lines and re.match(r'^#\s+(Chapter Draft:|Atlas:|Part\s)', lines[0]):
         i = 1
     # skip leading blockquote block and blank lines
     while i < len(lines) and (lines[i].strip().startswith(">") or lines[i].strip()==""):
@@ -219,17 +221,41 @@ def md_to_html(md):
     return "\n".join(out)
 
 # ---- assemble --------------------------------------------------------------
-parts = []
-for title, files in SECTIONS:
-    parts.append(f'<section class="divider"><h1 class="part">{html.escape(title)}</h1></section>')
+def doc_title(md, fallback):
+    # prefer the real in-body title (first H1 after the production header is stripped)
+    for ln in strip_chapter(md).split("\n"):
+        m = re.match(r'^#\s+(.+)', ln.strip())
+        if m:
+            return m.group(1).strip()
+    # atlases / openers strip their only H1; recover it from the raw source
+    for ln in md.split("\n"):
+        m = re.match(r'^#\s+(.+)', ln.strip())
+        if m:
+            t = re.sub(r'^(Chapter Draft:|Atlas:)\s*', '', m.group(1).strip())
+            t = re.sub(r'^Part\s+[IVX]+:\s*', '', t)
+            return t
+    return fallback
+
+parts, toc = [], []
+cidx = 0
+for sidx, (title, files) in enumerate(SECTIONS):
+    pid = f"p{sidx}"
+    parts.append(f'<section class="divider" id="{pid}"><h1 class="part">{html.escape(title)}</h1></section>')
+    toc.append(f'<li class="toc-part"><a href="#{pid}">{html.escape(title)}</a></li>')
     for f in files:
         md = read(f)
         if not md: continue
         CURRENT_FILE = f
+        cid = f"c{cidx}"; cidx += 1
         body = md_to_html(strip_chapter(md))
         for plate in CHAPTER_PLATES.get(f, []):
             body += inline_svg(plate)
-        parts.append(f'<article class="chapter">{body}</article>')
+        parts.append(f'<article class="chapter" id="{cid}">{body}</article>')
+        # the part-opener files repeat the part title; skip a redundant TOC line for them
+        if not re.match(r'^part\d', os.path.basename(f)):
+            toc.append(f'<li class="toc-chap"><a href="#{cid}">{html.escape(doc_title(md, f))}</a></li>')
+
+TOC_HTML = f'<section class="contents"><h1>Contents</h1><ul class="toc">{"".join(toc)}</ul></section>'
 
 CSS = """
 :root{--ink:#3A2E26;--paper:#F5EFE6;--tan:#C9A86A;--teal:#3E6B66;--ox:#9B4B3B}
@@ -262,6 +288,17 @@ a{color:var(--teal)}
 .hero span{display:block;font-size:11px;margin-top:6px;color:#a89a82}
 .ph{border:1px dashed var(--tan);background:#f1e9da;padding:14px;margin:12px 0;color:#8a7a64;
   font-family:'Barlow Semi Condensed',sans-serif;font-size:12px}
+.contents{page-break-after:always;padding-top:0.3in}
+.contents h1{font-family:'Playfair Display',Georgia,serif;text-align:center;font-size:27px;
+  margin:0 0 .7em;border-bottom:2px solid var(--tan);padding-bottom:.25em}
+ul.toc{list-style:none;margin:0;padding:0}
+ul.toc li{margin:.16em 0}
+ul.toc a{text-decoration:none;color:var(--ink)}
+ul.toc a:hover{color:var(--ox)}
+li.toc-part{margin-top:.8em;font-family:'Playfair Display',Georgia,serif;font-weight:600;
+  font-variant:small-caps;letter-spacing:.03em;font-size:15px;color:var(--ox);
+  border-bottom:1px solid #e2d2ab;padding-bottom:2px}
+li.toc-chap{padding-left:20px;font-size:13.5px}
 .plate{text-align:center;margin:14px 0}
 .plate svg,.plate img{max-width:100%;height:auto;border:1px solid #e3d6bf}
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13px;border:1px solid var(--tan)}
@@ -311,9 +348,10 @@ HTML = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <section class="cover">
   <h1>Field Guide to American Furniture Identification<br>1840&nbsp;&ndash;&nbsp;1940</h1>
   <div class="rule"></div>
-  <div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find &mdash; Victorian to Art&nbsp;Deco</div>
+  <div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find &middot; Victorian to Art&nbsp;Deco</div>
   <div class="sub" style="margin-top:24px;font-size:12px">New Creations Woodcraft &middot; draft compile</div>
 </section>
+{TOC_HTML}
 {''.join(parts)}
 </div>
 <script type="module">

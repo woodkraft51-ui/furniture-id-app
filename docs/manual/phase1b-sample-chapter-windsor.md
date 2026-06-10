@@ -1,4 +1,4 @@
-# Phase 1b — Sample Chapter (DRAFT for owner review)
+# Chapter Draft: Windsor Chair
 
 > The pattern chapter, built from the **real** `form_windsor_chair` canonical source,
 > poured into the approved design system (warm palette, 6×9, line-art-on-color-blocks,

@@ -14,8 +14,8 @@ GRY  = RGBColor(0x8a,0x7a,0x64)
 OX   = RGBColor(0x9B,0x4B,0x3B)
 
 SECTIONS = [
-    ("PART I — THE METHOD", ["part1-method.md"]),
-    ("PART II — THE FORMS · Seating", ["phase1b-sample-chapter-windsor.md","chapters/rocking-chair.md",
+    ("PART I · THE METHOD", ["part1-method.md"]),
+    ("PART II · THE FORMS · Seating", ["phase1b-sample-chapter-windsor.md","chapters/rocking-chair.md",
         "chapters/morris-chair.md","chapters/wing-chair.md","chapters/settee.md","chapters/victorian-sofa.md"]),
     ("Tables", ["chapters/parlor-table.md","chapters/drop-leaf-table.md","chapters/gateleg-table.md",
         "chapters/tilt-top-table.md","chapters/pembroke-table.md","chapters/candle-stand.md","chapters/work-table.md"]),
@@ -26,8 +26,9 @@ SECTIONS = [
     ("Beds", ["chapters/iron-bed.md","chapters/wooden-bedstead.md"]),
     ("Everyday Pieces", ["chapters/telephone-stand.md","chapters/nightstand.md"]),
     ("Clocks", ["chapters/clocks.md"]),
-    ("PART III — REFERENCE ATLASES", ["atlases/fasteners.md","atlases/joinery.md","atlases/wood-species.md",
-        "atlases/hardware-casters.md","atlases/finishes.md","atlases/glossary.md"]),
+    ("PART III · REFERENCE ATLASES", ["part3-reference.md","atlases/fasteners.md","atlases/joinery.md",
+        "atlases/saw-and-tool-marks.md","atlases/wood-species.md","atlases/hardware-casters.md",
+        "atlases/finishes.md","atlases/glossary.md"]),
 ]
 CHAPTER_PLATES = {
     "phase1b-sample-chapter-windsor.md":["windsor-back-types"],"chapters/rocking-chair.md":["rocker-types"],
@@ -50,7 +51,7 @@ def read(p):
 
 def strip_chapter(md):
     lines=md.split("\n"); i=0
-    if lines and re.match(r'^#\s+(Chapter Draft:|Atlas:)', lines[0]): i=1
+    if lines and re.match(r'^#\s+(Chapter Draft:|Atlas:|Part\s)', lines[0]): i=1
     while i<len(lines) and (lines[i].strip().startswith(">") or lines[i].strip()==""): i+=1
     body="\n".join(lines[i:])
     for marker in ["## Illustration list","## NOTES FOR OWNER","## Notes on format","## Illustration needs"]:
@@ -107,11 +108,11 @@ def placeholder(line):
         p=doc.add_paragraph(); r=p.add_run("Era:  "+val); r.italic=True; r.font.size=Pt(9)
     elif kind=="HERO PLATE":
         p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER
-        r=p.add_run("[ HERO PHOTO TO COME — "+val+" ]"); r.italic=True; r.font.color.rgb=GRY; r.font.size=Pt(10)
+        r=p.add_run("[ HERO PHOTO TO COME · "+val+" ]"); r.italic=True; r.font.color.rgb=GRY; r.font.size=Pt(10)
     elif kind=="VISUAL":
         mref=re.search(r'([\w/\-.]+)\.(svg|md|png)', val)
         if not (mref and add_png(os.path.basename(mref.group(1)))):
-            p=doc.add_paragraph(); r=p.add_run("[ Decision tree — see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
+            p=doc.add_paragraph(); r=p.add_run("[ Decision tree · see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
     elif kind=="LAYOUT":
         p=doc.add_paragraph(); r=p.add_run(val); r.italic=True; r.font.color.rgb=GRY
     return True
@@ -128,7 +129,7 @@ def render(md):
             i+=1
             tree=FILE_TREE.get(CURRENT_FILE)
             if not (tree and add_png(tree)):
-                p=doc.add_paragraph(); r=p.add_run("[ Decision tree — see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
+                p=doc.add_paragraph(); r=p.add_run("[ Decision tree · see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
             continue
         if re.match(r'^#{1,6}\s', s):
             lvl=len(s)-len(s.lstrip("#")); txt=s[lvl:].strip()
@@ -178,7 +179,7 @@ def render(md):
 t=doc.add_paragraph(); t.alignment=WD_ALIGN_PARAGRAPH.CENTER
 r=t.add_run("Field Guide to American Furniture Identification, 1840–1940"); r.bold=True; r.font.size=Pt(22)
 sb=doc.add_paragraph(); sb.alignment=WD_ALIGN_PARAGRAPH.CENTER
-r=sb.add_run("Spotting, Dating & Valuing the Antiques You'll Actually Find — Victorian to Art Deco"); r.italic=True; r.font.size=Pt(13)
+r=sb.add_run("Spotting, Dating & Valuing the Antiques You'll Actually Find · Victorian to Art Deco"); r.italic=True; r.font.size=Pt(13)
 doc.add_page_break()
 
 for title, files in SECTIONS:
