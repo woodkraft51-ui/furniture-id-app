@@ -182,11 +182,16 @@ def render(md):
             buf.append(lines[i]); i+=1
         p=doc.add_paragraph(); add_runs(p, " ".join(b.strip() for b in buf))
 
-# cover
-t=doc.add_paragraph(); t.alignment=WD_ALIGN_PARAGRAPH.CENTER
-r=t.add_run("Field Guide to American Furniture Identification, 1840–1940"); r.bold=True; r.font.size=Pt(22)
-sb=doc.add_paragraph(); sb.alignment=WD_ALIGN_PARAGRAPH.CENTER
-r=sb.add_run("Spotting, Dating & Valuing the Antiques You'll Actually Find · Victorian to Art Deco"); r.italic=True; r.font.size=Pt(13)
+# cover: the finished cover art (title baked in) as the title page
+_cover=os.path.join(ROOT,"diagrams","cover-hero.png")
+if os.path.exists(_cover):
+    doc.add_picture(_cover, width=Inches(4.5))
+    doc.paragraphs[-1].alignment=WD_ALIGN_PARAGRAPH.CENTER
+else:
+    t=doc.add_paragraph(); t.alignment=WD_ALIGN_PARAGRAPH.CENTER
+    r=t.add_run("A Field Guide to American Furniture, 1840 to 1940"); r.bold=True; r.font.size=Pt(22)
+    sb=doc.add_paragraph(); sb.alignment=WD_ALIGN_PARAGRAPH.CENTER
+    r=sb.add_run("Identification, Dating & Valuation of the Antiques You'll Actually Find"); r.italic=True; r.font.size=Pt(13)
 doc.add_page_break()
 
 for title, files in SECTIONS:

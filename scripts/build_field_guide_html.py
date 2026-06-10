@@ -263,26 +263,17 @@ for sidx, (title, files) in enumerate(SECTIONS):
 TOC_HTML = f'<section class="contents"><h1>Contents</h1><ul class="toc">{"".join(toc)}</ul></section>'
 
 def build_cover():
-    title = ('<div class="cover-title">'
-             '<h1>Field Guide to American Furniture Identification</h1>'
-             '<span class="yr">1840 to 1940</span>'
-             '<div class="rule"></div>'
-             '<div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find</div>'
-             '<div class="byline">New Creations Woodcraft</div>'
-             '</div>')
     cp = os.path.join(ROOT, "diagrams", "cover-hero.png")
     if os.path.exists(cp):
+        # the finished cover art has the title baked in; show it full-bleed, no overlay
         im = Image.open(cp).convert("RGB")
-        if im.width > 980:
-            im = im.resize((980, round(im.height * 980 / im.width)), Image.LANCZOS)
-        buf = io.BytesIO(); im.save(buf, format="JPEG", quality=85)
+        buf = io.BytesIO(); im.save(buf, format="JPEG", quality=90)
         b64 = base64.b64encode(buf.getvalue()).decode()
-        return (f'<section class="cover-photo"><img src="data:image/jpeg;base64,{b64}">'
-                f'{title}</section>')
+        return f'<section class="cover-photo"><img src="data:image/jpeg;base64,{b64}"></section>'
     return ('<section class="cover">'
-            '<h1>Field Guide to American Furniture Identification<br>1840 to 1940</h1>'
+            '<h1>A Field Guide to American Furniture<br>1840 to 1940</h1>'
             '<div class="rule"></div>'
-            '<div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find</div>'
+            '<div class="sub">Identification, Dating &amp; Valuation of the Antiques You&rsquo;ll Actually Find</div>'
             '<div class="sub" style="margin-top:24px;font-size:12px">New Creations Woodcraft</div>'
             '</section>')
 
@@ -380,7 +371,7 @@ body{padding-top:46px}
 
 HTML = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Field Guide to American Furniture Identification, 1840-1940</title>
+<title>A Field Guide to American Furniture: Identification, Dating &amp; Valuation, 1840 to 1940</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora&family=Barlow+Semi+Condensed:wght@400;600&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
 <div id="bar">
