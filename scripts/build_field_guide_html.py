@@ -301,13 +301,14 @@ li.toc-part{margin-top:.8em;font-family:'Playfair Display',Georgia,serif;font-we
 li.toc-chap{padding-left:20px;font-size:13.5px}
 .plate{text-align:center;margin:14px 0}
 .plate svg,.plate img{max-width:100%;height:auto;border:1px solid #e3d6bf}
-table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13px;border:1px solid var(--tan)}
-th{background:var(--tan);color:var(--ink);text-align:left;padding:7px 11px;
-  font-family:'Playfair Display',Georgia,serif;font-variant:small-caps;letter-spacing:.03em;
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13px;border:1.5px solid #6f543c}
+th{background:var(--tan);color:var(--ink);text-align:center;padding:8px 11px;
+  font-family:'Playfair Display',Georgia,serif;font-variant:small-caps;letter-spacing:.04em;
   font-weight:600;border-right:1px solid #b8965a}
 th:last-child{border-right:none}
-td{border-top:1px solid #e2d2ab;border-right:1px solid #efe1c4;padding:7px 11px;vertical-align:top}
+td{border-top:1px solid #ddcdb0;border-right:1px solid #e7d8ba;padding:8px 11px;vertical-align:middle}
 td:last-child{border-right:none}
+tbody tr:nth-child(even) td{background:#efe6d6}
 .dt{color:var(--teal);font-weight:600}
 ul.harm{list-style:none;margin-left:0;padding-left:0}
 ul.harm li{position:relative;padding-left:28px;margin:.55em 0}
