@@ -262,6 +262,32 @@ for sidx, (title, files) in enumerate(SECTIONS):
 
 TOC_HTML = f'<section class="contents"><h1>Contents</h1><ul class="toc">{"".join(toc)}</ul></section>'
 
+def build_cover():
+    title = ('<div class="cover-title"><div class="scrim">'
+             '<h1>Field Guide to American Furniture Identification</h1>'
+             '<span class="yr">1840 to 1940</span>'
+             '<div class="rule"></div>'
+             '<div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find</div>'
+             '<div class="byline">New Creations Woodcraft</div>'
+             '</div></div>')
+    cp = os.path.join(ROOT, "diagrams", "cover-hero.png")
+    if os.path.exists(cp):
+        im = Image.open(cp).convert("RGB")
+        if im.width > 980:
+            im = im.resize((980, round(im.height * 980 / im.width)), Image.LANCZOS)
+        buf = io.BytesIO(); im.save(buf, format="JPEG", quality=85)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        return (f'<section class="cover-photo"><img src="data:image/jpeg;base64,{b64}">'
+                f'{title}</section>')
+    return ('<section class="cover">'
+            '<h1>Field Guide to American Furniture Identification<br>1840 to 1940</h1>'
+            '<div class="rule"></div>'
+            '<div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find</div>'
+            '<div class="sub" style="margin-top:24px;font-size:12px">New Creations Woodcraft</div>'
+            '</section>')
+
+COVER_HTML = build_cover()
+
 CSS = """
 :root{--ink:#3A2E26;--paper:#F5EFE6;--tan:#C9A86A;--teal:#3E6B66;--ox:#9B4B3B}
 *{box-sizing:border-box}
@@ -272,6 +298,19 @@ body{margin:0;background:#e7ded0;color:var(--ink);font-family:'Lora','Georgia',s
 .cover h1{font-family:'Playfair Display',Georgia,serif;font-size:30px;line-height:1.2;margin:0 0 14px}
 .cover .sub{font-style:italic;color:var(--ink);font-size:15px;max-width:4in;margin:0 auto}
 .cover .rule{width:60px;height:3px;background:var(--ox);margin:22px auto}
+.cover-photo{position:relative;line-height:0;page-break-after:always;margin:-0.7in -0.75in 0}
+.cover-photo img{display:block;width:100%;height:auto}
+.cover-title{position:absolute;top:6%;left:50%;transform:translateX(-50%);width:84%;line-height:1.2}
+.cover-title .scrim{background:rgba(245,239,230,.80);border:1px solid rgba(58,46,38,.30);
+  box-shadow:0 6px 22px rgba(0,0,0,.28);padding:22px 20px;text-align:center}
+.cover-title h1{font-family:'Playfair Display',Georgia,serif;color:var(--ink);
+  font-size:25px;line-height:1.16;margin:0;font-weight:700}
+.cover-title .yr{display:block;font-family:'Playfair Display',Georgia,serif;color:var(--ink);
+  font-size:18px;letter-spacing:.14em;margin-top:8px}
+.cover-title .rule{width:54px;height:2px;background:var(--ox);margin:13px auto}
+.cover-title .sub{font-style:italic;color:#4a3c30;font-size:13px;margin:0 auto;max-width:4in}
+.cover-title .byline{font-family:'Playfair Display',Georgia,serif;color:var(--ink);
+  font-size:12.5px;letter-spacing:.12em;margin-top:14px;text-transform:uppercase}
 h1,h2,h3{font-family:'Playfair Display',Georgia,serif;line-height:1.2}
 .part{text-align:center;font-size:24px;letter-spacing:.04em;color:var(--ink);
   border-top:2px solid var(--tan);border-bottom:2px solid var(--tan);padding:0.5in 0;margin:0}
@@ -351,12 +390,7 @@ HTML = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
   <span class="hint">Turn Edit on, click into any text and change it, then Download and send it back.</span>
 </div>
 <div class="book">
-<section class="cover">
-  <h1>Field Guide to American Furniture Identification<br>1840&nbsp;&ndash;&nbsp;1940</h1>
-  <div class="rule"></div>
-  <div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find &middot; Victorian to Art&nbsp;Deco</div>
-  <div class="sub" style="margin-top:24px;font-size:12px">New Creations Woodcraft &middot; draft compile</div>
-</section>
+{COVER_HTML}
 {TOC_HTML}
 {''.join(parts)}
 </div>
