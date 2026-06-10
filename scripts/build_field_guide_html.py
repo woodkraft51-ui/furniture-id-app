@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Compile the Field Guide markdown into one styled, self-contained HTML file."""
-import os, re, html, glob
+import os, re, html, glob, base64, io
+from PIL import Image
 
 ROOT = "/home/user/furniture-id-app/docs/manual"
 OUT  = os.path.join(ROOT, "field-guide.html")
@@ -33,7 +34,25 @@ def read(p):
     fp = os.path.join(ROOT, p)
     return open(fp).read() if os.path.exists(fp) else ""
 
+def png_path_for(relpath):
+    """Owner's finished PNG (same basename, in diagrams/) wins over any SVG/mermaid placeholder."""
+    base = os.path.splitext(os.path.basename(relpath))[0]
+    p = os.path.join(ROOT, "diagrams", base + ".png")
+    return p if os.path.exists(p) else None
+
+def embed_png(p, maxw=1100):
+    im = Image.open(p).convert("RGB")
+    if im.width > maxw:
+        im = im.resize((maxw, round(im.height * maxw / im.width)), Image.LANCZOS)
+    buf = io.BytesIO()
+    im.save(buf, format="JPEG", quality=85)
+    b64 = base64.b64encode(buf.getvalue()).decode()
+    return f'<div class="plate"><img src="data:image/jpeg;base64,{b64}"></div>'
+
 def inline_svg(relpath):
+    png = png_path_for(relpath)
+    if png:
+        return embed_png(png)
     fp = os.path.join(ROOT, relpath)
     if os.path.exists(fp):
         svg = open(fp).read()
@@ -42,6 +61,9 @@ def inline_svg(relpath):
     return f'<div class="ph">image: {html.escape(relpath)}</div>'
 
 def mermaid_from_md(relpath):
+    png = png_path_for(relpath)
+    if png:
+        return embed_png(png)
     txt = read(relpath)
     m = re.search(r'```mermaid\n(.*?)```', txt, re.S)
     if m:
@@ -105,6 +127,13 @@ CHAPTER_PLATES = {
     "atlases/joinery.md":["diagrams/mortise-and-tenon.svg"],
 }
 
+# chapters whose inline ```mermaid``` block has an owner-supplied finished PNG
+FILE_TREE = {
+    "chapters/hoosier-cabinet.md": "hoosier-pantry-comparison",
+    "chapters/sideboard.md": "sideboard-buffet-server",
+}
+CURRENT_FILE = ""
+
 # ---- minimal markdown -> html ---------------------------------------------
 def inline_md(t):
     t = html.escape(t)
@@ -133,7 +162,12 @@ def md_to_html(md):
                 block.append(lines[i]); i+=1
             i+=1
             if lang=="mermaid":
-                out.append(f'<pre class="mermaid">{html.escape(chr(10).join(block))}</pre>')
+                tree = FILE_TREE.get(CURRENT_FILE)
+                tp = os.path.join(ROOT, "diagrams", (tree or "_none_") + ".png")
+                if tree and os.path.exists(tp):
+                    out.append(embed_png(tp))
+                else:
+                    out.append(f'<pre class="mermaid">{html.escape(chr(10).join(block))}</pre>')
             else:
                 out.append(f'<pre class="code">{html.escape(chr(10).join(block))}</pre>')
             continue
@@ -183,6 +217,7 @@ for title, files in SECTIONS:
     for f in files:
         md = read(f)
         if not md: continue
+        CURRENT_FILE = f
         body = md_to_html(strip_chapter(md))
         for plate in CHAPTER_PLATES.get(f, []):
             body += inline_svg(plate)
@@ -220,7 +255,7 @@ a{color:var(--teal)}
 .ph{border:1px dashed var(--tan);background:#f1e9da;padding:14px;margin:12px 0;color:#8a7a64;
   font-family:'Barlow Semi Condensed',sans-serif;font-size:12px}
 .plate{text-align:center;margin:14px 0}
-.plate svg{max-width:100%;height:auto;border:1px solid #e3d6bf}
+.plate svg,.plate img{max-width:100%;height:auto;border:1px solid #e3d6bf}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
 th{background:var(--ink);color:var(--paper);text-align:left;padding:6px 9px;font-family:'Barlow Semi Condensed',sans-serif}
 td{border:1px solid #ddcdb0;padding:6px 9px;vertical-align:top}

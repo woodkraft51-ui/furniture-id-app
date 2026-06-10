@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Compile the Field Guide markdown into a clean, Word-native .docx."""
-import os, re, glob
+import os, re, glob, io
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from PIL import Image
 
 ROOT = "/home/user/furniture-id-app/docs/manual"
 PNG  = "/tmp/dpng"
@@ -37,6 +38,12 @@ CHAPTER_PLATES = {
     "chapters/clocks.md":["clock-silhouettes"],"chapters/hoosier-cabinet.md":["hoosier-anatomy"],
     "atlases/joinery.md":["mortise-and-tenon"],"atlases/fasteners.md":["fasteners-nail-types","fasteners-screws"],
 }
+
+FILE_TREE = {
+    "chapters/hoosier-cabinet.md": "hoosier-pantry-comparison",
+    "chapters/sideboard.md": "sideboard-buffet-server",
+}
+CURRENT_FILE = ""
 
 def read(p):
     fp=os.path.join(ROOT,p); return open(fp).read() if os.path.exists(fp) else ""
@@ -75,10 +82,19 @@ def add_runs(p, text):
     if pos<len(text): p.add_run(text[pos:])
 
 def add_png(base):
-    fp=os.path.join(PNG, base+".png")
+    # owner's finished PNG in diagrams/ wins over the cairosvg rasterization in /tmp/dpng
+    fp=os.path.join(ROOT,"diagrams",base+".png")
+    if not os.path.exists(fp):
+        fp=os.path.join(PNG, base+".png")
     if os.path.exists(fp):
-        doc.add_picture(fp, width=Inches(4.4))
+        # downsample so the .docx stays emailable (owner PNGs are 1-3MB each at full res)
+        im=Image.open(fp).convert("RGB"); maxw=1400
+        if im.width>maxw: im=im.resize((maxw, round(im.height*maxw/im.width)), Image.LANCZOS)
+        buf=io.BytesIO(); im.save(buf, format="JPEG", quality=85); buf.seek(0)
+        doc.add_picture(buf, width=Inches(4.4))
         doc.paragraphs[-1].alignment=WD_ALIGN_PARAGRAPH.CENTER
+        return True
+    return False
 
 def placeholder(line):
     s=line.strip().strip("`").strip()
@@ -94,8 +110,7 @@ def placeholder(line):
         r=p.add_run("[ HERO PHOTO TO COME — "+val+" ]"); r.italic=True; r.font.color.rgb=GRY; r.font.size=Pt(10)
     elif kind=="VISUAL":
         mref=re.search(r'([\w/\-.]+)\.(svg|md)', val)
-        if mref and mref.group(2)=="svg": add_png(os.path.basename(mref.group(1)))
-        else:
+        if not (mref and add_png(os.path.basename(mref.group(1)))):
             p=doc.add_paragraph(); r=p.add_run("[ Decision tree — see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
     elif kind=="LAYOUT":
         p=doc.add_paragraph(); r=p.add_run(val); r.italic=True; r.font.color.rgb=GRY
@@ -111,7 +126,9 @@ def render(md):
             i+=1
             while i<len(lines) and not lines[i].strip().startswith("```"): i+=1
             i+=1
-            p=doc.add_paragraph(); r=p.add_run("[ Decision tree — see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
+            tree=FILE_TREE.get(CURRENT_FILE)
+            if not (tree and add_png(tree)):
+                p=doc.add_paragraph(); r=p.add_run("[ Decision tree — see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
             continue
         if re.match(r'^#{1,6}\s', s):
             lvl=len(s)-len(s.lstrip("#")); txt=s[lvl:].strip()
@@ -171,6 +188,7 @@ for title, files in SECTIONS:
     for f in files:
         md=read(f)
         if not md: continue
+        CURRENT_FILE=f
         doc.add_page_break()
         render(strip_chapter(md))
         for base in CHAPTER_PLATES.get(f, []):
