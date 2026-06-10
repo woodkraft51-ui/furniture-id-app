@@ -144,10 +144,13 @@ def inline_md(t):
     t = re.sub(r'(?<!\*)\*(?!\s)(.+?)(?<!\s)\*(?!\*)', r'<em>\1</em>', t)
     t = re.sub(r'`(.+?)`', r'<code>\1</code>', t)
     t = re.sub(r'\[(.+?)\]\((.+?)\)', r'<a href="\2">\1</a>', t)
+    # dating accent: Verdigris on period date expressions (c. NNNN[ to NNNN], mid NNNNs)
+    t = re.sub(r'(c\.\s*\d{3,4}(?:\s*to\s*\d{3,4})?|mid\s*\d{4}s)', r'<span class="dt">\1</span>', t)
     return t
 
 def md_to_html(md):
     out, i = [], 0
+    last_heading = ""
     lines = md.split("\n")
     while i < len(lines):
         line = lines[i]
@@ -176,6 +179,7 @@ def md_to_html(md):
             continue
         if re.match(r'^#{1,6}\s', s):
             lvl = len(s) - len(s.lstrip("#"))
+            last_heading = s[lvl:].strip().lower()
             out.append(f'<h{lvl}>{inline_md(s[lvl:].strip())}</h{lvl}>'); i+=1; continue
         if s in ("---","***","___"):
             out.append("<hr>"); i+=1; continue
@@ -198,7 +202,8 @@ def md_to_html(md):
             items=[]
             while i<len(lines) and re.match(r'^[-*]\s', lines[i].strip()):
                 items.append(f'<li>{inline_md(lines[i].strip()[2:])}</li>'); i+=1
-            out.append(f'<ul>{"".join(items)}</ul>'); continue
+            cls = ' class="harm"' if "hurts the value" in last_heading else ""
+            out.append(f'<ul{cls}>{"".join(items)}</ul>'); continue
         if re.match(r'^\d+\.\s', s):
             items=[]
             while i<len(lines) and re.match(r'^\d+\.\s', lines[i].strip()):
@@ -259,10 +264,19 @@ a{color:var(--teal)}
   font-family:'Barlow Semi Condensed',sans-serif;font-size:12px}
 .plate{text-align:center;margin:14px 0}
 .plate svg,.plate img{max-width:100%;height:auto;border:1px solid #e3d6bf}
-table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
-th{background:var(--ink);color:var(--paper);text-align:left;padding:6px 9px;font-family:'Barlow Semi Condensed',sans-serif}
-td{border:1px solid #ddcdb0;padding:6px 9px;vertical-align:top}
-tr:nth-child(even) td{background:#efe6d6}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13px;border:1px solid var(--tan)}
+th{background:var(--tan);color:var(--ink);text-align:left;padding:7px 11px;
+  font-family:'Playfair Display',Georgia,serif;font-variant:small-caps;letter-spacing:.03em;
+  font-weight:600;border-right:1px solid #b8965a}
+th:last-child{border-right:none}
+td{border-top:1px solid #e2d2ab;border-right:1px solid #efe1c4;padding:7px 11px;vertical-align:top}
+td:last-child{border-right:none}
+.dt{color:var(--teal);font-weight:600}
+ul.harm{list-style:none;margin-left:0;padding-left:0}
+ul.harm li{position:relative;padding-left:28px;margin:.55em 0}
+ul.harm li::before{content:"\2716";color:#fff;background:var(--ox);border-radius:50%;
+  width:17px;height:17px;line-height:17px;text-align:center;font-size:10px;
+  display:inline-block;position:absolute;left:0;top:2px}
 blockquote{border-left:4px solid var(--ox);background:#efe6d6;margin:12px 0;padding:8px 14px;font-style:italic}
 ul,ol{margin:.5em 0 .5em 1.2em}
 li{margin:.25em 0}
