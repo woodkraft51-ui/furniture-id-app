@@ -45,6 +45,7 @@ FILE_TREE = {
     "chapters/sideboard.md": "sideboard-buffet-server",
 }
 CURRENT_FILE = ""
+HERO_SLUG = {"phase1b-sample-chapter-windsor.md": "windsor"}
 
 def read(p):
     fp=os.path.join(ROOT,p); return open(fp).read() if os.path.exists(fp) else ""
@@ -111,8 +112,10 @@ def placeholder(line):
     elif kind=="ERA BAND":
         p=doc.add_paragraph(); r=p.add_run("Era:  "+val); r.italic=True; r.font.size=Pt(9)
     elif kind=="HERO PLATE":
-        p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER
-        r=p.add_run("[ HERO PHOTO TO COME · "+val+" ]"); r.italic=True; r.font.color.rgb=GRY; r.font.size=Pt(10)
+        slug=HERO_SLUG.get(CURRENT_FILE, os.path.splitext(os.path.basename(CURRENT_FILE))[0])
+        if not add_png("hero-"+slug):
+            p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER
+            r=p.add_run("[ HERO PHOTO TO COME · "+val+" ]"); r.italic=True; r.font.color.rgb=GRY; r.font.size=Pt(10)
     elif kind=="VISUAL":
         mref=re.search(r'([\w/\-.]+)\.(svg|md|png)', val)
         if not (mref and add_png(os.path.basename(mref.group(1)))):

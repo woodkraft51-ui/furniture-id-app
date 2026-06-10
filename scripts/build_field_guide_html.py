@@ -100,6 +100,10 @@ def repl_placeholder(line):
     if kind == "ERA BAND":
         return f'<div class="era">{html.escape(val)}</div>'
     if kind == "HERO PLATE":
+        slug = HERO_SLUG.get(CURRENT_FILE, os.path.splitext(os.path.basename(CURRENT_FILE))[0])
+        hp = os.path.join(ROOT, "diagrams", "hero-" + slug + ".png")
+        if os.path.exists(hp):
+            return embed_png(hp)
         return f'<div class="hero">HERO PHOTO TO COME<br><span>{html.escape(val)}</span></div>'
     if kind == "LAYOUT":
         return f'<div class="ph">{html.escape(val)}</div>'
@@ -137,6 +141,8 @@ FILE_TREE = {
     "chapters/sideboard.md": "sideboard-buffet-server",
 }
 CURRENT_FILE = ""
+# chapters whose hero photo basename differs from the file basename
+HERO_SLUG = {"phase1b-sample-chapter-windsor.md": "windsor"}
 
 # ---- minimal markdown -> html ---------------------------------------------
 def inline_md(t):
