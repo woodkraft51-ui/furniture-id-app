@@ -9,6 +9,8 @@ A wood species tells you about region, market, and style, and it reinforces a da
 
 Also learn the **primary versus secondary wood** idea: makers used a good show wood on the surfaces you see (the primary) and cheaper woods inside, on drawer sides, bottoms, and backs (the secondary). The mix of woods is itself a clue. A single uniform wood throughout, or plywood, leans modern.
 
+`[VISUAL: diagrams/wood-grain-types.svg]`
+
 ## The show woods
 
 | Wood | How to recognize it | Where and when |
@@ -30,6 +32,8 @@ Also learn the **primary versus secondary wood** idea: makers used a good show w
 | **Gum** | Pale with a faint figure, sometimes stained to imitate mahogany or walnut | common early-1900s factory secondary and show wood |
 | **Ash** | Looks like a paler, plainer oak, open grain | bent parts, country furniture |
 | **Chestnut** | Coarse open grain like oak but lighter and softer | pre-1910 secondary and country wood, before the blight |
+
+`[VISUAL: diagrams/primary-secondary-wood.svg]`
 
 ## How to use this in the field
 - Name the show wood for style and market, then read the secondary woods inside.

@@ -7,6 +7,8 @@
 
 Pulls, knobs, and casters are swapped more than any other part of a piece. A later caster or a shiny modern pull can fool you into dating the whole thing too late or too early. **Weigh hardware lightly, and look for the evidence of earlier hardware:** extra holes, shadow outlines, and unfilled mounting marks. (We watched our own software get fooled by a replaced caster, which is exactly why this warning leads the atlas.)
 
+`[VISUAL: diagrams/pulls-and-knobs.svg]`
+
 ## Pulls and knobs
 
 | Hardware | Look | Period it points to |
@@ -20,11 +22,16 @@ Pulls, knobs, and casters are swapped more than any other part of a piece. A lat
 | **Bakelite or chrome pull** | Plastic or streamlined metal | Art Deco and later, 1925 onward |
 
 ## Hinges and escutcheons
+
+`[VISUAL: diagrams/hinges-escutcheons.svg]`
+
 - **HL and H hinges**, exposed on cupboard doors, read early.
 - **Butt hinges**, mortised and hidden, become standard; machine-made uniform butt hinges are factory era.
 - **Escutcheons** (keyhole plates) follow the same style chronology as pulls.
 
 ## Casters
+
+`[VISUAL: diagrams/casters-types.svg]`
 
 | Caster | Look | Period it points to |
 |---|---|---|

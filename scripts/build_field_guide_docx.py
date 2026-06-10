@@ -83,19 +83,23 @@ def add_runs(p, text):
     if pos<len(text): p.add_run(text[pos:])
 
 def add_png(base):
-    # owner's finished PNG in diagrams/ wins over the cairosvg rasterization in /tmp/dpng
-    fp=os.path.join(ROOT,"diagrams",base+".png")
-    if not os.path.exists(fp):
-        fp=os.path.join(PNG, base+".png")
-    if os.path.exists(fp):
-        # downsample so the .docx stays emailable (owner PNGs are 1-3MB each at full res)
-        im=Image.open(fp).convert("RGB"); maxw=1400
-        if im.width>maxw: im=im.resize((maxw, round(im.height*maxw/im.width)), Image.LANCZOS)
-        buf=io.BytesIO(); im.save(buf, format="JPEG", quality=85); buf.seek(0)
-        doc.add_picture(buf, width=Inches(4.4))
-        doc.paragraphs[-1].alignment=WD_ALIGN_PARAGRAPH.CENTER
-        return True
-    return False
+    # owner's finished PNG wins; else rasterize a Claude SVG diagram for the .docx
+    pngp=os.path.join(ROOT,"diagrams",base+".png")
+    if not os.path.exists(pngp): pngp=os.path.join(PNG, base+".png")
+    svgp=os.path.join(ROOT,"diagrams",base+".svg")
+    im=None
+    if os.path.exists(pngp):
+        im=Image.open(pngp).convert("RGB")
+    elif os.path.exists(svgp):
+        import cairosvg
+        im=Image.open(io.BytesIO(cairosvg.svg2png(url=svgp, output_width=1400, background_color="#F5EFE6"))).convert("RGB")
+    if im is None: return False
+    maxw=1400
+    if im.width>maxw: im=im.resize((maxw, round(im.height*maxw/im.width)), Image.LANCZOS)
+    buf=io.BytesIO(); im.save(buf, format="JPEG", quality=85); buf.seek(0)
+    doc.add_picture(buf, width=Inches(4.4))
+    doc.paragraphs[-1].alignment=WD_ALIGN_PARAGRAPH.CENTER
+    return True
 
 def placeholder(line):
     s=line.strip().strip("`").strip()

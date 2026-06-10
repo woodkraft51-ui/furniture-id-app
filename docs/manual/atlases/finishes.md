@@ -20,10 +20,15 @@ Say it plainly, because it is the most expensive mistake people make: **an origi
 | **French polish** | A high, deep shellac shine built in many thin coats | fine formal pieces |
 
 ## Reading the surface for age and honesty
+
+`[VISUAL: diagrams/crazing-alligatoring.svg]`
+
 - **Crazing and alligatoring**, the fine and deep cracking of old shellac and varnish, are honest signs of age and hard to fake well.
 - **Patina**, the soft depth and color that decades of light, oxidation, and handling build, lives on undisturbed surfaces and is destroyed by sanding.
 - **Wear in the right places**, edges, arms, handles, feet, should match how a piece is actually used. Even wear everywhere, or none, is suspicious.
 - A **thick plastic film** or a flat, fresh, even coat says refinished or modern.
+
+`[VISUAL: diagrams/wear-points.svg]`
 
 ## How to use this in the field
 - Identify the finish, then ask whether it is original.

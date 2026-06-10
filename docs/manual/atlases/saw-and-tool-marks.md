@@ -25,6 +25,8 @@ As always, a saw mark dates the **board**, not always the whole piece. Repairs a
 
 ## Tool marks, the shaping evidence
 
+`[VISUAL: diagrams/tool-marks.svg]`
+
 `[OWNER: expand each row; add a macro photo of a drawknife facet vs a sanded-smooth reproduction surface.]`
 
 | Mark | How to tell it | What it says |

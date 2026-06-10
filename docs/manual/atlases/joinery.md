@@ -18,6 +18,8 @@ The rhythm is the tell: **people are slightly irregular, machines are perfect.**
 
 ## The other joints you will meet
 
+`[VISUAL: diagrams/joints-overview.svg]`
+
 | Joint | What it is | Notes |
 |---|---|---|
 | **Mortise and tenon** | A tongue (tenon) fits a slot (mortise); the backbone of frame and chair construction | spans all periods; pinned or wedged versions read earlier |

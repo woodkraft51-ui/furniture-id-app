@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 322" font-family="Georgia, serif">
+  <rect width="840" height="322" fill="#F5EFE6"/>
+  <rect width="840" height="40" fill="#C9A86A"/>
+  <text x="420" y="27" text-anchor="middle" font-size="19" font-weight="bold" fill="#3A2E26" letter-spacing="1.5">SAW MARKS · THE ERA EACH POINTS TO</text>
+  <rect x="30" y="80" width="220" height="170" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <rect x="310" y="80" width="220" height="170" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <rect x="590" y="80" width="220" height="170" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <!-- pit-saw: irregular near-straight strokes -->
+  <g stroke="#3A2E26" stroke-width="1.4">
+    <line x1="55" y1="86" x2="64" y2="244"/><line x1="80" y1="86" x2="74" y2="244"/>
+    <line x1="105" y1="86" x2="113" y2="244"/><line x1="131" y1="86" x2="124" y2="244"/>
+    <line x1="157" y1="86" x2="166" y2="244"/><line x1="183" y1="86" x2="177" y2="244"/>
+    <line x1="209" y1="86" x2="217" y2="244"/>
+  </g>
+  <!-- circular saw: arc sweeps -->
+  <g stroke="#3A2E26" stroke-width="1.4" fill="none">
+    <path d="M318 108 Q420 86 522 108"/><path d="M318 136 Q420 114 522 136"/>
+    <path d="M318 164 Q420 142 522 164"/><path d="M318 192 Q420 170 522 192"/>
+    <path d="M318 220 Q420 198 522 220"/>
+  </g>
+  <!-- band saw: fine even parallels -->
+  <g stroke="#3A2E26" stroke-width="1">
+    <line x1="606" y1="86" x2="606" y2="244"/><line x1="620" y1="86" x2="620" y2="244"/>
+    <line x1="634" y1="86" x2="634" y2="244"/><line x1="648" y1="86" x2="648" y2="244"/>
+    <line x1="662" y1="86" x2="662" y2="244"/><line x1="676" y1="86" x2="676" y2="244"/>
+    <line x1="690" y1="86" x2="690" y2="244"/><line x1="704" y1="86" x2="704" y2="244"/>
+    <line x1="718" y1="86" x2="718" y2="244"/><line x1="732" y1="86" x2="732" y2="244"/>
+    <line x1="746" y1="86" x2="746" y2="244"/><line x1="760" y1="86" x2="760" y2="244"/>
+    <line x1="774" y1="86" x2="774" y2="244"/><line x1="788" y1="86" x2="788" y2="244"/>
+  </g>
+  <g font-size="15" fill="#3A2E26" font-weight="bold" text-anchor="middle">
+    <text x="140" y="276">Pit-saw / hand-saw</text>
+    <text x="420" y="276">Circular saw</text>
+    <text x="700" y="276">Band saw</text>
+  </g>
+  <g font-size="13" fill="#3E6B66" text-anchor="middle">
+    <text x="140" y="296">before ~1830</text>
+    <text x="420" y="296">1830s on; common after 1850</text>
+    <text x="700" y="296">after ~1870</text>
+  </g>
+  <text x="420" y="316" text-anchor="middle" font-size="11.5" fill="#9B4B3B" font-style="italic">A curved arc means a circular saw: not before the 1830s, no matter how early the style looks.</text>
+</svg>
