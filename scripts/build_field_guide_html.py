@@ -263,13 +263,13 @@ for sidx, (title, files) in enumerate(SECTIONS):
 TOC_HTML = f'<section class="contents"><h1>Contents</h1><ul class="toc">{"".join(toc)}</ul></section>'
 
 def build_cover():
-    title = ('<div class="cover-title"><div class="scrim">'
+    title = ('<div class="cover-title">'
              '<h1>Field Guide to American Furniture Identification</h1>'
              '<span class="yr">1840 to 1940</span>'
              '<div class="rule"></div>'
              '<div class="sub">Spotting, Dating &amp; Valuing the Antiques You&rsquo;ll Actually Find</div>'
              '<div class="byline">New Creations Woodcraft</div>'
-             '</div></div>')
+             '</div>')
     cp = os.path.join(ROOT, "diagrams", "cover-hero.png")
     if os.path.exists(cp):
         im = Image.open(cp).convert("RGB")
@@ -300,17 +300,16 @@ body{margin:0;background:#e7ded0;color:var(--ink);font-family:'Lora','Georgia',s
 .cover .rule{width:60px;height:3px;background:var(--ox);margin:22px auto}
 .cover-photo{position:relative;line-height:0;page-break-after:always;margin:-0.7in -0.75in 0}
 .cover-photo img{display:block;width:100%;height:auto}
-.cover-title{position:absolute;top:6%;left:50%;transform:translateX(-50%);width:84%;line-height:1.2}
-.cover-title .scrim{background:rgba(245,239,230,.80);border:1px solid rgba(58,46,38,.30);
-  box-shadow:0 6px 22px rgba(0,0,0,.28);padding:22px 20px;text-align:center}
+.cover-title{position:absolute;top:7%;left:50%;transform:translateX(-50%);width:88%;text-align:center;
+  text-shadow:0 1px 3px rgba(245,239,230,.55),0 2px 10px rgba(245,239,230,.35)}
 .cover-title h1{font-family:'Playfair Display',Georgia,serif;color:var(--ink);
-  font-size:25px;line-height:1.16;margin:0;font-weight:700}
-.cover-title .yr{display:block;font-family:'Playfair Display',Georgia,serif;color:var(--ink);
-  font-size:18px;letter-spacing:.14em;margin-top:8px}
-.cover-title .rule{width:54px;height:2px;background:var(--ox);margin:13px auto}
-.cover-title .sub{font-style:italic;color:#4a3c30;font-size:13px;margin:0 auto;max-width:4in}
-.cover-title .byline{font-family:'Playfair Display',Georgia,serif;color:var(--ink);
-  font-size:12.5px;letter-spacing:.12em;margin-top:14px;text-transform:uppercase}
+  font-size:27px;line-height:1.16;margin:0;font-weight:700}
+.cover-title .yr{display:block;font-family:'Playfair Display',Georgia,serif;color:var(--teal);
+  font-size:19px;letter-spacing:.16em;margin-top:9px}
+.cover-title .rule{width:58px;height:2px;background:var(--ox);margin:14px auto}
+.cover-title .sub{font-style:italic;color:var(--ink);font-size:13.5px;margin:0 auto;max-width:4.2in}
+.cover-title .byline{font-family:'Playfair Display',Georgia,serif;color:var(--ox);
+  font-size:13px;letter-spacing:.14em;margin-top:16px;text-transform:uppercase}
 h1,h2,h3{font-family:'Playfair Display',Georgia,serif;line-height:1.2}
 .part{text-align:center;font-size:24px;letter-spacing:.04em;color:var(--ink);
   border-top:2px solid var(--tan);border-bottom:2px solid var(--tan);padding:0.5in 0;margin:0}
