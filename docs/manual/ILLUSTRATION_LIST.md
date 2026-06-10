@@ -19,7 +19,7 @@
 | ID | Shows | Purpose | Format | Status |
 |---|---|---|---|---|
 | MET-1 | Period-or-reproduction decision tree | Core method, reused everywhere | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
-| MET-2 | Three nail types: hand-wrought, cut, wire | Fastener dating | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-nail-types.svg`) |
+| MET-2 | Three nail types: hand-wrought, cut, wire | Fastener dating | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | MET-3 | Hand-cut vs machine-cut dovetail | Joinery dating | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
 | MET-4 | Slotted vs Phillips screw | The post-1930s tell | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 
@@ -149,7 +149,7 @@
 | ID | Shows | View | Purpose | Format | Status |
 |---|---|---|---|---|---|
 | SOFA-1 | Victorian sofa, full length | Three-quarter | Hero | Owner photo | NEEDED |
-| SOFA-2 | Victorian sofa silhouettes: Grecian, Rococo, Renaissance, Eastlake | Profiles | Visual key | Claude SVG | DRAFTED (`diagrams/victorian-sofa-silhouettes.svg`) |
+| SOFA-2 | Victorian sofa silhouettes: Grecian, Rococo, Renaissance, Eastlake | Profiles | Visual key | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | SOFA-3 | Hand-tied coil springs under the frame | Underside | Dating, not the cover | Owner photo | NEEDED |
 | SOFA-4 | Sofa vs settee scale | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
 
@@ -158,7 +158,7 @@
 |---|---|---|---|---|---|
 | PARL-1 | Parlor table, full | Three-quarter | Hero | Owner photo | NEEDED |
 | PARL-2 | Marble top underside and fit | Underside or edge | Original or married | Owner photo | NEEDED |
-| PARL-3 | Base styles: pedestal, cabriole, turned | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/table-base-styles.svg`) |
+| PARL-3 | Base styles: pedestal, cabriole, turned | Side by side | Visual key | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | PARL-4 | Caster | Macro | Replacement caution | Owner photo | NEEDED |
 
 ## Chapter: Drop-Leaf Table
@@ -173,7 +173,7 @@
 |---|---|---|---|---|---|
 | GATE-1 | Gateleg, open, a gate swung out | Three-quarter | Hero | Owner photo | NEEDED |
 | GATE-2 | The swinging gate assembly | Close | Defining feature | Owner photo | NEEDED |
-| GATE-3 | Turned-leg types: barley-twist, ring, ball, bobbin | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/turned-leg-types.svg`) |
+| GATE-3 | Turned-leg types: barley-twist, ring, ball, bobbin | Side by side | Visual key | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 
 ## Chapter: Tilt-Top Table
 | ID | Shows | View | Purpose | Format | Status |
@@ -252,7 +252,7 @@
 | CLOCK-1 | Tall-case clock, full height | Front | Hero | Owner photo | NEEDED |
 | CLOCK-2 | Shelf or mantel clock | Front | Hero | Owner photo | NEEDED |
 | CLOCK-3 | Maker's paper label and movement inside | Close | Dating the works | Owner photo or CC0 link | NEEDED |
-| CLOCK-4 | Tall-case vs shelf clock silhouettes | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/clock-silhouettes.svg`) |
+| CLOCK-4 | Tall-case vs shelf clock silhouettes | Side by side | Visual key | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 
 ---
 
