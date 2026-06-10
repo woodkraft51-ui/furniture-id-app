@@ -18,10 +18,10 @@
 ## Method section (Part I)
 | ID | Shows | Purpose | Format | Status |
 |---|---|---|---|---|
-| MET-1 | Period-or-reproduction decision tree | Core method, reused everywhere | Claude diagram (Mermaid) | DRAFTED (`diagrams/period-or-reproduction.md`) |
+| MET-1 | Period-or-reproduction decision tree | Core method, reused everywhere | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | MET-2 | Three nail types: hand-wrought, cut, wire | Fastener dating | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-nail-types.svg`) |
 | MET-3 | Hand-cut vs machine-cut dovetail | Joinery dating | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
-| MET-4 | Slotted vs Phillips screw | The post-1930s tell | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-screws.svg`) |
+| MET-4 | Slotted vs Phillips screw | The post-1930s tell | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 
 ## Chapter: Windsor Chair / Windsor Rocker
 | ID | Shows | View | Purpose | Format | Status |
@@ -49,7 +49,7 @@
 |---|---|---|---|---|---|
 | ROLL-1 | Roll-top desk, cover open | Three-quarter | Hero | Owner photo | NEEDED |
 | ROLL-2 | Cover closed and locked | Front | Enclosing function | Owner photo | NEEDED |
-| ROLL-3 | Slatted tambour vs rigid cylinder cover | Side by side | Roll-top vs cylinder | Claude SVG | DRAFTED (`diagrams/roll-top-covers.svg`) |
+| ROLL-3 | Slatted tambour vs rigid cylinder cover | Side by side | Roll-top vs cylinder | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | ROLL-4 | Fitted interior, pigeonholes and drawers | Front, close | Office interior | Owner photo | NEEDED |
 | ROLL-5 | Patent lock or roll mechanism | Macro | Dating | Owner photo or CC0 link | NEEDED |
 
@@ -118,7 +118,7 @@
 |---|---|---|---|---|---|
 | ROCK-1 | Rocking chair, profile | Side | Hero | Owner photo | NEEDED |
 | ROCK-2 | Joint where a runner meets the leg | Macro | Original or replaced | Owner photo | NEEDED |
-| ROCK-3 | Rocker types: Boston, ladderback, pressed-back, platform | Silhouettes | Visual key | Claude SVG | DRAFTED (`diagrams/rocker-types.svg`) |
+| ROCK-3 | Rocker types: Boston, ladderback, pressed-back, platform | Silhouettes | Visual key | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | ROCK-4 | Original stenciled crest | Close | Surface value | Owner photo or CC0 link | NEEDED |
 
 ## Chapter: Morris Chair
@@ -280,7 +280,7 @@
 | FAST-2 | Slotted vs Phillips screw | Claude SVG | DRAFTED |
 | FAST-3 | Real cut and wire nails from furniture | Owner photo or CC0 link | NEEDED |
 | JOIN-1 | Hand vs machine dovetail | Owner final art | **HAVE** (owner-supplied) |
-| JOIN-2 | Mortise and tenon, exploded | Claude SVG | DRAFTED (`diagrams/mortise-and-tenon.svg`) |
+| JOIN-2 | Mortise and tenon, exploded | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 | JOIN-3 | Real dovetailed drawer corners | Owner photos | NEEDED |
 | WOOD-1 | Grain plates: walnut, oak, mahogany, cherry, maple, pine | Owner photos or CC0 links | NEEDED |
 | WOOD-2 | Quartersawn oak ray fleck | Owner photo | NEEDED |
