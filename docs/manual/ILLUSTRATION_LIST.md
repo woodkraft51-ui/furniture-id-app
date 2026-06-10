@@ -20,7 +20,7 @@
 |---|---|---|---|---|
 | MET-1 | Period-or-reproduction decision tree | Core method, reused everywhere | Claude diagram (Mermaid) | DRAFTED (`diagrams/period-or-reproduction.md`) |
 | MET-2 | Three nail types: hand-wrought, cut, wire | Fastener dating | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-nail-types.svg`) |
-| MET-3 | Hand-cut vs machine-cut dovetail | Joinery dating | Claude SVG line diagram | DRAFTED (`diagrams/joinery-dovetails.svg`) |
+| MET-3 | Hand-cut vs machine-cut dovetail | Joinery dating | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
 | MET-4 | Slotted vs Phillips screw | The post-1930s tell | Claude SVG line diagram | DRAFTED (`diagrams/fasteners-screws.svg`) |
 
 ## Chapter: Windsor Chair / Windsor Rocker
@@ -41,7 +41,7 @@
 | HOO-4 | Tambour door with spice rack behind | Front, close | Upper fittings | Owner photo | NEEDED |
 | HOO-5 | Maker tag or patent-stamped hardware | Macro | Dating, attribution | Owner photo or CC0 link | NEEDED |
 | HOO-6 | Ant-proof caster | Macro | Period detail | Owner photo or Claude SVG | NEEDED |
-| HOO-7 | Hoosier "anatomy" labeled diagram | Schematic front | Teaching overview | Claude SVG | DRAFTED (`diagrams/hoosier-anatomy.svg`) |
+| HOO-7 | Hoosier "anatomy" labeled diagram | Schematic front | Teaching overview | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
 | HOO-8 | Real-Hoosier-or-cupboard decision tree | n/a | Teaching | Claude diagram (Mermaid) | DRAFTED (in chapter) |
 
 ## Chapter: Roll-Top and Cylinder Desk
@@ -109,7 +109,7 @@
 |---|---|---|---|---|---|
 | BLANK-1 | Blanket chest, full, lid and feet | Three-quarter | Hero | Owner photo | NEEDED |
 | BLANK-2 | Lid open, cavity and till | Top down | Defining feature | Owner photo | NEEDED |
-| BLANK-3 | Base feet types: bracket, bun, bootjack | Side by side | Teaching | Claude SVG | DRAFTED (`diagrams/blanket-chest-feet.svg`) |
+| BLANK-3 | Base feet types: bracket, bun, bootjack | Side by side | Teaching | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
 | BLANK-4 | Original painted decoration (Pennsylvania German) | Close | Value feature | Owner photo or CC0 link | NEEDED |
 | BLANK-5 | Corner joinery: dovetailed vs nailed | Close | Construction and dating | Owner photo | NEEDED |
 
@@ -135,7 +135,7 @@
 |---|---|---|---|---|---|
 | WING-1 | Wing chair, three-quarter | Three-quarter | Hero | Owner photo | NEEDED |
 | WING-2 | Wing silhouette types: scrolled, flat, ogee | Profiles | Visual key | Claude SVG | NEEDED |
-| WING-3 | Leg styles by period | Side by side | Dating centerpiece | Claude SVG | DRAFTED (`diagrams/legs-by-period.svg`) |
+| WING-3 | Leg styles by period | Side by side | Dating centerpiece | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
 | WING-4 | Wing chair vs armchair | Side by side | Comparison | Owner photos or Claude SVG | NEEDED |
 
 ## Chapter: Settee
@@ -166,7 +166,7 @@
 |---|---|---|---|---|---|
 | DROP-1 | Drop-leaf, one leaf up one down | Three-quarter | Hero | Owner photo | NEEDED |
 | DROP-2 | Rule joint at the leaf | Close | Defining detail | Owner photo or Claude SVG | NEEDED |
-| DROP-3 | Leaf-support types: swing leg, bracket, fly rail | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/drop-leaf-supports.svg`) |
+| DROP-3 | Leaf-support types: swing leg, bracket, fly rail | Side by side | Visual key | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
 
 ## Chapter: Gateleg Table
 | ID | Shows | View | Purpose | Format | Status |
@@ -279,7 +279,7 @@
 | FAST-1 | Three nail types | Claude SVG | DRAFTED |
 | FAST-2 | Slotted vs Phillips screw | Claude SVG | DRAFTED |
 | FAST-3 | Real cut and wire nails from furniture | Owner photo or CC0 link | NEEDED |
-| JOIN-1 | Hand vs machine dovetail | Claude SVG | DRAFTED |
+| JOIN-1 | Hand vs machine dovetail | Owner final art | **HAVE** (owner-supplied) |
 | JOIN-2 | Mortise and tenon, exploded | Claude SVG | DRAFTED (`diagrams/mortise-and-tenon.svg`) |
 | JOIN-3 | Real dovetailed drawer corners | Owner photos | NEEDED |
 | WOOD-1 | Grain plates: walnut, oak, mahogany, cherry, maple, pine | Owner photos or CC0 links | NEEDED |
