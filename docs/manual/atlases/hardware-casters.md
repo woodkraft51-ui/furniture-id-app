@@ -26,6 +26,7 @@ Pulls, knobs, and casters are swapped more than any other part of a piece. A lat
 `[VISUAL: diagrams/hinges-escutcheons.svg]`
 
 - **HL and H hinges**, exposed on cupboard doors, read early.
+- **Butterfly hinges**, exposed and shaped like a bow tie, are an early cabinet hinge of the 18th and 19th centuries.
 - **Butt hinges**, mortised and hidden, become standard; machine-made uniform butt hinges are factory era.
 - **Escutcheons** (keyhole plates) follow the same style chronology as pulls.
 
