@@ -11,27 +11,13 @@ Also learn the **primary versus secondary wood** idea: makers used a good show w
 
 `[VISUAL: diagrams/wood-grain-types.svg]`
 
-## The show woods
+`[VISUAL: diagrams/wood-species-spread-L.png]`
 
-| Wood | How to recognize it | Where and when |
-|---|---|---|
-| **Walnut** | Warm chocolate brown, fine straight-to-wavy grain, sometimes burl | dominant mid-Victorian (1860s to 1880s), again in 1920s to 1930s veneer |
-| **Oak** | Open coarse grain, prominent rays; quartersawn shows tiger-stripe ray flecks | Golden Oak era (1890 to 1915), Mission |
-| **Mahogany** | Reddish brown, fine grain, ribbon stripe when quartered | Federal, formal pieces, Colonial Revival, fine sofas |
-| **Cherry** | Warm reddish brown that darkens with age, fine even grain | country and Federal, regional cabinetmaking |
-| **Maple** | Pale, hard, fine grain; figured as birdseye or tiger (curly) | country, turned parts, fancy chairs; figured maple is prized |
-| **Rosewood** | Very dark brown to near black with dramatic streaking | high-style early Victorian (Rococo Revival), expensive |
-| **Ebonized wood** | Any wood stained or painted dense black, often with gilt lines | Eastlake and Aesthetic Movement |
+`[VISUAL: diagrams/wood-species-spread-R.png]`
 
-## The secondary and country woods
+`[VISUAL: diagrams/wood-species-secondary.png]`
 
-| Wood | How to recognize it | Notes |
-|---|---|---|
-| **Pine** | Soft, pale yellow to tan, knotty, light | the great secondary and country wood; painted vernacular pieces |
-| **Poplar** | Pale, often greenish or gray-streaked, soft and even | very common secondary wood |
-| **Gum** | Pale with a faint figure, sometimes stained to imitate mahogany or walnut | common early-1900s factory secondary and show wood |
-| **Ash** | Looks like a paler, plainer oak, open grain | bent parts, country furniture |
-| **Chestnut** | Coarse open grain like oak but lighter and softer | pre-1910 secondary and country wood, before the blight |
+`[VISUAL: diagrams/wood-species-secondary-2.png]`
 
 `[VISUAL: diagrams/primary-secondary-wood.svg]`
 
