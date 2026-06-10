@@ -42,7 +42,7 @@
 | HOO-5 | Maker tag or patent-stamped hardware | Macro | Dating, attribution | Owner photo or CC0 link | NEEDED |
 | HOO-6 | Ant-proof caster | Macro | Period detail | Owner photo or Claude SVG | NEEDED |
 | HOO-7 | Hoosier "anatomy" labeled diagram | Schematic front | Teaching overview | Owner final art | **HAVE** (owner-supplied; held owner-side / GitHub upload pending) |
-| HOO-8 | Real-Hoosier-or-cupboard decision tree | n/a | Teaching | Claude diagram (Mermaid) | DRAFTED (in chapter) |
+| HOO-8 | Pantry-vs-Hoosier comparison + decision tree (full page) | Full page | Teaching | Owner final art | **HAVE** (owner-supplied; GitHub upload pending) |
 
 ## Chapter: Roll-Top and Cylinder Desk
 | ID | Shows | View | Purpose | Format | Status |
