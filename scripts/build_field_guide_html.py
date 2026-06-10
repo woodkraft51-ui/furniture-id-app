@@ -273,7 +273,7 @@ def build_cover():
     return ('<section class="cover">'
             '<h1>A Field Guide to American Furniture<br>1840 to 1940</h1>'
             '<div class="rule"></div>'
-            '<div class="sub">Identification, Dating &amp; Valuation of the Antiques You&rsquo;ll Actually Find</div>'
+            '<div class="sub">Identification &amp; Dating of the Antiques You&rsquo;ll Actually Find</div>'
             '<div class="sub" style="margin-top:24px;font-size:12px">New Creations Woodcraft</div>'
             '</section>')
 
@@ -371,7 +371,7 @@ body{padding-top:46px}
 
 HTML = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>A Field Guide to American Furniture: Identification, Dating &amp; Valuation, 1840 to 1940</title>
+<title>A Field Guide to American Furniture: Identification &amp; Dating, 1840 to 1940</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora&family=Barlow+Semi+Condensed:wght@400;600&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
 <div id="bar">

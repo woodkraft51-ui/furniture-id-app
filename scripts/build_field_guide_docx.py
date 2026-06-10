@@ -191,7 +191,7 @@ else:
     t=doc.add_paragraph(); t.alignment=WD_ALIGN_PARAGRAPH.CENTER
     r=t.add_run("A Field Guide to American Furniture, 1840 to 1940"); r.bold=True; r.font.size=Pt(22)
     sb=doc.add_paragraph(); sb.alignment=WD_ALIGN_PARAGRAPH.CENTER
-    r=sb.add_run("Identification, Dating & Valuation of the Antiques You'll Actually Find"); r.italic=True; r.font.size=Pt(13)
+    r=sb.add_run("Identification & Dating of the Antiques You'll Actually Find"); r.italic=True; r.font.size=Pt(13)
 doc.add_page_break()
 
 for title, files in SECTIONS:
