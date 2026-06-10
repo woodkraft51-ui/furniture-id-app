@@ -37,12 +37,7 @@ Then ask one question that decides value more than any other: **are the rockers 
 
 ## Do not confuse it with
 
-| Feature seen | Likely type |
-|---|---|
-| Curved wood runners under the legs | Boston, Windsor, ladderback, or pressed-back rocker |
-| Springs over a stationary base | Platform or spring rocker |
-| Stamped design in an oak crest | Pressed-back rocker, c. 1890 to 1910 |
-| Tall upholstered padded back and frame | Upholstered parlor (Lincoln) rocker |
+`[VISUAL: the rocker lookalikes table, from diagrams/rocker-lookalikes.png]`
 
 ## What hurts the value
 - **Replaced or added rockers**, or a botched runner repair.
