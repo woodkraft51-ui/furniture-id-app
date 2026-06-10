@@ -43,16 +43,7 @@ Style still matters, for naming the look and the market, just not for proving th
 
 This is the window the guide covers, and these are the looks you will meet. Use it to name a style, then date the piece by construction.
 
-| Style | Rough years | What it looks like |
-|---|---|---|
-| Late Empire / Gothic Revival | 1840s | Heavy scrolled Empire, or pointed-arch Gothic accents |
-| Rococo Revival | 1845 to 1865 | Carved crests, grapes and roses, serpentine curves, cabriole legs |
-| Renaissance Revival | 1865 to 1885 | Architectural crests, burl panels, incised lines, medallions |
-| Eastlake / Aesthetic | 1875 to 1900 | Rectilinear, shallow incised geometric carving, ebonized accents |
-| Golden Oak era | 1890 to 1915 | Quartersawn oak, machine carving, claw feet, curved glass |
-| Mission / Arts and Crafts | 1900 to 1925 | Rectilinear oak, exposed joinery, honest construction |
-| Colonial Revival | 1880 to 1940 | Reproductions of earlier colonial and Federal forms |
-| Art Deco / Waterfall | 1925 to 1945 | Streamlined curves, rounded edges, bookmatched veneer |
+`[VISUAL: the furniture style timeline, from diagrams/style-timeline.png]`
 
 Remember the lag: private bedroom furniture and rural and Southern production trail urban fashion, sometimes by a decade or more. A plain painted piece can look older than it is.
 

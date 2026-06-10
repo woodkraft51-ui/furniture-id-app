@@ -102,9 +102,12 @@ def repl_placeholder(line):
     if kind == "LAYOUT":
         return f'<div class="ph">{html.escape(val)}</div>'
     if kind == "VISUAL":
-        mref = re.search(r'([\w/\-.]+\.(?:svg|md))', val)
+        mref = re.search(r'([\w/\-.]+\.(?:svg|md|png))', val)
         if mref:
             ref = mref.group(1)
+            if ref.endswith(".png"):
+                p = os.path.join(ROOT, ref)
+                return embed_png(p) if os.path.exists(p) else f'<div class="ph">image: {html.escape(ref)}</div>'
             if ref.endswith(".svg"): return inline_svg(ref)
             if ref.endswith(".md"):  return mermaid_from_md(ref)
         return f'<div class="ph">{html.escape(val)}</div>'

@@ -109,7 +109,7 @@ def placeholder(line):
         p=doc.add_paragraph(); p.alignment=WD_ALIGN_PARAGRAPH.CENTER
         r=p.add_run("[ HERO PHOTO TO COME — "+val+" ]"); r.italic=True; r.font.color.rgb=GRY; r.font.size=Pt(10)
     elif kind=="VISUAL":
-        mref=re.search(r'([\w/\-.]+)\.(svg|md)', val)
+        mref=re.search(r'([\w/\-.]+)\.(svg|md|png)', val)
         if not (mref and add_png(os.path.basename(mref.group(1)))):
             p=doc.add_paragraph(); r=p.add_run("[ Decision tree — see the diagram file ]"); r.italic=True; r.font.color.rgb=GRY
     elif kind=="LAYOUT":
