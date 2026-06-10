@@ -230,7 +230,7 @@
 |---|---|---|---|---|---|
 | BED-1 | Wooden bedstead, head and foot | Front | Hero | Owner photo | NEEDED |
 | BED-2 | Rail-to-post joint and hardware | Macro | Construction and alteration | Owner photo | NEEDED |
-| BED-3 | Subtype silhouettes: four-poster, sleigh, spool, panel | Side by side | Visual key | Claude SVG | DRAFTED (`diagrams/bedstead-subtypes.svg`) |
+| BED-3 | Subtype silhouettes: four-poster, sleigh, spool, panel | Side by side | Visual key | Owner final art | **HAVE** (owner-supplied; **FIX label "Farm-poster" -> "Four-poster"**; GitHub upload pending) |
 
 ## Chapter: Telephone Stand
 | ID | Shows | View | Purpose | Format | Status |
