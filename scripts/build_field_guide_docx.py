@@ -31,7 +31,7 @@ SECTIONS = [
         "atlases/finishes.md","atlases/glossary.md"]),
 ]
 CHAPTER_PLATES = {
-    "phase1b-sample-chapter-windsor.md":["windsor-back-types"],"chapters/rocking-chair.md":["rocker-types"],
+    "chapters/rocking-chair.md":["rocker-types"],
     "chapters/wing-chair.md":["legs-by-period"],"chapters/victorian-sofa.md":["victorian-sofa-silhouettes"],
     "chapters/gateleg-table.md":["turned-leg-types"],"chapters/parlor-table.md":["table-base-styles"],
     "chapters/drop-leaf-table.md":["drop-leaf-supports"],"chapters/blanket-chest.md":["blanket-chest-feet"],

@@ -117,7 +117,6 @@ def repl_placeholder(line):
 
 # diagrams to drop into each chapter (they are listed only in the stripped illustration tables)
 CHAPTER_PLATES = {
-    "phase1b-sample-chapter-windsor.md":["diagrams/windsor-back-types.svg"],
     "chapters/rocking-chair.md":["diagrams/rocker-types.svg"],
     "chapters/wing-chair.md":["diagrams/legs-by-period.svg"],
     "chapters/victorian-sofa.md":["diagrams/victorian-sofa-silhouettes.svg"],
