@@ -49,11 +49,11 @@ Remember the lag: private bedroom furniture and rural and Southern production tr
 
 ## The four Method diagrams
 
-These live here in Part I and are referenced throughout the book:
+Four diagrams carry the Method, and you will meet them again throughout the book:
 
-- **Period or reproduction** decision tree: `diagrams/period-or-reproduction.md`
-- **Three nails, three eras**: `diagrams/fasteners-nail-types.svg`
-- **Hand-cut vs machine-cut dovetail**: `diagrams/joinery-dovetails.svg`
-- **Slotted vs Phillips screw**: `diagrams/fasteners-screws.svg`
+- The **period-or-reproduction** decision tree
+- **Three nails, three eras** (hand-wrought, cut, and wire)
+- **Hand-cut vs machine-cut dovetails**
+- **Slotted vs Phillips screws**
 
 The full detail behind each lives in the Part III atlases.
