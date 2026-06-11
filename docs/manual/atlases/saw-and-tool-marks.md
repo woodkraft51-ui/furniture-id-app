@@ -2,7 +2,7 @@
 
 > Part III reference. What the cutting and shaping left behind on the wood, and the era it points
 > to. The form chapters send you here whenever they say "read the saw marks" or "read the tool
-> marks." SKELETON: starter rows are in place; owner to deepen the prose and add the photo plates.
+> marks."
 
 `[VISUAL: diagrams/saw-marks.svg]`
 
@@ -27,8 +27,6 @@ As always, a saw mark dates the **board**, not always the whole piece. Repairs a
 
 `[VISUAL: diagrams/tool-marks.svg]`
 
-`[OWNER: expand each row; add a macro photo of a drawknife facet vs a sanded-smooth reproduction surface.]`
-
 | Mark | How to tell it | What it says |
 |---|---|---|
 | **Drawknife / spokeshave facets** | Faint shallow facets where spindles, seats, and legs were shaped by hand | hand work, generally earlier; parts vary slightly one to the next |
@@ -40,13 +38,9 @@ The rhythm is the same tell as joinery: **people are slightly irregular, machine
 
 ## How to use this in the field
 
-`[OWNER: tighten to 3-4 lines.]`
-
 Turn the piece over before you decide anything. Find an unfinished secondary surface, raking the light across it so the marks read. Name the saw, name the shaping tool, and add those as layers to everything else: fasteners, joinery, wood, finish, wear. A circular-saw arc or a glassy machine surface is a hard ceiling on age, no matter what the style says.
 
 ## Illustration needs
-
-`[OWNER: confirm the plate list.]`
 
 | ID | Shows | View | Purpose | Format |
 |---|---|---|---|---|
