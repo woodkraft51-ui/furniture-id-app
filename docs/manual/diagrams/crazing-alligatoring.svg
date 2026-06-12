@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 290" font-family="Georgia, serif">
+  <rect width="840" height="290" fill="#F5EFE6"/>
+  <rect width="840" height="40" fill="#C9A86A"/>
+  <text x="420" y="27" text-anchor="middle" font-size="19" font-weight="bold" fill="#3A2E26" letter-spacing="1.5">HONEST SIGNS OF AGE · CRAZING AND ALLIGATORING</text>
+  <rect x="40" y="78" width="340" height="150" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <rect x="460" y="78" width="340" height="150" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <!-- fine crazing: dense fine network -->
+  <g stroke="#3A2E26" stroke-width="0.6" fill="none" opacity="0.85">
+    <path d="M60 90 L78 110 L70 134 L92 150 L84 176 L104 200"/>
+    <path d="M100 86 L116 106 L108 130 L128 148 L122 174 L140 198"/>
+    <path d="M150 88 L168 108 L160 132 L182 150 L174 176 L196 200"/>
+    <path d="M210 86 L226 108 L220 132 L240 150 L232 176 L252 198"/>
+    <path d="M270 88 L286 110 L278 134 L300 150 L292 176 L312 200"/>
+    <path d="M330 88 L348 108 L340 134 L360 152 L352 178"/>
+    <path d="M60 110 H360 M70 140 H352 M64 170 H358 M78 196 H348"/>
+    <path d="M60 124 L100 120 M120 128 L160 122 M180 130 L220 124 M240 132 L300 126 M320 130 L360 126"/>
+  </g>
+  <!-- alligatoring: deep blocky cells -->
+  <g stroke="#3A2E26" stroke-width="1.7" fill="none">
+    <path d="M460 122 H800 M460 168 H800"/>
+    <path d="M504 78 V228 M560 78 V228 M616 78 V228 M672 78 V228 M728 78 V228"/>
+    <path d="M482 78 L500 122 L478 168 L496 228"/>
+    <path d="M536 78 L520 122 L540 168 L524 228"/>
+    <path d="M592 78 L606 122 L588 168 L604 228"/>
+    <path d="M648 78 L632 122 L652 168 L636 228"/>
+    <path d="M704 78 L720 122 L700 168 L716 228"/>
+    <path d="M760 78 L744 122 L764 168 L748 228"/>
+  </g>
+  <g font-size="14.5" fill="#3A2E26" font-weight="bold" text-anchor="middle">
+    <text x="210" y="252">Crazing (shellac)</text>
+    <text x="630" y="252">Alligatoring (varnish)</text>
+  </g>
+  <g font-size="12.5" fill="#3E6B66" text-anchor="middle">
+    <text x="210" y="272">fine network of cracks</text>
+    <text x="630" y="272">deep, blocky cracking</text>
+  </g>
+  <text x="420" y="288" text-anchor="middle" font-size="11.5" fill="#9B4B3B" font-style="italic">Hard to fake well; honest crazing and patina support age and value. Do not strip an original surface.</text>
+</svg>

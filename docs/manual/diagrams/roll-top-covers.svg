@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="320" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Roll-top versus cylinder cover</text>
+
+  <!-- Tambour (slats) -->
+  <g fill="none" stroke="#3A2E26" stroke-width="2.5">
+    <path d="M90,230 L90,130 Q90,80 160,80 L260,80" fill="#C9A86A"/>
+  </g>
+  <g stroke="#3A2E26" stroke-width="1.5">
+    <line x1="98" y1="225" x2="98" y2="132"/>
+    <line x1="108" y1="222" x2="108" y2="120"/>
+    <line x1="118" y1="220" x2="120" y2="110"/>
+    <line x1="130" y1="218" x2="135" y2="100"/>
+    <line x1="145" y1="216" x2="155" y2="90"/>
+    <line x1="165" y1="214" x2="180" y2="84"/>
+    <line x1="190" y1="82" x2="190" y2="82"/>
+    <line x1="200" y1="80" x2="230" y2="80"/>
+  </g>
+  <text x="175" y="270" text-anchor="middle" font-size="15" fill="#3A2E26" font-weight="bold">Roll-top (tambour)</text>
+  <text x="175" y="289" text-anchor="middle" font-size="12" fill="#3A2E26">many thin slats on canvas</text>
+
+  <!-- Cylinder (solid curve) -->
+  <path d="M470,230 L470,140 Q470,80 540,80 L640,80 L640,92 L548,92 Q482,92 482,150 L482,230 Z" fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="555" y="270" text-anchor="middle" font-size="15" fill="#3A2E26" font-weight="bold">Cylinder</text>
+  <text x="555" y="289" text-anchor="middle" font-size="12" fill="#3A2E26">one solid curved panel</text>
+</svg>

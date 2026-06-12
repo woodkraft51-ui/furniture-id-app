@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="760" height="340" fill="#F5EFE6"/>
+  <text x="380" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Wooden bedstead subtypes</text>
+  <text x="380" y="56" text-anchor="middle" font-size="13" fill="#3A2E26">Recognize the head and foot.</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Four-poster -->
+    <rect x="70" y="110" width="10" height="140"/>
+    <rect x="160" y="110" width="10" height="140"/>
+    <circle cx="75" cy="104" r="8"/>
+    <circle cx="165" cy="104" r="8"/>
+    <rect x="80" y="150" width="80" height="40"/>
+
+    <!-- Sleigh -->
+    <path d="M250,200 q-10,-70 40,-70 q40,0 40,40 L330,200 Z"/>
+
+    <!-- Spool -->
+    <g>
+      <circle cx="470" cy="120" r="9"/>
+      <circle cx="470" cy="142" r="9"/>
+      <circle cx="470" cy="164" r="9"/>
+      <circle cx="470" cy="186" r="9"/>
+      <circle cx="470" cy="208" r="9"/>
+      <circle cx="560" cy="120" r="9"/>
+      <circle cx="560" cy="142" r="9"/>
+      <circle cx="560" cy="164" r="9"/>
+      <circle cx="560" cy="186" r="9"/>
+      <circle cx="560" cy="208" r="9"/>
+      <rect x="479" y="150" width="72" height="30"/>
+    </g>
+
+    <!-- Panel -->
+    <rect x="640" y="120" width="90" height="100"/>
+    <rect x="652" y="132" width="66" height="76" fill="#F5EFE6"/>
+  </g>
+
+  <g text-anchor="middle" fill="#3A2E26" font-size="14" font-weight="bold">
+    <text x="120" y="280">Four-poster</text>
+    <text x="290" y="280">Sleigh</text>
+    <text x="515" y="280">Spool</text>
+    <text x="685" y="280">Panel</text>
+  </g>
+</svg>

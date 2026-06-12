@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="330" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Screws: slotted versus Phillips</text>
+
+  <!-- Slotted -->
+  <circle cx="200" cy="150" r="72" fill="#C9A86A" stroke="#3A2E26" stroke-width="3"/>
+  <line x1="138" y1="150" x2="262" y2="150" stroke="#3A2E26" stroke-width="12" stroke-linecap="round"/>
+  <text x="200" y="262" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Slotted</text>
+  <text x="200" y="284" text-anchor="middle" font-size="13" fill="#3A2E26">the only kind before the 1930s</text>
+
+  <!-- Phillips -->
+  <circle cx="520" cy="150" r="72" fill="#C9A86A" stroke="#3A2E26" stroke-width="3"/>
+  <line x1="458" y1="150" x2="582" y2="150" stroke="#3A2E26" stroke-width="12" stroke-linecap="round"/>
+  <line x1="520" y1="88" x2="520" y2="212" stroke="#3A2E26" stroke-width="12" stroke-linecap="round"/>
+  <text x="520" y="262" text-anchor="middle" font-size="16" fill="#3A2E26" font-weight="bold">Phillips, cross slot</text>
+  <text x="520" y="284" text-anchor="middle" font-size="13" fill="#3A2E26">after the 1930s, a modern tell</text>
+
+  <text x="360" y="314" text-anchor="middle" font-size="12" fill="#3A2E26">A Phillips screw in an original joint means that part is modern.</text>
+</svg>

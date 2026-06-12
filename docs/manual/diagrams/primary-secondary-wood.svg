@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 320" font-family="Georgia, serif">
+  <rect width="840" height="320" fill="#F5EFE6"/>
+  <rect width="840" height="40" fill="#C9A86A"/>
+  <text x="420" y="27" text-anchor="middle" font-size="19" font-weight="bold" fill="#3A2E26" letter-spacing="1.5">PRIMARY VS SECONDARY WOOD · ONE DRAWER</text>
+  <!-- isometric-ish open drawer -->
+  <g stroke="#3A2E26" stroke-width="1.6" fill="none">
+    <!-- drawer front (show wood) -->
+    <polygon points="120,150 320,120 320,250 120,280" fill="#C9A86A" fill-opacity="0.55"/>
+    <!-- left side (secondary) -->
+    <polygon points="320,120 560,150 560,280 320,250" fill="#FBF7F0"/>
+    <!-- back -->
+    <line x1="560" y1="150" x2="640" y2="138"/>
+    <!-- bottom (secondary) -->
+    <polygon points="120,280 320,250 560,280 360,312" fill="#F0E7D4"/>
+  </g>
+  <!-- secondary grain hint on side -->
+  <g stroke="#C9A86A" stroke-width="1">
+    <line x1="350" y1="138" x2="350" y2="262"/><line x1="390" y1="143" x2="390" y2="266"/><line x1="430" y1="148" x2="430" y2="270"/><line x1="470" y1="152" x2="470" y2="274"/><line x1="510" y1="157" x2="510" y2="278"/>
+  </g>
+  <!-- pull on front -->
+  <circle cx="220" cy="205" r="9" fill="none" stroke="#3A2E26" stroke-width="1.6"/>
+  <!-- callouts -->
+  <g stroke="#3E6B66" stroke-width="1.2">
+    <line x1="220" y1="120" x2="220" y2="150"/>
+    <line x1="440" y1="120" x2="440" y2="150"/>
+    <line x1="360" y1="312" x2="360" y2="300"/>
+  </g>
+  <g font-size="14" font-weight="bold" text-anchor="middle">
+    <text x="220" y="112" fill="#3A2E26">PRIMARY (show wood)</text>
+    <text x="470" y="112" fill="#3A2E26">SECONDARY (sides, back)</text>
+  </g>
+  <g font-size="13" fill="#3E6B66" text-anchor="middle">
+    <text x="220" y="300">walnut, oak, mahogany, cherry</text>
+    <text x="600" y="210">pine, poplar, gum, chestnut</text>
+  </g>
+  <text x="420" y="306" text-anchor="middle" font-size="12" fill="#9B4B3B" font-style="italic">Different woods inside is honest old work; one uniform wood or plywood leans modern.</text>
+</svg>
