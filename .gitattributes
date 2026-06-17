@@ -1,0 +1,4 @@
+# Large Word masters are stored via Git LFS so they can exceed GitHub's
+# 100MB per-file push limit. GitHub Desktop bundles Git LFS and handles
+# this automatically once this file is present.
+*.docx filter=lfs diff=lfs merge=lfs -text
