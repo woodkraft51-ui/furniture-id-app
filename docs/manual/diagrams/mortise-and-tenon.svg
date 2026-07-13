@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="360" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">The mortise-and-tenon joint</text>
+  <text x="360" y="56" text-anchor="middle" font-size="13" fill="#3A2E26">A tongue (tenon) fits a slot (mortise). The backbone of frames and chairs.</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Rail with tenon (left) -->
+    <rect x="90" y="150" width="160" height="60"/>
+    <rect x="250" y="168" width="60" height="24"/>
+  </g>
+  <!-- peg through tenon -->
+  <circle cx="280" cy="180" r="6" fill="#3A2E26"/>
+  <text x="200" y="240" text-anchor="middle" font-size="13" fill="#3A2E26">rail with tenon (and peg)</text>
+
+  <!-- arrow -->
+  <line x1="330" y1="180" x2="400" y2="180" stroke="#3A2E26" stroke-width="3"/>
+  <polygon points="400,180 388,173 388,187" fill="#3A2E26"/>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Post with mortise (right) -->
+    <rect x="470" y="100" width="70" height="180"/>
+    <rect x="470" y="168" width="34" height="24" fill="#F5EFE6"/>
+  </g>
+  <text x="505" y="305" text-anchor="middle" font-size="13" fill="#3A2E26">post with mortise (the slot)</text>
+
+  <text x="360" y="338" text-anchor="middle" font-size="12" fill="#3A2E26">A wedged or pegged tenon reads earlier. All-dowel or biscuit joints read later.</text>
+</svg>

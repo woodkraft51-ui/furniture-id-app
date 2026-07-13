@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="340" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Table base styles</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Pedestal / tripod -->
+    <ellipse cx="140" cy="90" rx="78" ry="13"/>
+    <rect x="132" y="96" width="16" height="120"/>
+    <ellipse cx="140" cy="120" rx="15" ry="9"/>
+    <path d="M140,216 L86,278 L100,284 L140,232 Z"/>
+    <path d="M140,216 L194,278 L180,284 L140,232 Z"/>
+    <path d="M140,220 L140,290 L150,290 L150,224 Z"/>
+
+    <!-- Four-leg cabriole -->
+    <ellipse cx="360" cy="90" rx="78" ry="13"/>
+    <rect x="290" y="96" width="140" height="14"/>
+    <path d="M300,110 C286,160 290,220 306,272 L316,272 C326,220 318,160 312,110 Z"/>
+    <path d="M408,110 C422,160 418,220 402,272 L412,272 C422,220 432,160 420,110 Z"/>
+
+    <!-- Turned legs -->
+    <ellipse cx="580" cy="90" rx="78" ry="13"/>
+    <rect x="510" y="96" width="140" height="14"/>
+    <rect x="516" y="110" width="12" height="165"/>
+    <ellipse cx="522" cy="150" rx="11" ry="7"/>
+    <ellipse cx="522" cy="200" rx="11" ry="7"/>
+    <rect x="632" y="110" width="12" height="165"/>
+    <ellipse cx="638" cy="150" rx="11" ry="7"/>
+    <ellipse cx="638" cy="200" rx="11" ry="7"/>
+  </g>
+
+  <g text-anchor="middle" fill="#3A2E26">
+    <text x="140" y="312" font-size="15" font-weight="bold">Pedestal / tripod</text>
+    <text x="360" y="312" font-size="15" font-weight="bold">Four-leg cabriole</text>
+    <text x="580" y="312" font-size="15" font-weight="bold">Turned legs</text>
+  </g>
+</svg>

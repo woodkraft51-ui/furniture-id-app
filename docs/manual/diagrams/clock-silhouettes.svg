@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="420" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Tall-case versus shelf clock</text>
+  <text x="360" y="56" text-anchor="middle" font-size="13" fill="#3A2E26">Where does it sit? Floor, or shelf?</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Tall-case clock (left) -->
+    <!-- bonnet -->
+    <path d="M150,90 q40,-30 80,0 L230,140 L150,140 Z"/>
+    <circle cx="190" cy="118" r="16" fill="#F5EFE6"/>
+    <!-- trunk -->
+    <rect x="162" y="140" width="56" height="180"/>
+    <circle cx="190" cy="230" r="10" fill="#F5EFE6"/>
+    <!-- base -->
+    <rect x="150" y="320" width="80" height="50"/>
+  </g>
+  <text x="190" y="395" text-anchor="middle" font-size="15" fill="#3A2E26" font-weight="bold">Tall-case clock</text>
+  <text x="190" y="413" text-anchor="middle" font-size="12" fill="#3A2E26">floor-standing, weight-driven</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Shelf clock (right) -->
+    <rect x="450" y="250" width="150" height="110"/>
+    <path d="M450,250 q75,-50 150,0 Z"/>
+    <circle cx="525" cy="300" r="34" fill="#F5EFE6"/>
+  </g>
+  <text x="525" y="395" text-anchor="middle" font-size="15" fill="#3A2E26" font-weight="bold">Shelf / mantel clock</text>
+  <text x="525" y="413" text-anchor="middle" font-size="12" fill="#3A2E26">surface-set, spring-driven</text>
+</svg>

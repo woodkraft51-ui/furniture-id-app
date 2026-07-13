@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 300" font-family="Georgia, serif">
+  <rect width="840" height="300" fill="#F5EFE6"/>
+  <rect width="840" height="40" fill="#C9A86A"/>
+  <text x="420" y="27" text-anchor="middle" font-size="19" font-weight="bold" fill="#3A2E26" letter-spacing="1.5">TOOL MARKS · HAND VS MACHINE SHAPING</text>
+  <rect x="30" y="80" width="220" height="150" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <rect x="310" y="80" width="220" height="150" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <rect x="590" y="80" width="220" height="150" fill="#FBF7F0" stroke="#3A2E26" stroke-width="1.4"/>
+  <!-- drawknife facets: short overlapping scoops -->
+  <g stroke="#3A2E26" stroke-width="1.3" fill="none">
+    <path d="M45 110 q18 -12 36 0"/><path d="M85 110 q18 -10 36 0"/><path d="M125 108 q18 -12 36 0"/><path d="M165 112 q18 -11 36 0"/><path d="M205 110 q18 -12 30 0"/>
+    <path d="M50 150 q18 -12 36 0"/><path d="M92 148 q18 -11 36 0"/><path d="M134 151 q18 -12 36 0"/><path d="M176 149 q18 -11 32 0"/>
+    <path d="M45 190 q18 -12 36 0"/><path d="M88 191 q18 -12 36 0"/><path d="M132 189 q18 -11 36 0"/><path d="M176 191 q18 -12 32 0"/>
+  </g>
+  <!-- hand-plane tracks: long shallow even scallops -->
+  <g stroke="#3A2E26" stroke-width="1.2" fill="none">
+    <path d="M320 112 q105 -14 210 0"/><path d="M320 138 q105 -14 210 0"/><path d="M320 164 q105 -14 210 0"/><path d="M320 190 q105 -14 210 0"/>
+  </g>
+  <!-- machine: glassy smooth, faint uniform hatch -->
+  <g stroke="#C9A86A" stroke-width="1">
+    <line x1="600" y1="92" x2="800" y2="92"/><line x1="600" y1="108" x2="800" y2="108"/><line x1="600" y1="124" x2="800" y2="124"/><line x1="600" y1="140" x2="800" y2="140"/><line x1="600" y1="156" x2="800" y2="156"/><line x1="600" y1="172" x2="800" y2="172"/><line x1="600" y1="188" x2="800" y2="188"/><line x1="600" y1="204" x2="800" y2="204"/><line x1="600" y1="220" x2="800" y2="220"/>
+  </g>
+  <g font-size="15" fill="#3A2E26" font-weight="bold" text-anchor="middle">
+    <text x="140" y="254">Drawknife facets</text>
+    <text x="420" y="254">Hand-plane tracks</text>
+    <text x="700" y="254">Machine-smooth</text>
+  </g>
+  <g font-size="13" fill="#3E6B66" text-anchor="middle">
+    <text x="140" y="274">hand work, slightly uneven</text>
+    <text x="420" y="274">shallow even scallops</text>
+    <text x="700" y="274">uniform, sanded glassy</text>
+  </g>
+  <text x="420" y="294" text-anchor="middle" font-size="11.5" fill="#9B4B3B" font-style="italic">People are slightly irregular; machines are perfect.</text>
+</svg>

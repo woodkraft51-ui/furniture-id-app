@@ -330,6 +330,32 @@ type Phase6Result = {
   dating_overlap?: DatingOverlapData;
 };
 
+// ── Canonical report object ─────────────────────────────────────────────────
+// The single authoritative, structured conclusion for one analysis. Assembled
+// from the already-reconciled phase outputs (p2 dating, p3 form/style/subtype,
+// p5/p6 findings, p6 valuation). BOTH the developer trace and the user-facing
+// report render from THIS object; the user layer no longer re-derives or
+// invents. "One analysis, one conclusion, two presentation modes."
+export type CanonicalReport = {
+  identification: string;              // authoritative form name (aliases stripped)
+  also_called: string[];               // "(also commonly called: …)" aliases, split out
+  subtype: string | null;              // p3.subtype.subtype_name
+  style: string | null;                // p3.style_attribution.name ONLY (no context fallback)
+  date_range: string;                  // p2.range
+  confidence_identification: string;   // p3.confidence
+  confidence_dating: string;           // p2.confidence
+  identified: boolean;                 // false ⇒ honest "couldn't confidently identify" state
+  observed_evidence: string[];         // what the app actually saw (authority-ranked)
+  supporting_evidence: string[];       // p6.supported_findings (factual; no invented prose)
+  conflicting_evidence: string[];      // p6.tentative_findings
+  next_best_evidence: string[];        // p6.more_evidence_needed
+  cautions: string[];                  // p2.limitations
+  alternatives: string[];              // p3.alternatives (secondary; the renderer labels them)
+  value_range: string | null;          // engine fieldValue.display (quick value)
+  valuation: any;                      // p6.valuation (full breakdown, or insufficient-evidence note)
+  recommendation: { verdict: string; label: string; reasoning: string } | null;
+};
+
 type ClaudeResult =
   | { ok: true; parsed: any; raw: string }
   | { ok: false; error: any };
@@ -7651,6 +7677,108 @@ export function matchMakerMarks(rawText: string, observations: any[] = []) {
     };
   });
 }
+
+// Authority-ranked "what the app observed" selection. Moved engine-side (was
+// re-implemented in the page render layer) so BOTH reports show the SAME list.
+// Selection and ordering only — no interpretive prose is invented here.
+function selectObservedEvidence(
+  digest: EvidenceDigest | undefined,
+  p2: Phase2Result,
+  p3: Phase3Result,
+  p4: Phase4Result
+): string[] {
+  const observations: any[] = Array.isArray((digest as any)?.observations)
+    ? (digest as any).observations
+    : [];
+  if (!observations.length) {
+    const fallback: string[] = [];
+    if (Array.isArray(p3?.support)) fallback.push(...p3.support);
+    if (Array.isArray(p2?.support)) fallback.push(...p2.support);
+    const drivers = (p4 as any)?.confidence_drivers?.increased;
+    if (Array.isArray(drivers)) fallback.push(...drivers);
+    return Array.from(
+      new Set(fallback.map((s) => String(s || "").trim()).filter(Boolean))
+    ).slice(0, 10);
+  }
+  const priority: Record<string, number> = {
+    construction: 1, joinery: 2, toolmarks: 3, fasteners: 4,
+    materials: 5, material: 5, structure: 6,
+    hardware: 7, function: 8, form: 9,
+    finish: 10, alteration: 10, condition: 11,
+    style: 12, context: 13,
+  };
+  return Array.from(
+    new Set(
+      [...observations]
+        .filter((o: any) => String(o?.description || "").trim())
+        .sort((a: any, b: any) => {
+          const pa = priority[String(a?.type || "context")] || 10;
+          const pb = priority[String(b?.type || "context")] || 10;
+          if (pa !== pb) return pa - pb;
+          return Number(b?.confidence || 0) - Number(a?.confidence || 0);
+        })
+        .map((o: any) => String(o.description).trim())
+    )
+  ).slice(0, 10);
+}
+
+// Assemble the single authoritative conclusion object from reconciled phase
+// outputs. Pure data selection — no model call, no re-classification. The
+// aliases tail is split off the form name here so no renderer has to regex it.
+function buildCanonicalReport(
+  p2: Phase2Result,
+  p3: Phase3Result,
+  p4: Phase4Result,
+  p5: Phase5Result,
+  p6: Phase6Result,
+  digest: EvidenceDigest | undefined,
+  fieldValue: any,
+  recommendation: { recommendation: string; label: string; explanation: string } | null
+): CanonicalReport {
+  const rawForm = p3.display_form || p3.form || "Unknown";
+  const aliasMatch = rawForm.match(/\s*\(also commonly called:\s*([^)]*)\)\s*$/i);
+  const identification =
+    aliasMatch && typeof aliasMatch.index === "number"
+      ? rawForm.slice(0, aliasMatch.index).trim()
+      : rawForm.trim();
+  const also_called = aliasMatch
+    ? aliasMatch[1].split(/[;,]/).map((s) => s.trim()).filter(Boolean)
+    : [];
+
+  // Honest identification gate: a fallback_form sentinel or a bare "Unknown"
+  // means we could NOT confidently identify. The renderer then shows the honest
+  // "couldn't identify" state instead of asserting a false conclusion.
+  const hasFallback = (digest as any)?.clue_keys?.includes?.("fallback_form") ?? false;
+  const identified =
+    !hasFallback && !!identification && identification.toLowerCase() !== "unknown";
+
+  const valuation = (p6 as any).valuation ?? null;
+  const value_range =
+    valuation && !valuation.insufficient_evidence ? (fieldValue?.display ?? null) : null;
+
+  return {
+    identification,
+    also_called,
+    subtype: p3.subtype?.subtype_name ?? null,
+    style: p3.style_attribution?.name ?? null,
+    date_range: p2.range || "Unknown",
+    confidence_identification: String(p3.confidence ?? "Inconclusive"),
+    confidence_dating: String(p2.confidence ?? "Inconclusive"),
+    identified,
+    observed_evidence: selectObservedEvidence(digest, p2, p3, p4),
+    supporting_evidence: Array.isArray(p6.supported_findings) ? p6.supported_findings : [],
+    conflicting_evidence: Array.isArray(p6.tentative_findings) ? p6.tentative_findings : [],
+    next_best_evidence: Array.isArray(p6.more_evidence_needed) ? p6.more_evidence_needed : [],
+    cautions: Array.isArray(p2.limitations) ? p2.limitations : [],
+    alternatives: Array.isArray(p3.alternatives) ? p3.alternatives : [],
+    value_range,
+    valuation,
+    recommendation: recommendation
+      ? { verdict: recommendation.recommendation, label: recommendation.label, reasoning: recommendation.explanation }
+      : null,
+  };
+}
+
 export const PE = {
   async callClaude(
     system: string,
@@ -9896,6 +10024,10 @@ const recommendation = recommendationFromValue({
     observations: digest.observations,
     evidence_digest: digest,
     final_report: p6.summary,
+    // The single authoritative conclusion. Both the user report and the dev
+    // trace render from this — see CanonicalReport. Additive; nothing else in
+    // the return shape changed.
+    report_view: buildCanonicalReport(p2, p3, p4, p5, p6, digest, fieldValue, recommendation),
     field_scan: {
       identification: p3.display_form || p3.form,
       confidence: p3.confidence,

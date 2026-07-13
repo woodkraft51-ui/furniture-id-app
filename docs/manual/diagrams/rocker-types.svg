@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 340" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="920" height="340" fill="#F5EFE6"/>
+  <text x="460" y="32" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Rocker types, by what gives it away</text>
+
+  <g stroke="#3A2E26" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Boston: spindle back + crest, on rockers -->
+    <g transform="translate(120,60)">
+      <line x1="-45" y1="120" x2="40" y2="120"/>
+      <line x1="40" y1="120" x2="42" y2="50"/>
+      <line x1="-8" y1="50" x2="46" y2="50" stroke-width="6"/>
+      <line x1="6" y1="118" x2="10" y2="52"/>
+      <line x1="18" y1="118" x2="20" y2="52"/>
+      <line x1="30" y1="118" x2="31" y2="52"/>
+      <line x1="-45" y1="120" x2="-48" y2="195"/>
+      <line x1="40" y1="120" x2="44" y2="195"/>
+      <path d="M-60,195 Q-8,180 56,196"/>
+    </g>
+    <!-- Ladderback: horizontal slats -->
+    <g transform="translate(345,60)">
+      <line x1="-45" y1="120" x2="40" y2="120"/>
+      <line x1="40" y1="120" x2="42" y2="46"/>
+      <line x1="14" y1="120" x2="15" y2="50"/>
+      <line x1="15" y1="62" x2="42" y2="60" stroke-width="5"/>
+      <line x1="15" y1="82" x2="42" y2="80" stroke-width="5"/>
+      <line x1="15" y1="102" x2="42" y2="100" stroke-width="5"/>
+      <line x1="-45" y1="120" x2="-48" y2="195"/>
+      <line x1="40" y1="120" x2="44" y2="195"/>
+      <path d="M-60,195 Q-8,180 56,196"/>
+    </g>
+    <!-- Pressed-back: decorated crest -->
+    <g transform="translate(575,60)">
+      <line x1="-45" y1="120" x2="40" y2="120"/>
+      <line x1="40" y1="120" x2="42" y2="46"/>
+      <line x1="14" y1="120" x2="15" y2="50"/>
+      <rect x="13" y="46" width="32" height="22" fill="#C9A86A"/>
+      <line x1="22" y1="118" x2="24" y2="70"/>
+      <line x1="33" y1="118" x2="34" y2="70"/>
+      <line x1="-45" y1="120" x2="-48" y2="195"/>
+      <line x1="40" y1="120" x2="44" y2="195"/>
+      <path d="M-60,195 Q-8,180 56,196"/>
+    </g>
+    <!-- Platform: springs over a stationary base -->
+    <g transform="translate(800,60)">
+      <line x1="-45" y1="110" x2="40" y2="110"/>
+      <line x1="40" y1="110" x2="42" y2="46"/>
+      <line x1="-8" y1="50" x2="46" y2="50" stroke-width="6"/>
+      <line x1="10" y1="108" x2="13" y2="52"/>
+      <line x1="24" y1="108" x2="26" y2="52"/>
+      <path d="M-40,116 q8,16 16,0 q8,16 16,0 q8,16 16,0 q8,16 16,0" stroke-width="2"/>
+      <line x1="-50" y1="150" x2="50" y2="150" stroke-width="4"/>
+      <line x1="-44" y1="150" x2="-44" y2="195"/>
+      <line x1="44" y1="150" x2="44" y2="195"/>
+      <line x1="-52" y1="195" x2="52" y2="195" stroke-width="3"/>
+    </g>
+  </g>
+
+  <g text-anchor="middle" fill="#3A2E26">
+    <text x="120" y="250" font-size="15" font-weight="bold">Boston / Windsor</text>
+    <text x="120" y="269" font-size="12">spindles, on rockers</text>
+    <text x="345" y="250" font-size="15" font-weight="bold">Ladderback</text>
+    <text x="345" y="269" font-size="12">horizontal slats</text>
+    <text x="575" y="250" font-size="15" font-weight="bold">Pressed-back</text>
+    <text x="575" y="269" font-size="12">stamped oak crest</text>
+    <text x="800" y="250" font-size="15" font-weight="bold">Platform</text>
+    <text x="800" y="269" font-size="12">springs, fixed base</text>
+  </g>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="900" height="320" fill="#F5EFE6"/>
+  <text x="450" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Know a Windsor by its back</text>
+
+  <g stroke="#3A2E26" stroke-width="3" fill="none" stroke-linecap="round">
+    <!-- Sack-back: hoop over arm rail -->
+    <g transform="translate(70,70)">
+      <path d="M10,90 q40,-90 80,0" />
+      <line x1="0" y1="60" x2="100" y2="60"/>
+      <line x1="22" y1="62" x2="26" y2="6"/>
+      <line x1="38" y1="62" x2="40" y2="0"/>
+      <line x1="50" y1="62" x2="50" y2="-2"/>
+      <line x1="62" y1="62" x2="60" y2="0"/>
+      <line x1="78" y1="62" x2="74" y2="6"/>
+    </g>
+    <!-- Comb-back: tall spindles + crest comb -->
+    <g transform="translate(240,70)">
+      <line x1="6" y1="-10" x2="94" y2="-10"/>
+      <line x1="20" y1="90" x2="22" y2="-10"/>
+      <line x1="36" y1="90" x2="38" y2="-12"/>
+      <line x1="50" y1="90" x2="50" y2="-14"/>
+      <line x1="64" y1="90" x2="62" y2="-12"/>
+      <line x1="80" y1="90" x2="78" y2="-10"/>
+    </g>
+    <!-- Bow-back: arched bow -->
+    <g transform="translate(410,70)">
+      <path d="M6,90 q44,-110 88,0"/>
+      <line x1="24" y1="80" x2="34" y2="-6"/>
+      <line x1="42" y1="84" x2="46" y2="-20"/>
+      <line x1="58" y1="84" x2="54" y2="-20"/>
+      <line x1="76" y1="80" x2="66" y2="-6"/>
+    </g>
+    <!-- Fan-back: spindles flaring out -->
+    <g transform="translate(580,70)">
+      <path d="M2,-8 q48,-18 96,0"/>
+      <line x1="50" y1="90" x2="18" y2="-12"/>
+      <line x1="50" y1="90" x2="38" y2="-16"/>
+      <line x1="50" y1="90" x2="50" y2="-18"/>
+      <line x1="50" y1="90" x2="62" y2="-16"/>
+      <line x1="50" y1="90" x2="82" y2="-12"/>
+    </g>
+    <!-- Hoop-back: rounded hoop -->
+    <g transform="translate(750,70)">
+      <path d="M8,80 q42,-100 84,0"/>
+      <line x1="28" y1="78" x2="34" y2="0"/>
+      <line x1="50" y1="82" x2="50" y2="-14"/>
+      <line x1="72" y1="78" x2="66" y2="0"/>
+    </g>
+  </g>
+
+  <g text-anchor="middle" fill="#3A2E26" font-size="14" font-weight="bold">
+    <text x="120" y="210">Sack-back</text>
+    <text x="290" y="210">Comb-back</text>
+    <text x="460" y="210">Bow-back</text>
+    <text x="630" y="210">Fan-back</text>
+    <text x="800" y="210">Hoop-back</text>
+  </g>
+  <text x="450" y="270" text-anchor="middle" font-size="13" fill="#3A2E26">All share the Windsor rule: a plank seat with spindles and legs socketed into it.</text>
+</svg>

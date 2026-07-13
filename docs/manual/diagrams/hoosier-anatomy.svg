@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="540" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Anatomy of a Hoosier cabinet</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- upper case -->
+    <rect x="250" y="70" width="220" height="150"/>
+    <!-- flour bin (left upper) -->
+    <rect x="262" y="82" width="90" height="126"/>
+    <!-- tambour / spice (right upper) -->
+    <rect x="360" y="82" width="98" height="126"/>
+    <line x1="360" y1="100" x2="458" y2="100"/>
+    <line x1="360" y1="118" x2="458" y2="118"/>
+    <line x1="360" y1="136" x2="458" y2="136"/>
+    <!-- work surface -->
+    <rect x="240" y="220" width="240" height="22"/>
+    <!-- lower case -->
+    <rect x="250" y="242" width="220" height="210"/>
+    <rect x="262" y="254" width="90" height="40"/>
+    <rect x="360" y="254" width="98" height="40"/>
+    <rect x="262" y="300" width="196" height="140"/>
+    <line x1="360" y1="300" x2="360" y2="440"/>
+    <!-- legs -->
+    <rect x="258" y="452" width="14" height="40"/>
+    <rect x="448" y="452" width="14" height="40"/>
+    <ellipse cx="265" cy="496" rx="9" ry="6"/>
+    <ellipse cx="455" cy="496" rx="9" ry="6"/>
+  </g>
+
+  <!-- callouts -->
+  <g stroke="#3E6B66" stroke-width="2" fill="#3A2E26" font-size="13">
+    <line x1="262" y1="120" x2="150" y2="120"/>
+    <text x="146" y="124" text-anchor="end">flour bin and sifter</text>
+
+    <line x1="458" y1="118" x2="580" y2="110"/>
+    <text x="584" y="114" text-anchor="start">tambour door, spice rack</text>
+
+    <line x1="480" y1="231" x2="600" y2="231"/>
+    <text x="604" y="235" text-anchor="start">pull-out work surface</text>
+
+    <line x1="262" y1="274" x2="150" y2="274"/>
+    <text x="146" y="278" text-anchor="end">bread drawer</text>
+
+    <line x1="458" y1="274" x2="580" y2="280"/>
+    <text x="584" y="284" text-anchor="start">sugar bin</text>
+
+    <line x1="262" y1="380" x2="150" y2="390"/>
+    <text x="146" y="394" text-anchor="end">lower cabinet storage</text>
+
+    <line x1="265" y1="496" x2="180" y2="500"/>
+    <text x="176" y="504" text-anchor="end">ant-proof casters</text>
+  </g>
+</svg>

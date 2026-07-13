@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="720" height="300" fill="#F5EFE6"/>
+  <text x="360" y="34" text-anchor="middle" font-size="22" fill="#3A2E26" font-weight="bold">Blanket chest base feet</text>
+
+  <g fill="#C9A86A" stroke="#3A2E26" stroke-width="2.5" stroke-linejoin="round">
+    <!-- Bracket foot -->
+    <rect x="70" y="90" width="130" height="55"/>
+    <path d="M72,145 L72,205 L96,205 L96,168 Q100,148 118,146 Z"/>
+    <path d="M198,145 L198,205 L174,205 L174,168 Q170,148 152,146 Z"/>
+
+    <!-- Bun foot -->
+    <rect x="300" y="90" width="130" height="55"/>
+    <ellipse cx="320" cy="170" rx="18" ry="16"/>
+    <ellipse cx="410" cy="170" rx="18" ry="16"/>
+
+    <!-- Bootjack end -->
+    <path d="M560,90 L630,90 L630,205 L607,205 L595,178 L583,205 L560,205 Z"/>
+  </g>
+
+  <g text-anchor="middle" fill="#3A2E26">
+    <text x="135" y="245" font-size="15" font-weight="bold">Bracket foot</text>
+    <text x="135" y="264" font-size="12">shaped, on the corners</text>
+    <text x="365" y="245" font-size="15" font-weight="bold">Bun foot</text>
+    <text x="365" y="264" font-size="12">flattened ball</text>
+    <text x="595" y="245" font-size="15" font-weight="bold">Bootjack end</text>
+    <text x="595" y="264" font-size="12">V-notched end board</text>
+  </g>
+</svg>

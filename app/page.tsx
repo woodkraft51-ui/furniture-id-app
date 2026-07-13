@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect, useRef, useCallback } from "react"
 import { API } from "../lib/store";
 import { buildDatingFindingNarrative, type DatingFindingNarrative } from "../lib/datingFindingNarrative";
 import { pickStrongestZoneIndex } from "../lib/engineDatingOverlap";
+import type { CanonicalReport } from "../lib/engine";
 import WelcomeLanding from "./WelcomeLanding";
 import ExampleModal from "./ExampleModal";
 import GuidanceMessages from "./GuidanceMessages";
@@ -114,6 +115,9 @@ type ReportShape = {
   status?: string;
   analysis_mode?: "full_analysis" | "field_scan";
   final_report?: string;
+  // The single authoritative conclusion. The user-facing report renders from
+  // THIS (not re-derived from stage_outputs). See lib/engine CanonicalReport.
+  report_view?: CanonicalReport;
   stage_outputs?: Record<string, any>;
   observations?: any[];
   images?: any[];
@@ -404,108 +408,16 @@ function fieldValueBand(form: string, dateRange: string, conflictCount: number, 
   return { low, high, display: `$${low} – $${high}` };
 }
 
-function evidenceMeaning(text: string): string {
-  const t = String(text || "").toLowerCase();
+// evidenceMeaning() removed: it invented interpretive furniture-name claims in
+// the render layer (e.g. "…consistent with a desk, secretary, or writing
+// table") that the engine never asserted — the primary source of the user
+// report's unsupported-name divergences. Evidence now shows only the engine's
+// authoritative observations (report_view.observed_evidence).
 
-  if (t.includes("seating surface") || t.includes("bench")) {
-    return "This confirms the piece was designed for sitting, which immediately narrows the form away from cabinets or tables.";
-  }
-
-  if (t.includes("writing surface") || t.includes("writing or work surface") || t.includes("writing/work surface")) {
-    return "This indicates a dedicated writing or work surface, consistent with a desk, secretary, or writing table.";
-  }
-
-  // Match "raised surface" only — the bench-feature support is literally
-  // "A secondary raised surface is visible beside the seating area." Matching
-  // bare "secondary surface" false-fired on "secondary wood surfaces" /
-  // "secondary surfaces received minimal finishing" (interior carcass wood on a
-  // desk), wrongly annotating it as a bench feature.
-  if (t.includes("raised surface")) {
-    return "This indicates a secondary raised surface beside a seat, consistent with a writing bench or telephone bench.";
-  }
-
-  if (t.includes("spindle")) {
-    return "Spindle construction spans many periods — Windsor and stick furniture through mid-century modern and later — so it helps define the form but does not by itself narrow the date.";
-  }
-
-  if (t.includes("turned")) {
-    return "Turned elements indicate lathe-shaped components, a technique used continuously from the 18th century to the present; on its own it does not pin the date to a specific era.";
-  }
-
-  if (t.includes("paint") || t.includes("finish")) {
-    return "Surface finish may indicate later refinishing and should be considered when judging originality.";
-  }
-
-  // ✅ DEFAULT: DO NOT OVERRIDE GOOD EVIDENCE
-  return "";
-}
-
-function pickSupportingEvidence(report: ReportShape | null): string[] {
-  const digest = report?.evidence_digest;
-  const observations = Array.isArray(digest?.observations)
-    ? digest.observations
-    : [];
-
-  if (!observations.length) {
-    const p2 = report?.stage_outputs?.p2;
-    const p3 = report?.stage_outputs?.p3;
-    const p4 = report?.stage_outputs?.p4;
-    const fallback: string[] = [];
-
-    if (Array.isArray(p3?.support)) fallback.push(...p3.support);
-    if (Array.isArray(p2?.support)) fallback.push(...p2.support);
-    if (Array.isArray(p4?.confidence_drivers?.increased)) {
-      fallback.push(...p4.confidence_drivers.increased);
-    }
-
-    return Array.from(
-      new Set(fallback.map((item) => String(item || "").trim()).filter(Boolean))
-    ).slice(0, 10);
-  }
-
-  const priority: Record<string, number> = {
-  // 🔴 Highest authority (structure)
-  construction: 1,
-  joinery: 2,
-  toolmarks: 3,
-  fasteners: 4,
-
-  // 🟠 Strong secondary
-  materials: 5,
-  material: 5,
-  structure: 6,
-
-  // 🟡 Moderate
-  hardware: 7,
-  function: 8,
-  form: 9,
-
-  // 🔵 Weak / easily altered
-  finish: 10,
-  alteration: 10,
-  condition: 11,
-
-  // ⚪ Lowest authority
-  style: 12,
-  context: 13,
-};
-
-  return Array.from(
-    new Set(
-      [...observations]
-        .filter((o: any) => String(o?.description || "").trim())
-        .sort((a: any, b: any) => {
-          const pa = priority[String(a?.type || "context")] || 10;
-          const pb = priority[String(b?.type || "context")] || 10;
-
-          if (pa !== pb) return pa - pb;
-
-          return Number(b?.confidence || 0) - Number(a?.confidence || 0);
-        })
-        .map((o: any) => String(o.description).trim())
-    )
-  ).slice(0, 10);
-}
+// pickSupportingEvidence() removed: the authority-ranked evidence selection now
+// lives engine-side in selectObservedEvidence() (lib/engine.ts) and reaches the
+// report via report_view.observed_evidence, so both the user report and any
+// future consumer render the identical list.
 
 function SectionCard({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
@@ -2984,28 +2896,34 @@ const p6 = stageOutputs.p6 || null;
 const p7 = stageOutputs.p7 || null;
   
 
-  const fieldValue = useMemo(() => {
-    if (!p2 || !p3) return null;
-    return fieldValueBand(p3?.display_form || p3?.form || "Unknown", p2?.range || "Unknown", Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0, p1?.confidence_cap);
-  }, [p1, p2, p3, p5]);
+  // ── Single-source report values ───────────────────────────────────────────
+  // The user report renders from the engine's authoritative conclusion object
+  // (report_view), NOT from client re-derivation. Value + BUY/PASS verdict come
+  // straight from the engine's valuation/recommendation (was recomputed here via
+  // a divergent fieldValueBand). Evidence, caution, and next-step are
+  // authoritative only — no hardcoded filler; empty ⇒ the section is omitted,
+  // never invented.
+  const rv = report?.report_view || null;
 
-  const fieldRecommendation = useMemo(() => {
-    if (!fieldValue) return null;
-    return recommendationFromValue({
-      askingPrice: intake.asking_price,
-      valueLow: fieldValue.low,
-      valueHigh: fieldValue.high,
-      confidenceBand: p1?.confidence_cap,
-      conflictCount: Array.isArray(p5?.conflict_notes) ? p5.conflict_notes.length : 0,
-      profile: intake.picker_profile,
-      largeForm: isLargeForm(p3?.display_form || p3?.form, intake.approximate_height, intake.approximate_width),
-      repairSignals: hasRepairSignals(intake.condition_notes, intake.known_alterations),
-    });
-  }, [fieldValue, intake, p1, p3, p5]);
+  const fieldValue = useMemo(
+    () => (rv?.valuation && !rv.valuation.insufficient_evidence ? rv.valuation : null),
+    [rv]
+  );
+  const fieldRecommendation = useMemo(
+    () =>
+      rv?.recommendation
+        ? {
+            recommendation: rv.recommendation.verdict as RecommendationLevel,
+            label: rv.recommendation.label,
+            explanation: rv.recommendation.reasoning,
+          }
+        : null,
+    [rv]
+  );
 
-  const supportingEvidence = useMemo(() => pickSupportingEvidence(report), [report]);
-  const primaryCaution = (Array.isArray(p5?.conflict_notes) && p5.conflict_notes[0]) || (Array.isArray(p2?.limitations) && p2.limitations[0]) || "Exact dating depends on construction evidence such as joinery, fasteners, and structural details. Without these, visible style may suggest a period but cannot confirm it.";
-  const nextBestEvidence = (Array.isArray(p1?.next_best_evidence) && p1.next_best_evidence[0]) || "Add a structural detail such as an underside, back, or joinery view if accessible.";
+  const supportingEvidence = rv?.observed_evidence ?? [];
+  const primaryCaution = (rv?.cautions && rv.cautions[0]) || null;
+  const nextBestEvidence = (rv?.next_best_evidence && rv.next_best_evidence[0]) || null;
 
   const fieldReady = fieldPhotos.length >= 2;
   const fullReady = Boolean(coreImages.overall_front && coreImages.overall_side && allImages.length >= 2);
@@ -3527,13 +3445,22 @@ const p7 = stageOutputs.p7 || null;
           </div>
         )}
 
-        {report && analysisMode === "field_scan" && p2 && p3 && fieldValue && fieldRecommendation && (
+        {report && analysisMode === "field_scan" && rv && p2 && p3 && (
           <div style={{ marginTop: 20, display: "grid", gap: 18 }}>
-            <SectionCard title="Field Scan Result">
-              <div style={{ ...recommendationStyle(fieldRecommendation.recommendation), borderRadius: 12, padding: 16 }}>
-                <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: "0.03em", lineHeight: 1.1 }}>{fieldRecommendation.label}</div>
-                <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.55 }}>{fieldRecommendation.explanation}</div>
+            {!rv.identified && (
+              <div style={{ background: "#fdf3e7", border: "1px solid #e3c9a3", borderRadius: 12, padding: 16, fontSize: 14, color: "#7a5a2a", lineHeight: 1.6 }}>
+                <strong>We couldn&apos;t confidently identify this piece from the photos provided.</strong> The reading below is low-confidence — the evidence and next-step photos show what we saw and what would help.
               </div>
+            )}
+            <SectionCard title="Field Scan Result">
+              {fieldRecommendation ? (
+                <div style={{ ...recommendationStyle(fieldRecommendation.recommendation), borderRadius: 12, padding: 16 }}>
+                  <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: "0.03em", lineHeight: 1.1 }}>{fieldRecommendation.label}</div>
+                  <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.55 }}>{fieldRecommendation.explanation}</div>
+                </div>
+              ) : (
+                <div style={emptyText}>Not enough evidence to give a buy/pass verdict — see what would help below.</div>
+              )}
               <div className="no-print" style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                 {(report?.id || activeCaseId) && isInBasket(report?.id || activeCaseId) ? (
                   <a href="/compare" style={{ ...navLinkStyle, fontSize: 14 }}>In comparison ✓ — view{compareCount > 0 ? ` (${compareCount})` : ""}</a>
@@ -3546,25 +3473,15 @@ const p7 = stageOutputs.p7 || null;
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Likely Identification">
-                <div style={metaRowStyle}><span>Best reading</span><strong>{p3?.display_form || p3?.form || "Unknown"}</strong></div>
-                {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
-                {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
-                  <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                    Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value above.
-                  </div>
+                {/* All fields render from the authoritative report_view — no
+                    re-derivation, no non-authoritative style extras. */}
+                <div style={metaRowStyle}><span>Best reading</span><strong>{rv?.identification || "Unknown"}</strong></div>
+                {rv?.also_called && rv.also_called.length > 0 && (
+                  <div style={{ marginTop: 4, fontSize: 13, color: "#6a5845", lineHeight: 1.5 }}>Also called: {rv.also_called.join(", ")}</div>
                 )}
-                {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
-                  <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                    Why this label: {p3.final_style.final_style_reason}
-                  </div>
-                )}
-                {/* "Alternate possibilities" removed per appraiser direction:
-                    when primary confidence is high the alternates undermine
-                    authority; when primary confidence is low a list of also-rans
-                    doesn't help the user decide. Either case the section hurt
-                    more than it helped. p3.alternatives still computed by the
-                    engine (used by other downstream logic / cousin contrasts)
-                    but no longer rendered in the report. */}
+                {rv?.subtype && <div style={{ marginTop: 6, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Subtype: {rv.subtype}</div>}
+                {rv?.style && <div style={{ marginTop: 6, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Style: {rv.style}</div>}
+                <div style={{ ...metaRowStyle, marginTop: 10 }}><span>Identification confidence</span><strong style={{ color: bandColor(rv?.confidence_identification) }}>{rv?.confidence_identification || "Inconclusive"}</strong></div>
               </SectionCard>
               <SectionCard title="Broad Date Lane">
   {/* Frame date */}
@@ -3609,21 +3526,23 @@ const p7 = stageOutputs.p7 || null;
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
               <SectionCard title="Broad Resale Lane">
-                <div style={metaRowStyle}><span>Typical resale lane</span><strong>{fieldValue.display}</strong></div>
-                <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>This is a broad field-use range shaped by likely form, date lane, and visible risk.</div>
+                {fieldValue ? (
+                  <>
+                    <div style={metaRowStyle}><span>Typical resale lane</span><strong>{fieldValue.display}</strong></div>
+                    <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>This is a broad field-use range shaped by likely form, date lane, and visible risk.</div>
+                  </>
+                ) : (
+                  <div style={emptyText}>Not enough evidence to estimate a resale range.</div>
+                )}
               </SectionCard>
-              <SectionCard title="Main Caution"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}><GlossaryText text={primaryCaution} /></div></SectionCard>
+              {primaryCaution && <SectionCard title="Main Caution"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}><GlossaryText text={primaryCaution} /></div></SectionCard>}
             </div>
 
             <SectionCard title="Key Supporting Evidence">
-              {supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div>{evidenceMeaning(item) && (
-  <div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}>
-    <GlossaryText text={evidenceMeaning(item)} />
-  </div>
-)}</div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}
+              {supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}
             </SectionCard>
 
-            <SectionCard title="Next Best Evidence"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}><GlossaryText text={nextBestEvidence} /></div></SectionCard>
+            {nextBestEvidence && <SectionCard title="Next Best Evidence"><div style={{ fontSize: 14, color: "#574634", lineHeight: 1.6 }}><GlossaryText text={nextBestEvidence} /></div></SectionCard>}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
             <SectionCard title="Negotiating Tips">
             <TipsList items={p7?.negotiation_tips} />
@@ -3725,14 +3644,17 @@ const p7 = stageOutputs.p7 || null;
                 range, limitations, style context) now lives in the Date &
                 Style detail card placed just below the dating visual. */}
             <section style={{ background: "#fffdf9", border: "1px solid #ded3bf", borderRadius: 12, padding: 16, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: "#3e2f1f", lineHeight: 1.25 }}>{(p3?.display_form || p3?.form || "Unknown").replace(/\s*\(also commonly called:[^)]*\)\s*$/i, "")}</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#3e2f1f", lineHeight: 1.25 }}>{rv?.identification || "Unknown"}</div>
+              {rv?.also_called && rv.also_called.length > 0 && (
+                <div style={{ marginTop: 4, fontSize: 13, color: "#6a5845", lineHeight: 1.5 }}>Also called: {rv.also_called.join(", ")}</div>
+              )}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
                 {[
-                  { k: "Date", v: p2?.range || "Unknown", c: undefined as string | undefined },
-                  ...(p3?.style_attribution?.name || p3?.style_context
-                    ? [{ k: "Style", v: (p3?.style_attribution?.name || p3?.style_context) as string, c: undefined as string | undefined }]
-                    : []),
-                  { k: "Confidence", v: p3?.confidence || "Inconclusive", c: bandColor(p3?.confidence) },
+                  { k: "Date", v: rv?.date_range || "Unknown", c: undefined as string | undefined },
+                  ...(rv?.style ? [{ k: "Style", v: rv.style as string, c: undefined as string | undefined }] : []),
+                  ...(rv?.subtype ? [{ k: "Subtype", v: rv.subtype as string, c: undefined as string | undefined }] : []),
+                  { k: "ID confidence", v: rv?.confidence_identification || "Inconclusive", c: bandColor(rv?.confidence_identification) },
+                  { k: "Dating confidence", v: rv?.confidence_dating || "Inconclusive", c: bandColor(rv?.confidence_dating) },
                 ].map((pill) => (
                   <span key={pill.k} style={{ display: "inline-flex", gap: 6, alignItems: "baseline", background: "#efe6d6", borderRadius: 999, padding: "5px 12px", fontSize: 14 }}>
                     <span style={{ fontSize: 11, letterSpacing: 0.4, textTransform: "uppercase", color: "#6a5845" }}>{pill.k}</span>
@@ -3741,6 +3663,11 @@ const p7 = stageOutputs.p7 || null;
                 ))}
               </div>
             </section>
+            {rv && !rv.identified && (
+              <div style={{ background: "#fdf3e7", border: "1px solid #e3c9a3", borderRadius: 12, padding: 16, fontSize: 14, color: "#7a5a2a", lineHeight: 1.6 }}>
+                <strong>We couldn&apos;t confidently identify this piece from the photos provided.</strong> The reading above is low-confidence. The evidence and next-step photos below show what we saw and what would help pin it down.
+              </div>
+            )}
             {/* Upholstery track moved below the Date & Style detail card. */}
             {p6?.dating_overlap && (
               <SectionCard title="How we dated it">
@@ -3771,20 +3698,12 @@ const p7 = stageOutputs.p7 || null;
               </SectionCard>
             )}
             <SectionCard title="Date & style detail">
-              <div style={metaRowStyle}><span>Working range</span><strong>{p2?.range || "Unknown"}</strong></div>
-              <div style={metaRowStyle}><span>Dating confidence</span><strong style={{ color: bandColor(p2?.confidence) }}>{p2?.confidence || "Inconclusive"}</strong></div>
-              {p3?.style_context && <div style={{ marginTop: 10, fontSize: 14, color: "#574634", lineHeight: 1.55 }}>Broad style context: {p3.style_context}</div>}
-              {Array.isArray(p3?.style_influences) && p3.style_influences.length > 0 && (
-                <div style={{ marginTop: 10, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                  Style influences worth checking: {p3.style_influences.map((s: any) => s.name).join(", ")}. These are tentative reads from descriptive language, not confirmed by distinctive style evidence — they do not affect the dating or value.
-                </div>
-              )}
-              {p3?.final_style && ["named_transitional", "revival_wave", "reproduction", "impossible_pair", "late_period"].includes(p3.final_style.kind) && (
-                <div style={{ marginTop: 6, fontSize: 13, color: "#6a5845", lineHeight: 1.5, fontStyle: "italic" }}>
-                  Why this label: {p3.final_style.final_style_reason}
-                </div>
-              )}
-              {Array.isArray(p2?.limitations) && p2.limitations.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{p2.limitations.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
+              {/* Core conclusion fields render from report_view; non-authoritative
+                  style extras (broad context, "worth checking" influences) removed. */}
+              <div style={metaRowStyle}><span>Working range</span><strong>{rv?.date_range || "Unknown"}</strong></div>
+              <div style={metaRowStyle}><span>Dating confidence</span><strong style={{ color: bandColor(rv?.confidence_dating) }}>{rv?.confidence_dating || "Inconclusive"}</strong></div>
+              {rv?.style && <div style={metaRowStyle}><span>Style</span><strong>{rv.style}</strong></div>}
+              {rv?.cautions && rv.cautions.length > 0 && <><div style={subheadStyle}>Current limitations</div><ul style={listStyle}>{rv.cautions.map((item: string) => <li key={item}>{item}</li>)}</ul></>}
               {p3?.regional_period_notes && (
                 <DetailDropdown title="Regional & period context">
                   <div style={{ whiteSpace: "pre-wrap" }}>{p3.regional_period_notes}</div>
@@ -3844,15 +3763,21 @@ const p7 = stageOutputs.p7 || null;
                 )}
               </SectionCard>
             )}
-            <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div><div style={{ marginTop: 6, fontSize: 14, color: "#5c4a37", lineHeight: 1.6 }}><GlossaryText text={evidenceMeaning(item)} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
+            <SectionCard title="Key Supporting Evidence">{supportingEvidence.length > 0 ? <div style={{ display: "grid", gap: 12 }}>{supportingEvidence.map((item) => <div key={item} style={{ border: "1px solid #eadfcf", borderRadius: 10, padding: 12, background: "#fff" }}><div style={{ fontWeight: 700, fontSize: 14, color: "#3d2d1f", lineHeight: 1.5 }}><GlossaryText text={item} /></div></div>)}</div> : <div style={emptyText}>No supporting evidence was returned.</div>}</SectionCard>
             <SectionCard title="Resale Valuation">
-              <ResaleValuationSection valuation={p6?.valuation as ValuationShape | undefined} formLabel={p3?.display_form || p3?.form} />
+              <ResaleValuationSection valuation={rv?.valuation as ValuationShape | undefined} formLabel={rv?.identification} />
             </SectionCard>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-              <SectionCard title="Supported Findings">{p6?.supported_findings?.length ? <ul style={listStyle}>{p6.supported_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No supported findings were returned.</div>}</SectionCard>
-              <SectionCard title="Cautions and Conflicts">{p6?.tentative_findings?.length ? <ul style={listStyle}>{p6.tentative_findings.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>
+              <SectionCard title="Supported Findings">{rv?.supporting_evidence?.length ? <ul style={listStyle}>{rv.supporting_evidence.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No supported findings were returned.</div>}</SectionCard>
+              <SectionCard title="Cautions and Conflicts">{rv?.conflicting_evidence?.length ? <ul style={listStyle}>{rv.conflicting_evidence.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No major cautions were returned.</div>}</SectionCard>
             </div>
-            <SectionCard title="Next Best Evidence">{Array.isArray(p6?.more_evidence_needed) && p6.more_evidence_needed.length > 0 ? <ul style={listStyle}>{p6.more_evidence_needed.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No additional evidence recommendations were returned.</div>}</SectionCard>
+            {rv?.alternatives && rv.alternatives.length > 0 && (
+              <SectionCard title="Other Possibilities">
+                <div style={{ fontSize: 13, color: "#6a5845", lineHeight: 1.5, marginBottom: 8 }}>Secondary readings the evidence also allows — <em>not</em> the primary identification above.</div>
+                <ul style={listStyle}>{rv.alternatives.map((item: string) => <li key={item}>{item}</li>)}</ul>
+              </SectionCard>
+            )}
+            <SectionCard title="Next Best Evidence">{rv?.next_best_evidence && rv.next_best_evidence.length > 0 ? <ul style={listStyle}>{rv.next_best_evidence.map((item: string) => <li key={item}>{item}</li>)}</ul> : <div style={emptyText}>No additional evidence recommendations were returned.</div>}</SectionCard>
             <SectionCard title="Buying &amp; selling tips">
               <DetailDropdown title="When you're selling">
                 <TipsList items={p7?.selling_tips} />

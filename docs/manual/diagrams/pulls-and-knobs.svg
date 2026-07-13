@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 250" font-family="Georgia, serif">
+  <rect width="840" height="250" fill="#F5EFE6"/>
+  <rect width="840" height="40" fill="#C9A86A"/>
+  <text x="420" y="27" text-anchor="middle" font-size="19" font-weight="bold" fill="#3A2E26" letter-spacing="1.5">PULLS AND KNOBS BY PERIOD</text>
+  <g stroke="#3A2E26" stroke-width="1.6" fill="none">
+    <!-- 1 bail pull on willow backplate -->
+    <path d="M40 92 q30 -22 60 0 q14 30 0 60 q-30 22 -60 0 q-14 -30 0 -60 Z" fill="#C9A86A" fill-opacity="0.4"/>
+    <path d="M52 112 q18 34 36 0"/>
+    <circle cx="52" cy="112" r="2.5" fill="#3A2E26"/><circle cx="88" cy="112" r="2.5" fill="#3A2E26"/>
+    <!-- 2 Hepplewhite oval -->
+    <ellipse cx="210" cy="120" rx="40" ry="26" fill="#C9A86A" fill-opacity="0.4"/>
+    <path d="M188 116 q22 30 44 0"/>
+    <circle cx="188" cy="116" r="2.5" fill="#3A2E26"/><circle cx="232" cy="116" r="2.5" fill="#3A2E26"/>
+    <!-- 3 glass / wood knob -->
+    <circle cx="350" cy="120" r="26" fill="#FBF7F0"/>
+    <line x1="332" y1="104" x2="368" y2="136"/><line x1="368" y1="104" x2="332" y2="136"/><line x1="350" y1="94" x2="350" y2="146"/><line x1="324" y1="120" x2="376" y2="120"/>
+    <!-- 4 Victorian teardrop drop -->
+    <ellipse cx="490" cy="100" rx="22" ry="13" fill="#C9A86A" fill-opacity="0.4"/>
+    <path d="M490 112 q-8 28 0 40 q8 -12 0 -40" fill="#3A2E26" fill-opacity="0.5"/>
+    <!-- 5 Eastlake geometric -->
+    <rect x="600" y="92" width="80" height="56" fill="#C9A86A" fill-opacity="0.4"/>
+    <line x1="612" y1="104" x2="668" y2="104"/><line x1="612" y1="120" x2="668" y2="120"/><line x1="612" y1="136" x2="668" y2="136"/>
+    <!-- 6 Bakelite / chrome bar -->
+    <rect x="730" y="110" width="80" height="20" rx="10" fill="#FBF7F0"/>
+    <circle cx="744" cy="120" r="3" fill="#3A2E26"/><circle cx="796" cy="120" r="3" fill="#3A2E26"/>
+  </g>
+  <g font-size="12.5" fill="#3A2E26" font-weight="bold" text-anchor="middle">
+    <text x="70" y="186">Bail pull</text><text x="210" y="186">Hepplewhite oval</text><text x="350" y="186">Glass / wood knob</text>
+    <text x="490" y="186">Victorian teardrop</text><text x="640" y="186">Eastlake</text><text x="770" y="186">Bakelite / chrome</text>
+  </g>
+  <g font-size="11.5" fill="#3E6B66" text-anchor="middle">
+    <text x="70" y="204">18th c. &amp; revival</text><text x="210" y="204">Federal, c. 1790</text><text x="350" y="204">Victorian / Empire</text>
+    <text x="490" y="204">mid-late Victorian</text><text x="640" y="204">1875 to 1900</text><text x="770" y="204">Art Deco on</text>
+  </g>
+  <text x="420" y="232" text-anchor="middle" font-size="11.5" fill="#9B4B3B" font-style="italic">Hardware is the most-replaced part: read it for a hint, never a verdict, and hunt for shadow holes.</text>
+</svg>
